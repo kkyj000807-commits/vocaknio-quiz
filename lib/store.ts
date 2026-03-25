@@ -1,5 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createContext, useContext } from "react";
 
 export interface StatsData {
   totalAnswered: number;
@@ -10,12 +9,11 @@ export interface StatsData {
   lastStudyDate: string;
 }
 
-export interface BookmarkData {
-  wordNums: number[];
-}
-
 const STATS_KEY = "vocaknio_stats";
 const BOOKMARKS_KEY = "vocaknio_bookmarks";
+const WRONG_WORDS_KEY = "vocaknio_wrong_words";
+
+// ─── Stats ────────────────────────────────────────────────────────────────────
 
 export async function loadStats(): Promise<StatsData> {
   try {
@@ -45,13 +43,11 @@ export async function updateStatsAfterQuiz(
   const stats = await loadStats();
   const today = new Date().toISOString().slice(0, 10);
 
-  // Reset today count if new day
   if (stats.todayDate !== today) {
     stats.todayAnswered = 0;
     stats.todayDate = today;
   }
 
-  // Update streak
   const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
   if (stats.lastStudyDate === yesterday) {
     stats.streak += 1;
@@ -67,6 +63,8 @@ export async function updateStatsAfterQuiz(
   await saveStats(stats);
   return stats;
 }
+
+// ─── Bookmarks ────────────────────────────────────────────────────────────────
 
 export async function loadBookmarks(): Promise<number[]> {
   try {
@@ -92,4 +90,55 @@ export async function toggleBookmark(num: number): Promise<number[]> {
   }
   await saveBookmarks(bookmarks);
   return bookmarks;
+}
+
+// ─── Wrong Words (오답 누적) ──────────────────────────────────────────────────
+
+/**
+ * 오답 단어 num 목록을 불러옵니다.
+ */
+export async function loadWrongWords(): Promise<number[]> {
+  try {
+    const raw = await AsyncStorage.getItem(WRONG_WORDS_KEY);
+    if (raw) return JSON.parse(raw) as number[];
+  } catch {}
+  return [];
+}
+
+/**
+ * 오답 단어 num 목록을 저장합니다.
+ */
+export async function saveWrongWords(nums: number[]): Promise<void> {
+  try {
+    await AsyncStorage.setItem(WRONG_WORDS_KEY, JSON.stringify(nums));
+  } catch {}
+}
+
+/**
+ * 퀴즈 결과의 오답 num 배열을 기존 오답 목록에 누적 추가합니다.
+ * 중복은 제거됩니다.
+ */
+export async function addWrongWords(newNums: number[]): Promise<number[]> {
+  if (newNums.length === 0) return loadWrongWords();
+  const existing = await loadWrongWords();
+  const merged = Array.from(new Set([...existing, ...newNums]));
+  await saveWrongWords(merged);
+  return merged;
+}
+
+/**
+ * 특정 단어를 오답 목록에서 제거합니다 (마스터 처리).
+ */
+export async function removeWrongWord(num: number): Promise<number[]> {
+  const existing = await loadWrongWords();
+  const updated = existing.filter((n) => n !== num);
+  await saveWrongWords(updated);
+  return updated;
+}
+
+/**
+ * 오답 목록 전체를 초기화합니다.
+ */
+export async function clearWrongWords(): Promise<void> {
+  await saveWrongWords([]);
 }

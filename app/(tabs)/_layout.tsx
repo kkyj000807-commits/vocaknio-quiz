@@ -44,6 +44,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="wrong"
+        options={{
+          title: "오답노트",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={24} name="xmark.circle.fill" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="stats"
         options={{
           title: "통계",

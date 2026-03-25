@@ -27,7 +27,7 @@ import {
   getSynDistractors,
   getKorDistractors,
 } from "@/lib/vocab";
-import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks } from "@/lib/store";
+import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
 
 interface QuizQuestion {
@@ -201,14 +201,21 @@ export default function QuizScreen() {
   const handleNext = useCallback(async () => {
     haptic("light");
     if (currentIdx + 1 >= questions.length) {
-      // Quiz done
-      await updateStatsAfterQuiz(correctCount + (mode === "flashcard" && flashGrade === "correct" ? 1 : 0), questions.length);
+      // Quiz done — 오답 누적 저장
+      const finalWrongNums = wrongItems.map((w) => w.num);
+      await Promise.all([
+        updateStatsAfterQuiz(
+          correctCount + (mode === "flashcard" && flashGrade === "correct" ? 1 : 0),
+          questions.length
+        ),
+        addWrongWords(finalWrongNums),
+      ]);
       router.replace({
         pathname: "/result",
         params: {
           correct: correctCount,
           total: questions.length,
-          wrongNums: wrongItems.map((w) => w.num).join(","),
+          wrongNums: finalWrongNums.join(","),
         },
       });
       return;

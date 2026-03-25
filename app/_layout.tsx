@@ -89,6 +89,7 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="quiz" />
             <Stack.Screen name="result" />
+            <Stack.Screen name="wrong-quiz" />
             <Stack.Screen name="oauth/callback" />
           </Stack>
           <StatusBar style="auto" />

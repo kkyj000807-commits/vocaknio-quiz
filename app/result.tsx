@@ -113,6 +113,26 @@ export default function ResultScreen() {
             <Text style={s.btnSecondaryText}>↩ 다시 풀기</Text>
           </Pressable>
         </View>
+        {/* 오답 전용 퀴즈 바로 시작 */}
+        {wrongNums.length > 0 && (
+          <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
+            <Pressable
+              style={({ pressed }) => [s.btn, s.btnWrong, { width: "100%" }, pressed && { opacity: 0.85 }]}
+              onPress={() => {
+                haptic();
+                router.replace({
+                  pathname: "/wrong-quiz",
+                  params: {
+                    wrongNums: wrongNums.join(","),
+                    count: Math.min(wrongNums.length, 20),
+                  },
+                });
+              }}
+            >
+              <Text style={s.btnWrongText}>🔴 이번 오답 바로 복습하기 ({wrongNums.length}개)</Text>
+            </Pressable>
+          </View>
+        )}
 
         {/* Wrong Items List */}
         {wrongItems.length > 0 && (
@@ -294,5 +314,15 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     synTagText: {
       fontSize: 11,
       color: colors.primary2 as string,
+    },
+    btnWrong: {
+      backgroundColor: "rgba(248,113,113,0.12)",
+      borderWidth: 2,
+      borderColor: "rgba(248,113,113,0.35)",
+    },
+    btnWrongText: {
+      fontSize: 14,
+      fontWeight: "700",
+      color: colors.error,
     },
   });
