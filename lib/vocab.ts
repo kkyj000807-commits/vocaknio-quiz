@@ -20,6 +20,52 @@ export const ALL_SYNONYMS: string[] = Array.from(
   new Set(VOCAB.flatMap((v) => v.s))
 );
 
+// ─── 역방향 인덱스 빌드 ───────────────────────────────────────────────────────
+// syn -> 해당 동의어를 가진 단어(w)들의 집합
+const SYN_TO_WORDS: Map<string, Set<string>> = new Map();
+for (const item of VOCAB) {
+  for (const s of item.s) {
+    if (!SYN_TO_WORDS.has(s)) SYN_TO_WORDS.set(s, new Set());
+    SYN_TO_WORDS.get(s)!.add(item.w);
+  }
+}
+
+// word -> 동의어 집합
+const WORD_TO_SYNS: Map<string, Set<string>> = new Map();
+for (const item of VOCAB) {
+  WORD_TO_SYNS.set(item.w, new Set(item.s));
+}
+
+/**
+ * 특정 단어에 대해 오답 보기로 사용할 수 없는 동의어 집합을 반환한다.
+ *
+ * 금지 범위:
+ *  1. 단어 자신 (w)
+ *  2. 단어의 직접 동의어 (s[])
+ *  3. 직접 동의어를 공유하는 다른 단어들의 동의어
+ *     (= 같은 의미 그룹에 속하는 "형제 동의어")
+ *
+ * 이렇게 하면 정답과 의미적으로 겹치는 단어가 오답 보기에 나오지 않는다.
+ */
+export function getForbiddenSyns(item: VocabItem): Set<string> {
+  const forbidden = new Set<string>(item.s);
+  forbidden.add(item.w);
+
+  for (const syn of item.s) {
+    const siblingWords = SYN_TO_WORDS.get(syn);
+    if (!siblingWords) continue;
+    for (const siblingWord of siblingWords) {
+      if (siblingWord === item.w) continue;
+      const sibSyns = WORD_TO_SYNS.get(siblingWord);
+      if (sibSyns) {
+        for (const ss of sibSyns) forbidden.add(ss);
+      }
+    }
+  }
+
+  return forbidden;
+}
+
 export const RANGES = [
   { id: "0-999",    label: "1~1000번",    start: 0,    end: 999 },
   { id: "1000-1999", label: "1001~2000번", start: 1000, end: 1999 },
@@ -53,40 +99,109 @@ export function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-// Get distractors for synonym choice
+/**
+ * 동의어 고르기 모드용 오답 보기 생성
+ *
+ * 개선점:
+ * - getForbiddenSyns()로 의미적으로 겹치는 동의어 전체를 금지
+ * - 오답 보기가 부족할 경우 fallback으로 단순 단어(w) 목록에서 보충
+ */
 export function getSynDistractors(
   target: VocabItem,
   correctSyn: string,
   count = 3
 ): string[] {
+  const forbidden = getForbiddenSyns(target);
+  // correctSyn 자체도 금지 (정답이므로)
+  forbidden.add(correctSyn);
+
   const distractors: string[] = [];
-  const used = new Set([correctSyn, ...target.s]);
   const pool = shuffle(ALL_SYNONYMS);
+
   for (const syn of pool) {
-    if (!used.has(syn) && distractors.length < count) {
+    if (!forbidden.has(syn)) {
       distractors.push(syn);
-      used.add(syn);
+      forbidden.add(syn); // 보기 내 중복 방지
     }
     if (distractors.length >= count) break;
   }
-  return distractors;
+
+  // 풀이 부족한 극단적 케이스: 단어 자체(w)로 보충
+  if (distractors.length < count) {
+    const wordPool = shuffle(VOCAB.map((v) => v.w));
+    for (const w of wordPool) {
+      if (!forbidden.has(w) && distractors.length < count) {
+        distractors.push(w);
+        forbidden.add(w);
+      }
+    }
+  }
+
+  return distractors.slice(0, count);
 }
 
-// Get distractors for Korean meaning choice
+/**
+ * 한국어 뜻 고르기 모드용 오답 보기 생성
+ *
+ * 개선점:
+ * - 정답(k)과 동일한 k를 가진 항목 제외 (k 중복 방지)
+ * - k_short 기준으로도 중복 체크 (의미 유사 뜻 제거)
+ * - 정답 단어의 동의어들이 가진 k도 금지 (의미 그룹 중복 방지)
+ */
 export function getKorDistractors(
   target: VocabItem,
   pool: VocabItem[],
   count = 3
 ): string[] {
+  // 금지할 k 값 집합 구성
+  const forbiddenK = new Set<string>();
+  forbiddenK.add(target.k);
+  if (target.k_short) forbiddenK.add(target.k_short);
+
+  // 정답 단어의 동의어들을 가진 단어들의 k도 금지
+  const forbidden = getForbiddenSyns(target);
+  for (const item of VOCAB) {
+    if (item.w !== target.w && item.s.some((s) => forbidden.has(s))) {
+      if (item.k) forbiddenK.add(item.k);
+      if (item.k_short) forbiddenK.add(item.k_short);
+    }
+  }
+
   const distractors: string[] = [];
-  const used = new Set([target.k]);
+  const usedK = new Set<string>(forbiddenK);
   const shuffled = shuffle(pool);
+
   for (const item of shuffled) {
-    if (!used.has(item.k) && item.k && item.k.length > 2 && distractors.length < count) {
+    if (
+      item.w !== target.w &&
+      item.k &&
+      item.k.length > 2 &&
+      !usedK.has(item.k)
+    ) {
       distractors.push(item.k);
-      used.add(item.k);
+      usedK.add(item.k);
+      // k_short도 중복 방지용으로 등록
+      if (item.k_short) usedK.add(item.k_short);
     }
     if (distractors.length >= count) break;
   }
-  return distractors;
+
+  // 풀 부족 시 전체 VOCAB에서 보충
+  if (distractors.length < count) {
+    const globalPool = shuffle(VOCAB);
+    for (const item of globalPool) {
+      if (
+        item.w !== target.w &&
+        item.k &&
+        item.k.length > 2 &&
+        !usedK.has(item.k) &&
+        distractors.length < count
+      ) {
+        distractors.push(item.k);
+        usedK.add(item.k);
+      }
+    }
+  }
+
+  return distractors.slice(0, count);
 }
