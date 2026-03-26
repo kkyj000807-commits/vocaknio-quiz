@@ -52,10 +52,10 @@ export default function HomeScreen() {
       >
         {/* Header */}
         <View style={s.header}>
-          <Text style={s.headerTitle}>보카니오 퀴즈</Text>
+          <Text style={s.headerTitle}>편입 동의어 퀴즈</Text>
           <View style={s.badge}>
             <Text style={s.badgeText}>
-              편입 실전 · {VOCAB.length.toLocaleString()}개 단어 · IPA 발음기호
+              기출·실전 · {VOCAB.length.toLocaleString()}개 단어 · IPA 발음기호
             </Text>
           </View>
         </View>
