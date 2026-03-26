@@ -52,7 +52,7 @@ export default function HomeScreen() {
       >
         {/* Header */}
         <View style={s.header}>
-          <Text style={s.headerTitle}>편입 동의어 퀴즈</Text>
+          <Text style={s.headerTitle}>편입VOCA</Text>
           <View style={s.badge}>
             <Text style={s.badgeText}>
               기출·실전 · {VOCAB.length.toLocaleString()}개 단어 · IPA 발음기호

@@ -28,11 +28,11 @@ const schemeFromBundleId = `manus${timestamp}`;
 
 const env = {
   // App branding - update these values directly (do not use env vars)
-  appName: "편입 동의어 퀴즈",
+  appName: "편입VOCA",
   appSlug: "vocaknio-quiz",
   // S3 URL of the app logo - set this to the URL returned by generate_image when creating custom logo
   // Leave empty to use the default icon from assets/images/icon.png
-  logoUrl: "https://d2xsxph8kpxj0f.cloudfront.net/310519663476278282/WS6D4wDEAVvGHz7A5rpBdJ/vocaknio-icon-3Ajq2VrVobRx8NjTTYQJcT.png",
+  logoUrl: "https://d2xsxph8kpxj0f.cloudfront.net/310519663476278282/WS6D4wDEAVvGHz7A5rpBdJ/pyeonip-voca-icon-YCCNPhxqL6kCcU6NNwiSox.png",
   scheme: schemeFromBundleId,
   iosBundleId: bundleId,
   androidPackage: bundleId,

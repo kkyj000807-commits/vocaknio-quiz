@@ -57,3 +57,9 @@
 - [x] 한국어 뜻 고르기: 오답 보기에 정답과 의미 중복되는 뜻 제거
 - [x] 동의어 입력 모드: 정답 판정 시 동의어 전체 허용 (이미 구현)
 - [x] 보기 생성 유틸 함수 vocab.ts로 분리 및 테스트 추가
+
+## 앱 이름 및 아이콘 변경
+- [x] 새 앱 아이콘 생성 (편입VOCA 브랜드)
+- [x] app.config.ts appName "편입VOCA"로 변경
+- [x] 홈 화면 타이틀 "편입VOCA"로 변경
+- [x] 아이콘 파일 교체 (icon.png, splash-icon.png, favicon.png, android-icon-foreground.png)
