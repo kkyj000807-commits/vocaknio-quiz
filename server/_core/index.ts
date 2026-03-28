@@ -71,13 +71,21 @@ async function startServer() {
   );
 
   // Serve static web build (Expo export output)
-  const distPath = path.resolve(process.cwd(), "dist");
-  if (fs.existsSync(distPath)) {
-    app.use(express.static(distPath));
+  // Web build is in dist/client/, server build is in dist/server/
+  const webBuildPath = path.resolve(process.cwd(), "dist", "client");
+  const fallbackWebPath = path.resolve(process.cwd(), "dist");
+  const staticPath = fs.existsSync(webBuildPath) ? webBuildPath : fallbackWebPath;
+
+  // Only serve static files if index.html exists (avoid serving server JS as static)
+  const indexHtmlPath = path.join(staticPath, "index.html");
+  if (fs.existsSync(indexHtmlPath)) {
+    app.use(express.static(staticPath, { index: false }));
     // SPA fallback: serve index.html for all non-API routes
     app.get("*", (req, res, next) => {
       if (req.path.startsWith("/api")) return next();
-      const filePath = path.join(distPath, req.path);
+      // Skip serving .js files that are server bundles
+      if (req.path === "/index.js" || req.path === "/server/index.js") return next();
+      const filePath = path.join(staticPath, req.path);
       // Try exact file first, then .html, then index.html
       if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
         return res.sendFile(filePath);
@@ -86,7 +94,7 @@ async function startServer() {
       if (fs.existsSync(htmlPath)) {
         return res.sendFile(htmlPath);
       }
-      res.sendFile(path.join(distPath, "index.html"));
+      res.sendFile(indexHtmlPath);
     });
   }
 

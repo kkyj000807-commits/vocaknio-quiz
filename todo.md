@@ -105,3 +105,9 @@
 - [x] 클라이언트 로그인/회원가입 화면 구현 (이메일+비밀번호)
 - [x] Manus OAuth 의존성 제거 (use-auth.ts 교체)
 - [x] 로그인 없이도 앱 기본 기능 사용 가능 (로컨 모드)
+
+## Not Found 재발 수정
+- [x] 배포 서버에서 정적 파일 서빙 확인 (원인: dist/index.js와 index.html 충돌)
+- [x] 웹 빌드를 dist/client/로 분리 재생성
+- [x] 서버 빌드를 dist/server/로 분리
+- [x] 서버 재빌드 완료
