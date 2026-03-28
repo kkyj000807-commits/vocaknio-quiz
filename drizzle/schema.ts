@@ -1,14 +1,17 @@
 import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 /**
- * Core user table backing auth flow.
+ * Core user table — supports email/password + Google OAuth login.
+ * openId is kept for backward compat but nullable for new self-auth users.
  */
 export const users = mysqlTable("users", {
   id: int("id").autoincrement().primaryKey(),
-  openId: varchar("openId", { length: 64 }).notNull().unique(),
+  openId: varchar("openId", { length: 64 }).unique(),
   name: text("name"),
-  email: varchar("email", { length: 320 }),
-  loginMethod: varchar("loginMethod", { length: 64 }),
+  email: varchar("email", { length: 320 }).unique(),
+  passwordHash: varchar("passwordHash", { length: 256 }),   // null for social-only accounts
+  googleId: varchar("googleId", { length: 128 }).unique(),  // null for email-only accounts
+  loginMethod: varchar("loginMethod", { length: 64 }),      // "email" | "google" | "apple"
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -20,12 +23,6 @@ export type InsertUser = typeof users.$inferInsert;
 
 /**
  * 사용자별 학습 데이터 동기화 테이블
- * - wrongNums: 오답 단어 번호 목록 (JSON 배열 문자열)
- * - bookmarkNums: 북마크 단어 번호 목록 (JSON 배열 문자열)
- * - totalAnswered: 전체 풀이 수
- * - totalCorrect: 전체 정답 수
- * - streakDays: 연속 학습일
- * - lastStudiedAt: 마지막 학습 날짜
  */
 export const userData = mysqlTable("user_data", {
   id: int("id").autoincrement().primaryKey(),

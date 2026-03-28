@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE users ADD COLUMN googleId VARCHAR(128) NULL; ALTER TABLE users MODIFY COLUMN openId VARCHAR(64) NULL;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user zEYJzxLzpgqmMVy.root --database WS6D4wDEAVvGHz7A5rpBdJ --execute ALTER TABLE users ADD COLUMN googleId VARCHAR(128) NULL; ALTER TABLE users MODIFY COLUMN openId VARCHAR(64) NULL;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1954
+}

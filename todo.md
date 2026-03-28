@@ -96,3 +96,12 @@
 - [x] Expo Router 정적 빌드 실행 (dist/ 생성)
 - [x] server/_core/index.ts에 정적 파일 서빙 + SPA fallback 추가
 - [x] 서버 재빌드 완료
+
+## 독립 실행 및 자체 인증 시스템
+- [x] 현재 Manus OAuth 의존성 파악 및 제거 계획
+- [x] DB에 users 테이블 확장 (이메일, 비밀번호 해시, 구글ID)
+- [x] 서버 인증 API: 이메일/비밀번호 회원가입·로그인
+- [x] JWT 세션 토큰 발급 및 검증
+- [x] 클라이언트 로그인/회원가입 화면 구현 (이메일+비밀번호)
+- [x] Manus OAuth 의존성 제거 (use-auth.ts 교체)
+- [x] 로그인 없이도 앱 기본 기능 사용 가능 (로컨 모드)

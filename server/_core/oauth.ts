@@ -1,174 +1,127 @@
-import { COOKIE_NAME, ONE_YEAR_MS } from "../../shared/const.js";
+/**
+ * 자체 인증 라우트 — Manus OAuth 없이 독립 실행
+ * - POST /api/auth/register  : 이메일+비밀번호 회원가입
+ * - POST /api/auth/login     : 이메일+비밀번호 로그인
+ * - POST /api/auth/google    : 구글 ID 토큰으로 로그인/회원가입
+ * - POST /api/auth/logout    : 로그아웃 (쿠키 삭제)
+ * - GET  /api/auth/me        : 현재 로그인 사용자 정보
+ * - POST /api/auth/session   : Bearer 토큰 → 쿠키 교환 (웹 iframe용)
+ */
 import type { Express, Request, Response } from "express";
-import { getUserByOpenId, upsertUser } from "../db";
+import { COOKIE_NAME, ONE_YEAR_MS } from "../../shared/const.js";
 import { getSessionCookieOptions } from "./cookies";
-import { sdk } from "./sdk";
-
-function getQueryParam(req: Request, key: string): string | undefined {
-  const value = req.query[key];
-  return typeof value === "string" ? value : undefined;
-}
-
-async function syncUser(userInfo: {
-  openId?: string | null;
-  name?: string | null;
-  email?: string | null;
-  loginMethod?: string | null;
-  platform?: string | null;
-}) {
-  if (!userInfo.openId) {
-    throw new Error("openId missing from user info");
-  }
-
-  const lastSignedIn = new Date();
-  await upsertUser({
-    openId: userInfo.openId,
-    name: userInfo.name || null,
-    email: userInfo.email ?? null,
-    loginMethod: userInfo.loginMethod ?? userInfo.platform ?? null,
-    lastSignedIn,
-  });
-  const saved = await getUserByOpenId(userInfo.openId);
-  return (
-    saved ?? {
-      openId: userInfo.openId,
-      name: userInfo.name,
-      email: userInfo.email,
-      loginMethod: userInfo.loginMethod ?? null,
-      lastSignedIn,
-    }
-  );
-}
-
-function buildUserResponse(
-  user:
-    | Awaited<ReturnType<typeof getUserByOpenId>>
-    | {
-        openId: string;
-        name?: string | null;
-        email?: string | null;
-        loginMethod?: string | null;
-        lastSignedIn?: Date | null;
-      },
-) {
-  return {
-    id: (user as any)?.id ?? null,
-    openId: user?.openId ?? null,
-    name: user?.name ?? null,
-    email: user?.email ?? null,
-    loginMethod: user?.loginMethod ?? null,
-    lastSignedIn: (user?.lastSignedIn ?? new Date()).toISOString(),
-  };
-}
+import {
+  registerWithEmail,
+  loginWithEmail,
+  loginWithGoogle,
+  extractUserFromRequest,
+  signToken,
+} from "../auth";
 
 export function registerOAuthRoutes(app: Express) {
-  app.get("/api/oauth/callback", async (req: Request, res: Response) => {
-    const code = getQueryParam(req, "code");
-    const state = getQueryParam(req, "state");
-
-    if (!code || !state) {
-      res.status(400).json({ error: "code and state are required" });
+  // ── 이메일 회원가입 ──────────────────────────────────────────────
+  app.post("/api/auth/register", async (req: Request, res: Response) => {
+    const { email, password, name } = req.body as {
+      email?: string;
+      password?: string;
+      name?: string;
+    };
+    if (!email || !password || !name) {
+      res.status(400).json({ error: "이메일, 비밀번호, 이름을 모두 입력해 주세요." });
       return;
     }
+    if (password.length < 6) {
+      res.status(400).json({ error: "비밀번호는 6자 이상이어야 합니다." });
+      return;
+    }
+    const result = await registerWithEmail(email.trim().toLowerCase(), password, name.trim());
+    if ("error" in result) {
+      res.status(409).json({ error: result.error });
+      return;
+    }
+    const cookieOptions = getSessionCookieOptions(req);
+    res.cookie(COOKIE_NAME, result.token, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+    res.json({ token: result.token, user: result.user });
+  });
 
+  // ── 이메일 로그인 ────────────────────────────────────────────────
+  app.post("/api/auth/login", async (req: Request, res: Response) => {
+    const { email, password } = req.body as { email?: string; password?: string };
+    if (!email || !password) {
+      res.status(400).json({ error: "이메일과 비밀번호를 입력해 주세요." });
+      return;
+    }
+    const result = await loginWithEmail(email.trim().toLowerCase(), password);
+    if ("error" in result) {
+      res.status(401).json({ error: result.error });
+      return;
+    }
+    const cookieOptions = getSessionCookieOptions(req);
+    res.cookie(COOKIE_NAME, result.token, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+    res.json({ token: result.token, user: result.user });
+  });
+
+  // ── 구글 로그인 (클라이언트에서 id_token 전달) ───────────────────
+  app.post("/api/auth/google", async (req: Request, res: Response) => {
+    const { googleId, email, name } = req.body as {
+      googleId?: string;
+      email?: string;
+      name?: string;
+    };
+    if (!googleId) {
+      res.status(400).json({ error: "googleId가 필요합니다." });
+      return;
+    }
     try {
-      const tokenResponse = await sdk.exchangeCodeForToken(code, state);
-      const userInfo = await sdk.getUserInfo(tokenResponse.accessToken);
-      await syncUser(userInfo);
-      const sessionToken = await sdk.createSessionToken(userInfo.openId!, {
-        name: userInfo.name || "",
-        expiresInMs: ONE_YEAR_MS,
-      });
-
+      const result = await loginWithGoogle(googleId, email || "", name || "Google 사용자");
       const cookieOptions = getSessionCookieOptions(req);
-      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
-
-      // Redirect to the frontend URL (Expo web on port 8081)
-      // Cookie is set with parent domain so it works across both 3000 and 8081 subdomains
-      const frontendUrl =
-        process.env.EXPO_WEB_PREVIEW_URL ||
-        process.env.EXPO_PACKAGER_PROXY_URL ||
-        "http://localhost:8081";
-      res.redirect(302, frontendUrl);
-    } catch (error) {
-      console.error("[OAuth] Callback failed", error);
-      res.status(500).json({ error: "OAuth callback failed" });
+      res.cookie(COOKIE_NAME, result.token, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+      res.json({ token: result.token, user: result.user });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message || "구글 로그인 실패" });
     }
   });
 
-  app.get("/api/oauth/mobile", async (req: Request, res: Response) => {
-    const code = getQueryParam(req, "code");
-    const state = getQueryParam(req, "state");
-
-    if (!code || !state) {
-      res.status(400).json({ error: "code and state are required" });
-      return;
-    }
-
-    try {
-      const tokenResponse = await sdk.exchangeCodeForToken(code, state);
-      const userInfo = await sdk.getUserInfo(tokenResponse.accessToken);
-      const user = await syncUser(userInfo);
-
-      const sessionToken = await sdk.createSessionToken(userInfo.openId!, {
-        name: userInfo.name || "",
-        expiresInMs: ONE_YEAR_MS,
-      });
-
-      const cookieOptions = getSessionCookieOptions(req);
-      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
-
-      res.json({
-        app_session_id: sessionToken,
-        user: buildUserResponse(user),
-      });
-    } catch (error) {
-      console.error("[OAuth] Mobile exchange failed", error);
-      res.status(500).json({ error: "OAuth mobile exchange failed" });
-    }
-  });
-
+  // ── 로그아웃 ─────────────────────────────────────────────────────
   app.post("/api/auth/logout", (req: Request, res: Response) => {
     const cookieOptions = getSessionCookieOptions(req);
     res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
     res.json({ success: true });
   });
 
-  // Get current authenticated user - works with both cookie (web) and Bearer token (mobile)
-  app.get("/api/auth/me", async (req: Request, res: Response) => {
-    try {
-      const user = await sdk.authenticateRequest(req);
-      res.json({ user: buildUserResponse(user) });
-    } catch (error) {
-      console.error("[Auth] /api/auth/me failed:", error);
+  // ── 현재 사용자 정보 ─────────────────────────────────────────────
+  app.get("/api/auth/me", (req: Request, res: Response) => {
+    const user = extractUserFromRequest(req);
+    if (!user) {
       res.status(401).json({ error: "Not authenticated", user: null });
+      return;
     }
+    res.json({ user });
   });
 
-  // Establish session cookie from Bearer token
-  // Used by iframe preview: frontend receives token via postMessage, then calls this endpoint
-  // to get a proper Set-Cookie response from the backend (3000-xxx domain)
-  app.post("/api/auth/session", async (req: Request, res: Response) => {
-    try {
-      // Authenticate using Bearer token from Authorization header
-      const user = await sdk.authenticateRequest(req);
-
-      // Get the token from the Authorization header to set as cookie
-      const authHeader = req.headers.authorization || req.headers.Authorization;
-      if (typeof authHeader !== "string" || !authHeader.startsWith("Bearer ")) {
-        res.status(400).json({ error: "Bearer token required" });
-        return;
-      }
-      const token = authHeader.slice("Bearer ".length).trim();
-
-      // Set cookie for this domain (3000-xxx)
-      const cookieOptions = getSessionCookieOptions(req);
-      res.cookie(COOKIE_NAME, token, { ...cookieOptions, maxAge: ONE_YEAR_MS });
-
-      res.json({ success: true, user: buildUserResponse(user) });
-    } catch (error) {
-      console.error("[Auth] /api/auth/session failed:", error);
-      res.status(401).json({ error: "Invalid token" });
+  // ── Bearer 토큰 → 쿠키 교환 (웹 iframe 미리보기용) ───────────────
+  app.post("/api/auth/session", (req: Request, res: Response) => {
+    const authHeader = req.headers.authorization;
+    if (typeof authHeader !== "string" || !authHeader.startsWith("Bearer ")) {
+      res.status(400).json({ error: "Bearer token required" });
+      return;
     }
+    const token = authHeader.slice(7).trim();
+    const user = extractUserFromRequest({ headers: { authorization: authHeader } });
+    if (!user) {
+      res.status(401).json({ error: "Invalid token" });
+      return;
+    }
+    const cookieOptions = getSessionCookieOptions(req);
+    res.cookie(COOKIE_NAME, token, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+    res.json({ success: true, user });
+  });
+
+  // ── 구 Manus OAuth 콜백 — 하위 호환 (사용 안 함) ─────────────────
+  app.get("/api/oauth/callback", (_req: Request, res: Response) => {
+    res.redirect(302, process.env.EXPO_WEB_PREVIEW_URL || "http://localhost:8081");
+  });
+  app.get("/api/oauth/mobile", (_req: Request, res: Response) => {
+    res.status(410).json({ error: "Manus OAuth is no longer used." });
   });
 }

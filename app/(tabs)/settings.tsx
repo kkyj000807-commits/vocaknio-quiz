@@ -5,15 +5,19 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
 import { useAuth } from "@/hooks/use-auth";
 import { useThemeContext, type ThemeMode } from "@/lib/theme-provider";
-import { startOAuthLogin } from "@/constants/oauth";
+import { getApiBaseUrl } from "@/constants/oauth";
+import * as Auth from "@/lib/_core/auth";
 import { trpc } from "@/lib/trpc";
 import {
   loadStats,
@@ -25,12 +29,30 @@ import {
 } from "@/lib/store";
 
 type ThemeOption = { mode: ThemeMode; label: string; icon: "sun.max.fill" | "moon.fill" | "circle.lefthalf.filled" };
+type AuthTab = "login" | "register";
 
 const THEME_OPTIONS: ThemeOption[] = [
   { mode: "light", label: "라이트", icon: "sun.max.fill" },
   { mode: "dark", label: "다크", icon: "moon.fill" },
   { mode: "system", label: "시스템", icon: "circle.lefthalf.filled" },
 ];
+
+async function callAuthApi(
+  endpoint: string,
+  body: object
+): Promise<{ token?: string; user?: Auth.User; error?: string }> {
+  const base = getApiBaseUrl();
+  const url = `${base}${endpoint}`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  if (!res.ok) return { error: data.error || "오류가 발생했습니다." };
+  return data;
+}
 
 export default function SettingsScreen() {
   const colors = useColors();
@@ -39,77 +61,83 @@ export default function SettingsScreen() {
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState<string | null>(null);
 
+  // 로그인 폼 상태
+  const [authTab, setAuthTab] = useState<AuthTab>("login");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [authLoading2, setAuthLoading2] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+
   const pullMutation = trpc.sync.pull.useQuery(undefined, { enabled: false });
   const pushMutation = trpc.sync.push.useMutation();
 
-  // 서버 → 로컬 (다운로드)
-  const handlePull = useCallback(async () => {
-    if (!isAuthenticated) return;
-    setSyncing(true);
-    setSyncMsg(null);
-    try {
-      const result = await pullMutation.refetch();
-      const data = result.data;
-      if (!data) throw new Error("데이터 없음");
-
-      // 로컬 데이터와 병합 (서버 우선)
-      const localStats = await loadStats();
-      const mergedStats = {
-        ...localStats,
-        totalAnswered: Math.max(localStats.totalAnswered, data.totalAnswered),
-        totalCorrect: Math.max(localStats.totalCorrect, data.totalCorrect),
-        streak: Math.max(localStats.streak, data.streakDays),
-        lastStudyDate: data.lastStudiedAt || localStats.lastStudyDate,
-      };
-      await saveStats(mergedStats);
-
-      const localBookmarks = await loadBookmarks();
-      const mergedBookmarks = Array.from(new Set([...localBookmarks, ...data.bookmarkNums]));
-      await saveBookmarks(mergedBookmarks);
-
-      const localWrong = await loadWrongWords();
-      const mergedWrong = Array.from(new Set([...localWrong, ...data.wrongNums]));
-      await saveWrongWords(mergedWrong);
-
-      setSyncMsg("✓ 클라우드에서 데이터를 가져왔습니다.");
-    } catch (e) {
-      setSyncMsg("동기화 실패. 다시 시도해주세요.");
-    } finally {
-      setSyncing(false);
+  // ── 로그인 ──────────────────────────────────────────────────────
+  const handleEmailLogin = useCallback(async () => {
+    if (!email.trim() || !password) {
+      setAuthError("이메일과 비밀번호를 입력해 주세요.");
+      return;
     }
-  }, [isAuthenticated, pullMutation]);
-
-  // 로컬 → 서버 (업로드)
-  const handlePush = useCallback(async () => {
-    if (!isAuthenticated) return;
-    setSyncing(true);
-    setSyncMsg(null);
+    setAuthLoading2(true);
+    setAuthError(null);
     try {
-      const [stats, bookmarks, wrongWords] = await Promise.all([
-        loadStats(),
-        loadBookmarks(),
-        loadWrongWords(),
-      ]);
-      await pushMutation.mutateAsync({
-        wrongNums: wrongWords,
-        bookmarkNums: bookmarks,
-        totalAnswered: stats.totalAnswered,
-        totalCorrect: stats.totalCorrect,
-        streakDays: stats.streak,
-        lastStudiedAt: stats.lastStudyDate,
+      const result = await callAuthApi("/api/auth/login", { email: email.trim(), password });
+      if (result.error) {
+        setAuthError(result.error);
+        return;
+      }
+      if (result.token) {
+        await Auth.setSessionToken(result.token);
+        if (result.user) await Auth.setUserInfo(result.user);
+        await refreshAuth();
+        setEmail("");
+        setPassword("");
+      }
+    } catch {
+      setAuthError("로그인 중 오류가 발생했습니다.");
+    } finally {
+      setAuthLoading2(false);
+    }
+  }, [email, password, refreshAuth]);
+
+  // ── 회원가입 ─────────────────────────────────────────────────────
+  const handleRegister = useCallback(async () => {
+    if (!email.trim() || !password || !name.trim()) {
+      setAuthError("이름, 이메일, 비밀번호를 모두 입력해 주세요.");
+      return;
+    }
+    if (password.length < 6) {
+      setAuthError("비밀번호는 6자 이상이어야 합니다.");
+      return;
+    }
+    setAuthLoading2(true);
+    setAuthError(null);
+    try {
+      const result = await callAuthApi("/api/auth/register", {
+        email: email.trim(),
+        password,
+        name: name.trim(),
       });
-      setSyncMsg("✓ 데이터를 클라우드에 저장했습니다.");
-    } catch (e) {
-      setSyncMsg("저장 실패. 다시 시도해주세요.");
+      if (result.error) {
+        setAuthError(result.error);
+        return;
+      }
+      if (result.token) {
+        await Auth.setSessionToken(result.token);
+        if (result.user) await Auth.setUserInfo(result.user);
+        await refreshAuth();
+        setEmail("");
+        setPassword("");
+        setName("");
+      }
+    } catch {
+      setAuthError("회원가입 중 오류가 발생했습니다.");
     } finally {
-      setSyncing(false);
+      setAuthLoading2(false);
     }
-  }, [isAuthenticated, pushMutation]);
+  }, [email, password, name, refreshAuth]);
 
-  const handleLogin = useCallback(async () => {
-    await startOAuthLogin();
-  }, []);
-
+  // ── 로그아웃 ─────────────────────────────────────────────────────
   const handleLogout = useCallback(() => {
     Alert.alert("로그아웃", "로그아웃하시겠습니까?", [
       { text: "취소", style: "cancel" },
@@ -124,145 +152,282 @@ export default function SettingsScreen() {
     ]);
   }, [logout]);
 
+  // ── 클라우드 불러오기 ─────────────────────────────────────────────
+  const handlePull = useCallback(async () => {
+    if (!isAuthenticated) return;
+    setSyncing(true);
+    setSyncMsg(null);
+    try {
+      const result = await pullMutation.refetch();
+      const data = result.data;
+      if (!data) throw new Error("데이터 없음");
+      const localStats = await loadStats();
+      await saveStats({
+        ...localStats,
+        totalAnswered: Math.max(localStats.totalAnswered, data.totalAnswered),
+        totalCorrect: Math.max(localStats.totalCorrect, data.totalCorrect),
+        streak: Math.max(localStats.streak, data.streakDays),
+        lastStudyDate: data.lastStudiedAt || localStats.lastStudyDate,
+      });
+      const localBookmarks = await loadBookmarks();
+      await saveBookmarks(Array.from(new Set([...localBookmarks, ...data.bookmarkNums])));
+      const localWrong = await loadWrongWords();
+      await saveWrongWords(Array.from(new Set([...localWrong, ...data.wrongNums])));
+      setSyncMsg("✓ 클라우드에서 데이터를 가져왔습니다.");
+    } catch {
+      setSyncMsg("동기화 실패. 다시 시도해주세요.");
+    } finally {
+      setSyncing(false);
+    }
+  }, [isAuthenticated, pullMutation]);
+
+  // ── 클라우드 저장하기 ─────────────────────────────────────────────
+  const handlePush = useCallback(async () => {
+    if (!isAuthenticated) return;
+    setSyncing(true);
+    setSyncMsg(null);
+    try {
+      const [stats, bookmarks, wrongWords] = await Promise.all([
+        loadStats(), loadBookmarks(), loadWrongWords(),
+      ]);
+      await pushMutation.mutateAsync({
+        wrongNums: wrongWords,
+        bookmarkNums: bookmarks,
+        totalAnswered: stats.totalAnswered,
+        totalCorrect: stats.totalCorrect,
+        streakDays: stats.streak,
+        lastStudiedAt: stats.lastStudyDate,
+      });
+      setSyncMsg("✓ 데이터를 클라우드에 저장했습니다.");
+    } catch {
+      setSyncMsg("저장 실패. 다시 시도해주세요.");
+    } finally {
+      setSyncing(false);
+    }
+  }, [isAuthenticated, pushMutation]);
+
   const s = styles(colors);
 
   return (
     <ScreenContainer>
-      <ScrollView contentContainerStyle={s.scroll}>
-        {/* 헤더 */}
-        <View style={s.header}>
-          <Text style={s.title}>설정</Text>
-        </View>
-
-        {/* 테마 섹션 */}
-        <View style={s.section}>
-          <Text style={s.sectionTitle}>화면 테마</Text>
-          <View style={s.themeRow}>
-            {THEME_OPTIONS.map((opt) => {
-              const active = themeMode === opt.mode;
-              return (
-                <TouchableOpacity
-                  key={opt.mode}
-                  style={[s.themeBtn, active && s.themeBtnActive]}
-                  onPress={() => setThemeMode(opt.mode)}
-                  activeOpacity={0.75}
-                >
-                  <IconSymbol
-                    name={opt.icon}
-                    size={20}
-                    color={active ? colors.background : colors.muted}
-                  />
-                  <Text style={[s.themeBtnLabel, active && s.themeBtnLabelActive]}>
-                    {opt.label}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <ScrollView contentContainerStyle={s.scroll} keyboardShouldPersistTaps="handled">
+          {/* 헤더 */}
+          <View style={s.header}>
+            <Text style={s.title}>설정</Text>
           </View>
-        </View>
 
-        {/* 계정 섹션 */}
-        <View style={s.section}>
-          <Text style={s.sectionTitle}>계정</Text>
-          {authLoading ? (
+          {/* 테마 섹션 */}
+          <View style={s.section}>
+            <Text style={s.sectionTitle}>화면 테마</Text>
             <View style={s.card}>
-              <ActivityIndicator color={colors.primary} />
+              <View style={s.themeRow}>
+                {THEME_OPTIONS.map((opt) => {
+                  const active = themeMode === opt.mode;
+                  return (
+                    <TouchableOpacity
+                      key={opt.mode}
+                      style={[s.themeBtn, active && s.themeBtnActive]}
+                      onPress={() => setThemeMode(opt.mode)}
+                      activeOpacity={0.75}
+                    >
+                      <IconSymbol
+                        name={opt.icon}
+                        size={20}
+                        color={active ? colors.background : colors.muted}
+                      />
+                      <Text style={[s.themeBtnLabel, active && s.themeBtnLabelActive]}>
+                        {opt.label}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
             </View>
-          ) : isAuthenticated && user ? (
-            <View style={s.card}>
-              <View style={s.accountRow}>
-                <IconSymbol name="person.crop.circle" size={40} color={colors.primary} />
-                <View style={s.accountInfo}>
-                  <Text style={s.accountName}>{user.name ?? "사용자"}</Text>
-                  <Text style={s.accountEmail}>{user.email ?? user.openId}</Text>
+          </View>
+
+          {/* 계정 섹션 */}
+          <View style={s.section}>
+            <Text style={s.sectionTitle}>계정</Text>
+            {authLoading ? (
+              <View style={s.card}>
+                <ActivityIndicator color={colors.primary} />
+              </View>
+            ) : isAuthenticated && user ? (
+              /* 로그인 상태 */
+              <View style={s.card}>
+                <View style={s.accountRow}>
+                  <IconSymbol name="person.crop.circle" size={40} color={colors.primary} />
+                  <View style={s.accountInfo}>
+                    <Text style={s.accountName}>{user.name ?? "사용자"}</Text>
+                    <Text style={s.accountEmail}>{user.email ?? ""}</Text>
+                    <Text style={s.accountMethod}>
+                      {user.loginMethod === "google" ? "구글 계정" : "이메일 계정"}
+                    </Text>
+                  </View>
+                </View>
+                <TouchableOpacity style={s.logoutBtn} onPress={handleLogout} activeOpacity={0.75}>
+                  <Text style={s.logoutBtnText}>로그아웃</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              /* 비로그인 상태 — 이메일 로그인/회원가입 폼 */
+              <View style={s.card}>
+                <Text style={s.loginDesc}>
+                  로그인하면 오답·북마크·통계 데이터를{"\n"}여러 기기에서 동기화할 수 있습니다.
+                </Text>
+
+                {/* 탭 */}
+                <View style={s.tabRow}>
+                  <TouchableOpacity
+                    style={[s.tab, authTab === "login" && s.tabActive]}
+                    onPress={() => { setAuthTab("login"); setAuthError(null); }}
+                    activeOpacity={0.75}
+                  >
+                    <Text style={[s.tabLabel, authTab === "login" && s.tabLabelActive]}>로그인</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[s.tab, authTab === "register" && s.tabActive]}
+                    onPress={() => { setAuthTab("register"); setAuthError(null); }}
+                    activeOpacity={0.75}
+                  >
+                    <Text style={[s.tabLabel, authTab === "register" && s.tabLabelActive]}>회원가입</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* 오류 메시지 */}
+                {authError && (
+                  <View style={s.errorBox}>
+                    <Text style={s.errorText}>{authError}</Text>
+                  </View>
+                )}
+
+                {/* 회원가입 시 이름 필드 */}
+                {authTab === "register" && (
+                  <TextInput
+                    style={s.input}
+                    placeholder="이름"
+                    placeholderTextColor={colors.muted}
+                    value={name}
+                    onChangeText={setName}
+                    autoCapitalize="words"
+                    returnKeyType="next"
+                  />
+                )}
+
+                <TextInput
+                  style={s.input}
+                  placeholder="이메일"
+                  placeholderTextColor={colors.muted}
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  returnKeyType="next"
+                />
+                <TextInput
+                  style={s.input}
+                  placeholder="비밀번호 (6자 이상)"
+                  placeholderTextColor={colors.muted}
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry
+                  returnKeyType="done"
+                  onSubmitEditing={authTab === "login" ? handleEmailLogin : handleRegister}
+                />
+
+                <TouchableOpacity
+                  style={[s.loginBtn, authLoading2 && { opacity: 0.6 }]}
+                  onPress={authTab === "login" ? handleEmailLogin : handleRegister}
+                  disabled={authLoading2}
+                  activeOpacity={0.8}
+                >
+                  {authLoading2 ? (
+                    <ActivityIndicator color={colors.background} />
+                  ) : (
+                    <>
+                      <IconSymbol name="person.fill" size={18} color={colors.background} />
+                      <Text style={s.loginBtnText}>
+                        {authTab === "login" ? "로그인" : "회원가입"}
+                      </Text>
+                    </>
+                  )}
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+
+          {/* 클라우드 동기화 섹션 */}
+          {isAuthenticated && (
+            <View style={s.section}>
+              <Text style={s.sectionTitle}>클라우드 동기화</Text>
+              <View style={s.card}>
+                <Text style={s.syncDesc}>
+                  오답 노트, 북마크, 학습 통계를 서버에 저장하거나 불러옵니다.
+                </Text>
+                {syncMsg && (
+                  <View style={s.syncMsgBox}>
+                    <Text style={[s.syncMsgText, { color: syncMsg.startsWith("✓") ? colors.success : colors.error }]}>
+                      {syncMsg}
+                    </Text>
+                  </View>
+                )}
+                <View style={s.syncBtnRow}>
+                  <TouchableOpacity
+                    style={[s.syncBtn, { backgroundColor: colors.surface, borderColor: colors.border }]}
+                    onPress={handlePull}
+                    disabled={syncing}
+                    activeOpacity={0.75}
+                  >
+                    {syncing ? (
+                      <ActivityIndicator size="small" color={colors.primary} />
+                    ) : (
+                      <IconSymbol name="icloud.and.arrow.down" size={20} color={colors.primary} />
+                    )}
+                    <Text style={[s.syncBtnText, { color: colors.primary }]}>불러오기</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[s.syncBtn, { backgroundColor: colors.primary }]}
+                    onPress={handlePush}
+                    disabled={syncing}
+                    activeOpacity={0.75}
+                  >
+                    {syncing ? (
+                      <ActivityIndicator size="small" color={colors.background} />
+                    ) : (
+                      <IconSymbol name="icloud.and.arrow.up" size={20} color={colors.background} />
+                    )}
+                    <Text style={[s.syncBtnText, { color: colors.background }]}>저장하기</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
-              <TouchableOpacity style={s.logoutBtn} onPress={handleLogout} activeOpacity={0.75}>
-                <Text style={s.logoutBtnText}>로그아웃</Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View style={s.card}>
-              <Text style={s.loginDesc}>
-                로그인하면 오답·북마크·통계 데이터를{"\n"}여러 기기에서 동기화할 수 있습니다.
-              </Text>
-              <TouchableOpacity style={s.loginBtn} onPress={handleLogin} activeOpacity={0.8}>
-                <IconSymbol name="person.fill" size={18} color={colors.background} />
-                <Text style={s.loginBtnText}>로그인</Text>
-              </TouchableOpacity>
             </View>
           )}
-        </View>
 
-        {/* 클라우드 동기화 섹션 */}
-        {isAuthenticated && (
+          {/* 앱 정보 */}
           <View style={s.section}>
-            <Text style={s.sectionTitle}>클라우드 동기화</Text>
+            <Text style={s.sectionTitle}>앱 정보</Text>
             <View style={s.card}>
-              <Text style={s.syncDesc}>
-                오답 노트, 북마크, 학습 통계를 서버에 저장하거나 불러옵니다.
-              </Text>
-
-              {syncMsg && (
-                <View style={s.syncMsgBox}>
-                  <Text style={[s.syncMsgText, { color: syncMsg.startsWith("✓") ? colors.success : colors.error }]}>
-                    {syncMsg}
-                  </Text>
-                </View>
-              )}
-
-              <View style={s.syncBtnRow}>
-                <TouchableOpacity
-                  style={[s.syncBtn, { backgroundColor: colors.surface, borderColor: colors.border }]}
-                  onPress={handlePull}
-                  disabled={syncing}
-                  activeOpacity={0.75}
-                >
-                  {syncing ? (
-                    <ActivityIndicator size="small" color={colors.primary} />
-                  ) : (
-                    <IconSymbol name="icloud.and.arrow.down" size={20} color={colors.primary} />
-                  )}
-                  <Text style={[s.syncBtnText, { color: colors.primary }]}>불러오기</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[s.syncBtn, { backgroundColor: colors.primary }]}
-                  onPress={handlePush}
-                  disabled={syncing}
-                  activeOpacity={0.75}
-                >
-                  {syncing ? (
-                    <ActivityIndicator size="small" color={colors.background} />
-                  ) : (
-                    <IconSymbol name="icloud.and.arrow.up" size={20} color={colors.background} />
-                  )}
-                  <Text style={[s.syncBtnText, { color: colors.background }]}>저장하기</Text>
-                </TouchableOpacity>
+              <View style={s.infoRow}>
+                <Text style={s.infoLabel}>앱 이름</Text>
+                <Text style={s.infoValue}>편입VOCA</Text>
+              </View>
+              <View style={[s.infoRow, { borderTopWidth: 0.5, borderTopColor: colors.border }]}>
+                <Text style={s.infoLabel}>단어 수</Text>
+                <Text style={s.infoValue}>7,587개</Text>
+              </View>
+              <View style={[s.infoRow, { borderTopWidth: 0.5, borderTopColor: colors.border }]}>
+                <Text style={s.infoLabel}>버전</Text>
+                <Text style={s.infoValue}>1.0.0</Text>
               </View>
             </View>
           </View>
-        )}
-
-        {/* 앱 정보 */}
-        <View style={s.section}>
-          <Text style={s.sectionTitle}>앱 정보</Text>
-          <View style={s.card}>
-            <View style={s.infoRow}>
-              <Text style={s.infoLabel}>앱 이름</Text>
-              <Text style={s.infoValue}>편입VOCA</Text>
-            </View>
-            <View style={[s.infoRow, { borderTopWidth: 0.5, borderTopColor: colors.border }]}>
-              <Text style={s.infoLabel}>단어 수</Text>
-              <Text style={s.infoValue}>7,587개</Text>
-            </View>
-            <View style={[s.infoRow, { borderTopWidth: 0.5, borderTopColor: colors.border }]}>
-              <Text style={s.infoLabel}>버전</Text>
-              <Text style={s.infoValue}>1.0.0</Text>
-            </View>
-          </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </ScreenContainer>
   );
 }
@@ -274,38 +439,21 @@ const styles = (c: ReturnType<typeof useColors>) =>
     title: { fontSize: 28, fontWeight: "700", color: c.foreground },
     section: { marginBottom: 28 },
     sectionTitle: {
-      fontSize: 12,
-      fontWeight: "700",
-      color: c.muted,
-      letterSpacing: 1,
-      textTransform: "uppercase",
-      marginBottom: 10,
+      fontSize: 12, fontWeight: "700", color: c.muted,
+      letterSpacing: 1, textTransform: "uppercase", marginBottom: 10,
     },
     card: {
-      backgroundColor: c.surface,
-      borderRadius: 16,
-      borderWidth: 0.5,
-      borderColor: c.border,
-      padding: 16,
-      gap: 12,
+      backgroundColor: c.surface, borderRadius: 16,
+      borderWidth: 0.5, borderColor: c.border, padding: 16, gap: 12,
     },
     // Theme
     themeRow: { flexDirection: "row", gap: 10 },
     themeBtn: {
-      flex: 1,
-      flexDirection: "column",
-      alignItems: "center",
-      gap: 6,
-      paddingVertical: 14,
-      borderRadius: 14,
-      borderWidth: 1.5,
-      borderColor: c.border,
-      backgroundColor: c.surface,
+      flex: 1, flexDirection: "column", alignItems: "center", gap: 6,
+      paddingVertical: 14, borderRadius: 14, borderWidth: 1.5,
+      borderColor: c.border, backgroundColor: c.surface,
     },
-    themeBtnActive: {
-      backgroundColor: c.primary,
-      borderColor: c.primary,
-    },
+    themeBtnActive: { backgroundColor: c.primary, borderColor: c.primary },
     themeBtnLabel: { fontSize: 12, fontWeight: "600", color: c.muted },
     themeBtnLabelActive: { color: c.background },
     // Account
@@ -313,54 +461,47 @@ const styles = (c: ReturnType<typeof useColors>) =>
     accountInfo: { flex: 1 },
     accountName: { fontSize: 16, fontWeight: "700", color: c.foreground },
     accountEmail: { fontSize: 13, color: c.muted, marginTop: 2 },
+    accountMethod: { fontSize: 11, color: c.primary, marginTop: 2, fontWeight: "600" },
     logoutBtn: {
-      paddingVertical: 10,
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: c.error,
-      alignItems: "center",
+      paddingVertical: 10, borderRadius: 10,
+      borderWidth: 1, borderColor: c.error, alignItems: "center",
     },
     logoutBtnText: { fontSize: 14, fontWeight: "600", color: c.error },
     loginDesc: { fontSize: 14, color: c.muted, lineHeight: 20, textAlign: "center" },
+    // Auth tabs
+    tabRow: { flexDirection: "row", borderRadius: 10, overflow: "hidden", borderWidth: 1, borderColor: c.border },
+    tab: { flex: 1, paddingVertical: 10, alignItems: "center", backgroundColor: c.surface },
+    tabActive: { backgroundColor: c.primary },
+    tabLabel: { fontSize: 14, fontWeight: "600", color: c.muted },
+    tabLabelActive: { color: c.background },
+    // Input
+    input: {
+      backgroundColor: c.background, borderRadius: 10, borderWidth: 1,
+      borderColor: c.border, paddingHorizontal: 14, paddingVertical: 12,
+      fontSize: 15, color: c.foreground,
+    },
+    errorBox: {
+      backgroundColor: c.error + "22", borderRadius: 8,
+      paddingVertical: 8, paddingHorizontal: 12,
+    },
+    errorText: { fontSize: 13, color: c.error, fontWeight: "600" },
     loginBtn: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: 8,
-      backgroundColor: c.primary,
-      paddingVertical: 13,
-      borderRadius: 12,
+      flexDirection: "row", alignItems: "center", justifyContent: "center",
+      gap: 8, backgroundColor: c.primary, paddingVertical: 13, borderRadius: 12,
     },
     loginBtnText: { fontSize: 15, fontWeight: "700", color: c.background },
     // Sync
     syncDesc: { fontSize: 13, color: c.muted, lineHeight: 18 },
-    syncMsgBox: {
-      paddingVertical: 8,
-      paddingHorizontal: 12,
-      borderRadius: 8,
-      backgroundColor: c.card,
-    },
+    syncMsgBox: { paddingVertical: 8, paddingHorizontal: 12, borderRadius: 8, backgroundColor: c.background },
     syncMsgText: { fontSize: 13, fontWeight: "600" },
     syncBtnRow: { flexDirection: "row", gap: 10 },
     syncBtn: {
-      flex: 1,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: 6,
-      paddingVertical: 12,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: "transparent",
+      flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center",
+      gap: 6, paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderColor: "transparent",
     },
     syncBtnText: { fontSize: 14, fontWeight: "700" },
     // Info
-    infoRow: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      paddingVertical: 8,
-    },
+    infoRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 8 },
     infoLabel: { fontSize: 14, color: c.muted },
     infoValue: { fontSize: 14, fontWeight: "600", color: c.foreground },
   });

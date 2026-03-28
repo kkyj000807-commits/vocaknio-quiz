@@ -1,0 +1,8 @@
+{
+  "query": "\nALTER TABLE users \n  MODIFY COLUMN openId VARCHAR(64) NULL,\n  ADD COLUMN passwordHash VARCHAR(256) NULL AFTER email,\n  ADD COLUMN googleId VARCHAR(128) NULL AFTER passwordHash;\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway05.us-east-1.prod.aws.tidbcloud.com --port 4000 --user zEYJzxLzpgqmMVy.root --database WS6D4wDEAVvGHz7A5rpBdJ --execute \nALTER TABLE users \n  MODIFY COLUMN openId VARCHAR(64) NULL,\n  ADD COLUMN passwordHash VARCHAR(256) NULL AFTER email,\n  ADD COLUMN googleId VARCHAR(128) NULL AFTER passwordHash;\n",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 2: Unknown column 'passwordhash' in 'users'"
+  ]
+}
