@@ -26,6 +26,8 @@ import {
   shuffle,
   getSynDistractors,
   getKorDistractors,
+  getSynWithKorDistractors,
+  makeSynKorLabel,
 } from "@/lib/vocab";
 import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
@@ -47,7 +49,7 @@ function buildQuestions(
   );
 
   let candidates: VocabItem[];
-  if (mode === "syn-choice" || mode === "syn-type") {
+  if (mode === "syn-choice" || mode === "syn-type" || mode === "syn-kor-choice") {
     candidates = pool.filter((v) => v.s && v.s.length > 0);
   } else {
     candidates = pool;
@@ -65,6 +67,12 @@ function buildQuestions(
       const distractors = getKorDistractors(item, pool, 3);
       const choices = shuffle([item.k, ...distractors]);
       return { item, choices, correct: item.k };
+    } else if (mode === "syn-kor-choice") {
+      const correctSyn = item.s[Math.floor(Math.random() * item.s.length)];
+      const correctLabel = makeSynKorLabel(correctSyn, item);
+      const distractors = getSynWithKorDistractors(item, correctSyn, 3);
+      const choices = shuffle([correctLabel, ...distractors]);
+      return { item, choices, correct: correctLabel };
     } else if (mode === "flashcard") {
       return { item, choices: [], correct: item.k };
     } else {
@@ -96,6 +104,7 @@ export default function QuizScreen() {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
+  const [skipped, setSkipped] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [wrongCount, setWrongCount] = useState(0);
   const [wrongItems, setWrongItems] = useState<VocabItem[]>([]);
@@ -146,6 +155,7 @@ export default function QuizScreen() {
       animateCard();
       setSelectedChoice(idx);
       setAnswered(true);
+      setSkipped(false);
 
       const isCorrect = q.choices[idx] === q.correct;
       if (isCorrect) {
@@ -159,6 +169,18 @@ export default function QuizScreen() {
     },
     [answered, q, haptic, animateCard]
   );
+
+  // "모르겠다" 패스 — 오답 처리 + 오답 노트 저장
+  const handleSkip = useCallback(() => {
+    if (answered) return;
+    haptic("error");
+    animateCard();
+    setAnswered(true);
+    setSkipped(true);
+    setSelectedChoice(null);
+    setWrongCount((w) => w + 1);
+    setWrongItems((prev) => [...prev, q.item]);
+  }, [answered, q, haptic, animateCard]);
 
   const handleReveal = useCallback(() => {
     haptic("light");
@@ -201,13 +223,9 @@ export default function QuizScreen() {
   const handleNext = useCallback(async () => {
     haptic("light");
     if (currentIdx + 1 >= questions.length) {
-      // Quiz done — 오답 누적 저장
       const finalWrongNums = wrongItems.map((w) => w.num);
       await Promise.all([
-        updateStatsAfterQuiz(
-          correctCount + (mode === "flashcard" && flashGrade === "correct" ? 1 : 0),
-          questions.length
-        ),
+        updateStatsAfterQuiz(correctCount, questions.length),
         addWrongWords(finalWrongNums),
       ]);
       router.replace({
@@ -223,17 +241,34 @@ export default function QuizScreen() {
     setCurrentIdx((i) => i + 1);
     setAnswered(false);
     setSelectedChoice(null);
+    setSkipped(false);
     setRevealed(false);
     setFlashGrade(null);
     setTypedAnswer("");
     setTypeResult(null);
     setHintLevel(0);
-  }, [currentIdx, questions.length, correctCount, wrongItems, mode, flashGrade, haptic, router]);
+  }, [currentIdx, questions.length, correctCount, wrongItems, haptic, router]);
 
   const s = styles(colors);
   const pct = Math.round((currentIdx / questions.length) * 100);
 
   if (!q) return null;
+
+  const isChoiceMode = mode === "syn-choice" || mode === "kor-choice" || mode === "syn-kor-choice";
+
+  const getModeLabel = () => {
+    if (mode === "syn-choice") return "동의어 고르기";
+    if (mode === "kor-choice") return "한국어 뜻 고르기";
+    if (mode === "syn-kor-choice") return "동의어+뜻 고르기";
+    if (mode === "flashcard") return "플래시카드";
+    return "동의어 입력";
+  };
+
+  const getHintText = () => {
+    if (mode === "syn-choice") return "올바른 동의어는?";
+    if (mode === "kor-choice") return "올바른 한국어 뜻은?";
+    return "올바른 동의어(한글뜻)는?";
+  };
 
   const getHint = () => {
     const word = q.correct;
@@ -288,10 +323,7 @@ export default function QuizScreen() {
           <Animated.View style={[s.questionCard, cardAnimStyle]}>
             <View style={s.questionHeader}>
               <Text style={s.questionNum}>
-                문제 {currentIdx + 1} ·{" "}
-                {mode === "syn-choice" ? "동의어 고르기" :
-                  mode === "kor-choice" ? "한국어 뜻 고르기" :
-                  mode === "flashcard" ? "플래시카드" : "동의어 입력"}
+                문제 {currentIdx + 1} · {getModeLabel()}
               </Text>
               <Pressable onPress={handleBookmark} style={s.bookmarkBtn}>
                 <Text style={{ fontSize: 20 }}>{isBookmarked ? "🔖" : "🏷️"}</Text>
@@ -303,12 +335,10 @@ export default function QuizScreen() {
               <Text style={s.ipaText}>{q.item.p}</Text>
             ) : null}
 
-            {/* Mode-specific content */}
-            {(mode === "syn-choice" || mode === "kor-choice") && (
+            {/* 4지선다 모드 */}
+            {isChoiceMode && (
               <>
-                <Text style={s.hintText}>
-                  {mode === "syn-choice" ? "올바른 동의어는?" : "올바른 한국어 뜻은?"}
-                </Text>
+                <Text style={s.hintText}>{getHintText()}</Text>
                 <View style={s.choicesContainer}>
                   {q.choices.map((choice, idx) => {
                     let choiceStyle = s.choiceBtn;
@@ -341,16 +371,32 @@ export default function QuizScreen() {
                             {["①", "②", "③", "④"][idx]}
                           </Text>
                         </View>
-                        <Text style={textStyle} numberOfLines={2}>
-                          {choice.length > 60 ? choice.slice(0, 60) + "…" : choice}
+                        <Text style={textStyle} numberOfLines={3}>
+                          {choice}
                         </Text>
                       </Pressable>
                     );
                   })}
                 </View>
+
+                {/* 모르겠다 버튼 */}
+                {!answered && (
+                  <Pressable style={s.skipBtn} onPress={handleSkip}>
+                    <Text style={s.skipBtnText}>🤷 모르겠다 (패스)</Text>
+                  </Pressable>
+                )}
+
+                {/* 패스 후 정답 표시 */}
+                {answered && skipped && (
+                  <View style={s.skipResultBox}>
+                    <Text style={s.skipResultLabel}>정답</Text>
+                    <Text style={s.skipResultAnswer}>{q.correct}</Text>
+                  </View>
+                )}
               </>
             )}
 
+            {/* 플래시카드 모드 */}
             {mode === "flashcard" && (
               <View style={s.flashContainer}>
                 {!revealed ? (
@@ -395,6 +441,7 @@ export default function QuizScreen() {
               </View>
             )}
 
+            {/* 동의어 입력 모드 */}
             {mode === "syn-type" && (
               <View style={s.typeContainer}>
                 <Text style={s.hintText}>동의어를 입력하세요</Text>
@@ -440,7 +487,7 @@ export default function QuizScreen() {
               </View>
             )}
 
-            {/* Explanation Panel (after answering) */}
+            {/* 해설 패널 */}
             {answered && mode !== "flashcard" && (
               <View style={s.explPanel}>
                 <Text style={s.explHeader}>해설</Text>
@@ -465,7 +512,7 @@ export default function QuizScreen() {
               </View>
             )}
 
-            {/* Next Button */}
+            {/* 다음 버튼 */}
             {answered && (
               <Pressable
                 style={({ pressed }) => [s.nextBtn, pressed && { opacity: 0.85 }]}
@@ -621,6 +668,41 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.foreground,
       flex: 1,
       lineHeight: 20,
+    },
+    skipBtn: {
+      marginTop: 12,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 10,
+      paddingVertical: 11,
+      alignItems: "center",
+      backgroundColor: "rgba(255,255,255,0.03)",
+    },
+    skipBtnText: {
+      fontSize: 13,
+      color: colors.dim,
+      fontWeight: "600",
+    },
+    skipResultBox: {
+      marginTop: 12,
+      backgroundColor: "rgba(248,113,113,0.08)",
+      borderWidth: 1,
+      borderColor: "rgba(248,113,113,0.25)",
+      borderRadius: 10,
+      padding: 14,
+    },
+    skipResultLabel: {
+      fontSize: 10,
+      color: colors.error,
+      fontWeight: "700",
+      letterSpacing: 1,
+      textTransform: "uppercase",
+      marginBottom: 4,
+    },
+    skipResultAnswer: {
+      fontSize: 16,
+      fontWeight: "700",
+      color: colors.foreground,
     },
     flashContainer: {
       marginTop: 8,

@@ -80,13 +80,14 @@ export const RANGES = [
 
 export const COUNTS = [10, 20, 30, 50];
 
-export type QuizMode = "syn-choice" | "kor-choice" | "flashcard" | "syn-type";
+export type QuizMode = "syn-choice" | "kor-choice" | "syn-kor-choice" | "flashcard" | "syn-type";
 
 export const QUIZ_MODES: { id: QuizMode; icon: string; title: string; desc: string }[] = [
-  { id: "syn-choice", icon: "🔗", title: "동의어 고르기",   desc: "영어 단어 → 동의어 4택" },
-  { id: "kor-choice", icon: "🇰🇷", title: "한국어 뜻 고르기", desc: "영어 단어 → 한국어 뜻 4택" },
-  { id: "flashcard",  icon: "⚡", title: "플래시카드",      desc: "뜻 확인 후 자가 채점" },
-  { id: "syn-type",   icon: "✍️", title: "동의어 입력",     desc: "동의어를 직접 타이핑" },
+  { id: "syn-choice",     icon: "🔗", title: "동의어 고르기",       desc: "영어 단어 → 동의어 4택" },
+  { id: "kor-choice",     icon: "🇰🇷", title: "한국어 뜻 고르기",   desc: "영어 단어 → 한국어 뜻 4택" },
+  { id: "syn-kor-choice", icon: "🔀", title: "동의어+뜻 고르기",   desc: "동의어(한글뜻) 복합 4택" },
+  { id: "flashcard",      icon: "⚡", title: "플래시카드",          desc: "뜻 확인 후 자가 채점" },
+  { id: "syn-type",       icon: "✍️", title: "동의어 입력",         desc: "동의어를 직접 타이핑" },
 ];
 
 // Shuffle array (Fisher-Yates)
@@ -138,6 +139,66 @@ export function getSynDistractors(
   }
 
   return distractors.slice(0, count);
+}
+
+/**
+ * 동의어+한글뜻 복합 모드용 보기 생성
+ * 각 보기는 "synonym (\ud55c글뜻)" 형태의 문자열.
+ */
+export function getSynWithKorDistractors(
+  target: VocabItem,
+  correctSyn: string,
+  count = 3
+): string[] {
+  const forbidden = getForbiddenSyns(target);
+  forbidden.add(correctSyn);
+
+  const forbiddenK = new Set<string>();
+  if (target.k_short) forbiddenK.add(target.k_short);
+  if (target.k) forbiddenK.add(target.k);
+  for (const item of VOCAB) {
+    if (item.w !== target.w && item.s.some((s) => forbidden.has(s))) {
+      if (item.k_short) forbiddenK.add(item.k_short);
+      if (item.k) forbiddenK.add(item.k);
+    }
+  }
+
+  const distractors: string[] = [];
+  const usedSyn = new Set<string>(forbidden);
+  const usedK = new Set<string>(forbiddenK);
+
+  const shuffledVocab = shuffle(VOCAB);
+  for (const item of shuffledVocab) {
+    if (item.w === target.w) continue;
+    if (!item.s || item.s.length === 0) continue;
+    if (!item.k_short || item.k_short.length < 2) continue;
+    if (usedK.has(item.k_short) || usedK.has(item.k)) continue;
+    const availableSyns = item.s.filter((s) => !usedSyn.has(s));
+    if (availableSyns.length === 0) continue;
+    const syn = availableSyns[Math.floor(Math.random() * availableSyns.length)];
+    distractors.push(`${syn} (${item.k_short})`);
+    usedSyn.add(syn);
+    usedK.add(item.k_short);
+    if (item.k) usedK.add(item.k);
+    if (distractors.length >= count) break;
+  }
+
+  if (distractors.length < count) {
+    for (const item of shuffledVocab) {
+      if (item.w === target.w) continue;
+      if (!item.k_short || item.k_short.length < 2) continue;
+      if (usedK.has(item.k_short)) continue;
+      distractors.push(`${item.w} (${item.k_short})`);
+      usedK.add(item.k_short);
+      if (distractors.length >= count) break;
+    }
+  }
+
+  return distractors.slice(0, count);
+}
+
+export function makeSynKorLabel(syn: string, item: VocabItem): string {
+  return `${syn} (${item.k_short || item.k})`;
 }
 
 /**

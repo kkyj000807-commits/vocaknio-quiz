@@ -77,6 +77,7 @@ export default function WrongQuizScreen() {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
+  const [skipped, setSkipped] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [wrongCount, setWrongCount] = useState(0);
   const [wrongItems, setWrongItems] = useState<VocabItem[]>([]);
@@ -122,6 +123,7 @@ export default function WrongQuizScreen() {
       animateCard();
       setSelectedChoice(idx);
       setAnswered(true);
+      setSkipped(false);
 
       const isCorrect = q.choices[idx] === q.correct;
       if (isCorrect) {
@@ -135,6 +137,17 @@ export default function WrongQuizScreen() {
     },
     [answered, q, haptic, animateCard]
   );
+
+  const handleSkip = useCallback(() => {
+    if (answered) return;
+    haptic("error");
+    animateCard();
+    setAnswered(true);
+    setSkipped(true);
+    setSelectedChoice(null);
+    setWrongCount((w) => w + 1);
+    setWrongItems((prev) => [...prev, q.item]);
+  }, [answered, q, haptic, animateCard]);
 
   const handleNext = useCallback(async () => {
     haptic("light");
@@ -157,6 +170,7 @@ export default function WrongQuizScreen() {
     setCurrentIdx((i) => i + 1);
     setAnswered(false);
     setSelectedChoice(null);
+    setSkipped(false);
   }, [currentIdx, questions.length, correctCount, wrongItems, haptic, router]);
 
   const s = styles(colors);
@@ -254,6 +268,21 @@ export default function WrongQuizScreen() {
               );
             })}
           </View>
+
+          {/* 모르겠다 버튼 */}
+          {!answered && (
+            <Pressable style={s.skipBtn} onPress={handleSkip}>
+              <Text style={s.skipBtnText}>🤷 모르겠다 (패스)</Text>
+            </Pressable>
+          )}
+
+          {/* 패스 후 정답 표시 */}
+          {answered && skipped && (
+            <View style={s.skipResultBox}>
+              <Text style={s.skipResultLabel}>정답</Text>
+              <Text style={s.skipResultAnswer}>{q.correct}</Text>
+            </View>
+          )}
 
           {/* Explanation Panel */}
           {answered && (
@@ -517,5 +546,40 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontWeight: "700",
       color: "#fff",
       letterSpacing: 0.5,
+    },
+    skipBtn: {
+      marginTop: 12,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 10,
+      paddingVertical: 11,
+      alignItems: "center" as const,
+      backgroundColor: "rgba(255,255,255,0.03)",
+    },
+    skipBtnText: {
+      fontSize: 13,
+      color: colors.dim,
+      fontWeight: "600" as const,
+    },
+    skipResultBox: {
+      marginTop: 12,
+      backgroundColor: "rgba(248,113,113,0.08)",
+      borderWidth: 1,
+      borderColor: "rgba(248,113,113,0.25)",
+      borderRadius: 10,
+      padding: 14,
+    },
+    skipResultLabel: {
+      fontSize: 10,
+      color: colors.error,
+      fontWeight: "700" as const,
+      letterSpacing: 1,
+      textTransform: "uppercase" as const,
+      marginBottom: 4,
+    },
+    skipResultAnswer: {
+      fontSize: 16,
+      fontWeight: "700" as const,
+      color: colors.foreground,
     },
   });

@@ -63,3 +63,14 @@
 - [x] app.config.ts appName "편입VOCA"로 변경
 - [x] 홈 화면 타이틀 "편입VOCA"로 변경
 - [x] 아이콘 파일 교체 (icon.png, splash-icon.png, favicon.png, android-icon-foreground.png)
+
+## 스플래시/로딩 화면 텍스트 수정
+- [ ] 앱 전체에서 "보카니오", "수능" 텍스트 검색 및 제거
+- [ ] 로딩 화면 앱 이름 "편입VOCA" 표시
+- [ ] 로딩 화면 서브타이틀 "편입 최적화 단어장"으로 변경
+
+## 퀴즈 기능 추가
+- [x] "동의어+한글 뜻" 복합 4지선다 모드 추가 (보기에 "synonym (한글뜻)" 형태로 표시)
+- [x] 모든 4지선다 모드에 "모르겠다" 패스 버튼 추가 (오답 처리 + 오답 노트 저장)
+- [x] vocab.ts QUIZ_MODES에 새 모드 등록
+- [x] quiz.tsx에서 새 모드 렌더링 로직 구현
