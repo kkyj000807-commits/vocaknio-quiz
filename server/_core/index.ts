@@ -2,6 +2,8 @@ import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
 import net from "net";
+import path from "path";
+import fs from "fs";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
@@ -67,6 +69,26 @@ async function startServer() {
       createContext,
     }),
   );
+
+  // Serve static web build (Expo export output)
+  const distPath = path.resolve(process.cwd(), "dist");
+  if (fs.existsSync(distPath)) {
+    app.use(express.static(distPath));
+    // SPA fallback: serve index.html for all non-API routes
+    app.get("*", (req, res, next) => {
+      if (req.path.startsWith("/api")) return next();
+      const filePath = path.join(distPath, req.path);
+      // Try exact file first, then .html, then index.html
+      if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+        return res.sendFile(filePath);
+      }
+      const htmlPath = filePath.endsWith(".html") ? filePath : `${filePath}.html`;
+      if (fs.existsSync(htmlPath)) {
+        return res.sendFile(htmlPath);
+      }
+      res.sendFile(path.join(distPath, "index.html"));
+    });
+  }
 
   const preferredPort = parseInt(process.env.PORT || "3000");
   const port = await findAvailablePort(preferredPort);

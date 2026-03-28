@@ -90,3 +90,9 @@
 - [x] 설정 탭에 다크/라이트/시스템 모드 토글 추가
 - [x] 선택한 테마 AsyncStorage에 영구 저장
 - [x] 앱 시작 시 저장된 테마 복원
+
+## 배포 Not Found 오류 수정
+- [x] 배포 URL에서 Not Found 원인 파악 (서버가 정적 파일을 서빙하지 않음)
+- [x] Expo Router 정적 빌드 실행 (dist/ 생성)
+- [x] server/_core/index.ts에 정적 파일 서빙 + SPA fallback 추가
+- [x] 서버 재빌드 완료
