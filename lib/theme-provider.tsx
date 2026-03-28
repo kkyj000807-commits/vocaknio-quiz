@@ -1,18 +1,34 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Appearance, View } from "react-native";
 import { colorScheme as nativewindColorScheme, vars } from "nativewind";
 
 import { SchemeColors, type ColorScheme } from "@/constants/theme";
 
+export type ThemeMode = "dark" | "light" | "system";
+
+const THEME_KEY = "vocaknio_theme_mode";
+
 type ThemeContextValue = {
   colorScheme: ColorScheme;
-  setColorScheme: (scheme: ColorScheme) => void;
+  themeMode: ThemeMode;
+  setThemeMode: (mode: ThemeMode) => void;
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
+function getSystemScheme(): ColorScheme {
+  const sys = Appearance.getColorScheme();
+  return sys === "light" ? "light" : "dark";
+}
+
+function resolveScheme(mode: ThemeMode): ColorScheme {
+  if (mode === "system") return getSystemScheme();
+  return mode;
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // Force dark mode for this app
+  const [themeMode, setThemeModeState] = useState<ThemeMode>("dark");
   const [colorScheme, setColorSchemeState] = useState<ColorScheme>("dark");
 
   const applyScheme = useCallback((scheme: ColorScheme) => {
@@ -29,17 +45,40 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const setColorScheme = useCallback(
-    (scheme: ColorScheme) => {
+  const setThemeMode = useCallback(
+    async (mode: ThemeMode) => {
+      setThemeModeState(mode);
+      const scheme = resolveScheme(mode);
       setColorSchemeState(scheme);
       applyScheme(scheme);
+      try {
+        await AsyncStorage.setItem(THEME_KEY, mode);
+      } catch {}
     },
     [applyScheme]
   );
 
+  // Load persisted theme on mount
   useEffect(() => {
-    applyScheme(colorScheme);
-  }, [applyScheme, colorScheme]);
+    AsyncStorage.getItem(THEME_KEY).then((saved) => {
+      const mode: ThemeMode = (saved as ThemeMode) ?? "dark";
+      const scheme = resolveScheme(mode);
+      setThemeModeState(mode);
+      setColorSchemeState(scheme);
+      applyScheme(scheme);
+    });
+  }, [applyScheme]);
+
+  // Listen for system theme changes when mode is "system"
+  useEffect(() => {
+    if (themeMode !== "system") return;
+    const sub = Appearance.addChangeListener(({ colorScheme: sys }) => {
+      const scheme = sys === "light" ? "light" : "dark";
+      setColorSchemeState(scheme);
+      applyScheme(scheme);
+    });
+    return () => sub.remove();
+  }, [themeMode, applyScheme]);
 
   const themeVariables = useMemo(
     () =>
@@ -62,11 +101,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   );
 
   const value = useMemo(
-    () => ({
-      colorScheme,
-      setColorScheme,
-    }),
-    [colorScheme, setColorScheme]
+    () => ({ colorScheme, themeMode, setThemeMode }),
+    [colorScheme, themeMode, setThemeMode]
   );
 
   return (
@@ -78,8 +114,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
 export function useThemeContext(): ThemeContextValue {
   const ctx = useContext(ThemeContext);
-  if (!ctx) {
-    throw new Error("useThemeContext must be used within ThemeProvider");
-  }
+  if (!ctx) throw new Error("useThemeContext must be used within ThemeProvider");
   return ctx;
 }

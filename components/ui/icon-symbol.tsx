@@ -34,6 +34,15 @@ const MAPPING = {
   "lightbulb.fill": "lightbulb",
   "gear": "settings",
   "square.and.arrow.up": "share",
+  "person.fill": "person",
+  "person.crop.circle": "account-circle",
+  "icloud.and.arrow.up": "cloud-upload",
+  "icloud.and.arrow.down": "cloud-download",
+  "icloud.fill": "cloud",
+  "moon.fill": "dark-mode",
+  "sun.max.fill": "light-mode",
+  "circle.lefthalf.filled": "contrast",
+  "arrow.triangle.2.circlepath": "sync",
 } as IconMapping;
 
 export function IconSymbol({
