@@ -3,6 +3,7 @@ import {
   View,
   Text,
   FlatList,
+  ScrollView,
   TextInput,
   Pressable,
   StyleSheet,
@@ -25,15 +26,17 @@ import { useColors } from "@/hooks/use-colors";
 import * as Haptics from "expo-haptics";
 
 const RANGE_OPTIONS = [
-  { label: "전체", start: 0, end: VOCAB.length - 1 },
-  { label: "1~1000", start: 0, end: 999 },
-  { label: "1001~2000", start: 1000, end: 1999 },
-  { label: "2001~3000", start: 2000, end: 2999 },
-  { label: "3001~4000", start: 3000, end: 3999 },
-  { label: "4001~5000", start: 4000, end: 4999 },
-  { label: "5001~6000", start: 5000, end: 5999 },
-  { label: "6001~7000", start: 6000, end: 6999 },
-  { label: "7001~끝", start: 7000, end: VOCAB.length - 1 },
+  { label: "전체", start: 0, end: VOCAB.length - 1, isIdiom: false },
+  { label: "1~1000", start: 0, end: 999, isIdiom: false },
+  { label: "1001~2000", start: 1000, end: 1999, isIdiom: false },
+  { label: "2001~3000", start: 2000, end: 2999, isIdiom: false },
+  { label: "3001~4000", start: 3000, end: 3999, isIdiom: false },
+  { label: "4001~5000", start: 4000, end: 4999, isIdiom: false },
+  { label: "5001~6000", start: 5000, end: 5999, isIdiom: false },
+  { label: "6001~7000", start: 6000, end: 6999, isIdiom: false },
+  { label: "7001~8000", start: 7000, end: 7999, isIdiom: false },
+  { label: "8001~9517", start: 8000, end: VOCAB.length - 1, isIdiom: false },
+  { label: "숙어·표현", start: 0, end: VOCAB.length - 1, isIdiom: true },
 ];
 
 // 단어 카드 (접기/펼치기)
@@ -219,7 +222,12 @@ export default function WordbookScreen() {
   // 필터링된 단어 목록
   const filteredVocab = useMemo(() => {
     const range = RANGE_OPTIONS[selectedRange];
-    let list = VOCAB.slice(range.start, range.end + 1);
+    let list: VocabItem[];
+    if (range.isIdiom) {
+      list = VOCAB.filter((v) => v.type === 'idiom' || v.type === 'phrase');
+    } else {
+      list = VOCAB.slice(range.start, range.end + 1);
+    }
 
     if (showOnlyBookmarks) {
       list = list.filter((v) => bookmarks.has(v.num));
@@ -286,15 +294,21 @@ export default function WordbookScreen() {
       </View>
 
       {/* 범위 필터 */}
-      <FlatList
+      <ScrollView
         horizontal
-        data={RANGE_OPTIONS}
-        keyExtractor={(_, i) => String(i)}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={s.rangeList}
-        renderItem={({ item, index }) => (
+        style={s.rangeScroll}
+        keyboardShouldPersistTaps="handled"
+      >
+        {RANGE_OPTIONS.map((item, index) => (
           <Pressable
-            style={[s.rangeChip, selectedRange === index && s.rangeChipActive]}
+            key={index}
+            style={({ pressed }) => [
+              s.rangeChip,
+              selectedRange === index && s.rangeChipActive,
+              pressed && { opacity: 0.75 },
+            ]}
             onPress={() => {
               setSelectedRange(index);
               if (Platform.OS !== "web") {
@@ -311,9 +325,8 @@ export default function WordbookScreen() {
               {item.label}
             </Text>
           </Pressable>
-        )}
-        style={s.rangeScroll}
-      />
+        ))}
+      </ScrollView>
 
       {/* 결과 수 */}
       <View style={s.resultRow}>
