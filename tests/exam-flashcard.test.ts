@@ -15,7 +15,7 @@ describe("exam-questions 데이터 무결성", () => {
   it("모든 문항에 id, year, choices, answer가 있다", () => {
     for (const q of examQuestions) {
       expect(q.id).toBeTruthy();
-      expect([2024, 2025, 2026]).toContain(q.year);
+      expect([2020, 2021, 2022, 2023, 2024, 2025, 2026]).toContain(q.year);
       expect(q.choices.length).toBeGreaterThanOrEqual(4);
       expect(q.answer).toBeGreaterThanOrEqual(0);
       expect(q.answer).toBeLessThan(q.choices.length);
@@ -30,12 +30,25 @@ describe("exam-questions 데이터 무결성", () => {
   });
 
   it("연도별 필터링이 정확하다", () => {
+    const q2020 = getQuestionsByYear(2020);
+    const q2021 = getQuestionsByYear(2021);
+    const q2022 = getQuestionsByYear(2022);
+    const q2023 = getQuestionsByYear(2023);
     const q2024 = getQuestionsByYear(2024);
     const q2025 = getQuestionsByYear(2025);
     const q2026 = getQuestionsByYear(2026);
+    expect(q2020.every((q) => q.year === 2020)).toBe(true);
+    expect(q2021.every((q) => q.year === 2021)).toBe(true);
+    expect(q2022.every((q) => q.year === 2022)).toBe(true);
+    expect(q2023.every((q) => q.year === 2023)).toBe(true);
     expect(q2024.every((q) => q.year === 2024)).toBe(true);
     expect(q2025.every((q) => q.year === 2025)).toBe(true);
     expect(q2026.every((q) => q.year === 2026)).toBe(true);
+    // 신규 연도 문항이 있는지 확인
+    expect(q2020.length).toBeGreaterThan(0);
+    expect(q2021.length).toBeGreaterThan(0);
+    expect(q2022.length).toBeGreaterThan(0);
+    expect(q2023.length).toBeGreaterThan(0);
   });
 
   it("유형별 필터링이 정확하다", () => {

@@ -30,7 +30,7 @@ import {
   type QuestionType,
 } from "@/lib/exam-questions";
 
-type FilterYear = "all" | 2024 | 2025 | 2026;
+type FilterYear = "all" | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 | 2026;
 type FilterType = "all" | "vocab" | "reading" | "logic";
 
 const YEAR_OPTIONS: { id: FilterYear; label: string }[] = [
@@ -38,6 +38,10 @@ const YEAR_OPTIONS: { id: FilterYear; label: string }[] = [
   { id: 2026, label: "2026" },
   { id: 2025, label: "2025" },
   { id: 2024, label: "2024" },
+  { id: 2023, label: "2023" },
+  { id: 2022, label: "2022" },
+  { id: 2021, label: "2021" },
+  { id: 2020, label: "2020" },
 ];
 
 const TYPE_OPTIONS: { id: FilterType; label: string; icon: string }[] = [
@@ -223,7 +227,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
                     {["①", "②", "③", "④", "⑤"][ci]}
                   </Text>
                 </View>
-                <Text style={[s.choiceText, { color: textColor }]} numberOfLines={4}>
+                <Text style={[s.choiceText, { color: textColor }]}>
                   {choice}
                 </Text>
               </Pressable>
@@ -358,7 +362,7 @@ export default function ExamScreen() {
         {/* 헤더 */}
         <View style={s.header}>
           <Text style={s.headerTitle}>기출 퀴즈</Text>
-          <Text style={s.headerSub}>한양대 편입 {examQuestions.length}문항 · 2024~2026</Text>
+          <Text style={s.headerSub}>한양대 편입 {examQuestions.length}문항 · 2020~2026</Text>
         </View>
 
         {/* 연도 필터 */}
@@ -478,7 +482,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     chipRow: {
       flexDirection: "row",
       flexWrap: "wrap",
-      gap: 8,
+      gap: 6,
     },
     chip: {
       paddingHorizontal: 16,
@@ -691,7 +695,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     choiceBtn: {
       flexDirection: "row",
-      alignItems: "center",
+      alignItems: "flex-start",
       gap: 12,
       borderWidth: 1.5,
       borderRadius: 12,
