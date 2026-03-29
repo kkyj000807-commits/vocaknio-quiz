@@ -44,6 +44,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="wordbook"
+        options={{
+          title: "단어장",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={24} name="text.book.closed.fill" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="wrong"
         options={{
           title: "오답노트",
@@ -67,6 +76,15 @@ export default function TabLayout() {
           title: "북마크",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={24} name="bookmark.fill" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="exam"
+        options={{
+          title: "기출",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={24} name="graduationcap.fill" color={color} />
           ),
         }}
       />

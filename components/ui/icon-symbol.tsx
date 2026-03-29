@@ -43,6 +43,10 @@ const MAPPING = {
   "sun.max.fill": "light-mode",
   "circle.lefthalf.filled": "contrast",
   "arrow.triangle.2.circlepath": "sync",
+  "text.book.closed.fill": "import-contacts",
+  "list.bullet": "format-list-bulleted",
+  "graduationcap.fill": "school",
+  "doc.text.fill": "description",
 } as IconMapping;
 
 export function IconSymbol({

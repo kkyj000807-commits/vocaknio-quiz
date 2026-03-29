@@ -19,6 +19,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { ScreenContainer } from "@/components/screen-container";
+import { FlipCard } from "@/components/flip-card";
 import {
   VOCAB,
   VocabItem,
@@ -399,44 +400,49 @@ export default function QuizScreen() {
             {/* 플래시카드 모드 */}
             {mode === "flashcard" && (
               <View style={s.flashContainer}>
-                {!revealed ? (
-                  <>
-                    <Text style={s.flashHint}>뜻을 떠올린 후 확인 버튼을 누르세요</Text>
-                    <Pressable style={s.revealBtn} onPress={handleReveal}>
-                      <Text style={s.revealBtnText}>🔍 뜻 확인</Text>
-                    </Pressable>
-                  </>
-                ) : (
-                  <>
-                    <View style={s.flashAnswer}>
-                      <Text style={s.flashKorText}>{q.item.k_short}</Text>
-                      {q.item.s.length > 0 && (
-                        <View style={s.synTagRow}>
-                          {q.item.s.slice(0, 4).map((syn, i) => (
-                            <View key={i} style={s.synTag}>
-                              <Text style={s.synTagText}>{syn}</Text>
-                            </View>
-                          ))}
-                        </View>
-                      )}
+                <FlipCard
+                  flipped={revealed}
+                  style={s.flipCardWrapper}
+                  front={
+                    <View style={s.flipFront}>
+                      <Text style={s.flashHint}>뜻을 떠올린 후 확인 버튼을 누르세요</Text>
+                      <Pressable style={s.revealBtn} onPress={handleReveal}>
+                        <Text style={s.revealBtnText}>🔍 뜻 확인</Text>
+                      </Pressable>
                     </View>
-                    {!answered && (
-                      <View style={s.gradeRow}>
-                        <Pressable
-                          style={[s.gradeBtn, s.gradeBtnWrong]}
-                          onPress={() => handleFlashGrade("wrong")}
-                        >
-                          <Text style={[s.gradeBtnText, { color: colors.error }]}>❌ 모르겠어요</Text>
-                        </Pressable>
-                        <Pressable
-                          style={[s.gradeBtn, s.gradeBtnCorrect]}
-                          onPress={() => handleFlashGrade("correct")}
-                        >
-                          <Text style={[s.gradeBtnText, { color: colors.success }]}>✅ 알았어요</Text>
-                        </Pressable>
+                  }
+                  back={
+                    <View style={s.flipBack}>
+                      <View style={s.flashAnswer}>
+                        <Text style={s.flashKorText}>{q.item.k_short}</Text>
+                        {q.item.s.length > 0 && (
+                          <View style={s.synTagRow}>
+                            {q.item.s.slice(0, 4).map((syn, i) => (
+                              <View key={i} style={s.synTag}>
+                                <Text style={s.synTagText}>{syn}</Text>
+                              </View>
+                            ))}
+                          </View>
+                        )}
                       </View>
-                    )}
-                  </>
+                    </View>
+                  }
+                />
+                {revealed && !answered && (
+                  <View style={[s.gradeRow, { marginTop: 14 }]}>
+                    <Pressable
+                      style={[s.gradeBtn, s.gradeBtnWrong]}
+                      onPress={() => handleFlashGrade("wrong")}
+                    >
+                      <Text style={[s.gradeBtnText, { color: colors.error }]}>❌ 모르겠어요</Text>
+                    </Pressable>
+                    <Pressable
+                      style={[s.gradeBtn, s.gradeBtnCorrect]}
+                      onPress={() => handleFlashGrade("correct")}
+                    >
+                      <Text style={[s.gradeBtnText, { color: colors.success }]}>✅ 알았어요</Text>
+                    </Pressable>
+                  </View>
                 )}
               </View>
             )}
@@ -706,6 +712,20 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     flashContainer: {
       marginTop: 8,
+    },
+    flipCardWrapper: {
+      minHeight: 160,
+      width: "100%",
+    },
+    flipFront: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: 16,
+    },
+    flipBack: {
+      flex: 1,
+      paddingVertical: 4,
     },
     flashHint: {
       fontSize: 13,
