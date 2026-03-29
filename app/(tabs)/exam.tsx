@@ -20,6 +20,7 @@ import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
+import { recordOneAnswer } from "@/lib/store";
 import {
   examQuestions,
   shuffleQuestions,
@@ -124,12 +125,15 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
       );
       setSelected(choiceIdx);
       setAnswered(true);
-      if (choiceIdx === q.answer) {
+      const isCorrect = choiceIdx === q.answer;
+      if (isCorrect) {
         haptic("success");
         setCorrect((c) => c + 1);
       } else {
         haptic("error");
       }
+      // 한 문제 단위 즉시 저장 (기출 퀴즈는 vocab num이 없으므로 오답노트 num은 저장 불가)
+      recordOneAnswer(isCorrect);
     },
     [answered, q.answer, haptic, cardScale]
   );

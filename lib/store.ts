@@ -143,7 +143,47 @@ export async function clearWrongWords(): Promise<void> {
   await saveWrongWords([]);
 }
 
-// ─── Quiz Settings ────────────────────────────────────────────────────────────
+// ─── Per-question realtime update ───────────────────────────────────────────────
+
+/**
+ * 한 문제 결과를 즉시 통계에 반영합니다.
+ * - isCorrect: 정답 여부
+ * - wrongNum: 오답일 경우 단어 num (정답이면 undefined)
+ */
+export async function recordOneAnswer(
+  isCorrect: boolean,
+  wrongNum?: number
+): Promise<void> {
+  // 1) 통계 업데이트
+  const stats = await loadStats();
+  const today = new Date().toISOString().slice(0, 10);
+
+  if (stats.todayDate !== today) {
+    stats.todayAnswered = 0;
+    stats.todayDate = today;
+  }
+
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  if (stats.lastStudyDate === yesterday) {
+    stats.streak += 1;
+  } else if (stats.lastStudyDate !== today) {
+    stats.streak = 1;
+  }
+  stats.lastStudyDate = today;
+
+  stats.totalAnswered += 1;
+  stats.todayAnswered += 1;
+  if (isCorrect) stats.totalCorrect += 1;
+
+  await saveStats(stats);
+
+  // 2) 오답이면 오답노트에 추가
+  if (!isCorrect && wrongNum !== undefined) {
+    await addWrongWords([wrongNum]);
+  }
+}
+
+// ─── Quiz Settings ────────────────────────────────────────────────────────────────
 
 export type ChoiceLang = "korean" | "english";
 

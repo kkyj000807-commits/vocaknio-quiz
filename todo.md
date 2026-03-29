@@ -156,3 +156,8 @@
 - [x] 퀴즈 선지 언어 모드 설정 (한글뜻 선지 / 영어 선지 선택) - index.tsx 토글 + quiz.tsx choiceLang 파라미터 처리
 - [x] 단어장 순서 셔플 버튼 추가 (🔀 랜덤 버튼 구현 완료)
 - [x] 단어장 플래시카드 모드 - 👁 가리기 버튼으로 뜻 마스킹, 카드 탭으로 개별 공개/가리기
+
+## 라이트 모드 UI 수정 + 실시간 저장
+- [x] settings.tsx 라이트 모드 카드/섹션 배경색 오류 수정 (ScreenContainer에 bg-background 추가)
+- [x] quiz.tsx 한 문제 정답/오답 확인 즉시 오답노트+통계 실시간 저장 (recordOneAnswer 연동)
+- [x] exam.tsx 기출 퀴즈 한 문제 단위 실시간 통계 저장 (recordOneAnswer 연동)

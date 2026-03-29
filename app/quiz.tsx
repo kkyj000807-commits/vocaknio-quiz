@@ -30,7 +30,7 @@ import {
   getSynWithKorDistractors,
   makeSynKorLabel,
 } from "@/lib/vocab";
-import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords } from "@/lib/store";
+import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords, recordOneAnswer } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
 
 interface QuizQuestion {
@@ -195,6 +195,8 @@ export default function QuizScreen() {
         setWrongCount((w) => w + 1);
         setWrongItems((prev) => [...prev, q.item]);
       }
+      // 한 문제 단위 즉시 저장
+      recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num);
     },
     [answered, q, haptic, animateCard]
   );
@@ -209,6 +211,8 @@ export default function QuizScreen() {
     setSelectedChoice(null);
     setWrongCount((w) => w + 1);
     setWrongItems((prev) => [...prev, q.item]);
+    // 패스도 오답으로 즉시 저장
+    recordOneAnswer(false, q.item.num);
   }, [answered, q, haptic, animateCard]);
 
   const handleReveal = useCallback(() => {
@@ -227,6 +231,8 @@ export default function QuizScreen() {
         setWrongCount((w) => w + 1);
         setWrongItems((prev) => [...prev, q.item]);
       }
+      // 플래시카드 채점 즉시 저장
+      recordOneAnswer(grade === "correct", grade === "correct" ? undefined : q.item.num);
     },
     [haptic, q]
   );
@@ -247,16 +253,16 @@ export default function QuizScreen() {
       setWrongCount((w) => w + 1);
       setWrongItems((prev) => [...prev, q.item]);
     }
+    // 타이핑 정답 즉시 저장
+    recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num);
   }, [typedAnswer, q, haptic]);
 
   const handleNext = useCallback(async () => {
     haptic("light");
     if (currentIdx + 1 >= questions.length) {
       const finalWrongNums = wrongItems.map((w) => w.num);
-      await Promise.all([
-        updateStatsAfterQuiz(correctCount, questions.length),
-        addWrongWords(finalWrongNums),
-      ]);
+      // 통계/오답노트는 이미 문제별로 저장됨 — 결과 화면 이동만 수행
+      // (중복 집계 방지를 위해 updateStatsAfterQuiz 호출 제거)
       router.replace({
         pathname: "/result",
         params: {

@@ -230,7 +230,7 @@ export default function SettingsScreen() {
   const s = styles(colors);
 
   return (
-    <ScreenContainer>
+    <ScreenContainer containerClassName="bg-background">
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
