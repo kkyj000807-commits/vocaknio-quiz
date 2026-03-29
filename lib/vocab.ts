@@ -7,6 +7,8 @@ export interface VocabItem {
   k_short: string; // Korean meaning (short)
   s: string[];   // synonyms
   p: string;     // IPA pronunciation
+  category?: string; // semantic category
+  type?: 'word' | 'idiom' | 'phrase'; // entry type
 }
 
 export const VOCAB: VocabItem[] = vocabRaw as VocabItem[];
@@ -74,9 +76,21 @@ export const RANGES = [
   { id: "4000-4999", label: "4001~5000번", start: 4000, end: 4999 },
   { id: "5000-5999", label: "5001~6000번", start: 5000, end: 5999 },
   { id: "6000-6999", label: "6001~7000번", start: 6000, end: 6999 },
-  { id: "7000-7586", label: "7001~7587번", start: 7000, end: 7586 },
+  { id: "7000-7999", label: "7001~8000번", start: 7000, end: 7999 },
+  { id: "8000-9516", label: "8001~9517번", start: 8000, end: 9516 },
+  { id: "idioms",   label: "숙어·표현",    start: 0,    end: VOCAB.length - 1 },
   { id: "all",      label: "전체",         start: 0,    end: VOCAB.length - 1 },
 ];
+
+// 숙어 필터
+export const VOCAB_IDIOMS = VOCAB.filter(
+  (v) => v.type === 'idiom' || v.type === 'phrase'
+);
+
+// 단어만 (숙어 제외)
+export const VOCAB_WORDS_ONLY = VOCAB.filter(
+  (v) => !v.type || v.type === 'word'
+);
 
 export const COUNTS = [10, 20, 30, 50];
 

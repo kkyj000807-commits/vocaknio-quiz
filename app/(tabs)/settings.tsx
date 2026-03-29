@@ -12,6 +12,7 @@ import {
   Platform,
 } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
+import { VOCAB } from "@/lib/vocab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
 import { useAuth } from "@/hooks/use-auth";
@@ -418,7 +419,7 @@ export default function SettingsScreen() {
               </View>
               <View style={[s.infoRow, { borderTopWidth: 0.5, borderTopColor: colors.border }]}>
                 <Text style={s.infoLabel}>단어 수</Text>
-                <Text style={s.infoValue}>7,587개</Text>
+                <Text style={s.infoValue}>{VOCAB.length.toLocaleString()}개</Text>
               </View>
               <View style={[s.infoRow, { borderTopWidth: 0.5, borderTopColor: colors.border }]}>
                 <Text style={s.infoLabel}>버전</Text>

@@ -43,11 +43,18 @@ function buildQuestions(
   mode: QuizMode,
   rangeStart: number,
   rangeEnd: number,
-  count: number
+  count: number,
+  rangeId?: string
 ): QuizQuestion[] {
-  const pool = VOCAB.slice(rangeStart, rangeEnd + 1).filter(
-    (v) => v.k && v.k.length > 2
-  );
+  // 숙어 범위 선택 시 숙어만 필터
+  let pool: VocabItem[];
+  if (rangeId === 'idioms') {
+    pool = VOCAB.filter((v) => v.type === 'idiom' || v.type === 'phrase').filter((v) => v.k && v.k.length > 2);
+  } else {
+    pool = VOCAB.slice(rangeStart, rangeEnd + 1).filter(
+      (v) => v.k && v.k.length > 2
+    );
+  }
 
   let candidates: VocabItem[];
   if (mode === "syn-choice" || mode === "syn-type" || mode === "syn-kor-choice") {
@@ -92,15 +99,17 @@ export default function QuizScreen() {
     rangeStart: string;
     rangeEnd: string;
     count: string;
+    rangeId?: string;
   }>();
 
   const mode = params.mode ?? "syn-choice";
   const rangeStart = parseInt(params.rangeStart ?? "0");
   const rangeEnd = parseInt(params.rangeEnd ?? "999");
   const count = parseInt(params.count ?? "20");
+  const rangeId = params.rangeId ?? "";
 
   const [questions] = useState<QuizQuestion[]>(() =>
-    buildQuestions(mode, rangeStart, rangeEnd, count)
+    buildQuestions(mode, rangeStart, rangeEnd, count, rangeId)
   );
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answered, setAnswered] = useState(false);

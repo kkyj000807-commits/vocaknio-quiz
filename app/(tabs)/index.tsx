@@ -37,6 +37,7 @@ export default function HomeScreen() {
         rangeStart: range.start,
         rangeEnd: range.end,
         count: selectedCount,
+        rangeId: selectedRange,  // 숙어 필터링을 위해 rangeId 전달
       },
     });
   }, [selectedMode, selectedRange, selectedCount, router, haptic]);
