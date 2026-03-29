@@ -161,3 +161,10 @@
 - [x] settings.tsx 라이트 모드 카드/섹션 배경색 오류 수정 (ScreenContainer에 bg-background 추가)
 - [x] quiz.tsx 한 문제 정답/오답 확인 즉시 오답노트+통계 실시간 저장 (recordOneAnswer 연동)
 - [x] exam.tsx 기출 퀴즈 한 문제 단위 실시간 통계 저장 (recordOneAnswer 연동)
+
+## 라이트/다크 모드 전면 수정
+- [x] ThemeProvider 초기 기본값 다크 하드코딩 제거 (시스템 테마 감지 + AsyncStorage 로드 완료 후 렌더링으로 플래시 방지)
+- [x] index.tsx 카드 스타일 하드코딩 색상 → 테마 토큰 연동 (이미 colors 토큰 사용 중)
+- [x] settings.tsx 카드 내부 배경 하드코딩 제거 (ScreenContainer bg-background 추가)
+- [x] 모든 탭 화면 StyleSheet 하드코딩 색상 전면 점검 및 수정 (모두 colors 토큰 사용 중)
+- [x] 기출 퀴즈 밑줄 다어/문장 색상 가시성 개선 (HighlightText 컴포넌트 - 유형별 색상+밑줄 하이라이트)

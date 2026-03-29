@@ -81,6 +81,92 @@ function getTypeLabel(type: QuestionType): string {
   }
 }
 
+/**
+ * 텍스트에서 밑줄 단어(underlined)를 찾아 강조 색상으로 렌더링합니다.
+ * - question 필드: [단어] 대괄호 패턴
+ * - passage 필드: underlined 문자열을 직접 검색
+ */
+function HighlightText({
+  text,
+  underlined,
+  baseStyle,
+  highlightColor,
+  isBold = false,
+}: {
+  text: string;
+  underlined?: string;
+  baseStyle: object;
+  highlightColor: string;
+  isBold?: boolean;
+}) {
+  // [단어] 패턴 처리 (question 필드)
+  const bracketPattern = /\[([^\]]+)\]/g;
+  const hasBracket = bracketPattern.test(text);
+
+  if (hasBracket) {
+    const parts: { text: string; highlight: boolean }[] = [];
+    let lastIndex = 0;
+    const regex = /\[([^\]]+)\]/g;
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push({ text: text.slice(lastIndex, match.index), highlight: false });
+      }
+      parts.push({ text: match[1], highlight: true });
+      lastIndex = match.index + match[0].length;
+    }
+    if (lastIndex < text.length) {
+      parts.push({ text: text.slice(lastIndex), highlight: false });
+    }
+    return (
+      <Text style={baseStyle}>
+        {parts.map((p, i) =>
+          p.highlight ? (
+            <Text
+              key={i}
+              style={{
+                color: highlightColor,
+                fontWeight: "800",
+                textDecorationLine: "underline",
+                textDecorationColor: highlightColor,
+              }}
+            >
+              {p.text}
+            </Text>
+          ) : (
+            <Text key={i}>{p.text}</Text>
+          )
+        )}
+      </Text>
+    );
+  }
+
+  // underlined 문자열 직접 검색 (passage 필드)
+  if (underlined && text.includes(underlined)) {
+    const idx = text.indexOf(underlined);
+    const before = text.slice(0, idx);
+    const after = text.slice(idx + underlined.length);
+    return (
+      <Text style={baseStyle}>
+        <Text>{before}</Text>
+        <Text
+          style={{
+            color: highlightColor,
+            fontWeight: isBold ? "800" : "700",
+            textDecorationLine: "underline",
+            textDecorationColor: highlightColor,
+          }}
+        >
+          {underlined}
+        </Text>
+        <Text>{after}</Text>
+      </Text>
+    );
+  }
+
+  return <Text style={baseStyle}>{text}</Text>;
+}
+
 function getTypeColor(type: QuestionType, colors: ReturnType<typeof useColors>): string {
   if (isVocab(type)) return colors.primary as string;
   if (isReading(type)) return colors.success as string;
@@ -184,12 +270,23 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
         {/* 지문 (독해) */}
         {q.passage && (
           <View style={s.passageBox}>
-            <Text style={s.passageText}>{q.passage}</Text>
+            <HighlightText
+              text={q.passage}
+              underlined={q.underlined}
+              baseStyle={s.passageText}
+              highlightColor={typeColor}
+            />
           </View>
         )}
 
         {/* 문제 */}
-        <Text style={s.questionText}>{q.question}</Text>
+        <HighlightText
+          text={q.question}
+          underlined={q.underlined}
+          baseStyle={s.questionText}
+          highlightColor={typeColor}
+          isBold
+        />
 
         {/* 선택지 */}
         <View style={s.choicesWrap}>

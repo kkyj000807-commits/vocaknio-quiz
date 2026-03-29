@@ -28,8 +28,12 @@ function resolveScheme(mode: ThemeMode): ColorScheme {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [themeMode, setThemeModeState] = useState<ThemeMode>("dark");
-  const [colorScheme, setColorSchemeState] = useState<ColorScheme>("dark");
+  // 초기값을 시스템 테마로 설정 (다크 하드코딩 제거)
+  const initialSystemScheme = getSystemScheme();
+  const [themeMode, setThemeModeState] = useState<ThemeMode>("system");
+  const [colorScheme, setColorSchemeState] = useState<ColorScheme>(initialSystemScheme);
+  // AsyncStorage 로드 완료 여부 — 로드 전까지 렌더링 지연으로 색상 플래시 방지
+  const [ready, setReady] = useState(false);
 
   const applyScheme = useCallback((scheme: ColorScheme) => {
     nativewindColorScheme.set(scheme);
@@ -61,11 +65,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Load persisted theme on mount
   useEffect(() => {
     AsyncStorage.getItem(THEME_KEY).then((saved) => {
-      const mode: ThemeMode = (saved as ThemeMode) ?? "dark";
+      // 저장된 값이 없으면 시스템 테마 사용 (기존 "dark" 기본값 제거)
+      const mode: ThemeMode = (saved as ThemeMode) ?? "system";
       const scheme = resolveScheme(mode);
       setThemeModeState(mode);
       setColorSchemeState(scheme);
       applyScheme(scheme);
+      setReady(true);
     });
   }, [applyScheme]);
 
@@ -107,7 +113,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeContext.Provider value={value}>
-      <View style={[{ flex: 1 }, themeVariables]}>{children}</View>
+      <View style={[{ flex: 1 }, themeVariables]}>
+        {/* AsyncStorage 로드 완료 후에만 렌더링 — 색상 플래시(flash) 방지 */}
+        {ready ? children : null}
+      </View>
     </ThemeContext.Provider>
   );
 }
