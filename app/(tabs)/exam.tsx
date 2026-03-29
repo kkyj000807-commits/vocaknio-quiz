@@ -133,7 +133,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
   const handleNext = useCallback(() => {
     haptic("light");
     if (idx + 1 >= questions.length) {
-      onFinish(correct + (selected === q.answer ? 0 : 0), correct);
+      onFinish(correct, questions.length);
       return;
     }
     setIdx((i) => i + 1);

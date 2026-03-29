@@ -127,3 +127,8 @@
 - [x] 기출 퀴즈 모드 구현 (어휘·논리·독해 선택지)
 - [x] 기출 문제 탭 또는 메뉴 추가
 - [ ] 아이폰 APK/IPA 빌드 및 배포 (Publish 버튼)
+
+- [x] 배포 실패 수정 (build 스크립트: dist/index.js + dist/server/index.js 동시 생성)
+- [x] 기출 퀴즈 정답 카운트 버그 수정 (마지막 문제 total 누락)
+- [x] TypeScript 전체 오류 0개 확인
+- [x] 전체 테스트 23개 통과 확인
