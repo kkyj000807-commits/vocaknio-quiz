@@ -44,7 +44,8 @@ function buildQuestions(
   rangeStart: number,
   rangeEnd: number,
   count: number,
-  rangeId?: string
+  rangeId?: string,
+  choiceLang?: string
 ): QuizQuestion[] {
   // 숙어 범위 선택 시 숙어만 필터
   let pool: VocabItem[];
@@ -59,6 +60,13 @@ function buildQuestions(
   let candidates: VocabItem[];
   if (mode === "syn-choice" || mode === "syn-type" || mode === "syn-kor-choice") {
     candidates = pool.filter((v) => v.s && v.s.length > 0);
+  } else if (mode === "kor-choice") {
+    // 영어 선지 모드에서는 동의어가 있는 단어만 출제
+    if (choiceLang === "english") {
+      candidates = pool.filter((v) => v.s && v.s.length > 0);
+    } else {
+      candidates = pool;
+    }
   } else {
     candidates = pool;
   }
@@ -72,9 +80,18 @@ function buildQuestions(
       const choices = shuffle([correctSyn, ...distractors]);
       return { item, choices, correct: correctSyn };
     } else if (mode === "kor-choice") {
-      const distractors = getKorDistractors(item, pool, 3);
-      const choices = shuffle([item.k, ...distractors]);
-      return { item, choices, correct: item.k };
+      if (choiceLang === "english") {
+        // 영어 선지 모드: 동의어 선지로 출제 (단어의 뜻을 영어 동의어로 고르기)
+        const correctSyn = item.s[Math.floor(Math.random() * item.s.length)];
+        const distractors = getSynDistractors(item, correctSyn, 3);
+        const choices = shuffle([correctSyn, ...distractors]);
+        return { item, choices, correct: correctSyn };
+      } else {
+        // 한글 선지 모드 (기본)
+        const distractors = getKorDistractors(item, pool, 3);
+        const choices = shuffle([item.k, ...distractors]);
+        return { item, choices, correct: item.k };
+      }
     } else if (mode === "syn-kor-choice") {
       const correctSyn = item.s[Math.floor(Math.random() * item.s.length)];
       const correctLabel = makeSynKorLabel(correctSyn, item);
@@ -100,6 +117,7 @@ export default function QuizScreen() {
     rangeEnd: string;
     count: string;
     rangeId?: string;
+    choiceLang?: string;
   }>();
 
   const mode = params.mode ?? "syn-choice";
@@ -107,9 +125,10 @@ export default function QuizScreen() {
   const rangeEnd = parseInt(params.rangeEnd ?? "999");
   const count = parseInt(params.count ?? "20");
   const rangeId = params.rangeId ?? "";
+  const choiceLang = params.choiceLang ?? "korean";
 
   const [questions] = useState<QuizQuestion[]>(() =>
-    buildQuestions(mode, rangeStart, rangeEnd, count, rangeId)
+    buildQuestions(mode, rangeStart, rangeEnd, count, rangeId, choiceLang)
   );
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answered, setAnswered] = useState(false);
@@ -268,7 +287,9 @@ export default function QuizScreen() {
 
   const getModeLabel = () => {
     if (mode === "syn-choice") return "동의어 고르기";
-    if (mode === "kor-choice") return "한국어 뜻 고르기";
+    if (mode === "kor-choice") {
+      return choiceLang === "english" ? "동의어 고르기 (영어)" : "한국어 뜻 고르기";
+    }
     if (mode === "syn-kor-choice") return "동의어+뜻 고르기";
     if (mode === "flashcard") return "플래시카드";
     return "동의어 입력";
@@ -276,7 +297,9 @@ export default function QuizScreen() {
 
   const getHintText = () => {
     if (mode === "syn-choice") return "올바른 동의어는?";
-    if (mode === "kor-choice") return "올바른 한국어 뜻은?";
+    if (mode === "kor-choice") {
+      return choiceLang === "english" ? "올바른 동의어는? (영어)" : "올바른 한국어 뜻은?";
+    }
     return "올바른 동의어(한글뜻)는?";
   };
 

@@ -142,3 +142,31 @@ export async function removeWrongWord(num: number): Promise<number[]> {
 export async function clearWrongWords(): Promise<void> {
   await saveWrongWords([]);
 }
+
+// ─── Quiz Settings ────────────────────────────────────────────────────────────
+
+export type ChoiceLang = "korean" | "english";
+
+const QUIZ_SETTINGS_KEY = "vocaknio_quiz_settings";
+
+export interface QuizSettings {
+  choiceLang: ChoiceLang;
+}
+
+const DEFAULT_QUIZ_SETTINGS: QuizSettings = {
+  choiceLang: "korean",
+};
+
+export async function loadQuizSettings(): Promise<QuizSettings> {
+  try {
+    const raw = await AsyncStorage.getItem(QUIZ_SETTINGS_KEY);
+    if (raw) return { ...DEFAULT_QUIZ_SETTINGS, ...JSON.parse(raw) };
+  } catch {}
+  return { ...DEFAULT_QUIZ_SETTINGS };
+}
+
+export async function saveQuizSettings(settings: QuizSettings): Promise<void> {
+  try {
+    await AsyncStorage.setItem(QUIZ_SETTINGS_KEY, JSON.stringify(settings));
+  } catch {}
+}

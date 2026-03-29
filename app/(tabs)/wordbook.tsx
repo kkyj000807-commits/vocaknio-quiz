@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,14 +10,7 @@ import {
   Platform,
   TouchableOpacity,
 } from "react-native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  FadeIn,
-  FadeOut,
-  Layout,
-} from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { VOCAB, VocabItem } from "@/lib/vocab";
@@ -39,7 +32,16 @@ const RANGE_OPTIONS = [
   { label: "숙어·표현", start: 0, end: VOCAB.length - 1, isIdiom: true },
 ];
 
-// 단어 카드 (접기/펼치기)
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ─── 단어 카드 ────────────────────────────────────────────────────────────────
 function WordCard({
   item,
   bookmarks,
@@ -75,7 +77,6 @@ function WordCard({
       onPress={handlePress}
       style={({ pressed }) => [s.card, pressed && { opacity: 0.85 }]}
     >
-      {/* 상단 행: 번호 + 단어 + 북마크 */}
       <View style={s.topRow}>
         <View style={s.numBadge}>
           <Text style={s.numText}>{item.num}</Text>
@@ -89,12 +90,10 @@ function WordCard({
         </TouchableOpacity>
       </View>
 
-      {/* 한국어 뜻 (항상 표시) */}
       <Text style={s.korText} numberOfLines={expanded ? undefined : 2}>
         {item.k_short}
       </Text>
 
-      {/* 펼쳐진 상태: 동의어 태그 */}
       {expanded && item.s.length > 0 && (
         <Animated.View entering={FadeIn.duration(180)} style={s.synRow}>
           {item.s.map((syn, i) => (
@@ -105,7 +104,6 @@ function WordCard({
         </Animated.View>
       )}
 
-      {/* 펼치기 힌트 */}
       <Text style={s.expandHint}>{expanded ? "▲ 접기" : "▼ 동의어 보기"}</Text>
     </Pressable>
   );
@@ -144,9 +142,7 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       color: colors.primary,
       fontVariant: ["tabular-nums"],
     },
-    wordArea: {
-      flex: 1,
-    },
+    wordArea: { flex: 1 },
     wordText: {
       fontSize: 18,
       fontWeight: "800",
@@ -160,10 +156,7 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       marginTop: 2,
       letterSpacing: 0.3,
     },
-    bookmarkBtn: {
-      padding: 2,
-      flexShrink: 0,
-    },
+    bookmarkBtn: { padding: 2, flexShrink: 0 },
     korText: {
       fontSize: 13,
       color: colors.muted,
@@ -185,27 +178,24 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       paddingHorizontal: 9,
       paddingVertical: 3,
     },
-    synTagText: {
-      fontSize: 11,
-      color: colors.primary,
-    },
+    synTagText: { fontSize: 11, color: colors.primary },
     expandHint: {
       fontSize: 10,
-      color: colors.dim,
+      color: colors.muted,
       marginTop: 4,
       textAlign: "right",
     },
   });
 
-// ─── 메인 화면 ───────────────────────────────────────────────────────────────
+// ─── 메인 화면 ────────────────────────────────────────────────────────────────
 export default function WordbookScreen() {
   const colors = useColors();
-  const s = styles(colors);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedRange, setSelectedRange] = useState(0); // 0 = 전체
+  const [selectedRange, setSelectedRange] = useState(0);
   const [bookmarks, setBookmarks] = useState<Set<number>>(new Set());
   const [showOnlyBookmarks, setShowOnlyBookmarks] = useState(false);
+  const [isShuffled, setIsShuffled] = useState(false);
 
   useEffect(() => {
     loadBookmarks().then((arr) => setBookmarks(new Set(arr)));
@@ -219,12 +209,11 @@ export default function WordbookScreen() {
     setBookmarks(new Set(updated));
   }, []);
 
-  // 필터링된 단어 목록
   const filteredVocab = useMemo(() => {
     const range = RANGE_OPTIONS[selectedRange];
     let list: VocabItem[];
     if (range.isIdiom) {
-      list = VOCAB.filter((v) => v.type === 'idiom' || v.type === 'phrase');
+      list = VOCAB.filter((v) => v.type === "idiom" || v.type === "phrase");
     } else {
       list = VOCAB.slice(range.start, range.end + 1);
     }
@@ -244,8 +233,12 @@ export default function WordbookScreen() {
       );
     }
 
+    if (isShuffled) {
+      list = shuffle(list);
+    }
+
     return list;
-  }, [searchQuery, selectedRange, bookmarks, showOnlyBookmarks]);
+  }, [searchQuery, selectedRange, bookmarks, showOnlyBookmarks, isShuffled]);
 
   const renderItem = useCallback(
     ({ item }: { item: VocabItem }) => (
@@ -261,24 +254,50 @@ export default function WordbookScreen() {
 
   const keyExtractor = useCallback((item: VocabItem) => String(item.num), []);
 
+  const handleShuffle = useCallback(() => {
+    setIsShuffled((v) => !v);
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+  }, []);
+
   return (
     <ScreenContainer containerClassName="bg-background">
       {/* 헤더 */}
-      <View style={s.header}>
-        <Text style={s.headerTitle}>단어장</Text>
-        <Text style={s.headerSub}>총 {VOCAB.length.toLocaleString()}개 단어</Text>
+      <View style={styles.header}>
+        <View>
+          <Text style={[styles.headerTitle, { color: colors.foreground }]}>단어장</Text>
+          <Text style={[styles.headerSub, { color: colors.muted }]}>
+            총 {VOCAB.length.toLocaleString()}개 단어
+          </Text>
+        </View>
+        {/* 셔플 버튼 */}
+        <TouchableOpacity
+          style={[
+            styles.shuffleBtn,
+            {
+              backgroundColor: isShuffled ? colors.primary : colors.surface,
+              borderColor: isShuffled ? colors.primary : colors.border,
+            },
+          ]}
+          onPress={handleShuffle}
+        >
+          <Text style={[styles.shuffleBtnText, { color: isShuffled ? "#fff" : colors.muted }]}>
+            🔀 {isShuffled ? "랜덤 ON" : "랜덤"}
+          </Text>
+        </TouchableOpacity>
       </View>
 
-      {/* 검색창 */}
-      <View style={s.searchRow}>
-        <View style={s.searchBox}>
-          <Text style={s.searchIcon}>🔍</Text>
+      {/* 검색창 + 북마크 필터 */}
+      <View style={styles.searchRow}>
+        <View style={[styles.searchBox, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+          <Text style={styles.searchIcon}>🔍</Text>
           <TextInput
-            style={s.searchInput}
+            style={[styles.searchInput, { color: colors.foreground }]}
             value={searchQuery}
             onChangeText={setSearchQuery}
             placeholder="단어, 뜻, 동의어 검색..."
-            placeholderTextColor={colors.dim}
+            placeholderTextColor={colors.muted}
             autoCapitalize="none"
             autoCorrect={false}
             returnKeyType="search"
@@ -286,54 +305,71 @@ export default function WordbookScreen() {
           />
         </View>
         <TouchableOpacity
-          style={[s.bookmarkFilterBtn, showOnlyBookmarks && s.bookmarkFilterActive]}
+          style={[
+            styles.iconBtn,
+            {
+              backgroundColor: showOnlyBookmarks ? colors.primary + "22" : colors.surface,
+              borderColor: showOnlyBookmarks ? colors.primary : colors.border,
+            },
+          ]}
           onPress={() => setShowOnlyBookmarks((v) => !v)}
         >
           <Text style={{ fontSize: 16 }}>🔖</Text>
         </TouchableOpacity>
       </View>
 
-      {/* 범위 필터 */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={s.rangeList}
-        style={s.rangeScroll}
-        keyboardShouldPersistTaps="handled"
-      >
-        {RANGE_OPTIONS.map((item, index) => (
-          <Pressable
-            key={index}
-            style={({ pressed }) => [
-              s.rangeChip,
-              selectedRange === index && s.rangeChipActive,
-              pressed && { opacity: 0.75 },
-            ]}
-            onPress={() => {
-              setSelectedRange(index);
-              if (Platform.OS !== "web") {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              }
-            }}
-          >
-            <Text
+      {/* 구간 필터 — 독립적인 View로 높이 고정 */}
+      <View style={styles.rangeWrapper}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.rangeContent}
+          keyboardShouldPersistTaps="handled"
+          bounces={false}
+        >
+          {RANGE_OPTIONS.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              activeOpacity={0.7}
               style={[
-                s.rangeChipText,
-                selectedRange === index && s.rangeChipTextActive,
+                styles.rangeChip,
+                {
+                  backgroundColor:
+                    selectedRange === index ? colors.primary : colors.surface,
+                  borderColor:
+                    selectedRange === index ? colors.primary : colors.border,
+                },
               ]}
+              onPress={() => {
+                setSelectedRange(index);
+                if (Platform.OS !== "web") {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                }
+              }}
             >
-              {item.label}
-            </Text>
-          </Pressable>
-        ))}
-      </ScrollView>
+              <Text
+                style={[
+                  styles.rangeChipText,
+                  {
+                    color: selectedRange === index ? "#fff" : colors.muted,
+                    fontWeight: selectedRange === index ? "700" : "500",
+                  },
+                ]}
+              >
+                {item.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
 
       {/* 결과 수 */}
-      <View style={s.resultRow}>
-        <Text style={s.resultText}>
+      <View style={styles.resultRow}>
+        <Text style={[styles.resultText, { color: colors.muted }]}>
           {filteredVocab.length.toLocaleString()}개
           {searchQuery ? ` · "${searchQuery}" 검색 결과` : ""}
           {showOnlyBookmarks ? " · 북마크만" : ""}
+          {isShuffled ? " · 랜덤 순서" : ""}
         </Text>
       </View>
 
@@ -342,16 +378,16 @@ export default function WordbookScreen() {
         data={filteredVocab}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
-        contentContainerStyle={s.listContent}
+        contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
         initialNumToRender={20}
         maxToRenderPerBatch={20}
         windowSize={10}
         removeClippedSubviews={Platform.OS !== "web"}
         ListEmptyComponent={
-          <View style={s.emptyBox}>
-            <Text style={s.emptyIcon}>📭</Text>
-            <Text style={s.emptyText}>
+          <View style={styles.emptyBox}>
+            <Text style={styles.emptyIcon}>📭</Text>
+            <Text style={[styles.emptyText, { color: colors.muted }]}>
               {searchQuery ? "검색 결과가 없습니다" : "단어가 없습니다"}
             </Text>
           </View>
@@ -361,117 +397,100 @@ export default function WordbookScreen() {
   );
 }
 
-const styles = (colors: ReturnType<typeof useColors>) =>
-  StyleSheet.create({
-    header: {
-      paddingHorizontal: 20,
-      paddingTop: 20,
-      paddingBottom: 12,
-    },
-    headerTitle: {
-      fontSize: 28,
-      fontWeight: "800",
-      color: colors.foreground,
-      letterSpacing: -0.5,
-    },
-    headerSub: {
-      fontSize: 12,
-      color: colors.dim,
-      marginTop: 2,
-    },
-    searchRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      paddingHorizontal: 16,
-      gap: 8,
-      marginBottom: 10,
-    },
-    searchBox: {
-      flex: 1,
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
-      borderRadius: 12,
-      paddingHorizontal: 12,
-      paddingVertical: Platform.OS === "ios" ? 10 : 6,
-      gap: 8,
-    },
-    searchIcon: {
-      fontSize: 15,
-    },
-    searchInput: {
-      flex: 1,
-      fontSize: 14,
-      color: colors.foreground,
-      padding: 0,
-    },
-    bookmarkFilterBtn: {
-      width: 42,
-      height: 42,
-      borderRadius: 12,
-      backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    bookmarkFilterActive: {
-      backgroundColor: colors.primary + "22",
-      borderColor: colors.primary,
-    },
-    rangeScroll: {
-      flexGrow: 0,
-    },
-    rangeList: {
-      paddingHorizontal: 16,
-      gap: 6,
-      paddingBottom: 4,
-    },
-    rangeChip: {
-      paddingHorizontal: 14,
-      paddingVertical: 7,
-      borderRadius: 20,
-      backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
-    },
-    rangeChipActive: {
-      backgroundColor: colors.primary,
-      borderColor: colors.primary,
-    },
-    rangeChipText: {
-      fontSize: 12,
-      fontWeight: "600",
-      color: colors.muted,
-    },
-    rangeChipTextActive: {
-      color: "#fff",
-    },
-    resultRow: {
-      paddingHorizontal: 20,
-      paddingTop: 10,
-      paddingBottom: 6,
-    },
-    resultText: {
-      fontSize: 11,
-      color: colors.dim,
-    },
-    listContent: {
-      paddingTop: 4,
-      paddingBottom: 32,
-    },
-    emptyBox: {
-      alignItems: "center",
-      paddingTop: 80,
-      gap: 12,
-    },
-    emptyIcon: {
-      fontSize: 40,
-    },
-    emptyText: {
-      fontSize: 15,
-      color: colors.dim,
-    },
-  });
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 12,
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: "800",
+    letterSpacing: -0.5,
+  },
+  headerSub: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  shuffleBtn: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  shuffleBtnText: {
+    fontSize: 13,
+    fontWeight: "600",
+  },
+  searchRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    gap: 8,
+    marginBottom: 10,
+  },
+  searchBox: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: Platform.OS === "ios" ? 10 : 6,
+    gap: 8,
+  },
+  searchIcon: { fontSize: 15 },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    padding: 0,
+  },
+  iconBtn: {
+    width: 42,
+    height: 42,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  // ★ 핵심 수정: 구간 필터를 독립 View로 감싸서 높이를 명시적으로 확보
+  rangeWrapper: {
+    height: 46,
+    marginBottom: 2,
+  },
+  rangeContent: {
+    paddingHorizontal: 16,
+    gap: 6,
+    alignItems: "center",
+    height: 46,
+  },
+  rangeChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  rangeChipText: {
+    fontSize: 12,
+  },
+  resultRow: {
+    paddingHorizontal: 20,
+    paddingTop: 6,
+    paddingBottom: 6,
+  },
+  resultText: { fontSize: 11 },
+  listContent: {
+    paddingTop: 4,
+    paddingBottom: 32,
+  },
+  emptyBox: {
+    alignItems: "center",
+    paddingTop: 80,
+    gap: 12,
+  },
+  emptyIcon: { fontSize: 40 },
+  emptyText: { fontSize: 14 },
+});

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import { Platform } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
 import { VOCAB, RANGES, COUNTS, QUIZ_MODES, type QuizMode } from "@/lib/vocab";
 import { useColors } from "@/hooks/use-colors";
+import { loadQuizSettings, saveQuizSettings, type ChoiceLang } from "@/lib/store";
 
 export default function HomeScreen() {
   const colors = useColors();
@@ -20,12 +21,24 @@ export default function HomeScreen() {
   const [selectedMode, setSelectedMode] = useState<QuizMode>("syn-choice");
   const [selectedRange, setSelectedRange] = useState("0-999");
   const [selectedCount, setSelectedCount] = useState(20);
+  const [choiceLang, setChoiceLang] = useState<ChoiceLang>("korean");
+
+  // 저장된 선지 언어 설정 불러오기
+  useEffect(() => {
+    loadQuizSettings().then((s) => setChoiceLang(s.choiceLang));
+  }, []);
 
   const haptic = useCallback(() => {
     if (Platform.OS !== "web") {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
   }, []);
+
+  const handleChoiceLangToggle = useCallback(async (lang: ChoiceLang) => {
+    haptic();
+    setChoiceLang(lang);
+    await saveQuizSettings({ choiceLang: lang });
+  }, [haptic]);
 
   const handleStart = useCallback(() => {
     haptic();
@@ -37,12 +50,16 @@ export default function HomeScreen() {
         rangeStart: range.start,
         rangeEnd: range.end,
         count: selectedCount,
-        rangeId: selectedRange,  // 숙어 필터링을 위해 rangeId 전달
+        rangeId: selectedRange,
+        choiceLang,
       },
     });
-  }, [selectedMode, selectedRange, selectedCount, router, haptic]);
+  }, [selectedMode, selectedRange, selectedCount, choiceLang, router, haptic]);
 
   const s = styles(colors);
+
+  // 선지 언어 설정이 의미 있는 모드인지 확인 (kor-choice 모드에서만 영어 전환 가능)
+  const isChoiceLangRelevant = selectedMode === "kor-choice";
 
   return (
     <ScreenContainer containerClassName="bg-background">
@@ -85,6 +102,36 @@ export default function HomeScreen() {
               );
             })}
           </View>
+
+          {/* 선지 언어 설정 — kor-choice 모드에서만 표시 */}
+          {isChoiceLangRelevant && (
+            <View style={s.langToggleContainer}>
+              <Text style={s.langToggleLabel}>선지 언어</Text>
+              <View style={s.langToggleRow}>
+                <Pressable
+                  style={[s.langBtn, choiceLang === "korean" && s.langBtnActive]}
+                  onPress={() => handleChoiceLangToggle("korean")}
+                >
+                  <Text style={[s.langBtnText, choiceLang === "korean" && s.langBtnTextActive]}>
+                    🇰🇷 한글뜻
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={[s.langBtn, choiceLang === "english" && s.langBtnActive]}
+                  onPress={() => handleChoiceLangToggle("english")}
+                >
+                  <Text style={[s.langBtnText, choiceLang === "english" && s.langBtnTextActive]}>
+                    🔤 영어 동의어
+                  </Text>
+                </Pressable>
+              </View>
+              <Text style={s.langToggleDesc}>
+                {choiceLang === "korean"
+                  ? "선지가 한국어 뜻으로 표시됩니다"
+                  : "선지가 영어 동의어로 표시됩니다"}
+              </Text>
+            </View>
+          )}
         </View>
 
         {/* Range */}
@@ -230,6 +277,52 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontSize: 11,
       color: colors.dim,
       marginTop: 3,
+    },
+    // 선지 언어 토글
+    langToggleContainer: {
+      marginTop: 16,
+      paddingTop: 16,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+    },
+    langToggleLabel: {
+      fontSize: 11,
+      fontWeight: "700",
+      color: colors.dim,
+      letterSpacing: 1.5,
+      textTransform: "uppercase",
+      marginBottom: 10,
+    },
+    langToggleRow: {
+      flexDirection: "row",
+      gap: 8,
+    },
+    langBtn: {
+      flex: 1,
+      backgroundColor: colors.card,
+      borderWidth: 2,
+      borderColor: colors.border,
+      borderRadius: 10,
+      paddingVertical: 10,
+      alignItems: "center",
+    },
+    langBtnActive: {
+      borderColor: colors.primary,
+      backgroundColor: "rgba(108,99,255,0.12)",
+    },
+    langBtnText: {
+      fontSize: 13,
+      fontWeight: "600",
+      color: colors.muted,
+    },
+    langBtnTextActive: {
+      color: colors.primary2 as string,
+    },
+    langToggleDesc: {
+      fontSize: 11,
+      color: colors.dim,
+      marginTop: 8,
+      textAlign: "center",
     },
     chipRow: {
       flexDirection: "row",

@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -27,15 +27,24 @@ import {
   saveStats,
   saveBookmarks,
   saveWrongWords,
+  loadQuizSettings,
+  saveQuizSettings,
+  type ChoiceLang,
 } from "@/lib/store";
 
 type ThemeOption = { mode: ThemeMode; label: string; icon: "sun.max.fill" | "moon.fill" | "circle.lefthalf.filled" };
+type LangOption = { lang: ChoiceLang; label: string; desc: string };
 type AuthTab = "login" | "register";
 
 const THEME_OPTIONS: ThemeOption[] = [
   { mode: "light", label: "라이트", icon: "sun.max.fill" },
   { mode: "dark", label: "다크", icon: "moon.fill" },
   { mode: "system", label: "시스템", icon: "circle.lefthalf.filled" },
+];
+
+const LANG_OPTIONS: LangOption[] = [
+  { lang: "korean", label: "🇰🇷 한글뜻", desc: "한국어 뜻 4지선다" },
+  { lang: "english", label: "🔤 영어 동의어", desc: "영어 동의어 4지선다" },
 ];
 
 async function callAuthApi(
@@ -61,6 +70,16 @@ export default function SettingsScreen() {
   const { themeMode, setThemeMode } = useThemeContext();
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState<string | null>(null);
+  const [choiceLang, setChoiceLang] = useState<ChoiceLang>("korean");
+
+  useEffect(() => {
+    loadQuizSettings().then((s) => setChoiceLang(s.choiceLang));
+  }, []);
+
+  const handleChoiceLangChange = useCallback(async (lang: ChoiceLang) => {
+    setChoiceLang(lang);
+    await saveQuizSettings({ choiceLang: lang });
+  }, []);
 
   // 로그인 폼 상태
   const [authTab, setAuthTab] = useState<AuthTab>("login");
@@ -71,6 +90,7 @@ export default function SettingsScreen() {
   const [authError, setAuthError] = useState<string | null>(null);
 
   const pullMutation = trpc.sync.pull.useQuery(undefined, { enabled: false });
+  // useEffect는 위에서 이미 선언됨
   const pushMutation = trpc.sync.push.useMutation();
 
   // ── 로그인 ──────────────────────────────────────────────────────
@@ -219,6 +239,36 @@ export default function SettingsScreen() {
           {/* 헤더 */}
           <View style={s.header}>
             <Text style={s.title}>설정</Text>
+          </View>
+
+          {/* 퀴즈 선지 언어 섹션 */}
+          <View style={s.section}>
+            <Text style={s.sectionTitle}>퀴즈 선지 언어</Text>
+            <View style={s.card}>
+              <Text style={s.settingDesc}>
+                "한국어 뜻 고르기" 모드에서 선지를 한글뜻 또는 영어 동의어로 표시합니다.
+              </Text>
+              <View style={s.langRow}>
+                {LANG_OPTIONS.map((opt) => {
+                  const active = choiceLang === opt.lang;
+                  return (
+                    <TouchableOpacity
+                      key={opt.lang}
+                      style={[s.langBtn, active && s.langBtnActive]}
+                      onPress={() => handleChoiceLangChange(opt.lang)}
+                      activeOpacity={0.75}
+                    >
+                      <Text style={[s.langBtnLabel, active && s.langBtnLabelActive]}>
+                        {opt.label}
+                      </Text>
+                      <Text style={[s.langBtnDesc, active && s.langBtnDescActive]}>
+                        {opt.desc}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
           </View>
 
           {/* 테마 섹션 */}
@@ -505,4 +555,17 @@ const styles = (c: ReturnType<typeof useColors>) =>
     infoRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 8 },
     infoLabel: { fontSize: 14, color: c.muted },
     infoValue: { fontSize: 14, fontWeight: "600", color: c.foreground },
+    // Quiz Lang
+    settingDesc: { fontSize: 13, color: c.muted, lineHeight: 18, marginBottom: 4 },
+    langRow: { flexDirection: "row", gap: 10 },
+    langBtn: {
+      flex: 1, flexDirection: "column", alignItems: "center", gap: 4,
+      paddingVertical: 12, borderRadius: 12, borderWidth: 1.5,
+      borderColor: c.border, backgroundColor: c.surface,
+    },
+    langBtnActive: { backgroundColor: c.primary, borderColor: c.primary },
+    langBtnLabel: { fontSize: 13, fontWeight: "700", color: c.muted },
+    langBtnLabelActive: { color: c.background },
+    langBtnDesc: { fontSize: 10, color: c.dim, textAlign: "center" },
+    langBtnDescActive: { color: c.background + "cc" },
   });
