@@ -10,7 +10,7 @@ import {
   Platform,
   TouchableOpacity,
 } from "react-native";
-import Animated, { FadeIn } from "react-native-reanimated";
+import Animated, { FadeIn, useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { VOCAB, VocabItem } from "@/lib/vocab";
@@ -47,22 +47,37 @@ function WordCard({
   bookmarks,
   onToggleBookmark,
   colors,
+  maskMode,
 }: {
   item: VocabItem;
   bookmarks: Set<number>;
   onToggleBookmark: (num: number) => void;
   colors: ReturnType<typeof useColors>;
+  maskMode: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
+  // 마스크 모드에서 개별 카드의 공개 여부
+  const [revealed, setRevealed] = useState(false);
   const isBookmarked = bookmarks.has(item.num);
   const s = cardStyles(colors);
 
+  // maskMode가 꺼지면 revealed 초기화
+  useEffect(() => {
+    if (!maskMode) setRevealed(false);
+  }, [maskMode]);
+
   const handlePress = useCallback(() => {
-    setExpanded((v) => !v);
+    if (maskMode) {
+      // 마스크 모드: 탭으로 뜻 공개/가리기 토글
+      setRevealed((v) => !v);
+    } else {
+      // 일반 모드: 동의어 펼치기/접기
+      setExpanded((v) => !v);
+    }
     if (Platform.OS !== "web") {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
-  }, []);
+  }, [maskMode]);
 
   const handleBookmark = useCallback(
     (e: any) => {
@@ -71,6 +86,8 @@ function WordCard({
     },
     [item.num, onToggleBookmark]
   );
+
+  const isMasked = maskMode && !revealed;
 
   return (
     <Pressable
@@ -90,21 +107,37 @@ function WordCard({
         </TouchableOpacity>
       </View>
 
-      <Text style={s.korText} numberOfLines={expanded ? undefined : 2}>
-        {item.k_short}
-      </Text>
+      {/* 한글 뜻 — 마스크 모드에서 가리기 */}
+      {isMasked ? (
+        <View style={s.maskBox}>
+          <Text style={s.maskHintText}>👆 탭하여 뜻 보기</Text>
+        </View>
+      ) : (
+        <>
+          <Text style={s.korText} numberOfLines={maskMode ? undefined : (expanded ? undefined : 2)}>
+            {item.k_short}
+          </Text>
 
-      {expanded && item.s.length > 0 && (
-        <Animated.View entering={FadeIn.duration(180)} style={s.synRow}>
-          {item.s.map((syn, i) => (
-            <View key={i} style={s.synTag}>
-              <Text style={s.synTagText}>{syn}</Text>
-            </View>
-          ))}
-        </Animated.View>
+          {/* 동의어 — 마스크 해제 시 항상 표시, 일반 모드는 expanded일 때만 */}
+          {(maskMode || expanded) && item.s.length > 0 && (
+            <Animated.View entering={FadeIn.duration(180)} style={s.synRow}>
+              {item.s.map((syn, i) => (
+                <View key={i} style={s.synTag}>
+                  <Text style={s.synTagText}>{syn}</Text>
+                </View>
+              ))}
+            </Animated.View>
+          )}
+        </>
       )}
 
-      <Text style={s.expandHint}>{expanded ? "▲ 접기" : "▼ 동의어 보기"}</Text>
+      {/* 힌트 텍스트 */}
+      {!maskMode && (
+        <Text style={s.expandHint}>{expanded ? "▲ 접기" : "▼ 동의어 보기"}</Text>
+      )}
+      {maskMode && !isMasked && (
+        <Text style={s.expandHint}>👆 탭하여 다시 가리기</Text>
+      )}
     </Pressable>
   );
 }
@@ -163,6 +196,21 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       lineHeight: 19,
       marginBottom: 4,
     },
+    // 마스크 박스 — 뜻을 가리는 영역
+    maskBox: {
+      height: 38,
+      borderRadius: 8,
+      backgroundColor: colors.border,
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: 4,
+      overflow: "hidden",
+    },
+    maskHintText: {
+      fontSize: 12,
+      color: colors.muted,
+      fontWeight: "600",
+    },
     synRow: {
       flexDirection: "row",
       flexWrap: "wrap",
@@ -196,6 +244,7 @@ export default function WordbookScreen() {
   const [bookmarks, setBookmarks] = useState<Set<number>>(new Set());
   const [showOnlyBookmarks, setShowOnlyBookmarks] = useState(false);
   const [isShuffled, setIsShuffled] = useState(false);
+  const [maskMode, setMaskMode] = useState(false);
 
   useEffect(() => {
     loadBookmarks().then((arr) => setBookmarks(new Set(arr)));
@@ -247,15 +296,23 @@ export default function WordbookScreen() {
         bookmarks={bookmarks}
         onToggleBookmark={handleToggleBookmark}
         colors={colors}
+        maskMode={maskMode}
       />
     ),
-    [bookmarks, handleToggleBookmark, colors]
+    [bookmarks, handleToggleBookmark, colors, maskMode]
   );
 
   const keyExtractor = useCallback((item: VocabItem) => String(item.num), []);
 
   const handleShuffle = useCallback(() => {
     setIsShuffled((v) => !v);
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+  }, []);
+
+  const handleMaskToggle = useCallback(() => {
+    setMaskMode((v) => !v);
     if (Platform.OS !== "web") {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
@@ -271,22 +328,52 @@ export default function WordbookScreen() {
             총 {VOCAB.length.toLocaleString()}개 단어
           </Text>
         </View>
-        {/* 셔플 버튼 */}
-        <TouchableOpacity
-          style={[
-            styles.shuffleBtn,
-            {
-              backgroundColor: isShuffled ? colors.primary : colors.surface,
-              borderColor: isShuffled ? colors.primary : colors.border,
-            },
-          ]}
-          onPress={handleShuffle}
-        >
-          <Text style={[styles.shuffleBtnText, { color: isShuffled ? "#fff" : colors.muted }]}>
-            🔀 {isShuffled ? "랜덤 ON" : "랜덤"}
-          </Text>
-        </TouchableOpacity>
+        {/* 버튼 그룹 */}
+        <View style={styles.headerBtns}>
+          {/* 뜻 가리기 버튼 */}
+          <TouchableOpacity
+            style={[
+              styles.headerBtn,
+              {
+                backgroundColor: maskMode ? colors.warning + "22" : colors.surface,
+                borderColor: maskMode ? colors.warning : colors.border,
+              },
+            ]}
+            onPress={handleMaskToggle}
+          >
+            <Text style={[styles.headerBtnText, { color: maskMode ? colors.warning : colors.muted }]}>
+              {maskMode ? "👁 가리기 ON" : "👁 가리기"}
+            </Text>
+          </TouchableOpacity>
+          {/* 셔플 버튼 */}
+          <TouchableOpacity
+            style={[
+              styles.headerBtn,
+              {
+                backgroundColor: isShuffled ? colors.primary : colors.surface,
+                borderColor: isShuffled ? colors.primary : colors.border,
+              },
+            ]}
+            onPress={handleShuffle}
+          >
+            <Text style={[styles.headerBtnText, { color: isShuffled ? "#fff" : colors.muted }]}>
+              🔀 {isShuffled ? "랜덤 ON" : "랜덤"}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
+
+      {/* 마스크 모드 안내 배너 */}
+      {maskMode && (
+        <Animated.View
+          entering={FadeIn.duration(200)}
+          style={[styles.maskBanner, { backgroundColor: colors.warning + "18", borderColor: colors.warning + "55" }]}
+        >
+          <Text style={[styles.maskBannerText, { color: colors.warning }]}>
+            📖 플래시카드 모드 — 카드를 탭하면 뜻이 보입니다
+          </Text>
+        </Animated.View>
+      )}
 
       {/* 검색창 + 북마크 필터 */}
       <View style={styles.searchRow}>
@@ -370,6 +457,7 @@ export default function WordbookScreen() {
           {searchQuery ? ` · "${searchQuery}" 검색 결과` : ""}
           {showOnlyBookmarks ? " · 북마크만" : ""}
           {isShuffled ? " · 랜덤 순서" : ""}
+          {maskMode ? " · 플래시카드 모드" : ""}
         </Text>
       </View>
 
@@ -415,15 +503,34 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 2,
   },
-  shuffleBtn: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+  headerBtns: {
+    flexDirection: "row",
+    gap: 8,
+    alignItems: "center",
+  },
+  headerBtn: {
+    paddingHorizontal: 11,
+    paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
   },
-  shuffleBtnText: {
-    fontSize: 13,
+  headerBtnText: {
+    fontSize: 12,
     fontWeight: "600",
+  },
+  // 마스크 모드 안내 배너
+  maskBanner: {
+    marginHorizontal: 16,
+    marginBottom: 8,
+    borderRadius: 10,
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+  maskBannerText: {
+    fontSize: 12,
+    fontWeight: "600",
+    textAlign: "center",
   },
   searchRow: {
     flexDirection: "row",
