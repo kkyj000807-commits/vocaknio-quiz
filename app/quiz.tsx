@@ -30,7 +30,7 @@ import {
   getSynWithKorDistractors,
   makeSynKorLabel,
 } from "@/lib/vocab";
-import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords, recordOneAnswer } from "@/lib/store";
+import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords, recordOneAnswer, loadMastered, addMastered } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
 
 interface QuizQuestion {
@@ -45,7 +45,8 @@ function buildQuestions(
   rangeEnd: number,
   count: number,
   rangeId?: string,
-  choiceLang?: string
+  choiceLang?: string,
+  masteredNums?: number[]
 ): QuizQuestion[] {
   // 숙어 범위 선택 시 숙어만 필터
   let pool: VocabItem[];
@@ -55,6 +56,11 @@ function buildQuestions(
     pool = VOCAB.slice(rangeStart, rangeEnd + 1).filter(
       (v) => v.k && v.k.length > 2
     );
+  }
+  // 플래시카드 모드에서 마스터된 단어 제외
+  if (mode === 'flashcard' && masteredNums && masteredNums.length > 0) {
+    const masteredSet = new Set(masteredNums);
+    pool = pool.filter((v) => !masteredSet.has(v.num));
   }
 
   let candidates: VocabItem[];
@@ -127,6 +133,7 @@ export default function QuizScreen() {
   const rangeId = params.rangeId ?? "";
   const choiceLang = params.choiceLang ?? "korean";
 
+  const [masteredNums, setMasteredNums] = useState<number[]>([]);
   const [questions] = useState<QuizQuestion[]>(() =>
     buildQuestions(mode, rangeStart, rangeEnd, count, rangeId, choiceLang)
   );
@@ -151,7 +158,10 @@ export default function QuizScreen() {
 
   useEffect(() => {
     loadBookmarks().then(setBookmarks);
-  }, []);
+    if (mode === 'flashcard') {
+      loadMastered().then(setMasteredNums);
+    }
+  }, [mode]);
 
   const haptic = useCallback((type: "light" | "success" | "error" = "light") => {
     if (Platform.OS === "web") return;
@@ -236,6 +246,32 @@ export default function QuizScreen() {
     },
     [haptic, q]
   );
+
+  // 플래시카드 마스터 처리 — 이 단어를 마스터 목록에 추가
+  const handleFlashMaster = useCallback(async () => {
+    if (!q) return;
+    haptic("success");
+    const updated = await addMastered(q.item.num);
+    setMasteredNums(updated);
+    // 마스터 처리 후 자동으로 다음 문제로 이동
+    if (currentIdx + 1 >= questions.length) {
+      router.replace({
+        pathname: "/result",
+        params: {
+          correct: correctCount,
+          total: questions.length,
+          wrongNums: wrongItems.map((w) => w.num).join(","),
+        },
+      });
+      return;
+    }
+    setCurrentIdx((i) => i + 1);
+    setAnswered(false);
+    setSelectedChoice(null);
+    setSkipped(false);
+    setRevealed(false);
+    setFlashGrade(null);
+  }, [q, haptic, currentIdx, questions.length, correctCount, wrongItems, router]);
 
   const handleTypeSubmit = useCallback(() => {
     if (!typedAnswer.trim()) return;
@@ -410,9 +446,23 @@ export default function QuizScreen() {
                             {["①", "②", "③", "④"][idx]}
                           </Text>
                         </View>
-                        <Text style={textStyle} numberOfLines={3}>
-                          {choice}
-                        </Text>
+                        <View style={{ flex: 1 }}>
+                          <Text style={textStyle} numberOfLines={3}>
+                            {choice}
+                          </Text>
+                          {/* 정답 확인 후 선지 한글뜻 표시 */}
+                          {answered && (() => {
+                            const choiceItem = VOCAB.find((v) =>
+                              v.w === choice ||
+                              (v.s && v.s.includes(choice))
+                            );
+                            const kor = choiceItem?.k_short;
+                            if (!kor) return null;
+                            return (
+                              <Text style={s.choiceKorText}>{kor}</Text>
+                            );
+                          })()}
+                        </View>
                       </Pressable>
                     );
                   })}
@@ -467,18 +517,27 @@ export default function QuizScreen() {
                   }
                 />
                 {revealed && !answered && (
-                  <View style={[s.gradeRow, { marginTop: 14 }]}>
+                  <View style={{ marginTop: 14, gap: 8 }}>
+                    <View style={s.gradeRow}>
+                      <Pressable
+                        style={[s.gradeBtn, s.gradeBtnWrong]}
+                        onPress={() => handleFlashGrade("wrong")}
+                      >
+                        <Text style={[s.gradeBtnText, { color: colors.error }]}>❌ 모르겠어요</Text>
+                      </Pressable>
+                      <Pressable
+                        style={[s.gradeBtn, s.gradeBtnCorrect]}
+                        onPress={() => handleFlashGrade("correct")}
+                      >
+                        <Text style={[s.gradeBtnText, { color: colors.success }]}>✅ 알았어요</Text>
+                      </Pressable>
+                    </View>
+                    {/* 마스터 버튼 — 이 단어는 완전히 알아서 앞으로 출제 제외 */}
                     <Pressable
-                      style={[s.gradeBtn, s.gradeBtnWrong]}
-                      onPress={() => handleFlashGrade("wrong")}
+                      style={s.masterBtn}
+                      onPress={handleFlashMaster}
                     >
-                      <Text style={[s.gradeBtnText, { color: colors.error }]}>❌ 모르겠어요</Text>
-                    </Pressable>
-                    <Pressable
-                      style={[s.gradeBtn, s.gradeBtnCorrect]}
-                      onPress={() => handleFlashGrade("correct")}
-                    >
-                      <Text style={[s.gradeBtnText, { color: colors.success }]}>✅ 알았어요</Text>
+                      <Text style={s.masterBtnText}>⭐ 마스터 — 다음부터 이 단어 제외</Text>
                     </Pressable>
                   </View>
                 )}
@@ -967,5 +1026,24 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontWeight: "700",
       color: "#fff",
       letterSpacing: 0.5,
+    },
+    choiceKorText: {
+      fontSize: 11,
+      color: colors.dim,
+      marginTop: 3,
+      lineHeight: 15,
+    },
+    masterBtn: {
+      backgroundColor: "rgba(251,191,36,0.12)",
+      borderWidth: 1,
+      borderColor: "rgba(251,191,36,0.35)",
+      borderRadius: 12,
+      paddingVertical: 12,
+      alignItems: "center",
+    },
+    masterBtnText: {
+      fontSize: 13,
+      fontWeight: "700",
+      color: "#F59E0B",
     },
   });

@@ -24,10 +24,17 @@ export default function WrongScreen() {
   const colors = useColors();
   const router = useRouter();
   const [wrongNums, setWrongNums] = useState<number[]>([]);
+  // 가리기 모드 ON/OFF
+  const [hideMode, setHideMode] = useState(false);
+  // 개별 카드 공개 상태 (num -> revealed)
+  const [revealed, setRevealed] = useState<Record<number, boolean>>({});
 
   useFocusEffect(
     useCallback(() => {
       loadWrongWords().then(setWrongNums);
+      // 탭 전환 시 가리기 상태 초기화
+      setHideMode(false);
+      setRevealed({});
     }, [])
   );
 
@@ -46,6 +53,12 @@ export default function WrongScreen() {
       haptic();
       const updated = await removeWrongWord(num);
       setWrongNums(updated);
+      // 마스터 처리된 카드 공개 상태 제거
+      setRevealed((prev) => {
+        const next = { ...prev };
+        delete next[num];
+        return next;
+      });
     },
     []
   );
@@ -63,6 +76,7 @@ export default function WrongScreen() {
           onPress: async () => {
             await clearWrongWords();
             setWrongNums([]);
+            setRevealed({});
           },
         },
       ]
@@ -81,42 +95,77 @@ export default function WrongScreen() {
     });
   }, [wrongItems, wrongNums, router]);
 
+  const toggleHideMode = useCallback(() => {
+    haptic();
+    setHideMode((prev) => {
+      if (!prev) {
+        // 가리기 ON: 모든 카드 가리기
+        setRevealed({});
+      }
+      return !prev;
+    });
+  }, []);
+
+  const toggleReveal = useCallback((num: number) => {
+    if (!hideMode) return;
+    haptic();
+    setRevealed((prev) => ({ ...prev, [num]: !prev[num] }));
+  }, [hideMode]);
+
   const s = styles(colors);
 
-  const renderItem = ({ item }: { item: VocabItem }) => (
-    <View style={s.wordCard}>
-      <View style={s.wordCardHeader}>
-        <View style={s.wordInfo}>
-          <Text style={s.wordText}>{item.w}</Text>
-          {item.p ? <Text style={s.ipaText}>{item.p}</Text> : null}
+  const renderItem = ({ item }: { item: VocabItem }) => {
+    const isRevealed = !hideMode || revealed[item.num];
+
+    return (
+      <Pressable
+        style={s.wordCard}
+        onPress={() => toggleReveal(item.num)}
+        disabled={!hideMode}
+      >
+        <View style={s.wordCardHeader}>
+          <View style={s.wordInfo}>
+            <Text style={s.wordText}>{item.w}</Text>
+            {item.p ? <Text style={s.ipaText}>{item.p}</Text> : null}
+          </View>
+          <Pressable
+            style={s.masterBtn}
+            onPress={() => handleMaster(item.num)}
+          >
+            <Text style={s.masterBtnText}>✓ 마스터</Text>
+          </Pressable>
         </View>
-        <Pressable
-          style={s.masterBtn}
-          onPress={() => handleMaster(item.num)}
-        >
-          <Text style={s.masterBtnText}>✓ 마스터</Text>
-        </Pressable>
-      </View>
-      <Text style={s.korText} numberOfLines={2}>
-        {item.k_short}
-      </Text>
-      {item.s.length > 0 && (
-        <View style={s.synTagRow}>
-          {item.s.slice(0, 4).map((syn, i) => (
-            <View key={i} style={s.synTag}>
-              <Text style={s.synTagText}>{syn}</Text>
-            </View>
-          ))}
-        </View>
-      )}
-    </View>
-  );
+
+        {/* 뜻 영역 - 가리기 모드에서 마스킹 */}
+        {isRevealed ? (
+          <>
+            <Text style={s.korText} numberOfLines={2}>
+              {item.k_short}
+            </Text>
+            {item.s.length > 0 && (
+              <View style={s.synTagRow}>
+                {item.s.slice(0, 4).map((syn, i) => (
+                  <View key={i} style={s.synTag}>
+                    <Text style={s.synTagText}>{syn}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+          </>
+        ) : (
+          <View style={s.maskedArea}>
+            <Text style={s.maskedText}>탭하여 뜻 확인</Text>
+          </View>
+        )}
+      </Pressable>
+    );
+  };
 
   return (
     <ScreenContainer containerClassName="bg-background">
       {/* Header */}
       <View style={s.header}>
-        <View>
+        <View style={{ flex: 1 }}>
           <Text style={s.headerTitle}>오답 노트</Text>
           <Text style={s.headerSub}>
             {wrongItems.length > 0
@@ -126,6 +175,15 @@ export default function WrongScreen() {
         </View>
         {wrongItems.length > 0 && (
           <View style={s.headerBtns}>
+            {/* 가리기 토글 */}
+            <Pressable
+              style={[s.hideBtn, hideMode && s.hideBtnActive]}
+              onPress={toggleHideMode}
+            >
+              <Text style={[s.hideBtnText, hideMode && s.hideBtnTextActive]}>
+                {hideMode ? "👁 보이기" : "🙈 가리기"}
+              </Text>
+            </Pressable>
             <Pressable
               style={({ pressed }) => [s.quizBtn, pressed && { opacity: 0.85 }]}
               onPress={handleStartQuiz}
@@ -159,11 +217,22 @@ export default function WrongScreen() {
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
           ListHeaderComponent={
-            <View style={s.infoBox}>
-              <Text style={s.infoText}>
-                💡 단어를 완전히 외웠다면 <Text style={{ color: colors.success }}>✓ 마스터</Text> 버튼으로 목록에서 제거하세요
-              </Text>
-            </View>
+            hideMode ? (
+              <View style={s.hideModeInfoBox}>
+                <Text style={s.hideModeInfoText}>
+                  🙈 뜻 가리기 모드 — 각 카드를 탭하면 뜻이 공개됩니다
+                </Text>
+                <Text style={[s.hideModeInfoText, { marginTop: 4, color: colors.dim }]}>
+                  {Object.values(revealed).filter(Boolean).length} / {wrongItems.length}개 확인
+                </Text>
+              </View>
+            ) : (
+              <View style={s.infoBox}>
+                <Text style={s.infoText}>
+                  💡 단어를 완전히 외웠다면 <Text style={{ color: colors.success }}>✓ 마스터</Text> 버튼으로 목록에서 제거하세요
+                </Text>
+              </View>
+            )
           }
         />
       )}
@@ -194,30 +263,53 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     headerBtns: {
       flexDirection: "row",
-      gap: 8,
+      gap: 6,
       alignItems: "center",
+      flexWrap: "wrap",
+      justifyContent: "flex-end",
+      maxWidth: 200,
+    },
+    hideBtn: {
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 12,
+      paddingHorizontal: 10,
+      paddingVertical: 7,
+    },
+    hideBtnActive: {
+      backgroundColor: "rgba(108,99,255,0.15)",
+      borderColor: colors.primary,
+    },
+    hideBtnText: {
+      fontSize: 11,
+      fontWeight: "700",
+      color: colors.muted,
+    },
+    hideBtnTextActive: {
+      color: colors.primary,
     },
     quizBtn: {
       backgroundColor: colors.error,
       borderRadius: 12,
-      paddingHorizontal: 14,
-      paddingVertical: 9,
+      paddingHorizontal: 12,
+      paddingVertical: 7,
     },
     quizBtnText: {
-      fontSize: 12,
+      fontSize: 11,
       fontWeight: "700",
       color: "#fff",
     },
     clearBtn: {
-      backgroundColor: colors.card,
+      backgroundColor: colors.surface,
       borderWidth: 1,
       borderColor: colors.border,
       borderRadius: 12,
-      paddingHorizontal: 12,
-      paddingVertical: 9,
+      paddingHorizontal: 10,
+      paddingVertical: 7,
     },
     clearBtnText: {
-      fontSize: 12,
+      fontSize: 11,
       fontWeight: "600",
       color: colors.dim,
     },
@@ -255,6 +347,20 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontSize: 12,
       color: colors.muted,
       lineHeight: 18,
+    },
+    hideModeInfoBox: {
+      backgroundColor: "rgba(108,99,255,0.08)",
+      borderWidth: 1,
+      borderColor: "rgba(108,99,255,0.2)",
+      borderRadius: 12,
+      padding: 12,
+      marginBottom: 12,
+    },
+    hideModeInfoText: {
+      fontSize: 12,
+      color: colors.primary,
+      lineHeight: 18,
+      fontWeight: "600",
     },
     wordCard: {
       backgroundColor: colors.surface,
@@ -321,5 +427,18 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     synTagText: {
       fontSize: 11,
       color: colors.primary2 as string,
+    },
+    maskedArea: {
+      backgroundColor: "rgba(108,99,255,0.08)",
+      borderWidth: 1,
+      borderColor: "rgba(108,99,255,0.2)",
+      borderRadius: 8,
+      paddingVertical: 12,
+      alignItems: "center",
+    },
+    maskedText: {
+      fontSize: 12,
+      color: colors.primary,
+      fontWeight: "600",
     },
   });

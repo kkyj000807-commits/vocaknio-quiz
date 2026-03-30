@@ -459,6 +459,40 @@ export default function SettingsScreen() {
             </View>
           )}
 
+          {/* 학습 데이터 관리 */}
+          <View style={s.section}>
+            <Text style={s.sectionTitle}>학습 데이터 관리</Text>
+            <View style={s.card}>
+              <Text style={[s.syncDesc, { marginBottom: 12 }]}>
+                플래시카드에서 ⭐ 마스터한 단어 목록을 초기화합니다.{"\n"}모르는 단어 위주로 다시 학습하려면 리셋하세요.
+              </Text>
+              <TouchableOpacity
+                style={[s.syncBtn, { backgroundColor: "rgba(251,191,36,0.12)", borderColor: "rgba(251,191,36,0.35)", flex: 1, width: "100%" }]}
+                onPress={async () => {
+                  Alert.alert(
+                    "마스터 목록 초기화",
+                    "플래시카드에서 마스터 처리한 단어 목록을 모두 초기화합니다. 계속하시겠습니까?",
+                    [
+                      { text: "취소", style: "cancel" },
+                      {
+                        text: "초기화",
+                        style: "destructive",
+                        onPress: async () => {
+                          const { clearMastered } = await import("@/lib/store");
+                          await clearMastered();
+                          Alert.alert("완료", "마스터 목록이 초기화되었습니다.");
+                        },
+                      },
+                    ]
+                  );
+                }}
+                activeOpacity={0.75}
+              >
+                <Text style={[s.syncBtnText, { color: "#F59E0B" }]}>⭐ 마스터 목록 초기화</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
           {/* 앱 정보 */}
           <View style={s.section}>
             <Text style={s.sectionTitle}>앱 정보</Text>

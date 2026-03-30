@@ -33,6 +33,13 @@ import {
 
 type FilterYear = "all" | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 | 2026;
 type FilterType = "all" | "vocab" | "reading" | "logic";
+type FilterSchool = "all" | "한양대" | "성균관대";
+
+const SCHOOL_OPTIONS: { id: FilterSchool; label: string; icon: string }[] = [
+  { id: "all",    label: "전체",    icon: "🏫" },
+  { id: "한양대",  label: "한양대",  icon: "🔵" },
+  { id: "성균관대", label: "성균관대", icon: "🟣" },
+];
 
 const YEAR_OPTIONS: { id: FilterYear; label: string }[] = [
   { id: "all", label: "전체" },
@@ -397,17 +404,19 @@ export default function ExamScreen() {
   const colors = useColors();
   const [yearFilter, setYearFilter] = useState<FilterYear>("all");
   const [typeFilter, setTypeFilter] = useState<FilterType>("all");
+  const [schoolFilter, setSchoolFilter] = useState<FilterSchool>("all");
   const [quizQuestions, setQuizQuestions] = useState<ExamQuestion[] | null>(null);
   const [result, setResult] = useState<{ correct: number; total: number } | null>(null);
 
   const filteredQuestions = useMemo(() => {
     let qs = examQuestions;
+    if (schoolFilter !== "all") qs = qs.filter((q) => q.school === schoolFilter);
     if (yearFilter !== "all") qs = qs.filter((q) => q.year === yearFilter);
     if (typeFilter === "vocab") qs = qs.filter((q) => isVocab(q.type));
     else if (typeFilter === "reading") qs = qs.filter((q) => isReading(q.type));
     else if (typeFilter === "logic") qs = qs.filter((q) => isLogic(q.type));
     return qs;
-  }, [yearFilter, typeFilter]);
+  }, [yearFilter, typeFilter, schoolFilter]);
 
   const handleStart = useCallback(() => {
     if (filteredQuestions.length === 0) return;
@@ -463,7 +472,25 @@ export default function ExamScreen() {
         {/* 헤더 */}
         <View style={s.header}>
           <Text style={s.headerTitle}>기출 퀴즈</Text>
-          <Text style={s.headerSub}>한양대 편입 {examQuestions.length}문항 · 2020~2026</Text>
+          <Text style={s.headerSub}>편입 기출 {examQuestions.length}문항 · 한양대·성균관대 · 2020~2026</Text>
+        </View>
+
+        {/* 학교 필터 */}
+        <View style={s.section}>
+          <Text style={s.sectionLabel}>학교</Text>
+          <View style={s.chipRow}>
+            {SCHOOL_OPTIONS.map((opt) => (
+              <Pressable
+                key={opt.id}
+                style={[s.chip, schoolFilter === opt.id && s.chipActive]}
+                onPress={() => setSchoolFilter(opt.id)}
+              >
+                <Text style={[s.chipText, schoolFilter === opt.id && s.chipTextActive]}>
+                  {opt.icon} {opt.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
         </View>
 
         {/* 연도 필터 */}

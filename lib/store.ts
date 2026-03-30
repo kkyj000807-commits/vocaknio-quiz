@@ -183,6 +183,43 @@ export async function recordOneAnswer(
   }
 }
 
+// ─── Mastered Words (플래시카드 마스터 제외) ─────────────────────────────────────
+
+const MASTERED_KEY = "vocaknio_mastered";
+
+/**
+ * 마스터 처리된 단어 num 목록을 불러옵니다.
+ */
+export async function loadMastered(): Promise<number[]> {
+  try {
+    const raw = await AsyncStorage.getItem(MASTERED_KEY);
+    if (raw) return JSON.parse(raw) as number[];
+  } catch {}
+  return [];
+}
+
+/**
+ * 단어를 마스터 목록에 추가합니다.
+ */
+export async function addMastered(num: number): Promise<number[]> {
+  const existing = await loadMastered();
+  if (existing.includes(num)) return existing;
+  const updated = [...existing, num];
+  try {
+    await AsyncStorage.setItem(MASTERED_KEY, JSON.stringify(updated));
+  } catch {}
+  return updated;
+}
+
+/**
+ * 마스터 목록 전체를 초기화합니다 (리셋).
+ */
+export async function clearMastered(): Promise<void> {
+  try {
+    await AsyncStorage.setItem(MASTERED_KEY, JSON.stringify([]));
+  } catch {}
+}
+
 // ─── Quiz Settings ────────────────────────────────────────────────────────────────
 
 export type ChoiceLang = "korean" | "english";

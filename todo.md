@@ -168,3 +168,25 @@
 - [x] settings.tsx 카드 내부 배경 하드코딩 제거 (ScreenContainer bg-background 추가)
 - [x] 모든 탭 화면 StyleSheet 하드코딩 색상 전면 점검 및 수정 (모두 colors 토큰 사용 중)
 - [x] 기출 퀴즈 밑줄 다어/문장 색상 가시성 개선 (HighlightText 컴포넌트 - 유형별 색상+밑줄 하이라이트)
+
+## 오개념 오답 방지 (선지 생성 로직 개선)
+- [ ] vocab.ts VocabEntry에 wrongPool 필드 추가 (오답 선지 블랙리스트)
+- [ ] 선지 생성 로직: wrongPool에 있는 단어는 오답 선지에서 제외
+- [ ] 오개념 유발 가능성 높은 주요 단어들 wrongPool 데이터 작성 (bloated 등 다의어/비유어)
+
+## 기출 PDF 추가 + 오개념 오답 방지
+- [x] 성균관대 2022 기출 문제 exam-questions.ts 추가 (7문제)
+- [x] 성균관대 2021 기출 문제 exam-questions.ts 추가 (3문제)
+- [x] 한양대 기출 문제 exam-questions.ts 추가 (2문제)
+- [x] exam.tsx 학교 필터 UI 추가 (한양대/성균관대 선택)
+- [ ] vocab.ts VocabEntry wrongPool 필드 추가 + getKorDistractors 필터링 로직 개선
+- [ ] 오개념 유발 주요 단어 wrongPool 데이터 작성 (bloated 등 다의어/비유어)
+
+## 오답 선지 반의어 우선 + 선지 한글뜻 표시
+- [x] vocab.json VocabEntry에 antonym(반의어) 필드 추가 + 379개 단어 반의어 데이터 생성
+- [x] lib/vocab.ts 선지 생성 로직 - 반의어를 오답 선지로 우선 사용
+- [x] quiz.tsx - 정답 확인 후 모든 선지에 한글 뜻 표시 (영어 선지에도 한글뜻 병기)
+- [x] 오답노트(wrong.tsx) 플래시카드 가리기 기능 추가 (👁 가리기 버튼 + 카드 탭 개별 공개)
+- [x] 플래시카드 마스터 제외 기능 - 마스터 버튼 누른 단어는 목록에서 제외 (AsyncStorage 영구 저장)
+- [x] store.ts 마스터 목록 저장/로드/리셋 함수 추가
+- [x] settings.tsx 마스터 목록 리셋 버튼 추가

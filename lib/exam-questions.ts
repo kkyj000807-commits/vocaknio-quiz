@@ -15,6 +15,7 @@ export type QuestionType =
 
 export interface ExamQuestion {
   id: string;
+  school?: string;        // 학교명 (한양대, 성균관대 등)
   year: number;
   qNum: number;
   type: QuestionType;
@@ -1305,4 +1306,270 @@ export function shuffleChoices(question: ExamQuestion): ExamQuestion {
     choices: shuffled.map((c) => c.choice),
     answer: shuffled.findIndex((c) => c.isAnswer),
   };
+}
+
+// ─────────────────────────────────────────────
+// 성균관대 2022 기출 문제
+// ─────────────────────────────────────────────
+const skku2022Questions: ExamQuestion[] = [
+  {
+    id: "skku2022-33",
+    school: "성균관대",
+    year: 2022,
+    qNum: 33,
+    type: "reading-vocab",
+    passage: `When Colorado's legislators debated gun control earlier this year the Centennial Gun store, a firearms wonderland in the Denver suburbs, became a "complete zoo", says Paul Stanley, one of its managers. Gun fans who feared for their Second Amendment rights cleared a shop wall of assault rifles. Suburban types who had never owned a gun flocked to the shop because "they didn't want the government telling them what to do." Ladies' night at the firing range was Ⓐbooked solid.
+
+In the end the Democratic-run legislature passed several gun laws, including a necessary tightening of background checks and a ban on magazines that hold more than 15 rounds. That, in a libertarian-minded western state, generated more recoil than an antique Enfield. Outraged gun-lovers gathered signatures to recall four legislators who had backed Ⓑthe new laws. Two of the bids, against John Morse, the president of the state Senate, in Colorado Springs and Angela Giron in Pueblo, were successful, and on September 10th voters in those districts will be asked if they want to boot their state senators from office.`,
+    question: `The underlined Ⓐ"booked solid" means that the firing range was '__________'.`,
+    underlined: "booked solid",
+    choices: [
+      "built firmly",
+      "fully surrounded",
+      "completely filled out",
+      "delicately designed",
+      "well protected",
+    ],
+    answer: 2,
+    explanation: `"booked solid"는 '완전히 예약이 찼다'는 뜻이다. 사격 훈련장의 레이디스 나이트가 완전히 예약이 찼다(completely filled out)는 의미이므로 ③이 정답이다. 'booked'는 '예약된', 'solid'는 '완전히, 빈틈없이'를 의미한다.`,
+    points: 2,
+  },
+  {
+    id: "skku2022-34",
+    school: "성균관대",
+    year: 2022,
+    qNum: 34,
+    type: "reading-vocab",
+    passage: `When Colorado's legislators debated gun control earlier this year the Centennial Gun store, a firearms wonderland in the Denver suburbs, became a "complete zoo", says Paul Stanley, one of its managers. Gun fans who feared for their Second Amendment rights cleared a shop wall of assault rifles. Suburban types who had never owned a gun flocked to the shop because "they didn't want the government telling them what to do." Ladies' night at the firing range was Ⓐbooked solid.
+
+In the end the Democratic-run legislature passed several gun laws, including a necessary tightening of background checks and a ban on magazines that hold more than 15 rounds. That, in a libertarian-minded western state, generated more recoil than an antique Enfield. Outraged gun-lovers gathered signatures to recall four legislators who had backed Ⓑthe new laws. Two of the bids, against John Morse, the president of the state Senate, in Colorado Springs and Angela Giron in Pueblo, were successful, and on September 10th voters in those districts will be asked if they want to boot their state senators from office.`,
+    question: `The underlined Ⓑ"the new laws" state that '__________'.`,
+    underlined: "the new laws",
+    choices: [
+      "the store can't carry the gun with more than 15 bullets",
+      "anybody over 15 can buy a machine gun anywhere in Colorado",
+      "every US citizen has a right to defend themselves with a gun",
+      "you shouldn't carry a gun when you go out in the western states",
+      "the government can tell the people what to do when necessary",
+    ],
+    answer: 0,
+    explanation: `새 법안(the new laws)은 15발 이상 들어가는 탄창 금지를 포함하므로, 15발 이상 탄창이 있는 총기를 판매할 수 없다는 ①이 정답이다. 'more than 15 rounds' → 'more than 15 bullets'로 패러프레이징된 것을 파악해야 한다.`,
+    points: 2,
+  },
+  {
+    id: "skku2022-35",
+    school: "성균관대",
+    year: 2022,
+    qNum: 35,
+    type: "reading-main",
+    passage: `When Colorado's legislators debated gun control earlier this year the Centennial Gun store, a firearms wonderland in the Denver suburbs, became a "complete zoo", says Paul Stanley, one of its managers. Gun fans who feared for their Second Amendment rights cleared a shop wall of assault rifles. Suburban types who had never owned a gun flocked to the shop because "they didn't want the government telling them what to do." Ladies' night at the firing range was booked solid.
+
+In the end the Democratic-run legislature passed several gun laws, including a necessary tightening of background checks and a ban on magazines that hold more than 15 rounds. That, in a libertarian-minded western state, generated more recoil than an antique Enfield. Outraged gun-lovers gathered signatures to recall four legislators who had backed the new laws. Two of the bids, against John Morse, the president of the state Senate, in Colorado Springs and Angela Giron in Pueblo, were successful, and on September 10th voters in those districts will be asked if they want to boot their state senators from office.`,
+    question: "According to the above passage, John Morse, the state senator, might be recalled because he __________.",
+    choices: [
+      "abused his power for his own interest",
+      "fought for the Second Amendment rights",
+      "didn't get the voters' support",
+      "passed the laws that control the use of gun",
+      "is supposed to retire pretty soon",
+    ],
+    answer: 3,
+    explanation: `존 모스 상원의원은 총기 규제 법안(the new laws)을 지지했기 때문에 총기 소유자들의 서명 운동으로 소환(recall) 위기에 처했다. 따라서 ④ '총기 사용을 규제하는 법안을 통과시켰기 때문에'가 정답이다.`,
+    points: 2,
+  },
+  {
+    id: "skku2022-44",
+    school: "성균관대",
+    year: 2022,
+    qNum: 44,
+    type: "reading-vocab",
+    passage: `Very little such bandying, though, is done by professional biologists. One lion biologist gave me a pointed response to the idea: "Bunkum." He and many others who study imperiled species and beleaguered ecosystems view cloning as irrelevant to their main concerns. Worse, it might be a costly distraction – diverting money, diverting energy, allowing the public to feel some bogus reassurance that all mistakes and choices are reversible and that any lost species can be re-created using biological engineering. The reality is that when a species becomes endangered its troubles are generally twofold: not enough habitat and, as the population drops, not enough diversity left in its shrunken gene pool. What can cloning contribute toward easing these troubles? As for habitat, nothing. As for genetic diversity, little or nothing – except under very particular circumstances. Cloning is copying, and you don't increase diversity by making copies.`,
+    question: `The meaning of the underlined "[Bunkum]" is '__________'.`,
+    underlined: "Bunkum",
+    choices: [
+      "miracle",
+      "nonsense",
+      "belief",
+      "concern",
+      "money",
+    ],
+    answer: 1,
+    explanation: `"Bunkum"은 '허튼소리, 헛소리(nonsense)'를 의미하는 구어체 표현이다. 생물학자가 복제 기술이 멸종 위기 종 보호에 도움이 된다는 아이디어에 대해 단호하게 "Bunkum"이라고 반응한 것은 그 아이디어가 말도 안 된다는 뜻이다. 문맥상 'bogus reassurance(가짜 안심)'와 연결된다.`,
+    points: 2,
+  },
+  {
+    id: "skku2022-45",
+    school: "성균관대",
+    year: 2022,
+    qNum: 45,
+    type: "reading-main",
+    passage: `Very little such bandying, though, is done by professional biologists. One lion biologist gave me a pointed response to the idea: "Bunkum." He and many others who study imperiled species and beleaguered ecosystems view cloning as irrelevant to their main concerns. Worse, it might be a costly distraction – diverting money, diverting energy, allowing the public to feel some bogus reassurance that all mistakes and choices are reversible and that any lost species can be re-created using biological engineering. The reality is that when a species becomes endangered its troubles are generally twofold: not enough habitat and, as the population drops, not enough diversity left in its shrunken gene pool. What can cloning contribute toward easing these troubles? As for habitat, nothing. As for genetic diversity, little or nothing – except under very particular circumstances. Cloning is copying, and you don't increase diversity by making copies.`,
+    question: "The author argues that cloning _________.",
+    choices: [
+      "can solve the problem of habitat loss for endangered species",
+      "is an effective tool for increasing genetic diversity",
+      "provides real solutions to the main conservation challenges",
+      "is largely irrelevant to the core problems of endangered species",
+      "has been proven successful by professional biologists",
+    ],
+    answer: 3,
+    explanation: `필자는 복제 기술이 멸종 위기 종의 핵심 문제(서식지 부족, 유전적 다양성 부족)를 해결하는 데 거의 도움이 되지 않는다고 주장한다. "As for habitat, nothing. As for genetic diversity, little or nothing"이 핵심 근거이므로 ④가 정답이다.`,
+    points: 2,
+  },
+  {
+    id: "skku2022-25",
+    school: "성균관대",
+    year: 2022,
+    qNum: 25,
+    type: "reading-main",
+    passage: `Why are the apples in the local markets in Washington State so small and old-looking? The dried-up stems look like some of them might have been pulled out of cold storage from last year's harvest. Recently, friends who gather apples brought some they had just picked, and those apples were at least four times the size of what's being sold here. Where do these big, delicious apples go? Are they shipped to Europe or the eastern US? Or can they be purchased here in Seattle?`,
+    question: "As a consumer, the narrator would feel __________.",
+    choices: [
+      "satisfied",
+      "cautious",
+      "irate",
+      "distracted",
+      "indifferent",
+    ],
+    answer: 2,
+    explanation: `필자는 워싱턴 주 현지 시장의 사과가 작고 오래되어 보인다며 불만을 표하고, 방금 수확한 큰 사과들은 어디로 가는지 의문을 제기하고 있다. 따라서 소비자로서 '성난, 화가 난(irate)' 상태임을 알 수 있다. ① 만족한 ② 조심스러운 ④ 산만해진 ⑤ 무관심한`,
+    points: 2,
+  },
+  {
+    id: "skku2022-26",
+    school: "성균관대",
+    year: 2022,
+    qNum: 26,
+    type: "reading-main",
+    passage: `There was no room at the inn anywhere. Finally, I trudged back to the station square, to the VVV office, the main tourist office, where I thought it might be possible to find a room. I went inside and up the stairs into a hall that reminded me of Ellis Island. Weary tourists were straggly queued in eight lines with at least 30 people in each. VVV staff were sending people to Haarlem, Delft, Rotterdam, The Hague – anywhere, because there wasn't a hotel room of any price left in Amsterdam. It was only April. What would July be like? They'd have to start sending people to Iceland. A large sign on the wall said: "No tickets for the Van Gogh Museum. Sold out." That mattered too. One of the reasons I had come here was to see the exhibition.`,
+    question: "The writer of the following has a(n) __________ attitude.",
+    choices: [
+      "uncertain",
+      "optimistic",
+      "tranquil",
+      "hopeful",
+      "despondent",
+    ],
+    answer: 4,
+    explanation: `필자는 암스테르담에서 묵을 방도 없고, 반 고흐 박물관 티켓도 매진되어 낙담한 상황이다. 따라서 ⑤ 'despondent(낙담한, 의기소침한)'가 정답이다. ① 확신이 없는 ② 낙관적인 ③ 고요한 ④ 희망에 찬`,
+    points: 2,
+  },
+];
+
+// ─────────────────────────────────────────────
+// 한양대 기출 문제 (어휘 동의어)
+// ─────────────────────────────────────────────
+const hanyang2022Questions: ExamQuestion[] = [
+  {
+    id: "hyu2022-21",
+    school: "한양대",
+    year: 2022,
+    qNum: 21,
+    type: "reading-vocab",
+    passage: `The mid-nineteenth century had seen the introduction of the first haute couture salons, elite institutions that only very rarely sold pret-a-porter (ready-to-wear) garments. The twentieth century introduced a change, and much stiffer competition, with designers making pret-a-porter available directly from their salons. The type of clothing produced by Chanel lent itself well to this approach, being significantly simpler, freer, and more suited to the postwar woman who increasingly worked and led an independent lifestyle. Her innovative use of jersey (previously used almost exclusively for menswear, particularly underwear) was an inspired move that promoted easy-to-wear garments and an emphasis on sportswear for women. The majority of her clothing was devoid of fuss, with straight simple lines and a classic elegance that did not require the use of restrictive corsetry.`,
+    question: `밑줄 친 "[introduced]"의 뜻과 가장 가까운 것은?`,
+    underlined: "introduced",
+    choices: [
+      "evaded",
+      "extended",
+      "heralded",
+      "suspended",
+      "eliminated",
+    ],
+    answer: 2,
+    explanation: `문맥에서 "The twentieth century introduced a change"는 '20세기가 변화를 가져왔다/예고했다'는 의미이다. 'introduce'는 여기서 '(새로운 것을) 도입하다, 예고하다'는 뜻으로 쓰였으며, 이와 가장 가까운 것은 ③ 'heralded(예고했다, 알렸다)'이다. evaded=회피했다, extended=연장했다, suspended=중단했다, eliminated=제거했다.`,
+    points: 2,
+  },
+  {
+    id: "hyu2022-37",
+    school: "한양대",
+    year: 2022,
+    qNum: 37,
+    type: "reading-vocab",
+    passage: `Truth has been a subject of much debate amongst practitioners, particularly the issue of what criteria could guarantee the truth of any proposition. The concept of truth had to be based on something itself known to be true beyond all possible doubt in order to provide that guarantee. Some philosophers began to claim that no such criteria would ever be found, that instead we were trapped in a web of philosophical debates with truth itself too, in which case the issue becomes far murkier than it first appears. The concept of post-truth, where objective facts are less influential in shaping public opinion than appeals to emotion and personal belief, has become increasingly relevant in contemporary discourse.`,
+    question: `밑줄 친 "[obdurate]"의 의미로 가장 적절한 것은?`,
+    underlined: "obdurate",
+    choices: [
+      "displaying keen insight",
+      "difficult to understand or solve",
+      "characterized by wiliness and trickery",
+      "resistant to persuasion or softening influences",
+      "giving a deceptive impression of easiness or simplicity",
+    ],
+    answer: 3,
+    explanation: `"obdurate"는 '완고한, 고집스러운, 설득에 굴하지 않는'의 뜻이다. 따라서 ④ 'resistant to persuasion or softening influences(설득이나 완화 영향에 저항하는)'가 정답이다. 편입 시험에서 자주 출제되는 어휘로, 동의어로는 stubborn, intransigent, inflexible 등이 있다.`,
+    points: 2,
+  },
+];
+
+// ─────────────────────────────────────────────
+// 성균관대 2021 기출 문제
+// ─────────────────────────────────────────────
+const skku2021Questions: ExamQuestion[] = [
+  {
+    id: "skku2021-22",
+    school: "성균관대",
+    year: 2021,
+    qNum: 22,
+    type: "grammar",
+    passage: `Despite the record-shattering success of BTS, radio has generally been reluctant to rotate Korean pop music. Becker of Alpha Media says his radio company is working hard on where and how it will make that change. "People often dismiss it because it's not primarily in English," he says. "The challenge I raise again is, if last year's most-played song was 'Despacito,' why can't we play more songs without them being in English?" Nevertheless, as Super Junior's K-pop/Latin crossover success proves, America is not the only target for the genre. "Listeners are really starting to expect us to be globally aware," says Whittle. "As programmers, we've become more aware of the fact that the world has gotten so much [larger] than it used to be."`,
+    question: "윗글의 밑줄 친 부분 중 문맥상 낱말의 쓰임이 적절하지 않은 것은?",
+    underlined: "larger",
+    choices: [
+      "record-shattering",
+      "reluctant",
+      "primarily",
+      "crossover",
+      "larger → smaller",
+    ],
+    answer: 4,
+    explanation: `"세상이 예전보다 훨씬 더 넓어졌다"는 의미가 되어야 하는데, 문맥상 '전 세계적으로 보이기를 기대한다'는 내용이므로 세상이 더 '좁아졌다(smaller)'고 해야 자연스럽다. 즉, 세계화로 인해 세상이 더 가까워지고 좁아졌다는 의미이므로 'larger'를 'smaller'로 바꿔야 한다.`,
+    points: 2,
+  },
+  {
+    id: "skku2021-23",
+    school: "성균관대",
+    year: 2021,
+    qNum: 23,
+    type: "reading-main",
+    passage: `I love the location of my new house. For one thing, the neighbourhood is safe, so I enjoy walking at night. Also, most people in my neighbourhood don't lock their doors at night. My new house is so large that I should probably buy more furniture. In addition, the neighbourhood is conveniently located. Many stores and restaurants are nearby. Within a few miles there are also libraries, health and fitness centres. Best of all, I like the people who live in this neighbourhood. They are friendly and want to keep our community safe and clean.`,
+    question: "윗글의 내용과 일치하지 않는 것은?",
+    choices: [
+      "The neighbourhood is safe enough to walk at night.",
+      "People in the neighbourhood don't lock their doors at night.",
+      "The house is large but lacks enough furniture.",
+      "There are many stores and restaurants nearby.",
+      "The neighbourhood is far from libraries and fitness centres.",
+    ],
+    answer: 4,
+    explanation: `본문에서 "Within a few miles there are also libraries, health and fitness centres"라고 했으므로, 도서관과 피트니스 센터가 멀리 있다는 ⑤는 내용과 일치하지 않는다. 몇 마일 이내에 있다고 했으므로 가깝다는 것이 맞다.`,
+    points: 2,
+  },
+  {
+    id: "skku2021-25",
+    school: "성균관대",
+    year: 2021,
+    qNum: 25,
+    type: "reading-main",
+    passage: `My second mate was a round-cheeked, silent young man, grave beyond his years, I thought; but as our eyes met I detected a slight quiver on his lips. I was not the ship's captain. But I looked down at the moment because it was not my business to encourage sneering on board ship. I had been appointed to the command only two weeks before. I did not know much of the hands forward. And I felt that it was fitting, in my new position, to keep some distance from the people I commanded.`,
+    question: "As a captain, the narrator feels __________.",
+    choices: [
+      "disappointed",
+      "circumspect",
+      "angry",
+      "distracted",
+      "indifferent",
+    ],
+    answer: 1,
+    explanation: `선장으로 임명된 지 2주밖에 안 된 화자는 선원들과 거리를 두는 것이 적절하다고 느끼며, 비웃음을 조장하지 않으려 한다. 이는 '조심스럽고 신중한(circumspect)' 태도이다. ① 실망한 ③ 화난 ④ 산만해진 ⑤ 무관심한`,
+    points: 2,
+  },
+];
+
+// 전체 배열에 추가
+examQuestions.push(...skku2022Questions, ...hanyang2022Questions, ...skku2021Questions);
+
+// 학교별 필터링
+export function getQuestionsBySchool(school: string): ExamQuestion[] {
+  return examQuestions.filter((q) => q.school === school);
 }

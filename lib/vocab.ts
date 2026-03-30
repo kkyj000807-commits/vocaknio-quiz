@@ -9,7 +9,11 @@ export interface VocabItem {
   p: string;     // IPA pronunciation
   category?: string; // semantic category
   type?: 'word' | 'idiom' | 'phrase'; // entry type
+  antonym?: string[]; // antonyms (반의어) - 오답 선지 우선 사용
 }
+
+// antonym -> 해당 반의어를 가진 단어(w)들의 집합 (역방향 인덱스)
+const ANTONYM_TO_WORDS: Map<string, Set<string>> = new Map();
 
 export const VOCAB: VocabItem[] = vocabRaw as VocabItem[];
 
@@ -36,6 +40,37 @@ for (const item of VOCAB) {
 const WORD_TO_SYNS: Map<string, Set<string>> = new Map();
 for (const item of VOCAB) {
   WORD_TO_SYNS.set(item.w, new Set(item.s));
+}
+
+// antonym 역방향 인덱스 빌드
+for (const item of VOCAB) {
+  if (!item.antonym) continue;
+  for (const ant of item.antonym) {
+    if (!ANTONYM_TO_WORDS.has(ant)) ANTONYM_TO_WORDS.set(ant, new Set());
+    ANTONYM_TO_WORDS.get(ant)!.add(item.w);
+  }
+}
+
+/**
+ * 특정 단어의 반의어 목록을 반환한다.
+ * vocab.json의 antonym 필드 + 역방향 인덱스(다른 단어의 antonym에 이 단어가 포함된 경우) 합산.
+ */
+export function getAntonyms(item: VocabItem): string[] {
+  const result = new Set<string>(item.antonym ?? []);
+  // 다른 단어들의 antonym에 이 단어(w)가 포함되어 있으면, 그 단어의 antonym들도 반의어
+  const reverseAnts = ANTONYM_TO_WORDS.get(item.w);
+  if (reverseAnts) {
+    for (const antWord of reverseAnts) {
+      const antItem = VOCAB.find(v => v.w === antWord);
+      if (antItem?.antonym) {
+        for (const a of antItem.antonym) result.add(a);
+      }
+    }
+  }
+  // 자기 자신과 자신의 동의어는 제외
+  result.delete(item.w);
+  for (const s of item.s) result.delete(s);
+  return Array.from(result);
 }
 
 /**
@@ -118,6 +153,7 @@ export function shuffle<T>(arr: T[]): T[] {
  * 동의어 고르기 모드용 오답 보기 생성
  *
  * 개선점:
+ * - 반의어(antonym)를 오답 선지로 우선 사용 → 편입 시험 사고 훈련에 적합
  * - getForbiddenSyns()로 의미적으로 겹치는 동의어 전체를 금지
  * - 오답 보기가 부족할 경우 fallback으로 단순 단어(w) 목록에서 보충
  */
@@ -127,21 +163,32 @@ export function getSynDistractors(
   count = 3
 ): string[] {
   const forbidden = getForbiddenSyns(target);
-  // correctSyn 자체도 금지 (정답이므로)
   forbidden.add(correctSyn);
 
   const distractors: string[] = [];
-  const pool = shuffle(ALL_SYNONYMS);
 
-  for (const syn of pool) {
-    if (!forbidden.has(syn)) {
-      distractors.push(syn);
-      forbidden.add(syn); // 보기 내 중복 방지
+  // 1순위: 반의어를 오답 선지로 우선 사용
+  const antonyms = shuffle(getAntonyms(target));
+  for (const ant of antonyms) {
+    if (!forbidden.has(ant) && distractors.length < count) {
+      distractors.push(ant);
+      forbidden.add(ant);
     }
-    if (distractors.length >= count) break;
   }
 
-  // 풀이 부족한 극단적 케이스: 단어 자체(w)로 보충
+  // 2순위: 반의어가 부족하면 일반 동의어 풀에서 보충
+  if (distractors.length < count) {
+    const pool = shuffle(ALL_SYNONYMS);
+    for (const syn of pool) {
+      if (!forbidden.has(syn)) {
+        distractors.push(syn);
+        forbidden.add(syn);
+      }
+      if (distractors.length >= count) break;
+    }
+  }
+
+  // 3순위: 풀이 부족한 극단적 케이스 - 단어 자체(w)로 보충
   if (distractors.length < count) {
     const wordPool = shuffle(VOCAB.map((v) => v.w));
     for (const w of wordPool) {
