@@ -16,7 +16,11 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
   withSequence,
+  runOnJS,
+  interpolate,
+  Extrapolation,
 } from "react-native-reanimated";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { FlipCard } from "@/components/flip-card";
@@ -152,8 +156,16 @@ export default function QuizScreen() {
   const [hintLevel, setHintLevel] = useState(0);
 
   const cardScale = useSharedValue(1);
+  // 카드 슬라이드 전환용 shared values
+  const cardTranslateX = useSharedValue(0);
+  const cardOpacity = useSharedValue(1);
+
   const cardAnimStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: cardScale.value }],
+    transform: [
+      { scale: cardScale.value },
+      { translateX: cardTranslateX.value },
+    ],
+    opacity: cardOpacity.value,
   }));
 
   useEffect(() => {
@@ -176,6 +188,20 @@ export default function QuizScreen() {
       withTiming(1, { duration: 120 })
     );
   }, [cardScale]);
+
+  // 카드 슬라이드 전환 애니메이션 (다음 문제로 이동 시)
+  const slideToNext = useCallback((onComplete: () => void) => {
+    // 현재 카드를 왼쪽으로 슬라이드 아웃
+    cardTranslateX.value = withTiming(-60, { duration: 180 });
+    cardOpacity.value = withTiming(0, { duration: 180 }, () => {
+      // 오른쪽에서 새 카드 진입
+      cardTranslateX.value = 60;
+      cardOpacity.value = 0;
+      runOnJS(onComplete)();
+      cardTranslateX.value = withTiming(0, { duration: 220 });
+      cardOpacity.value = withTiming(1, { duration: 220 });
+    });
+  }, [cardTranslateX, cardOpacity]);
 
   const q = questions[currentIdx];
   const isBookmarked = q ? bookmarks.includes(q.item.num) : false;
@@ -297,8 +323,6 @@ export default function QuizScreen() {
     haptic("light");
     if (currentIdx + 1 >= questions.length) {
       const finalWrongNums = wrongItems.map((w) => w.num);
-      // 통계/오답노트는 이미 문제별로 저장됨 — 결과 화면 이동만 수행
-      // (중복 집계 방지를 위해 updateStatsAfterQuiz 호출 제거)
       router.replace({
         pathname: "/result",
         params: {
@@ -309,16 +333,29 @@ export default function QuizScreen() {
       });
       return;
     }
-    setCurrentIdx((i) => i + 1);
-    setAnswered(false);
-    setSelectedChoice(null);
-    setSkipped(false);
-    setRevealed(false);
-    setFlashGrade(null);
-    setTypedAnswer("");
-    setTypeResult(null);
-    setHintLevel(0);
-  }, [currentIdx, questions.length, correctCount, wrongItems, haptic, router]);
+    // 슬라이드 애니메이션 후 다음 문제로 전환
+    slideToNext(() => {
+      setCurrentIdx((i) => i + 1);
+      setAnswered(false);
+      setSelectedChoice(null);
+      setSkipped(false);
+      setRevealed(false);
+      setFlashGrade(null);
+      setTypedAnswer("");
+      setTypeResult(null);
+      setHintLevel(0);
+    });
+  }, [currentIdx, questions.length, correctCount, wrongItems, haptic, router, slideToNext]);
+
+  // 스와이프 제스처 — 정답 확인 후 왼쪽 스와이프로 다음 문제
+  const swipeGesture = Gesture.Pan()
+    .activeOffsetX([-20, 20])
+    .failOffsetY([-15, 15])
+    .onEnd((e) => {
+      if (answered && e.translationX < -50) {
+        runOnJS(handleNext)();
+      }
+    });
 
   const s = styles(colors);
   const pct = Math.round((currentIdx / questions.length) * 100);
@@ -361,6 +398,7 @@ export default function QuizScreen() {
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
+        <GestureDetector gesture={swipeGesture}>
         <ScrollView
           style={{ flex: 1 }}
           contentContainerStyle={{ paddingBottom: 32 }}
@@ -628,6 +666,7 @@ export default function QuizScreen() {
             )}
           </Animated.View>
         </ScrollView>
+        </GestureDetector>
       </KeyboardAvoidingView>
     </ScreenContainer>
   );

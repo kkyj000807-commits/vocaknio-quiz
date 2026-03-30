@@ -15,7 +15,9 @@ import Animated, {
   FadeIn,
   FadeOut,
   SlideInRight,
+  runOnJS,
 } from "react-native-reanimated";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
@@ -195,9 +197,27 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
   const [correct, setCorrect] = useState(0);
 
   const cardScale = useSharedValue(1);
+  const cardTranslateX = useSharedValue(0);
+  const cardOpacity = useSharedValue(1);
   const cardAnim = useAnimatedStyle(() => ({
-    transform: [{ scale: cardScale.value }],
+    transform: [
+      { scale: cardScale.value },
+      { translateX: cardTranslateX.value },
+    ],
+    opacity: cardOpacity.value,
   }));
+
+  // 카드 슬라이드 전환 애니메이션
+  const slideToNext = useCallback((onComplete: () => void) => {
+    cardTranslateX.value = withTiming(-60, { duration: 180 });
+    cardOpacity.value = withTiming(0, { duration: 180 }, () => {
+      cardTranslateX.value = 60;
+      cardOpacity.value = 0;
+      runOnJS(onComplete)();
+      cardTranslateX.value = withTiming(0, { duration: 220 });
+      cardOpacity.value = withTiming(1, { duration: 220 });
+    });
+  }, [cardTranslateX, cardOpacity]);
 
   const q = useMemo(() => shuffleChoices(questions[idx]), [questions, idx]);
 
@@ -237,16 +257,29 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
       onFinish(correct, questions.length);
       return;
     }
-    setIdx((i) => i + 1);
-    setAnswered(false);
-    setSelected(null);
-  }, [idx, questions.length, correct, selected, q.answer, haptic, onFinish]);
+    slideToNext(() => {
+      setIdx((i) => i + 1);
+      setAnswered(false);
+      setSelected(null);
+    });
+  }, [idx, questions.length, correct, haptic, onFinish, slideToNext]);
+
+  // 스와이프 제스처 — 정답 확인 후 왼쪽 스와이프로 다음 문제
+  const swipeGesture = Gesture.Pan()
+    .activeOffsetX([-20, 20])
+    .failOffsetY([-15, 15])
+    .onEnd((e) => {
+      if (answered && e.translationX < -50) {
+        runOnJS(handleNext)();
+      }
+    });
 
   const s = styles(colors);
   const pct = Math.round((idx / questions.length) * 100);
   const typeColor = getTypeColor(q.type, colors);
 
   return (
+    <GestureDetector gesture={swipeGesture}>
     <ScrollView
       style={{ flex: 1 }}
       contentContainerStyle={{ paddingBottom: 40 }}
@@ -266,7 +299,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
       </View>
 
       {/* 문제 카드 */}
-      <Animated.View style={[s.card, cardAnim]} entering={SlideInRight.duration(250)}>
+      <Animated.View style={[s.card, cardAnim]}>
         {/* 유형 배지 */}
         <View style={[s.typeBadge, { backgroundColor: typeColor + "22", borderColor: typeColor + "55" }]}>
           <Text style={[s.typeBadgeText, { color: typeColor }]}>
@@ -366,10 +399,11 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
         )}
       </Animated.View>
     </ScrollView>
+    </GestureDetector>
   );
 }
 
-// ─── 결과 컴포넌트 ────────────────────────────────────────────────────────────
+// ─── 메인 화면 컴포넌트───────────────────────────────────────────────────────────
 interface ResultViewProps {
   correct: number;
   total: number;

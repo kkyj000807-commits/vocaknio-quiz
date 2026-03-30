@@ -10,7 +10,7 @@ import {
   Platform,
   TouchableOpacity,
 } from "react-native";
-import Animated, { FadeIn, useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated";
+import Animated, { FadeIn, useSharedValue, useAnimatedStyle, withTiming, runOnJS } from "react-native-reanimated";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { VOCAB, VocabItem } from "@/lib/vocab";
@@ -246,6 +246,28 @@ export default function WordbookScreen() {
   const [isShuffled, setIsShuffled] = useState(false);
   const [maskMode, setMaskMode] = useState(false);
 
+  // 리스트 전환 애니메이션
+  const listTranslateX = useSharedValue(0);
+  const listOpacity = useSharedValue(1);
+  const listAnimStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: listTranslateX.value }],
+    opacity: listOpacity.value,
+    flex: 1,
+  }));
+
+  const slideList = useCallback((direction: 'left' | 'right', onComplete: () => void) => {
+    const outX = direction === 'left' ? -40 : 40;
+    const inX = direction === 'left' ? 40 : -40;
+    listTranslateX.value = withTiming(outX, { duration: 160 });
+    listOpacity.value = withTiming(0, { duration: 160 }, () => {
+      listTranslateX.value = inX;
+      listOpacity.value = 0;
+      runOnJS(onComplete)();
+      listTranslateX.value = withTiming(0, { duration: 200 });
+      listOpacity.value = withTiming(1, { duration: 200 });
+    });
+  }, [listTranslateX, listOpacity]);
+
   useEffect(() => {
     loadBookmarks().then((arr) => setBookmarks(new Set(arr)));
   }, []);
@@ -428,10 +450,13 @@ export default function WordbookScreen() {
                 },
               ]}
               onPress={() => {
-                setSelectedRange(index);
+                if (index === selectedRange) return;
                 if (Platform.OS !== "web") {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 }
+                // 카테고리 번호가 올라가면 오른쪽에서, 내려가면 왼쪽에서 진입
+                const direction = index > selectedRange ? 'left' : 'right';
+                slideList(direction, () => setSelectedRange(index));
               }}
             >
               <Text
@@ -462,25 +487,27 @@ export default function WordbookScreen() {
       </View>
 
       {/* 단어 목록 */}
-      <FlatList
-        data={filteredVocab}
-        keyExtractor={keyExtractor}
-        renderItem={renderItem}
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-        initialNumToRender={20}
-        maxToRenderPerBatch={20}
-        windowSize={10}
-        removeClippedSubviews={Platform.OS !== "web"}
-        ListEmptyComponent={
-          <View style={styles.emptyBox}>
-            <Text style={styles.emptyIcon}>📭</Text>
-            <Text style={[styles.emptyText, { color: colors.muted }]}>
-              {searchQuery ? "검색 결과가 없습니다" : "단어가 없습니다"}
-            </Text>
-          </View>
-        }
-      />
+      <Animated.View style={listAnimStyle}>
+        <FlatList
+          data={filteredVocab}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+          initialNumToRender={20}
+          maxToRenderPerBatch={20}
+          windowSize={10}
+          removeClippedSubviews={Platform.OS !== "web"}
+          ListEmptyComponent={
+            <View style={styles.emptyBox}>
+              <Text style={styles.emptyIcon}>📭</Text>
+              <Text style={[styles.emptyText, { color: colors.muted }]}>
+                {searchQuery ? "검색 결과가 없습니다" : "단어가 없습니다"}
+              </Text>
+            </View>
+          }
+        />
+      </Animated.View>
     </ScreenContainer>
   );
 }

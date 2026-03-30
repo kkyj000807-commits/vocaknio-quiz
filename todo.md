@@ -190,3 +190,9 @@
 - [x] 플래시카드 마스터 제외 기능 - 마스터 버튼 누른 단어는 목록에서 제외 (AsyncStorage 영구 저장)
 - [x] store.ts 마스터 목록 저장/로드/리셋 함수 추가
 - [x] settings.tsx 마스터 목록 리셋 버튼 추가
+
+## 사용자 편의성 개선 (2026-03-30)
+- [x] quiz.tsx 카드 전환 애니메이션 (translateX + opacity, cubic-bezier)
+- [x] quiz.tsx 스와이프 제스처로 다음 문제 이동 (GestureDetector + PanGesture)
+- [x] exam.tsx 문제 전환 애니메이션 + 스와이프 제스처
+- [x] 범위/카테고리 전환 시 슬라이드 방향 의미 부여 (올라가면 오른쪽, 내려가면 왼쪽)
