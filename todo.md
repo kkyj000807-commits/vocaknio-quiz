@@ -211,6 +211,6 @@
 - [x] stats.tsx 통계 화면에 학습 시간 UI 카드 추가 (오늘/이번 주/누적)
 
 ## 로고 교체 (2026-03-30)
-- [ ] VOCA NEXUS 로고를 앱 아이콘 규격(정사각형)으로 생성
-- [ ] assets/images/icon.png, splash-icon.png, favicon.png, android-icon-foreground.png 교체
-- [ ] app.config.ts appName, logoUrl 업데이트
+- [x] VOCA NEXUS 로고를 앱 아이콘 규격(정사각형)으로 생성
+- [x] assets/images/icon.png, splash-icon.png, favicon.png, android-icon-foreground.png 교체
+- [x] app.config.ts appName(VOCA NEXUS), logoUrl 업데이트
