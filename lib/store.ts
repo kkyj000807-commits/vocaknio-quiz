@@ -247,3 +247,108 @@ export async function saveQuizSettings(settings: QuizSettings): Promise<void> {
     await AsyncStorage.setItem(QUIZ_SETTINGS_KEY, JSON.stringify(settings));
   } catch {}
 }
+
+// ─── Study Time (순공부 시간) ─────────────────────────────────────────────────
+
+const STUDY_TIME_KEY = "vocaknio_study_time";
+
+export interface StudyTimeData {
+  /** 오늘 날짜 (YYYY-MM-DD) */
+  todayDate: string;
+  /** 오늘 학습 시간 (초) */
+  todaySeconds: number;
+  /** 이번 주 학습 시간 (초) — ISO 주차 기준 */
+  weekSeconds: number;
+  /** 이번 주 번호 (YYYY-Www) */
+  weekKey: string;
+  /** 누적 학습 시간 (초) */
+  totalSeconds: number;
+  /** 날짜별 학습 시간 기록 { "YYYY-MM-DD": seconds } — 최근 30일 */
+  dailyLog: Record<string, number>;
+}
+
+function getTodayKey(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function getWeekKey(date = new Date()): string {
+  // ISO 주차: 월요일 기준
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+  const yearStart = new Date(d.getFullYear(), 0, 1);
+  const weekNo = Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+  return `${d.getFullYear()}-W${String(weekNo).padStart(2, "0")}`;
+}
+
+export async function loadStudyTime(): Promise<StudyTimeData> {
+  try {
+    const raw = await AsyncStorage.getItem(STUDY_TIME_KEY);
+    if (raw) return JSON.parse(raw) as StudyTimeData;
+  } catch {}
+  return {
+    todayDate: "",
+    todaySeconds: 0,
+    weekSeconds: 0,
+    weekKey: "",
+    totalSeconds: 0,
+    dailyLog: {},
+  };
+}
+
+export async function saveStudyTime(data: StudyTimeData): Promise<void> {
+  try {
+    await AsyncStorage.setItem(STUDY_TIME_KEY, JSON.stringify(data));
+  } catch {}
+}
+
+/**
+ * 학습 시간(초)을 누적합니다.
+ * - 오늘/이번 주가 바뀌면 자동으로 리셋 후 누적
+ * - dailyLog는 최근 30일만 유지
+ */
+export async function addStudySeconds(seconds: number): Promise<StudyTimeData> {
+  if (seconds <= 0) return loadStudyTime();
+
+  const data = await loadStudyTime();
+  const today = getTodayKey();
+  const weekKey = getWeekKey();
+
+  // 날짜 리셋
+  if (data.todayDate !== today) {
+    data.todaySeconds = 0;
+    data.todayDate = today;
+  }
+
+  // 주차 리셋
+  if (data.weekKey !== weekKey) {
+    data.weekSeconds = 0;
+    data.weekKey = weekKey;
+  }
+
+  data.todaySeconds += seconds;
+  data.weekSeconds += seconds;
+  data.totalSeconds += seconds;
+
+  // dailyLog 업데이트
+  data.dailyLog[today] = (data.dailyLog[today] ?? 0) + seconds;
+
+  // 최근 30일만 유지
+  const keys = Object.keys(data.dailyLog).sort();
+  if (keys.length > 30) {
+    keys.slice(0, keys.length - 30).forEach((k) => delete data.dailyLog[k]);
+  }
+
+  await saveStudyTime(data);
+  return data;
+}
+
+/** 초를 "X시간 Y분" 또는 "Y분" 형식으로 변환 */
+export function formatStudyTime(seconds: number): string {
+  if (seconds < 60) return `${seconds}초`;
+  const mins = Math.floor(seconds / 60);
+  const hours = Math.floor(mins / 60);
+  const remainMins = mins % 60;
+  if (hours > 0) return remainMins > 0 ? `${hours}시간 ${remainMins}분` : `${hours}시간`;
+  return `${mins}분`;
+}

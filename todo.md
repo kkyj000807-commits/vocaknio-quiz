@@ -203,3 +203,14 @@
 ## 편입 빈출 뜻 기준 동의어 개선 (2026-03-30)
 - [x] resort to: 핵심 의미(수단으로 이용하다) 동의어 우선 배치, k_short 수정
 - [x] 유사 패턴(다의어) 단어들 편입 빈출 뜻 기준 동의어 재구성 (account for, stand for, make up for, give way to, lead to, result in, make for, object to)
+
+## 순공부 시간 트래킹 (2026-03-30)
+- [x] store.ts에 학습 시간 저장/로드/누적 함수 추가 (오늘/주간/누적)
+- [x] useStudyTimer 훅: 앱 포커스/블러 기반 순공부 시간 측정
+- [x] _layout.tsx에 useStudyTimer 전역 연결
+- [x] stats.tsx 통계 화면에 학습 시간 UI 카드 추가 (오늘/이번 주/누적)
+
+## 로고 교체 (2026-03-30)
+- [ ] VOCA NEXUS 로고를 앱 아이콘 규격(정사각형)으로 생성
+- [ ] assets/images/icon.png, splash-icon.png, favicon.png, android-icon-foreground.png 교체
+- [ ] app.config.ts appName, logoUrl 업데이트

@@ -9,16 +9,18 @@ import {
 import { useFocusEffect } from "expo-router";
 
 import { ScreenContainer } from "@/components/screen-container";
-import { loadStats, type StatsData } from "@/lib/store";
+import { loadStats, type StatsData, loadStudyTime, type StudyTimeData, formatStudyTime } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
 
 export default function StatsScreen() {
   const colors = useColors();
   const [stats, setStats] = useState<StatsData | null>(null);
+  const [studyTime, setStudyTime] = useState<StudyTimeData | null>(null);
 
   useFocusEffect(
     useCallback(() => {
       loadStats().then(setStats);
+      loadStudyTime().then(setStudyTime);
     }, [])
   );
 
@@ -81,6 +83,34 @@ export default function StatsScreen() {
               {stats?.todayAnswered ?? 0}
             </Text>
             <Text style={s.statCardLabel}>오늘 풀이</Text>
+          </View>
+        </View>
+
+        {/* 학습 시간 섹션 */}
+        <View style={s.timeSection}>
+          <Text style={s.sectionTitle}>⏱ 순공부 시간</Text>
+          <View style={s.timeGrid}>
+            <View style={s.timeCard}>
+              <Text style={s.timeEmoji}>📅</Text>
+              <Text style={[s.timeNum, { color: colors.primary }]}>
+                {formatStudyTime(studyTime?.todaySeconds ?? 0)}
+              </Text>
+              <Text style={s.timeLabel}>오늘</Text>
+            </View>
+            <View style={[s.timeCard, s.timeCardMid]}>
+              <Text style={s.timeEmoji}>📆</Text>
+              <Text style={[s.timeNum, { color: colors.success }]}>
+                {formatStudyTime(studyTime?.weekSeconds ?? 0)}
+              </Text>
+              <Text style={s.timeLabel}>이번 주</Text>
+            </View>
+            <View style={s.timeCard}>
+              <Text style={s.timeEmoji}>🏅</Text>
+              <Text style={[s.timeNum, { color: colors.warning }]}>
+                {formatStudyTime(studyTime?.totalSeconds ?? 0)}
+              </Text>
+              <Text style={s.timeLabel}>누적</Text>
+            </View>
           </View>
         </View>
 
@@ -240,5 +270,47 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontSize: 13,
       color: colors.muted,
       lineHeight: 20,
+    },
+    // 학습 시간 섹션
+    timeSection: {
+      marginHorizontal: 16,
+      marginTop: 8,
+      marginBottom: 10,
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 16,
+      padding: 20,
+    },
+    timeGrid: {
+      flexDirection: "row" as const,
+      gap: 0,
+    },
+    timeCard: {
+      flex: 1,
+      alignItems: "center" as const,
+      paddingVertical: 8,
+    },
+    timeCardMid: {
+      borderLeftWidth: 1,
+      borderRightWidth: 1,
+      borderColor: colors.border,
+    },
+    timeEmoji: {
+      fontSize: 22,
+      marginBottom: 6,
+    },
+    timeNum: {
+      fontSize: 18,
+      fontWeight: "700" as const,
+      fontVariant: ["tabular-nums"] as any,
+      textAlign: "center" as const,
+    },
+    timeLabel: {
+      fontSize: 11,
+      color: colors.dim,
+      marginTop: 4,
+      textTransform: "uppercase" as const,
+      letterSpacing: 0.5,
     },
   });
