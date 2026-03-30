@@ -26178,9 +26178,15 @@
   {
     "num": 2349,
     "w": "account for",
-    "k": "설명하다; (비율) 차지하다; 유발하다, 일으키다",
-    "k_short": "설명하다; (비율) 차지하다; 유발하다, 일으키다",
-    "s": [],
+    "k": "설명하다; (비율을) 차지하다; 유발하다",
+    "k_short": "설명하다; (비율을) 차지하다",
+    "s": [
+      "explain",
+      "constitute",
+      "make up",
+      "be responsible for",
+      "give a reason for"
+    ],
     "p": "/əˈkaʊnt/",
     "category": "언어·표현"
   },
@@ -42776,9 +42782,15 @@
   {
     "num": 3859,
     "w": "make up for",
-    "k": "~를벌충하다, 만회하다; ~에대해보상(배상)하다",
-    "k_short": "~를벌충하다, 만회하다; ~에대해보상(배상)하다",
-    "s": [],
+    "k": "~를 벌충하다, 만회하다; ~에 대해 보상하다",
+    "k_short": "벌충하다, 보상하다",
+    "s": [
+      "compensate for",
+      "atone for",
+      "offset",
+      "redress",
+      "indemnify"
+    ],
     "p": "/meɪk/",
     "category": "창조·생산·건설"
   },
@@ -43390,9 +43402,15 @@
   {
     "num": 3916,
     "w": "give way to",
-    "k": "~로바뀌다(대체되다); 항복, 굴복하다",
-    "k_short": "~로바뀌다(대체되다); 항복, 굴복하다",
-    "s": [],
+    "k": "~로 바뀌다(대체되다); 항복·굴복하다",
+    "k_short": "굴복하다; ~로 대체되다",
+    "s": [
+      "yield to",
+      "surrender to",
+      "succumb to",
+      "be replaced by",
+      "give in to"
+    ],
     "p": "/gɪv/",
     "category": "변화·전환"
   },
@@ -54585,9 +54603,15 @@
   {
     "num": 4959,
     "w": "stand for",
-    "k": "~를나타내다, 상징(의미)하다",
-    "k_short": "~를나타내다, 상징(의미)하다",
-    "s": [],
+    "k": "~를 나타내다, 상징하다; ~을 지지하다; ~을 용납하다",
+    "k_short": "나타내다, 상징하다",
+    "s": [
+      "represent",
+      "symbolize",
+      "signify",
+      "denote",
+      "advocate"
+    ],
     "p": "/stænd/",
     "category": "종교·철학·사상"
   },
@@ -64238,9 +64262,15 @@
   {
     "num": 5854,
     "w": "lead to",
-    "k": "(~한결과로) 이어지다, (~한결과를) 가져오다, 초래하다, 유발하다",
-    "k_short": "(~한결과로) 이어지다, (~한결과를) 가져오다, 초래하다, 유발하다",
-    "s": [],
+    "k": "(결과로) 이어지다, 초래하다, 유발하다",
+    "k_short": "초래하다, 유발하다",
+    "s": [
+      "result in",
+      "bring about",
+      "cause",
+      "give rise to",
+      "produce"
+    ],
     "p": "/lɛd/",
     "category": "관계·연결·영향"
   },
@@ -64258,9 +64288,14 @@
   {
     "num": 5856,
     "w": "resort (to)",
-    "k": "(보통달갑지않은수단에) 의지. 의존, 호소하다",
-    "k_short": "(보통달갑지않은수단에) 의지. 의존, 호소하다",
-    "s": [],
+    "k": "(보통 달갑지 않은 수단에) 의지·의존하다, 호소하다",
+    "k_short": "(수단으로) 의지하다, 호소하다",
+    "s": [
+      "recur to",
+      "fall back on",
+      "turn to",
+      "avail oneself of"
+    ],
     "p": "/rɪˈzɔrt/",
     "category": "관계·연결·영향"
   },
@@ -85222,9 +85257,13 @@
   {
     "num": 7836,
     "w": "resort",
-    "k": "의지. 의존, 호소하다",
-    "k_short": "의지. 의존, 호소하다",
-    "s": [],
+    "k": "(수단으로) 의지하다, 호소하다",
+    "k_short": "(수단으로) 의지하다, 호소하다",
+    "s": [
+      "recur to",
+      "fall back on",
+      "turn to"
+    ],
     "p": "",
     "category": "기타",
     "type": "word"
@@ -88978,10 +89017,13 @@
   {
     "num": 8154,
     "w": "make for",
-    "k": "~으로 향하다",
-    "k_short": "~으로 향하다",
+    "k": "~으로 향하다; ~에 기여하다, ~에 도움이 되다",
+    "k_short": "~으로 향하다; ~에 기여하다",
     "s": [
-      "move towards"
+      "move towards",
+      "head for",
+      "contribute to",
+      "be conducive to"
     ],
     "p": "",
     "category": "숙어·표현",
@@ -89246,10 +89288,14 @@
   {
     "num": 8176,
     "w": "object to",
-    "k": "~에 반대하다",
+    "k": "~에 반대하다, ~을 이의 제기하다",
     "k_short": "~에 반대하다",
     "s": [
-      "be opposed to"
+      "be opposed to",
+      "protest against",
+      "take exception to",
+      "disapprove of",
+      "demur at"
     ],
     "p": "",
     "category": "숙어·표현",
@@ -89783,11 +89829,14 @@
   {
     "num": 8220,
     "w": "resort to",
-    "k": "자주 드나들다, 호소하다",
-    "k_short": "자주 드나들다, 호소하다",
+    "k": "(최후의 수단으로) ~을 이용하다, ~에 호소하다",
+    "k_short": "(수단으로) 이용하다, 호소하다",
     "s": [
-      "go frequently",
-      "adopt as means"
+      "recur to",
+      "fall back on",
+      "turn to",
+      "adopt as means",
+      "avail oneself of"
     ],
     "p": "",
     "category": "숙어·표현",
@@ -89808,10 +89857,14 @@
   {
     "num": 8222,
     "w": "result in",
-    "k": "결국~이 되다",
-    "k_short": "결국~이 되다",
+    "k": "결국 ~이 되다, ~을 초래하다",
+    "k_short": "초래하다, ~이 되다",
     "s": [
-      "bring about"
+      "lead to",
+      "bring about",
+      "cause",
+      "give rise to",
+      "end in"
     ],
     "p": "",
     "category": "숙어·표현",

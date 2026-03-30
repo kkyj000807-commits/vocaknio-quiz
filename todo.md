@@ -199,3 +199,7 @@
 
 ## 데이터 오타 수정 (2026-03-30)
 - [x] vocab.json 한글/특수문자 혼입 단어 전체 탐색 및 수정 (8개: fus판sy→fussy, sel저l→sell, en제dow→endow 등)
+
+## 편입 빈출 뜻 기준 동의어 개선 (2026-03-30)
+- [x] resort to: 핵심 의미(수단으로 이용하다) 동의어 우선 배치, k_short 수정
+- [x] 유사 패턴(다의어) 단어들 편입 빈출 뜻 기준 동의어 재구성 (account for, stand for, make up for, give way to, lead to, result in, make for, object to)
