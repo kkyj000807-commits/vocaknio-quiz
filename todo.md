@@ -196,3 +196,6 @@
 - [x] quiz.tsx 스와이프 제스처로 다음 문제 이동 (GestureDetector + PanGesture)
 - [x] exam.tsx 문제 전환 애니메이션 + 스와이프 제스처
 - [x] 범위/카테고리 전환 시 슬라이드 방향 의미 부여 (올라가면 오른쪽, 내려가면 왼쪽)
+
+## 데이터 오타 수정 (2026-03-30)
+- [x] vocab.json 한글/특수문자 혼입 단어 전체 탐색 및 수정 (8개: fus판sy→fussy, sel저l→sell, en제dow→endow 등)
