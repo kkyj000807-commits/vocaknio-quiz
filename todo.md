@@ -214,3 +214,6 @@
 - [x] VOCA NEXUS 로고를 앱 아이콘 규격(정사각형)으로 생성
 - [x] assets/images/icon.png, splash-icon.png, favicon.png, android-icon-foreground.png 교체
 - [x] app.config.ts appName(VOCA NEXUS), logoUrl 업데이트
+
+## 사전식 검색 우선순위 정렬 (2026-03-30)
+- [x] wordbook.tsx 검색 로직을 철자 시작 일치 → 단어 포함 → 뜻/동의어 포함 3단계 우선순위로 개선

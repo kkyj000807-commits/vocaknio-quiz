@@ -295,13 +295,42 @@ export default function WordbookScreen() {
 
     if (searchQuery.trim()) {
       const q = searchQuery.trim().toLowerCase();
-      list = list.filter(
-        (v) =>
-          v.w.toLowerCase().includes(q) ||
-          v.k.toLowerCase().includes(q) ||
-          v.k_short.toLowerCase().includes(q) ||
-          v.s.some((s) => s.toLowerCase().includes(q))
-      );
+
+      // ── 3단계 우선순위 정렬 ────────────────────────────────────────────
+      // 0: 단어(w)가 q로 시작  ← 가장 높은 우선순위 (사전식 자동완성)
+      // 1: 단어(w) 중간에 q 포함
+      // 2: 뜻(k/k_short) 또는 동의어(s)에 q 포함
+      // 해당 없으면 결과에서 제외
+      type Scored = { item: VocabItem; score: number };
+      const scored: Scored[] = [];
+
+      for (const v of list) {
+        const wLow = v.w.toLowerCase();
+        const kLow = v.k.toLowerCase();
+        const ksLow = v.k_short.toLowerCase();
+        const synMatch = v.s.some((s) => s.toLowerCase().includes(q));
+
+        if (wLow.startsWith(q)) {
+          // 같은 score 0 안에서도 알파벳 순 유지를 위해 소수점 활용
+          scored.push({ item: v, score: 0 });
+        } else if (wLow.includes(q)) {
+          scored.push({ item: v, score: 1 });
+        } else if (kLow.includes(q) || ksLow.includes(q) || synMatch) {
+          scored.push({ item: v, score: 2 });
+        }
+        // 매칭 없으면 제외
+      }
+
+      // score 오름차순 → 같은 score 내에서는 단어 알파벳 순
+      scored.sort((a, b) => {
+        if (a.score !== b.score) return a.score - b.score;
+        // score 0,1: 단어 알파벳 순
+        if (a.score < 2) return a.item.w.localeCompare(b.item.w);
+        // score 2: 원래 번호 순 유지
+        return a.item.num - b.item.num;
+      });
+
+      list = scored.map((s) => s.item);
     }
 
     if (isShuffled) {
