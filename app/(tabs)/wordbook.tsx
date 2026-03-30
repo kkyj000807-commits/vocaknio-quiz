@@ -10,13 +10,23 @@ import {
   Platform,
   TouchableOpacity,
 } from "react-native";
-import Animated, { FadeIn, useSharedValue, useAnimatedStyle, withTiming, runOnJS } from "react-native-reanimated";
+import Animated, {
+  FadeIn,
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withSpring,
+  runOnJS,
+  interpolate,
+  Extrapolation,
+} from "react-native-reanimated";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { VOCAB, VocabItem } from "@/lib/vocab";
 import { loadBookmarks, toggleBookmark } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
 import * as Haptics from "expo-haptics";
+import { useAudioPlayer, setAudioModeAsync } from "expo-audio";
 
 const RANGE_OPTIONS = [
   { label: "전체", start: 0, end: VOCAB.length - 1, isIdiom: false },
@@ -48,36 +58,81 @@ function WordCard({
   onToggleBookmark,
   colors,
   maskMode,
+  onPlayHide,
+  onPlayReveal,
 }: {
   item: VocabItem;
   bookmarks: Set<number>;
   onToggleBookmark: (num: number) => void;
   colors: ReturnType<typeof useColors>;
   maskMode: boolean;
+  onPlayHide: () => void;
+  onPlayReveal: () => void;
 }) {
   const [expanded, setExpanded] = useState(false);
-  // 마스크 모드에서 개별 카드의 공개 여부
+  // 전체 가리기 모드에서 개별 공개 여부
   const [revealed, setRevealed] = useState(false);
+  // 개별 가리기 (전체 가리기 모드와 독립)
+  const [indivMasked, setIndivMasked] = useState(false);
   const isBookmarked = bookmarks.has(item.num);
   const s = cardStyles(colors);
 
+  // 개별 가리기 공개 애니메이션 (높이 0 → auto 효과를 opacity+translateY로 구현)
+  const revealAnim = useSharedValue(0); // 0=가려짐, 1=공개
+  const revealStyle = useAnimatedStyle(() => ({
+    opacity: revealAnim.value,
+    transform: [{ translateY: interpolate(revealAnim.value, [0, 1], [-8, 0], Extrapolation.CLAMP) }],
+  }));
+
   // maskMode가 꺼지면 revealed 초기화
   useEffect(() => {
-    if (!maskMode) setRevealed(false);
+    if (!maskMode) {
+      setRevealed(false);
+      revealAnim.value = 0;
+    }
   }, [maskMode]);
 
+  // 전체 가리기 모드에서 탭 → 공개
   const handlePress = useCallback(() => {
     if (maskMode) {
-      // 마스크 모드: 탭으로 뜻 공개/가리기 토글
-      setRevealed((v) => !v);
+      const next = !revealed;
+      setRevealed(next);
+      if (next) {
+        // 공개
+        revealAnim.value = withSpring(1, { damping: 18, stiffness: 200 });
+        runOnJS(onPlayReveal)();
+        if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      } else {
+        // 다시 가리기
+        revealAnim.value = withTiming(0, { duration: 150 });
+        runOnJS(onPlayHide)();
+        if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
     } else {
       // 일반 모드: 동의어 펼치기/접기
       setExpanded((v) => !v);
+      if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
-    if (Platform.OS !== "web") {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    }
-  }, [maskMode]);
+  }, [maskMode, revealed, onPlayReveal, onPlayHide]);
+
+  // 개별 가리기 토글 (전체 가리기 모드와 무관하게 동작)
+  const handleIndivMask = useCallback(
+    (e: any) => {
+      e.stopPropagation?.();
+      const next = !indivMasked;
+      setIndivMasked(next);
+      if (next) {
+        revealAnim.value = withTiming(0, { duration: 150 });
+        runOnJS(onPlayHide)();
+        if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      } else {
+        revealAnim.value = withSpring(1, { damping: 18, stiffness: 200 });
+        runOnJS(onPlayReveal)();
+        if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      }
+    },
+    [indivMasked, onPlayHide, onPlayReveal]
+  );
 
   const handleBookmark = useCallback(
     (e: any) => {
@@ -87,7 +142,17 @@ function WordCard({
     [item.num, onToggleBookmark]
   );
 
-  const isMasked = maskMode && !revealed;
+  // 개별 가리기 초기화 (카드가 처음 마운트될 때 revealAnim 초기화)
+  useEffect(() => {
+    if (!indivMasked) {
+      revealAnim.value = 1; // 기본은 공개 상태
+    }
+  }, []);
+
+  // 전체 가리기 모드일 때: maskMode && !revealed → 가림
+  // 개별 가리기일 때: indivMasked → 가림
+  const isMaskedByAll = maskMode && !revealed;
+  const isHidden = isMaskedByAll || indivMasked;
 
   return (
     <Pressable
@@ -102,40 +167,53 @@ function WordCard({
           <Text style={s.wordText}>{item.w}</Text>
           {item.p ? <Text style={s.ipaText}>{item.p}</Text> : null}
         </View>
+        {/* 개별 가리기 버튼 */}
+        <TouchableOpacity
+          onPress={handleIndivMask}
+          style={[s.bookmarkBtn, { marginRight: 4 }]}
+          hitSlop={8}
+        >
+          <Text style={{ fontSize: 16 }}>{indivMasked ? "🙈" : "👁"}</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={handleBookmark} style={s.bookmarkBtn} hitSlop={8}>
           <Text style={{ fontSize: 18 }}>{isBookmarked ? "🔖" : "🏷️"}</Text>
         </TouchableOpacity>
       </View>
 
-      {/* 한글 뜻 — 마스크 모드에서 가리기 */}
-      {isMasked ? (
-        <View style={s.maskBox}>
-          <Text style={s.maskHintText}>👆 탭하여 뜻 보기</Text>
-        </View>
+      {/* 한글 뜻 — 가려진 상태 */}
+      {isHidden ? (
+        <Pressable
+          onPress={handlePress}
+          style={s.maskBox}
+        >
+          <Text style={s.maskHintText}>
+            {isMaskedByAll ? "👆 탭하여 뜻 보기" : "👁 개별 가리기 중 · 👁 버튼으로 해제"}
+          </Text>
+        </Pressable>
       ) : (
-        <>
+        <Animated.View style={revealStyle}>
           <Text style={s.korText} numberOfLines={maskMode ? undefined : (expanded ? undefined : 2)}>
             {item.k_short}
           </Text>
 
-          {/* 동의어 — 마스크 해제 시 항상 표시, 일반 모드는 expanded일 때만 */}
+          {/* 동의어 */}
           {(maskMode || expanded) && item.s.length > 0 && (
-            <Animated.View entering={FadeIn.duration(180)} style={s.synRow}>
+            <View style={s.synRow}>
               {item.s.map((syn, i) => (
                 <View key={i} style={s.synTag}>
                   <Text style={s.synTagText}>{syn}</Text>
                 </View>
               ))}
-            </Animated.View>
+            </View>
           )}
-        </>
+        </Animated.View>
       )}
 
       {/* 힌트 텍스트 */}
-      {!maskMode && (
+      {!maskMode && !indivMasked && (
         <Text style={s.expandHint}>{expanded ? "▲ 접기" : "▼ 동의어 보기"}</Text>
       )}
-      {maskMode && !isMasked && (
+      {maskMode && !isMaskedByAll && !indivMasked && (
         <Text style={s.expandHint}>👆 탭하여 다시 가리기</Text>
       )}
     </Pressable>
@@ -246,6 +324,28 @@ export default function WordbookScreen() {
   const [isShuffled, setIsShuffled] = useState(false);
   const [maskMode, setMaskMode] = useState(false);
 
+  // ─── 사운드 (개별/전체 가리기 피드백) ─────────────────────────────────────
+  const hidePlayer = useAudioPlayer(require("@/assets/sounds/hide.wav"));
+  const revealPlayer = useAudioPlayer(require("@/assets/sounds/reveal.wav"));
+
+  useEffect(() => {
+    if (Platform.OS !== "web") {
+      setAudioModeAsync({ playsInSilentMode: true }).catch(() => {});
+    }
+  }, []);
+
+  const playHide = useCallback(() => {
+    if (Platform.OS !== "web") {
+      try { hidePlayer.seekTo(0); hidePlayer.play(); } catch {}
+    }
+  }, [hidePlayer]);
+
+  const playReveal = useCallback(() => {
+    if (Platform.OS !== "web") {
+      try { revealPlayer.seekTo(0); revealPlayer.play(); } catch {}
+    }
+  }, [revealPlayer]);
+
   // 리스트 전환 애니메이션
   const listTranslateX = useSharedValue(0);
   const listOpacity = useSharedValue(1);
@@ -324,8 +424,15 @@ export default function WordbookScreen() {
       // score 오름차순 → 같은 score 내에서는 단어 알파벳 순
       scored.sort((a, b) => {
         if (a.score !== b.score) return a.score - b.score;
-        // score 0,1: 단어 알파벳 순
-        if (a.score < 2) return a.item.w.localeCompare(b.item.w);
+        if (a.score === 0) {
+          // score 0: q가 단어에서 나타나는 위치(index)가 작을수록 우선 → 같으면 알파벳 순
+          const idxA = a.item.w.toLowerCase().indexOf(q);
+          const idxB = b.item.w.toLowerCase().indexOf(q);
+          if (idxA !== idxB) return idxA - idxB;
+          return a.item.w.localeCompare(b.item.w);
+        }
+        // score 1: 단어 알파벳 순
+        if (a.score === 1) return a.item.w.localeCompare(b.item.w);
         // score 2: 원래 번호 순 유지
         return a.item.num - b.item.num;
       });
@@ -348,9 +455,11 @@ export default function WordbookScreen() {
         onToggleBookmark={handleToggleBookmark}
         colors={colors}
         maskMode={maskMode}
+        onPlayHide={playHide}
+        onPlayReveal={playReveal}
       />
     ),
-    [bookmarks, handleToggleBookmark, colors, maskMode]
+    [bookmarks, handleToggleBookmark, colors, maskMode, playHide, playReveal]
   );
 
   const keyExtractor = useCallback((item: VocabItem) => String(item.num), []);
@@ -393,7 +502,7 @@ export default function WordbookScreen() {
             onPress={handleMaskToggle}
           >
             <Text style={[styles.headerBtnText, { color: maskMode ? colors.warning : colors.muted }]}>
-              {maskMode ? "👁 가리기 ON" : "👁 가리기"}
+              {maskMode ? "👁 전체 가리기 ON" : "👁 전체 가리기"}
             </Text>
           </TouchableOpacity>
           {/* 셔플 버튼 */}
