@@ -19,7 +19,7 @@ export default function HomeScreen() {
   const colors = useColors();
   const router = useRouter();
   const [selectedMode, setSelectedMode] = useState<QuizMode>("syn-choice");
-  const [selectedRange, setSelectedRange] = useState("0-999");
+  const [selectedRange, setSelectedRange] = useState("d01");
   const [selectedCount, setSelectedCount] = useState(20);
   const [choiceLang, setChoiceLang] = useState<ChoiceLang>("korean");
 
