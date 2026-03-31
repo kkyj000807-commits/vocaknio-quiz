@@ -35,12 +35,17 @@ import {
 
 type FilterYear = "all" | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 | 2026;
 type FilterType = "all" | "vocab" | "reading" | "logic";
-type FilterSchool = "all" | "한양대" | "성균관대";
+type FilterSchool = "all" | "hanyang" | "sungkyunkwan" | "sogang" | "chungang" | "konkuk" | "gachon" | "logic";
 
-const SCHOOL_OPTIONS: { id: FilterSchool; label: string; icon: string }[] = [
-  { id: "all",    label: "전체",    icon: "🏫" },
-  { id: "한양대",  label: "한양대",  icon: "🔵" },
-  { id: "성균관대", label: "성균관대", icon: "🟣" },
+const SCHOOL_OPTIONS: { id: FilterSchool; label: string; icon: string; available: boolean }[] = [
+  { id: "all",          label: "전체",      icon: "🏫", available: true },
+  { id: "hanyang",      label: "한양대",    icon: "🔵", available: true },
+  { id: "sungkyunkwan", label: "성균관대",  icon: "🟡", available: true },
+  { id: "logic",        label: "논리 시리즈", icon: "🟣", available: true },
+  { id: "sogang",       label: "서강대",    icon: "🔴", available: false },
+  { id: "chungang",     label: "중앙대",    icon: "🟢", available: false },
+  { id: "konkuk",       label: "건국대",    icon: "🟠", available: false },
+  { id: "gachon",       label: "가천대",    icon: "⚪", available: false },
 ];
 
 const YEAR_OPTIONS: { id: FilterYear; label: string }[] = [
@@ -506,7 +511,7 @@ export default function ExamScreen() {
         {/* 헤더 */}
         <View style={s.header}>
           <Text style={s.headerTitle}>기출 퀴즈</Text>
-          <Text style={s.headerSub}>편입 기출 {examQuestions.length}문항 · 한양대·성균관대 · 2020~2026</Text>
+          <Text style={s.headerSub}>편입 기출 {examQuestions.length}문항 · 한양·성균관·논리 시리즈 · 2020~2026</Text>
         </View>
 
         {/* 학교 필터 */}
@@ -516,11 +521,19 @@ export default function ExamScreen() {
             {SCHOOL_OPTIONS.map((opt) => (
               <Pressable
                 key={opt.id}
-                style={[s.chip, schoolFilter === opt.id && s.chipActive]}
-                onPress={() => setSchoolFilter(opt.id)}
+                style={[
+                  s.chip,
+                  schoolFilter === opt.id && s.chipActive,
+                  !opt.available && s.chipDisabled,
+                ]}
+                onPress={() => opt.available && setSchoolFilter(opt.id)}
               >
-                <Text style={[s.chipText, schoolFilter === opt.id && s.chipTextActive]}>
-                  {opt.icon} {opt.label}
+                <Text style={[
+                  s.chipText,
+                  schoolFilter === opt.id && s.chipTextActive,
+                  !opt.available && s.chipTextDisabled,
+                ]}>
+                  {opt.icon} {opt.label}{!opt.available ? " (준비중)" : ""}
                 </Text>
               </Pressable>
             ))}
@@ -665,6 +678,13 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     chipTextActive: {
       color: colors.primary as string,
+    },
+    chipDisabled: {
+      opacity: 0.4,
+    },
+    chipTextDisabled: {
+      color: colors.muted as string,
+      fontSize: 11,
     },
     typeGrid: {
       flexDirection: "row",

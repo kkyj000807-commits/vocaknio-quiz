@@ -13,7 +13,7 @@ export const SCHOOLS: SchoolMeta[] = [
   { id: "chungang", label: "중앙대", shortLabel: "중앙", color: "#E74C3C", glowColor: "rgba(231,76,60,0.2)", tier: "중경외시", available: false, years: [], description: "준비 중" },
   { id: "konkuk", label: "건국대", shortLabel: "건국", color: "#27AE60", glowColor: "rgba(39,174,96,0.2)", tier: "건동홍", available: false, years: [], description: "준비 중" },
   { id: "gachon", label: "가천대", shortLabel: "가천", color: "#F39C12", glowColor: "rgba(243,156,18,0.2)", tier: "기타", available: false, years: [], description: "준비 중" },
-  { id: "logic", label: "논리 시리즈", shortLabel: "논리", color: "#4A9EFF", glowColor: "rgba(74,158,255,0.2)", tier: "특수", available: false, years: [], description: "TOP2/TOP3 논리 강의 · 준비 중" },
+  { id: "logic", label: "논리 시리즈", shortLabel: "논리", color: "#A855F7", glowColor: "rgba(168,85,247,0.3)", tier: "특수", available: true, years: [2024], description: "TOP2/TOP3 스타일앤톤 논리완성 165문제 · 학교 공통 출제 유형" },
 ];
 export function getSchool(id: SchoolId): SchoolMeta { return SCHOOLS.find((s) => s.id === id) ?? SCHOOLS[0]; }
 export function getAvailableSchools(): SchoolMeta[] { return SCHOOLS.filter((s) => s.available); }
