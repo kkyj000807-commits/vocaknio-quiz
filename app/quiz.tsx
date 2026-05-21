@@ -159,6 +159,9 @@ export default function QuizScreen() {
   // 카드 슬라이드 전환용 shared values
   const cardTranslateX = useSharedValue(0);
   const cardOpacity = useSharedValue(1);
+  // 정답/오답 플래시 overlay
+  const flashOpacity = useSharedValue(0);
+  const [flashIsCorrect, setFlashIsCorrect] = useState<boolean | null>(null);
 
   const cardAnimStyle = useAnimatedStyle(() => ({
     transform: [
@@ -166,6 +169,10 @@ export default function QuizScreen() {
       { translateX: cardTranslateX.value },
     ],
     opacity: cardOpacity.value,
+  }));
+
+  const flashOverlayStyle = useAnimatedStyle(() => ({
+    opacity: flashOpacity.value,
   }));
 
   useEffect(() => {
@@ -188,6 +195,14 @@ export default function QuizScreen() {
       withTiming(1, { duration: 120 })
     );
   }, [cardScale]);
+
+  const triggerFlash = useCallback((isCorrect: boolean) => {
+    setFlashIsCorrect(isCorrect);
+    flashOpacity.value = withSequence(
+      withTiming(0.28, { duration: 80 }),
+      withTiming(0, { duration: 500 })
+    );
+  }, [flashOpacity]);
 
   // 카드 슬라이드 전환 애니메이션 (다음 문제로 이동 시)
   const slideToNext = useCallback((onComplete: () => void) => {
@@ -231,10 +246,11 @@ export default function QuizScreen() {
         setWrongCount((w) => w + 1);
         setWrongItems((prev) => [...prev, q.item]);
       }
+      triggerFlash(isCorrect);
       // 한 문제 단위 즉시 저장
       recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num);
     },
-    [answered, q, haptic, animateCard]
+    [answered, q, haptic, animateCard, triggerFlash]
   );
 
   // "모르겠다" 패스 — 오답 처리 + 오답 노트 저장
@@ -247,9 +263,10 @@ export default function QuizScreen() {
     setSelectedChoice(null);
     setWrongCount((w) => w + 1);
     setWrongItems((prev) => [...prev, q.item]);
+    triggerFlash(false);
     // 패스도 오답으로 즉시 저장
     recordOneAnswer(false, q.item.num);
-  }, [answered, q, haptic, animateCard]);
+  }, [answered, q, haptic, animateCard, triggerFlash]);
 
   const handleReveal = useCallback(() => {
     haptic("light");
@@ -267,10 +284,11 @@ export default function QuizScreen() {
         setWrongCount((w) => w + 1);
         setWrongItems((prev) => [...prev, q.item]);
       }
+      triggerFlash(grade === "correct");
       // 플래시카드 채점 즉시 저장
       recordOneAnswer(grade === "correct", grade === "correct" ? undefined : q.item.num);
     },
-    [haptic, q]
+    [haptic, q, triggerFlash]
   );
 
   // 플래시카드 마스터 처리 — 이 단어를 마스터 목록에 추가
@@ -434,6 +452,15 @@ export default function QuizScreen() {
 
           {/* Question Card */}
           <Animated.View style={[s.questionCard, cardAnimStyle]}>
+            {/* 정답/오답 플래시 overlay */}
+            <Animated.View
+              pointerEvents="none"
+              style={[s.flashOverlay, flashOverlayStyle, {
+                backgroundColor: flashIsCorrect
+                  ? colors.success
+                  : colors.error,
+              }]}
+            />
             <View style={s.questionHeader}>
               <Text style={s.questionNum}>
                 문제 {currentIdx + 1} · {getModeLabel()}
@@ -735,6 +762,16 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       borderColor: colors.border,
       borderRadius: 20,
       padding: 24,
+      overflow: "hidden",
+    },
+    flashOverlay: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      borderRadius: 20,
+      zIndex: 10,
     },
     questionHeader: {
       flexDirection: "row",

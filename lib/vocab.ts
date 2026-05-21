@@ -10,6 +10,7 @@ export interface VocabItem {
   category?: string; // semantic category
   type?: 'word' | 'idiom' | 'phrase'; // entry type
   antonym?: string[]; // antonyms (반의어) - 오답 선지 우선 사용
+  wrongPool?: string[]; // 오답 선지 블랙리스트 (w값) - 오개념 유발 단어 제외
 }
 
 // antonym -> 해당 반의어를 가진 단어(w)들의 집합 (역방향 인덱스)
@@ -264,6 +265,16 @@ export function getSynDistractors(
   const forbidden = getForbiddenSyns(target);
   forbidden.add(correctSyn);
 
+  // wrongPool 단어들의 동의어도 오답 선지에서 제외
+  if (target.wrongPool && target.wrongPool.length > 0) {
+    for (const wpWord of target.wrongPool) {
+      const wpSyns = WORD_TO_SYNS.get(wpWord);
+      if (wpSyns) {
+        for (const s of wpSyns) forbidden.add(s);
+      }
+    }
+  }
+
   const distractors: string[] = [];
 
   // 1순위: 반의어를 오답 선지로 우선 사용
@@ -388,6 +399,16 @@ export function getKorDistractors(
     }
   }
 
+  // wrongPool 단어들의 k도 오답 선지에서 제외
+  const wrongPoolWords = new Set<string>(target.wrongPool ?? []);
+  for (const wpWord of wrongPoolWords) {
+    const wpItem = VOCAB.find(v => v.w === wpWord);
+    if (wpItem) {
+      if (wpItem.k) forbiddenK.add(wpItem.k);
+      if (wpItem.k_short) forbiddenK.add(wpItem.k_short);
+    }
+  }
+
   const distractors: string[] = [];
   const usedK = new Set<string>(forbiddenK);
   const shuffled = shuffle(pool);
@@ -395,6 +416,7 @@ export function getKorDistractors(
   for (const item of shuffled) {
     if (
       item.w !== target.w &&
+      !wrongPoolWords.has(item.w) &&
       item.k &&
       item.k.length > 2 &&
       !usedK.has(item.k)
