@@ -758,6 +758,408 @@ def build():
     ]))
     story.append(footer)
 
+    # ════════════════════════════════════════════════════════════
+    # PART 2 — 파닉스 규칙
+    # ════════════════════════════════════════════════════════════
+    story.append(PageBreak())
+
+    part2_banner = Table([[Paragraph("PART 2 — 파닉스 규칙", st("p2t", 24, WHITE, align=1)),
+                           ]], colWidths=[CONTENT_W])
+    part2_banner.setStyle(TableStyle([
+        ("BACKGROUND",(0,0),(-1,-1), colors.HexColor("#0D47A1")),
+        ("TOPPADDING",(0,0),(-1,-1), 20),
+        ("BOTTOMPADDING",(0,0),(-1,-1), 20),
+    ]))
+    story.append(part2_banner)
+    sub_banner = Table([[Paragraph(
+        "철자만 보고 발음을 유추하는 규칙 — IPA를 읽기 전에 먼저 소리를 예측해 봐요",
+        st("p2s", 11, WHITE, align=1))]], colWidths=[CONTENT_W])
+    sub_banner.setStyle(TableStyle([
+        ("BACKGROUND",(0,0),(-1,-1), colors.HexColor("#1565C0")),
+        ("TOPPADDING",(0,0),(-1,-1), 8),
+        ("BOTTOMPADDING",(0,0),(-1,-1), 8),
+    ]))
+    story.append(sub_banner)
+    story.append(sp(5))
+
+    # ─── 헬퍼: 비교 카드 (좌/우 두 규칙을 나란히) ─────────────────────
+    def rule_card(label, spell_hint, ipa_sound, kor_sound, examples, bg, border, note=""):
+        """단일 규칙 카드"""
+        top_data = [
+            [Paragraph(label, st("rclbl", 10, border, align=1))],
+            [Paragraph(spell_hint, st("rcsp", 22, border, align=1, leading=26))],
+            [Paragraph(W_IPA(f'{ipa_sound}  →  "{kor_sound}"'),
+                       st("rcipa", 13, NAVY, align=1))],
+        ]
+        top_t = Table(top_data, colWidths=[None])
+        top_t.setStyle(TableStyle([
+            ("BACKGROUND",(0,0),(0,0), bg),
+            ("BACKGROUND",(0,1),(0,1), bg),
+            ("BACKGROUND",(0,2),(0,2), WHITE),
+            ("TOPPADDING",(0,0),(-1,-1), 4),
+            ("BOTTOMPADDING",(0,0),(-1,-1), 4),
+            ("LINEBELOW",(0,1),(0,1), 1.5, border),
+        ]))
+        ex_rows = [[Paragraph(W_IPA(en), st("rce",11,NAVY,align=1)),
+                    Paragraph(f"[{kr}]", st("rck",10,ROSE,align=1))]
+                   for en,kr in examples]
+        ex_t = Table(ex_rows, colWidths=[None,None])
+        ex_t.setStyle(TableStyle([
+            ("ALIGN",(0,0),(-1,-1),"CENTER"),
+            ("TOPPADDING",(0,0),(-1,-1),2),
+            ("BOTTOMPADDING",(0,0),(-1,-1),2),
+        ]))
+        ex_wrap = Table([[ex_t]], colWidths=[None])
+        ex_wrap.setStyle(TableStyle([
+            ("TOPPADDING",(0,0),(-1,-1),4),
+            ("BOTTOMPADDING",(0,0),(-1,-1),4),
+        ]))
+        parts = [top_t, ex_wrap]
+        if note:
+            note_t = Table([[Paragraph(W_IPA(f"* {note}"), st("rcn",8,GREEN,leading=11))]], colWidths=[None])
+            note_t.setStyle(TableStyle([
+                ("BACKGROUND",(0,0),(-1,-1),GREEN_SOFT),
+                ("LEFTPADDING",(0,0),(-1,-1),6),
+                ("TOPPADDING",(0,0),(-1,-1),4),
+                ("BOTTOMPADDING",(0,0),(-1,-1),4),
+            ]))
+            parts.append(note_t)
+        card = Table([[p] for p in parts], colWidths=[None])
+        card.setStyle(TableStyle([
+            ("TOPPADDING",(0,0),(-1,-1),0),
+            ("BOTTOMPADDING",(0,0),(-1,-1),0),
+            ("LEFTPADDING",(0,0),(-1,-1),0),
+            ("RIGHTPADDING",(0,0),(-1,-1),0),
+            ("BOX",(0,0),(-1,-1),1.5,border),
+        ]))
+        return card
+
+    def two_cards(left, right):
+        t = Table([[left, right]], colWidths=[(CONTENT_W-4*mm)/2]*2)
+        t.setStyle(TableStyle([
+            ("VALIGN",(0,0),(-1,-1),"TOP"),
+            ("LEFTPADDING",(0,0),(-1,-1),2),
+            ("RIGHTPADDING",(0,0),(-1,-1),2),
+        ]))
+        return t
+
+    def rule_table(headers, rows, col_widths, accent=NAVY):
+        hdr = [Paragraph(h, S_WHITE_C) for h in headers]
+        data = [hdr] + [[Paragraph(W_IPA(str(c)), st(f"rt{i}{j}",10,GREY_TXT,align=1 if j<len(col_widths)-1 else 0,leading=13))
+                         for j,c in enumerate(row)] for i,row in enumerate(rows)]
+        t = Table(data, colWidths=col_widths)
+        t.setStyle(TableStyle([
+            ("FONTNAME",(0,0),(-1,-1),"KR"),
+            ("BACKGROUND",(0,0),(-1,0), accent),
+            ("ROWBACKGROUNDS",(0,1),(-1,-1),[WHITE, SKY_SOFT]),
+            ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
+            ("TOPPADDING",(0,0),(-1,-1),7),
+            ("BOTTOMPADDING",(0,0),(-1,-1),7),
+            ("BOX",(0,0),(-1,-1),1,accent),
+            ("GRID",(0,1),(-1,-1),0.4,GREY_BORDER),
+        ]))
+        return t
+
+    # ═══════ P2-1. C와 K ═══════
+    story.append(section_header("9", "C 와 K — 둘 다 /k/ 지만 쓰는 규칙이 다름", ""))
+    story.append(sp(3))
+    story.append(info_box(
+        "<b>핵심 규칙:</b> C 다음에 e·i·y 가 오면 /s/, 나머지(a·o·u·자음)는 /k/ &nbsp;&nbsp;"
+        "K 는 항상 /k/ — C가 헷갈릴 때 K를 쓰면 안전!",
+        bg=SKY_SOFT, border=BLUE, icon="◆"))
+    story.append(sp(3))
+
+    c_hard = rule_card("C + a / o / u / 자음",  "C (hard)",  "/k/", "ㅋ",
+        [("cat","캩"),("cold","코울드"),("cup","컾"),("class","클래스")],
+        SKY_SOFT, BLUE, note="자음 앞 C도 /k/ → cry[크라이], club[클럽]")
+    c_soft = rule_card("C + e / i / y",          "C (soft)",  "/s/", "ㅅ",
+        [("cell","쎌"),("city","씨티"),("cycle","싸이클"),("price","프라이스")],
+        ROSE_SOFT, ROSE, note="예외 없음! e·i·y 앞 C는 무조건 /s/")
+    story.append(two_cards(c_hard, c_soft))
+    story.append(sp(3))
+
+    k_card = rule_card("K 는 항상", "K", "/k/", "ㅋ",
+        [("king","킹"),("keep","키ㅡ프"),("skill","스킬"),("break","브레이크")],
+        GREEN_SOFT, GREEN, note="K는 e·i·y 앞에서도 /k/ → key[키ㅡ], kit[킽]")
+    ck_card = rule_card("단모음 뒤 이중 자음", "CK", "/k/", "ㅋ",
+        [("black","블랙"),("lock","락"),("quick","쿠익"),("check","첵")],
+        PEACH_SOFT, colors.HexColor("#E65100"),
+        note="단모음 직후: back/beck/brick/block/buck. 장모음·이중모음 뒤엔 K 단독")
+    story.append(two_cards(k_card, ck_card))
+    story.append(sp(2))
+    story.append(info_box(
+        "<b>QU → /kw/</b> &nbsp; queen[쿠ㅡ인] / quick[쿠익] / quiet[쿠아이엇] &nbsp;&nbsp; "
+        "<b>CH → /tʃ/</b> &nbsp; chair[췌어] / beach[비ㅡ취] &nbsp;&nbsp; "
+        "<b>CH → /k/</b> (그리스어 계열) &nbsp; character[캐릭터] / chemistry[케미스트리]",
+        bg=YELLOW_SOFT, border=YELLOW, icon="◆"))
+
+    story.append(PageBreak())
+
+    # ═══════ P2-2. G ═══════
+    story.append(section_header("10", "G 의 두 가지 발음 — Hard G vs Soft G", ""))
+    story.append(sp(3))
+    story.append(info_box(
+        "<b>핵심 규칙:</b> G 다음에 e·i·y 가 오면 /dʒ/ (soft), 나머지는 /g/ (hard)"
+        " — 단, 예외 단어가 C보다 많으므로 사전 확인 필수!",
+        bg=YELLOW_SOFT, border=YELLOW, icon="★"))
+    story.append(sp(3))
+
+    g_hard = rule_card("G + a / o / u / 자음", "G (hard)", "/g/", "ㄱ",
+        [("gap","갭"),("go","고우"),("gun","건"),("green","그리ㅡ인")],
+        GREEN_SOFT, GREEN)
+    g_soft = rule_card("G + e / i / y (일반적)", "G (soft)", "/dʒ/", "쥐",
+        [("gem","줴음"),("giant","쟈이언트"),("gym","줴임"),("age","에이쥐")],
+        PURPLE_SOFT, PURPLE)
+    story.append(two_cards(g_hard, g_soft))
+    story.append(sp(2))
+
+    story.append(info_box(
+        "<b>G soft 예외 (e·i 앞에서도 /g/ 발음):</b> &nbsp;"
+        "get[겟] / give[기브] / girl[거ㅡㄹ] / begin[비긴] / tiger[타이거] / gear[기어]<br/>"
+        "→ 이 단어들은 외워야 합니다!",
+        bg=ROSE_SOFT, border=ROSE, icon="★"))
+    story.append(sp(2))
+
+    gh_data = [
+        ("gh 묵음",  "-igh / -ight",  "night[나잍], light[라잍], right[롸잍], eight[에잍]"),
+        ("gh 묵음",  "-ough (장모음)", "through[쓰루ㅡ], though[도우], dough[도우]"),
+        ("gh → /f/", "-ough (단모음)", "tough[터프], rough[러프], enough[이너프], laugh[래프]"),
+        ("gh → /f/", "-augh",         "cough[코프], draught[드래프트]"),
+        ("gh → /g/", "어두 gh",        "ghost[고우스트], ghetto[게토우]"),
+    ]
+    story.append(Paragraph("GH 패턴 — 묵음이 가장 많음", st("h2g", 13, BLUE, leading=16)))
+    story.append(sp(1))
+    story.append(rule_table(
+        ["패턴","위치/조건","예시"],
+        gh_data,
+        [28*mm, 35*mm, None],
+        accent=NAVY))
+
+    story.append(PageBreak())
+
+    # ═══════ P2-3. 묵음 자음 ═══════
+    story.append(section_header("11", "묵음 자음 (Silent Consonants)", "철자에 있지만 발음하지 않는 글자들"))
+    story.append(sp(3))
+    story.append(info_box(
+        "영어는 라틴어·프랑스어·그리스어에서 빌려온 단어가 많아 철자와 발음이 다릅니다. "
+        "<b>아래 패턴을 외워두면 처음 보는 단어도 발음을 추측할 수 있어요.</b>",
+        bg=SKY_SOFT, border=BLUE, icon="ⓘ"))
+    story.append(sp(3))
+
+    silent_data = [
+        ("kn-",  "k 묵음",  "knife[나이프]  know[노우]  knock[나크]  knee[니ㅡ]  knight[나잍]"),
+        ("wr-",  "w 묵음",  "write[롸잍]  wrong[롱]  wrap[랩]  wrist[리스트]  wreck[렉]"),
+        ("-mb",  "b 묵음",  "bomb[밤]  climb[클라임]  thumb[썸]  lamb[람]  comb[코움]"),
+        ("-mn",  "n 묵음",  "autumn[어텀]  column[칼럼]  damn[담]  hymn[힘]"),
+        ("-bt/-pt", "b·p 묵음", "debt[뎃]  doubt[다웉]  subtle[서틀]  receipt[리씨ㅡ트]"),
+        ("h-",   "h 묵음",  "hour[아워]  honest[아니스트]  heir[에어]  honor[아너]"),
+        ("-gh",  "gh 묵음", "night[나잍]  daughter[도ㅡ터]  eight[에잍]  high[하이]"),
+        ("-ght", "ght→t",   "thought[쏘ㅡ트]  bought[보ㅡ트]  fight[파잍]  might[마잍]"),
+        ("-l-",  "l 묵음",  "calm[캄]  half[해프]  walk[워ㅡ크]  talk[토ㅡ크]  would[우드]"),
+        ("-w-",  "w 묵음",  "sword[소ㅡ드]  two[투ㅡ]  answer[앤서]  whole[호울]"),
+        ("ps-",  "p 묵음",  "psychology[싸이칼러지]  psalm[쌈]  pneumonia[뉴모우니어]"),
+    ]
+    story.append(rule_table(
+        ["패턴","규칙","예시 단어 + 한글 발음"],
+        silent_data,
+        [18*mm, 22*mm, None],
+        accent=colors.HexColor("#37474F")))
+
+    story.append(PageBreak())
+
+    # ═══════ P2-4. Magic E ═══════
+    story.append(section_header("12", "Magic E 규칙 (CVCe 패턴)", "끝의 e가 앞 모음을 장모음으로 바꿈"))
+    story.append(sp(3))
+    story.append(info_box(
+        "<b>CVCe = 자음(C) + 모음(V) + 자음(C) + 묵음 e</b><br/>"
+        "끝의 e는 발음하지 않지만, 앞의 모음을 '알파벳 이름(장모음)'으로 바꿉니다.",
+        bg=YELLOW_SOFT, border=YELLOW, icon="★"))
+    story.append(sp(3))
+
+    magic_e_data = [
+        ("a_e", "a → /eɪ/", "cap → cape",  "캡 → 케이프",  "man→mane, hat→hate, tap→tape, plan→plane"),
+        ("i_e", "i → /aɪ/", "kit → kite",  "킽 → 카이트",  "bit→bite, pin→pine, rid→ride, slim→slime"),
+        ("o_e", "o → /oʊ/", "hop → hope",  "합 → 호우프",  "not→note, rod→rode, glob→globe, ton→tone"),
+        ("u_e", "u → /juː/", "cut → cute", "컾 → 큐ㅡ트",  "us→use, tub→tube, cub→cube, dun→dune"),
+        ("e_e", "e → /iː/", "pet → Pete", "펫 → 피ㅡ트",  "these[디ㅡ즈], eve[이ㅡ브], scene[씨ㅡ인]"),
+    ]
+    magic_hdr = ["패턴", "변화", "비교", "한글 발음", "추가 예시"]
+    magic_rows = [[d[0], W_IPA(d[1]), d[2], d[3], d[4]] for d in magic_e_data]
+    story.append(rule_table(magic_hdr, magic_rows, [14*mm, 22*mm, 24*mm, 24*mm, None], accent=colors.HexColor("#880E4F")))
+    story.append(sp(2))
+    story.append(info_box(
+        "<b>주의:</b> have[해브] / give[기브] / live[리브] / come[컴] / some[섬] — "
+        "e로 끝나지만 Magic E 규칙이 적용 안 되는 예외 단어들, 그냥 외우세요!",
+        bg=ROSE_SOFT, border=ROSE, icon="★"))
+
+    story.append(PageBreak())
+
+    # ═══════ P2-5. 모음 이중자 ═══════
+    story.append(section_header("13", "모음 이중자 (Vowel Digraphs/Teams)", "두 모음이 붙어 하나의 소리"))
+    story.append(sp(3))
+    story.append(info_box(
+        "<b>'두 모음이 나란히 있으면 첫 번째가 제 이름을 말한다'</b> — 완전한 법칙은 아니지만 "
+        "ai/ay, ee/ea, oa 패턴에선 꽤 잘 맞습니다.",
+        bg=SKY_SOFT, border=BLUE, icon="◆"))
+    story.append(sp(3))
+
+    digraph_data = [
+        ("ai / ay", "/eɪ/", "에이", "rain[레인]  wait[웨잍]  day[데이]  play[플레이]", "ai는 단어 중간, ay는 단어 끝"),
+        ("ee / ea", "/iː/", "이ㅡ", "tree[트리ㅡ]  feed[피ㅡ드]  beat[비ㅡ트]  sea[씨ㅡ]", "ea는 /ɛ/ 예외: bread[브레드], head[헤드]"),
+        ("oa",      "/oʊ/", "오우", "boat[보웉]  road[로우드]  coat[코웉]  soap[쏘웁]",   "oa는 대부분 /oʊ/"),
+        ("oo",      "/uː/ or /ʊ/","우ㅡ/우","food[푸ㅡ드]  moon[무ㅡ인]  book[붘]  good[귿]","food/moon은 길게, book/good은 짧게"),
+        ("oi / oy", "/ɔɪ/", "오이", "oil[오일]  coin[코인]  boy[보이]  toy[토이]",         "oi는 중간, oy는 끝"),
+        ("ou / ow", "/aʊ/", "아우", "out[아웉]  mouth[마우쓰]  cow[카우]  town[타운]",     "ou·ow는 /oʊ/도 됨: soul[쏘울], snow[스노우]"),
+        ("ow",      "/oʊ/", "오우", "snow[스노우]  slow[슬로우]  own[오운]  blow[블로우]", "ou/ow 두 소리 구분은 외워야"),
+        ("ew / ue", "/juː/ or /uː/","유ㅡ/우ㅡ","new[뉴ㅡ]  few[퓨ㅡ]  blue[블루ㅡ]  due[듀ㅡ]","자음 뒤엔 /uː/: brew[브루ㅡ]"),
+        ("au / aw", "/ɔː/", "오ㅡ", "caught[코ㅡ트]  sauce[쏘ㅡ스]  saw[쏘ㅡ]  draw[드로ㅡ]", "au는 중간, aw는 끝에 주로"),
+        ("ie",      "/iː/ or /aɪ/","이ㅡ/아이","believe[빌리ㅡ브]  piece[피ㅡ스]  die[다이]  tie[타이]","단어 중간은 /iː/, 끝은 /aɪ/ 경향"),
+    ]
+    digraph_hdr = ["철자", "IPA", "한글", "예시", "주의"]
+    story.append(rule_table(digraph_hdr, digraph_data, [15*mm, 20*mm, 18*mm, 55*mm, None], accent=BLUE))
+
+    story.append(PageBreak())
+
+    # ═══════ P2-6. 특수 패턴 ═══════
+    story.append(section_header("14", "특수 철자 패턴", "파닉스 예외 — 꼭 알아야 할 덩어리들"))
+    story.append(sp(3))
+
+    special_data = [
+        ("ph",     "/f/",   "포/파/프", "phone[포운]  photo[포우토]  graph[그래프]  alphabet[앨퍼벳]",
+         "그리스어 유래. f 대신 ph 쓰는 학술 단어 많음"),
+        ("-tion",  "/ʃən/", "션",      "nation[네이션]  action[액션]  station[스테이션]  fiction[픽션]",
+         "동사→명사: -tion 붙으면 강세 앞 음절로 이동"),
+        ("-sion",  "/ʒən/ or /ʃən/","전/션","vision[비전]  tension[텐션]  mission[미션]  explosion[익스플로전]",
+         "모음 뒤 -sion → /ʒən/, 자음 뒤 -sion → /ʃən/"),
+        ("-ture",  "/tʃər/","처",      "nature[네이처]  picture[픽처]  future[퓨처]  culture[컬처]",
+         "-ture는 항상 /tʃər/. '쳐' 로 읽으면 됨"),
+        ("-ough",  "여러 소리", "복수", "through[쓰루ㅡ] / though[도우] / thought[쏘ㅡ트] / tough[터프] / cough[코프]",
+         "영어에서 가장 불규칙한 패턴. 단어별로 외워야"),
+        ("-ight",  "/aɪt/", "아잍",   "night[나잍]  light[라잍]  right[롸잍]  fight[파잍]  might[마잍]",
+         "-igh → /aɪ/, t는 발음. -ight = 아이+트"),
+        ("-ought/-aught", "/ɔːt/","오ㅡ트","thought[쏘ㅡ트]  bought[보ㅡ트]  caught[코ㅡ트]  taught[토ㅡ트]",
+         "철자 달라도 소리는 같음. /ɔːt/"),
+        ("wh-",    "/w/ or /h/", "워/ㅎ","where[웨어]  when[웬]  what[왓] | who[후ㅡ]  whole[호울]  whom[후ㅡ임]",
+         "wh + 모음 → /w/. 예외: who/whole/whom은 /h/"),
+        ("-le",    "/əl/",  "얼",     "table[테이벌]  simple[씸펄]  puzzle[퍼즐]  bottle[바틀]",
+         "단어 끝 -le = /əl/. e는 발음 안 함"),
+        ("-ed",    "/t/ /d/ /ɪd/","트/드/이드","jumped[점프트]  played[플레이드]  wanted[완팃]",
+         "무성음→/t/, 유성음→/d/, t/d 뒤→/ɪd/"),
+    ]
+    story.append(rule_table(
+        ["철자","IPA","한글","예시","설명"],
+        special_data,
+        [20*mm, 20*mm, 14*mm, 58*mm, None],
+        accent=colors.HexColor("#4A148C")))
+
+    story.append(PageBreak())
+
+    # ═══════ P2-7. -ed 어미 ═══════
+    story.append(section_header("15", "-ed / -s 어미 발음 규칙", "동사 과거형 · 복수/3인칭단수 어미"))
+    story.append(sp(3))
+
+    story.append(Paragraph("-ed 과거형 어미 — 3가지 발음", st("h2ed", 13, BLUE, leading=16)))
+    story.append(sp(2))
+    ed_data = [
+        ("/t/ — 무성음 뒤", "p·k·f·s·sh·ch·x 뒤", "jumped[점프트]  looked[룩트]  laughed[래프트]  passed[패스트]  watched[와취트]"),
+        ("/d/ — 유성음 뒤", "b·g·v·z·m·n·l·r·모음 뒤", "played[플레이드]  called[코ㅡ일드]  loved[러브드]  opened[오우펀드]"),
+        ("/ɪd/ — t·d 뒤",  "어간 끝이 t 또는 d",     "wanted[완팃]  needed[니ㅡ딧]  started[스타ㅡ팃]  ended[엔딧]"),
+    ]
+    story.append(rule_table(
+        ["발음","조건","예시"],
+        ed_data,
+        [30*mm, 45*mm, None],
+        accent=colors.HexColor("#1B5E20")))
+    story.append(sp(3))
+
+    story.append(Paragraph("-s/-es 복수·3인칭 어미 — 3가지 발음", st("h2s", 13, BLUE, leading=16)))
+    story.append(sp(2))
+    s_data = [
+        ("/s/ — 무성음 뒤",  "p·t·k·f·θ 뒤",    "cats[캩츠]  books[북스]  stops[스탑스]  myths[미쓰스]"),
+        ("/z/ — 유성음 뒤",  "b·d·g·v·m·n·l·r·모음 뒤", "dogs[도그즈]  beds[베즈]  calls[코ㅡ일즈]  plays[플레이즈]"),
+        ("/ɪz/ — 시빌란트 뒤","s·z·sh·zh·ch·dʒ 뒤","buses[버씨즈]  watches[와취즈]  judges[줘쥐즈]  roses[로우지즈]"),
+    ]
+    story.append(rule_table(
+        ["발음","조건","예시"],
+        s_data,
+        [30*mm, 45*mm, None],
+        accent=colors.HexColor("#004D40")))
+    story.append(sp(3))
+
+    story.append(info_box(
+        "<b>한 줄 요약:</b> &nbsp;"
+        "-ed/-s 어미는 직전 소리가 <b>무성→/t/ /s/</b>, <b>유성→/d/ /z/</b>, "
+        "<b>같은 계열(t·d / 시빌란트)→/ɪd/ /ɪz/</b> 로 발음됩니다.",
+        bg=YELLOW_SOFT, border=YELLOW, icon="◆"))
+
+    story.append(PageBreak())
+
+    # ═══════ P2-8. 강모음 약모음·강세 이동 ═══════
+    story.append(section_header("16", "강세 이동 & 파생어 발음 변화", "철자는 같아도 강세 위치에 따라 발음이 바뀜"))
+    story.append(sp(3))
+    story.append(info_box(
+        "영어는 강세 받는 모음이 또렷하고, 강세 없는 모음은 ə(슈와)로 약화됩니다. "
+        "파생어를 만들 때 강세가 이동하면서 발음이 크게 달라지므로 주의하세요.",
+        bg=SKY_SOFT, border=BLUE, icon="◆"))
+    story.append(sp(3))
+
+    stress_shift_data = [
+        ("PHO-to-graph",   "ˈfoʊtəɡræf", "포우터그래프", "PHO-TOG-ra-phy",  "fəˈtɒɡrəfi",  "퍼탁그러피"),
+        ("E-co-no-my",     "iˈkɒnəmi",   "이카너미",     "e-co-NOM-ic",     "ˌiːkəˈnɒmɪk", "이ㅡ커나믹"),
+        ("PO-li-tics",     "ˈpɒlɪtɪks",  "팔리틱스",     "po-LIT-i-cal",    "pəˈlɪtɪkəl",  "펄리티컬"),
+        ("RE-cord (명사)",  "ˈrekərd",    "뤠커드",       "re-CORD (동사)",  "rɪˈkɔːrd",    "리코ㅡ드"),
+        ("PER-mit (명사)", "ˈpɜːrmɪt",   "퍼ㅡ밋",       "per-MIT (동사)",  "pərˈmɪt",      "퍼밋"),
+        ("PRE-sent (명사)","ˈpreznt",     "프레즌트",     "pre-SENT (동사)", "prɪˈzent",     "프리젠트"),
+    ]
+    hdr_ss = [Paragraph(h, S_WHITE_C) for h in ["기본형","IPA","한글","파생형/품사","IPA","한글"]]
+    rows_ss = [hdr_ss]
+    for row in stress_shift_data:
+        rows_ss.append([
+            Paragraph(W_IPA(row[0]), st(f"ss0",11,NAVY,align=1)),
+            Paragraph(W_IPA(row[1]), st(f"ss1",11,ROSE,align=1)),
+            Paragraph(W_IPA(row[2]), st(f"ss2",10,GREY_TXT,align=1)),
+            Paragraph(W_IPA(row[3]), st(f"ss3",11,NAVY,align=1)),
+            Paragraph(W_IPA(row[4]), st(f"ss4",11,ROSE,align=1)),
+            Paragraph(W_IPA(row[5]), st(f"ss5",10,GREY_TXT,align=1)),
+        ])
+    t_ss = Table(rows_ss, colWidths=[30*mm, 28*mm, 22*mm, 30*mm, 28*mm, None])
+    t_ss.setStyle(TableStyle([
+        ("FONTNAME",(0,0),(-1,-1),"KR"),
+        ("BACKGROUND",(0,0),(-1,0), NAVY),
+        ("ROWBACKGROUNDS",(0,1),(-1,-1),[WHITE, SKY_SOFT]),
+        ("VALIGN",(0,0),(-1,-1),"MIDDLE"),
+        ("TOPPADDING",(0,0),(-1,-1),8),
+        ("BOTTOMPADDING",(0,0),(-1,-1),8),
+        ("BOX",(0,0),(-1,-1),1,NAVY),
+        ("GRID",(0,1),(-1,-1),0.4,GREY_BORDER),
+        ("LINEAFTER",(2,0),(2,-1),1.5,colors.HexColor("#90CAF9")),
+    ]))
+    story.append(t_ss)
+    story.append(sp(3))
+
+    story.append(info_box(
+        "<b>슈와 약화 법칙:</b> photograph → photography 변환 시 "
+        "photo의 'o'[oʊ]가 photography에서 'o'[ə]로 약화됩니다. "
+        "강세 받는 음절은 또렷하게, 나머지는 슈와(ə)로 흐리게.",
+        bg=YELLOW_SOFT, border=YELLOW, icon="◆"))
+    story.append(sp(3))
+
+    # 파닉스 최종 푸터
+    phonics_footer = Table([[Paragraph(
+        "<b>파닉스 규칙 + IPA 발음기호를 함께 익히면</b><br/>"
+        "처음 보는 단어도 소리를 유추할 수 있습니다. "
+        "규칙 → 예외 순서로 반복하면서 패턴을 몸에 익히세요!",
+        st("pftr", 11, WHITE, align=1, leading=17)
+    )]], colWidths=[CONTENT_W])
+    phonics_footer.setStyle(TableStyle([
+        ("BACKGROUND",(0,0),(-1,-1), colors.HexColor("#0D47A1")),
+        ("TOPPADDING",(0,0),(-1,-1), 14),
+        ("BOTTOMPADDING",(0,0),(-1,-1), 14),
+        ("LEFTPADDING",(0,0),(-1,-1), 12),
+        ("RIGHTPADDING",(0,0),(-1,-1), 12),
+    ]))
+    story.append(phonics_footer)
+
     doc.build(story)
     print(f"PDF 생성 완료: {path}")
 
