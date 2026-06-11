@@ -123,6 +123,8 @@ const config: ExpoConfig = {
   experiments: {
     typedRoutes: true,
     reactCompiler: true,
+    // GitHub Pages 등 하위 경로 배포용 (예: EXPO_BASE_URL=/vocaknio-quiz)
+    ...(process.env.EXPO_BASE_URL ? { baseUrl: process.env.EXPO_BASE_URL } : {}),
   },
 };
 
