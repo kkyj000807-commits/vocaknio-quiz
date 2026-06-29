@@ -176,7 +176,7 @@ function WordCard({
           style={[s.bookmarkBtn, { marginRight: 4 }]}
           hitSlop={8}
         >
-          <Text style={{ fontSize: 16 }}>{indivMasked ? "🙈" : "👁"}</Text>
+          <Text style={{ fontSize: 16 }}>{indivMasked ? "🔒" : "🔓"}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleBookmark} style={s.bookmarkBtn} hitSlop={8}>
           <Text style={{ fontSize: 18 }}>{isBookmarked ? "🔖" : "🏷️"}</Text>
@@ -190,7 +190,7 @@ function WordCard({
           style={s.maskBox}
         >
           <Text style={s.maskHintText}>
-            {isMaskedByAll ? "👆 탭하여 뜻 보기" : "👁 개별 가리기 중 · 👁 버튼으로 해제"}
+            {isMaskedByAll ? "👆 탭하여 뜻 보기" : "🔒 가림 · 🔓 버튼으로 해제"}
           </Text>
         </Pressable>
       ) : (
@@ -505,7 +505,7 @@ export default function WordbookScreen() {
             onPress={handleMaskToggle}
           >
             <Text style={[styles.headerBtnText, { color: maskMode ? colors.warning : colors.muted }]}>
-              {maskMode ? "👁 전체 가리기 ON" : "👁 전체 가리기"}
+              {maskMode ? "🔒 전체 가리기 ON" : "🔓 전체 가리기"}
             </Text>
           </TouchableOpacity>
           {/* 셔플 버튼 */}

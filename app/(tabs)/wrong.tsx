@@ -183,7 +183,7 @@ export default function WrongScreen() {
               onPress={toggleHideMode}
             >
               <Text style={[s.hideBtnText, hideMode && s.hideBtnTextActive]}>
-                {hideMode ? "👁 보이기" : "🙈 가리기"}
+                {hideMode ? "🔓 보이기" : "🔒 가리기"}
               </Text>
             </Pressable>
             <Pressable
@@ -222,7 +222,7 @@ export default function WrongScreen() {
             hideMode ? (
               <View style={s.hideModeInfoBox}>
                 <Text style={s.hideModeInfoText}>
-                  🙈 뜻 가리기 모드 — 각 카드를 탭하면 뜻이 공개됩니다
+                  🔒 뜻 가리기 모드 — 각 카드를 탭하면 뜻이 공개됩니다
                 </Text>
                 <Text style={[s.hideModeInfoText, { marginTop: 4, color: colors.dim }]}>
                   {Object.values(revealed).filter(Boolean).length} / {wrongItems.length}개 확인

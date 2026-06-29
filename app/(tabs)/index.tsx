@@ -20,7 +20,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { ScreenContainer } from "@/components/screen-container";
-import { VOCAB, RANGES, COUNTS, QUIZ_MODES, type QuizMode } from "@/lib/vocab";
+import { VOCAB, VOCAB_IDIOMS, RANGES, COUNTS, QUIZ_MODES, type QuizMode } from "@/lib/vocab";
 import { useColors } from "@/hooks/use-colors";
 import { loadQuizSettings, saveQuizSettings, type ChoiceLang } from "@/lib/store";
 
@@ -194,22 +194,36 @@ export default function HomeScreen() {
             </View>
           </View>
 
-          {/* 전체 범위 랜덤 (기본값) */}
-          <Pressable
-            style={[s.fullRandomBtn, selectedRange === "all" && s.fullRandomBtnActive]}
-            onPress={() => { haptic(); setSelectedRange("all"); }}
-          >
-            {selectedRange === "all" && <View style={s.fullRandomGlow} />}
-            <View style={{ flex: 1 }}>
+          {/* 빠른 선택: 전체 랜덤(기본) + 숙어·표현(편입 병목) */}
+          <View style={s.quickRangeRow}>
+            <Pressable
+              style={[s.quickRangeBtn, selectedRange === "all" && s.fullRandomBtnActive]}
+              onPress={() => { haptic(); setSelectedRange("all"); }}
+            >
+              {selectedRange === "all" && <View style={s.fullRandomGlow} />}
               <Text style={[s.fullRandomTitle, selectedRange === "all" && s.fullRandomTitleActive]}>
-                🎲 전체 범위 랜덤
+                🎲 전체 랜덤
               </Text>
               <Text style={s.fullRandomSub}>
-                {VOCAB.length.toLocaleString()}단어 전체에서 무작위 출제
+                {VOCAB.length.toLocaleString()}단어 무작위
               </Text>
-            </View>
-            {selectedRange === "all" && <View style={s.rangeCheckDot} />}
-          </Pressable>
+              {selectedRange === "all" && <View style={s.rangeCheckDot} />}
+            </Pressable>
+
+            <Pressable
+              style={[s.quickRangeBtn, selectedRange === "idioms" && s.fullRandomBtnActive]}
+              onPress={() => { haptic(); setSelectedRange("idioms"); }}
+            >
+              {selectedRange === "idioms" && <View style={s.fullRandomGlow} />}
+              <Text style={[s.fullRandomTitle, selectedRange === "idioms" && s.fullRandomTitleActive]}>
+                🧩 숙어·표현
+              </Text>
+              <Text style={s.fullRandomSub}>
+                {VOCAB_IDIOMS.length.toLocaleString()}개 집중 공략
+              </Text>
+              {selectedRange === "idioms" && <View style={s.rangeCheckDot} />}
+            </Pressable>
+          </View>
 
           <Text style={s.rangeOrLabel}>또는 특정 구간 선택</Text>
 
@@ -498,19 +512,23 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     rangeTabTextActive: {
       color: colors.primary as string,
     },
-    // ── 전체 랜덤 버튼
-    fullRandomBtn: {
+    // ── 빠른 선택 (전체 랜덤 + 숙어)
+    quickRangeRow: {
       flexDirection: "row",
-      alignItems: "center",
+      gap: 10,
+      marginBottom: 12,
+    },
+    quickRangeBtn: {
+      flex: 1,
       backgroundColor: colors.card as string,
       borderWidth: 1.5,
       borderColor: colors.border as string,
       borderRadius: 12,
       paddingHorizontal: 14,
       paddingVertical: 13,
-      marginBottom: 12,
       position: "relative",
       overflow: "hidden",
+      justifyContent: "center",
     },
     fullRandomBtnActive: {
       borderColor: (colors.primary as string) + "80",
