@@ -11,6 +11,8 @@ export interface VocabItem {
   type?: 'word' | 'idiom' | 'phrase'; // entry type
   antonym?: string[]; // antonyms (반의어) - 오답 선지 우선 사용
   wrongPool?: string[]; // 오답 선지 블랙리스트 (w값) - 오개념 유발 단어 제외
+  etym?: string; // 어원/암기 첨언 (영영사전 기준, 왜 이런 뜻이 되는지 설명)
+  def?: string; // 영영사전 정의
 }
 
 // antonym -> 해당 반의어를 가진 단어(w)들의 집합 (역방향 인덱스)

@@ -225,6 +225,13 @@ function WordCard({
               ))}
             </View>
           )}
+
+          {/* 첨언 (어원/뉘앙스) — 왜 이런 뜻인지 이해 보조 */}
+          {(maskMode || expanded) && item.etym ? (
+            <View style={s.etymBox}>
+              <Text style={s.etymText}>💡 {item.etym}</Text>
+            </View>
+          ) : null}
         </Animated.View>
       )}
 
@@ -324,6 +331,20 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       paddingVertical: 3,
     },
     synTagText: { fontSize: 11, color: colors.primary },
+    etymBox: {
+      marginTop: 8,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      borderRadius: 8,
+      backgroundColor: colors.warning + "14",
+      borderLeftWidth: 3,
+      borderLeftColor: colors.warning + "88",
+    },
+    etymText: {
+      fontSize: 12,
+      lineHeight: 18,
+      color: colors.muted,
+    },
     expandHint: {
       fontSize: 10,
       color: colors.muted,
