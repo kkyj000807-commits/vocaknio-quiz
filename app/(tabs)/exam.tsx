@@ -33,6 +33,21 @@ import {
   type QuestionType,
 } from "@/lib/exam-questions";
 
+// 웹(Safari)에서는 스와이프 제스처가 세로 스크롤을 막으므로 GestureDetector를 끼우지 않는다.
+// 네이티브(iOS/Android 앱)에서만 좌우 스와이프 제스처를 활성화한다.
+function SwipeWrapper({
+  enabled,
+  gesture,
+  children,
+}: {
+  enabled: boolean;
+  gesture: ReturnType<typeof Gesture.Pan>;
+  children: React.ReactElement;
+}) {
+  if (!enabled) return children;
+  return <GestureDetector gesture={gesture}>{children}</GestureDetector>;
+}
+
 type FilterYear = "all" | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 | 2026;
 type FilterType = "all" | "vocab" | "reading" | "logic";
 type FilterSchool = "all" | "hanyang" | "sungkyunkwan" | "sogang" | "chungang" | "konkuk" | "gachon" | "logic";
@@ -269,8 +284,10 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
     });
   }, [idx, questions.length, correct, haptic, onFinish, slideToNext]);
 
-  // 스와이프 제스처 — 정답 확인 후 왼쪽 스와이프로 다음 문제
+  // 스와이프 제스처 — 정답 확인 후 왼쪽 스와이프로 다음 문제 (네이티브 전용)
+  const swipeEnabled = Platform.OS !== "web";
   const swipeGesture = Gesture.Pan()
+    .enabled(swipeEnabled)
     .activeOffsetX([-20, 20])
     .failOffsetY([-15, 15])
     .onEnd((e) => {
@@ -284,7 +301,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
   const typeColor = getTypeColor(q.type, colors);
 
   return (
-    <GestureDetector gesture={swipeGesture}>
+    <SwipeWrapper enabled={swipeEnabled} gesture={swipeGesture}>
     <ScrollView
       style={{ flex: 1 }}
       contentContainerStyle={{ paddingBottom: 40 }}
@@ -404,7 +421,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
         )}
       </Animated.View>
     </ScrollView>
-    </GestureDetector>
+    </SwipeWrapper>
   );
 }
 
