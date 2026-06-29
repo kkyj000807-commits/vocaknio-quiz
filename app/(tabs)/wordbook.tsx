@@ -28,6 +28,22 @@ import { loadBookmarks, toggleBookmark } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
 import * as Haptics from "expo-haptics";
 import { useAudioPlayer, setAudioModeAsync } from "expo-audio";
+import conceptGroupsRaw from "@/assets/concept-groups.json";
+
+// 개념(동의어) 묶음 데이터 — 같은 뜻 단어끼리 모아 암기
+interface ConceptGroup {
+  label: string;
+  kor: string;
+  nums: number[];
+  isCategory?: boolean;
+}
+const CONCEPT_GROUPS = conceptGroupsRaw as ConceptGroup[];
+const VOCAB_BY_NUM: Map<number, VocabItem> = new Map(VOCAB.map((v) => [v.num, v]));
+
+// 개념별 보기용 리스트 아이템 (헤더 또는 단어)
+type ConceptRow =
+  | { kind: "header"; id: string; label: string; kor: string; count: number; isCategory?: boolean }
+  | { kind: "word"; id: string; item: VocabItem };
 
 const RANGE_OPTIONS = [
   { label: "전체", start: 0, end: VOCAB.length - 1, isIdiom: false },
@@ -326,6 +342,7 @@ export default function WordbookScreen() {
   const [showOnlyBookmarks, setShowOnlyBookmarks] = useState(false);
   const [isShuffled, setIsShuffled] = useState(false);
   const [maskMode, setMaskMode] = useState(false);
+  const [conceptMode, setConceptMode] = useState(false);
 
   // ─── 사운드 (개별/전체 가리기 피드백) ─────────────────────────────────────
   const hidePlayer = useAudioPlayer(require("@/assets/sounds/hide.wav"));
@@ -450,6 +467,38 @@ export default function WordbookScreen() {
     return list;
   }, [searchQuery, selectedRange, bookmarks, showOnlyBookmarks, isShuffled]);
 
+  // 개념별 보기 — 동의어 묶음(헤더) + 단어 행으로 평탄화
+  const conceptRows = useMemo<ConceptRow[]>(() => {
+    if (!conceptMode) return [];
+    const q = searchQuery.trim().toLowerCase();
+    const rows: ConceptRow[] = [];
+    for (const g of CONCEPT_GROUPS) {
+      let items = g.nums
+        .map((n) => VOCAB_BY_NUM.get(n))
+        .filter((v): v is VocabItem => !!v);
+      if (showOnlyBookmarks) items = items.filter((v) => bookmarks.has(v.num));
+      if (q) {
+        items = items.filter(
+          (v) =>
+            v.w.toLowerCase().includes(q) ||
+            v.k.toLowerCase().includes(q) ||
+            v.s.some((s) => s.toLowerCase().includes(q))
+        );
+      }
+      if (items.length === 0) continue;
+      rows.push({
+        kind: "header",
+        id: `h_${g.label}_${rows.length}`,
+        label: g.label,
+        kor: g.kor,
+        count: items.length,
+        isCategory: g.isCategory,
+      });
+      for (const v of items) rows.push({ kind: "word", id: `w_${v.num}`, item: v });
+    }
+    return rows;
+  }, [conceptMode, searchQuery, showOnlyBookmarks, bookmarks]);
+
   const renderItem = useCallback(
     ({ item }: { item: VocabItem }) => (
       <WordCard
@@ -466,6 +515,43 @@ export default function WordbookScreen() {
   );
 
   const keyExtractor = useCallback((item: VocabItem) => String(item.num), []);
+
+  // 개념별 보기 렌더 (헤더 / 단어)
+  const renderConceptRow = useCallback(
+    ({ item: row }: { item: ConceptRow }) => {
+      if (row.kind === "header") {
+        return (
+          <View
+            style={[
+              styles.conceptHeader,
+              { backgroundColor: colors.primary + "14", borderColor: colors.primary + "33" },
+            ]}
+          >
+            <Text style={[styles.conceptLabel, { color: colors.primary }]}>
+              {row.isCategory ? "🗂 " : "🧩 "}
+              {row.label}
+              {row.kor ? <Text style={{ color: colors.muted }}>  {row.kor}</Text> : null}
+            </Text>
+            <Text style={[styles.conceptCount, { color: colors.muted }]}>{row.count}</Text>
+          </View>
+        );
+      }
+      return (
+        <WordCard
+          item={row.item}
+          bookmarks={bookmarks}
+          onToggleBookmark={handleToggleBookmark}
+          colors={colors}
+          maskMode={maskMode}
+          onPlayHide={playHide}
+          onPlayReveal={playReveal}
+        />
+      );
+    },
+    [bookmarks, handleToggleBookmark, colors, maskMode, playHide, playReveal]
+  );
+
+  const conceptKeyExtractor = useCallback((row: ConceptRow) => row.id, []);
 
   const handleShuffle = useCallback(() => {
     setIsShuffled((v) => !v);
@@ -523,6 +609,26 @@ export default function WordbookScreen() {
               🔀 {isShuffled ? "랜덤 ON" : "랜덤"}
             </Text>
           </TouchableOpacity>
+          {/* 개념별 보기 버튼 */}
+          <TouchableOpacity
+            style={[
+              styles.headerBtn,
+              {
+                backgroundColor: conceptMode ? colors.primary : colors.surface,
+                borderColor: conceptMode ? colors.primary : colors.border,
+              },
+            ]}
+            onPress={() => {
+              setConceptMode((v) => !v);
+              if (Platform.OS !== "web") {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              }
+            }}
+          >
+            <Text style={[styles.headerBtnText, { color: conceptMode ? "#fff" : colors.muted }]}>
+              🧩 {conceptMode ? "개념별 ON" : "개념별"}
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -568,7 +674,8 @@ export default function WordbookScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* 구간 필터 — 독립적인 View로 높이 고정 */}
+      {/* 구간 필터 — 독립적인 View로 높이 고정 (개념별 보기에서는 숨김) */}
+      {!conceptMode && (
       <View style={styles.rangeWrapper}>
         <ScrollView
           horizontal
@@ -615,8 +722,19 @@ export default function WordbookScreen() {
           ))}
         </ScrollView>
       </View>
+      )}
+
+      {/* 개념별 보기 안내 */}
+      {conceptMode && (
+        <View style={styles.resultRow}>
+          <Text style={[styles.resultText, { color: colors.muted }]}>
+            🧩 같은 뜻 단어끼리 묶어 보기 · {CONCEPT_GROUPS.length.toLocaleString()}개 개념
+          </Text>
+        </View>
+      )}
 
       {/* 결과 수 */}
+      {!conceptMode && (
       <View style={styles.resultRow}>
         <Text style={[styles.resultText, { color: colors.muted }]}>
           {filteredVocab.length.toLocaleString()}개
@@ -626,34 +744,79 @@ export default function WordbookScreen() {
           {maskMode ? " · 플래시카드 모드" : ""}
         </Text>
       </View>
+      )}
 
       {/* 단어 목록 */}
-      <Animated.View style={listAnimStyle}>
+      {conceptMode ? (
         <FlatList
-          data={filteredVocab}
-          keyExtractor={keyExtractor}
-          renderItem={renderItem}
+          data={conceptRows}
+          keyExtractor={conceptKeyExtractor}
+          renderItem={renderConceptRow}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
-          initialNumToRender={20}
-          maxToRenderPerBatch={20}
+          initialNumToRender={25}
+          maxToRenderPerBatch={25}
           windowSize={10}
           removeClippedSubviews={Platform.OS !== "web"}
           ListEmptyComponent={
             <View style={styles.emptyBox}>
               <Text style={styles.emptyIcon}>📭</Text>
               <Text style={[styles.emptyText, { color: colors.muted }]}>
-                {searchQuery ? "검색 결과가 없습니다" : "단어가 없습니다"}
+                검색 결과가 없습니다
               </Text>
             </View>
           }
         />
-      </Animated.View>
+      ) : (
+        <Animated.View style={listAnimStyle}>
+          <FlatList
+            data={filteredVocab}
+            keyExtractor={keyExtractor}
+            renderItem={renderItem}
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+            initialNumToRender={20}
+            maxToRenderPerBatch={20}
+            windowSize={10}
+            removeClippedSubviews={Platform.OS !== "web"}
+            ListEmptyComponent={
+              <View style={styles.emptyBox}>
+                <Text style={styles.emptyIcon}>📭</Text>
+                <Text style={[styles.emptyText, { color: colors.muted }]}>
+                  {searchQuery ? "검색 결과가 없습니다" : "단어가 없습니다"}
+                </Text>
+              </View>
+            }
+          />
+        </Animated.View>
+      )}
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
+  conceptHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginHorizontal: 16,
+    marginTop: 14,
+    marginBottom: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+  conceptLabel: {
+    fontSize: 14,
+    fontWeight: "800",
+    flex: 1,
+  },
+  conceptCount: {
+    fontSize: 11,
+    fontWeight: "700",
+    fontVariant: ["tabular-nums"],
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",
