@@ -42,7 +42,7 @@ const VOCAB_BY_NUM: Map<number, VocabItem> = new Map(VOCAB.map((v) => [v.num, v]
 
 // 개념별 보기용 리스트 아이템 (헤더 또는 단어)
 type ConceptRow =
-  | { kind: "header"; id: string; label: string; kor: string; count: number; isCategory?: boolean }
+  | { kind: "header"; id: string; label: string; kor: string; count: number; isCategory?: boolean; open?: boolean }
   | { kind: "word"; id: string; item: VocabItem };
 
 const RANGE_OPTIONS = [
@@ -364,6 +364,20 @@ export default function WordbookScreen() {
   const [isShuffled, setIsShuffled] = useState(false);
   const [maskMode, setMaskMode] = useState(false);
   const [conceptMode, setConceptMode] = useState(false);
+  // 개념별 아코디언 — 펼쳐진 개념 라벨 집합
+  const [expandedConcepts, setExpandedConcepts] = useState<Set<string>>(new Set());
+
+  const toggleConcept = useCallback((label: string) => {
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    setExpandedConcepts((prev) => {
+      const next = new Set(prev);
+      if (next.has(label)) next.delete(label);
+      else next.add(label);
+      return next;
+    });
+  }, []);
 
   // ─── 사운드 (개별/전체 가리기 피드백) ─────────────────────────────────────
   const hidePlayer = useAudioPlayer(require("@/assets/sounds/hide.wav"));
@@ -488,10 +502,11 @@ export default function WordbookScreen() {
     return list;
   }, [searchQuery, selectedRange, bookmarks, showOnlyBookmarks, isShuffled]);
 
-  // 개념별 보기 — 동의어 묶음(헤더) + 단어 행으로 평탄화
+  // 개념별 보기 — 사전식 아코디언 (헤더 탭 → 단어 펼침)
   const conceptRows = useMemo<ConceptRow[]>(() => {
     if (!conceptMode) return [];
     const q = searchQuery.trim().toLowerCase();
+    const searchActive = q.length > 0;
     const rows: ConceptRow[] = [];
     for (const g of CONCEPT_GROUPS) {
       let items = g.nums
@@ -507,6 +522,8 @@ export default function WordbookScreen() {
         );
       }
       if (items.length === 0) continue;
+      // 검색 중이면 자동 펼침, 아니면 펼쳐진 개념만 단어 표시 (사전식 인덱스)
+      const isOpen = searchActive || expandedConcepts.has(g.label);
       rows.push({
         kind: "header",
         id: `h_${g.label}_${rows.length}`,
@@ -514,11 +531,14 @@ export default function WordbookScreen() {
         kor: g.kor,
         count: items.length,
         isCategory: g.isCategory,
+        open: isOpen,
       });
-      for (const v of items) rows.push({ kind: "word", id: `w_${v.num}`, item: v });
+      if (isOpen) {
+        for (const v of items) rows.push({ kind: "word", id: `w_${v.num}`, item: v });
+      }
     }
     return rows;
-  }, [conceptMode, searchQuery, showOnlyBookmarks, bookmarks]);
+  }, [conceptMode, searchQuery, showOnlyBookmarks, bookmarks, expandedConcepts]);
 
   const renderItem = useCallback(
     ({ item }: { item: VocabItem }) => (
@@ -541,20 +561,30 @@ export default function WordbookScreen() {
   const renderConceptRow = useCallback(
     ({ item: row }: { item: ConceptRow }) => {
       if (row.kind === "header") {
+        const primaryLabel = row.kor && !row.isCategory ? row.kor : row.label;
+        const subLabel = row.kor && !row.isCategory ? row.label : "";
         return (
-          <View
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => toggleConcept(row.label)}
             style={[
               styles.conceptHeader,
-              { backgroundColor: colors.primary + "14", borderColor: colors.primary + "33" },
+              {
+                backgroundColor: row.open ? colors.primary + "22" : colors.primary + "10",
+                borderColor: row.open ? colors.primary + "66" : colors.primary + "2A",
+              },
             ]}
           >
-            <Text style={[styles.conceptLabel, { color: colors.primary }]}>
-              {row.isCategory ? "🗂 " : "🧩 "}
-              {row.label}
-              {row.kor ? <Text style={{ color: colors.muted }}>  {row.kor}</Text> : null}
+            <Text style={[styles.conceptChevron, { color: colors.primary }]}>
+              {row.open ? "▾" : "▸"}
+            </Text>
+            <Text style={[styles.conceptLabel, { color: colors.primary }]} numberOfLines={1}>
+              {row.isCategory ? "🗂 " : ""}
+              {primaryLabel}
+              {subLabel ? <Text style={[styles.conceptSub, { color: colors.muted }]}>  {subLabel}</Text> : null}
             </Text>
             <Text style={[styles.conceptCount, { color: colors.muted }]}>{row.count}</Text>
-          </View>
+          </TouchableOpacity>
         );
       }
       return (
@@ -569,7 +599,7 @@ export default function WordbookScreen() {
         />
       );
     },
-    [bookmarks, handleToggleBookmark, colors, maskMode, playHide, playReveal]
+    [bookmarks, handleToggleBookmark, colors, maskMode, playHide, playReveal, toggleConcept]
   );
 
   const conceptKeyExtractor = useCallback((row: ConceptRow) => row.id, []);
@@ -745,12 +775,25 @@ export default function WordbookScreen() {
       </View>
       )}
 
-      {/* 개념별 보기 안내 */}
+      {/* 개념별 보기 안내 + 전체 펼치기/접기 */}
       {conceptMode && (
-        <View style={styles.resultRow}>
-          <Text style={[styles.resultText, { color: colors.muted }]}>
-            🧩 같은 뜻 단어끼리 묶어 보기 · {CONCEPT_GROUPS.length.toLocaleString()}개 개념
+        <View style={styles.conceptInfoRow}>
+          <Text style={[styles.resultText, { color: colors.muted, flex: 1 }]}>
+            🧩 뜻을 탭하면 펼쳐져요 · {CONCEPT_GROUPS.length.toLocaleString()}개 개념
           </Text>
+          <TouchableOpacity
+            onPress={() => {
+              if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              setExpandedConcepts((prev) =>
+                prev.size > 0 ? new Set() : new Set(CONCEPT_GROUPS.map((g) => g.label))
+              );
+            }}
+            style={[styles.expandAllBtn, { borderColor: colors.border }]}
+          >
+            <Text style={[styles.expandAllText, { color: colors.primary }]}>
+              {expandedConcepts.size > 0 ? "모두 접기" : "모두 펼치기"}
+            </Text>
+          </TouchableOpacity>
         </View>
       )}
 
@@ -828,10 +871,36 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
   },
+  conceptInfoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 6,
+    gap: 8,
+  },
+  expandAllBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  expandAllText: {
+    fontSize: 11,
+    fontWeight: "700",
+  },
+  conceptChevron: {
+    fontSize: 13,
+    fontWeight: "800",
+    marginRight: 8,
+  },
   conceptLabel: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: "800",
     flex: 1,
+  },
+  conceptSub: {
+    fontSize: 12,
+    fontWeight: "600",
   },
   conceptCount: {
     fontSize: 11,
