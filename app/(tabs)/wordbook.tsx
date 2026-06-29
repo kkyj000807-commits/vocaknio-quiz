@@ -226,6 +226,13 @@ function WordCard({
             </View>
           )}
 
+          {/* 영영 정의 */}
+          {(maskMode || expanded) && item.def ? (
+            <View style={s.defBox}>
+              <Text style={s.defText}>📖 {item.def}</Text>
+            </View>
+          ) : null}
+
           {/* 첨언 (어원/뉘앙스) — 왜 이런 뜻인지 이해 보조 */}
           {(maskMode || expanded) && item.etym ? (
             <View style={s.etymBox}>
@@ -331,6 +338,21 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       paddingVertical: 3,
     },
     synTagText: { fontSize: 11, color: colors.primary },
+    defBox: {
+      marginTop: 8,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      borderRadius: 8,
+      backgroundColor: colors.primary + "12",
+      borderLeftWidth: 3,
+      borderLeftColor: colors.primary + "88",
+    },
+    defText: {
+      fontSize: 12,
+      lineHeight: 18,
+      color: colors.muted,
+      fontStyle: "italic",
+    },
     etymBox: {
       marginTop: 8,
       paddingHorizontal: 10,
