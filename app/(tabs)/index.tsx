@@ -28,14 +28,15 @@ const { width: SCREEN_W } = Dimensions.get("window");
 
 // DAY 범위만 필터 (d01~d20)
 const DAY_RANGES = RANGES.filter((r) => r.id.startsWith("d"));
-// 100단위 범위 (r01~)
-const BULK_RANGES = RANGES.filter((r) => r.id.startsWith("r"));
+// 100단위 범위 (w1000~)
+const BULK_RANGES = RANGES.filter((r) => r.id.startsWith("w"));
 
 export default function HomeScreen() {
   const colors = useColors();
   const router = useRouter();
   const [selectedMode, setSelectedMode] = useState<QuizMode>("syn-choice");
-  const [selectedRange, setSelectedRange] = useState("d01");
+  // 기본값: 전체 범위 랜덤
+  const [selectedRange, setSelectedRange] = useState("all");
   const [selectedCount, setSelectedCount] = useState(20);
   const [choiceLang, setChoiceLang] = useState<ChoiceLang>("korean");
   const [rangeTab, setRangeTab] = useState<"day" | "bulk">("day");
@@ -176,7 +177,7 @@ export default function HomeScreen() {
             <View style={s.rangeTabRow}>
               <Pressable
                 style={[s.rangeTab, rangeTab === "day" && s.rangeTabActive]}
-                onPress={() => { haptic(); setRangeTab("day"); setSelectedRange("d01"); }}
+                onPress={() => { haptic(); setRangeTab("day"); }}
               >
                 <Text style={[s.rangeTabText, rangeTab === "day" && s.rangeTabTextActive]}>
                   DAY (50)
@@ -184,7 +185,7 @@ export default function HomeScreen() {
               </Pressable>
               <Pressable
                 style={[s.rangeTab, rangeTab === "bulk" && s.rangeTabActive]}
-                onPress={() => { haptic(); setRangeTab("bulk"); setSelectedRange("r01"); }}
+                onPress={() => { haptic(); setRangeTab("bulk"); }}
               >
                 <Text style={[s.rangeTabText, rangeTab === "bulk" && s.rangeTabTextActive]}>
                   100단위
@@ -192,6 +193,25 @@ export default function HomeScreen() {
               </Pressable>
             </View>
           </View>
+
+          {/* 전체 범위 랜덤 (기본값) */}
+          <Pressable
+            style={[s.fullRandomBtn, selectedRange === "all" && s.fullRandomBtnActive]}
+            onPress={() => { haptic(); setSelectedRange("all"); }}
+          >
+            {selectedRange === "all" && <View style={s.fullRandomGlow} />}
+            <View style={{ flex: 1 }}>
+              <Text style={[s.fullRandomTitle, selectedRange === "all" && s.fullRandomTitleActive]}>
+                🎲 전체 범위 랜덤
+              </Text>
+              <Text style={s.fullRandomSub}>
+                {VOCAB.length.toLocaleString()}단어 전체에서 무작위 출제
+              </Text>
+            </View>
+            {selectedRange === "all" && <View style={s.rangeCheckDot} />}
+          </Pressable>
+
+          <Text style={s.rangeOrLabel}>또는 특정 구간 선택</Text>
 
           <View style={s.rangeGrid}>
             {currentRanges.map((r) => {
@@ -477,6 +497,54 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     rangeTabTextActive: {
       color: colors.primary as string,
+    },
+    // ── 전체 랜덤 버튼
+    fullRandomBtn: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: colors.card as string,
+      borderWidth: 1.5,
+      borderColor: colors.border as string,
+      borderRadius: 12,
+      paddingHorizontal: 14,
+      paddingVertical: 13,
+      marginBottom: 12,
+      position: "relative",
+      overflow: "hidden",
+    },
+    fullRandomBtnActive: {
+      borderColor: (colors.primary as string) + "80",
+      backgroundColor: (colors.primary as string) + "15",
+    },
+    fullRandomGlow: {
+      position: "absolute",
+      top: -20,
+      left: -10,
+      width: 90,
+      height: 90,
+      borderRadius: 45,
+      backgroundColor: (colors.primary as string) + "20",
+    },
+    fullRandomTitle: {
+      fontSize: 14,
+      fontWeight: "800",
+      color: colors.foreground as string,
+      marginBottom: 2,
+    },
+    fullRandomTitleActive: {
+      color: "#FFFFFF",
+    },
+    fullRandomSub: {
+      fontSize: 11,
+      color: colors.muted as string,
+    },
+    rangeOrLabel: {
+      fontSize: 10,
+      fontWeight: "600",
+      color: colors.dim as string,
+      letterSpacing: 1,
+      textTransform: "uppercase",
+      marginBottom: 10,
     },
     // ── 범위 그리드
     rangeGrid: {
