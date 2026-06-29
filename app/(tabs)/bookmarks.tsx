@@ -12,6 +12,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
+import { SpeakerButton } from "@/components/speaker-button";
 import { VOCAB, type VocabItem } from "@/lib/vocab";
 import { loadBookmarks, toggleBookmark } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
@@ -68,6 +69,7 @@ export default function BookmarksScreen() {
           <Text style={s.wordText}>{item.w}</Text>
           {item.p ? <Text style={s.ipaText}>{item.p}</Text> : null}
         </View>
+        <SpeakerButton text={item.w} size={32} />
         <Pressable
           style={s.removeBtn}
           onPress={() => handleRemoveBookmark(item.num)}

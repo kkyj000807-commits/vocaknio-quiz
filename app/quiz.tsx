@@ -24,6 +24,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { FlipCard } from "@/components/flip-card";
+import { SpeakerButton } from "@/components/speaker-button";
 import {
   VOCAB,
   VocabItem,
@@ -487,7 +488,10 @@ export default function QuizScreen() {
               </Pressable>
             </View>
 
-            <Text style={s.wordText}>{q.item.w}</Text>
+            <View style={s.wordRow}>
+              <Text style={s.wordText}>{q.item.w}</Text>
+              <SpeakerButton text={q.item.w} size={38} />
+            </View>
             {q.item.p ? (
               <Text style={s.ipaText}>{q.item.p}</Text>
             ) : null}
@@ -805,12 +809,18 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     bookmarkBtn: {
       padding: 4,
     },
+    wordRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+      marginBottom: 4,
+      flexWrap: "wrap",
+    },
     wordText: {
       fontSize: 30,
       fontWeight: "800",
       color: colors.foreground,
       letterSpacing: -1,
-      marginBottom: 4,
     },
     ipaText: {
       fontSize: 13,

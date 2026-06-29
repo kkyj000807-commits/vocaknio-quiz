@@ -22,6 +22,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { ScreenContainer } from "@/components/screen-container";
+import { SpeakerButton } from "@/components/speaker-button";
 import { VOCAB, VocabItem } from "@/lib/vocab";
 import { loadBookmarks, toggleBookmark } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
@@ -167,6 +168,8 @@ function WordCard({
           <Text style={s.wordText}>{item.w}</Text>
           {item.p ? <Text style={s.ipaText}>{item.p}</Text> : null}
         </View>
+        {/* 발음 듣기 */}
+        <SpeakerButton text={item.w} size={32} />
         {/* 개별 가리기 버튼 */}
         <TouchableOpacity
           onPress={handleIndivMask}

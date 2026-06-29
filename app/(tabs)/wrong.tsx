@@ -12,6 +12,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
+import { SpeakerButton } from "@/components/speaker-button";
 import { VOCAB, type VocabItem } from "@/lib/vocab";
 import {
   loadWrongWords,
@@ -128,6 +129,7 @@ export default function WrongScreen() {
             <Text style={s.wordText}>{item.w}</Text>
             {item.p ? <Text style={s.ipaText}>{item.p}</Text> : null}
           </View>
+          <SpeakerButton text={item.w} size={32} />
           <Pressable
             style={s.masterBtn}
             onPress={() => handleMaster(item.num)}
