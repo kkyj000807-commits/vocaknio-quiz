@@ -549,6 +549,10 @@ export default function QuizScreen() {
                             );
                           })()}
                         </View>
+                        {/* 정답 확인 후 영어 선지 발음 듣기 */}
+                        {answered && /[A-Za-z]/.test(choice) && (
+                          <SpeakerButton text={choice} size={30} />
+                        )}
                       </Pressable>
                     );
                   })}

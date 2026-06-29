@@ -21,6 +21,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
+import { SpeakerButton } from "@/components/speaker-button";
 import { useColors } from "@/hooks/use-colors";
 import { recordOneAnswer } from "@/lib/store";
 import {
@@ -393,6 +394,10 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
                 <Text style={[s.choiceText, { color: textColor }]}>
                   {choice}
                 </Text>
+                {/* 정답 확인 후 영어 선지 발음 듣기 */}
+                {answered && /[A-Za-z]/.test(choice) && (
+                  <SpeakerButton text={choice} size={30} />
+                )}
               </Pressable>
             );
           })}
