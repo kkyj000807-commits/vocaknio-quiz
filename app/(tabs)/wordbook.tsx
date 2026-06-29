@@ -47,6 +47,7 @@ type ConceptRow =
 
 const RANGE_OPTIONS = [
   { label: "전체", start: 0, end: VOCAB.length - 1, isIdiom: false },
+  { label: "숙어·표현", start: 0, end: VOCAB.length - 1, isIdiom: true },
   { label: "1~1000", start: 0, end: 999, isIdiom: false },
   { label: "1001~2000", start: 1000, end: 1999, isIdiom: false },
   { label: "2001~3000", start: 2000, end: 2999, isIdiom: false },
@@ -56,7 +57,6 @@ const RANGE_OPTIONS = [
   { label: "6001~7000", start: 6000, end: 6999, isIdiom: false },
   { label: "7001~8000", start: 7000, end: 7999, isIdiom: false },
   { label: "8001~9517", start: 8000, end: VOCAB.length - 1, isIdiom: false },
-  { label: "숙어·표현", start: 0, end: VOCAB.length - 1, isIdiom: true },
 ];
 
 function shuffle<T>(arr: T[]): T[] {
