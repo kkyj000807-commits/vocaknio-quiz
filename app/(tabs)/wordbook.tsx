@@ -380,6 +380,12 @@ export default function WordbookScreen() {
   const colors = useColors();
 
   const [searchQuery, setSearchQuery] = useState("");
+  // 검색 디바운스 — 9천 단어 필터링이 매 키입력마다 돌지 않도록 200ms 지연
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuery(searchQuery), 200);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
   const [selectedRange, setSelectedRange] = useState(0);
   const [bookmarks, setBookmarks] = useState<Set<number>>(new Set());
   const [showOnlyBookmarks, setShowOnlyBookmarks] = useState(false);
@@ -471,7 +477,7 @@ export default function WordbookScreen() {
     }
 
     if (searchQuery.trim()) {
-      const q = searchQuery.trim().toLowerCase();
+      const q = debouncedQuery.trim().toLowerCase();
 
       // ── 3단계 우선순위 정렬 ────────────────────────────────────────────
       // 0: 단어(w)가 q로 시작  ← 가장 높은 우선순위 (사전식 자동완성)
@@ -522,12 +528,12 @@ export default function WordbookScreen() {
     }
 
     return list;
-  }, [searchQuery, selectedRange, bookmarks, showOnlyBookmarks, isShuffled]);
+  }, [debouncedQuery, selectedRange, bookmarks, showOnlyBookmarks, isShuffled]);
 
   // 개념별 보기 — 사전식 아코디언 (헤더 탭 → 단어 펼침)
   const conceptRows = useMemo<ConceptRow[]>(() => {
     if (!conceptMode) return [];
-    const q = searchQuery.trim().toLowerCase();
+    const q = debouncedQuery.trim().toLowerCase();
     const searchActive = q.length > 0;
     const rows: ConceptRow[] = [];
     for (const g of CONCEPT_GROUPS) {
@@ -560,7 +566,7 @@ export default function WordbookScreen() {
       }
     }
     return rows;
-  }, [conceptMode, searchQuery, showOnlyBookmarks, bookmarks, expandedConcepts]);
+  }, [conceptMode, debouncedQuery, showOnlyBookmarks, bookmarks, expandedConcepts]);
 
   const renderItem = useCallback(
     ({ item }: { item: VocabItem }) => (
