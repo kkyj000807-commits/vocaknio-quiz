@@ -25,6 +25,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { ScreenContainer } from "@/components/screen-container";
 import { FlipCard } from "@/components/flip-card";
 import { SpeakerButton } from "@/components/speaker-button";
+import { WordDetailModal } from "@/components/word-detail-modal";
 import {
   VOCAB,
   VocabItem,
@@ -170,6 +171,8 @@ export default function QuizScreen() {
   const [typeResult, setTypeResult] = useState<"correct" | "wrong" | null>(null);
   const [bookmarks, setBookmarks] = useState<number[]>([]);
   const [hintLevel, setHintLevel] = useState(0);
+  // 선지 단어 상세 학습 모달
+  const [detailWord, setDetailWord] = useState<string | null>(null);
 
   // 뒤로가기 지원 — 이미 채점된 문제 기록 (점수 중복 집계 방지 + 복원)
   const scoredRef = useRef<Set<number>>(new Set());
@@ -583,8 +586,7 @@ export default function QuizScreen() {
                       <Pressable
                         key={idx}
                         style={choiceStyle}
-                        onPress={() => handleChoiceSelect(idx)}
-                        disabled={answered}
+                        onPress={() => (answered ? setDetailWord(choice) : handleChoiceSelect(idx))}
                       >
                         <View style={[
                           s.choiceNum,
@@ -614,6 +616,10 @@ export default function QuizScreen() {
                               <Text style={s.choiceKorText}>{kor}</Text>
                             );
                           })()}
+                          {/* 탭하여 자세히 학습 안내 */}
+                          {answered && /[A-Za-z]/.test(choice) && (
+                            <Text style={s.choiceMoreHint}>탭하여 자세히 ›</Text>
+                          )}
                         </View>
                         {/* 정답 확인 후 영어 선지 발음 듣기 */}
                         {answered && /[A-Za-z]/.test(choice) && (
@@ -786,6 +792,7 @@ export default function QuizScreen() {
         </ScrollView>
         </SwipeWrapper>
       </KeyboardAvoidingView>
+      <WordDetailModal word={detailWord} onClose={() => setDetailWord(null)} />
     </ScreenContainer>
   );
 }
@@ -1218,6 +1225,12 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.dim,
       marginTop: 3,
       lineHeight: 15,
+    },
+    choiceMoreHint: {
+      fontSize: 10,
+      color: colors.primary2 as string,
+      marginTop: 4,
+      fontWeight: "600",
     },
     masterBtn: {
       backgroundColor: "rgba(251,191,36,0.12)",
