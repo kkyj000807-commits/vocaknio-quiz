@@ -753,92 +753,7 @@ export default function WordbookScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* 구간 필터 — 독립적인 View로 높이 고정 (개념별 보기에서는 숨김) */}
-      {!conceptMode && (
-      <View style={styles.rangeWrapper}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.rangeContent}
-          keyboardShouldPersistTaps="handled"
-          bounces={false}
-        >
-          {RANGE_OPTIONS.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              activeOpacity={0.7}
-              style={[
-                styles.rangeChip,
-                {
-                  backgroundColor:
-                    selectedRange === index ? colors.primary : colors.surface,
-                  borderColor:
-                    selectedRange === index ? colors.primary : colors.border,
-                },
-              ]}
-              onPress={() => {
-                if (index === selectedRange) return;
-                if (Platform.OS !== "web") {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                }
-                // 카테고리 번호가 올라가면 오른쪽에서, 내려가면 왼쪽에서 진입
-                const direction = index > selectedRange ? 'left' : 'right';
-                slideList(direction, () => setSelectedRange(index));
-              }}
-            >
-              <Text
-                style={[
-                  styles.rangeChipText,
-                  {
-                    color: selectedRange === index ? "#fff" : colors.muted,
-                    fontWeight: selectedRange === index ? "700" : "500",
-                  },
-                ]}
-              >
-                {item.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
-      )}
-
-      {/* 개념별 보기 안내 + 전체 펼치기/접기 */}
-      {conceptMode && (
-        <View style={styles.conceptInfoRow}>
-          <Text style={[styles.resultText, { color: colors.muted, flex: 1 }]}>
-            🧩 뜻을 탭하면 펼쳐져요 · {CONCEPT_GROUPS.length.toLocaleString()}개 개념
-          </Text>
-          <TouchableOpacity
-            onPress={() => {
-              if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              setExpandedConcepts((prev) =>
-                prev.size > 0 ? new Set() : new Set(CONCEPT_GROUPS.map((g) => g.label))
-              );
-            }}
-            style={[styles.expandAllBtn, { borderColor: colors.border }]}
-          >
-            <Text style={[styles.expandAllText, { color: colors.primary }]}>
-              {expandedConcepts.size > 0 ? "모두 접기" : "모두 펼치기"}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
-
-      {/* 결과 수 */}
-      {!conceptMode && (
-      <View style={styles.resultRow}>
-        <Text style={[styles.resultText, { color: colors.muted }]}>
-          {filteredVocab.length.toLocaleString()}개
-          {searchQuery ? ` · "${searchQuery}" 검색 결과` : ""}
-          {showOnlyBookmarks ? " · 북마크만" : ""}
-          {isShuffled ? " · 랜덤 순서" : ""}
-          {maskMode ? " · 플래시카드 모드" : ""}
-        </Text>
-      </View>
-      )}
-
-      {/* 단어 목록 */}
+      {/* 단어 목록 — 필터·결과를 리스트 헤더로 넣어 함께 스크롤(통일감) */}
       {conceptMode ? (
         <FlatList
           data={conceptRows}
@@ -846,10 +761,31 @@ export default function WordbookScreen() {
           renderItem={renderConceptRow}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
           initialNumToRender={25}
           maxToRenderPerBatch={25}
           windowSize={10}
           removeClippedSubviews={Platform.OS !== "web"}
+          ListHeaderComponent={
+            <View style={styles.conceptInfoRow}>
+              <Text style={[styles.resultText, { color: colors.muted, flex: 1 }]}>
+                🧩 뜻을 탭하면 펼쳐져요 · {CONCEPT_GROUPS.length.toLocaleString()}개 개념
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setExpandedConcepts((prev) =>
+                    prev.size > 0 ? new Set() : new Set(CONCEPT_GROUPS.map((g) => g.label))
+                  );
+                }}
+                style={[styles.expandAllBtn, { borderColor: colors.border }]}
+              >
+                <Text style={[styles.expandAllText, { color: colors.primary }]}>
+                  {expandedConcepts.size > 0 ? "모두 접기" : "모두 펼치기"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          }
           ListEmptyComponent={
             <View style={styles.emptyBox}>
               <Text style={styles.emptyIcon}>📭</Text>
@@ -860,27 +796,83 @@ export default function WordbookScreen() {
           }
         />
       ) : (
-        <Animated.View style={listAnimStyle}>
-          <FlatList
-            data={filteredVocab}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            contentContainerStyle={styles.listContent}
-            showsVerticalScrollIndicator={false}
-            initialNumToRender={20}
-            maxToRenderPerBatch={20}
-            windowSize={10}
-            removeClippedSubviews={Platform.OS !== "web"}
-            ListEmptyComponent={
-              <View style={styles.emptyBox}>
-                <Text style={styles.emptyIcon}>📭</Text>
-                <Text style={[styles.emptyText, { color: colors.muted }]}>
-                  {searchQuery ? "검색 결과가 없습니다" : "단어가 없습니다"}
+        <FlatList
+          data={filteredVocab}
+          keyExtractor={keyExtractor}
+          renderItem={renderItem}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          initialNumToRender={20}
+          maxToRenderPerBatch={20}
+          windowSize={10}
+          removeClippedSubviews={Platform.OS !== "web"}
+          ListHeaderComponent={
+            <View>
+              {/* 구간 필터 (리스트와 함께 스크롤) */}
+              <View style={styles.rangeWrapper}>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.rangeContent}
+                  keyboardShouldPersistTaps="handled"
+                  bounces={false}
+                >
+                  {RANGE_OPTIONS.map((item, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      activeOpacity={0.7}
+                      style={[
+                        styles.rangeChip,
+                        {
+                          backgroundColor: selectedRange === index ? colors.primary : colors.surface,
+                          borderColor: selectedRange === index ? colors.primary : colors.border,
+                        },
+                      ]}
+                      onPress={() => {
+                        if (index === selectedRange) return;
+                        if (Platform.OS !== "web") {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        }
+                        setSelectedRange(index);
+                      }}
+                    >
+                      <Text
+                        style={[
+                          styles.rangeChipText,
+                          {
+                            color: selectedRange === index ? "#fff" : colors.muted,
+                            fontWeight: selectedRange === index ? "700" : "500",
+                          },
+                        ]}
+                      >
+                        {item.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+              {/* 결과 수 */}
+              <View style={styles.resultRow}>
+                <Text style={[styles.resultText, { color: colors.muted }]}>
+                  {filteredVocab.length.toLocaleString()}개
+                  {debouncedQuery ? ` · "${debouncedQuery}" 검색 결과` : ""}
+                  {showOnlyBookmarks ? " · 북마크만" : ""}
+                  {isShuffled ? " · 랜덤 순서" : ""}
+                  {maskMode ? " · 플래시카드 모드" : ""}
                 </Text>
               </View>
-            }
-          />
-        </Animated.View>
+            </View>
+          }
+          ListEmptyComponent={
+            <View style={styles.emptyBox}>
+              <Text style={styles.emptyIcon}>📭</Text>
+              <Text style={[styles.emptyText, { color: colors.muted }]}>
+                {debouncedQuery ? "검색 결과가 없습니다" : "단어가 없습니다"}
+              </Text>
+            </View>
+          }
+        />
       )}
     </ScreenContainer>
   );
