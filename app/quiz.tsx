@@ -171,6 +171,10 @@ export default function QuizScreen() {
   const [bookmarks, setBookmarks] = useState<number[]>([]);
   const [hintLevel, setHintLevel] = useState(0);
 
+  // 뒤로가기 지원 — 이미 채점된 문제 기록 (점수 중복 집계 방지 + 복원)
+  const scoredRef = useRef<Set<number>>(new Set());
+  const recordRef = useRef<Record<number, { choice: number | null; skipped: boolean; flash: "correct" | "wrong" | null; typed: string; typeResult: "correct" | "wrong" | null }>>({});
+
   const cardScale = useSharedValue(1);
   // 카드 슬라이드 전환용 shared values
   const cardTranslateX = useSharedValue(0);
@@ -234,6 +238,18 @@ export default function QuizScreen() {
     });
   }, [cardTranslateX, cardOpacity]);
 
+  // 이전 문제로 이동 시 (오른쪽으로 슬라이드 아웃 → 왼쪽에서 진입)
+  const slideToPrev = useCallback((onComplete: () => void) => {
+    cardTranslateX.value = withTiming(60, { duration: 180 });
+    cardOpacity.value = withTiming(0, { duration: 180 }, () => {
+      cardTranslateX.value = -60;
+      cardOpacity.value = 0;
+      runOnJS(onComplete)();
+      cardTranslateX.value = withTiming(0, { duration: 220 });
+      cardOpacity.value = withTiming(1, { duration: 220 });
+    });
+  }, [cardTranslateX, cardOpacity]);
+
   const q = questions[currentIdx];
   const isBookmarked = q ? bookmarks.includes(q.item.num) : false;
 
@@ -254,19 +270,25 @@ export default function QuizScreen() {
       setSkipped(false);
 
       const isCorrect = q.choices[idx] === q.correct;
+      const first = !scoredRef.current.has(currentIdx);
       if (isCorrect) {
         haptic("success");
-        setCorrectCount((c) => c + 1);
+        if (first) setCorrectCount((c) => c + 1);
       } else {
         haptic("error");
-        setWrongCount((w) => w + 1);
-        setWrongItems((prev) => [...prev, q.item]);
+        if (first) {
+          setWrongCount((w) => w + 1);
+          setWrongItems((prev) => [...prev, q.item]);
+        }
       }
       triggerFlash(isCorrect);
-      // 한 문제 단위 즉시 저장
-      recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num);
+      if (first) {
+        scoredRef.current.add(currentIdx);
+        recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num);
+      }
+      recordRef.current[currentIdx] = { choice: idx, skipped: false, flash: null, typed: "", typeResult: null };
     },
-    [answered, q, haptic, animateCard, triggerFlash]
+    [answered, q, haptic, animateCard, triggerFlash, currentIdx]
   );
 
   // "모르겠다" 패스 — 오답 처리 + 오답 노트 저장
@@ -277,12 +299,16 @@ export default function QuizScreen() {
     setAnswered(true);
     setSkipped(true);
     setSelectedChoice(null);
-    setWrongCount((w) => w + 1);
-    setWrongItems((prev) => [...prev, q.item]);
+    const first = !scoredRef.current.has(currentIdx);
+    if (first) {
+      setWrongCount((w) => w + 1);
+      setWrongItems((prev) => [...prev, q.item]);
+      scoredRef.current.add(currentIdx);
+      recordOneAnswer(false, q.item.num);
+    }
     triggerFlash(false);
-    // 패스도 오답으로 즉시 저장
-    recordOneAnswer(false, q.item.num);
-  }, [answered, q, haptic, animateCard, triggerFlash]);
+    recordRef.current[currentIdx] = { choice: null, skipped: true, flash: null, typed: "", typeResult: null };
+  }, [answered, q, haptic, animateCard, triggerFlash, currentIdx]);
 
   const handleReveal = useCallback(() => {
     haptic("light");
@@ -294,17 +320,23 @@ export default function QuizScreen() {
       haptic(grade === "correct" ? "success" : "error");
       setFlashGrade(grade);
       setAnswered(true);
+      const first = !scoredRef.current.has(currentIdx);
       if (grade === "correct") {
-        setCorrectCount((c) => c + 1);
+        if (first) setCorrectCount((c) => c + 1);
       } else {
-        setWrongCount((w) => w + 1);
-        setWrongItems((prev) => [...prev, q.item]);
+        if (first) {
+          setWrongCount((w) => w + 1);
+          setWrongItems((prev) => [...prev, q.item]);
+        }
       }
       triggerFlash(grade === "correct");
-      // 플래시카드 채점 즉시 저장
-      recordOneAnswer(grade === "correct", grade === "correct" ? undefined : q.item.num);
+      if (first) {
+        scoredRef.current.add(currentIdx);
+        recordOneAnswer(grade === "correct", grade === "correct" ? undefined : q.item.num);
+      }
+      recordRef.current[currentIdx] = { choice: null, skipped: false, flash: grade, typed: "", typeResult: null };
     },
-    [haptic, q, triggerFlash]
+    [haptic, q, triggerFlash, currentIdx]
   );
 
   // 플래시카드 마스터 처리 — 이 단어를 마스터 목록에 추가
@@ -341,17 +373,23 @@ export default function QuizScreen() {
     const isCorrect = allAccepted.includes(userAns);
     setTypeResult(isCorrect ? "correct" : "wrong");
     setAnswered(true);
+    const first = !scoredRef.current.has(currentIdx);
     if (isCorrect) {
       haptic("success");
-      setCorrectCount((c) => c + 1);
+      if (first) setCorrectCount((c) => c + 1);
     } else {
       haptic("error");
-      setWrongCount((w) => w + 1);
-      setWrongItems((prev) => [...prev, q.item]);
+      if (first) {
+        setWrongCount((w) => w + 1);
+        setWrongItems((prev) => [...prev, q.item]);
+      }
     }
-    // 타이핑 정답 즉시 저장
-    recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num);
-  }, [typedAnswer, q, haptic]);
+    if (first) {
+      scoredRef.current.add(currentIdx);
+      recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num);
+    }
+    recordRef.current[currentIdx] = { choice: null, skipped: false, flash: null, typed: typedAnswer, typeResult: isCorrect ? "correct" : "wrong" };
+  }, [typedAnswer, q, haptic, currentIdx]);
 
   const handleNext = useCallback(async () => {
     haptic("light");
@@ -368,8 +406,21 @@ export default function QuizScreen() {
       return;
     }
     // 슬라이드 애니메이션 후 다음 문제로 전환
-    slideToNext(() => {
-      setCurrentIdx((i) => i + 1);
+    slideToNext(() => applyIndex(currentIdx + 1));
+  }, [currentIdx, questions.length, correctCount, wrongItems, haptic, router, slideToNext]);
+
+  // 인덱스 이동 시 상태 적용 — 이미 푼 문제면 기록 복원(리뷰), 새 문제면 초기화
+  const applyIndex = useCallback((target: number) => {
+    const rec = recordRef.current[target];
+    if (rec) {
+      setAnswered(true);
+      setSelectedChoice(rec.choice);
+      setSkipped(rec.skipped);
+      setFlashGrade(rec.flash);
+      setRevealed(rec.flash !== null);
+      setTypedAnswer(rec.typed);
+      setTypeResult(rec.typeResult);
+    } else {
       setAnswered(false);
       setSelectedChoice(null);
       setSkipped(false);
@@ -377,9 +428,17 @@ export default function QuizScreen() {
       setFlashGrade(null);
       setTypedAnswer("");
       setTypeResult(null);
-      setHintLevel(0);
-    });
-  }, [currentIdx, questions.length, correctCount, wrongItems, haptic, router, slideToNext]);
+    }
+    setHintLevel(0);
+    setCurrentIdx(target);
+  }, []);
+
+  // 이전 문제로 (실수로 넘어간 단어 다시 보기) — 점수 변화 없음
+  const handlePrev = useCallback(() => {
+    if (currentIdx === 0) return;
+    haptic("light");
+    slideToPrev(() => applyIndex(currentIdx - 1));
+  }, [currentIdx, haptic, applyIndex]);
 
   // 스와이프 제스처 — 정답 확인 후 왼쪽 스와이프로 다음 문제 (네이티브 전용)
   const swipeEnabled = Platform.OS !== "web";
@@ -480,6 +539,13 @@ export default function QuizScreen() {
               }]}
             />
             <View style={s.questionHeader}>
+              {currentIdx > 0 ? (
+                <Pressable onPress={handlePrev} style={s.prevBtn} hitSlop={8}>
+                  <Text style={s.prevBtnText}>← 이전</Text>
+                </Pressable>
+              ) : (
+                <View style={{ width: 48 }} />
+              )}
               <Text style={s.questionNum}>
                 문제 {currentIdx + 1} · {getModeLabel()}
               </Text>
@@ -812,6 +878,19 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     bookmarkBtn: {
       padding: 4,
+    },
+    prevBtn: {
+      paddingVertical: 4,
+      paddingHorizontal: 8,
+      borderRadius: 8,
+      backgroundColor: colors.card,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    prevBtnText: {
+      fontSize: 11,
+      fontWeight: "700",
+      color: colors.primary2 as string,
     },
     wordRow: {
       flexDirection: "row",
