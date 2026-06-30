@@ -24,10 +24,19 @@ import Animated, {
 import { ScreenContainer } from "@/components/screen-container";
 import { SpeakerButton } from "@/components/speaker-button";
 import { VOCAB, VocabItem } from "@/lib/vocab";
-import { loadBookmarks, toggleBookmark } from "@/lib/store";
+import {
+  loadBookmarks,
+  toggleBookmark,
+  loadMastered,
+  addMastered,
+  removeMastered,
+  loadMemos,
+  saveMemo,
+} from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
 import * as Haptics from "expo-haptics";
 import { useAudioPlayer, setAudioModeAsync } from "expo-audio";
+import { Modal } from "react-native";
 import conceptGroupsRaw from "@/assets/concept-groups.json";
 
 // 개념(동의어) 묶음 데이터 — 같은 뜻 단어끼리 모아 암기
@@ -77,6 +86,10 @@ function WordCard({
   maskMode,
   onPlayHide,
   onPlayReveal,
+  isMastered,
+  onToggleMaster,
+  memo,
+  onEditMemo,
 }: {
   item: VocabItem;
   bookmarks: Set<number>;
@@ -85,6 +98,10 @@ function WordCard({
   maskMode: boolean;
   onPlayHide: () => void;
   onPlayReveal: () => void;
+  isMastered: boolean;
+  onToggleMaster: (num: number) => void;
+  memo?: string;
+  onEditMemo: (num: number) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   // 전체 가리기 모드에서 개별 공개 여부
@@ -186,6 +203,22 @@ function WordCard({
         </View>
         {/* 발음 듣기 */}
         <SpeakerButton text={item.w} size={32} />
+        {/* 메모 버튼 */}
+        <TouchableOpacity
+          onPress={(e) => { e.stopPropagation?.(); onEditMemo(item.num); }}
+          style={[s.bookmarkBtn, { marginRight: 2 }]}
+          hitSlop={8}
+        >
+          <Text style={{ fontSize: 16 }}>{memo ? "📝" : "🗒️"}</Text>
+        </TouchableOpacity>
+        {/* 마스터 버튼 — 누르면 마스터 섹션으로 이동 */}
+        <TouchableOpacity
+          onPress={(e) => { e.stopPropagation?.(); onToggleMaster(item.num); }}
+          style={[s.bookmarkBtn, { marginRight: 2 }]}
+          hitSlop={8}
+        >
+          <Text style={{ fontSize: 18 }}>{isMastered ? "⭐" : "☆"}</Text>
+        </TouchableOpacity>
         {/* 개별 가리기 버튼 */}
         <TouchableOpacity
           onPress={handleIndivMask}
@@ -238,6 +271,13 @@ function WordCard({
             <View style={s.etymBox}>
               <Text style={s.etymText}>💡 {item.etym}</Text>
             </View>
+          ) : null}
+
+          {/* 개인 메모 */}
+          {memo ? (
+            <TouchableOpacity onPress={(e) => { e.stopPropagation?.(); onEditMemo(item.num); }} style={s.memoBox}>
+              <Text style={s.memoText}>📝 {memo}</Text>
+            </TouchableOpacity>
           ) : null}
         </Animated.View>
       )}
@@ -367,6 +407,20 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       lineHeight: 18,
       color: colors.muted,
     },
+    memoBox: {
+      marginTop: 8,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      borderRadius: 8,
+      backgroundColor: colors.success + "14",
+      borderLeftWidth: 3,
+      borderLeftColor: colors.success + "88",
+    },
+    memoText: {
+      fontSize: 12,
+      lineHeight: 18,
+      color: colors.foreground,
+    },
     expandHint: {
       fontSize: 10,
       color: colors.muted,
@@ -389,6 +443,13 @@ export default function WordbookScreen() {
   const [selectedRange, setSelectedRange] = useState(0);
   const [bookmarks, setBookmarks] = useState<Set<number>>(new Set());
   const [showOnlyBookmarks, setShowOnlyBookmarks] = useState(false);
+  // 마스터한 단어 — 본목록에서 제외하고 별도 섹션으로
+  const [mastered, setMastered] = useState<Set<number>>(new Set());
+  const [masterView, setMasterView] = useState(false); // true=마스터 단어만 보기
+  // 개인 메모
+  const [memos, setMemos] = useState<Record<number, string>>({});
+  const [memoEditNum, setMemoEditNum] = useState<number | null>(null);
+  const [memoDraft, setMemoDraft] = useState("");
   const [isShuffled, setIsShuffled] = useState(false);
   const [maskMode, setMaskMode] = useState(false);
   const [conceptMode, setConceptMode] = useState(false);
@@ -453,7 +514,29 @@ export default function WordbookScreen() {
 
   useEffect(() => {
     loadBookmarks().then((arr) => setBookmarks(new Set(arr)));
+    loadMastered().then((arr) => setMastered(new Set(arr)));
+    loadMemos().then(setMemos);
   }, []);
+
+  const handleToggleMaster = useCallback(async (num: number) => {
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const isM = mastered.has(num);
+    const updated = isM ? await removeMastered(num) : await addMastered(num);
+    setMastered(new Set(updated));
+  }, [mastered]);
+
+  const openMemo = useCallback((num: number) => {
+    setMemoEditNum(num);
+    setMemoDraft(memos[num] ?? "");
+  }, [memos]);
+
+  const submitMemo = useCallback(async () => {
+    if (memoEditNum == null) return;
+    const updated = await saveMemo(memoEditNum, memoDraft);
+    setMemos(updated);
+    setMemoEditNum(null);
+    setMemoDraft("");
+  }, [memoEditNum, memoDraft]);
 
   const handleToggleBookmark = useCallback(async (num: number) => {
     if (Platform.OS !== "web") {
@@ -475,6 +558,10 @@ export default function WordbookScreen() {
     if (showOnlyBookmarks) {
       list = list.filter((v) => bookmarks.has(v.num));
     }
+
+    // 마스터 단어: 마스터 보기면 마스터만, 아니면 본목록에서 제외
+    if (masterView) list = list.filter((v) => mastered.has(v.num));
+    else if (mastered.size > 0) list = list.filter((v) => !mastered.has(v.num));
 
     if (searchQuery.trim()) {
       const q = debouncedQuery.trim().toLowerCase();
@@ -528,7 +615,7 @@ export default function WordbookScreen() {
     }
 
     return list;
-  }, [debouncedQuery, selectedRange, bookmarks, showOnlyBookmarks, isShuffled]);
+  }, [debouncedQuery, selectedRange, bookmarks, showOnlyBookmarks, isShuffled, masterView, mastered]);
 
   // 개념별 보기 — 사전식 아코디언 (헤더 탭 → 단어 펼침)
   const conceptRows = useMemo<ConceptRow[]>(() => {
@@ -541,6 +628,8 @@ export default function WordbookScreen() {
         .map((n) => VOCAB_BY_NUM.get(n))
         .filter((v): v is VocabItem => !!v);
       if (showOnlyBookmarks) items = items.filter((v) => bookmarks.has(v.num));
+      if (masterView) items = items.filter((v) => mastered.has(v.num));
+      else if (mastered.size > 0) items = items.filter((v) => !mastered.has(v.num));
       if (q) {
         items = items.filter(
           (v) =>
@@ -566,7 +655,7 @@ export default function WordbookScreen() {
       }
     }
     return rows;
-  }, [conceptMode, debouncedQuery, showOnlyBookmarks, bookmarks, expandedConcepts]);
+  }, [conceptMode, debouncedQuery, showOnlyBookmarks, bookmarks, expandedConcepts, masterView, mastered]);
 
   const renderItem = useCallback(
     ({ item }: { item: VocabItem }) => (
@@ -578,9 +667,13 @@ export default function WordbookScreen() {
         maskMode={maskMode}
         onPlayHide={playHide}
         onPlayReveal={playReveal}
+        isMastered={mastered.has(item.num)}
+        onToggleMaster={handleToggleMaster}
+        memo={memos[item.num]}
+        onEditMemo={openMemo}
       />
     ),
-    [bookmarks, handleToggleBookmark, colors, maskMode, playHide, playReveal]
+    [bookmarks, handleToggleBookmark, colors, maskMode, playHide, playReveal, mastered, handleToggleMaster, memos, openMemo]
   );
 
   const keyExtractor = useCallback((item: VocabItem) => String(item.num), []);
@@ -624,10 +717,14 @@ export default function WordbookScreen() {
           maskMode={maskMode}
           onPlayHide={playHide}
           onPlayReveal={playReveal}
+          isMastered={mastered.has(row.item.num)}
+          onToggleMaster={handleToggleMaster}
+          memo={memos[row.item.num]}
+          onEditMemo={openMemo}
         />
       );
     },
-    [bookmarks, handleToggleBookmark, colors, maskMode, playHide, playReveal, toggleConcept]
+    [bookmarks, handleToggleBookmark, colors, maskMode, playHide, playReveal, toggleConcept, mastered, handleToggleMaster, memos, openMemo]
   );
 
   const conceptKeyExtractor = useCallback((row: ConceptRow) => row.id, []);
@@ -708,8 +805,38 @@ export default function WordbookScreen() {
               🧩 {conceptMode ? "개념별 ON" : "개념별"}
             </Text>
           </TouchableOpacity>
+          {/* 마스터 단어 보기 토글 */}
+          <TouchableOpacity
+            style={[
+              styles.headerBtn,
+              {
+                backgroundColor: masterView ? "#F59E0B" : colors.surface,
+                borderColor: masterView ? "#F59E0B" : colors.border,
+              },
+            ]}
+            onPress={() => {
+              setMasterView((v) => !v);
+              if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            }}
+          >
+            <Text style={[styles.headerBtnText, { color: masterView ? "#fff" : colors.muted }]}>
+              ⭐ 마스터 {mastered.size > 0 ? `(${mastered.size})` : ""}
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
+
+      {/* 마스터 보기 안내 배너 */}
+      {masterView && (
+        <Animated.View
+          entering={FadeIn.duration(200)}
+          style={[styles.maskBanner, { backgroundColor: "#F59E0B22", borderColor: "#F59E0B55" }]}
+        >
+          <Text style={[styles.maskBannerText, { color: "#F59E0B" }]}>
+            ⭐ 마스터한 단어 보기 — ☆를 누르면 다시 본목록으로 돌아가요
+          </Text>
+        </Animated.View>
+      )}
 
       {/* 마스크 모드 안내 배너 */}
       {maskMode && (
@@ -874,6 +1001,37 @@ export default function WordbookScreen() {
           }
         />
       )}
+
+      {/* 개인 메모 편집 모달 */}
+      <Modal visible={memoEditNum != null} transparent animationType="fade" onRequestClose={() => setMemoEditNum(null)}>
+        <Pressable style={styles.memoBackdrop} onPress={() => setMemoEditNum(null)}>
+          <Pressable
+            style={[styles.memoSheet, { backgroundColor: colors.surface, borderColor: colors.border }]}
+            onPress={(e) => e.stopPropagation?.()}
+          >
+            <Text style={[styles.memoTitle, { color: colors.foreground }]}>
+              📝 {memoEditNum != null ? VOCAB_BY_NUM.get(memoEditNum)?.w : ""} — 내 메모
+            </Text>
+            <TextInput
+              style={[styles.memoInput, { backgroundColor: colors.card, borderColor: colors.border, color: colors.foreground }]}
+              value={memoDraft}
+              onChangeText={setMemoDraft}
+              placeholder="이 단어에 대한 나만의 메모를 적어보세요"
+              placeholderTextColor={colors.muted}
+              multiline
+              autoFocus
+            />
+            <View style={styles.memoBtnRow}>
+              <TouchableOpacity style={[styles.memoBtn, { borderColor: colors.border }]} onPress={() => setMemoEditNum(null)}>
+                <Text style={[styles.memoBtnText, { color: colors.muted }]}>취소</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.memoBtn, { backgroundColor: colors.primary, borderColor: colors.primary }]} onPress={submitMemo}>
+                <Text style={[styles.memoBtnText, { color: "#fff" }]}>저장</Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </ScreenContainer>
   );
 }
@@ -908,6 +1066,35 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700",
   },
+  memoBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    justifyContent: "center",
+    padding: 24,
+  },
+  memoSheet: {
+    borderRadius: 18,
+    borderWidth: 1,
+    padding: 20,
+  },
+  memoTitle: { fontSize: 15, fontWeight: "800", marginBottom: 12 },
+  memoInput: {
+    minHeight: 90,
+    borderWidth: 1.5,
+    borderRadius: 12,
+    padding: 12,
+    fontSize: 14,
+    textAlignVertical: "top",
+  },
+  memoBtnRow: { flexDirection: "row", gap: 10, marginTop: 14 },
+  memoBtn: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    alignItems: "center",
+  },
+  memoBtnText: { fontSize: 13, fontWeight: "700" },
   conceptChevron: {
     fontSize: 13,
     fontWeight: "800",
