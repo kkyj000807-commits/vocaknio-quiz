@@ -47,6 +47,9 @@ const MAPPING = {
   "list.bullet": "format-list-bulleted",
   "graduationcap.fill": "school",
   "doc.text.fill": "description",
+  "calendar": "event",
+  "plus": "add",
+  "trash.fill": "delete",
 } as IconMapping;
 
 export function IconSymbol({
