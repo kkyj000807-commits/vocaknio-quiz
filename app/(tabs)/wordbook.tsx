@@ -123,19 +123,20 @@ function WordCard({
   const s = cardStyles(colors);
 
   // 개별 가리기 공개 애니메이션 (높이 0 → auto 효과를 opacity+translateY로 구현)
-  const revealAnim = useSharedValue(0); // 0=가려짐, 1=공개
+  // 기본값 1(보임) — 가리기 모드가 아니면 뜻이 항상 보이도록 (웹에서 effect 타이밍으로 숨겨지는 버그 방지)
+  const revealAnim = useSharedValue(1); // 0=가려짐, 1=공개
   const revealStyle = useAnimatedStyle(() => ({
     opacity: revealAnim.value,
     transform: [{ translateY: interpolate(revealAnim.value, [0, 1], [-8, 0], Extrapolation.CLAMP) }],
   }));
 
-  // maskMode가 꺼지면 revealed 초기화
+  // maskMode가 꺼지면 revealed 초기화 (개별 가리기 상태에 맞춰 표시)
   useEffect(() => {
     if (!maskMode) {
       setRevealed(false);
-      revealAnim.value = 0;
+      revealAnim.value = indivMasked ? 0 : 1;
     }
-  }, [maskMode]);
+  }, [maskMode, indivMasked]);
 
   // 전체 가리기 모드에서 탭 → 공개
   const handlePress = useCallback(() => {
