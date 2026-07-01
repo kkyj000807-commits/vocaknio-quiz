@@ -68,6 +68,17 @@ const RANGE_OPTIONS = [
   { label: "8001~9517", start: 8000, end: VOCAB.length - 1, isIdiom: false },
 ];
 
+// 단어 길이에 따라 폰트 크기 동적 조절 — 웹(adjustsFontSizeToFit 미지원)에서도 한 줄 유지
+function wordFontSize(w: string): number {
+  const n = w.length;
+  if (n <= 8) return 18;
+  if (n <= 10) return 16;
+  if (n <= 13) return 14;
+  if (n <= 17) return 12;
+  if (n <= 24) return 10;
+  return 9;
+}
+
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -199,14 +210,18 @@ function WordCard({
         </View>
         <View style={s.wordArea}>
           <Text
-            style={s.wordText}
+            style={[s.wordText, { fontSize: wordFontSize(item.w) }]}
             numberOfLines={1}
             adjustsFontSizeToFit
             minimumFontScale={0.5}
           >
             {item.w}
           </Text>
-          {item.p ? <Text style={s.ipaText} numberOfLines={1}>{item.p}</Text> : null}
+          {item.p ? (
+            <Text style={[s.ipaText, item.p.length > 16 && { fontSize: 9 }]} numberOfLines={1}>
+              {item.p}
+            </Text>
+          ) : null}
         </View>
         {/* 발음 듣기 */}
         <SpeakerButton text={item.w} size={32} />

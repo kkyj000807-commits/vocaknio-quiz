@@ -558,7 +558,14 @@ export default function QuizScreen() {
             </View>
 
             <View style={s.wordRow}>
-              <Text style={s.wordText} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.5}>
+              <Text
+                style={[s.wordText, {
+                  fontSize: q.item.w.length <= 10 ? 30 : q.item.w.length <= 16 ? 24 : q.item.w.length <= 22 ? 20 : q.item.w.length <= 30 ? 16 : 13,
+                }]}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.5}
+              >
                 {q.item.w}
               </Text>
               <SpeakerButton text={q.item.w} size={38} />
