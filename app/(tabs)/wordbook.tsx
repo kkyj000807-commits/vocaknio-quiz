@@ -198,8 +198,15 @@ function WordCard({
           <Text style={s.numText}>{item.num}</Text>
         </View>
         <View style={s.wordArea}>
-          <Text style={s.wordText}>{item.w}</Text>
-          {item.p ? <Text style={s.ipaText}>{item.p}</Text> : null}
+          <Text
+            style={s.wordText}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.5}
+          >
+            {item.w}
+          </Text>
+          {item.p ? <Text style={s.ipaText} numberOfLines={1}>{item.p}</Text> : null}
         </View>
         {/* 발음 듣기 */}
         <SpeakerButton text={item.w} size={32} />

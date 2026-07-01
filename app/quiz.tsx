@@ -558,7 +558,9 @@ export default function QuizScreen() {
             </View>
 
             <View style={s.wordRow}>
-              <Text style={s.wordText}>{q.item.w}</Text>
+              <Text style={s.wordText} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.5}>
+                {q.item.w}
+              </Text>
               <SpeakerButton text={q.item.w} size={38} />
             </View>
             {q.item.p ? (
@@ -904,13 +906,13 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       alignItems: "center",
       gap: 12,
       marginBottom: 4,
-      flexWrap: "wrap",
     },
     wordText: {
       fontSize: 30,
       fontWeight: "800",
       color: colors.foreground,
       letterSpacing: -1,
+      flex: 1,
     },
     ipaText: {
       fontSize: 13,
