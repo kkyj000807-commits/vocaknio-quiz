@@ -23,7 +23,7 @@ import Animated, {
 
 import { ScreenContainer } from "@/components/screen-container";
 import { SpeakerButton } from "@/components/speaker-button";
-import { VOCAB, VocabItem } from "@/lib/vocab";
+import { VOCAB, VocabItem, synWithKor } from "@/lib/vocab";
 import {
   loadBookmarks,
   toggleBookmark,
@@ -271,12 +271,12 @@ function WordCard({
             {item.k_short}
           </Text>
 
-          {/* 동의어 */}
+          {/* 동의어 (한글뜻 병기) */}
           {(maskMode || expanded) && item.s.length > 0 && (
             <View style={s.synRow}>
               {item.s.map((syn, i) => (
                 <View key={i} style={s.synTag}>
-                  <Text style={s.synTagText}>{syn}</Text>
+                  <Text style={s.synTagText}>{synWithKor(syn)}</Text>
                 </View>
               ))}
             </View>

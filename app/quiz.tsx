@@ -35,6 +35,7 @@ import {
   getKorDistractors,
   getSynWithKorDistractors,
   makeSynKorLabel,
+  synWithKor,
 } from "@/lib/vocab";
 import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords, recordOneAnswer, loadMastered, addMastered } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
@@ -672,18 +673,25 @@ export default function QuizScreen() {
                   }
                   back={
                     <View style={s.flipBack}>
-                      <View style={s.flashAnswer}>
+                      {/* 초록 답 칸 탭 → 카드 다시 뒤집어 원상복귀 */}
+                      <Pressable
+                        style={s.flashAnswer}
+                        onPress={() => {
+                          haptic("light");
+                          setRevealed(false);
+                        }}
+                      >
                         <Text style={s.flashKorText}>{q.item.k_short}</Text>
                         {q.item.s.length > 0 && (
                           <View style={s.synTagRow}>
                             {q.item.s.slice(0, 4).map((syn, i) => (
                               <View key={i} style={s.synTag}>
-                                <Text style={s.synTagText}>{syn}</Text>
+                                <Text style={s.synTagText}>{synWithKor(syn)}</Text>
                               </View>
                             ))}
                           </View>
                         )}
-                      </View>
+                      </Pressable>
                     </View>
                   }
                 />
@@ -778,7 +786,7 @@ export default function QuizScreen() {
                   <View style={s.synTagRow}>
                     {q.item.s.slice(0, 5).map((syn, i) => (
                       <View key={i} style={s.synTag}>
-                        <Text style={s.synTagText}>{syn}</Text>
+                        <Text style={s.synTagText}>{synWithKor(syn)}</Text>
                       </View>
                     ))}
                   </View>

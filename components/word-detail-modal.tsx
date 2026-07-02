@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Modal, View, Text, Pressable, ScrollView, StyleSheet } from "react-native";
 
-import { VOCAB, VocabItem } from "@/lib/vocab";
+import { VOCAB, VocabItem, synWithKor } from "@/lib/vocab";
 import { SpeakerButton } from "@/components/speaker-button";
 import { useColors } from "@/hooks/use-colors";
 
@@ -75,7 +75,7 @@ export function WordDetailModal({
                   <View style={s.synRow}>
                     {item.s.map((syn, i) => (
                       <View key={i} style={s.synTag}>
-                        <Text style={s.synTagText}>{syn}</Text>
+                        <Text style={s.synTagText}>{synWithKor(syn)}</Text>
                       </View>
                     ))}
                   </View>
@@ -87,7 +87,7 @@ export function WordDetailModal({
                     <View style={s.synRow}>
                       {item.antonym.map((a, i) => (
                         <View key={i} style={s.antTag}>
-                          <Text style={s.antTagText}>{a}</Text>
+                          <Text style={s.antTagText}>{synWithKor(a)}</Text>
                         </View>
                       ))}
                     </View>

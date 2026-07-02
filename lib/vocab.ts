@@ -1,4 +1,5 @@
 import vocabRaw from "@/assets/vocab.json";
+import synGlossRaw from "@/assets/syn-gloss.json";
 
 export interface VocabItem {
   num: number;
@@ -372,6 +373,50 @@ export function getSynWithKorDistractors(
 
 export function makeSynKorLabel(syn: string, item: VocabItem): string {
   return `${syn} (${item.k_short || item.k})`;
+}
+
+// ─── 동의어 한글 병기 (TFD식 시소러스 + 한국인용 괄호 한글뜻) ─────────────────
+
+// 단어장에 없는 동의어용 보조 한글뜻 사전
+const SYN_GLOSS: Record<string, string> = synGlossRaw as Record<string, string>;
+
+// 표제어 → 짧은 한글뜻 (lazy 초기화)
+let WORD_KOR: Map<string, string> | null = null;
+
+// k_short에서 짧은 대표 한글뜻만 추출 (품사표기·괄호·뒷의미 제거)
+function shortKor(k: string): string {
+  let s = k.replace(/^[a-z]{1,4}\.\s*/i, "");
+  s = s.split(";")[0];
+  s = s.replace(/\([^)]*\)/g, "").replace(/\s+/g, " ").trim();
+  const parts = s.split(",").map((x) => x.trim()).filter(Boolean);
+  s = parts.slice(0, 2).join(", ");
+  if (s.length > 14) s = s.slice(0, 14) + "…";
+  return s;
+}
+
+/**
+ * 동의어의 짧은 한글뜻을 반환. 표제어로 있으면 그 뜻, 없으면 syn-gloss 사전, 둘 다 없으면 null.
+ */
+export function korGloss(syn: string): string | null {
+  const key = syn.trim().toLowerCase();
+  if (!key) return null;
+  if (!WORD_KOR) {
+    WORD_KOR = new Map();
+    for (const v of VOCAB) {
+      const w = v.w.toLowerCase();
+      if (!WORD_KOR.has(w) && v.k_short) {
+        const sk = shortKor(v.k_short);
+        if (sk) WORD_KOR.set(w, sk);
+      }
+    }
+  }
+  return WORD_KOR.get(key) ?? SYN_GLOSS[key] ?? null;
+}
+
+/** "synonym(한글뜻)" 라벨 — 한글뜻 없으면 synonym만 */
+export function synWithKor(syn: string): string {
+  const g = korGloss(syn);
+  return g ? `${syn}(${g})` : syn;
 }
 
 /**
