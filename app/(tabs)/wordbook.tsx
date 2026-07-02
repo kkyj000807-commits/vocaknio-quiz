@@ -68,9 +68,15 @@ const RANGE_OPTIONS = [
   { label: "8001~9517", start: 8000, end: VOCAB.length - 1, isIdiom: false },
 ];
 
-// 단어 길이에 따라 폰트 크기 동적 조절 — 웹(adjustsFontSizeToFit 미지원)에서도 한 줄 유지
+// 단어 길이에 따라 폰트 크기 동적 조절 — 웹(adjustsFontSizeToFit 미지원)에서도 잘림 방지
+// 숙어(공백 포함)는 2줄 허용이라 덜 줄임
 function wordFontSize(w: string): number {
   const n = w.length;
+  if (w.includes(" ")) {
+    if (n <= 20) return 16;
+    if (n <= 32) return 14;
+    return 13;
+  }
   if (n <= 8) return 18;
   if (n <= 10) return 16;
   if (n <= 13) return 14;
@@ -212,7 +218,9 @@ function WordCard({
         <View style={s.wordArea}>
           <Text
             style={[s.wordText, { fontSize: wordFontSize(item.w) }]}
-            numberOfLines={1}
+            // 숙어(공백 포함)는 2줄까지 줄바꿈 허용, 단일 단어는 1줄 자동 축소.
+            // 카드 탭(펼치기)하면 전체 표시.
+            numberOfLines={expanded ? undefined : item.w.includes(" ") ? 2 : 1}
             adjustsFontSizeToFit
             minimumFontScale={0.5}
           >
