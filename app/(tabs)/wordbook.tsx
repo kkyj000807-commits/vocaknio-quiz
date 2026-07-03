@@ -784,8 +784,14 @@ export default function WordbookScreen() {
             총 {VOCAB.length.toLocaleString()}개 단어
           </Text>
         </View>
-        {/* 버튼 그룹 */}
-        <View style={styles.headerBtns}>
+        {/* 버튼 그룹 — 좁은 화면에서 가로 스와이프로 스크롤 */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          bounces={false}
+          style={{ flexShrink: 1 }}
+          contentContainerStyle={styles.headerBtns}
+        >
           {/* 뜻 가리기 버튼 */}
           <TouchableOpacity
             style={[
@@ -854,7 +860,7 @@ export default function WordbookScreen() {
               ⭐ 마스터 {mastered.size > 0 ? `(${mastered.size})` : ""}
             </Text>
           </TouchableOpacity>
-        </View>
+        </ScrollView>
       </View>
 
       {/* 마스터 보기 안내 배너 */}
