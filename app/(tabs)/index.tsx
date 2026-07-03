@@ -61,13 +61,13 @@ export default function HomeScreen() {
     if (Platform.OS !== "web") {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
-    const range = RANGES.find((r) => r.id === selectedRange)!;
+    const range = RANGES.find((r) => r.id === selectedRange);
     router.push({
       pathname: "/quiz",
       params: {
         mode: selectedMode,
-        rangeStart: range.start,
-        rangeEnd: range.end,
+        rangeStart: range?.start ?? 0,
+        rangeEnd: range?.end ?? VOCAB.length - 1,
         count: selectedCount,
         rangeId: selectedRange,
         choiceLang,
@@ -222,6 +222,20 @@ export default function HomeScreen() {
                 {VOCAB_IDIOMS.length.toLocaleString()}개 집중 공략
               </Text>
               {selectedRange === "idioms" && <View style={s.rangeCheckDot} />}
+            </Pressable>
+
+            <Pressable
+              style={[s.quickRangeBtn, selectedRange === "smart" && s.fullRandomBtnActive]}
+              onPress={() => { haptic(); setSelectedRange("smart"); }}
+            >
+              {selectedRange === "smart" && <View style={s.fullRandomGlow} />}
+              <Text style={[s.fullRandomTitle, selectedRange === "smart" && s.fullRandomTitleActive]}>
+                🎯 맞춤
+              </Text>
+              <Text style={s.fullRandomSub}>
+                오답률·안 본 단어·기출 우선
+              </Text>
+              {selectedRange === "smart" && <View style={s.rangeCheckDot} />}
             </Pressable>
           </View>
 

@@ -232,6 +232,32 @@ export async function clearMastered(): Promise<void> {
   } catch {}
 }
 
+// ─── 단어별 퀴즈 통계 (맞춤형 출제용: 노출수/오답수) ─────────────────────────────
+
+const WORD_STATS_KEY = "vocaknio_word_stats";
+
+export type WordStat = { s: number; w: number }; // s=노출(seen), w=오답(wrong)
+
+export async function loadWordStats(): Promise<Record<number, WordStat>> {
+  try {
+    const raw = await AsyncStorage.getItem(WORD_STATS_KEY);
+    if (raw) return JSON.parse(raw) as Record<number, WordStat>;
+  } catch {}
+  return {};
+}
+
+/** 한 문제 풀이 결과를 단어별 통계에 반영 */
+export async function recordWordStat(num: number, isCorrect: boolean): Promise<void> {
+  try {
+    const stats = await loadWordStats();
+    const cur = stats[num] ?? { s: 0, w: 0 };
+    cur.s += 1;
+    if (!isCorrect) cur.w += 1;
+    stats[num] = cur;
+    await AsyncStorage.setItem(WORD_STATS_KEY, JSON.stringify(stats));
+  } catch {}
+}
+
 // ─── 개인 메모 (단어별 사용자 메모) ──────────────────────────────────────────────
 
 const MEMO_KEY = "vocaknio_memos";

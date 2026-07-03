@@ -37,7 +37,7 @@ import {
   makeSynKorLabel,
   synWithKor,
 } from "@/lib/vocab";
-import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords, recordOneAnswer, loadMastered, addMastered } from "@/lib/store";
+import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords, recordOneAnswer, loadMastered, addMastered, loadWordStats, recordWordStat, type WordStat } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
 
 interface QuizQuestion {
@@ -68,12 +68,26 @@ function buildQuestions(
   count: number,
   rangeId?: string,
   choiceLang?: string,
-  masteredNums?: number[]
+  masteredNums?: number[],
+  wordStats?: Record<number, WordStat>
 ): QuizQuestion[] {
   // 숙어 범위 선택 시 숙어만 필터
   let pool: VocabItem[];
   if (rangeId === 'idioms') {
     pool = VOCAB.filter((v) => v.type === 'idiom' || v.type === 'phrase').filter((v) => v.k && v.k.length > 2);
+  } else if (rangeId === 'smart') {
+    // 🎯 맞춤 출제: 오답률 높은 단어 > 아직 안 본 단어 > 기출 표시 단어 우선
+    const stats = wordStats ?? {};
+    const scored = VOCAB.filter((v) => v.k && v.k.length > 2).map((v) => {
+      const st = stats[v.num];
+      const wrongRate = st && st.s > 0 ? st.w / st.s : 0;
+      const unseen = !st ? 1 : 0;
+      const examBoost = v.etym && v.etym.includes("기출") ? 1 : 0;
+      const priority = wrongRate * 4 + unseen * 2 + examBoost + Math.random() * 0.8;
+      return { v, priority };
+    });
+    scored.sort((a, b) => b.priority - a.priority);
+    pool = scored.slice(0, Math.max(count * 8, 200)).map((x) => x.v);
   } else {
     pool = VOCAB.slice(rangeStart, rangeEnd + 1).filter(
       (v) => v.k && v.k.length > 2
@@ -156,9 +170,19 @@ export default function QuizScreen() {
   const choiceLang = params.choiceLang ?? "korean";
 
   const [masteredNums, setMasteredNums] = useState<number[]>([]);
-  const [questions] = useState<QuizQuestion[]>(() =>
-    buildQuestions(mode, rangeStart, rangeEnd, count, rangeId, choiceLang)
+  const [questions, setQuestions] = useState<QuizQuestion[]>(() =>
+    rangeId === "smart" ? [] : buildQuestions(mode, rangeStart, rangeEnd, count, rangeId, choiceLang)
   );
+
+  // 🎯 맞춤 모드: 단어별 통계 로드 후 출제 (오답률·미노출·기출 가중)
+  useEffect(() => {
+    if (rangeId === "smart") {
+      loadWordStats().then((stats) => {
+        setQuestions(buildQuestions(mode, rangeStart, rangeEnd, count, rangeId, choiceLang, undefined, stats));
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
@@ -289,6 +313,7 @@ export default function QuizScreen() {
       if (first) {
         scoredRef.current.add(currentIdx);
         recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num);
+        recordWordStat(q.item.num, isCorrect);
       }
       recordRef.current[currentIdx] = { choice: idx, skipped: false, flash: null, typed: "", typeResult: null };
     },
@@ -309,6 +334,7 @@ export default function QuizScreen() {
       setWrongItems((prev) => [...prev, q.item]);
       scoredRef.current.add(currentIdx);
       recordOneAnswer(false, q.item.num);
+      recordWordStat(q.item.num, false);
     }
     triggerFlash(false);
     recordRef.current[currentIdx] = { choice: null, skipped: true, flash: null, typed: "", typeResult: null };
@@ -337,6 +363,7 @@ export default function QuizScreen() {
       if (first) {
         scoredRef.current.add(currentIdx);
         recordOneAnswer(grade === "correct", grade === "correct" ? undefined : q.item.num);
+        recordWordStat(q.item.num, grade === "correct");
       }
       recordRef.current[currentIdx] = { choice: null, skipped: false, flash: grade, typed: "", typeResult: null };
     },
@@ -391,6 +418,7 @@ export default function QuizScreen() {
     if (first) {
       scoredRef.current.add(currentIdx);
       recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num);
+      recordWordStat(q.item.num, isCorrect);
     }
     recordRef.current[currentIdx] = { choice: null, skipped: false, flash: null, typed: typedAnswer, typeResult: isCorrect ? "correct" : "wrong" };
   }, [typedAnswer, q, haptic, currentIdx]);
