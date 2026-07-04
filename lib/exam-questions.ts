@@ -53,7 +53,9 @@ export const examQuestions: ExamQuestion[] = [
     question:
       "The senator's [obstreperous] refusal to yield the floor—marked by raised voice and calculated belligerence—disrupted the proceedings.",
     underlined: "obstreperous",
-    choices: ["unruly", "defiant", "reticent", "vociferous", "conciliatory"],
+    // 검수: defiant(반항적)·vociferous(소리 높은)는 사전·문맥상 정답 방어 가능 → 중복정답 방지 위해
+    // 반의어 방향(docile)·무관어(perfunctory)로 교체
+    choices: ["unruly", "docile", "reticent", "perfunctory", "conciliatory"],
     answer: 0,
     explanation: "obstreperous = 소란스럽고 다루기 힘든 → unruly(제멋대로인, 다루기 힘든)",
     points: 2,
@@ -66,7 +68,8 @@ export const examQuestions: ExamQuestion[] = [
     question:
       "He remained [circumspect] when addressing the sensitive topic.",
     underlined: "circumspect",
-    choices: ["evasive", "cautious", "resigned", "dogmatic", "indifferent"],
+    // 검수: evasive(회피하는)는 '민감한 주제' 문맥에서 정답 방어 가능 → 반의어 방향(reckless)으로 교체
+    choices: ["reckless", "cautious", "resigned", "dogmatic", "indifferent"],
     answer: 1,
     explanation: "circumspect = 신중한, 조심스러운 → cautious(조심스러운)",
     points: 2,
