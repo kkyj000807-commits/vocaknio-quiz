@@ -46,6 +46,18 @@ interface QuizQuestion {
   correct: string;
 }
 
+// 기출 출처 각주 (정답 유출 방지: 대학·연도만 추출)
+function examSourceTag(etym?: string): string | null {
+  if (!etym || !etym.includes("기출")) return null;
+  const seg = etym.slice(Math.max(0, etym.indexOf("기출") - 40));
+  const year = seg.match(/20\d{2}/)?.[0];
+  const univ = seg.match(/(한양대|중앙대|동국대|서강대|성균관대|건국대|가천대|경희대|이화여대|한국외대|홍익대|숙명여대|국민대|숭실대|인하대|아주대|단국대)/)?.[0];
+  if (year && univ) return `${year} ${univ} 기출`;
+  if (univ) return `${univ} 기출`;
+  if (year) return `${year} 기출`;
+  return "기출";
+}
+
 // 웹(Safari)에서는 스와이프 제스처가 세로 스크롤을 막으므로 GestureDetector를 끼우지 않는다.
 // 네이티브(iOS/Android 앱)에서만 좌우 스와이프 제스처를 활성화한다.
 function SwipeWrapper({
@@ -602,6 +614,10 @@ export default function QuizScreen() {
             {q.item.p ? (
               <Text style={s.ipaText}>{q.item.p}</Text>
             ) : null}
+            {/* 기출 출처 각주 (작게, 정답 정보 없음) */}
+            {examSourceTag(q.item.etym) ? (
+              <Text style={s.examTag}>📌 {examSourceTag(q.item.etym)}</Text>
+            ) : null}
 
             {/* 4지선다 모드 */}
             {isChoiceMode && (
@@ -819,6 +835,10 @@ export default function QuizScreen() {
                     ))}
                   </View>
                 )}
+                {/* 첨언(어원·기출 상세) — 정답 확인 후 공개 */}
+                {q.item.etym ? (
+                  <Text style={s.explEtym}>💡 {q.item.etym}</Text>
+                ) : null}
               </View>
             )}
 
@@ -968,6 +988,22 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontSize: 12,
       color: colors.dim,
       marginBottom: 14,
+    },
+    examTag: {
+      fontSize: 10,
+      color: colors.warning as string,
+      marginTop: 2,
+      marginBottom: 6,
+      fontWeight: "600",
+    },
+    explEtym: {
+      fontSize: 12,
+      lineHeight: 18,
+      color: colors.muted,
+      marginTop: 10,
+      paddingTop: 8,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
     },
     choicesContainer: {
       gap: 10,
