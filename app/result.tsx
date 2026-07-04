@@ -98,7 +98,7 @@ export default function ResultScreen() {
             style={({ pressed }) => [s.btn, s.btnPrimary, pressed && { opacity: 0.85 }]}
             onPress={() => {
               haptic();
-              router.replace("/");
+              router.replace("/practice");
             }}
           >
             <Text style={s.btnPrimaryText}>🏠 홈으로</Text>
@@ -113,7 +113,7 @@ export default function ResultScreen() {
             <Text style={s.btnSecondaryText}>↩ 다시 풀기</Text>
           </Pressable>
         </View>
-        {/* 오답 전용 퀴즈 바로 시작 */}
+        {/* 오답 전용 문제풀이 바로 시작 */}
         {wrongNums.length > 0 && (
           <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
             <Pressable

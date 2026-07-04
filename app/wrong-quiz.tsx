@@ -187,7 +187,7 @@ export default function WrongQuizScreen() {
       >
         {/* Header Banner */}
         <View style={s.wrongBanner}>
-          <Text style={s.wrongBannerText}>🔴 오답 전용 퀴즈</Text>
+          <Text style={s.wrongBannerText}>🔴 오답 전용 문제풀이</Text>
           <Text style={s.wrongBannerSub}>틀린 단어만 모아서 복습</Text>
         </View>
 

@@ -12,13 +12,15 @@ interface SpeakerButtonProps {
   size?: number;
   /** 느리게 읽기 (학습용 0.92 기본) */
   rate?: number;
+  /** 버튼 투명도 (단어보다 시각적 우선순위 낮출 때 0.75 권장) */
+  opacity?: number;
 }
 
 /**
  * 🔊 발음 듣기 버튼.
  * 누르면 expo-speech(웹은 Web Speech API)로 영단어를 읽어준다.
  */
-export function SpeakerButton({ text, size = 36, rate }: SpeakerButtonProps) {
+export function SpeakerButton({ text, size = 36, rate, opacity = 1 }: SpeakerButtonProps) {
   const colors = useColors();
 
   const handlePress = useCallback(() => {
@@ -40,6 +42,7 @@ export function SpeakerButton({ text, size = 36, rate }: SpeakerButtonProps) {
           borderRadius: size / 3,
           backgroundColor: (colors.primary as string) + "1A",
           borderColor: (colors.primary as string) + "55",
+          opacity,
         },
         pressed && { opacity: 0.6, transform: [{ scale: 0.92 }] },
       ]}

@@ -46,15 +46,40 @@ interface QuizQuestion {
   correct: string;
 }
 
-// 기출 출처 각주 (정답 유출 방지: 대학·연도만 추출)
+// 문제풀이 화면 가시성 팔레트 (다크 네이비 고정 스펙)
+const UI: Record<string, string> = {
+  textMain: "#F3F6FF",
+  textSub: "#B8C4DD",
+  textMuted: "#8FA0BF",
+  cardBg: "#101B3A",
+  border: "#283A66",
+  green: "#6EE7A8",
+};
+
+// 기출 출처 각주 (정답 유출 방지: 대학·연도만 "26동국대" 형식으로 추출)
+const UNIV_PATTERN =
+  /(한양대|중앙대|동국대|서강대|성균관대|건국대|가천대|경희대|이화여대|한국외대|홍익대|숙명여대|국민대|숭실대|인하대|아주대|단국대)/g;
 function examSourceTag(etym?: string): string | null {
   if (!etym || !etym.includes("기출")) return null;
-  const seg = etym.slice(Math.max(0, etym.indexOf("기출") - 40));
-  const year = seg.match(/20\d{2}/)?.[0];
-  const univ = seg.match(/(한양대|중앙대|동국대|서강대|성균관대|건국대|가천대|경희대|이화여대|한국외대|홍익대|숙명여대|국민대|숭실대|인하대|아주대|단국대)/)?.[0];
-  if (year && univ) return `${year} ${univ} 기출`;
-  if (univ) return `${univ} 기출`;
-  if (year) return `${year} 기출`;
+  const tags: string[] = [];
+  const seen = new Set<string>();
+  const re = new RegExp(UNIV_PATTERN.source, "g");
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(etym)) !== null) {
+    const univ = m[1];
+    // 대학명 주변 ±25자 안에서 연도(20xx) 탐색 → "26동국대" 형태
+    const near = etym.slice(Math.max(0, m.index - 25), m.index + univ.length + 25);
+    const year = near.match(/20(\d{2})/);
+    const tag = year ? `${year[1]}${univ}` : univ;
+    if (!seen.has(tag)) {
+      seen.add(tag);
+      tags.push(tag);
+    }
+    if (tags.length >= 3) break;
+  }
+  if (tags.length > 0) return tags.join(" · ");
+  const y = etym.match(/20(\d{2})/);
+  if (y) return `${y[1]} 기출`;
   return "기출";
 }
 
@@ -514,11 +539,14 @@ export default function QuizScreen() {
   };
 
   const getHintText = () => {
-    if (mode === "syn-choice") return "올바른 동의어는?";
+    const w = q.item.w;
+    if (mode === "syn-choice") return `${w}와 의미가 가장 가까운 단어는?`;
     if (mode === "kor-choice") {
-      return choiceLang === "english" ? "올바른 동의어는? (영어)" : "올바른 한국어 뜻은?";
+      return choiceLang === "english"
+        ? `${w}와 의미가 가장 가까운 단어는?`
+        : `${w}의 뜻으로 가장 알맞은 것은?`;
     }
-    return "올바른 동의어(한글뜻)는?";
+    return `${w}와 의미가 가장 가까운 단어는?`;
   };
 
   const getHint = () => {
@@ -540,7 +568,13 @@ export default function QuizScreen() {
         <SwipeWrapper enabled={swipeEnabled} gesture={swipeGesture}>
         <ScrollView
           style={{ flex: 1 }}
-          contentContainerStyle={{ paddingBottom: 32 }}
+          contentContainerStyle={{
+            // 하단 버튼이 홈 인디케이터/탭바에 가리지 않도록 안전영역 포함 여유 확보
+            paddingBottom:
+              Platform.OS === "web"
+                ? ("calc(96px + env(safe-area-inset-bottom))" as any)
+                : 96,
+          }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
@@ -601,7 +635,7 @@ export default function QuizScreen() {
             <View style={s.wordRow}>
               <Text
                 style={[s.wordText, {
-                  fontSize: q.item.w.length <= 10 ? 30 : q.item.w.length <= 16 ? 24 : q.item.w.length <= 22 ? 20 : q.item.w.length <= 30 ? 16 : 13,
+                  fontSize: q.item.w.length <= 10 ? 40 : q.item.w.length <= 16 ? 30 : q.item.w.length <= 22 ? 24 : q.item.w.length <= 30 ? 18 : 14,
                 }]}
                 numberOfLines={1}
                 adjustsFontSizeToFit
@@ -609,7 +643,7 @@ export default function QuizScreen() {
               >
                 {q.item.w}
               </Text>
-              <SpeakerButton text={q.item.w} size={38} />
+              <SpeakerButton text={q.item.w} size={38} opacity={0.75} />
             </View>
             {q.item.p ? (
               <Text style={s.ipaText}>{q.item.p}</Text>
@@ -630,7 +664,7 @@ export default function QuizScreen() {
                     if (answered) {
                       if (choice === q.correct) {
                         choiceStyle = { ...s.choiceBtn, ...s.choiceCorrect };
-                        textStyle = { ...s.choiceText, color: colors.success };
+                        textStyle = { ...s.choiceText, color: UI.green };
                       } else if (idx === selectedChoice) {
                         choiceStyle = { ...s.choiceBtn, ...s.choiceWrong };
                         textStyle = { ...s.choiceText, color: colors.error };
@@ -644,7 +678,7 @@ export default function QuizScreen() {
                       >
                         <View style={[
                           s.choiceNum,
-                          answered && choice === q.correct && { backgroundColor: colors.success },
+                          answered && choice === q.correct && { backgroundColor: UI.green },
                           answered && idx === selectedChoice && choice !== q.correct && { backgroundColor: colors.error },
                         ]}>
                           <Text style={[
@@ -655,29 +689,48 @@ export default function QuizScreen() {
                           </Text>
                         </View>
                         <View style={{ flex: 1 }}>
-                          <Text style={textStyle} numberOfLines={3}>
+                          <Text
+                            style={[
+                              textStyle,
+                              // 긴 선지(한국어 뜻·복합형)는 잘리지 않게 단계적으로 축소
+                              choice.length > 22 && { fontSize: 18, lineHeight: 25 },
+                              choice.length > 44 && { fontSize: 15, lineHeight: 21 },
+                            ]}
+                            numberOfLines={4}
+                          >
                             {choice}
                           </Text>
-                          {/* 정답 확인 후 선지 한글뜻 표시 */}
+                          {/* 정답 확인 후 선지 위계: 단어 → 뜻 → 유의어 */}
                           {answered && (() => {
                             const choiceItem = VOCAB.find((v) =>
                               v.w === choice ||
                               (v.s && v.s.includes(choice))
                             );
-                            const kor = choiceItem?.k_short;
-                            if (!kor) return null;
+                            if (!choiceItem) return null;
+                            const syns = (choiceItem.s ?? [])
+                              .filter((x) => x !== choice)
+                              .slice(0, 3);
                             return (
-                              <Text style={s.choiceKorText}>{kor}</Text>
+                              <>
+                                {choiceItem.k_short ? (
+                                  <Text style={s.choiceKorText}>{choiceItem.k_short}</Text>
+                                ) : null}
+                                {syns.length > 0 ? (
+                                  <Text style={s.choiceSynText} numberOfLines={1}>
+                                    ≒ {syns.join(", ")}
+                                  </Text>
+                                ) : null}
+                              </>
                             );
                           })()}
-                          {/* 탭하여 자세히 학습 안내 */}
+                          {/* 자세히 보기 안내 (은은하게) */}
                           {answered && /[A-Za-z]/.test(choice) && (
-                            <Text style={s.choiceMoreHint}>탭하여 자세히 ›</Text>
+                            <Text style={s.choiceMoreHint}>자세히 ›</Text>
                           )}
                         </View>
                         {/* 정답 확인 후 영어 선지 발음 듣기 */}
                         {answered && /[A-Za-z]/.test(choice) && (
-                          <SpeakerButton text={choice} size={30} />
+                          <SpeakerButton text={choice} size={30} opacity={0.75} />
                         )}
                       </Pressable>
                     );
@@ -920,9 +973,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     questionCard: {
       marginHorizontal: 16,
-      backgroundColor: colors.surface,
+      backgroundColor: UI.cardBg,
       borderWidth: 1,
-      borderColor: colors.border,
+      borderColor: UI.border,
       borderRadius: 20,
       padding: 24,
       overflow: "hidden",
@@ -943,8 +996,8 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       marginBottom: 14,
     },
     questionNum: {
-      fontSize: 11,
-      color: colors.dim,
+      fontSize: 14,
+      color: UI.textMuted,
       letterSpacing: 1,
       textTransform: "uppercase",
     },
@@ -971,26 +1024,28 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       marginBottom: 4,
     },
     wordText: {
-      fontSize: 30,
+      fontSize: 40,
       fontWeight: "800",
-      color: colors.foreground,
+      color: UI.textMain,
       letterSpacing: -1,
       flex: 1,
     },
     ipaText: {
-      fontSize: 13,
-      color: colors.primary2 as string,
+      fontSize: 20,
+      color: UI.textSub,
       fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
       letterSpacing: 0.5,
       marginBottom: 16,
     },
     hintText: {
-      fontSize: 12,
-      color: colors.dim,
+      fontSize: 16,
+      fontWeight: "600",
+      color: UI.textSub,
       marginBottom: 14,
+      lineHeight: 23,
     },
     examTag: {
-      fontSize: 10,
+      fontSize: 14,
       color: colors.warning as string,
       marginTop: 2,
       marginBottom: 6,
@@ -1009,9 +1064,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       gap: 10,
     },
     choiceBtn: {
-      backgroundColor: colors.card,
+      backgroundColor: UI.cardBg,
       borderWidth: 2,
-      borderColor: colors.border,
+      borderColor: UI.border,
       borderRadius: 12,
       padding: 14,
       flexDirection: "row",
@@ -1019,12 +1074,12 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       gap: 12,
     },
     choiceCorrect: {
-      borderColor: colors.success,
-      backgroundColor: "rgba(52,211,153,0.1)",
+      borderColor: UI.green,
+      backgroundColor: "rgba(110,231,168,0.08)",
     },
     choiceWrong: {
       borderColor: colors.error,
-      backgroundColor: "rgba(248,113,113,0.1)",
+      backgroundColor: "rgba(248,113,113,0.08)",
     },
     choiceNum: {
       width: 26,
@@ -1041,10 +1096,11 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.dim,
     },
     choiceText: {
-      fontSize: 14,
-      color: colors.foreground,
+      fontSize: 24,
+      fontWeight: "700",
+      color: UI.textMain,
       flex: 1,
-      lineHeight: 20,
+      lineHeight: 31,
     },
     skipBtn: {
       marginTop: 12,
@@ -1233,9 +1289,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontWeight: "600",
     },
     explPanel: {
-      backgroundColor: colors.card,
+      backgroundColor: UI.cardBg,
       borderWidth: 1,
-      borderColor: colors.border,
+      borderColor: UI.border,
       borderRadius: 12,
       padding: 16,
       marginTop: 14,
@@ -1266,10 +1322,10 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
     },
     explKor: {
-      fontSize: 14,
-      color: colors.muted,
+      fontSize: 16,
+      color: UI.textSub,
       marginBottom: 10,
-      lineHeight: 20,
+      lineHeight: 23,
     },
     synTagRow: {
       flexDirection: "row",
@@ -1285,7 +1341,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       paddingVertical: 3,
     },
     synTagText: {
-      fontSize: 11,
+      fontSize: 15,
       color: colors.primary2 as string,
     },
     nextBtn: {
@@ -1302,16 +1358,21 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       letterSpacing: 0.5,
     },
     choiceKorText: {
-      fontSize: 11,
-      color: colors.dim,
+      fontSize: 16,
+      color: UI.textSub,
+      marginTop: 4,
+      lineHeight: 22,
+    },
+    choiceSynText: {
+      fontSize: 15,
+      color: UI.textMuted,
       marginTop: 3,
-      lineHeight: 15,
+      lineHeight: 20,
     },
     choiceMoreHint: {
-      fontSize: 10,
-      color: colors.primary2 as string,
-      marginTop: 4,
-      fontWeight: "600",
+      fontSize: 12,
+      color: UI.textMuted,
+      marginTop: 5,
     },
     masterBtn: {
       backgroundColor: "rgba(251,191,36,0.12)",

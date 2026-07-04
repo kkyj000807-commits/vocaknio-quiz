@@ -105,7 +105,7 @@ export default function BookmarksScreen() {
             style={({ pressed }) => [s.quizBtn, pressed && { opacity: 0.85 }]}
             onPress={handleStartQuiz}
           >
-            <Text style={s.quizBtnText}>퀴즈 시작</Text>
+            <Text style={s.quizBtnText}>문제풀이 시작</Text>
           </Pressable>
         )}
       </View>
@@ -115,7 +115,7 @@ export default function BookmarksScreen() {
           <Text style={s.emptyEmoji}>🏷️</Text>
           <Text style={s.emptyTitle}>북마크가 없어요</Text>
           <Text style={s.emptyText}>
-            퀴즈 중 단어 옆 🏷️ 버튼을 눌러{"\n"}북마크에 추가해 보세요
+            문제풀이 중 단어 옆 🏷️ 버튼을 눌러{"\n"}북마크에 추가해 보세요
           </Text>
         </View>
       ) : (

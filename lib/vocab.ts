@@ -46,6 +46,13 @@ for (const item of VOCAB) {
   WORD_TO_SYNS.set(item.w, new Set(item.s));
 }
 
+// word(소문자) -> VocabItem (표제어 조회용)
+const WORD_TO_ITEM: Map<string, VocabItem> = new Map();
+for (const item of VOCAB) {
+  const key = item.w.toLowerCase();
+  if (!WORD_TO_ITEM.has(key)) WORD_TO_ITEM.set(key, item);
+}
+
 // antonym 역방향 인덱스 빌드
 for (const item of VOCAB) {
   if (!item.antonym) continue;
@@ -253,12 +260,29 @@ export function shuffle<T>(arr: T[]): T[] {
 }
 
 /**
+ * 반의어 방향(반대 의미) 후보 목록: 반의어 자체 + 반의어 표제어의 동의어들.
+ * 정답과 의미가 겹치는 단어(forbidden)는 호출부에서 걸러진다.
+ */
+export function getAntonymDirection(target: VocabItem): string[] {
+  const result = new Set<string>(getAntonyms(target));
+  for (const ant of Array.from(result)) {
+    const antSyns = WORD_TO_SYNS.get(ant);
+    if (antSyns) {
+      for (const s of antSyns) result.add(s);
+    }
+  }
+  result.delete(target.w);
+  for (const s of target.s) result.delete(s);
+  return Array.from(result);
+}
+
+/**
  * 동의어 고르기 모드용 오답 보기 생성
  *
- * 개선점:
- * - 반의어(antonym)를 오답 선지로 우선 사용 → 편입 시험 사고 훈련에 적합
+ * 오답 구성 원칙 (오개념 방지, 전 섹션 공통):
+ * - 정답 방향과 헷갈릴 여지가 없도록, 오답 = 반의어 방향 단어들 + 아예 무관한 단어 1개
  * - getForbiddenSyns()로 의미적으로 겹치는 동의어 전체를 금지
- * - 오답 보기가 부족할 경우 fallback으로 단순 단어(w) 목록에서 보충
+ * - 반의어 방향 후보가 부족하면 무관 단어로 채움 (유사어로는 절대 채우지 않음)
  */
 export function getSynDistractors(
   target: VocabItem,
@@ -280,20 +304,22 @@ export function getSynDistractors(
 
   const distractors: string[] = [];
 
-  // 1순위: 반의어를 오답 선지로 우선 사용
-  const antonyms = shuffle(getAntonyms(target));
-  for (const ant of antonyms) {
-    if (!forbidden.has(ant) && distractors.length < count) {
+  // 반의어 방향 단어: 최대 count-1개 (마지막 1자리는 무관 단어 몫)
+  const antonymSlots = count - 1;
+  const antDirection = shuffle(getAntonymDirection(target));
+  const antSet = new Set(antDirection);
+  for (const ant of antDirection) {
+    if (!forbidden.has(ant) && distractors.length < antonymSlots) {
       distractors.push(ant);
       forbidden.add(ant);
     }
   }
 
-  // 2순위: 반의어가 부족하면 일반 동의어 풀에서 보충
+  // 무관 단어: 반의어 방향도 아니고 의미도 겹치지 않는 단어로 나머지 자리 채움
   if (distractors.length < count) {
     const pool = shuffle(ALL_SYNONYMS);
     for (const syn of pool) {
-      if (!forbidden.has(syn)) {
+      if (!forbidden.has(syn) && !antSet.has(syn)) {
         distractors.push(syn);
         forbidden.add(syn);
       }
@@ -301,7 +327,7 @@ export function getSynDistractors(
     }
   }
 
-  // 3순위: 풀이 부족한 극단적 케이스 - 단어 자체(w)로 보충
+  // 풀이 부족한 극단적 케이스 - 단어 자체(w)로 보충
   if (distractors.length < count) {
     const wordPool = shuffle(VOCAB.map((v) => v.w));
     for (const w of wordPool) {
@@ -341,6 +367,19 @@ export function getSynWithKorDistractors(
   const usedSyn = new Set<string>(forbidden);
   const usedK = new Set<string>(forbiddenK);
 
+  // 1) 오개념 방지: 반의어 방향 단어를 최대 count-1개 (마지막 1자리는 무관 단어 몫)
+  const antonymSlots = count - 1;
+  for (const ant of shuffle(getAntonymDirection(target))) {
+    if (distractors.length >= antonymSlots) break;
+    if (usedSyn.has(ant)) continue;
+    const g = korGloss(ant);
+    if (!g || usedK.has(g)) continue;
+    distractors.push(`${ant} (${g})`);
+    usedSyn.add(ant);
+    usedK.add(g);
+  }
+
+  // 2) 무관 단어로 나머지 자리 채움
   const shuffledVocab = shuffle(VOCAB);
   for (const item of shuffledVocab) {
     if (item.w === target.w) continue;
@@ -458,6 +497,20 @@ export function getKorDistractors(
 
   const distractors: string[] = [];
   const usedK = new Set<string>(forbiddenK);
+
+  // 1) 오개념 방지: 반의어 방향 단어의 한국어 뜻을 최대 count-1개
+  const antonymSlots = count - 1;
+  for (const ant of shuffle(getAntonymDirection(target))) {
+    if (distractors.length >= antonymSlots) break;
+    const antItem = WORD_TO_ITEM.get(ant.toLowerCase());
+    if (!antItem || wrongPoolWords.has(antItem.w)) continue;
+    if (!antItem.k || antItem.k.length <= 2 || usedK.has(antItem.k)) continue;
+    distractors.push(antItem.k);
+    usedK.add(antItem.k);
+    if (antItem.k_short) usedK.add(antItem.k_short);
+  }
+
+  // 2) 무관 단어의 뜻으로 나머지 자리 채움
   const shuffled = shuffle(pool);
 
   for (const item of shuffled) {
