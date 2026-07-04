@@ -36,6 +36,7 @@ import {
   getSynWithKorDistractors,
   makeSynKorLabel,
   synWithKor,
+  korGloss,
 } from "@/lib/vocab";
 import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords, recordOneAnswer, loadMastered, addMastered, loadWordStats, recordWordStat, type WordStat } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
@@ -700,20 +701,24 @@ export default function QuizScreen() {
                           >
                             {choice}
                           </Text>
-                          {/* 정답 확인 후 선지 위계: 단어 → 뜻 → 유의어 */}
+                          {/* 정답 확인 후 선지 위계: 단어 → 뜻 → 유의어
+                              뜻은 반드시 보기 단어 "자체"의 표제어 또는 검수된 동의어 사전(korGloss)에서만.
+                              동의어 보유 단어(v.s.includes)로 찾으면 다른 단어의 뜻이 붙는 오개념 버그 발생. */}
                           {answered && (() => {
-                            const choiceItem = VOCAB.find((v) =>
-                              v.w === choice ||
-                              (v.s && v.s.includes(choice))
+                            const norm = choice.trim().toLowerCase();
+                            const choiceItem = VOCAB.find(
+                              (v) => v.w.trim().toLowerCase() === norm
                             );
-                            if (!choiceItem) return null;
-                            const syns = (choiceItem.s ?? [])
-                              .filter((x) => x !== choice)
-                              .slice(0, 3);
+                            // 표제어 없으면 검수된 동의어 한글뜻 사전만 사용, 그마저 없으면 표시 안 함
+                            const kor = choiceItem?.k_short ?? korGloss(choice);
+                            const syns = choiceItem
+                              ? choiceItem.s.filter((x) => x !== choice).slice(0, 3)
+                              : [];
+                            if (!kor && syns.length === 0) return null;
                             return (
                               <>
-                                {choiceItem.k_short ? (
-                                  <Text style={s.choiceKorText}>{choiceItem.k_short}</Text>
+                                {kor ? (
+                                  <Text style={s.choiceKorText}>{kor}</Text>
                                 ) : null}
                                 {syns.length > 0 ? (
                                   <Text style={s.choiceSynText} numberOfLines={1}>
