@@ -33,6 +33,7 @@ import {
   type ExamQuestion,
   type QuestionType,
 } from "@/lib/exam-questions";
+import { EXAM_STATS } from "@/lib/exam-stats";
 
 // 웹(Safari)에서는 스와이프 제스처가 세로 스크롤을 막으므로 GestureDetector를 끼우지 않는다.
 // 네이티브(iOS/Android 앱)에서만 좌우 스와이프 제스처를 활성화한다.
@@ -533,7 +534,31 @@ export default function ExamScreen() {
         {/* 헤더 */}
         <View style={s.header}>
           <Text style={s.headerTitle}>기출문제 풀이</Text>
-          <Text style={s.headerSub}>편입 기출 {examQuestions.length}문항 · 한양·성균관·논리 시리즈 · 2020~2026</Text>
+          <Text style={s.headerSub}>편입 기출 · 한양·성균관·논리 시리즈 · 2013~2026</Text>
+          {/* 검증 기준 집계 — 출처(학교·연도·원문) 확인된 자료만 '기출'로 셈 */}
+          <View style={s.statChipRow}>
+            <View style={s.statChip}>
+              <Text style={s.statChipNum}>{EXAM_STATS.verifiedQuestions}</Text>
+              <Text style={s.statChipLabel}>검증 기출 문항</Text>
+            </View>
+            <View style={s.statChip}>
+              <Text style={s.statChipNum}>{EXAM_STATS.examWords}</Text>
+              <Text style={s.statChipLabel}>기출 단어</Text>
+            </View>
+            <View style={s.statChip}>
+              <Text style={s.statChipNum}>{EXAM_STATS.examIdioms}</Text>
+              <Text style={s.statChipLabel}>기출 숙어·표현</Text>
+            </View>
+            <View style={s.statChip}>
+              <Text style={s.statChipNum}>
+                {EXAM_STATS.unverifiedQuestions + EXAM_STATS.pendingVocab}
+              </Text>
+              <Text style={s.statChipLabel}>검수 대기</Text>
+            </View>
+          </View>
+          <Text style={s.statNote}>
+            재구성 연습문항 {EXAM_STATS.reconstructedQuestions}개는 기출 집계에서 제외
+          </Text>
         </View>
 
         {/* 학교 필터 */}
@@ -663,6 +688,38 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontSize: 13,
       color: colors.muted as string,
       marginTop: 4,
+    },
+    statChipRow: {
+      flexDirection: "row",
+      gap: 8,
+      marginTop: 12,
+    },
+    statChip: {
+      flex: 1,
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 10,
+      paddingVertical: 8,
+      paddingHorizontal: 4,
+      alignItems: "center",
+    },
+    statChipNum: {
+      fontSize: 18,
+      fontWeight: "700",
+      color: colors.foreground,
+      fontVariant: ["tabular-nums"],
+    },
+    statChipLabel: {
+      fontSize: 10,
+      color: colors.dim,
+      marginTop: 2,
+      textAlign: "center",
+    },
+    statNote: {
+      fontSize: 11,
+      color: colors.dim,
+      marginTop: 8,
     },
     section: {
       paddingHorizontal: 20,
