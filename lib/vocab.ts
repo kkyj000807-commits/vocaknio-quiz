@@ -292,9 +292,11 @@ export function getSynDistractors(
   const forbidden = getForbiddenSyns(target);
   forbidden.add(correctSyn);
 
-  // wrongPool 단어들의 동의어도 오답 선지에서 제외
+  // wrongPool: 문맥상 정답으로 방어 가능한 근접어 블랙리스트.
+  // 단어 자체 + 그 단어의 동의어를 모두 오답 선지에서 제외 (중복정답 방지)
   if (target.wrongPool && target.wrongPool.length > 0) {
     for (const wpWord of target.wrongPool) {
+      forbidden.add(wpWord);
       const wpSyns = WORD_TO_SYNS.get(wpWord);
       if (wpSyns) {
         for (const s of wpSyns) forbidden.add(s);
@@ -352,6 +354,17 @@ export function getSynWithKorDistractors(
 ): string[] {
   const forbidden = getForbiddenSyns(target);
   forbidden.add(correctSyn);
+
+  // wrongPool 단어 자체 + 그 동의어도 제외 (중복정답 방지)
+  if (target.wrongPool && target.wrongPool.length > 0) {
+    for (const wpWord of target.wrongPool) {
+      forbidden.add(wpWord);
+      const wpSyns = WORD_TO_SYNS.get(wpWord);
+      if (wpSyns) {
+        for (const s of wpSyns) forbidden.add(s);
+      }
+    }
+  }
 
   const forbiddenK = new Set<string>();
   if (target.k_short) forbiddenK.add(target.k_short);
