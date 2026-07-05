@@ -3,117 +3,120 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { Appearance, View } from "react-native";
 import { colorScheme as nativewindColorScheme, vars } from "nativewind";
 
-import { SchemeColors, type ColorScheme } from "@/constants/theme";
-
-export type ThemeMode = "dark" | "light" | "system";
+import {
+  AppThemes,
+  DEFAULT_APP_THEME,
+  schemeOfTheme,
+  type AppThemeName,
+  type ColorScheme,
+  type ThemeColorPalette,
+} from "@/constants/theme";
 
 const THEME_KEY = "vocaknio_theme_mode";
 
 type ThemeContextValue = {
-  colorScheme: ColorScheme;
-  themeMode: ThemeMode;
-  setThemeMode: (mode: ThemeMode) => void;
+  colorScheme: ColorScheme;          // 이진 스킴 (상태바·dark 클래스용)
+  themeName: AppThemeName;           // 현재 앱 테마
+  palette: ThemeColorPalette;        // 현재 테마 팔레트
+  setThemeName: (name: AppThemeName) => void;
+  /** @deprecated 이전 API 호환 — themeName 사용 권장 */
+  themeMode: AppThemeName;
+  /** @deprecated 이전 API 호환 — setThemeName 사용 권장 */
+  setThemeMode: (name: AppThemeName) => void;
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-function getSystemScheme(): ColorScheme {
-  const sys = Appearance.getColorScheme();
-  return sys === "light" ? "light" : "dark";
-}
-
-function resolveScheme(mode: ThemeMode): ColorScheme {
-  if (mode === "system") return getSystemScheme();
-  return mode;
+/** 저장된 레거시 값('dark'|'light'|'system') → 새 테마 이름 마이그레이션 */
+function migrateStored(saved: string | null): AppThemeName {
+  if (saved === "dark" || saved === "dark_navy") return "dark_navy";
+  if (saved === "clean_sky" || saved === "paper_blue" || saved === "exam_paper") {
+    return saved;
+  }
+  // 'light' | 'system' | null | 알 수 없는 값 → 기본 테마
+  return DEFAULT_APP_THEME;
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // 초기값을 시스템 테마로 설정 (다크 하드코딩 제거)
-  const initialSystemScheme = getSystemScheme();
-  const [themeMode, setThemeModeState] = useState<ThemeMode>("system");
-  const [colorScheme, setColorSchemeState] = useState<ColorScheme>(initialSystemScheme);
+  const [themeName, setThemeNameState] = useState<AppThemeName>(DEFAULT_APP_THEME);
   // AsyncStorage 로드 완료 여부 — 로드 전까지 렌더링 지연으로 색상 플래시 방지
   const [ready, setReady] = useState(false);
 
-  const applyScheme = useCallback((scheme: ColorScheme) => {
+  const applyTheme = useCallback((name: AppThemeName) => {
+    const scheme = schemeOfTheme(name);
     nativewindColorScheme.set(scheme);
     Appearance.setColorScheme?.(scheme);
     if (typeof document !== "undefined") {
       const root = document.documentElement;
-      root.dataset.theme = scheme;
+      root.dataset.theme = name;
       root.classList.toggle("dark", scheme === "dark");
-      const palette = SchemeColors[scheme];
+      const palette = AppThemes[name];
       Object.entries(palette).forEach(([token, value]) => {
-        root.style.setProperty(`--color-${token}`, value);
+        if (typeof value === "string") root.style.setProperty(`--color-${token}`, value);
       });
+      if (document.body) document.body.style.backgroundColor = palette.background;
     }
   }, []);
 
-  const setThemeMode = useCallback(
-    async (mode: ThemeMode) => {
-      setThemeModeState(mode);
-      const scheme = resolveScheme(mode);
-      setColorSchemeState(scheme);
-      applyScheme(scheme);
+  const setThemeName = useCallback(
+    async (name: AppThemeName) => {
+      setThemeNameState(name);
+      applyTheme(name);
       try {
-        await AsyncStorage.setItem(THEME_KEY, mode);
+        await AsyncStorage.setItem(THEME_KEY, name);
       } catch {}
     },
-    [applyScheme]
+    [applyTheme]
   );
 
-  // Load persisted theme on mount
+  // Load persisted theme on mount (레거시 값 마이그레이션 포함)
   useEffect(() => {
     AsyncStorage.getItem(THEME_KEY).then((saved) => {
-      // 저장된 값이 없으면 시스템 테마 사용 (기존 "dark" 기본값 제거)
-      const mode: ThemeMode = (saved as ThemeMode) ?? "system";
-      const scheme = resolveScheme(mode);
-      setThemeModeState(mode);
-      setColorSchemeState(scheme);
-      applyScheme(scheme);
+      const name = migrateStored(saved);
+      setThemeNameState(name);
+      applyTheme(name);
       setReady(true);
     });
-  }, [applyScheme]);
+  }, [applyTheme]);
 
-  // Listen for system theme changes when mode is "system"
-  useEffect(() => {
-    if (themeMode !== "system") return;
-    const sub = Appearance.addChangeListener(({ colorScheme: sys }) => {
-      const scheme = sys === "light" ? "light" : "dark";
-      setColorSchemeState(scheme);
-      applyScheme(scheme);
-    });
-    return () => sub.remove();
-  }, [themeMode, applyScheme]);
+  const palette = AppThemes[themeName];
+  const colorScheme = schemeOfTheme(themeName);
 
   const themeVariables = useMemo(
     () =>
       vars({
-        "color-primary": SchemeColors[colorScheme].primary,
-        "color-primary2": SchemeColors[colorScheme].primary2,
-        "color-background": SchemeColors[colorScheme].background,
-        "color-surface": SchemeColors[colorScheme].surface,
-        "color-card": SchemeColors[colorScheme].card,
-        "color-foreground": SchemeColors[colorScheme].foreground,
-        "color-muted": SchemeColors[colorScheme].muted,
-        "color-dim": SchemeColors[colorScheme].dim,
-        "color-border": SchemeColors[colorScheme].border,
-        "color-success": SchemeColors[colorScheme].success,
-        "color-warning": SchemeColors[colorScheme].warning,
-        "color-error": SchemeColors[colorScheme].error,
-        "color-tint": SchemeColors[colorScheme].tint,
+        "color-primary": palette.primary,
+        "color-primary2": palette.primary2,
+        "color-background": palette.background,
+        "color-surface": palette.surface,
+        "color-card": palette.card,
+        "color-foreground": palette.foreground,
+        "color-muted": palette.muted,
+        "color-dim": palette.dim,
+        "color-border": palette.border,
+        "color-success": palette.success,
+        "color-warning": palette.warning,
+        "color-error": palette.error,
+        "color-tint": palette.tint,
       }),
-    [colorScheme]
+    [palette]
   );
 
-  const value = useMemo(
-    () => ({ colorScheme, themeMode, setThemeMode }),
-    [colorScheme, themeMode, setThemeMode]
+  const value = useMemo<ThemeContextValue>(
+    () => ({
+      colorScheme,
+      themeName,
+      palette,
+      setThemeName,
+      themeMode: themeName,
+      setThemeMode: setThemeName,
+    }),
+    [colorScheme, themeName, palette, setThemeName]
   );
 
   return (
     <ThemeContext.Provider value={value}>
-      <View style={[{ flex: 1 }, themeVariables]}>
+      <View style={[{ flex: 1, backgroundColor: palette.background }, themeVariables]}>
         {/* AsyncStorage 로드 완료 후에만 렌더링 — 색상 플래시(flash) 방지 */}
         {ready ? children : null}
       </View>

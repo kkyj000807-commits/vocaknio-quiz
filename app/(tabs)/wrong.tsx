@@ -280,7 +280,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       paddingVertical: 7,
     },
     hideBtnActive: {
-      backgroundColor: "rgba(108,99,255,0.15)",
+      backgroundColor: (colors.primary as string) + "26",
       borderColor: colors.primary,
     },
     hideBtnText: {
@@ -338,9 +338,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       lineHeight: 22,
     },
     infoBox: {
-      backgroundColor: "rgba(248,113,113,0.08)",
+      backgroundColor: (colors.error as string) + "14",
       borderWidth: 1,
-      borderColor: "rgba(248,113,113,0.2)",
+      borderColor: (colors.error as string) + "33",
       borderRadius: 12,
       padding: 12,
       marginBottom: 12,
@@ -351,9 +351,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       lineHeight: 18,
     },
     hideModeInfoBox: {
-      backgroundColor: "rgba(108,99,255,0.08)",
+      backgroundColor: (colors.primary as string) + "14",
       borderWidth: 1,
-      borderColor: "rgba(108,99,255,0.2)",
+      borderColor: (colors.primary as string) + "33",
       borderRadius: 12,
       padding: 12,
       marginBottom: 12,
@@ -367,7 +367,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     wordCard: {
       backgroundColor: colors.surface,
       borderWidth: 1,
-      borderColor: "rgba(248,113,113,0.2)",
+      borderColor: (colors.error as string) + "33",
       borderRadius: 14,
       padding: 16,
     },
@@ -395,9 +395,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
     },
     masterBtn: {
-      backgroundColor: "rgba(52,211,153,0.12)",
+      backgroundColor: (colors.success as string) + "1F",
       borderWidth: 1,
-      borderColor: "rgba(52,211,153,0.3)",
+      borderColor: (colors.success as string) + "4D",
       borderRadius: 10,
       paddingHorizontal: 10,
       paddingVertical: 5,
@@ -419,9 +419,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       gap: 6,
     },
     synTag: {
-      backgroundColor: "rgba(108,99,255,0.12)",
+      backgroundColor: (colors.primary as string) + "1F",
       borderWidth: 1,
-      borderColor: "rgba(108,99,255,0.25)",
+      borderColor: (colors.primary as string) + "40",
       borderRadius: 20,
       paddingHorizontal: 10,
       paddingVertical: 3,
@@ -431,9 +431,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.primary2 as string,
     },
     maskedArea: {
-      backgroundColor: "rgba(108,99,255,0.08)",
+      backgroundColor: (colors.primary as string) + "14",
       borderWidth: 1,
-      borderColor: "rgba(108,99,255,0.2)",
+      borderColor: (colors.primary as string) + "33",
       borderRadius: 8,
       paddingVertical: 12,
       alignItems: "center",

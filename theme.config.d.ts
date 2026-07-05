@@ -1,21 +1,55 @@
+type Swatch = { light: string; dark: string };
+
 export const themeColors: {
-  primary: { light: string; dark: string };
-  primary2: { light: string; dark: string };
-  background: { light: string; dark: string };
-  surface: { light: string; dark: string };
-  card: { light: string; dark: string };
-  foreground: { light: string; dark: string };
-  muted: { light: string; dark: string };
-  dim: { light: string; dark: string };
-  border: { light: string; dark: string };
-  success: { light: string; dark: string };
-  warning: { light: string; dark: string };
-  error: { light: string; dark: string };
-  tint: { light: string; dark: string };
+  primary: Swatch;
+  primary2: Swatch;
+  primarySoft: Swatch;
+  background: Swatch;
+  surface: Swatch;
+  card: Swatch;
+  foreground: Swatch;
+  muted: Swatch;
+  dim: Swatch;
+  border: Swatch;
+  success: Swatch;
+  successText: Swatch;
+  warning: Swatch;
+  warningText: Swatch;
+  error: Swatch;
+  errorText: Swatch;
+  tint: Swatch;
+};
+
+type AppThemePalette = {
+  primary: string;
+  primary2: string;
+  primarySoft: string;
+  background: string;
+  surface: string;
+  card: string;
+  foreground: string;
+  muted: string;
+  dim: string;
+  border: string;
+  success: string;
+  successText: string;
+  warning: string;
+  warningText: string;
+  error: string;
+  errorText: string;
+  tint: string;
+};
+
+export const appThemes: {
+  dark_navy: AppThemePalette;
+  clean_sky: AppThemePalette;
+  paper_blue: AppThemePalette;
+  exam_paper: AppThemePalette;
 };
 
 declare const themeConfig: {
   themeColors: typeof themeColors;
+  appThemes: typeof appThemes;
 };
 
 export default themeConfig;

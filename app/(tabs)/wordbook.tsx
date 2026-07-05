@@ -852,8 +852,8 @@ export default function WordbookScreen() {
             style={[
               styles.headerBtn,
               {
-                backgroundColor: masterView ? "#F59E0B" : colors.surface,
-                borderColor: masterView ? "#F59E0B" : colors.border,
+                backgroundColor: masterView ? (colors.warning as string) : colors.surface,
+                borderColor: masterView ? (colors.warning as string) : colors.border,
               },
             ]}
             onPress={() => {
@@ -872,9 +872,9 @@ export default function WordbookScreen() {
       {masterView && (
         <Animated.View
           entering={FadeIn.duration(200)}
-          style={[styles.maskBanner, { backgroundColor: "#F59E0B22", borderColor: "#F59E0B55" }]}
+          style={[styles.maskBanner, { backgroundColor: (colors.warning as string) + "22", borderColor: (colors.warning as string) + "55" }]}
         >
-          <Text style={[styles.maskBannerText, { color: "#F59E0B" }]}>
+          <Text style={[styles.maskBannerText, { color: colors.warningText as string }]}>
             ⭐ 마스터한 단어 보기 — ☆를 누르면 다시 본목록으로 돌아가요
           </Text>
         </Animated.View>

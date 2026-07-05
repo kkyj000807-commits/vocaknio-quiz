@@ -76,7 +76,7 @@ export default function ThemeLabScreen() {
                   },
                 ]}
                 onPress={() => {
-                  setThemeMode(scheme);
+                  setThemeMode(scheme === "dark" ? "dark_navy" : "paper_blue");
                   setLastAction(`Applied ${scheme} globally`);
                 }}
               >

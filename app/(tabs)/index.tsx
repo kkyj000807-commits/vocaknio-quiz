@@ -251,7 +251,7 @@ const RELATION_LABEL: Record<string, string> = {
 
 function relChipColor(rel: string, colors: ReturnType<typeof useColors>): string {
   if (rel === "exact") return colors.success as string;
-  if (rel === "near") return "#D9A62E";
+  if (rel === "near") return colors.warningText as string;
   if (rel === "contextual") return "#9D7BEC";
   if (rel === "unverified") return colors.dim as string;
   return colors.error as string;
@@ -411,8 +411,8 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
                 </View>
               );
             return (
-              <View style={[s.statusBadge, { borderColor: "#D9A62E66", backgroundColor: "#D9A62E1A" }]}>
-                <Text style={[s.statusBadgeText, { color: "#D9A62E" }]}>
+              <View style={[s.statusBadge, { borderColor: (colors.warningText as string) + "66", backgroundColor: (colors.warningText as string) + "1A" }]}>
+                <Text style={[s.statusBadgeText, { color: colors.warningText as string }]}>
                   ⚠️ 검수 필요 — 정답·해설 참고용
                 </Text>
               </View>
@@ -1422,7 +1422,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     trapText: {
       fontSize: 12.5,
-      color: "#D9A62E",
+      color: colors.warningText as string,
       lineHeight: 19,
       marginBottom: 10,
       fontWeight: "600",
@@ -1452,9 +1452,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.success as string,
     },
     bulbBox: {
-      backgroundColor: "rgba(251,191,36,0.10)",
+      backgroundColor: (colors.warning as string) + "1A",
       borderWidth: 1,
-      borderColor: "rgba(251,191,36,0.35)",
+      borderColor: (colors.warning as string) + "59",
       borderRadius: 10,
       padding: 12,
       marginBottom: 10,
@@ -1466,13 +1466,13 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     bulbMeta: {
       fontSize: 12,
-      color: "#D9A62E",
+      color: colors.warningText as string,
       fontWeight: "700",
       marginTop: 6,
     },
     bulbMore: {
       fontSize: 12,
-      color: "#D9A62E",
+      color: colors.warningText as string,
       fontWeight: "700",
       marginTop: 8,
     },

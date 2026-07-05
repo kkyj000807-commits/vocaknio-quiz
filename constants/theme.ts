@@ -7,6 +7,11 @@ export {
   Fonts,
   SchemeColors,
   ThemeColors,
+  AppThemes,
+  APP_THEME_META,
+  DEFAULT_APP_THEME,
+  schemeOfTheme,
+  type AppThemeName,
   type ColorScheme,
   type ThemeColorPalette,
 } from "@/lib/_core/theme";

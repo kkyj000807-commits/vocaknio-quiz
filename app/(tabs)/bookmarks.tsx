@@ -231,9 +231,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       gap: 6,
     },
     synTag: {
-      backgroundColor: "rgba(108,99,255,0.12)",
+      backgroundColor: (colors.primary as string) + "1F",
       borderWidth: 1,
-      borderColor: "rgba(108,99,255,0.25)",
+      borderColor: (colors.primary as string) + "40",
       borderRadius: 20,
       paddingHorizontal: 10,
       paddingVertical: 3,

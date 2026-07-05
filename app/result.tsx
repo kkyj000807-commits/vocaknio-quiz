@@ -270,7 +270,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     wrongItem: {
       backgroundColor: colors.card,
       borderWidth: 1,
-      borderColor: "rgba(248,113,113,0.25)",
+      borderColor: (colors.error as string) + "40",
       borderRadius: 12,
       padding: 14,
       marginBottom: 8,
@@ -304,9 +304,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       marginTop: 8,
     },
     synTag: {
-      backgroundColor: "rgba(108,99,255,0.12)",
+      backgroundColor: (colors.primary as string) + "1F",
       borderWidth: 1,
-      borderColor: "rgba(108,99,255,0.25)",
+      borderColor: (colors.primary as string) + "40",
       borderRadius: 20,
       paddingHorizontal: 10,
       paddingVertical: 3,
@@ -316,9 +316,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.primary2 as string,
     },
     btnWrong: {
-      backgroundColor: "rgba(248,113,113,0.12)",
+      backgroundColor: (colors.error as string) + "1F",
       borderWidth: 2,
-      borderColor: "rgba(248,113,113,0.35)",
+      borderColor: (colors.error as string) + "59",
     },
     btnWrongText: {
       fontSize: 14,

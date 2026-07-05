@@ -47,16 +47,6 @@ interface QuizQuestion {
   correct: string;
 }
 
-// 문제풀이 화면 가시성 팔레트 (다크 네이비 고정 스펙)
-const UI: Record<string, string> = {
-  textMain: "#F3F6FF",
-  textSub: "#B8C4DD",
-  textMuted: "#8FA0BF",
-  cardBg: "#101B3A",
-  border: "#283A66",
-  green: "#6EE7A8",
-};
-
 // 기출 출처 각주 (정답 유출 방지: 대학·연도만 "26동국대" 형식으로 추출)
 const UNIV_PATTERN =
   /(한양대|중앙대|동국대|서강대|성균관대|건국대|가천대|경희대|이화여대|한국외대|홍익대|숙명여대|국민대|숭실대|인하대|아주대|단국대)/g;
@@ -665,7 +655,7 @@ export default function QuizScreen() {
                     if (answered) {
                       if (choice === q.correct) {
                         choiceStyle = { ...s.choiceBtn, ...s.choiceCorrect };
-                        textStyle = { ...s.choiceText, color: UI.green };
+                        textStyle = { ...s.choiceText, color: colors.success as string };
                       } else if (idx === selectedChoice) {
                         choiceStyle = { ...s.choiceBtn, ...s.choiceWrong };
                         textStyle = { ...s.choiceText, color: colors.error };
@@ -679,7 +669,7 @@ export default function QuizScreen() {
                       >
                         <View style={[
                           s.choiceNum,
-                          answered && choice === q.correct && { backgroundColor: UI.green },
+                          answered && choice === q.correct && { backgroundColor: colors.success as string },
                           answered && idx === selectedChoice && choice !== q.correct && { backgroundColor: colors.error },
                         ]}>
                           <Text style={[
@@ -978,9 +968,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     questionCard: {
       marginHorizontal: 16,
-      backgroundColor: UI.cardBg,
+      backgroundColor: colors.surface as string,
       borderWidth: 1,
-      borderColor: UI.border,
+      borderColor: colors.border as string,
       borderRadius: 20,
       padding: 18,
       overflow: "hidden",
@@ -1002,7 +992,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     questionNum: {
       fontSize: 11,
-      color: UI.textMuted,
+      color: colors.dim as string,
       letterSpacing: 1,
       textTransform: "uppercase",
     },
@@ -1031,13 +1021,13 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     wordText: {
       fontSize: 30,
       fontWeight: "800",
-      color: UI.textMain,
+      color: colors.foreground as string,
       letterSpacing: -0.5,
       flex: 1,
     },
     ipaText: {
       fontSize: 14,
-      color: UI.textSub,
+      color: colors.muted as string,
       fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
       letterSpacing: 0.5,
       marginBottom: 12,
@@ -1045,7 +1035,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     hintText: {
       fontSize: 13.5,
       fontWeight: "600",
-      color: UI.textSub,
+      color: colors.muted as string,
       marginBottom: 12,
       lineHeight: 19,
     },
@@ -1069,9 +1059,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       gap: 10,
     },
     choiceBtn: {
-      backgroundColor: UI.cardBg,
+      backgroundColor: colors.surface as string,
       borderWidth: 2,
-      borderColor: UI.border,
+      borderColor: colors.border as string,
       borderRadius: 12,
       padding: 12,
       minHeight: 48,
@@ -1080,12 +1070,12 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       gap: 10,
     },
     choiceCorrect: {
-      borderColor: UI.green,
-      backgroundColor: "rgba(110,231,168,0.08)",
+      borderColor: colors.success as string,
+      backgroundColor: (colors.success as string) + "14",
     },
     choiceWrong: {
       borderColor: colors.error,
-      backgroundColor: "rgba(248,113,113,0.08)",
+      backgroundColor: (colors.error as string) + "14",
     },
     choiceNum: {
       width: 26,
@@ -1104,7 +1094,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     choiceText: {
       fontSize: 17,
       fontWeight: "700",
-      color: UI.textMain,
+      color: colors.foreground as string,
       flex: 1,
       lineHeight: 23,
     },
@@ -1115,7 +1105,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       borderRadius: 10,
       paddingVertical: 11,
       alignItems: "center",
-      backgroundColor: "rgba(255,255,255,0.03)",
+      backgroundColor: (colors.foreground as string) + "08",
     },
     skipBtnText: {
       fontSize: 13,
@@ -1124,9 +1114,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     skipResultBox: {
       marginTop: 12,
-      backgroundColor: "rgba(248,113,113,0.08)",
+      backgroundColor: (colors.error as string) + "14",
       borderWidth: 1,
-      borderColor: "rgba(248,113,113,0.25)",
+      borderColor: (colors.error as string) + "40",
       borderRadius: 10,
       padding: 14,
     },
@@ -1180,9 +1170,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.primary2 as string,
     },
     flashAnswer: {
-      backgroundColor: "rgba(52,211,153,0.08)",
+      backgroundColor: (colors.success as string) + "14",
       borderWidth: 1,
-      borderColor: "rgba(52,211,153,0.25)",
+      borderColor: (colors.success as string) + "40",
       borderRadius: 12,
       padding: 16,
       marginBottom: 14,
@@ -1206,12 +1196,12 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       alignItems: "center",
     },
     gradeBtnWrong: {
-      borderColor: "rgba(248,113,113,0.25)",
-      backgroundColor: "rgba(248,113,113,0.08)",
+      borderColor: (colors.error as string) + "40",
+      backgroundColor: (colors.error as string) + "14",
     },
     gradeBtnCorrect: {
-      borderColor: "rgba(52,211,153,0.25)",
-      backgroundColor: "rgba(52,211,153,0.08)",
+      borderColor: (colors.success as string) + "40",
+      backgroundColor: (colors.success as string) + "14",
     },
     gradeBtnText: {
       fontSize: 13,
@@ -1265,11 +1255,11 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     typeInputCorrect: {
       borderColor: colors.success,
-      backgroundColor: "rgba(52,211,153,0.08)",
+      backgroundColor: (colors.success as string) + "14",
     },
     typeInputWrong: {
       borderColor: colors.error,
-      backgroundColor: "rgba(248,113,113,0.08)",
+      backgroundColor: (colors.error as string) + "14",
     },
     submitBtn: {
       backgroundColor: colors.primary,
@@ -1286,7 +1276,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     typeWrongInfo: {
       marginTop: 8,
       padding: 10,
-      backgroundColor: "rgba(248,113,113,0.08)",
+      backgroundColor: (colors.error as string) + "14",
       borderRadius: 8,
     },
     typeWrongText: {
@@ -1295,9 +1285,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontWeight: "600",
     },
     explPanel: {
-      backgroundColor: UI.cardBg,
+      backgroundColor: colors.surface as string,
       borderWidth: 1,
-      borderColor: UI.border,
+      borderColor: colors.border as string,
       borderRadius: 12,
       padding: 16,
       marginTop: 14,
@@ -1329,7 +1319,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     explKor: {
       fontSize: 14,
-      color: UI.textSub,
+      color: colors.muted as string,
       marginBottom: 10,
       lineHeight: 20,
     },
@@ -1339,9 +1329,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       gap: 6,
     },
     synTag: {
-      backgroundColor: "rgba(108,99,255,0.12)",
+      backgroundColor: (colors.primary as string) + "1F",
       borderWidth: 1,
-      borderColor: "rgba(108,99,255,0.25)",
+      borderColor: (colors.primary as string) + "40",
       borderRadius: 20,
       paddingHorizontal: 10,
       paddingVertical: 3,
@@ -1365,25 +1355,25 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     choiceKorText: {
       fontSize: 13,
-      color: UI.textSub,
+      color: colors.muted as string,
       marginTop: 3,
       lineHeight: 18,
     },
     choiceSynText: {
       fontSize: 12,
-      color: UI.textMuted,
+      color: colors.dim as string,
       marginTop: 2,
       lineHeight: 16,
     },
     choiceMoreHint: {
       fontSize: 10.5,
-      color: UI.textMuted,
+      color: colors.dim as string,
       marginTop: 4,
     },
     masterBtn: {
-      backgroundColor: "rgba(251,191,36,0.12)",
+      backgroundColor: (colors.warning as string) + "1F",
       borderWidth: 1,
-      borderColor: "rgba(251,191,36,0.35)",
+      borderColor: (colors.warning as string) + "59",
       borderRadius: 12,
       paddingVertical: 12,
       alignItems: "center",
@@ -1391,6 +1381,6 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     masterBtnText: {
       fontSize: 13,
       fontWeight: "700",
-      color: "#F59E0B",
+      color: colors.warningText as string,
     },
   });

@@ -19,6 +19,47 @@ export function provenanceOf(id: string): Provenance {
   return EXAM_PROVENANCE[id] ?? "unverified";
 }
 
+// ─── 문항 검증 상태 (7단계 파이프라인) ───────────────────────────────────────
+// verified가 아닌 문항은 앱에서 "확정 정답"처럼 보여주면 안 된다.
+export type ValidationStatus =
+  | "raw_extracted"           // PDF에서 문항만 추출됨
+  | "number_only_unverified"  // 정답 번호만 있음, 선지 미연결
+  | "choice_linked"           // 정답 번호와 실제 선지 텍스트 연결됨
+  | "explanation_drafted"     // 구조 해설 초안 있음
+  | "verified"                // 문항·정답·해설 검수 완료 (골드 파이프라인 통과)
+  | "needs_review"            // 추출/해설/정답 확인 필요
+  | "blocked";                // 오류·복수정답·OCR 불량 — 학습 노출 금지
+
+/** 구조 해설(문맥 의미/핵심 단서/핵심 논리 라벨) 보유 여부 */
+function hasStructuredExplanation(expl: string): boolean {
+  return /(?:^|\n)(문맥 의미|핵심 단서|핵심 논리)\s*[:：]/.test(expl);
+}
+
+export function validationStatusOf(q: {
+  id: string;
+  explanation: string;
+  verification?: { status: string };
+}): ValidationStatus {
+  const p = provenanceOf(q.id);
+  if (p === "blocked") return "blocked";
+  const v = q.verification?.status;
+  if (v === "verified") return "verified";
+  if (v === "ambiguous" || v === "blocked") return "blocked";
+  if (p === "unverified") return "needs_review"; // 출처 미확인 → 검수 필요
+  if (hasStructuredExplanation(q.explanation)) return "explanation_drafted";
+  return "choice_linked"; // 정답 번호·선지 텍스트는 연결돼 있으나 해설이 간이 수준
+}
+
+export const VALIDATION_LABEL: Record<ValidationStatus, string> = {
+  raw_extracted: "추출 원본",
+  number_only_unverified: "정답 번호만",
+  choice_linked: "선지 연결 · 간이 해설",
+  explanation_drafted: "해설 초안",
+  verified: "검증 완료",
+  needs_review: "검수 필요",
+  blocked: "차단",
+};
+
 // ─── 어휘 데이터의 기출 출처 집계 ────────────────────────────────────────────
 // '진짜 기출'로 세는 조건: etym의 기출 노트에 학교명이 확인되는 항목만.
 // 학교명이 없는 '기출' 표기는 검수 대기(pending)로 분리한다.
