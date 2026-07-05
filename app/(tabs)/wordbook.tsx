@@ -34,10 +34,13 @@ import {
   saveMemo,
 } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
+import { EXAM_STATS } from "@/lib/exam-stats";
 import * as Haptics from "expo-haptics";
 import { useAudioPlayer, setAudioModeAsync } from "expo-audio";
 import { Modal } from "react-native";
 import conceptGroupsRaw from "@/assets/concept-groups.json";
+
+const IDIOM_COUNT = VOCAB.filter((v) => v.type === "idiom" || v.type === "phrase").length;
 
 // 개념(동의어) 묶음 데이터 — 같은 뜻 단어끼리 모아 암기
 interface ConceptGroup {
@@ -780,8 +783,10 @@ export default function WordbookScreen() {
       <View style={styles.header}>
         <View>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>단어장</Text>
+          {/* 전체 수가 기본 학습량처럼 보이지 않도록 기출·숙어를 구분해 표기 */}
           <Text style={[styles.headerSub, { color: colors.muted }]}>
-            총 {VOCAB.length.toLocaleString()}개 단어
+            기출 표제어 {(EXAM_STATS.examWords + EXAM_STATS.examIdioms).toLocaleString()} ·
+            숙어·표현 {IDIOM_COUNT.toLocaleString()} · 전체 {VOCAB.length.toLocaleString()}
           </Text>
         </View>
         {/* 버튼 그룹 — 좁은 화면에서 가로 스와이프로 스크롤 */}

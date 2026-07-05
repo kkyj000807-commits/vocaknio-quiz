@@ -1066,14 +1066,15 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       borderTopColor: colors.border,
     },
     choicesContainer: {
-      gap: 8,
+      gap: 10,
     },
     choiceBtn: {
       backgroundColor: UI.cardBg,
       borderWidth: 2,
       borderColor: UI.border,
       borderRadius: 12,
-      padding: 11,
+      padding: 12,
+      minHeight: 48,
       flexDirection: "row",
       alignItems: "center",
       gap: 10,

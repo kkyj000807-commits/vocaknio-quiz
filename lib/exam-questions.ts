@@ -19,12 +19,13 @@ export interface ExamQuestion {
   year: number;
   qNum: number;
   type: QuestionType;
-  passage?: string;       // 독해 지문
-  question: string;       // 문제 지문/질문 (밑줄 단어 포함)
+  passage?: string;       // 독해 지문 (영어 원문만)
+  question: string;       // 문제 지문/질문 — 영어 원문만, 한국어 번역 금지 (translationKo로 분리)
+  translationKo?: string; // 한국어 해석 — 정답 확인 후에만 표시
   underlined?: string;    // 밑줄 친 단어/구
   choices: string[];      // 선택지 (4~5개)
   answer: number;         // 정답 인덱스 (0-based)
-  explanation: string;    // 해설
+  explanation: string;    // 상세 해설 (정답→완성문장→문맥의미→단서→오답이유→해석→출처)
   points: number;         // 배점
 }
 

@@ -33,7 +33,7 @@ import {
   type ExamQuestion,
   type QuestionType,
 } from "@/lib/exam-questions";
-import { EXAM_STATS } from "@/lib/exam-stats";
+import { EXAM_STATS, provenanceOf } from "@/lib/exam-stats";
 
 // 웹(Safari)에서는 스와이프 제스처가 세로 스크롤을 막으므로 GestureDetector를 끼우지 않는다.
 // 네이티브(iOS/Android 앱)에서만 좌우 스와이프 제스처를 활성화한다.
@@ -354,9 +354,9 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
           </View>
         )}
 
-        {/* 문제 — 한글 번역은 정답 확인 전까지 숨김 (정답 유출 방지) */}
+        {/* 문제 — 영어 원문만 표시, 한국어 해석(translationKo)은 정답 확인 후 공개 */}
         <HighlightText
-          text={splitKorTranslation(q.question).en}
+          text={q.translationKo ? q.question : splitKorTranslation(q.question).en}
           underlined={q.underlined}
           baseStyle={s.questionText}
           highlightColor={typeColor}
@@ -423,20 +423,21 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
         </View>
 
         {/* 해설 (+ 정답 확인 후 우리말 해석 공개) */}
-        {answered && (
-          <Animated.View entering={FadeIn.duration(300)} style={s.explBox}>
-            {splitKorTranslation(q.question).ko ? (
-              <>
-                <Text style={s.explTitle}>우리말 해석</Text>
-                <Text style={[s.explText, { marginBottom: 10 }]}>
-                  {splitKorTranslation(q.question).ko}
-                </Text>
-              </>
-            ) : null}
-            <Text style={s.explTitle}>해설</Text>
-            <Text style={s.explText}>{q.explanation}</Text>
-          </Animated.View>
-        )}
+        {answered && (() => {
+          const ko = q.translationKo ?? splitKorTranslation(q.question).ko;
+          return (
+            <Animated.View entering={FadeIn.duration(300)} style={s.explBox}>
+              {ko ? (
+                <>
+                  <Text style={s.explTitle}>우리말 해석</Text>
+                  <Text style={[s.explText, { marginBottom: 10 }]}>{ko}</Text>
+                </>
+              ) : null}
+              <Text style={s.explTitle}>해설</Text>
+              <Text style={s.explText}>{q.explanation}</Text>
+            </Animated.View>
+          );
+        })()}
 
         {/* 다음 버튼 */}
         {answered && (
@@ -497,7 +498,8 @@ export default function ExamScreen() {
   const [result, setResult] = useState<{ correct: number; total: number } | null>(null);
 
   const filteredQuestions = useMemo(() => {
-    let qs = examQuestions;
+    // 차단(blocked) 문항은 절대 출제하지 않는다 (오류·복수정답·빈칸 유실 등)
+    let qs = examQuestions.filter((q) => provenanceOf(q.id) !== "blocked");
     if (schoolFilter !== "all") qs = qs.filter((q) => q.school === schoolFilter);
     if (yearFilter !== "all") qs = qs.filter((q) => q.year === yearFilter);
     if (typeFilter === "vocab") qs = qs.filter((q) => isVocab(q.type));
@@ -581,9 +583,16 @@ export default function ExamScreen() {
               </Text>
               <Text style={s.statChipLabel}>검수 대기</Text>
             </View>
+            <View style={s.statChip}>
+              <Text style={s.statChipNum}>{EXAM_STATS.reconstructedQuestions}</Text>
+              <Text style={s.statChipLabel}>재구성 문제</Text>
+            </View>
           </View>
           <Text style={s.statNote}>
-            재구성 연습문항 {EXAM_STATS.reconstructedQuestions}개는 기출 집계에서 제외
+            재구성 연습문항은 기출 집계에서 제외
+            {EXAM_STATS.blockedQuestions > 0
+              ? ` · 오류 문항 ${EXAM_STATS.blockedQuestions}개 출제 차단`
+              : ""}
           </Text>
         </View>
 
@@ -966,14 +975,14 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       marginBottom: 16,
     },
     passageText: {
-      fontSize: 13,
+      fontSize: 16,
       color: colors.foreground as string,
-      lineHeight: 20,
+      lineHeight: 25,
     },
     questionText: {
-      fontSize: 15,
+      fontSize: 18,
       color: colors.foreground as string,
-      lineHeight: 24,
+      lineHeight: 28,
       fontWeight: "600",
       marginBottom: 18,
     },
@@ -993,6 +1002,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       borderWidth: 1.5,
       borderRadius: 12,
       padding: 13,
+      minHeight: 48,
     },
     choiceNum: {
       width: 26,
@@ -1009,9 +1019,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.muted as string,
     },
     choiceText: {
-      fontSize: 14,
+      fontSize: 17,
       flex: 1,
-      lineHeight: 20,
+      lineHeight: 24,
     },
     explBox: {
       marginTop: 16,
