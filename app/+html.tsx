@@ -39,7 +39,8 @@ export default function Root({ children }: PropsWithChildren) {
           content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
         />
         <title>VOCA NEXUS</title>
-        <meta name="theme-color" content="#060D1F" />
+        {/* 기본 테마 paper_blue 초기 페인트 색 (로드 후 테마 프로바이더가 갱신) */}
+        <meta name="theme-color" content="#FFFDF7" />
         <link rel="apple-touch-icon" href={`${BASE}/apple-touch-icon.png`} />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />

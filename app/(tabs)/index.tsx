@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import {
   View,
   Text,
@@ -23,7 +23,8 @@ import * as Haptics from "expo-haptics";
 import { ScreenContainer } from "@/components/screen-container";
 import { SpeakerButton } from "@/components/speaker-button";
 import { useColors } from "@/hooks/use-colors";
-import { recordOneAnswer } from "@/lib/store";
+import { recordOneAnswer, loadBookmarks, toggleBookmark } from "@/lib/store";
+import { VOCAB, korGloss } from "@/lib/vocab";
 import {
   examQuestions,
   shuffleQuestions,
@@ -240,6 +241,25 @@ function parseExplanation(expl: string) {
   };
 }
 
+// ─── 선지 뜻 조회 (검수된 경로만: 자기 표제어 → syn-gloss 사전) ─────────────────
+// 다른 표제어의 동의어 배열에서 뜻을 가져오는 것은 오개념 버그라 금지.
+const WORD_ITEM = new Map(VOCAB.map((v) => [v.w.trim().toLowerCase(), v]));
+
+/** 단어형 선지인가 (문장·한국어 선지는 뜻 표시 대상 아님) */
+function isWordChoice(choice: string): boolean {
+  return /^[A-Za-z][A-Za-z '’\-()]{0,34}$/.test(choice.trim());
+}
+
+/** 선지 뜻 — {gloss, verified(표제어 일치 여부), num(단어장 num)} 또는 null(검수 필요) */
+function choiceGloss(choice: string): { gloss: string; num?: number } | null {
+  const key = choice.trim().toLowerCase().replace(/^[①②③④⑤]\s*/, "");
+  const item = WORD_ITEM.get(key);
+  if (item?.k_short) return { gloss: item.k_short, num: item.num };
+  const g = korGloss(key);
+  if (g) return { gloss: g };
+  return null;
+}
+
 // 선지 관계 배지 표기
 const RELATION_LABEL: Record<string, string> = {
   exact: "직접 동의어",
@@ -363,6 +383,29 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
   const s = styles(colors);
   const pct = Math.round((idx / questions.length) * 100);
   const typeColor = getTypeColor(q.type, colors);
+
+  // 구조화 해설의 "오답 이유: ① … ② …"를 선지 인덱스별로 분해 (비골드 문항용)
+  const wrongReasons = useMemo(() => {
+    const map: Record<number, string> = {};
+    const wrong = parseExplanation(q.explanation).wrong;
+    if (!wrong) return map;
+    for (const seg of wrong.split(/(?=[①②③④⑤])/)) {
+      const m = seg.match(/^([①②③④⑤])\s*([\s\S]*)$/);
+      if (m && m[2].trim()) map["①②③④⑤".indexOf(m[1])] = m[2].trim().replace(/[.。]\s*$/, "");
+    }
+    return map;
+  }, [q.explanation]);
+
+  // 선지 단어 → 단어장(북마크) 추가
+  const [bmSet, setBmSet] = useState<Set<number>>(new Set());
+  useEffect(() => {
+    loadBookmarks().then((b) => setBmSet(new Set(b)));
+  }, []);
+  const handleAddWordbook = useCallback(async (num: number) => {
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const list = await toggleBookmark(num);
+    setBmSet(new Set(list));
+  }, []);
 
   return (
     <SwipeWrapper enabled={swipeEnabled} gesture={swipeGesture}>
@@ -509,7 +552,16 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
                   <Text style={[s.choiceText, { color: textColor }]}>
                     {choice}
                   </Text>
-                  {/* 골드: 정답 확인 후 선지별 관계 배지 + 판정 이유 */}
+                  {/* 정답 확인 후: 모든 선지의 뜻 + 정답/오답 라벨 + 이유 공개
+                      (풀기 전에는 절대 노출하지 않음 — 정답 유출 방지) */}
+                  {answered && isWordChoice(choice) ? (() => {
+                    const g = choiceGloss(choice);
+                    return (
+                      <Text style={s.choiceGlossText}>
+                        {g ? g.gloss : "뜻 정보 검수 필요"}
+                      </Text>
+                    );
+                  })() : null}
                   {answered && ca ? (
                     <>
                       <View style={s.relRow}>
@@ -526,6 +578,10 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
                         {ca.reason}
                       </Text>
                     </>
+                  ) : answered && wrongReasons[ci] && !isCorrect ? (
+                    <Text style={s.choiceReason} numberOfLines={detailOpen ? 0 : 2}>
+                      오답 이유: {wrongReasons[ci]}
+                    </Text>
                   ) : null}
                 </View>
                 {/* 정답 확인 후 영어 선지 발음 듣기 */}
@@ -726,6 +782,54 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
                     }건 (${verif.reviewedBy.join("→")})`
                   : ""}
               </Text>
+            </Animated.View>
+          );
+        })()}
+
+        {/* 📚 선지 단어 정리 — 오답 선지까지 한 번에 흡수 */}
+        {answered && (() => {
+          const words = q.choices
+            .filter((c) => isWordChoice(c))
+            .map((c) => ({ choice: c, g: choiceGloss(c) }));
+          if (words.length === 0) return null;
+          return (
+            <Animated.View entering={FadeIn.duration(300)} style={s.wordSummaryBox}>
+              <Text style={s.wordSummaryTitle}>📚 선지 단어 정리</Text>
+              {words.map(({ choice, g }, i) => {
+                const inBook = g?.num != null && bmSet.has(g.num);
+                return (
+                  <View key={i} style={s.wordSummaryRow}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={s.wordSummaryWord}>
+                        {choice}
+                        {choice === q.choices[q.answer] ? (
+                          <Text style={{ color: colors.success as string }}>  ✓ 정답</Text>
+                        ) : null}
+                      </Text>
+                      <Text style={s.wordSummaryGloss}>
+                        {g ? g.gloss : "뜻 정보 검수 필요"}
+                      </Text>
+                    </View>
+                    {g?.num != null ? (
+                      <Pressable
+                        style={[
+                          s.wordAddBtn,
+                          inBook && {
+                            backgroundColor: (colors.primary as string) + "1F",
+                            borderColor: colors.primary as string,
+                          },
+                        ]}
+                        onPress={() => handleAddWordbook(g.num!)}
+                        hitSlop={6}
+                      >
+                        <Text style={[s.wordAddBtnText, inBook && { color: colors.primary as string }]}>
+                          {inBook ? "✓ 담김" : "+ 단어장"}
+                        </Text>
+                      </Pressable>
+                    ) : null}
+                  </View>
+                );
+              })}
             </Animated.View>
           );
         })()}
@@ -1426,6 +1530,54 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       lineHeight: 19,
       marginBottom: 10,
       fontWeight: "600",
+    },
+    choiceGlossText: {
+      fontSize: 12.5,
+      color: colors.muted as string,
+      marginTop: 3,
+      lineHeight: 17,
+    },
+    wordSummaryBox: {
+      marginTop: 14,
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 12,
+      padding: 14,
+    },
+    wordSummaryTitle: {
+      fontSize: 12,
+      fontWeight: "800",
+      color: colors.foreground as string,
+      marginBottom: 8,
+    },
+    wordSummaryRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 10,
+      paddingVertical: 6,
+    },
+    wordSummaryWord: {
+      fontSize: 14,
+      fontWeight: "700",
+      color: colors.foreground as string,
+    },
+    wordSummaryGloss: {
+      fontSize: 12,
+      color: colors.muted as string,
+      marginTop: 1,
+    },
+    wordAddBtn: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 8,
+      paddingHorizontal: 10,
+      paddingVertical: 6,
+    },
+    wordAddBtnText: {
+      fontSize: 11,
+      fontWeight: "700",
+      color: colors.dim as string,
     },
     evidenceBox: {
       backgroundColor: colors.surface,
