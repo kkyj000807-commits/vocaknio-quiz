@@ -31,6 +31,8 @@ import {
   getQuestionsByYear,
   getQuestionsByType,
   isGoldQuestion,
+  sectionOf,
+  type SectionType,
   type ExamQuestion,
   type QuestionType,
 } from "@/lib/exam-questions";
@@ -52,7 +54,7 @@ function SwipeWrapper({
 }
 
 type FilterYear = "all" | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 | 2026;
-type FilterType = "all" | "vocab" | "reading" | "logic";
+type FilterType = "all" | SectionType;
 type FilterSchool = "all" | "hanyang" | "sungkyunkwan" | "sogang" | "chungang" | "konkuk" | "gachon" | "logic";
 
 const SCHOOL_OPTIONS: { id: FilterSchool; label: string; icon: string; available: boolean }[] = [
@@ -77,27 +79,15 @@ const YEAR_OPTIONS: { id: FilterYear; label: string }[] = [
   { id: 2020, label: "2020" },
 ];
 
+// 섹션 = 지시문·요구 사고 기준 분류 (sectionOf) — 파일명/기존 라벨 아님
 const TYPE_OPTIONS: { id: FilterType; label: string; icon: string }[] = [
-  { id: "all",     label: "전체",   icon: "📚" },
-  { id: "vocab",   label: "어휘",   icon: "🔤" },
-  { id: "reading", label: "독해",   icon: "📖" },
-  { id: "logic",   label: "논리",   icon: "🔗" },
+  { id: "all",                 label: "전체",     icon: "📚" },
+  { id: "vocabulary",          label: "어휘",     icon: "🔤" },
+  { id: "sentence_completion", label: "논리완성", icon: "🔗" },
+  { id: "reading",             label: "독해",     icon: "📖" },
+  { id: "grammar",             label: "문법",     icon: "✏️" },
+  { id: "discourse",           label: "표현·담화", icon: "💬" },
 ];
-
-function isVocab(type: QuestionType) {
-  return type === "vocab-synonym" || type === "vocab-blank";
-}
-function isReading(type: QuestionType) {
-  return (
-    type === "reading-main" ||
-    type === "reading-vocab" ||
-    type === "reading-blank" ||
-    type === "reading-title"
-  );
-}
-function isLogic(type: QuestionType) {
-  return type === "logic-blank" || type === "grammar";
-}
 
 function getTypeLabel(type: QuestionType): string {
   switch (type) {
@@ -200,9 +190,11 @@ function HighlightText({
 }
 
 function getTypeColor(type: QuestionType, colors: ReturnType<typeof useColors>): string {
-  if (isVocab(type)) return colors.primary as string;
-  if (isReading(type)) return colors.success as string;
-  if (isLogic(type)) return colors.warning as string;
+  if (type === "vocab-synonym" || type === "vocab-blank" || type === "reading-vocab")
+    return colors.primary as string;
+  if (type === "reading-main" || type === "reading-title" || type === "reading-blank")
+    return colors.success as string;
+  if (type === "logic-blank" || type === "grammar") return colors.warning as string;
   return colors.muted as string;
 }
 
@@ -394,11 +386,38 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
 
       {/* 문제 카드 */}
       <Animated.View style={[s.card, cardAnim]}>
-        {/* 유형 배지 */}
-        <View style={[s.typeBadge, { backgroundColor: typeColor + "22", borderColor: typeColor + "55" }]}>
-          <Text style={[s.typeBadgeText, { color: typeColor }]}>
-            {q.year}년 {getTypeLabel(q.type)} · {q.points}점
-          </Text>
+        {/* 유형 배지 + 검수 상태 (정답 정보 없음) */}
+        <View style={s.badgeRow}>
+          <View style={[s.typeBadge, { backgroundColor: typeColor + "22", borderColor: typeColor + "55" }]}>
+            <Text style={[s.typeBadgeText, { color: typeColor }]}>
+              {q.year}년 {getTypeLabel(q.type)} · {q.points}점
+            </Text>
+          </View>
+          {(() => {
+            const p = provenanceOf(q.id);
+            const gold = isGoldQuestion(q) && q.verification?.status === "verified";
+            if (gold)
+              return (
+                <View style={[s.statusBadge, { borderColor: (colors.success as string) + "66", backgroundColor: (colors.success as string) + "1A" }]}>
+                  <Text style={[s.statusBadgeText, { color: colors.success as string }]}>
+                    ✓ 골드 검수 {q.verification?.grade}
+                  </Text>
+                </View>
+              );
+            if (p === "verified")
+              return (
+                <View style={[s.statusBadge, { borderColor: (colors.success as string) + "66", backgroundColor: (colors.success as string) + "1A" }]}>
+                  <Text style={[s.statusBadgeText, { color: colors.success as string }]}>✓ 원문 확인</Text>
+                </View>
+              );
+            return (
+              <View style={[s.statusBadge, { borderColor: "#D9A62E66", backgroundColor: "#D9A62E1A" }]}>
+                <Text style={[s.statusBadgeText, { color: "#D9A62E" }]}>
+                  ⚠️ 검수 필요 — 정답·해설 참고용
+                </Text>
+              </View>
+            );
+          })()}
         </View>
 
         {/* 지문 (독해) */}
@@ -774,9 +793,7 @@ export default function ExamScreen() {
     let qs = examQuestions.filter((q) => provenanceOf(q.id) !== "blocked");
     if (schoolFilter !== "all") qs = qs.filter((q) => q.school === schoolFilter);
     if (yearFilter !== "all") qs = qs.filter((q) => q.year === yearFilter);
-    if (typeFilter === "vocab") qs = qs.filter((q) => isVocab(q.type));
-    else if (typeFilter === "reading") qs = qs.filter((q) => isReading(q.type));
-    else if (typeFilter === "logic") qs = qs.filter((q) => isLogic(q.type));
+    if (typeFilter !== "all") qs = qs.filter((q) => sectionOf(q) === typeFilter);
     return qs;
   }, [yearFilter, typeFilter, schoolFilter]);
 
@@ -1225,13 +1242,29 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       borderRadius: 20,
       padding: 20,
     },
+    badgeRow: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 6,
+      marginBottom: 14,
+    },
     typeBadge: {
       alignSelf: "flex-start",
       borderWidth: 1,
       borderRadius: 8,
       paddingHorizontal: 10,
       paddingVertical: 4,
-      marginBottom: 14,
+    },
+    statusBadge: {
+      alignSelf: "flex-start",
+      borderWidth: 1,
+      borderRadius: 8,
+      paddingHorizontal: 10,
+      paddingVertical: 4,
+    },
+    statusBadgeText: {
+      fontSize: 11,
+      fontWeight: "700",
     },
     typeBadgeText: {
       fontSize: 11,

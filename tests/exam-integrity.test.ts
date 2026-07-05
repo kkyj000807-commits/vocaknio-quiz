@@ -10,7 +10,7 @@
  */
 import { describe, it, expect } from "vitest";
 
-import { examQuestions } from "@/lib/exam-questions";
+import { examQuestions, sectionOf } from "@/lib/exam-questions";
 import { provenanceOf } from "@/lib/exam-stats";
 
 // 실제 출제되는 문항 = 차단되지 않은 문항
@@ -75,5 +75,37 @@ describe("기출 문항 무결성", () => {
 
   it("출제 문항 수가 0이 아니어야 한다 (차단이 전량을 삼키지 않았는지)", () => {
     expect(served.length).toBeGreaterThan(50);
+  });
+
+  it("정답 번호는 항상 실제 선지 텍스트와 연결되어야 한다 (해설의 정답 단어 = choices[answer])", () => {
+    // 구조화 해설('정답: ① word(뜻)')이 있는 문항: 해설이 지목한 단어가 실제 정답 선지와 일치해야 함
+    const bad = served.filter((q) => {
+      const m = q.explanation.match(/(?:^|\n)정답\s*[:：]\s*[①②③④⑤]?\s*([A-Za-z][A-Za-z '-]*)/);
+      if (!m) return false; // 구조화 해설 없으면 검사 대상 아님
+      const claimed = m[1].trim().toLowerCase();
+      // 선지에 번호 기호(① 등)가 붙은 경우 제거 후 비교
+      const actual = (q.choices[q.answer] ?? "")
+        .replace(/^[①②③④⑤]\s*/, "")
+        .toLowerCase();
+      return !actual.startsWith(claimed) && !claimed.startsWith(actual);
+    });
+    expect(bad.map((q) => q.id)).toEqual([]);
+  });
+
+  it("모든 출제 문항이 5개 섹션 중 하나로 분류되어야 한다", () => {
+    const valid = ["vocabulary", "sentence_completion", "reading", "grammar", "discourse"];
+    const bad = served.filter((q) => !valid.includes(sectionOf(q)));
+    expect(bad.map((q) => q.id)).toEqual([]);
+  });
+
+  it("골드 verified 문항은 references가 1건 이상이어야 한다 (무근거 verified 금지)", () => {
+    const bad = examQuestions.filter((q) => {
+      if (q.verification?.status !== "verified") return false;
+      const refs = (q.choiceAnalysis ?? []).reduce(
+        (n, c) => n + (c.references?.length ?? 0), 0
+      );
+      return refs === 0;
+    });
+    expect(bad.map((q) => q.id)).toEqual([]);
   });
 });

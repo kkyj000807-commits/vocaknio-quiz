@@ -3712,6 +3712,56 @@ export function isGoldQuestion(q: ExamQuestion): boolean {
   return !!q.verification && !!q.choiceAnalysis && q.choiceAnalysis.length > 0;
 }
 
+// ─── 섹션 분류 (지시문·요구 사고 기준 — 파일명/기존 라벨 아님) ─────────────────
+export type SectionType =
+  | "vocabulary"          // 어휘: 밑줄 단어·표현의 의미 (synonym/closest in meaning)
+  | "sentence_completion" // 논리완성·빈칸완성 (문맥·논리·collocation·register)
+  | "reading"             // 독해: 주제·제목·요지·일치·추론·순서
+  | "grammar"             // 문법: 어법상 틀린 것
+  | "discourse";          // 표현/담화: 연결사·지시·어조
+
+// 지시문 감사 결과 수동 확정 (지시문이 형식상 빈칸이지만 실제로는 어휘 문제인 케이스 등)
+const SECTION_OVERRIDE: Record<string, SectionType> = {
+  "skku2022-33": "vocabulary",          // underlined "booked solid" means … (밑줄 의미)
+  "skku2022-34": "vocabulary",
+  "skku2022-44": "vocabulary",
+  "skku2022-35": "sentence_completion", // 지문 빈칸
+  "skku2022-45": "sentence_completion",
+  "skku2022-25": "sentence_completion",
+  "skku2022-26": "sentence_completion",
+  "skku2021-25": "sentence_completion",
+};
+
+const SECTION_BY_TYPE: Record<QuestionType, SectionType> = {
+  "vocab-synonym": "vocabulary",
+  "reading-vocab": "vocabulary",
+  "vocab-blank": "sentence_completion",
+  "logic-blank": "sentence_completion",
+  "reading-blank": "sentence_completion",
+  "reading-main": "reading",
+  "reading-title": "reading",
+  "grammar": "grammar",
+};
+
+/** 문항의 섹션 — 지시문 우선, 수동 확정 오버라이드, 마지막으로 유형 필드 */
+export function sectionOf(q: ExamQuestion): SectionType {
+  const ov = SECTION_OVERRIDE[q.id];
+  if (ov) return ov;
+  const t = `${q.question} ${q.underlined ?? ""}`;
+  if (/어법상|문법적으로/.test(t)) return "grammar";
+  if (/의미가 가장 가까운|뜻과 가장 가까운|closest in meaning|뜻으로 가장|underlined.*means/i.test(t))
+    return "vocabulary";
+  if (/주제|제목|요지|일치|무관한|순서|삽입|필자의 태도|글의 내용/.test(t)) return "reading";
+  if (/연결사|지시하는 것|가리키는 것|어조로 가장/.test(t)) return "discourse";
+  if (/빈칸|들어갈 (가장 )?(적절|알맞)|_{2,}/.test(t)) return "sentence_completion";
+  return SECTION_BY_TYPE[q.type];
+}
+
+/** 정답 선지 텍스트 — 정답 번호만 믿지 말고 항상 문자열로 연결 */
+export function correctAnswerText(q: ExamQuestion): string {
+  return q.choices[q.answer] ?? "";
+}
+
 // 학교별 필터링
 export function getQuestionsBySchool(school: string): ExamQuestion[] {
   return examQuestions.filter((q) => q.school === school);

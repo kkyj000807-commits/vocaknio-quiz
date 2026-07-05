@@ -134,7 +134,8 @@
   "logic-top24강-17": "reconstructed",
   "logic-top36강-20": "reconstructed",
   "logic-top35강-14": "reconstructed",
-  "logic-top24강-13": "reconstructed"
+  "logic-top24강-13": "reconstructed",
+  "logic-top23강-02": "reconstructed"
  },
  "verdicts": {
   "2026-35": {
@@ -677,9 +678,11 @@
    "reasons": []
   },
   "logic-top23강-02": {
-   "v": "correct",
+   "v": "inconsistent",
    "corrected": null,
-   "reasons": []
+   "reasons": [
+    "해설 정답(malevolence)과 저장 정답 인덱스 불일치 — 회귀 테스트 검출"
+   ]
   },
   "logic-top23강-03": {
    "v": "correct",
