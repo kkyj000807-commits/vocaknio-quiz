@@ -30,6 +30,7 @@ import {
   shuffleChoices,
   getQuestionsByYear,
   getQuestionsByType,
+  isGoldQuestion,
   type ExamQuestion,
   type QuestionType,
 } from "@/lib/exam-questions";
@@ -216,8 +217,11 @@ function splitKorTranslation(text: string): { en: string; ko: string | null } {
   };
 }
 
-// 구조화 해설 파서 — "정답:/완성 문장:/문맥 의미:/핵심 단서:/오답 이유:/해석:/출처:" 라벨 분리
-const EXPL_LABELS = ["정답", "완성 문장", "문맥 의미", "핵심 단서", "오답 이유", "해석", "출처"];
+// 구조화 해설 파서 — 라벨 분리 (정규화 7단계 + 골드 11단계 라벨)
+const EXPL_LABELS = [
+  "정답", "완성 문장", "문맥 의미", "핵심 단서", "오답 이유", "해석", "출처",
+  "핵심 논리", "근거 표현", "문법·논리·어조", "영영 정의", "정답 이유", "함정",
+];
 function parseExplanation(expl: string) {
   const get = (label: string): string | null => {
     const others = EXPL_LABELS.filter((l) => l !== label).join("|");
@@ -234,6 +238,36 @@ function parseExplanation(expl: string) {
     wrong: get("오답 이유"),
     trans: get("해석"),
     source: get("출처"),
+    // 골드 라벨
+    keyLogic: get("핵심 논리"),
+    evidenceSpan: get("근거 표현"),
+    grammarTone: get("문법·논리·어조"),
+    engDef: get("영영 정의"),
+    correctReason: get("정답 이유"),
+    trap: get("함정"),
+  };
+}
+
+// 선지 관계 배지 표기
+const RELATION_LABEL: Record<string, string> = {
+  exact: "직접 동의어",
+  near: "근접어",
+  contextual: "문맥상 최선답",
+  wrong: "오답",
+  unverified: "근거 부족",
+};
+
+function relChipColor(rel: string, colors: ReturnType<typeof useColors>): string {
+  if (rel === "exact") return colors.success as string;
+  if (rel === "near") return "#D9A62E";
+  if (rel === "contextual") return "#9D7BEC";
+  if (rel === "unverified") return colors.dim as string;
+  return colors.error as string;
+}
+function relChipStyle(rel: string, colors: ReturnType<typeof useColors>) {
+  return {
+    borderColor: relChipColor(rel, colors) + "66",
+    backgroundColor: relChipColor(rel, colors) + "1A",
   };
 }
 
@@ -250,6 +284,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
   const [selected, setSelected] = useState<number | null>(null);
   const [correct, setCorrect] = useState(0);
   const [detailOpen, setDetailOpen] = useState(false); // 전구 박스 '더보기' 접기
+  const [choicesRevealed, setChoicesRevealed] = useState(false); // 골드 빈칸: 의미 예측 후 선택지 공개
 
   const cardScale = useSharedValue(1);
   const cardTranslateX = useSharedValue(0);
@@ -317,6 +352,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
       setAnswered(false);
       setSelected(null);
       setDetailOpen(false);
+      setChoicesRevealed(false);
     });
   }, [idx, questions.length, correct, haptic, onFinish, slideToNext]);
 
@@ -393,9 +429,26 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
             </Text>
           )}
 
-        {/* 선택지 */}
+        {/* 골드 빈칸 문항: 선택지를 숨기고 의미 예측 먼저 (원하면 바로 공개) */}
+        {isGoldQuestion(q) && q.type.includes("blank") && !answered && !choicesRevealed ? (
+          <View style={s.predictBox}>
+            <Text style={s.predictTitle}>🧠 선택지를 보기 전에</Text>
+            <Text style={s.predictText}>
+              문단의 핵심을 파악하고, 빈칸에 들어갈 의미를 한국어나 쉬운 영어로
+              먼저 예측해 보세요. 예측이 끝나면 선택지를 확인합니다.
+            </Text>
+            <Pressable
+              style={s.predictBtn}
+              onPress={() => setChoicesRevealed(true)}
+            >
+              <Text style={s.predictBtnText}>선택지 보기 →</Text>
+            </Pressable>
+          </View>
+        ) : (
         <View style={s.choicesWrap}>
           {q.choices.map((choice, ci) => {
+            // 골드 문항: 선지 문자열로 choiceAnalysis 매칭 (셔플 안전)
+            const ca = q.choiceAnalysis?.find((c) => c.choice === choice);
             const isCorrect = ci === q.answer;
             const isSelected = ci === selected;
             let borderColor = colors.border as string;
@@ -433,17 +486,38 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
                     {["①", "②", "③", "④", "⑤"][ci]}
                   </Text>
                 </View>
-                <Text style={[s.choiceText, { color: textColor }]}>
-                  {choice}
-                </Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={[s.choiceText, { color: textColor }]}>
+                    {choice}
+                  </Text>
+                  {/* 골드: 정답 확인 후 선지별 관계 배지 + 판정 이유 */}
+                  {answered && ca ? (
+                    <>
+                      <View style={s.relRow}>
+                        <View style={[s.relChip, relChipStyle(ca.relation, colors)]}>
+                          <Text style={[s.relChipText, { color: relChipColor(ca.relation, colors) }]}>
+                            {RELATION_LABEL[ca.relation] ?? ca.relation}
+                          </Text>
+                        </View>
+                        {!ca.grammaticalFit ? (
+                          <Text style={s.relNote}>문법·문형 탈락</Text>
+                        ) : null}
+                      </View>
+                      <Text style={s.choiceReason} numberOfLines={detailOpen ? 0 : 2}>
+                        {ca.reason}
+                      </Text>
+                    </>
+                  ) : null}
+                </View>
                 {/* 정답 확인 후 영어 선지 발음 듣기 */}
                 {answered && /[A-Za-z]/.test(choice) && (
-                  <SpeakerButton text={choice} size={30} />
+                  <SpeakerButton text={choice} size={30} opacity={0.75} />
                 )}
               </Pressable>
             );
           })}
         </View>
+        )}
 
         {/* 해설 — 📖 원문 → ✅ 정답 복원 → 💡 전구 문맥 해설 → 해석 → 출처
             (정답 제출 전에는 어떤 번역·해설도 노출하지 않는다) */}
@@ -470,10 +544,17 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
               : prov === "reconstructed"
               ? "📖 재구성 예문 (기출 아님)"
               : "📖 예문 · 기출 원문 확인 필요";
+          const gold = isGoldQuestion(q);
+          const anal = q.analysis;
+          const verif = q.verification;
           return (
             <Animated.View entering={FadeIn.duration(300)} style={s.explBox}>
-              {parsed.answer ? (
-                <Text style={s.answerLine}>정답: {parsed.answer}</Text>
+              {/* ② 정답 + 한 줄 핵심 논리 */}
+              <Text style={s.answerLine}>
+                정답: {["①", "②", "③", "④", "⑤"][q.answer]} {answerText}
+              </Text>
+              {(verif?.keyLogic ?? parsed.keyLogic) ? (
+                <Text style={s.keyLogicText}>{verif?.keyLogic ?? parsed.keyLogic}</Text>
               ) : null}
 
               {/* 📖 원문 + ✅ 복원 */}
@@ -504,15 +585,56 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
                 </View>
               ) : null}
 
-              {/* 💡 전구 박스 — 핵심 해설 먼저, 오답 이유는 더보기 */}
-              {(parsed.meaning || parsed.clue || ev?.contextClues?.length) ? (
+              {/* ③ 메인포인트 (골드) */}
+              {gold && anal?.mainPoint ? (
+                <View style={s.evidenceBox}>
+                  <Text style={s.evidenceLabel}>📌 문단의 메인포인트</Text>
+                  <Text style={s.explText}>{anal.mainPoint}</Text>
+                </View>
+              ) : null}
+
+              {/* 💡 전구 박스 — ④근거 표현 ⑤표면/함의 ⑥비유·태도 */}
+              {(gold && anal) || parsed.meaning || parsed.clue || ev?.contextClues?.length ? (
                 <View style={s.bulbBox}>
-                  <Text style={s.bulbText}>
-                    💡 {[parsed.meaning, parsed.clue].filter(Boolean).join("\n단서: ")}
-                  </Text>
-                  {ev?.logicRelation ? (
-                    <Text style={s.bulbMeta}>논리 관계: {ev.logicRelation}</Text>
-                  ) : null}
+                  {gold && anal ? (
+                    <>
+                      <Text style={s.bulbText}>
+                        💡 근거: “{anal.evidenceSpan}”
+                        {anal.blankFunction ? `\n빈칸의 역할: ${anal.blankFunction}` : ""}
+                      </Text>
+                      {anal.contextualMeaning ? (
+                        <Text style={[s.bulbText, { marginTop: 6 }]}>
+                          문맥 의미: {anal.contextualMeaning}
+                        </Text>
+                      ) : null}
+                      {anal.impliedMeaning &&
+                      (anal.inferenceConfidence === "explicit" ||
+                        anal.inferenceConfidence === "strongly-implied") ? (
+                        <Text style={[s.bulbText, { marginTop: 6 }]}>
+                          언외적 함의: {anal.impliedMeaning}
+                        </Text>
+                      ) : null}
+                      {anal.figurative ? (
+                        <Text style={[s.bulbText, { marginTop: 6 }]}>
+                          비유: {anal.figurative.expression} — 문자적으로는 “
+                          {anal.figurative.literalMeaning}”, 이 문맥에서는 “
+                          {anal.figurative.contextualMeaning}”
+                        </Text>
+                      ) : null}
+                      <Text style={s.bulbMeta}>
+                        논리 관계: {anal.discourseRelation} · 어조: {anal.authorTone}
+                      </Text>
+                    </>
+                  ) : (
+                    <>
+                      <Text style={s.bulbText}>
+                        💡 {[parsed.meaning, parsed.clue].filter(Boolean).join("\n단서: ")}
+                      </Text>
+                      {ev?.logicRelation ? (
+                        <Text style={s.bulbMeta}>논리 관계: {ev.logicRelation}</Text>
+                      ) : null}
+                    </>
+                  )}
                   {detailOpen && parsed.wrong ? (
                     <Text style={[s.bulbText, { marginTop: 8 }]}>
                       오답 이유{"\n"}{parsed.wrong}
@@ -526,6 +648,31 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
                     </Pressable>
                   ) : null}
                 </View>
+              ) : null}
+
+              {/* ⑧ 영영 정의 + ⑪ 최강 경쟁 오답과의 차이 (골드) */}
+              {gold && (parsed.engDef || anal?.strongestRival) ? (
+                <View style={s.evidenceBox}>
+                  {parsed.engDef ? (
+                    <>
+                      <Text style={s.evidenceLabel}>영영 정의</Text>
+                      <Text style={s.explText}>{parsed.engDef}</Text>
+                    </>
+                  ) : null}
+                  {anal?.strongestRival && anal?.rivalRejectionReason ? (
+                    <>
+                      <Text style={[s.evidenceLabel, parsed.engDef ? { marginTop: 8 } : null]}>
+                        최강 경쟁 선지: {anal.strongestRival}
+                      </Text>
+                      <Text style={s.explText}>{anal.rivalRejectionReason}</Text>
+                    </>
+                  ) : null}
+                </View>
+              ) : null}
+
+              {/* ⑬ 함정 (골드) */}
+              {gold && verif?.trap && verif.trap !== "명시적 함정 없음" ? (
+                <Text style={s.trapText}>⚠️ 출제 함정: {verif.trap}</Text>
               ) : null}
 
               {/* 해석 (정답 제출 후에만) */}
@@ -544,7 +691,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
                 </>
               ) : null}
 
-              {/* 출처 */}
+              {/* ⑭ 출처 + 검수등급·근거 자료 */}
               <Text style={s.sourceLine}>
                 {parsed.source ??
                   (prov === "verified"
@@ -552,6 +699,13 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
                     : prov === "reconstructed"
                     ? "재구성 연습문항 (기출 아님)"
                     : "출처 검수 대기")}
+                {verif
+                  ? ` · 검수등급 ${verif.grade} · 근거 ${
+                      (q.choiceAnalysis ?? []).reduce(
+                        (n, c) => n + (c.references?.length ?? 0), 0
+                      )
+                    }건 (${verif.reviewedBy.join("→")})`
+                  : ""}
               </Text>
             </Animated.View>
           );
@@ -1166,7 +1320,79 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontSize: 15,
       fontWeight: "800",
       color: colors.success as string,
+      marginBottom: 4,
+    },
+    keyLogicText: {
+      fontSize: 13.5,
+      color: colors.foreground as string,
+      lineHeight: 20,
       marginBottom: 10,
+    },
+    predictBox: {
+      borderWidth: 1.5,
+      borderStyle: "dashed",
+      borderColor: colors.border as string,
+      borderRadius: 12,
+      padding: 18,
+      alignItems: "center",
+      gap: 10,
+    },
+    predictTitle: {
+      fontSize: 14,
+      fontWeight: "800",
+      color: colors.foreground as string,
+    },
+    predictText: {
+      fontSize: 12.5,
+      color: colors.dim as string,
+      lineHeight: 19,
+      textAlign: "center",
+    },
+    predictBtn: {
+      backgroundColor: colors.primary as string,
+      borderRadius: 10,
+      paddingVertical: 11,
+      paddingHorizontal: 22,
+      marginTop: 2,
+    },
+    predictBtnText: {
+      fontSize: 13,
+      fontWeight: "800",
+      color: "#fff",
+    },
+    relRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+      marginTop: 5,
+    },
+    relChip: {
+      borderWidth: 1,
+      borderRadius: 99,
+      paddingHorizontal: 8,
+      paddingVertical: 2,
+    },
+    relChipText: {
+      fontSize: 10.5,
+      fontWeight: "800",
+    },
+    relNote: {
+      fontSize: 10.5,
+      color: colors.error as string,
+      fontWeight: "700",
+    },
+    choiceReason: {
+      fontSize: 12,
+      color: colors.dim as string,
+      lineHeight: 17,
+      marginTop: 3,
+    },
+    trapText: {
+      fontSize: 12.5,
+      color: "#D9A62E",
+      lineHeight: 19,
+      marginBottom: 10,
+      fontWeight: "600",
     },
     evidenceBox: {
       backgroundColor: colors.surface,

@@ -20,6 +20,89 @@ export type SynonymRelation =
   | "contextual-equivalent"  // 해당 문맥에서만 정답 가능
   | "invalid";               // 정답으로 인정 불가 (차단 대상)
 
+// ─── 골드 문항 검수 스키마 (센텐스 컴플리션 개편 지침) ─────────────────────────
+
+/** 검증 근거 자료 — AI 기억은 근거가 아님. 확인하지 않은 출처 생성 금지. */
+export interface Reference {
+  title: string;
+  authorOrPublisher: string;
+  urlOrBibliography: string;
+  accessedAt: string;
+  supportedClaim: string;
+}
+
+/** 함의 신뢰도 — plausible/speculative 만으로 정답 결정 시 출제 금지 */
+export type InferenceConfidence =
+  | "explicit" | "strongly-implied" | "plausible" | "speculative";
+
+/** 비유적 표현 분석 — 문자 그대로만 번역 금지 */
+export interface FigurativeAnalysis {
+  expression: string;
+  literalMeaning: string;
+  contextualMeaning: string;
+  conceptualMapping: string;   // 예: "발전은 목적지를 향한 이동이다"
+  rhetoricalFunction: string;
+  evidence: string[];
+}
+
+/** 문항 분석 — 선택지를 보기 전에 문장이 요구하는 조건을 먼저 기록 (최종 지침 11절) */
+export interface QuestionAnalysis {
+  mainPoint?: string;             // 문단의 메인포인트 한 문장
+  requiredPartOfSpeech: string;   // 빈칸의 품사
+  grammarConstraint: string;      // 문형 조건
+  blankFunction?: string;         // 빈칸이 문단에서 수행하는 역할
+  discourseRelation:
+    | "cause" | "contrast" | "concession" | "addition"
+    | "example" | "conclusion" | "other";
+  polarity: "positive" | "negative" | "neutral" | "mixed";
+  literalMeaning?: string;        // 표면 의미
+  contextualMeaning?: string;     // 문맥 의미
+  impliedMeaning?: string;        // 언외적 함의 (실제 표현 근거 필수)
+  authorTone: string;             // 필자의 태도·어조 (authorStance)
+  presupposition?: string;        // 전제
+  inferenceTriggers?: string[];   // 함의를 유발하는 실제 표현들
+  inferenceConfidence?: InferenceConfidence;
+  semanticPlaceholder: string;    // 선택지 보기 전 예상 개념 (쉬운 영어/한국어)
+  evidenceSpan: string;           // 지문 내부 핵심 근거 표현
+  expectedRegister: string;       // 격식·분야
+  expectedCollocation: string;    // 기대 연어
+  strongestRival?: string;        // 가장 강한 경쟁 선지
+  rivalRejectionReason?: string;  // 그 선지가 덜 적절한 이유 (반박 증명)
+  figurative?: FigurativeAnalysis; // 비유 표현이 정답 판단에 관여할 때
+}
+
+/** 선택지별 독립 판정 — 단순 총점으로 정답 확정 금지, 즉시탈락 조건 우선 */
+export interface ChoiceAnalysis {
+  choice: string;                 // 선지 문자열로 매칭 (셔플되므로 인덱스 금지)
+  grammaticalFit: boolean;        // false면 즉시 탈락
+  semanticFit: number;            // 0~3
+  discourseFit: number;           // 0~3
+  pragmaticFit?: number;          // 0~3 (태도·함의 적합성)
+  collocationFit: number;         // 0~2
+  registerFit: number;            // 0~1
+  relation: "exact" | "near" | "contextual" | "wrong" | "unverified";
+  definition?: string;            // 실제 확인한 영영 정의
+  reason: string;                 // 이 선지가 정답/오답인 구체적 이유
+  references: Reference[];
+}
+
+/**
+ * 검수 판정 (최종 지침 10·11절).
+ * grade: A 공식정답 확인 / B 독립 답지 3+ 일치 + 언어학적 근거 / C 근거로 유일답 확정
+ *        / D 복수 방어 가능·근거 부족 / X 판정 불가. A~C만 정상 출제.
+ * references 없는 문항은 verified 불가.
+ */
+export interface QuestionVerification {
+  status: "verified" | "probable" | "ambiguous" | "blocked";
+  grade: "A" | "B" | "C" | "D" | "X";
+  reviewedBy: string[];           // 검수 역할 파이프라인 (연구자/풀이자/반론자/판정자)
+  reviewedAt: string;
+  sourceCommit?: string;          // 검수 시점 소스 커밋
+  dataVersion?: string;
+  trap?: string;                  // 출제자가 설계한 함정
+  keyLogic?: string;              // 정답 한 줄 핵심 논리
+}
+
 /** 기출 원문 증거 — 정답 제출 후에만 노출. 원문 미확보 시 만들어내지 않는다. */
 export interface ExamEvidence {
   originalSentenceEn?: string;  // 빈칸/밑줄이 있는 실제 기출 문장 (원문 그대로)
@@ -44,6 +127,10 @@ export interface ExamQuestion {
   answer: number;         // 정답 인덱스 (0-based)
   explanation: string;    // 상세 해설 (정답→완성문장→문맥의미→단서→오답이유→해석→출처)
   evidence?: ExamEvidence; // 기출 원문 증거 (정답 확인 후 전구 박스에 사용)
+  // ── 골드 검수 필드 (optional — 골드 문항부터 채움) ──
+  analysis?: QuestionAnalysis;
+  choiceAnalysis?: ChoiceAnalysis[];
+  verification?: QuestionVerification;
   points: number;         // 배점
 }
 
@@ -3581,6 +3668,7 @@ examQuestions.push(...logicQuestions);
 // 원본 리터럴은 보존하고, 검수 완료된 항목만 원문(영어)·한국어 해석·구조 해설로 덮는다.
 // (검수에서 정답 오류·복수정답·빈칸 유실로 판정된 문항은 provenance="blocked"로 출제 차단)
 import examNormalized from "@/assets/exam-normalized.json";
+import examGold from "@/assets/exam-gold.json";
 
 type NormOverlay = { question?: string; translationKo?: string; explanation?: string };
 const NORM = examNormalized as Record<string, NormOverlay>;
@@ -3590,6 +3678,38 @@ for (const q of examQuestions) {
   if (ov.question) q.question = ov.question;
   if (ov.translationKo) q.translationKo = ov.translationKo;
   if (ov.explanation) q.explanation = ov.explanation;
+}
+
+// ─── 골드 문항 오버레이 ───────────────────────────────────────────────────────
+// 역할 분담 검수(조사→풀이→반론→최종)를 통과한 문항의 전체 분석·판정·근거를 병합.
+// 정규화 오버레이보다 뒤에 적용되어 우선한다.
+type GoldOverlay = {
+  question?: string;
+  translationKo?: string;
+  explanation?: string;
+  answer?: number;
+  analysis?: QuestionAnalysis;
+  choiceAnalysis?: ChoiceAnalysis[];
+  verification?: QuestionVerification;
+  evidence?: ExamEvidence;
+};
+const GOLD = examGold as Record<string, GoldOverlay>;
+for (const q of examQuestions) {
+  const g = GOLD[q.id];
+  if (!g) continue;
+  if (g.question) q.question = g.question;
+  if (g.translationKo) q.translationKo = g.translationKo;
+  if (g.explanation) q.explanation = g.explanation;
+  if (typeof g.answer === "number") q.answer = g.answer;
+  if (g.analysis) q.analysis = g.analysis;
+  if (g.choiceAnalysis) q.choiceAnalysis = g.choiceAnalysis;
+  if (g.verification) q.verification = g.verification;
+  if (g.evidence) q.evidence = g.evidence;
+}
+
+/** 골드 검수 완료(분석·판정 보유) 문항 여부 */
+export function isGoldQuestion(q: ExamQuestion): boolean {
+  return !!q.verification && !!q.choiceAnalysis && q.choiceAnalysis.length > 0;
 }
 
 // 학교별 필터링
