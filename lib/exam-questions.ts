@@ -3577,6 +3577,21 @@ const logicQuestions: ExamQuestion[] = [
 ];
 examQuestions.push(...logicQuestions);
 
+// ─── 정규화 오버레이 적용 ─────────────────────────────────────────────────────
+// 원본 리터럴은 보존하고, 검수 완료된 항목만 원문(영어)·한국어 해석·구조 해설로 덮는다.
+// (검수에서 정답 오류·복수정답·빈칸 유실로 판정된 문항은 provenance="blocked"로 출제 차단)
+import examNormalized from "@/assets/exam-normalized.json";
+
+type NormOverlay = { question?: string; translationKo?: string; explanation?: string };
+const NORM = examNormalized as Record<string, NormOverlay>;
+for (const q of examQuestions) {
+  const ov = NORM[q.id];
+  if (!ov) continue;
+  if (ov.question) q.question = ov.question;
+  if (ov.translationKo) q.translationKo = ov.translationKo;
+  if (ov.explanation) q.explanation = ov.explanation;
+}
+
 // 학교별 필터링
 export function getQuestionsBySchool(school: string): ExamQuestion[] {
   return examQuestions.filter((q) => q.school === school);
