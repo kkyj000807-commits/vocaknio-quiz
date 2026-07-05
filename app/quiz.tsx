@@ -636,7 +636,7 @@ export default function QuizScreen() {
             <View style={s.wordRow}>
               <Text
                 style={[s.wordText, {
-                  fontSize: q.item.w.length <= 10 ? 40 : q.item.w.length <= 16 ? 30 : q.item.w.length <= 22 ? 24 : q.item.w.length <= 30 ? 18 : 14,
+                  fontSize: q.item.w.length <= 10 ? 30 : q.item.w.length <= 16 ? 25 : q.item.w.length <= 22 ? 21 : q.item.w.length <= 30 ? 17 : 13,
                 }]}
                 numberOfLines={1}
                 adjustsFontSizeToFit
@@ -694,8 +694,8 @@ export default function QuizScreen() {
                             style={[
                               textStyle,
                               // 긴 선지(한국어 뜻·복합형)는 잘리지 않게 단계적으로 축소
-                              choice.length > 22 && { fontSize: 18, lineHeight: 25 },
-                              choice.length > 44 && { fontSize: 15, lineHeight: 21 },
+                              choice.length > 26 && { fontSize: 15, lineHeight: 21 },
+                              choice.length > 48 && { fontSize: 13.5, lineHeight: 19 },
                             ]}
                             numberOfLines={4}
                           >
@@ -982,7 +982,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       borderWidth: 1,
       borderColor: UI.border,
       borderRadius: 20,
-      padding: 24,
+      padding: 18,
       overflow: "hidden",
     },
     flashOverlay: {
@@ -1001,7 +1001,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       marginBottom: 14,
     },
     questionNum: {
-      fontSize: 14,
+      fontSize: 11,
       color: UI.textMuted,
       letterSpacing: 1,
       textTransform: "uppercase",
@@ -1029,28 +1029,28 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       marginBottom: 4,
     },
     wordText: {
-      fontSize: 40,
+      fontSize: 30,
       fontWeight: "800",
       color: UI.textMain,
-      letterSpacing: -1,
+      letterSpacing: -0.5,
       flex: 1,
     },
     ipaText: {
-      fontSize: 20,
+      fontSize: 14,
       color: UI.textSub,
       fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
       letterSpacing: 0.5,
-      marginBottom: 16,
+      marginBottom: 12,
     },
     hintText: {
-      fontSize: 16,
+      fontSize: 13.5,
       fontWeight: "600",
       color: UI.textSub,
-      marginBottom: 14,
-      lineHeight: 23,
+      marginBottom: 12,
+      lineHeight: 19,
     },
     examTag: {
-      fontSize: 14,
+      fontSize: 11.5,
       color: colors.warning as string,
       marginTop: 2,
       marginBottom: 6,
@@ -1066,17 +1066,17 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       borderTopColor: colors.border,
     },
     choicesContainer: {
-      gap: 10,
+      gap: 8,
     },
     choiceBtn: {
       backgroundColor: UI.cardBg,
       borderWidth: 2,
       borderColor: UI.border,
       borderRadius: 12,
-      padding: 14,
+      padding: 11,
       flexDirection: "row",
       alignItems: "center",
-      gap: 12,
+      gap: 10,
     },
     choiceCorrect: {
       borderColor: UI.green,
@@ -1101,11 +1101,11 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.dim,
     },
     choiceText: {
-      fontSize: 24,
+      fontSize: 17,
       fontWeight: "700",
       color: UI.textMain,
       flex: 1,
-      lineHeight: 31,
+      lineHeight: 23,
     },
     skipBtn: {
       marginTop: 12,
@@ -1327,10 +1327,10 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
     },
     explKor: {
-      fontSize: 16,
+      fontSize: 14,
       color: UI.textSub,
       marginBottom: 10,
-      lineHeight: 23,
+      lineHeight: 20,
     },
     synTagRow: {
       flexDirection: "row",
@@ -1346,7 +1346,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       paddingVertical: 3,
     },
     synTagText: {
-      fontSize: 15,
+      fontSize: 12,
       color: colors.primary2 as string,
     },
     nextBtn: {
@@ -1363,21 +1363,21 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       letterSpacing: 0.5,
     },
     choiceKorText: {
-      fontSize: 16,
+      fontSize: 13,
       color: UI.textSub,
-      marginTop: 4,
-      lineHeight: 22,
+      marginTop: 3,
+      lineHeight: 18,
     },
     choiceSynText: {
-      fontSize: 15,
-      color: UI.textMuted,
-      marginTop: 3,
-      lineHeight: 20,
-    },
-    choiceMoreHint: {
       fontSize: 12,
       color: UI.textMuted,
-      marginTop: 5,
+      marginTop: 2,
+      lineHeight: 16,
+    },
+    choiceMoreHint: {
+      fontSize: 10.5,
+      color: UI.textMuted,
+      marginTop: 4,
     },
     masterBtn: {
       backgroundColor: "rgba(251,191,36,0.12)",

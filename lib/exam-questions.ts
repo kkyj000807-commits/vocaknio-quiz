@@ -1965,10 +1965,10 @@ const logicQuestions: ExamQuestion[] = [
     year: 2024,
     qNum: 11,
     type: "logic-blank",
-    question: `Despite his huge wealth Kamprad was typically known as a(n) businessman who lived the lifestyle he preached for his company (in which) executives travel on low-cost airlines and stay in budget hotels. 그의 엄청난 부에도 불구하고 캄프라드는 자신의 회사를 위해 그가 설교한 생활방식대로 살았던 검소한 사업가로 일반적으로 알려져 있는데， 그의 회사의 임원들은 저가항공사를 이용하고 저렴한 호텔에서 묵는다`,
+    question: `Despite his huge wealth Kamprad was typically known as a(n) ______ businessman who lived the lifestyle he preached for his company, in which executives travel on low-cost airlines and stay in budget hotels. 그의 엄청난 부에도 불구하고 캄프라드는 자신의 회사를 위해 그가 설교한 생활방식대로 살았던 검소한 사업가로 일반적으로 알려져 있는데， 그의 회사의 임원들은 저가항공사를 이용하고 저렴한 호텔에서 묵는다`,
     choices: ["frugal", "radical", "reclusive", "arrogant"],
-    answer: 2,
-    explanation: `[TOP2-4강] 빈칸에는 'reclusive(은둔한)'이 적절합니다. 문맥 힌트: n, in which`,
+    answer: 0,
+    explanation: `[TOP2-4강] 빈칸에는 'frugal(검소한)'이 적절합니다. 근거: Despite his huge wealth(막대한 부에도 불구하고) + 저가 항공(low-cost airlines)·저가 호텔(budget hotels) 문맥 → 부유하지만 '검소한' 사업가. reclusive(은둔한)는 사교성 관련으로 항공·호텔 근거와 무관.`,
     points: 2,
   },
   {

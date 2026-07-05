@@ -205,6 +205,17 @@ function getTypeColor(type: QuestionType, colors: ReturnType<typeof useColors>):
   return colors.muted as string;
 }
 
+// 재구성 문항 뒤에 붙은 한글 번역은 정답 힌트를 유출하므로 정답 확인 전엔 분리한다.
+// 한글이 앞부분(<30자)에 오는 것은 "밑줄 친 …" 같은 정상 지시문이므로 그대로 둔다.
+function splitKorTranslation(text: string): { en: string; ko: string | null } {
+  const i = text.search(/[가-힣]/);
+  if (i < 0 || i < 30) return { en: text, ko: null };
+  return {
+    en: text.slice(0, i).replace(/[ ,·\-–]+$/, "").trim(),
+    ko: text.slice(i).trim(),
+  };
+}
+
 // ─── 퀴즈 세션 컴포넌트 ──────────────────────────────────────────────────────
 interface QuizSessionProps {
   questions: ExamQuestion[];
@@ -343,14 +354,21 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
           </View>
         )}
 
-        {/* 문제 */}
+        {/* 문제 — 한글 번역은 정답 확인 전까지 숨김 (정답 유출 방지) */}
         <HighlightText
-          text={q.question}
+          text={splitKorTranslation(q.question).en}
           underlined={q.underlined}
           baseStyle={s.questionText}
           highlightColor={typeColor}
           isBold
         />
+        {/* 빈칸 위치 표시가 유실된 재구성 문항 안내 */}
+        {(q.type.includes("blank") || q.type.includes("logic")) &&
+          !/_{2,}|\(빈칸\)/.test(q.question) && (
+            <Text style={s.blankNote}>
+              ※ 빈칸 위치 표시가 없는 재구성 문항 — 문맥으로 판단하세요
+            </Text>
+          )}
 
         {/* 선택지 */}
         <View style={s.choicesWrap}>
@@ -404,9 +422,17 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
           })}
         </View>
 
-        {/* 해설 */}
+        {/* 해설 (+ 정답 확인 후 우리말 해석 공개) */}
         {answered && (
           <Animated.View entering={FadeIn.duration(300)} style={s.explBox}>
+            {splitKorTranslation(q.question).ko ? (
+              <>
+                <Text style={s.explTitle}>우리말 해석</Text>
+                <Text style={[s.explText, { marginBottom: 10 }]}>
+                  {splitKorTranslation(q.question).ko}
+                </Text>
+              </>
+            ) : null}
             <Text style={s.explTitle}>해설</Text>
             <Text style={s.explText}>{q.explanation}</Text>
           </Animated.View>
@@ -950,6 +976,12 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       lineHeight: 24,
       fontWeight: "600",
       marginBottom: 18,
+    },
+    blankNote: {
+      fontSize: 11,
+      color: colors.dim as string,
+      marginTop: -10,
+      marginBottom: 14,
     },
     choicesWrap: {
       gap: 10,
