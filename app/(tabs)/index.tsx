@@ -216,6 +216,27 @@ function splitKorTranslation(text: string): { en: string; ko: string | null } {
   };
 }
 
+// 구조화 해설 파서 — "정답:/완성 문장:/문맥 의미:/핵심 단서:/오답 이유:/해석:/출처:" 라벨 분리
+const EXPL_LABELS = ["정답", "완성 문장", "문맥 의미", "핵심 단서", "오답 이유", "해석", "출처"];
+function parseExplanation(expl: string) {
+  const get = (label: string): string | null => {
+    const others = EXPL_LABELS.filter((l) => l !== label).join("|");
+    const m = expl.match(
+      new RegExp(`(?:^|\\n)${label}\\s*[:：]\\s*([\\s\\S]*?)(?=\\n(?:${others})\\s*[:：]|$)`)
+    );
+    return m ? m[1].trim() : null;
+  };
+  return {
+    answer: get("정답"),
+    restored: get("완성 문장"),
+    meaning: get("문맥 의미"),
+    clue: get("핵심 단서"),
+    wrong: get("오답 이유"),
+    trans: get("해석"),
+    source: get("출처"),
+  };
+}
+
 // ─── 퀴즈 세션 컴포넌트 ──────────────────────────────────────────────────────
 interface QuizSessionProps {
   questions: ExamQuestion[];
@@ -228,6 +249,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
   const [answered, setAnswered] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
   const [correct, setCorrect] = useState(0);
+  const [detailOpen, setDetailOpen] = useState(false); // 전구 박스 '더보기' 접기
 
   const cardScale = useSharedValue(1);
   const cardTranslateX = useSharedValue(0);
@@ -294,6 +316,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
       setIdx((i) => i + 1);
       setAnswered(false);
       setSelected(null);
+      setDetailOpen(false);
     });
   }, [idx, questions.length, correct, haptic, onFinish, slideToNext]);
 
@@ -422,19 +445,114 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
           })}
         </View>
 
-        {/* 해설 (+ 정답 확인 후 우리말 해석 공개) */}
+        {/* 해설 — 📖 원문 → ✅ 정답 복원 → 💡 전구 문맥 해설 → 해석 → 출처
+            (정답 제출 전에는 어떤 번역·해설도 노출하지 않는다) */}
         {answered && (() => {
-          const ko = q.translationKo ?? splitKorTranslation(q.question).ko;
+          const ev = q.evidence;
+          const parsed = parseExplanation(q.explanation);
+          const prov = provenanceOf(q.id);
+          const answerText = q.choices[q.answer];
+          const ko = parsed.trans ?? q.translationKo ?? splitKorTranslation(q.question).ko;
+          // 원문: evidence 우선, 없으면 빈칸 유형의 문제 문장 자체가 원문
+          const enQ = q.translationKo ? q.question : splitKorTranslation(q.question).en;
+          const original =
+            ev?.originalSentenceEn ??
+            (q.type.includes("blank") && /_{2,}/.test(enQ) ? enQ : null);
+          // 복원문: 빈칸에 정답을 기계적으로 삽입 (문장 재작성 금지)
+          const restored =
+            ev?.restoredSentenceEn ??
+            (original && /_{2,}/.test(original)
+              ? original.replace(/_{2,}/, answerText)
+              : parsed.restored);
+          const srcLabel =
+            prov === "verified"
+              ? "📖 기출 원문"
+              : prov === "reconstructed"
+              ? "📖 재구성 예문 (기출 아님)"
+              : "📖 예문 · 기출 원문 확인 필요";
           return (
             <Animated.View entering={FadeIn.duration(300)} style={s.explBox}>
+              {parsed.answer ? (
+                <Text style={s.answerLine}>정답: {parsed.answer}</Text>
+              ) : null}
+
+              {/* 📖 원문 + ✅ 복원 */}
+              {original ? (
+                <View style={s.evidenceBox}>
+                  <Text style={s.evidenceLabel}>{srcLabel}</Text>
+                  <Text style={s.evidenceEn}>{original}</Text>
+                  {restored ? (
+                    <>
+                      <Text style={[s.evidenceLabel, { marginTop: 8 }]}>✅ 정답 복원</Text>
+                      <Text style={s.evidenceEn}>
+                        {restored.split(answerText).map((part, i, arr) => (
+                          <Text key={i}>
+                            {part}
+                            {i < arr.length - 1 && (
+                              <Text style={s.evidenceAnswer}>{answerText}</Text>
+                            )}
+                          </Text>
+                        ))}
+                      </Text>
+                    </>
+                  ) : null}
+                </View>
+              ) : restored ? (
+                <View style={s.evidenceBox}>
+                  <Text style={s.evidenceLabel}>✅ 정답 문장</Text>
+                  <Text style={s.evidenceEn}>{restored}</Text>
+                </View>
+              ) : null}
+
+              {/* 💡 전구 박스 — 핵심 해설 먼저, 오답 이유는 더보기 */}
+              {(parsed.meaning || parsed.clue || ev?.contextClues?.length) ? (
+                <View style={s.bulbBox}>
+                  <Text style={s.bulbText}>
+                    💡 {[parsed.meaning, parsed.clue].filter(Boolean).join("\n단서: ")}
+                  </Text>
+                  {ev?.logicRelation ? (
+                    <Text style={s.bulbMeta}>논리 관계: {ev.logicRelation}</Text>
+                  ) : null}
+                  {detailOpen && parsed.wrong ? (
+                    <Text style={[s.bulbText, { marginTop: 8 }]}>
+                      오답 이유{"\n"}{parsed.wrong}
+                    </Text>
+                  ) : null}
+                  {parsed.wrong ? (
+                    <Pressable onPress={() => setDetailOpen((v) => !v)} hitSlop={6}>
+                      <Text style={s.bulbMore}>
+                        {detailOpen ? "접기 ▲" : "오답 이유 더보기 ▼"}
+                      </Text>
+                    </Pressable>
+                  ) : null}
+                </View>
+              ) : null}
+
+              {/* 해석 (정답 제출 후에만) */}
               {ko ? (
                 <>
                   <Text style={s.explTitle}>우리말 해석</Text>
                   <Text style={[s.explText, { marginBottom: 10 }]}>{ko}</Text>
                 </>
               ) : null}
-              <Text style={s.explTitle}>해설</Text>
-              <Text style={s.explText}>{q.explanation}</Text>
+
+              {/* 구조화 실패 시 원본 해설 전문 표시 (정보 손실 방지) */}
+              {!parsed.meaning && !parsed.answer ? (
+                <>
+                  <Text style={s.explTitle}>해설</Text>
+                  <Text style={s.explText}>{q.explanation}</Text>
+                </>
+              ) : null}
+
+              {/* 출처 */}
+              <Text style={s.sourceLine}>
+                {parsed.source ??
+                  (prov === "verified"
+                    ? `${q.school ?? ""} ${q.year} ${q.qNum}번`
+                    : prov === "reconstructed"
+                    ? "재구성 연습문항 (기출 아님)"
+                    : "출처 검수 대기")}
+              </Text>
             </Animated.View>
           );
         })()}
@@ -1043,6 +1161,66 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontSize: 13,
       color: colors.foreground as string,
       lineHeight: 20,
+    },
+    answerLine: {
+      fontSize: 15,
+      fontWeight: "800",
+      color: colors.success as string,
+      marginBottom: 10,
+    },
+    evidenceBox: {
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 10,
+      padding: 12,
+      marginBottom: 10,
+    },
+    evidenceLabel: {
+      fontSize: 10,
+      fontWeight: "800",
+      color: colors.dim as string,
+      letterSpacing: 0.8,
+      marginBottom: 4,
+    },
+    evidenceEn: {
+      fontSize: 15,
+      color: colors.foreground as string,
+      lineHeight: 23,
+    },
+    evidenceAnswer: {
+      fontWeight: "800",
+      color: colors.success as string,
+    },
+    bulbBox: {
+      backgroundColor: "rgba(251,191,36,0.10)",
+      borderWidth: 1,
+      borderColor: "rgba(251,191,36,0.35)",
+      borderRadius: 10,
+      padding: 12,
+      marginBottom: 10,
+    },
+    bulbText: {
+      fontSize: 13.5,
+      color: colors.foreground as string,
+      lineHeight: 21,
+    },
+    bulbMeta: {
+      fontSize: 12,
+      color: "#D9A62E",
+      fontWeight: "700",
+      marginTop: 6,
+    },
+    bulbMore: {
+      fontSize: 12,
+      color: "#D9A62E",
+      fontWeight: "700",
+      marginTop: 8,
+    },
+    sourceLine: {
+      fontSize: 11.5,
+      color: colors.dim as string,
+      marginTop: 2,
     },
     nextBtn: {
       marginTop: 16,

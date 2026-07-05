@@ -13,6 +13,23 @@ export type QuestionType =
   | "reading-title"
   | "grammar";
 
+/** 동의어 정답의 관계 유형 — 정답 제출 후 해설에 표시 */
+export type SynonymRelation =
+  | "exact-synonym"          // 거의 그대로 교체 가능
+  | "near-synonym"           // 의미가 가깝지만 뉘앙스 차이 존재
+  | "contextual-equivalent"  // 해당 문맥에서만 정답 가능
+  | "invalid";               // 정답으로 인정 불가 (차단 대상)
+
+/** 기출 원문 증거 — 정답 제출 후에만 노출. 원문 미확보 시 만들어내지 않는다. */
+export interface ExamEvidence {
+  originalSentenceEn?: string;  // 빈칸/밑줄이 있는 실제 기출 문장 (원문 그대로)
+  restoredSentenceEn?: string;  // 빈칸에 정답을 넣은 복원 문장
+  contextClues?: string[];      // 정답을 결정하는 문맥 단서
+  logicRelation?: string;       // 대조·인과·양보·예시·부연·순접·역접·어조 전환
+  relation?: SynonymRelation;   // 동의어 문제의 정답 관계 유형
+  needsSourceCheck?: boolean;   // 기출 원문 확인 필요 (원문 미확보)
+}
+
 export interface ExamQuestion {
   id: string;
   school?: string;        // 학교명 (한양대, 성균관대 등)
@@ -26,6 +43,7 @@ export interface ExamQuestion {
   choices: string[];      // 선택지 (4~5개)
   answer: number;         // 정답 인덱스 (0-based)
   explanation: string;    // 상세 해설 (정답→완성문장→문맥의미→단서→오답이유→해석→출처)
+  evidence?: ExamEvidence; // 기출 원문 증거 (정답 확인 후 전구 박스에 사용)
   points: number;         // 배점
 }
 
