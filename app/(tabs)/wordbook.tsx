@@ -57,7 +57,39 @@ type ConceptRow =
   | { kind: "header"; id: string; label: string; kor: string; count: number; isCategory?: boolean; open?: boolean }
   | { kind: "word"; id: string; item: VocabItem };
 
+// 기출 표제어: etym 기출 노트에 학교명이 확인된 단어 (기출탭 집계와 동일 기준)
+const EXAM_UNIV_RE =
+  /(한양대|중앙대|동국대|서강대|성균관대|건국대|가천대|경희대|이화여대|한국외대|홍익대|숙명여대|국민대|숭실대|인하대|아주대|단국대)/;
+const EXAM_HEADWORD_NUMS: Set<number> = new Set(
+  VOCAB.filter((v) => {
+    const et = v.etym ?? "";
+    return et.includes("기출") && EXAM_UNIV_RE.test(et);
+  }).map((v) => v.num)
+);
+
+// "25한양대 · 22중앙대" 형식 기출 각주 (최대 3개, 정답 정보 없음)
+function examTagOf(item: VocabItem): string | null {
+  const et = item.etym ?? "";
+  if (!et.includes("기출")) return null;
+  const tags: string[] = [];
+  const seen = new Set<string>();
+  const re = new RegExp(EXAM_UNIV_RE.source, "g");
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(et)) !== null) {
+    const near = et.slice(Math.max(0, m.index - 25), m.index + m[1].length + 25);
+    const y = near.match(/20(\d{2})/);
+    const tag = y ? `${y[1]}${m[1]}` : m[1];
+    if (!seen.has(tag)) {
+      seen.add(tag);
+      tags.push(tag);
+    }
+    if (tags.length >= 3) break;
+  }
+  return tags.length ? tags.join(" · ") : null;
+}
+
 const RANGE_OPTIONS = [
+  { label: `⭐ 기출 (${EXAM_HEADWORD_NUMS.size.toLocaleString()})`, start: 0, end: VOCAB.length - 1, isIdiom: false, isExam: true },
   { label: "전체", start: 0, end: VOCAB.length - 1, isIdiom: false },
   { label: "숙어·표현", start: 0, end: VOCAB.length - 1, isIdiom: true },
   { label: "1~1000", start: 0, end: 999, isIdiom: false },
@@ -282,6 +314,11 @@ function WordCard({
             {item.k_short}
           </Text>
 
+          {/* 기출 출처 각주 (학교·연도만 — 정답 정보 없음) */}
+          {examTagOf(item) ? (
+            <Text style={s.examTagText}>📌 {examTagOf(item)}</Text>
+          ) : null}
+
           {/* 동의어 (한글뜻 병기) */}
           {(maskMode || expanded) && item.s.length > 0 && (
             <View style={s.synRow}>
@@ -379,6 +416,12 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       fontSize: 13,
       color: colors.muted,
       lineHeight: 19,
+      marginBottom: 4,
+    },
+    examTagText: {
+      fontSize: 10.5,
+      color: colors.warningText as string,
+      fontWeight: "700",
       marginBottom: 4,
     },
     // 마스크 박스 — 뜻을 가리는 영역
@@ -583,7 +626,10 @@ export default function WordbookScreen() {
   const filteredVocab = useMemo(() => {
     const range = RANGE_OPTIONS[selectedRange];
     let list: VocabItem[];
-    if (range.isIdiom) {
+    if ((range as { isExam?: boolean }).isExam) {
+      // ⭐ 기출 섹션: 학교 출처가 확인된 기출 표제어만
+      list = VOCAB.filter((v) => EXAM_HEADWORD_NUMS.has(v.num));
+    } else if (range.isIdiom) {
       list = VOCAB.filter((v) => v.type === "idiom" || v.type === "phrase");
     } else {
       list = VOCAB.slice(range.start, range.end + 1);
