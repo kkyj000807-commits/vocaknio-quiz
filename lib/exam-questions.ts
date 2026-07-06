@@ -113,6 +113,16 @@ export interface ExamEvidence {
   needsSourceCheck?: boolean;   // 기출 원문 확인 필요 (원문 미확보)
 }
 
+/**
+ * 선택지 — 정답 제출 전에는 text만 노출, 제출 후 koreanGloss·explanation 공개.
+ * koreanGloss는 검수된 경로(자기 표제어 → syn-gloss 사전)로만 채운다.
+ */
+export interface ExamChoice {
+  text: string;
+  koreanGloss?: string;   // 한국어 뜻 (없으면 UI에서 '뜻 정보 검수 필요' 표시)
+  explanation?: string;   // 이 선지가 정답/오답인 이유
+}
+
 export interface ExamQuestion {
   id: string;
   school?: string;        // 학교명 (한양대, 성균관대 등)
@@ -123,7 +133,7 @@ export interface ExamQuestion {
   question: string;       // 문제 지문/질문 — 영어 원문만, 한국어 번역 금지 (translationKo로 분리)
   translationKo?: string; // 한국어 해석 — 정답 확인 후에만 표시
   underlined?: string;    // 밑줄 친 단어/구
-  choices: string[];      // 선택지 (4~5개)
+  choices: ExamChoice[];  // 선택지 (4~5개)
   answer: number;         // 정답 인덱스 (0-based)
   explanation: string;    // 상세 해설 (정답→완성문장→문맥의미→단서→오답이유→해석→출처)
   evidence?: ExamEvidence; // 기출 원문 증거 (정답 확인 후 전구 박스에 사용)
@@ -134,7 +144,13 @@ export interface ExamQuestion {
   points: number;         // 배점
 }
 
-export const examQuestions: ExamQuestion[] = [
+// 원본 리터럴은 문자열 선지를 유지한다 (3,600줄 데이터 무수정 원칙) —
+// 모듈 로드 시 normalizeChoices()가 ExamChoice 객체로 변환·뜻·이유를 채운다.
+type RawExamQuestion = Omit<ExamQuestion, "choices"> & {
+  choices: (string | ExamChoice)[];
+};
+
+const rawExamQuestions: RawExamQuestion[] = [
   // ─────────────────────────────────────────────
   // 2026 어휘 동의어 (Q2~Q5)
   // ─────────────────────────────────────────────
@@ -1420,7 +1436,7 @@ export function shuffleChoices(question: ExamQuestion): ExamQuestion {
 // ─────────────────────────────────────────────
 // 성균관대 2022 기출 문제
 // ─────────────────────────────────────────────
-const skku2022Questions: ExamQuestion[] = [
+const skku2022Questions: RawExamQuestion[] = [
   {
     id: "skku2022-33",
     school: "성균관대",
@@ -1568,7 +1584,7 @@ In the end the Democratic-run legislature passed several gun laws, including a n
 // ─────────────────────────────────────────────
 // 한양대 기출 문제 (어휘 동의어)
 // ─────────────────────────────────────────────
-const hanyang2022Questions: ExamQuestion[] = [
+const hanyang2022Questions: RawExamQuestion[] = [
   {
     id: "hyu2022-21",
     school: "한양대",
@@ -1614,7 +1630,7 @@ const hanyang2022Questions: ExamQuestion[] = [
 // ─────────────────────────────────────────────
 // 성균관대 2021 기출 문제
 // ─────────────────────────────────────────────
-const skku2021Questions: ExamQuestion[] = [
+const skku2021Questions: RawExamQuestion[] = [
   {
     id: "skku2021-22",
     school: "성균관대",
@@ -1676,11 +1692,11 @@ const skku2021Questions: ExamQuestion[] = [
 ];
 
 // 전체 배열에 추가
-examQuestions.push(...skku2022Questions, ...hanyang2022Questions, ...skku2021Questions);
+rawExamQuestions.push(...skku2022Questions, ...hanyang2022Questions, ...skku2021Questions);
 
 // 논리완성 문제 데이터 (TOP2/TOP3 스타일앤톤 시리즈)
 // 출처: 스타일앤톤 편입 논리완성 강의 자료
-const logicQuestions: ExamQuestion[] = [
+const logicQuestions: RawExamQuestion[] = [
   {
     id: "logic-top23강-01",
     school: "logic",
@@ -3662,7 +3678,7 @@ const logicQuestions: ExamQuestion[] = [
     points: 2,
   },
 ];
-examQuestions.push(...logicQuestions);
+rawExamQuestions.push(...logicQuestions);
 
 // ─── 정규화 오버레이 적용 ─────────────────────────────────────────────────────
 // 원본 리터럴은 보존하고, 검수 완료된 항목만 원문(영어)·한국어 해석·구조 해설로 덮는다.
@@ -3672,7 +3688,7 @@ import examGold from "@/assets/exam-gold.json";
 
 type NormOverlay = { question?: string; translationKo?: string; explanation?: string };
 const NORM = examNormalized as Record<string, NormOverlay>;
-for (const q of examQuestions) {
+for (const q of rawExamQuestions) {
   const ov = NORM[q.id];
   if (!ov) continue;
   if (ov.question) q.question = ov.question;
@@ -3694,7 +3710,7 @@ type GoldOverlay = {
   evidence?: ExamEvidence;
 };
 const GOLD = examGold as Record<string, GoldOverlay>;
-for (const q of examQuestions) {
+for (const q of rawExamQuestions) {
   const g = GOLD[q.id];
   if (!g) continue;
   if (g.question) q.question = g.question;
@@ -3706,6 +3722,63 @@ for (const q of examQuestions) {
   if (g.verification) q.verification = g.verification;
   if (g.evidence) q.evidence = g.evidence;
 }
+
+// ─── 선지 정규화: string → ExamChoice (뜻·이유 채움) ─────────────────────────
+// koreanGloss: 검수된 경로만 — ① 자기 표제어 k_short ② syn-gloss 사전. 실패 시 undefined
+// ("뜻 정보 검수 필요"로 표시). 다른 표제어의 동의어 배열에서 뜻을 가져오는 것은 금지.
+import { VOCAB, korGloss } from "./vocab";
+
+const WORD_KSHORT = new Map<string, string>();
+for (const v of VOCAB) {
+  const key = v.w.trim().toLowerCase();
+  if (!WORD_KSHORT.has(key) && v.k_short) WORD_KSHORT.set(key, v.k_short);
+}
+
+/** 단어형 선지인가 (문장·한국어 선지는 뜻 표시 대상 아님) */
+export function isWordChoice(text: string): boolean {
+  return /^[A-Za-z][A-Za-z '’\-()]{0,34}$/.test(text.trim());
+}
+
+function glossFor(text: string): string | undefined {
+  if (!isWordChoice(text)) return undefined;
+  const key = text.trim().toLowerCase().replace(/^[①②③④⑤]\s*/, "");
+  return WORD_KSHORT.get(key) ?? korGloss(key) ?? undefined;
+}
+
+/** 구조 해설의 "오답 이유: ① … ② …"를 선지 인덱스별로 분해 */
+function splitWrongReasons(explanation: string): Record<number, string> {
+  const map: Record<number, string> = {};
+  const m = explanation.match(
+    /(?:^|\n)오답 이유\s*[:：]\s*([\s\S]*?)(?=\n(?:정답|완성 문장|문맥 의미|핵심 단서|해석|출처|핵심 논리|근거 표현|문법·논리·어조|영영 정의|정답 이유|함정)\s*[:：]|$)/
+  );
+  if (!m) return map;
+  for (const seg of m[1].split(/(?=[①②③④⑤])/)) {
+    const mm = seg.match(/^([①②③④⑤])\s*([\s\S]*)$/);
+    if (mm && mm[2].trim()) {
+      map["①②③④⑤".indexOf(mm[1])] = mm[2].trim().replace(/[.。]\s*$/, "");
+    }
+  }
+  return map;
+}
+
+function normalizeChoices(q: RawExamQuestion): ExamChoice[] {
+  const wrong = splitWrongReasons(q.explanation);
+  return q.choices.map((c, i) => {
+    const base: ExamChoice = typeof c === "string" ? { text: c } : { ...c };
+    if (!base.koreanGloss) base.koreanGloss = glossFor(base.text);
+    if (!base.explanation) {
+      // 골드 choiceAnalysis(선지 문자열 매칭) 우선, 없으면 구조 해설의 오답 이유
+      const ca = q.choiceAnalysis?.find((x) => x.choice === base.text);
+      base.explanation = ca?.reason ?? (i !== q.answer ? wrong[i] : undefined);
+    }
+    return base;
+  });
+}
+
+export const examQuestions: ExamQuestion[] = rawExamQuestions.map((q) => ({
+  ...q,
+  choices: normalizeChoices(q),
+}));
 
 /** 골드 검수 완료(분석·판정 보유) 문항 여부 */
 export function isGoldQuestion(q: ExamQuestion): boolean {
@@ -3759,7 +3832,7 @@ export function sectionOf(q: ExamQuestion): SectionType {
 
 /** 정답 선지 텍스트 — 정답 번호만 믿지 말고 항상 문자열로 연결 */
 export function correctAnswerText(q: ExamQuestion): string {
-  return q.choices[q.answer] ?? "";
+  return q.choices[q.answer]?.text ?? "";
 }
 
 // 학교별 필터링

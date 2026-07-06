@@ -84,7 +84,7 @@ describe("기출 문항 무결성", () => {
       if (!m) return false; // 구조화 해설 없으면 검사 대상 아님
       const claimed = m[1].trim().toLowerCase();
       // 선지에 번호 기호(① 등)가 붙은 경우 제거 후 비교
-      const actual = (q.choices[q.answer] ?? "")
+      const actual = (q.choices[q.answer]?.text ?? "")
         .replace(/^[①②③④⑤]\s*/, "")
         .toLowerCase();
       return !actual.startsWith(claimed) && !claimed.startsWith(actual);
@@ -95,6 +95,22 @@ describe("기출 문항 무결성", () => {
   it("모든 출제 문항이 5개 섹션 중 하나로 분류되어야 한다", () => {
     const valid = ["vocabulary", "sentence_completion", "reading", "grammar", "discourse"];
     const bad = served.filter((q) => !valid.includes(sectionOf(q)));
+    expect(bad.map((q) => q.id)).toEqual([]);
+  });
+
+  it("모든 선지는 text 필드를 가진 객체다 (정답 번호-선지 텍스트 연결 보장)", () => {
+    for (const q of examQuestions) {
+      for (const c of q.choices) {
+        expect(typeof c.text).toBe("string");
+        expect(c.text.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it("정답 제출 후 공개용 선지 뜻은 데이터에 존재하거나 undefined(검수 필요 표시)여야 하며 빈 문자열 금지", () => {
+    const bad = served.filter((q) =>
+      q.choices.some((c) => c.koreanGloss !== undefined && c.koreanGloss.trim() === "")
+    );
     expect(bad.map((q) => q.id)).toEqual([]);
   });
 

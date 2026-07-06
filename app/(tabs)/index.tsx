@@ -32,6 +32,7 @@ import {
   getQuestionsByYear,
   getQuestionsByType,
   isGoldQuestion,
+  isWordChoice,
   sectionOf,
   type SectionType,
   type ExamQuestion,
@@ -241,23 +242,11 @@ function parseExplanation(expl: string) {
   };
 }
 
-// ─── 선지 뜻 조회 (검수된 경로만: 자기 표제어 → syn-gloss 사전) ─────────────────
-// 다른 표제어의 동의어 배열에서 뜻을 가져오는 것은 오개념 버그라 금지.
+// ─── 선지 → 단어장 num 조회 (표제어 일치 시에만 단어장 추가 가능) ───────────────
 const WORD_ITEM = new Map(VOCAB.map((v) => [v.w.trim().toLowerCase(), v]));
 
-/** 단어형 선지인가 (문장·한국어 선지는 뜻 표시 대상 아님) */
-function isWordChoice(choice: string): boolean {
-  return /^[A-Za-z][A-Za-z '’\-()]{0,34}$/.test(choice.trim());
-}
-
-/** 선지 뜻 — {gloss, verified(표제어 일치 여부), num(단어장 num)} 또는 null(검수 필요) */
-function choiceGloss(choice: string): { gloss: string; num?: number } | null {
-  const key = choice.trim().toLowerCase().replace(/^[①②③④⑤]\s*/, "");
-  const item = WORD_ITEM.get(key);
-  if (item?.k_short) return { gloss: item.k_short, num: item.num };
-  const g = korGloss(key);
-  if (g) return { gloss: g };
-  return null;
+function wordbookNum(text: string): number | undefined {
+  return WORD_ITEM.get(text.trim().toLowerCase())?.num;
 }
 
 // 선지 관계 배지 표기
@@ -384,18 +373,6 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
   const pct = Math.round((idx / questions.length) * 100);
   const typeColor = getTypeColor(q.type, colors);
 
-  // 구조화 해설의 "오답 이유: ① … ② …"를 선지 인덱스별로 분해 (비골드 문항용)
-  const wrongReasons = useMemo(() => {
-    const map: Record<number, string> = {};
-    const wrong = parseExplanation(q.explanation).wrong;
-    if (!wrong) return map;
-    for (const seg of wrong.split(/(?=[①②③④⑤])/)) {
-      const m = seg.match(/^([①②③④⑤])\s*([\s\S]*)$/);
-      if (m && m[2].trim()) map["①②③④⑤".indexOf(m[1])] = m[2].trim().replace(/[.。]\s*$/, "");
-    }
-    return map;
-  }, [q.explanation]);
-
   // 선지 단어 → 단어장(북마크) 추가
   const [bmSet, setBmSet] = useState<Set<number>>(new Set());
   useEffect(() => {
@@ -510,7 +487,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
         <View style={s.choicesWrap}>
           {q.choices.map((choice, ci) => {
             // 골드 문항: 선지 문자열로 choiceAnalysis 매칭 (셔플 안전)
-            const ca = q.choiceAnalysis?.find((c) => c.choice === choice);
+            const ca = q.choiceAnalysis?.find((c) => c.choice === choice.text);
             const isCorrect = ci === q.answer;
             const isSelected = ci === selected;
             let borderColor = colors.border as string;
@@ -550,18 +527,15 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={[s.choiceText, { color: textColor }]}>
-                    {choice}
+                    {choice.text}
                   </Text>
                   {/* 정답 확인 후: 모든 선지의 뜻 + 정답/오답 라벨 + 이유 공개
                       (풀기 전에는 절대 노출하지 않음 — 정답 유출 방지) */}
-                  {answered && isWordChoice(choice) ? (() => {
-                    const g = choiceGloss(choice);
-                    return (
-                      <Text style={s.choiceGlossText}>
-                        {g ? g.gloss : "뜻 정보 검수 필요"}
-                      </Text>
-                    );
-                  })() : null}
+                  {answered && isWordChoice(choice.text) ? (
+                    <Text style={s.choiceGlossText}>
+                      {choice.koreanGloss ?? "뜻 정보 검수 필요"}
+                    </Text>
+                  ) : null}
                   {answered && ca ? (
                     <>
                       <View style={s.relRow}>
@@ -578,15 +552,15 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
                         {ca.reason}
                       </Text>
                     </>
-                  ) : answered && wrongReasons[ci] && !isCorrect ? (
+                  ) : answered && choice.explanation && !isCorrect ? (
                     <Text style={s.choiceReason} numberOfLines={detailOpen ? 0 : 2}>
-                      오답 이유: {wrongReasons[ci]}
+                      오답 이유: {choice.explanation}
                     </Text>
                   ) : null}
                 </View>
                 {/* 정답 확인 후 영어 선지 발음 듣기 */}
-                {answered && /[A-Za-z]/.test(choice) && (
-                  <SpeakerButton text={choice} size={30} opacity={0.75} />
+                {answered && /[A-Za-z]/.test(choice.text) && (
+                  <SpeakerButton text={choice.text} size={30} opacity={0.75} />
                 )}
               </Pressable>
             );
@@ -600,7 +574,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
           const ev = q.evidence;
           const parsed = parseExplanation(q.explanation);
           const prov = provenanceOf(q.id);
-          const answerText = q.choices[q.answer];
+          const answerText = q.choices[q.answer]?.text ?? "";
           const ko = parsed.trans ?? q.translationKo ?? splitKorTranslation(q.question).ko;
           // 원문: evidence 우선, 없으면 빈칸 유형의 문제 문장 자체가 원문
           const enQ = q.translationKo ? q.question : splitKorTranslation(q.question).en;
@@ -789,28 +763,29 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
         {/* 📚 선지 단어 정리 — 오답 선지까지 한 번에 흡수 */}
         {answered && (() => {
           const words = q.choices
-            .filter((c) => isWordChoice(c))
-            .map((c) => ({ choice: c, g: choiceGloss(c) }));
+            .map((c, i) => ({ c, i }))
+            .filter(({ c }) => isWordChoice(c.text));
           if (words.length === 0) return null;
           return (
             <Animated.View entering={FadeIn.duration(300)} style={s.wordSummaryBox}>
               <Text style={s.wordSummaryTitle}>📚 선지 단어 정리</Text>
-              {words.map(({ choice, g }, i) => {
-                const inBook = g?.num != null && bmSet.has(g.num);
+              {words.map(({ c, i }) => {
+                const num = wordbookNum(c.text);
+                const inBook = num != null && bmSet.has(num);
                 return (
                   <View key={i} style={s.wordSummaryRow}>
                     <View style={{ flex: 1 }}>
                       <Text style={s.wordSummaryWord}>
-                        {choice}
-                        {choice === q.choices[q.answer] ? (
+                        {c.text}
+                        {i === q.answer ? (
                           <Text style={{ color: colors.success as string }}>  ✓ 정답</Text>
                         ) : null}
                       </Text>
                       <Text style={s.wordSummaryGloss}>
-                        {g ? g.gloss : "뜻 정보 검수 필요"}
+                        {c.koreanGloss ?? "뜻 정보 검수 필요"}
                       </Text>
                     </View>
-                    {g?.num != null ? (
+                    {num != null ? (
                       <Pressable
                         style={[
                           s.wordAddBtn,
@@ -819,7 +794,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
                             borderColor: colors.primary as string,
                           },
                         ]}
-                        onPress={() => handleAddWordbook(g.num!)}
+                        onPress={() => handleAddWordbook(num)}
                         hitSlop={6}
                       >
                         <Text style={[s.wordAddBtnText, inBook && { color: colors.primary as string }]}>
