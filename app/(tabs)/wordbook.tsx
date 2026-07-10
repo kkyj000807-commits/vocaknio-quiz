@@ -20,6 +20,7 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from "react-native-reanimated";
+import { useRouter } from "expo-router";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { SpeakerButton } from "@/components/speaker-button";
@@ -534,6 +535,7 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
 // ─── 메인 화면 ────────────────────────────────────────────────────────────────
 export default function WordbookScreen() {
   const colors = useColors();
+  const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState("");
   // 검색 디바운스 — 9천 단어 필터링이 매 키입력마다 돌지 않도록 200ms 지연
@@ -767,6 +769,27 @@ export default function WordbookScreen() {
     return rows;
   }, [conceptMode, debouncedQuery, showOnlyBookmarks, bookmarks, expandedConcepts, masterView, mastered]);
 
+  // 현재 보고 있는 섹션 그대로 문제풀이 시작 (동의어 4택 20문항)
+  const handleQuickQuiz = useCallback(() => {
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const range = RANGE_OPTIONS[selectedRange];
+    let rangeId = "";
+    if (range.isExam) rangeId = "examhw";
+    else if (range.bookIdx != null) rangeId = `lt:${LOGICTREE_BOOKS[range.bookIdx].book}`;
+    else if (range.isIdiom) rangeId = "idioms";
+    else if (range.start === 0 && range.end === VOCAB.length - 1) rangeId = "all";
+    router.push({
+      pathname: "/quiz",
+      params: {
+        mode: "syn-choice",
+        rangeStart: String(range.start),
+        rangeEnd: String(range.end),
+        count: "20",
+        rangeId,
+      },
+    });
+  }, [selectedRange, router]);
+
   // LOGIC TREE 권 선택 시: num → 교재 원본 순번(1부터) 매핑
   const bookPosMap = useMemo(() => {
     const bookIdx = RANGE_OPTIONS[selectedRange].bookIdx;
@@ -885,6 +908,16 @@ export default function WordbookScreen() {
           style={{ flexShrink: 1 }}
           contentContainerStyle={styles.headerBtns}
         >
+          {/* 현재 섹션으로 바로 문제풀이 */}
+          <TouchableOpacity
+            style={[
+              styles.headerBtn,
+              { backgroundColor: colors.primary, borderColor: colors.primary },
+            ]}
+            onPress={handleQuickQuiz}
+          >
+            <Text style={[styles.headerBtnText, { color: "#fff" }]}>▶ 문제풀이</Text>
+          </TouchableOpacity>
           {/* 뜻 가리기 버튼 */}
           <TouchableOpacity
             style={[

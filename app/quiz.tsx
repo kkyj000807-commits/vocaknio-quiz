@@ -106,6 +106,12 @@ function buildQuestions(
   if (ltPool) {
     // 정병권 LOGIC TREE 권별 풀
     pool = ltPool.filter((v) => v.k && v.k.length > 2);
+  } else if (rangeId === 'examhw') {
+    // ⭐ 기출 표제어 풀 (학교 출처 확인된 단어만 — 단어장 기출 섹션과 동일 기준)
+    pool = VOCAB.filter((v) => {
+      const et = v.etym ?? "";
+      return et.includes("기출") && new RegExp(UNIV_PATTERN.source).test(et) && v.k && v.k.length > 2;
+    });
   } else if (rangeId === 'idioms') {
     pool = VOCAB.filter((v) => v.type === 'idiom' || v.type === 'phrase').filter((v) => v.k && v.k.length > 2);
   } else if (rangeId === 'smart') {
