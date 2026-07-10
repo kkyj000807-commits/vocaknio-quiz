@@ -154,6 +154,7 @@ function shuffle<T>(arr: T[]): T[] {
 // ─── 단어 카드 ────────────────────────────────────────────────────────────────
 function WordCard({
   item,
+  displayNum,
   bookmarks,
   onToggleBookmark,
   colors,
@@ -166,6 +167,8 @@ function WordCard({
   onEditMemo,
 }: {
   item: VocabItem;
+  /** 표시용 번호 — LOGIC TREE 권 섹션에서는 교재 원본 순번, 그 외에는 num */
+  displayNum?: number;
   bookmarks: Set<number>;
   onToggleBookmark: (num: number) => void;
   colors: ReturnType<typeof useColors>;
@@ -270,7 +273,7 @@ function WordCard({
     >
       <View style={s.topRow}>
         <View style={s.numBadge}>
-          <Text style={s.numText}>{item.num}</Text>
+          <Text style={s.numText}>{displayNum ?? item.num}</Text>
         </View>
         <View style={s.wordArea}>
           <Text
@@ -764,10 +767,22 @@ export default function WordbookScreen() {
     return rows;
   }, [conceptMode, debouncedQuery, showOnlyBookmarks, bookmarks, expandedConcepts, masterView, mastered]);
 
+  // LOGIC TREE 권 선택 시: num → 교재 원본 순번(1부터) 매핑
+  const bookPosMap = useMemo(() => {
+    const bookIdx = RANGE_OPTIONS[selectedRange].bookIdx;
+    if (bookIdx == null) return null;
+    const m = new Map<number, number>();
+    LOGICTREE_BOOKS[bookIdx].nums.forEach((n, i) => {
+      if (!m.has(n)) m.set(n, i + 1);
+    });
+    return m;
+  }, [selectedRange]);
+
   const renderItem = useCallback(
     ({ item }: { item: VocabItem }) => (
       <WordCard
         item={item}
+        displayNum={bookPosMap?.get(item.num)}
         bookmarks={bookmarks}
         onToggleBookmark={handleToggleBookmark}
         colors={colors}
@@ -780,7 +795,7 @@ export default function WordbookScreen() {
         onEditMemo={openMemo}
       />
     ),
-    [bookmarks, handleToggleBookmark, colors, maskMode, playHide, playReveal, mastered, handleToggleMaster, memos, openMemo]
+    [bookPosMap, bookmarks, handleToggleBookmark, colors, maskMode, playHide, playReveal, mastered, handleToggleMaster, memos, openMemo]
   );
 
   const keyExtractor = useCallback((item: VocabItem) => String(item.num), []);

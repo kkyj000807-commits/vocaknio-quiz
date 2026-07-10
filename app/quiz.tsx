@@ -37,6 +37,7 @@ import {
   makeSynKorLabel,
   synWithKor,
   korGloss,
+  logictreePool,
 } from "@/lib/vocab";
 import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords, recordOneAnswer, loadMastered, addMastered, loadWordStats, recordWordStat, type WordStat } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
@@ -101,7 +102,11 @@ function buildQuestions(
 ): QuizQuestion[] {
   // 숙어 범위 선택 시 숙어만 필터
   let pool: VocabItem[];
-  if (rangeId === 'idioms') {
+  const ltPool = rangeId ? logictreePool(rangeId) : null;
+  if (ltPool) {
+    // 정병권 LOGIC TREE 권별 풀
+    pool = ltPool.filter((v) => v.k && v.k.length > 2);
+  } else if (rangeId === 'idioms') {
     pool = VOCAB.filter((v) => v.type === 'idiom' || v.type === 'phrase').filter((v) => v.k && v.k.length > 2);
   } else if (rangeId === 'smart') {
     // 🎯 맞춤 출제: 오답률 높은 단어 > 아직 안 본 단어 > 기출 표시 단어 우선

@@ -28,6 +28,9 @@ const { width: SCREEN_W } = Dimensions.get("window");
 
 // DAY 범위만 필터 (d01~d20)
 const DAY_RANGES = RANGES.filter((r) => r.id.startsWith("d"));
+
+// 정병권 LOGIC TREE 권별 구간
+const LT_RANGES = RANGES.filter((r) => r.id.startsWith("lt:"));
 // 100단위 범위 (w1000~)
 const BULK_RANGES = RANGES.filter((r) => r.id.startsWith("w"));
 
@@ -237,6 +240,27 @@ export default function HomeScreen() {
               </Text>
               {selectedRange === "smart" && <View style={s.rangeCheckDot} />}
             </Pressable>
+          </View>
+
+          {/* 정병권 LOGIC TREE 권별 구간 */}
+          <Text style={s.rangeOrLabel}>📗 LOGIC TREE 권별</Text>
+          <View style={s.rangeGrid}>
+            {LT_RANGES.map((r) => {
+              const active = selectedRange === r.id;
+              return (
+                <Pressable
+                  key={r.id}
+                  style={[s.rangeCard, active && s.rangeCardActive]}
+                  onPress={() => { haptic(); setSelectedRange(r.id); }}
+                >
+                  {active && <View style={s.rangeGlow} />}
+                  <Text style={[s.rangeLabel, active && s.rangeLabelActive]}>
+                    {r.label.replace("LOGIC TREE ", "")}
+                  </Text>
+                  {active && <View style={s.rangeCheckDot} />}
+                </Pressable>
+              );
+            })}
           </View>
 
           <Text style={s.rangeOrLabel}>또는 특정 구간 선택</Text>

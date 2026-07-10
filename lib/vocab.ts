@@ -1,5 +1,6 @@
 import vocabRaw from "@/assets/vocab.json";
 import synGlossRaw from "@/assets/syn-gloss.json";
+import logictreeBooksRaw from "@/assets/logictree-books.json";
 
 export interface VocabItem {
   num: number;
@@ -225,7 +226,28 @@ export const RANGES = [
   { id: "w9500", label: "9501~9517번", start: 9500, end: 9516 },
   { id: "idioms", label: "숙어·표현",    start: 0,    end: VOCAB.length - 1 },
   { id: "all",    label: "전체",         start: 0,    end: VOCAB.length - 1 },
+  // ── 정병권 LOGIC TREE 권별 (교재 수록 어휘 풀) ──────────────────────────
+  { id: "lt:V101", label: "LOGIC TREE 101", start: 0, end: VOCAB.length - 1 },
+  { id: "lt:V201", label: "LOGIC TREE 201", start: 0, end: VOCAB.length - 1 },
+  { id: "lt:V301", label: "LOGIC TREE 301", start: 0, end: VOCAB.length - 1 },
+  { id: "lt:V401", label: "LOGIC TREE 401", start: 0, end: VOCAB.length - 1 },
+  { id: "lt:V501", label: "LOGIC TREE 501", start: 0, end: VOCAB.length - 1 },
+  { id: "lt:V502", label: "LOGIC TREE 502", start: 0, end: VOCAB.length - 1 },
+  { id: "lt:V601", label: "LOGIC TREE 601", start: 0, end: VOCAB.length - 1 },
 ];
+
+// ── 정병권 LOGIC TREE 권별 어휘 풀 (rangeId "lt:V101" → 해당 권 단어들) ─────────
+const LOGICTREE_RANGE_BOOKS = logictreeBooksRaw as { book: string; nums: number[] }[];
+const NUM_TO_ITEM: Map<number, VocabItem> = new Map(VOCAB.map((v) => [v.num, v]));
+
+export function logictreePool(rangeId: string): VocabItem[] | null {
+  if (!rangeId.startsWith("lt:")) return null;
+  const book = LOGICTREE_RANGE_BOOKS.find((b) => b.book === rangeId.slice(3));
+  if (!book) return null;
+  return book.nums
+    .map((n) => NUM_TO_ITEM.get(n))
+    .filter((v): v is VocabItem => !!v);
+}
 
 // 숙어 필터
 export const VOCAB_IDIOMS = VOCAB.filter(
