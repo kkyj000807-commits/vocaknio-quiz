@@ -100,7 +100,8 @@ const RANGE_OPTIONS = [
   { label: "5001~6000", start: 5000, end: 5999, isIdiom: false },
   { label: "6001~7000", start: 6000, end: 6999, isIdiom: false },
   { label: "7001~8000", start: 7000, end: 7999, isIdiom: false },
-  { label: "8001~9517", start: 8000, end: VOCAB.length - 1, isIdiom: false },
+  { label: "8001~10000", start: 8000, end: 9999, isIdiom: false },
+  { label: `10001~${VOCAB.length.toLocaleString()}`, start: 10000, end: VOCAB.length - 1, isIdiom: false },
 ];
 
 // 단어 길이에 따라 폰트 크기 동적 조절 — 웹(adjustsFontSizeToFit 미지원)에서도 잘림 방지
