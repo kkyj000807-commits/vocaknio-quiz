@@ -88,10 +88,31 @@ function examTagOf(item: VocabItem): string | null {
   return tags.length ? tags.join(" · ") : null;
 }
 
-const RANGE_OPTIONS = [
+// 정병권 LOGIC TREE 교재 — 권별 수록 순서(배열) 그대로 보존된 num 목록
+import logictreeBooksRaw from "@/assets/logictree-books.json";
+const LOGICTREE_BOOKS = logictreeBooksRaw as { book: string; nums: number[] }[];
+
+type RangeOption = {
+  label: string;
+  start: number;
+  end: number;
+  isIdiom: boolean;
+  isExam?: boolean;
+  bookIdx?: number; // LOGIC TREE 권 인덱스 — 교재 배열 순서 유지
+};
+
+const RANGE_OPTIONS: RangeOption[] = [
   { label: `⭐ 기출 (${EXAM_HEADWORD_NUMS.size.toLocaleString()})`, start: 0, end: VOCAB.length - 1, isIdiom: false, isExam: true },
   { label: "전체", start: 0, end: VOCAB.length - 1, isIdiom: false },
   { label: "숙어·표현", start: 0, end: VOCAB.length - 1, isIdiom: true },
+  // 정병권 LOGIC TREE 권별 섹션 (교재 수록 순서 그대로)
+  ...LOGICTREE_BOOKS.map((b, i) => ({
+    label: b.book.replace(/^V/, ""), // "101, 201, 301" 형식
+    start: 0,
+    end: VOCAB.length - 1,
+    isIdiom: false,
+    bookIdx: i,
+  })),
   { label: "1~1000", start: 0, end: 999, isIdiom: false },
   { label: "1001~2000", start: 1000, end: 1999, isIdiom: false },
   { label: "2001~3000", start: 2000, end: 2999, isIdiom: false },
@@ -627,9 +648,14 @@ export default function WordbookScreen() {
   const filteredVocab = useMemo(() => {
     const range = RANGE_OPTIONS[selectedRange];
     let list: VocabItem[];
-    if ((range as { isExam?: boolean }).isExam) {
+    if (range.isExam) {
       // ⭐ 기출 섹션: 학교 출처가 확인된 기출 표제어만
       list = VOCAB.filter((v) => EXAM_HEADWORD_NUMS.has(v.num));
+    } else if (range.bookIdx != null) {
+      // 정병권 LOGIC TREE: 교재 수록 순서(배열) 그대로 — 재정렬 금지
+      list = LOGICTREE_BOOKS[range.bookIdx].nums
+        .map((n) => VOCAB_BY_NUM.get(n))
+        .filter((v): v is VocabItem => !!v);
     } else if (range.isIdiom) {
       list = VOCAB.filter((v) => v.type === "idiom" || v.type === "phrase");
     } else {
