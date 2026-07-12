@@ -41,10 +41,15 @@ for (const item of VOCAB) {
   }
 }
 
-// word -> 동의어 집합
+// word -> 동의어 집합 (중복 표제어는 합집합 — 덮어쓰면 첫 항목 동의어가 금지망에서 빠져 복수정답 위험)
 const WORD_TO_SYNS: Map<string, Set<string>> = new Map();
 for (const item of VOCAB) {
-  WORD_TO_SYNS.set(item.w, new Set(item.s));
+  const prev = WORD_TO_SYNS.get(item.w);
+  if (prev) {
+    for (const s of item.s) prev.add(s);
+  } else {
+    WORD_TO_SYNS.set(item.w, new Set(item.s));
+  }
 }
 
 // word(소문자) -> VocabItem (표제어 조회용)
@@ -97,10 +102,12 @@ export function getAntonyms(item: VocabItem): string[] {
  * 이렇게 하면 정답과 의미적으로 겹치는 단어가 오답 보기에 나오지 않는다.
  */
 export function getForbiddenSyns(item: VocabItem): Set<string> {
-  const forbidden = new Set<string>(item.s);
+  // 같은 표제어의 모든 항목(중복 포함) 동의어 합집합에서 시작 — 복수정답 원천 차단
+  const allSyns = WORD_TO_SYNS.get(item.w) ?? new Set(item.s);
+  const forbidden = new Set<string>(allSyns);
   forbidden.add(item.w);
 
-  for (const syn of item.s) {
+  for (const syn of allSyns) {
     const siblingWords = SYN_TO_WORDS.get(syn);
     if (!siblingWords) continue;
     for (const siblingWord of siblingWords) {

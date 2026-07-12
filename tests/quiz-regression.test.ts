@@ -140,3 +140,30 @@ describe("생성 문항 정답 유일성", () => {
     }
   });
 });
+
+// ─── 복수정답 금지: 대량 생성 시뮬레이션 ─────────────────────────────────────
+describe("생성 문항 복수정답 금지 (전 항목 합집합 기준)", () => {
+  it("500문항 시뮬레이션: 오답이 정답 단어의 동의어(중복 표제어 포함)면 실패", () => {
+    const byW = new Map<string, Set<string>>();
+    for (const v of VOCAB) {
+      const p = byW.get(v.w.toLowerCase()) ?? new Set<string>();
+      v.s.forEach((s) => p.add(s.toLowerCase()));
+      byW.set(v.w.toLowerCase(), p);
+    }
+    const pool = VOCAB_WITH_SYNONYMS;
+    for (let i = 0; i < 500; i++) {
+      const item = pool[(i * 7919) % pool.length];
+      const correct = item.s[0];
+      const ds = getSynDistractors(item, correct, 3);
+      const synsAll = byW.get(item.w.toLowerCase())!;
+      for (const d of ds) {
+        // 오답이 같은 표제어의 어떤 항목의 동의어와도 겹치면 복수정답
+        expect(
+          synsAll.has(d.toLowerCase()),
+          `${item.w}: 오답 '${d}'가 동의어와 충돌`
+        ).toBe(false);
+        expect(d.toLowerCase()).not.toBe(item.w.toLowerCase());
+      }
+    }
+  });
+});
