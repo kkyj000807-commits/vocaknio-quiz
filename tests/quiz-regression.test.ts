@@ -167,3 +167,25 @@ describe("생성 문항 복수정답 금지 (전 항목 합집합 기준)", () =
     }
   });
 });
+
+
+describe("한국어 뜻 모드 복수정답 금지", () => {
+  it("한국어 뜻 모드 500문항 시뮬레이션: 오답 뜻이 정답 뜻과 동일하거나 동의어 항목의 뜻이면 실패", () => {
+    const pool = VOCAB.filter((v) => v.k && v.k.length > 2);
+    for (let i = 0; i < 500; i++) {
+      const item = pool[(i * 7919) % pool.length];
+      const ds = getKorDistractors(item, pool, 3);
+      const forbidden = getForbiddenSyns(item);
+      for (const d of ds) {
+        expect(d).not.toBe(item.k);
+        expect(d).not.toBe(item.k_short);
+        // 오답 뜻의 주인이 정답과 동의어 그룹을 공유하면 복수정답
+        const owner = VOCAB.find((v) => v.k === d);
+        if (owner) {
+          const overlap = owner.s.some((s) => forbidden.has(s));
+          expect(overlap, `${item.w}: 오답 뜻 '${d.slice(0, 20)}'(${owner.w})가 동의어군 공유`).toBe(false);
+        }
+      }
+    }
+  });
+});
