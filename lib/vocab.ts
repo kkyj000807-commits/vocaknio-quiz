@@ -288,6 +288,41 @@ export function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+// ─── 한글뜻 겹침 차단 (중복정답 2차 방어선) ─────────────────────────────────
+// 동의어 그래프에 연결이 없어도 한글뜻 어간이 겹치면 의미상 정답일 수 있으므로 오답 금지.
+// 예: 정답 뜻 "완화하다" ↔ 후보 뜻 "완화시키다" → 어간 '완화' 공유 → 차단.
+function korStemTokens(text: string | null | undefined): Set<string> {
+  const out = new Set<string>();
+  if (!text) return out;
+  for (const chunk of text.split(/[^가-힣]+/)) {
+    if (chunk.length < 2) continue;
+    out.add(chunk.slice(0, 2));
+    if (chunk.length >= 3) out.add(chunk.slice(0, 3));
+  }
+  return out;
+}
+
+// 뜻 겹침 판정에서 무시할 범용 어간 (기능어 — 이것만으로는 같은 뜻이 아님)
+const GENERIC_STEMS = new Set([
+  "하다", "하는", "되다", "되는", "있다", "있는", "없다", "없는", "만들", "시키",
+  "것을", "사람", "상태", "정도", "매우", "아주", "위해", "대해", "~에", "~을",
+]);
+
+function stemsOf(text: string | null | undefined): Set<string> {
+  const s = korStemTokens(text);
+  for (const g of GENERIC_STEMS) s.delete(g);
+  return s;
+}
+
+/** 두 한글 뜻이 유의미한 어간을 공유하는가 (겹치면 복수정답 위험) */
+export function korMeaningOverlaps(a: string | null | undefined, b: string | null | undefined): boolean {
+  if (!a || !b) return false;
+  const ta = stemsOf(a);
+  if (ta.size === 0) return false;
+  for (const tok of stemsOf(b)) if (ta.has(tok)) return true;
+  return false;
+}
+
 /**
  * 반의어 방향(반대 의미) 후보 목록: 반의어 자체 + 반의어 표제어의 동의어들.
  * 정답과 의미가 겹치는 단어(forbidden)는 호출부에서 걸러진다.
@@ -346,11 +381,12 @@ export function getSynDistractors(
     }
   }
 
-  // 무관 단어: 반의어 방향도 아니고 의미도 겹치지 않는 단어로 나머지 자리 채움
+  // 무관 단어: 반의어 방향 아님 + 의미 그래프 비연결 + **한글뜻 어간도 비겹침**
   if (distractors.length < count) {
     const pool = shuffle(ALL_SYNONYMS);
     for (const syn of pool) {
-      if (!forbidden.has(syn) && !antSet.has(syn)) {
+      if (!forbidden.has(syn) && !antSet.has(syn) &&
+          !korMeaningOverlaps(target.k, korGloss(syn))) {
         distractors.push(syn);
         forbidden.add(syn);
       }
@@ -358,13 +394,14 @@ export function getSynDistractors(
     }
   }
 
-  // 풀이 부족한 극단적 케이스 - 단어 자체(w)로 보충
+  // 풀이 부족한 극단적 케이스 - 단어 자체(w)로 보충 (뜻 겹침 검사 유지)
   if (distractors.length < count) {
-    const wordPool = shuffle(VOCAB.map((v) => v.w));
-    for (const w of wordPool) {
-      if (!forbidden.has(w) && distractors.length < count) {
-        distractors.push(w);
-        forbidden.add(w);
+    const wordPool = shuffle(VOCAB);
+    for (const v of wordPool) {
+      if (!forbidden.has(v.w) && distractors.length < count &&
+          !korMeaningOverlaps(target.k, v.k)) {
+        distractors.push(v.w);
+        forbidden.add(v.w);
       }
     }
   }
@@ -421,13 +458,14 @@ export function getSynWithKorDistractors(
     usedK.add(g);
   }
 
-  // 2) 무관 단어로 나머지 자리 채움
+  // 2) 무관 단어로 나머지 자리 채움 (한글뜻 어간 겹침 차단)
   const shuffledVocab = shuffle(VOCAB);
   for (const item of shuffledVocab) {
     if (item.w === target.w) continue;
     if (!item.s || item.s.length === 0) continue;
     if (!item.k_short || item.k_short.length < 2) continue;
     if (usedK.has(item.k_short) || usedK.has(item.k)) continue;
+    if (korMeaningOverlaps(target.k, item.k)) continue; // 복수정답 위험 차단
     const availableSyns = item.s.filter((s) => !usedSyn.has(s));
     if (availableSyns.length === 0) continue;
     const syn = availableSyns[Math.floor(Math.random() * availableSyns.length)];
@@ -561,7 +599,8 @@ export function getKorDistractors(
       !wrongPoolWords.has(item.w) &&
       item.k &&
       item.k.length > 2 &&
-      !usedK.has(item.k)
+      !usedK.has(item.k) &&
+      !korMeaningOverlaps(target.k, item.k) // 뜻 어간 겹침 = 복수정답 위험 → 차단
     ) {
       distractors.push(item.k);
       usedK.add(item.k);
@@ -571,7 +610,7 @@ export function getKorDistractors(
     if (distractors.length >= count) break;
   }
 
-  // 풀 부족 시 전체 VOCAB에서 보충
+  // 풀 부족 시 전체 VOCAB에서 보충 (뜻 겹침 검사 유지)
   if (distractors.length < count) {
     const globalPool = shuffle(VOCAB);
     for (const item of globalPool) {
@@ -580,6 +619,7 @@ export function getKorDistractors(
         item.k &&
         item.k.length > 2 &&
         !usedK.has(item.k) &&
+        !korMeaningOverlaps(target.k, item.k) &&
         distractors.length < count
       ) {
         distractors.push(item.k);

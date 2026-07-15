@@ -24,7 +24,7 @@ import { useRouter } from "expo-router";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { SpeakerButton } from "@/components/speaker-button";
-import { VOCAB, VocabItem, synWithKor } from "@/lib/vocab";
+import { VOCAB, VocabItem, synWithKor, QUIZ_MODES, COUNTS, type QuizMode } from "@/lib/vocab";
 import {
   loadBookmarks,
   toggleBookmark,
@@ -769,26 +769,35 @@ export default function WordbookScreen() {
     return rows;
   }, [conceptMode, debouncedQuery, showOnlyBookmarks, bookmarks, expandedConcepts, masterView, mastered]);
 
-  // 현재 보고 있는 섹션 그대로 문제풀이 시작 (동의어 4택 20문항)
-  const handleQuickQuiz = useCallback(() => {
+  // 현재 섹션 → 문제풀이: 옵션 시트에서 모드·문항 수를 고른 뒤 시작
+  const [quizSheetOpen, setQuizSheetOpen] = useState(false);
+  const [sheetMode, setSheetMode] = useState<QuizMode>("syn-choice");
+  const [sheetCount, setSheetCount] = useState(20);
+
+  const currentRangeId = useCallback(() => {
+    const range = RANGE_OPTIONS[selectedRange];
+    if (range.isExam) return "examhw";
+    if (range.bookIdx != null) return `lt:${LOGICTREE_BOOKS[range.bookIdx].book}`;
+    if (range.isIdiom) return "idioms";
+    if (range.start === 0 && range.end === VOCAB.length - 1) return "all";
+    return "";
+  }, [selectedRange]);
+
+  const handleQuickQuizStart = useCallback(() => {
     if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     const range = RANGE_OPTIONS[selectedRange];
-    let rangeId = "";
-    if (range.isExam) rangeId = "examhw";
-    else if (range.bookIdx != null) rangeId = `lt:${LOGICTREE_BOOKS[range.bookIdx].book}`;
-    else if (range.isIdiom) rangeId = "idioms";
-    else if (range.start === 0 && range.end === VOCAB.length - 1) rangeId = "all";
+    setQuizSheetOpen(false);
     router.push({
       pathname: "/quiz",
       params: {
-        mode: "syn-choice",
+        mode: sheetMode,
         rangeStart: String(range.start),
         rangeEnd: String(range.end),
-        count: "20",
-        rangeId,
+        count: String(sheetCount),
+        rangeId: currentRangeId(),
       },
     });
-  }, [selectedRange, router]);
+  }, [selectedRange, sheetMode, sheetCount, currentRangeId, router]);
 
   // LOGIC TREE 권 선택 시: num → 교재 원본 순번(1부터) 매핑
   const bookPosMap = useMemo(() => {
@@ -908,16 +917,6 @@ export default function WordbookScreen() {
           style={{ flexShrink: 1 }}
           contentContainerStyle={styles.headerBtns}
         >
-          {/* 현재 섹션으로 바로 문제풀이 */}
-          <TouchableOpacity
-            style={[
-              styles.headerBtn,
-              { backgroundColor: colors.primary, borderColor: colors.primary },
-            ]}
-            onPress={handleQuickQuiz}
-          >
-            <Text style={[styles.headerBtnText, { color: "#fff" }]}>▶ 문제풀이</Text>
-          </TouchableOpacity>
           {/* 뜻 가리기 버튼 */}
           <TouchableOpacity
             style={[
@@ -1012,6 +1011,81 @@ export default function WordbookScreen() {
           </Text>
         </Animated.View>
       )}
+
+      {/* 현재 섹션으로 문제풀이 — 전체 폭 버튼 */}
+      <TouchableOpacity
+        style={[styles.quizWideBtn, { backgroundColor: colors.primary }]}
+        activeOpacity={0.85}
+        onPress={() => {
+          if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          setQuizSheetOpen(true);
+        }}
+      >
+        <Text style={styles.quizWideBtnText}>
+          ▶ {RANGE_OPTIONS[selectedRange].label.replace(/\s*\([\d,]+\)$/, "")} 문제풀이 시작
+        </Text>
+        <Text style={styles.quizWideBtnSub}>모드·문항 수 선택 ›</Text>
+      </TouchableOpacity>
+
+      {/* 문제풀이 옵션 시트 */}
+      <Modal visible={quizSheetOpen} transparent animationType="slide" onRequestClose={() => setQuizSheetOpen(false)}>
+        <Pressable style={styles.sheetBackdrop} onPress={() => setQuizSheetOpen(false)}>
+          <Pressable style={[styles.sheetBox, { backgroundColor: colors.surface, borderColor: colors.border }]} onPress={() => {}}>
+            <Text style={[styles.sheetTitle, { color: colors.foreground }]}>
+              {RANGE_OPTIONS[selectedRange].label} · 문제풀이 옵션
+            </Text>
+            <Text style={[styles.sheetLabel, { color: colors.muted }]}>모드</Text>
+            <View style={styles.sheetGrid}>
+              {QUIZ_MODES.map((m) => {
+                const active = sheetMode === m.id;
+                return (
+                  <TouchableOpacity
+                    key={m.id}
+                    style={[
+                      styles.sheetOpt,
+                      { borderColor: active ? colors.primary : colors.border,
+                        backgroundColor: active ? (colors.primary as string) + "1A" : "transparent" },
+                    ]}
+                    onPress={() => setSheetMode(m.id)}
+                  >
+                    <Text style={[styles.sheetOptText, { color: active ? colors.primary : colors.foreground }]}>
+                      {m.icon} {m.title}
+                    </Text>
+                    <Text style={[styles.sheetOptDesc, { color: colors.dim }]}>{m.desc}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+            <Text style={[styles.sheetLabel, { color: colors.muted }]}>문항 수</Text>
+            <View style={styles.sheetCountRow}>
+              {COUNTS.map((c) => {
+                const active = sheetCount === c;
+                return (
+                  <TouchableOpacity
+                    key={c}
+                    style={[
+                      styles.sheetCountBtn,
+                      { borderColor: active ? colors.primary : colors.border,
+                        backgroundColor: active ? colors.primary : "transparent" },
+                    ]}
+                    onPress={() => setSheetCount(c)}
+                  >
+                    <Text style={{ fontSize: 14, fontWeight: "700", color: active ? "#fff" : (colors.foreground as string) }}>
+                      {c}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+            <TouchableOpacity
+              style={[styles.sheetStartBtn, { backgroundColor: colors.primary }]}
+              onPress={handleQuickQuizStart}
+            >
+              <Text style={styles.quizWideBtnText}>문제풀이 시작 →</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
 
       {/* 검색창 + 북마크 필터 */}
       <View style={styles.searchRow}>
@@ -1323,6 +1397,46 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
   },
+  quizWideBtn: {
+    marginHorizontal: 20,
+    marginBottom: 10,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  quizWideBtnText: {
+    fontSize: 15,
+    fontWeight: "800",
+    color: "#fff",
+  },
+  quizWideBtnSub: {
+    fontSize: 11,
+    color: "rgba(255,255,255,0.85)",
+    marginTop: 2,
+  },
+  sheetBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    justifyContent: "flex-end",
+  },
+  sheetBox: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderWidth: 1,
+    padding: 20,
+    paddingBottom: 34,
+  },
+  sheetTitle: { fontSize: 16, fontWeight: "800", marginBottom: 12 },
+  sheetLabel: { fontSize: 11, fontWeight: "700", letterSpacing: 0.8, marginBottom: 8, marginTop: 6 },
+  sheetGrid: { gap: 8, marginBottom: 8 },
+  sheetOpt: { borderWidth: 1.5, borderRadius: 10, paddingVertical: 9, paddingHorizontal: 12 },
+  sheetOptText: { fontSize: 13.5, fontWeight: "700" },
+  sheetOptDesc: { fontSize: 11, marginTop: 1 },
+  sheetCountRow: { flexDirection: "row", gap: 8, marginBottom: 14 },
+  sheetCountBtn: {
+    flex: 1, borderWidth: 1.5, borderRadius: 10, paddingVertical: 10, alignItems: "center",
+  },
+  sheetStartBtn: { borderRadius: 12, paddingVertical: 14, alignItems: "center" },
   searchRow: {
     flexDirection: "row",
     alignItems: "center",
