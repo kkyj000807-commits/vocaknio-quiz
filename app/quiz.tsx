@@ -24,6 +24,8 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { FlipCard } from "@/components/flip-card";
+import { SpeakerButton } from "@/components/speaker-button";
+import { WordDetailModal } from "@/components/word-detail-modal";
 import {
   VOCAB,
   VocabItem,
@@ -33,14 +35,59 @@ import {
   getKorDistractors,
   getSynWithKorDistractors,
   makeSynKorLabel,
+  synWithKor,
+  korGloss,
+  logictreePool,
 } from "@/lib/vocab";
-import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords, recordOneAnswer, loadMastered, addMastered } from "@/lib/store";
+import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords, recordOneAnswer, loadMastered, addMastered, loadWordStats, recordWordStat, type WordStat } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
 
 interface QuizQuestion {
   item: VocabItem;
   choices: string[];
   correct: string;
+}
+
+// 기출 출처 각주 (정답 유출 방지: 대학·연도만 "26동국대" 형식으로 추출)
+const UNIV_PATTERN =
+  /(한양대|중앙대|동국대|서강대|성균관대|건국대|가천대|경희대|이화여대|한국외대|홍익대|숙명여대|국민대|숭실대|인하대|아주대|단국대)/g;
+function examSourceTag(etym?: string): string | null {
+  if (!etym || !etym.includes("기출")) return null;
+  const tags: string[] = [];
+  const seen = new Set<string>();
+  const re = new RegExp(UNIV_PATTERN.source, "g");
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(etym)) !== null) {
+    const univ = m[1];
+    // 대학명 주변 ±25자 안에서 연도(20xx) 탐색 → "26동국대" 형태
+    const near = etym.slice(Math.max(0, m.index - 25), m.index + univ.length + 25);
+    const year = near.match(/20(\d{2})/);
+    const tag = year ? `${year[1]}${univ}` : univ;
+    if (!seen.has(tag)) {
+      seen.add(tag);
+      tags.push(tag);
+    }
+    if (tags.length >= 3) break;
+  }
+  if (tags.length > 0) return tags.join(" · ");
+  const y = etym.match(/20(\d{2})/);
+  if (y) return `${y[1]} 기출`;
+  return "기출";
+}
+
+// 웹(Safari)에서는 스와이프 제스처가 세로 스크롤을 막으므로 GestureDetector를 끼우지 않는다.
+// 네이티브(iOS/Android 앱)에서만 좌우 스와이프 제스처를 활성화한다.
+function SwipeWrapper({
+  enabled,
+  gesture,
+  children,
+}: {
+  enabled: boolean;
+  gesture: ReturnType<typeof Gesture.Pan>;
+  children: React.ReactElement;
+}) {
+  if (!enabled) return children;
+  return <GestureDetector gesture={gesture}>{children}</GestureDetector>;
 }
 
 function buildQuestions(
@@ -50,12 +97,36 @@ function buildQuestions(
   count: number,
   rangeId?: string,
   choiceLang?: string,
-  masteredNums?: number[]
+  masteredNums?: number[],
+  wordStats?: Record<number, WordStat>
 ): QuizQuestion[] {
   // 숙어 범위 선택 시 숙어만 필터
   let pool: VocabItem[];
-  if (rangeId === 'idioms') {
+  const ltPool = rangeId ? logictreePool(rangeId) : null;
+  if (ltPool) {
+    // 정병권 LOGIC TREE 권별 풀
+    pool = ltPool.filter((v) => v.k && v.k.length > 2);
+  } else if (rangeId === 'examhw') {
+    // ⭐ 기출 표제어 풀 (학교 출처 확인된 단어만 — 단어장 기출 섹션과 동일 기준)
+    pool = VOCAB.filter((v) => {
+      const et = v.etym ?? "";
+      return et.includes("기출") && new RegExp(UNIV_PATTERN.source).test(et) && v.k && v.k.length > 2;
+    });
+  } else if (rangeId === 'idioms') {
     pool = VOCAB.filter((v) => v.type === 'idiom' || v.type === 'phrase').filter((v) => v.k && v.k.length > 2);
+  } else if (rangeId === 'smart') {
+    // 🎯 맞춤 출제: 오답률 높은 단어 > 아직 안 본 단어 > 기출 표시 단어 우선
+    const stats = wordStats ?? {};
+    const scored = VOCAB.filter((v) => v.k && v.k.length > 2).map((v) => {
+      const st = stats[v.num];
+      const wrongRate = st && st.s > 0 ? st.w / st.s : 0;
+      const unseen = !st ? 1 : 0;
+      const examBoost = v.etym && v.etym.includes("기출") ? 1 : 0;
+      const priority = wrongRate * 4 + unseen * 2 + examBoost + Math.random() * 0.8;
+      return { v, priority };
+    });
+    scored.sort((a, b) => b.priority - a.priority);
+    pool = scored.slice(0, Math.max(count * 8, 200)).map((x) => x.v);
   } else {
     pool = VOCAB.slice(rangeStart, rangeEnd + 1).filter(
       (v) => v.k && v.k.length > 2
@@ -138,9 +209,19 @@ export default function QuizScreen() {
   const choiceLang = params.choiceLang ?? "korean";
 
   const [masteredNums, setMasteredNums] = useState<number[]>([]);
-  const [questions] = useState<QuizQuestion[]>(() =>
-    buildQuestions(mode, rangeStart, rangeEnd, count, rangeId, choiceLang)
+  const [questions, setQuestions] = useState<QuizQuestion[]>(() =>
+    rangeId === "smart" ? [] : buildQuestions(mode, rangeStart, rangeEnd, count, rangeId, choiceLang)
   );
+
+  // 🎯 맞춤 모드: 단어별 통계 로드 후 출제 (오답률·미노출·기출 가중)
+  useEffect(() => {
+    if (rangeId === "smart") {
+      loadWordStats().then((stats) => {
+        setQuestions(buildQuestions(mode, rangeStart, rangeEnd, count, rangeId, choiceLang, undefined, stats));
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
@@ -154,11 +235,20 @@ export default function QuizScreen() {
   const [typeResult, setTypeResult] = useState<"correct" | "wrong" | null>(null);
   const [bookmarks, setBookmarks] = useState<number[]>([]);
   const [hintLevel, setHintLevel] = useState(0);
+  // 선지 단어 상세 학습 모달
+  const [detailWord, setDetailWord] = useState<string | null>(null);
+
+  // 뒤로가기 지원 — 이미 채점된 문제 기록 (점수 중복 집계 방지 + 복원)
+  const scoredRef = useRef<Set<number>>(new Set());
+  const recordRef = useRef<Record<number, { choice: number | null; skipped: boolean; flash: "correct" | "wrong" | null; typed: string; typeResult: "correct" | "wrong" | null }>>({});
 
   const cardScale = useSharedValue(1);
   // 카드 슬라이드 전환용 shared values
   const cardTranslateX = useSharedValue(0);
   const cardOpacity = useSharedValue(1);
+  // 정답/오답 플래시 overlay
+  const flashOpacity = useSharedValue(0);
+  const [flashIsCorrect, setFlashIsCorrect] = useState<boolean | null>(null);
 
   const cardAnimStyle = useAnimatedStyle(() => ({
     transform: [
@@ -166,6 +256,10 @@ export default function QuizScreen() {
       { translateX: cardTranslateX.value },
     ],
     opacity: cardOpacity.value,
+  }));
+
+  const flashOverlayStyle = useAnimatedStyle(() => ({
+    opacity: flashOpacity.value,
   }));
 
   useEffect(() => {
@@ -189,6 +283,14 @@ export default function QuizScreen() {
     );
   }, [cardScale]);
 
+  const triggerFlash = useCallback((isCorrect: boolean) => {
+    setFlashIsCorrect(isCorrect);
+    flashOpacity.value = withSequence(
+      withTiming(0.28, { duration: 80 }),
+      withTiming(0, { duration: 500 })
+    );
+  }, [flashOpacity]);
+
   // 카드 슬라이드 전환 애니메이션 (다음 문제로 이동 시)
   const slideToNext = useCallback((onComplete: () => void) => {
     // 현재 카드를 왼쪽으로 슬라이드 아웃
@@ -196,6 +298,18 @@ export default function QuizScreen() {
     cardOpacity.value = withTiming(0, { duration: 180 }, () => {
       // 오른쪽에서 새 카드 진입
       cardTranslateX.value = 60;
+      cardOpacity.value = 0;
+      runOnJS(onComplete)();
+      cardTranslateX.value = withTiming(0, { duration: 220 });
+      cardOpacity.value = withTiming(1, { duration: 220 });
+    });
+  }, [cardTranslateX, cardOpacity]);
+
+  // 이전 문제로 이동 시 (오른쪽으로 슬라이드 아웃 → 왼쪽에서 진입)
+  const slideToPrev = useCallback((onComplete: () => void) => {
+    cardTranslateX.value = withTiming(60, { duration: 180 });
+    cardOpacity.value = withTiming(0, { duration: 180 }, () => {
+      cardTranslateX.value = -60;
       cardOpacity.value = 0;
       runOnJS(onComplete)();
       cardTranslateX.value = withTiming(0, { duration: 220 });
@@ -223,18 +337,26 @@ export default function QuizScreen() {
       setSkipped(false);
 
       const isCorrect = q.choices[idx] === q.correct;
+      const first = !scoredRef.current.has(currentIdx);
       if (isCorrect) {
         haptic("success");
-        setCorrectCount((c) => c + 1);
+        if (first) setCorrectCount((c) => c + 1);
       } else {
         haptic("error");
-        setWrongCount((w) => w + 1);
-        setWrongItems((prev) => [...prev, q.item]);
+        if (first) {
+          setWrongCount((w) => w + 1);
+          setWrongItems((prev) => [...prev, q.item]);
+        }
       }
-      // 한 문제 단위 즉시 저장
-      recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num);
+      triggerFlash(isCorrect);
+      if (first) {
+        scoredRef.current.add(currentIdx);
+        recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num);
+        recordWordStat(q.item.num, isCorrect);
+      }
+      recordRef.current[currentIdx] = { choice: idx, skipped: false, flash: null, typed: "", typeResult: null };
     },
-    [answered, q, haptic, animateCard]
+    [answered, q, haptic, animateCard, triggerFlash, currentIdx]
   );
 
   // "모르겠다" 패스 — 오답 처리 + 오답 노트 저장
@@ -245,11 +367,17 @@ export default function QuizScreen() {
     setAnswered(true);
     setSkipped(true);
     setSelectedChoice(null);
-    setWrongCount((w) => w + 1);
-    setWrongItems((prev) => [...prev, q.item]);
-    // 패스도 오답으로 즉시 저장
-    recordOneAnswer(false, q.item.num);
-  }, [answered, q, haptic, animateCard]);
+    const first = !scoredRef.current.has(currentIdx);
+    if (first) {
+      setWrongCount((w) => w + 1);
+      setWrongItems((prev) => [...prev, q.item]);
+      scoredRef.current.add(currentIdx);
+      recordOneAnswer(false, q.item.num);
+      recordWordStat(q.item.num, false);
+    }
+    triggerFlash(false);
+    recordRef.current[currentIdx] = { choice: null, skipped: true, flash: null, typed: "", typeResult: null };
+  }, [answered, q, haptic, animateCard, triggerFlash, currentIdx]);
 
   const handleReveal = useCallback(() => {
     haptic("light");
@@ -261,16 +389,24 @@ export default function QuizScreen() {
       haptic(grade === "correct" ? "success" : "error");
       setFlashGrade(grade);
       setAnswered(true);
+      const first = !scoredRef.current.has(currentIdx);
       if (grade === "correct") {
-        setCorrectCount((c) => c + 1);
+        if (first) setCorrectCount((c) => c + 1);
       } else {
-        setWrongCount((w) => w + 1);
-        setWrongItems((prev) => [...prev, q.item]);
+        if (first) {
+          setWrongCount((w) => w + 1);
+          setWrongItems((prev) => [...prev, q.item]);
+        }
       }
-      // 플래시카드 채점 즉시 저장
-      recordOneAnswer(grade === "correct", grade === "correct" ? undefined : q.item.num);
+      triggerFlash(grade === "correct");
+      if (first) {
+        scoredRef.current.add(currentIdx);
+        recordOneAnswer(grade === "correct", grade === "correct" ? undefined : q.item.num);
+        recordWordStat(q.item.num, grade === "correct");
+      }
+      recordRef.current[currentIdx] = { choice: null, skipped: false, flash: grade, typed: "", typeResult: null };
     },
-    [haptic, q]
+    [haptic, q, triggerFlash, currentIdx]
   );
 
   // 플래시카드 마스터 처리 — 이 단어를 마스터 목록에 추가
@@ -307,17 +443,24 @@ export default function QuizScreen() {
     const isCorrect = allAccepted.includes(userAns);
     setTypeResult(isCorrect ? "correct" : "wrong");
     setAnswered(true);
+    const first = !scoredRef.current.has(currentIdx);
     if (isCorrect) {
       haptic("success");
-      setCorrectCount((c) => c + 1);
+      if (first) setCorrectCount((c) => c + 1);
     } else {
       haptic("error");
-      setWrongCount((w) => w + 1);
-      setWrongItems((prev) => [...prev, q.item]);
+      if (first) {
+        setWrongCount((w) => w + 1);
+        setWrongItems((prev) => [...prev, q.item]);
+      }
     }
-    // 타이핑 정답 즉시 저장
-    recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num);
-  }, [typedAnswer, q, haptic]);
+    if (first) {
+      scoredRef.current.add(currentIdx);
+      recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num);
+      recordWordStat(q.item.num, isCorrect);
+    }
+    recordRef.current[currentIdx] = { choice: null, skipped: false, flash: null, typed: typedAnswer, typeResult: isCorrect ? "correct" : "wrong" };
+  }, [typedAnswer, q, haptic, currentIdx]);
 
   const handleNext = useCallback(async () => {
     haptic("light");
@@ -334,8 +477,21 @@ export default function QuizScreen() {
       return;
     }
     // 슬라이드 애니메이션 후 다음 문제로 전환
-    slideToNext(() => {
-      setCurrentIdx((i) => i + 1);
+    slideToNext(() => applyIndex(currentIdx + 1));
+  }, [currentIdx, questions.length, correctCount, wrongItems, haptic, router, slideToNext]);
+
+  // 인덱스 이동 시 상태 적용 — 이미 푼 문제면 기록 복원(리뷰), 새 문제면 초기화
+  const applyIndex = useCallback((target: number) => {
+    const rec = recordRef.current[target];
+    if (rec) {
+      setAnswered(true);
+      setSelectedChoice(rec.choice);
+      setSkipped(rec.skipped);
+      setFlashGrade(rec.flash);
+      setRevealed(rec.flash !== null);
+      setTypedAnswer(rec.typed);
+      setTypeResult(rec.typeResult);
+    } else {
       setAnswered(false);
       setSelectedChoice(null);
       setSkipped(false);
@@ -343,12 +499,22 @@ export default function QuizScreen() {
       setFlashGrade(null);
       setTypedAnswer("");
       setTypeResult(null);
-      setHintLevel(0);
-    });
-  }, [currentIdx, questions.length, correctCount, wrongItems, haptic, router, slideToNext]);
+    }
+    setHintLevel(0);
+    setCurrentIdx(target);
+  }, []);
 
-  // 스와이프 제스처 — 정답 확인 후 왼쪽 스와이프로 다음 문제
+  // 이전 문제로 (실수로 넘어간 단어 다시 보기) — 점수 변화 없음
+  const handlePrev = useCallback(() => {
+    if (currentIdx === 0) return;
+    haptic("light");
+    slideToPrev(() => applyIndex(currentIdx - 1));
+  }, [currentIdx, haptic, applyIndex]);
+
+  // 스와이프 제스처 — 정답 확인 후 왼쪽 스와이프로 다음 문제 (네이티브 전용)
+  const swipeEnabled = Platform.OS !== "web";
   const swipeGesture = Gesture.Pan()
+    .enabled(swipeEnabled)
     .activeOffsetX([-20, 20])
     .failOffsetY([-15, 15])
     .onEnd((e) => {
@@ -375,11 +541,14 @@ export default function QuizScreen() {
   };
 
   const getHintText = () => {
-    if (mode === "syn-choice") return "올바른 동의어는?";
+    const w = q.item.w;
+    if (mode === "syn-choice") return `${w}와 의미가 가장 가까운 단어는?`;
     if (mode === "kor-choice") {
-      return choiceLang === "english" ? "올바른 동의어는? (영어)" : "올바른 한국어 뜻은?";
+      return choiceLang === "english"
+        ? `${w}와 의미가 가장 가까운 단어는?`
+        : `${w}의 뜻으로 가장 알맞은 것은?`;
     }
-    return "올바른 동의어(한글뜻)는?";
+    return `${w}와 의미가 가장 가까운 단어는?`;
   };
 
   const getHint = () => {
@@ -398,10 +567,16 @@ export default function QuizScreen() {
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <GestureDetector gesture={swipeGesture}>
+        <SwipeWrapper enabled={swipeEnabled} gesture={swipeGesture}>
         <ScrollView
           style={{ flex: 1 }}
-          contentContainerStyle={{ paddingBottom: 32 }}
+          contentContainerStyle={{
+            // 하단 버튼이 홈 인디케이터/탭바에 가리지 않도록 안전영역 포함 여유 확보
+            paddingBottom:
+              Platform.OS === "web"
+                ? ("calc(96px + env(safe-area-inset-bottom))" as any)
+                : 96,
+          }}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
@@ -434,7 +609,23 @@ export default function QuizScreen() {
 
           {/* Question Card */}
           <Animated.View style={[s.questionCard, cardAnimStyle]}>
+            {/* 정답/오답 플래시 overlay */}
+            <Animated.View
+              pointerEvents="none"
+              style={[s.flashOverlay, flashOverlayStyle, {
+                backgroundColor: flashIsCorrect
+                  ? colors.success
+                  : colors.error,
+              }]}
+            />
             <View style={s.questionHeader}>
+              {currentIdx > 0 ? (
+                <Pressable onPress={handlePrev} style={s.prevBtn} hitSlop={8}>
+                  <Text style={s.prevBtnText}>← 이전</Text>
+                </Pressable>
+              ) : (
+                <View style={{ width: 48 }} />
+              )}
               <Text style={s.questionNum}>
                 문제 {currentIdx + 1} · {getModeLabel()}
               </Text>
@@ -443,9 +634,25 @@ export default function QuizScreen() {
               </Pressable>
             </View>
 
-            <Text style={s.wordText}>{q.item.w}</Text>
+            <View style={s.wordRow}>
+              <Text
+                style={[s.wordText, {
+                  fontSize: q.item.w.length <= 10 ? 30 : q.item.w.length <= 16 ? 25 : q.item.w.length <= 22 ? 21 : q.item.w.length <= 30 ? 17 : 13,
+                }]}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.5}
+              >
+                {q.item.w}
+              </Text>
+              <SpeakerButton text={q.item.w} size={38} opacity={0.75} />
+            </View>
             {q.item.p ? (
               <Text style={s.ipaText}>{q.item.p}</Text>
+            ) : null}
+            {/* 기출 출처 각주 (작게, 정답 정보 없음) */}
+            {examSourceTag(q.item.etym) ? (
+              <Text style={s.examTag}>📌 {examSourceTag(q.item.etym)}</Text>
             ) : null}
 
             {/* 4지선다 모드 */}
@@ -459,7 +666,7 @@ export default function QuizScreen() {
                     if (answered) {
                       if (choice === q.correct) {
                         choiceStyle = { ...s.choiceBtn, ...s.choiceCorrect };
-                        textStyle = { ...s.choiceText, color: colors.success };
+                        textStyle = { ...s.choiceText, color: colors.success as string };
                       } else if (idx === selectedChoice) {
                         choiceStyle = { ...s.choiceBtn, ...s.choiceWrong };
                         textStyle = { ...s.choiceText, color: colors.error };
@@ -469,12 +676,11 @@ export default function QuizScreen() {
                       <Pressable
                         key={idx}
                         style={choiceStyle}
-                        onPress={() => handleChoiceSelect(idx)}
-                        disabled={answered}
+                        onPress={() => (answered ? setDetailWord(choice) : handleChoiceSelect(idx))}
                       >
                         <View style={[
                           s.choiceNum,
-                          answered && choice === q.correct && { backgroundColor: colors.success },
+                          answered && choice === q.correct && { backgroundColor: colors.success as string },
                           answered && idx === selectedChoice && choice !== q.correct && { backgroundColor: colors.error },
                         ]}>
                           <Text style={[
@@ -485,22 +691,53 @@ export default function QuizScreen() {
                           </Text>
                         </View>
                         <View style={{ flex: 1 }}>
-                          <Text style={textStyle} numberOfLines={3}>
+                          <Text
+                            style={[
+                              textStyle,
+                              // 긴 선지(한국어 뜻·복합형)는 잘리지 않게 단계적으로 축소
+                              choice.length > 26 && { fontSize: 15, lineHeight: 21 },
+                              choice.length > 48 && { fontSize: 13.5, lineHeight: 19 },
+                            ]}
+                            numberOfLines={4}
+                          >
                             {choice}
                           </Text>
-                          {/* 정답 확인 후 선지 한글뜻 표시 */}
+                          {/* 정답 확인 후 선지 위계: 단어 → 뜻 → 유의어
+                              뜻은 반드시 보기 단어 "자체"의 표제어 또는 검수된 동의어 사전(korGloss)에서만.
+                              동의어 보유 단어(v.s.includes)로 찾으면 다른 단어의 뜻이 붙는 오개념 버그 발생. */}
                           {answered && (() => {
-                            const choiceItem = VOCAB.find((v) =>
-                              v.w === choice ||
-                              (v.s && v.s.includes(choice))
+                            const norm = choice.trim().toLowerCase();
+                            const choiceItem = VOCAB.find(
+                              (v) => v.w.trim().toLowerCase() === norm
                             );
-                            const kor = choiceItem?.k_short;
-                            if (!kor) return null;
+                            // 표제어 없으면 검수된 동의어 한글뜻 사전만 사용, 그마저 없으면 표시 안 함
+                            const kor = choiceItem?.k_short ?? korGloss(choice);
+                            const syns = choiceItem
+                              ? choiceItem.s.filter((x) => x !== choice).slice(0, 3)
+                              : [];
+                            if (!kor && syns.length === 0) return null;
                             return (
-                              <Text style={s.choiceKorText}>{kor}</Text>
+                              <>
+                                {kor ? (
+                                  <Text style={s.choiceKorText}>{kor}</Text>
+                                ) : null}
+                                {syns.length > 0 ? (
+                                  <Text style={s.choiceSynText} numberOfLines={1}>
+                                    ≒ {syns.join(", ")}
+                                  </Text>
+                                ) : null}
+                              </>
                             );
                           })()}
+                          {/* 자세히 보기 안내 (은은하게) */}
+                          {answered && /[A-Za-z]/.test(choice) && (
+                            <Text style={s.choiceMoreHint}>자세히 ›</Text>
+                          )}
                         </View>
+                        {/* 정답 확인 후 영어 선지 발음 듣기 */}
+                        {answered && /[A-Za-z]/.test(choice) && (
+                          <SpeakerButton text={choice} size={30} opacity={0.75} />
+                        )}
                       </Pressable>
                     );
                   })}
@@ -539,18 +776,25 @@ export default function QuizScreen() {
                   }
                   back={
                     <View style={s.flipBack}>
-                      <View style={s.flashAnswer}>
+                      {/* 초록 답 칸 탭 → 카드 다시 뒤집어 원상복귀 */}
+                      <Pressable
+                        style={s.flashAnswer}
+                        onPress={() => {
+                          haptic("light");
+                          setRevealed(false);
+                        }}
+                      >
                         <Text style={s.flashKorText}>{q.item.k_short}</Text>
                         {q.item.s.length > 0 && (
                           <View style={s.synTagRow}>
                             {q.item.s.slice(0, 4).map((syn, i) => (
                               <View key={i} style={s.synTag}>
-                                <Text style={s.synTagText}>{syn}</Text>
+                                <Text style={s.synTagText}>{synWithKor(syn)}</Text>
                               </View>
                             ))}
                           </View>
                         )}
-                      </View>
+                      </Pressable>
                     </View>
                   }
                 />
@@ -645,11 +889,15 @@ export default function QuizScreen() {
                   <View style={s.synTagRow}>
                     {q.item.s.slice(0, 5).map((syn, i) => (
                       <View key={i} style={s.synTag}>
-                        <Text style={s.synTagText}>{syn}</Text>
+                        <Text style={s.synTagText}>{synWithKor(syn)}</Text>
                       </View>
                     ))}
                   </View>
                 )}
+                {/* 첨언(어원·기출 상세) — 정답 확인 후 공개 */}
+                {q.item.etym ? (
+                  <Text style={s.explEtym}>💡 {q.item.etym}</Text>
+                ) : null}
               </View>
             )}
 
@@ -666,8 +914,9 @@ export default function QuizScreen() {
             )}
           </Animated.View>
         </ScrollView>
-        </GestureDetector>
+        </SwipeWrapper>
       </KeyboardAvoidingView>
+      <WordDetailModal word={detailWord} onClose={() => setDetailWord(null)} />
     </ScreenContainer>
   );
 }
@@ -730,11 +979,21 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     questionCard: {
       marginHorizontal: 16,
-      backgroundColor: colors.surface,
+      backgroundColor: colors.surface as string,
       borderWidth: 1,
-      borderColor: colors.border,
+      borderColor: colors.border as string,
       borderRadius: 20,
-      padding: 24,
+      padding: 18,
+      overflow: "hidden",
+    },
+    flashOverlay: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      borderRadius: 20,
+      zIndex: 10,
     },
     questionHeader: {
       flexDirection: "row",
@@ -744,52 +1003,90 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     questionNum: {
       fontSize: 11,
-      color: colors.dim,
+      color: colors.dim as string,
       letterSpacing: 1,
       textTransform: "uppercase",
     },
     bookmarkBtn: {
       padding: 4,
     },
+    prevBtn: {
+      paddingVertical: 4,
+      paddingHorizontal: 8,
+      borderRadius: 8,
+      backgroundColor: colors.card,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    prevBtnText: {
+      fontSize: 11,
+      fontWeight: "700",
+      color: colors.primary2 as string,
+    },
+    wordRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+      marginBottom: 4,
+    },
     wordText: {
       fontSize: 30,
       fontWeight: "800",
-      color: colors.foreground,
-      letterSpacing: -1,
-      marginBottom: 4,
+      color: colors.foreground as string,
+      letterSpacing: -0.5,
+      flex: 1,
     },
     ipaText: {
-      fontSize: 13,
-      color: colors.primary2 as string,
+      fontSize: 14,
+      color: colors.muted as string,
       fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
       letterSpacing: 0.5,
-      marginBottom: 16,
+      marginBottom: 12,
     },
     hintText: {
+      fontSize: 13.5,
+      fontWeight: "600",
+      color: colors.muted as string,
+      marginBottom: 12,
+      lineHeight: 19,
+    },
+    examTag: {
+      fontSize: 11.5,
+      color: colors.warning as string,
+      marginTop: 2,
+      marginBottom: 6,
+      fontWeight: "600",
+    },
+    explEtym: {
       fontSize: 12,
-      color: colors.dim,
-      marginBottom: 14,
+      lineHeight: 18,
+      color: colors.muted,
+      marginTop: 10,
+      paddingTop: 8,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
     },
     choicesContainer: {
       gap: 10,
     },
     choiceBtn: {
-      backgroundColor: colors.card,
+      backgroundColor: colors.surface as string,
       borderWidth: 2,
-      borderColor: colors.border,
+      borderColor: colors.border as string,
       borderRadius: 12,
-      padding: 14,
+      padding: 12,
+      minHeight: 48,
       flexDirection: "row",
       alignItems: "center",
-      gap: 12,
+      gap: 10,
     },
     choiceCorrect: {
-      borderColor: colors.success,
-      backgroundColor: "rgba(52,211,153,0.1)",
+      borderColor: colors.success as string,
+      backgroundColor: (colors.success as string) + "14",
     },
     choiceWrong: {
       borderColor: colors.error,
-      backgroundColor: "rgba(248,113,113,0.1)",
+      backgroundColor: (colors.error as string) + "14",
     },
     choiceNum: {
       width: 26,
@@ -806,10 +1103,11 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.dim,
     },
     choiceText: {
-      fontSize: 14,
-      color: colors.foreground,
+      fontSize: 17,
+      fontWeight: "700",
+      color: colors.foreground as string,
       flex: 1,
-      lineHeight: 20,
+      lineHeight: 23,
     },
     skipBtn: {
       marginTop: 12,
@@ -818,7 +1116,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       borderRadius: 10,
       paddingVertical: 11,
       alignItems: "center",
-      backgroundColor: "rgba(255,255,255,0.03)",
+      backgroundColor: (colors.foreground as string) + "08",
     },
     skipBtnText: {
       fontSize: 13,
@@ -827,9 +1125,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     skipResultBox: {
       marginTop: 12,
-      backgroundColor: "rgba(248,113,113,0.08)",
+      backgroundColor: (colors.error as string) + "14",
       borderWidth: 1,
-      borderColor: "rgba(248,113,113,0.25)",
+      borderColor: (colors.error as string) + "40",
       borderRadius: 10,
       padding: 14,
     },
@@ -883,9 +1181,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.primary2 as string,
     },
     flashAnswer: {
-      backgroundColor: "rgba(52,211,153,0.08)",
+      backgroundColor: (colors.success as string) + "14",
       borderWidth: 1,
-      borderColor: "rgba(52,211,153,0.25)",
+      borderColor: (colors.success as string) + "40",
       borderRadius: 12,
       padding: 16,
       marginBottom: 14,
@@ -909,12 +1207,12 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       alignItems: "center",
     },
     gradeBtnWrong: {
-      borderColor: "rgba(248,113,113,0.25)",
-      backgroundColor: "rgba(248,113,113,0.08)",
+      borderColor: (colors.error as string) + "40",
+      backgroundColor: (colors.error as string) + "14",
     },
     gradeBtnCorrect: {
-      borderColor: "rgba(52,211,153,0.25)",
-      backgroundColor: "rgba(52,211,153,0.08)",
+      borderColor: (colors.success as string) + "40",
+      backgroundColor: (colors.success as string) + "14",
     },
     gradeBtnText: {
       fontSize: 13,
@@ -968,11 +1266,11 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     typeInputCorrect: {
       borderColor: colors.success,
-      backgroundColor: "rgba(52,211,153,0.08)",
+      backgroundColor: (colors.success as string) + "14",
     },
     typeInputWrong: {
       borderColor: colors.error,
-      backgroundColor: "rgba(248,113,113,0.08)",
+      backgroundColor: (colors.error as string) + "14",
     },
     submitBtn: {
       backgroundColor: colors.primary,
@@ -989,7 +1287,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     typeWrongInfo: {
       marginTop: 8,
       padding: 10,
-      backgroundColor: "rgba(248,113,113,0.08)",
+      backgroundColor: (colors.error as string) + "14",
       borderRadius: 8,
     },
     typeWrongText: {
@@ -998,9 +1296,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontWeight: "600",
     },
     explPanel: {
-      backgroundColor: colors.card,
+      backgroundColor: colors.surface as string,
       borderWidth: 1,
-      borderColor: colors.border,
+      borderColor: colors.border as string,
       borderRadius: 12,
       padding: 16,
       marginTop: 14,
@@ -1032,7 +1330,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     explKor: {
       fontSize: 14,
-      color: colors.muted,
+      color: colors.muted as string,
       marginBottom: 10,
       lineHeight: 20,
     },
@@ -1042,15 +1340,15 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       gap: 6,
     },
     synTag: {
-      backgroundColor: "rgba(108,99,255,0.12)",
+      backgroundColor: (colors.primary as string) + "1F",
       borderWidth: 1,
-      borderColor: "rgba(108,99,255,0.25)",
+      borderColor: (colors.primary as string) + "40",
       borderRadius: 20,
       paddingHorizontal: 10,
       paddingVertical: 3,
     },
     synTagText: {
-      fontSize: 11,
+      fontSize: 12,
       color: colors.primary2 as string,
     },
     nextBtn: {
@@ -1067,15 +1365,26 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       letterSpacing: 0.5,
     },
     choiceKorText: {
-      fontSize: 11,
-      color: colors.dim,
+      fontSize: 13,
+      color: colors.muted as string,
       marginTop: 3,
-      lineHeight: 15,
+      lineHeight: 18,
+    },
+    choiceSynText: {
+      fontSize: 12,
+      color: colors.dim as string,
+      marginTop: 2,
+      lineHeight: 16,
+    },
+    choiceMoreHint: {
+      fontSize: 10.5,
+      color: colors.dim as string,
+      marginTop: 4,
     },
     masterBtn: {
-      backgroundColor: "rgba(251,191,36,0.12)",
+      backgroundColor: (colors.warning as string) + "1F",
       borderWidth: 1,
-      borderColor: "rgba(251,191,36,0.35)",
+      borderColor: (colors.warning as string) + "59",
       borderRadius: 12,
       paddingVertical: 12,
       alignItems: "center",
@@ -1083,6 +1392,6 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     masterBtnText: {
       fontSize: 13,
       fontWeight: "700",
-      color: "#F59E0B",
+      color: colors.warningText as string,
     },
   });

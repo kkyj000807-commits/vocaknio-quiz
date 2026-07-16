@@ -187,7 +187,7 @@ export default function WrongQuizScreen() {
       >
         {/* Header Banner */}
         <View style={s.wrongBanner}>
-          <Text style={s.wrongBannerText}>🔴 오답 전용 퀴즈</Text>
+          <Text style={s.wrongBannerText}>🔴 오답 전용 문제풀이</Text>
           <Text style={s.wrongBannerSub}>틀린 단어만 모아서 복습</Text>
         </View>
 
@@ -327,9 +327,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       marginHorizontal: 16,
       marginTop: 16,
       marginBottom: 12,
-      backgroundColor: "rgba(248,113,113,0.1)",
+      backgroundColor: (colors.error as string) + "1A",
       borderWidth: 1,
-      borderColor: "rgba(248,113,113,0.25)",
+      borderColor: (colors.error as string) + "40",
       borderRadius: 12,
       paddingVertical: 10,
       paddingHorizontal: 16,
@@ -399,7 +399,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       marginHorizontal: 16,
       backgroundColor: colors.surface,
       borderWidth: 1,
-      borderColor: "rgba(248,113,113,0.2)",
+      borderColor: (colors.error as string) + "33",
       borderRadius: 20,
       padding: 24,
     },
@@ -452,11 +452,11 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     choiceCorrect: {
       borderColor: colors.success,
-      backgroundColor: "rgba(52,211,153,0.1)",
+      backgroundColor: (colors.success as string) + "1A",
     },
     choiceWrong: {
       borderColor: colors.error,
-      backgroundColor: "rgba(248,113,113,0.1)",
+      backgroundColor: (colors.error as string) + "1A",
     },
     choiceNum: {
       width: 26,
@@ -523,9 +523,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       gap: 6,
     },
     synTag: {
-      backgroundColor: "rgba(108,99,255,0.12)",
+      backgroundColor: (colors.primary as string) + "1F",
       borderWidth: 1,
-      borderColor: "rgba(108,99,255,0.25)",
+      borderColor: (colors.primary as string) + "40",
       borderRadius: 20,
       paddingHorizontal: 10,
       paddingVertical: 3,
@@ -554,7 +554,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       borderRadius: 10,
       paddingVertical: 11,
       alignItems: "center" as const,
-      backgroundColor: "rgba(255,255,255,0.03)",
+      backgroundColor: (colors.foreground as string) + "08",
     },
     skipBtnText: {
       fontSize: 13,
@@ -563,9 +563,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     skipResultBox: {
       marginTop: 12,
-      backgroundColor: "rgba(248,113,113,0.08)",
+      backgroundColor: (colors.error as string) + "14",
       borderWidth: 1,
-      borderColor: "rgba(248,113,113,0.25)",
+      borderColor: (colors.error as string) + "40",
       borderRadius: 10,
       padding: 14,
     },

@@ -37,9 +37,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "퀴즈",
+          title: "기출문제",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={24} name="book.fill" color={color} />
+            <IconSymbol size={24} name="graduationcap.fill" color={color} />
           ),
         }}
       />
@@ -80,11 +80,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="exam"
+        name="practice"
         options={{
-          title: "기출",
+          title: "문제풀이",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={24} name="graduationcap.fill" color={color} />
+            <IconSymbol size={24} name="book.fill" color={color} />
           ),
         }}
       />

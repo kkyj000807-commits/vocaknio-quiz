@@ -12,6 +12,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
+import { SpeakerButton } from "@/components/speaker-button";
 import { VOCAB, type VocabItem } from "@/lib/vocab";
 import {
   loadWrongWords,
@@ -128,6 +129,7 @@ export default function WrongScreen() {
             <Text style={s.wordText}>{item.w}</Text>
             {item.p ? <Text style={s.ipaText}>{item.p}</Text> : null}
           </View>
+          <SpeakerButton text={item.w} size={32} />
           <Pressable
             style={s.masterBtn}
             onPress={() => handleMaster(item.num)}
@@ -181,14 +183,14 @@ export default function WrongScreen() {
               onPress={toggleHideMode}
             >
               <Text style={[s.hideBtnText, hideMode && s.hideBtnTextActive]}>
-                {hideMode ? "👁 보이기" : "🙈 가리기"}
+                {hideMode ? "🔓 보이기" : "🔒 가리기"}
               </Text>
             </Pressable>
             <Pressable
               style={({ pressed }) => [s.quizBtn, pressed && { opacity: 0.85 }]}
               onPress={handleStartQuiz}
             >
-              <Text style={s.quizBtnText}>오답 퀴즈</Text>
+              <Text style={s.quizBtnText}>오답 문제풀이</Text>
             </Pressable>
             <Pressable
               style={({ pressed }) => [s.clearBtn, pressed && { opacity: 0.85 }]}
@@ -205,7 +207,7 @@ export default function WrongScreen() {
           <Text style={s.emptyEmoji}>🎯</Text>
           <Text style={s.emptyTitle}>오답 단어가 없어요</Text>
           <Text style={s.emptyText}>
-            퀴즈를 풀면 틀린 단어가{"\n"}여기에 자동으로 쌓입니다
+            문제를 풀면 틀린 단어가{"\n"}여기에 자동으로 쌓입니다
           </Text>
         </View>
       ) : (
@@ -220,7 +222,7 @@ export default function WrongScreen() {
             hideMode ? (
               <View style={s.hideModeInfoBox}>
                 <Text style={s.hideModeInfoText}>
-                  🙈 뜻 가리기 모드 — 각 카드를 탭하면 뜻이 공개됩니다
+                  🔒 뜻 가리기 모드 — 각 카드를 탭하면 뜻이 공개됩니다
                 </Text>
                 <Text style={[s.hideModeInfoText, { marginTop: 4, color: colors.dim }]}>
                   {Object.values(revealed).filter(Boolean).length} / {wrongItems.length}개 확인
@@ -278,7 +280,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       paddingVertical: 7,
     },
     hideBtnActive: {
-      backgroundColor: "rgba(108,99,255,0.15)",
+      backgroundColor: (colors.primary as string) + "26",
       borderColor: colors.primary,
     },
     hideBtnText: {
@@ -336,9 +338,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       lineHeight: 22,
     },
     infoBox: {
-      backgroundColor: "rgba(248,113,113,0.08)",
+      backgroundColor: (colors.error as string) + "14",
       borderWidth: 1,
-      borderColor: "rgba(248,113,113,0.2)",
+      borderColor: (colors.error as string) + "33",
       borderRadius: 12,
       padding: 12,
       marginBottom: 12,
@@ -349,9 +351,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       lineHeight: 18,
     },
     hideModeInfoBox: {
-      backgroundColor: "rgba(108,99,255,0.08)",
+      backgroundColor: (colors.primary as string) + "14",
       borderWidth: 1,
-      borderColor: "rgba(108,99,255,0.2)",
+      borderColor: (colors.primary as string) + "33",
       borderRadius: 12,
       padding: 12,
       marginBottom: 12,
@@ -365,7 +367,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     wordCard: {
       backgroundColor: colors.surface,
       borderWidth: 1,
-      borderColor: "rgba(248,113,113,0.2)",
+      borderColor: (colors.error as string) + "33",
       borderRadius: 14,
       padding: 16,
     },
@@ -393,9 +395,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
     },
     masterBtn: {
-      backgroundColor: "rgba(52,211,153,0.12)",
+      backgroundColor: (colors.success as string) + "1F",
       borderWidth: 1,
-      borderColor: "rgba(52,211,153,0.3)",
+      borderColor: (colors.success as string) + "4D",
       borderRadius: 10,
       paddingHorizontal: 10,
       paddingVertical: 5,
@@ -417,9 +419,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       gap: 6,
     },
     synTag: {
-      backgroundColor: "rgba(108,99,255,0.12)",
+      backgroundColor: (colors.primary as string) + "1F",
       borderWidth: 1,
-      borderColor: "rgba(108,99,255,0.25)",
+      borderColor: (colors.primary as string) + "40",
       borderRadius: 20,
       paddingHorizontal: 10,
       paddingVertical: 3,
@@ -429,9 +431,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.primary2 as string,
     },
     maskedArea: {
-      backgroundColor: "rgba(108,99,255,0.08)",
+      backgroundColor: (colors.primary as string) + "14",
       borderWidth: 1,
-      borderColor: "rgba(108,99,255,0.2)",
+      borderColor: (colors.primary as string) + "33",
       borderRadius: 8,
       paddingVertical: 12,
       alignItems: "center",

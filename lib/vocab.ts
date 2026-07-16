@@ -1,4 +1,6 @@
 import vocabRaw from "@/assets/vocab.json";
+import synGlossRaw from "@/assets/syn-gloss.json";
+import logictreeBooksRaw from "@/assets/logictree-books.json";
 
 export interface VocabItem {
   num: number;
@@ -10,6 +12,9 @@ export interface VocabItem {
   category?: string; // semantic category
   type?: 'word' | 'idiom' | 'phrase'; // entry type
   antonym?: string[]; // antonyms (반의어) - 오답 선지 우선 사용
+  wrongPool?: string[]; // 오답 선지 블랙리스트 (w값) - 오개념 유발 단어 제외
+  etym?: string; // 어원/암기 첨언 (영영사전 기준, 왜 이런 뜻이 되는지 설명)
+  def?: string; // 영영사전 정의
 }
 
 // antonym -> 해당 반의어를 가진 단어(w)들의 집합 (역방향 인덱스)
@@ -36,10 +41,22 @@ for (const item of VOCAB) {
   }
 }
 
-// word -> 동의어 집합
+// word -> 동의어 집합 (중복 표제어는 합집합 — 덮어쓰면 첫 항목 동의어가 금지망에서 빠져 복수정답 위험)
 const WORD_TO_SYNS: Map<string, Set<string>> = new Map();
 for (const item of VOCAB) {
-  WORD_TO_SYNS.set(item.w, new Set(item.s));
+  const prev = WORD_TO_SYNS.get(item.w);
+  if (prev) {
+    for (const s of item.s) prev.add(s);
+  } else {
+    WORD_TO_SYNS.set(item.w, new Set(item.s));
+  }
+}
+
+// word(소문자) -> VocabItem (표제어 조회용)
+const WORD_TO_ITEM: Map<string, VocabItem> = new Map();
+for (const item of VOCAB) {
+  const key = item.w.toLowerCase();
+  if (!WORD_TO_ITEM.has(key)) WORD_TO_ITEM.set(key, item);
 }
 
 // antonym 역방향 인덱스 빌드
@@ -85,10 +102,12 @@ export function getAntonyms(item: VocabItem): string[] {
  * 이렇게 하면 정답과 의미적으로 겹치는 단어가 오답 보기에 나오지 않는다.
  */
 export function getForbiddenSyns(item: VocabItem): Set<string> {
-  const forbidden = new Set<string>(item.s);
+  // 같은 표제어의 모든 항목(중복 포함) 동의어 합집합에서 시작 — 복수정답 원천 차단
+  const allSyns = WORD_TO_SYNS.get(item.w) ?? new Set(item.s);
+  const forbidden = new Set<string>(allSyns);
   forbidden.add(item.w);
 
-  for (const syn of item.s) {
+  for (const syn of allSyns) {
     const siblingWords = SYN_TO_WORDS.get(syn);
     if (!siblingWords) continue;
     for (const siblingWord of siblingWords) {
@@ -214,7 +233,28 @@ export const RANGES = [
   { id: "w9500", label: "9501~9517번", start: 9500, end: 9516 },
   { id: "idioms", label: "숙어·표현",    start: 0,    end: VOCAB.length - 1 },
   { id: "all",    label: "전체",         start: 0,    end: VOCAB.length - 1 },
+  // ── 정병권 LOGIC TREE 권별 (교재 수록 어휘 풀) ──────────────────────────
+  { id: "lt:V101", label: "LOGIC TREE 101", start: 0, end: VOCAB.length - 1 },
+  { id: "lt:V201", label: "LOGIC TREE 201", start: 0, end: VOCAB.length - 1 },
+  { id: "lt:V301", label: "LOGIC TREE 301", start: 0, end: VOCAB.length - 1 },
+  { id: "lt:V401", label: "LOGIC TREE 401", start: 0, end: VOCAB.length - 1 },
+  { id: "lt:V501", label: "LOGIC TREE 501", start: 0, end: VOCAB.length - 1 },
+  { id: "lt:V502", label: "LOGIC TREE 502", start: 0, end: VOCAB.length - 1 },
+  { id: "lt:V601", label: "LOGIC TREE 601", start: 0, end: VOCAB.length - 1 },
 ];
+
+// ── 정병권 LOGIC TREE 권별 어휘 풀 (rangeId "lt:V101" → 해당 권 단어들) ─────────
+const LOGICTREE_RANGE_BOOKS = logictreeBooksRaw as { book: string; nums: number[] }[];
+const NUM_TO_ITEM: Map<number, VocabItem> = new Map(VOCAB.map((v) => [v.num, v]));
+
+export function logictreePool(rangeId: string): VocabItem[] | null {
+  if (!rangeId.startsWith("lt:")) return null;
+  const book = LOGICTREE_RANGE_BOOKS.find((b) => b.book === rangeId.slice(3));
+  if (!book) return null;
+  return book.nums
+    .map((n) => NUM_TO_ITEM.get(n))
+    .filter((v): v is VocabItem => !!v);
+}
 
 // 숙어 필터
 export const VOCAB_IDIOMS = VOCAB.filter(
@@ -248,13 +288,65 @@ export function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+// ─── 한글뜻 겹침 차단 (중복정답 2차 방어선) ─────────────────────────────────
+// 동의어 그래프에 연결이 없어도 한글뜻 어간이 겹치면 의미상 정답일 수 있으므로 오답 금지.
+// 예: 정답 뜻 "완화하다" ↔ 후보 뜻 "완화시키다" → 어간 '완화' 공유 → 차단.
+function korStemTokens(text: string | null | undefined): Set<string> {
+  const out = new Set<string>();
+  if (!text) return out;
+  for (const chunk of text.split(/[^가-힣]+/)) {
+    if (chunk.length < 2) continue;
+    out.add(chunk.slice(0, 2));
+    if (chunk.length >= 3) out.add(chunk.slice(0, 3));
+  }
+  return out;
+}
+
+// 뜻 겹침 판정에서 무시할 범용 어간 (기능어 — 이것만으로는 같은 뜻이 아님)
+const GENERIC_STEMS = new Set([
+  "하다", "하는", "되다", "되는", "있다", "있는", "없다", "없는", "만들", "시키",
+  "것을", "사람", "상태", "정도", "매우", "아주", "위해", "대해", "~에", "~을",
+]);
+
+function stemsOf(text: string | null | undefined): Set<string> {
+  const s = korStemTokens(text);
+  for (const g of GENERIC_STEMS) s.delete(g);
+  return s;
+}
+
+/** 두 한글 뜻이 유의미한 어간을 공유하는가 (겹치면 복수정답 위험) */
+export function korMeaningOverlaps(a: string | null | undefined, b: string | null | undefined): boolean {
+  if (!a || !b) return false;
+  const ta = stemsOf(a);
+  if (ta.size === 0) return false;
+  for (const tok of stemsOf(b)) if (ta.has(tok)) return true;
+  return false;
+}
+
+/**
+ * 반의어 방향(반대 의미) 후보 목록: 반의어 자체 + 반의어 표제어의 동의어들.
+ * 정답과 의미가 겹치는 단어(forbidden)는 호출부에서 걸러진다.
+ */
+export function getAntonymDirection(target: VocabItem): string[] {
+  const result = new Set<string>(getAntonyms(target));
+  for (const ant of Array.from(result)) {
+    const antSyns = WORD_TO_SYNS.get(ant);
+    if (antSyns) {
+      for (const s of antSyns) result.add(s);
+    }
+  }
+  result.delete(target.w);
+  for (const s of target.s) result.delete(s);
+  return Array.from(result);
+}
+
 /**
  * 동의어 고르기 모드용 오답 보기 생성
  *
- * 개선점:
- * - 반의어(antonym)를 오답 선지로 우선 사용 → 편입 시험 사고 훈련에 적합
+ * 오답 구성 원칙 (오개념 방지, 전 섹션 공통):
+ * - 정답 방향과 헷갈릴 여지가 없도록, 오답 = 반의어 방향 단어들 + 아예 무관한 단어 1개
  * - getForbiddenSyns()로 의미적으로 겹치는 동의어 전체를 금지
- * - 오답 보기가 부족할 경우 fallback으로 단순 단어(w) 목록에서 보충
+ * - 반의어 방향 후보가 부족하면 무관 단어로 채움 (유사어로는 절대 채우지 않음)
  */
 export function getSynDistractors(
   target: VocabItem,
@@ -264,22 +356,37 @@ export function getSynDistractors(
   const forbidden = getForbiddenSyns(target);
   forbidden.add(correctSyn);
 
+  // wrongPool: 문맥상 정답으로 방어 가능한 근접어 블랙리스트.
+  // 단어 자체 + 그 단어의 동의어를 모두 오답 선지에서 제외 (중복정답 방지)
+  if (target.wrongPool && target.wrongPool.length > 0) {
+    for (const wpWord of target.wrongPool) {
+      forbidden.add(wpWord);
+      const wpSyns = WORD_TO_SYNS.get(wpWord);
+      if (wpSyns) {
+        for (const s of wpSyns) forbidden.add(s);
+      }
+    }
+  }
+
   const distractors: string[] = [];
 
-  // 1순위: 반의어를 오답 선지로 우선 사용
-  const antonyms = shuffle(getAntonyms(target));
-  for (const ant of antonyms) {
-    if (!forbidden.has(ant) && distractors.length < count) {
+  // 반의어 방향 단어: 최대 count-1개 (마지막 1자리는 무관 단어 몫)
+  const antonymSlots = count - 1;
+  const antDirection = shuffle(getAntonymDirection(target));
+  const antSet = new Set(antDirection);
+  for (const ant of antDirection) {
+    if (!forbidden.has(ant) && distractors.length < antonymSlots) {
       distractors.push(ant);
       forbidden.add(ant);
     }
   }
 
-  // 2순위: 반의어가 부족하면 일반 동의어 풀에서 보충
+  // 무관 단어: 반의어 방향 아님 + 의미 그래프 비연결 + **한글뜻 어간도 비겹침**
   if (distractors.length < count) {
     const pool = shuffle(ALL_SYNONYMS);
     for (const syn of pool) {
-      if (!forbidden.has(syn)) {
+      if (!forbidden.has(syn) && !antSet.has(syn) &&
+          !korMeaningOverlaps(target.k, korGloss(syn))) {
         distractors.push(syn);
         forbidden.add(syn);
       }
@@ -287,13 +394,14 @@ export function getSynDistractors(
     }
   }
 
-  // 3순위: 풀이 부족한 극단적 케이스 - 단어 자체(w)로 보충
+  // 풀이 부족한 극단적 케이스 - 단어 자체(w)로 보충 (뜻 겹침 검사 유지)
   if (distractors.length < count) {
-    const wordPool = shuffle(VOCAB.map((v) => v.w));
-    for (const w of wordPool) {
-      if (!forbidden.has(w) && distractors.length < count) {
-        distractors.push(w);
-        forbidden.add(w);
+    const wordPool = shuffle(VOCAB);
+    for (const v of wordPool) {
+      if (!forbidden.has(v.w) && distractors.length < count &&
+          !korMeaningOverlaps(target.k, v.k)) {
+        distractors.push(v.w);
+        forbidden.add(v.w);
       }
     }
   }
@@ -313,6 +421,17 @@ export function getSynWithKorDistractors(
   const forbidden = getForbiddenSyns(target);
   forbidden.add(correctSyn);
 
+  // wrongPool 단어 자체 + 그 동의어도 제외 (중복정답 방지)
+  if (target.wrongPool && target.wrongPool.length > 0) {
+    for (const wpWord of target.wrongPool) {
+      forbidden.add(wpWord);
+      const wpSyns = WORD_TO_SYNS.get(wpWord);
+      if (wpSyns) {
+        for (const s of wpSyns) forbidden.add(s);
+      }
+    }
+  }
+
   const forbiddenK = new Set<string>();
   if (target.k_short) forbiddenK.add(target.k_short);
   if (target.k) forbiddenK.add(target.k);
@@ -327,12 +446,26 @@ export function getSynWithKorDistractors(
   const usedSyn = new Set<string>(forbidden);
   const usedK = new Set<string>(forbiddenK);
 
+  // 1) 오개념 방지: 반의어 방향 단어를 최대 count-1개 (마지막 1자리는 무관 단어 몫)
+  const antonymSlots = count - 1;
+  for (const ant of shuffle(getAntonymDirection(target))) {
+    if (distractors.length >= antonymSlots) break;
+    if (usedSyn.has(ant)) continue;
+    const g = korGloss(ant);
+    if (!g || usedK.has(g)) continue;
+    distractors.push(`${ant} (${g})`);
+    usedSyn.add(ant);
+    usedK.add(g);
+  }
+
+  // 2) 무관 단어로 나머지 자리 채움 (한글뜻 어간 겹침 차단)
   const shuffledVocab = shuffle(VOCAB);
   for (const item of shuffledVocab) {
     if (item.w === target.w) continue;
     if (!item.s || item.s.length === 0) continue;
     if (!item.k_short || item.k_short.length < 2) continue;
     if (usedK.has(item.k_short) || usedK.has(item.k)) continue;
+    if (korMeaningOverlaps(target.k, item.k)) continue; // 복수정답 위험 차단
     const availableSyns = item.s.filter((s) => !usedSyn.has(s));
     if (availableSyns.length === 0) continue;
     const syn = availableSyns[Math.floor(Math.random() * availableSyns.length)];
@@ -359,6 +492,50 @@ export function getSynWithKorDistractors(
 
 export function makeSynKorLabel(syn: string, item: VocabItem): string {
   return `${syn} (${item.k_short || item.k})`;
+}
+
+// ─── 동의어 한글 병기 (TFD식 시소러스 + 한국인용 괄호 한글뜻) ─────────────────
+
+// 단어장에 없는 동의어용 보조 한글뜻 사전
+const SYN_GLOSS: Record<string, string> = synGlossRaw as Record<string, string>;
+
+// 표제어 → 짧은 한글뜻 (lazy 초기화)
+let WORD_KOR: Map<string, string> | null = null;
+
+// k_short에서 짧은 대표 한글뜻만 추출 (품사표기·괄호·뒷의미 제거)
+function shortKor(k: string): string {
+  let s = k.replace(/^[a-z]{1,4}\.\s*/i, "");
+  s = s.split(";")[0];
+  s = s.replace(/\([^)]*\)/g, "").replace(/\s+/g, " ").trim();
+  const parts = s.split(",").map((x) => x.trim()).filter(Boolean);
+  s = parts.slice(0, 2).join(", ");
+  if (s.length > 14) s = s.slice(0, 14) + "…";
+  return s;
+}
+
+/**
+ * 동의어의 짧은 한글뜻을 반환. 표제어로 있으면 그 뜻, 없으면 syn-gloss 사전, 둘 다 없으면 null.
+ */
+export function korGloss(syn: string): string | null {
+  const key = syn.trim().toLowerCase();
+  if (!key) return null;
+  if (!WORD_KOR) {
+    WORD_KOR = new Map();
+    for (const v of VOCAB) {
+      const w = v.w.toLowerCase();
+      if (!WORD_KOR.has(w) && v.k_short) {
+        const sk = shortKor(v.k_short);
+        if (sk) WORD_KOR.set(w, sk);
+      }
+    }
+  }
+  return WORD_KOR.get(key) ?? SYN_GLOSS[key] ?? null;
+}
+
+/** "synonym(한글뜻)" 라벨 — 한글뜻 없으면 synonym만 */
+export function synWithKor(syn: string): string {
+  const g = korGloss(syn);
+  return g ? `${syn}(${g})` : syn;
 }
 
 /**
@@ -388,16 +565,42 @@ export function getKorDistractors(
     }
   }
 
+  // wrongPool 단어들의 k도 오답 선지에서 제외
+  const wrongPoolWords = new Set<string>(target.wrongPool ?? []);
+  for (const wpWord of wrongPoolWords) {
+    const wpItem = VOCAB.find(v => v.w === wpWord);
+    if (wpItem) {
+      if (wpItem.k) forbiddenK.add(wpItem.k);
+      if (wpItem.k_short) forbiddenK.add(wpItem.k_short);
+    }
+  }
+
   const distractors: string[] = [];
   const usedK = new Set<string>(forbiddenK);
+
+  // 1) 오개념 방지: 반의어 방향 단어의 한국어 뜻을 최대 count-1개
+  const antonymSlots = count - 1;
+  for (const ant of shuffle(getAntonymDirection(target))) {
+    if (distractors.length >= antonymSlots) break;
+    const antItem = WORD_TO_ITEM.get(ant.toLowerCase());
+    if (!antItem || wrongPoolWords.has(antItem.w)) continue;
+    if (!antItem.k || antItem.k.length <= 2 || usedK.has(antItem.k)) continue;
+    distractors.push(antItem.k);
+    usedK.add(antItem.k);
+    if (antItem.k_short) usedK.add(antItem.k_short);
+  }
+
+  // 2) 무관 단어의 뜻으로 나머지 자리 채움
   const shuffled = shuffle(pool);
 
   for (const item of shuffled) {
     if (
       item.w !== target.w &&
+      !wrongPoolWords.has(item.w) &&
       item.k &&
       item.k.length > 2 &&
-      !usedK.has(item.k)
+      !usedK.has(item.k) &&
+      !korMeaningOverlaps(target.k, item.k) // 뜻 어간 겹침 = 복수정답 위험 → 차단
     ) {
       distractors.push(item.k);
       usedK.add(item.k);
@@ -407,7 +610,7 @@ export function getKorDistractors(
     if (distractors.length >= count) break;
   }
 
-  // 풀 부족 시 전체 VOCAB에서 보충
+  // 풀 부족 시 전체 VOCAB에서 보충 (뜻 겹침 검사 유지)
   if (distractors.length < count) {
     const globalPool = shuffle(VOCAB);
     for (const item of globalPool) {
@@ -416,6 +619,7 @@ export function getKorDistractors(
         item.k &&
         item.k.length > 2 &&
         !usedK.has(item.k) &&
+        !korMeaningOverlaps(target.k, item.k) &&
         distractors.length < count
       ) {
         distractors.push(item.k);

@@ -212,12 +212,74 @@ export async function addMastered(num: number): Promise<number[]> {
 }
 
 /**
+ * 단어를 마스터 목록에서 제거합니다 (마스터 해제).
+ */
+export async function removeMastered(num: number): Promise<number[]> {
+  const existing = await loadMastered();
+  const updated = existing.filter((n) => n !== num);
+  try {
+    await AsyncStorage.setItem(MASTERED_KEY, JSON.stringify(updated));
+  } catch {}
+  return updated;
+}
+
+/**
  * 마스터 목록 전체를 초기화합니다 (리셋).
  */
 export async function clearMastered(): Promise<void> {
   try {
     await AsyncStorage.setItem(MASTERED_KEY, JSON.stringify([]));
   } catch {}
+}
+
+// ─── 단어별 퀴즈 통계 (맞춤형 출제용: 노출수/오답수) ─────────────────────────────
+
+const WORD_STATS_KEY = "vocaknio_word_stats";
+
+export type WordStat = { s: number; w: number }; // s=노출(seen), w=오답(wrong)
+
+export async function loadWordStats(): Promise<Record<number, WordStat>> {
+  try {
+    const raw = await AsyncStorage.getItem(WORD_STATS_KEY);
+    if (raw) return JSON.parse(raw) as Record<number, WordStat>;
+  } catch {}
+  return {};
+}
+
+/** 한 문제 풀이 결과를 단어별 통계에 반영 */
+export async function recordWordStat(num: number, isCorrect: boolean): Promise<void> {
+  try {
+    const stats = await loadWordStats();
+    const cur = stats[num] ?? { s: 0, w: 0 };
+    cur.s += 1;
+    if (!isCorrect) cur.w += 1;
+    stats[num] = cur;
+    await AsyncStorage.setItem(WORD_STATS_KEY, JSON.stringify(stats));
+  } catch {}
+}
+
+// ─── 개인 메모 (단어별 사용자 메모) ──────────────────────────────────────────────
+
+const MEMO_KEY = "vocaknio_memos";
+
+/** 단어별 개인 메모 맵 {num: text} 불러오기 */
+export async function loadMemos(): Promise<Record<number, string>> {
+  try {
+    const raw = await AsyncStorage.getItem(MEMO_KEY);
+    if (raw) return JSON.parse(raw) as Record<number, string>;
+  } catch {}
+  return {};
+}
+
+/** 단어 메모 저장/삭제(빈 문자열이면 삭제) */
+export async function saveMemo(num: number, text: string): Promise<Record<number, string>> {
+  const memos = await loadMemos();
+  if (text.trim()) memos[num] = text.trim();
+  else delete memos[num];
+  try {
+    await AsyncStorage.setItem(MEMO_KEY, JSON.stringify(memos));
+  } catch {}
+  return memos;
 }
 
 // ─── Quiz Settings ────────────────────────────────────────────────────────────────

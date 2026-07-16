@@ -98,7 +98,7 @@ export default function ResultScreen() {
             style={({ pressed }) => [s.btn, s.btnPrimary, pressed && { opacity: 0.85 }]}
             onPress={() => {
               haptic();
-              router.replace("/");
+              router.replace("/practice");
             }}
           >
             <Text style={s.btnPrimaryText}>🏠 홈으로</Text>
@@ -113,7 +113,7 @@ export default function ResultScreen() {
             <Text style={s.btnSecondaryText}>↩ 다시 풀기</Text>
           </Pressable>
         </View>
-        {/* 오답 전용 퀴즈 바로 시작 */}
+        {/* 오답 전용 문제풀이 바로 시작 */}
         {wrongNums.length > 0 && (
           <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
             <Pressable
@@ -270,7 +270,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     wrongItem: {
       backgroundColor: colors.card,
       borderWidth: 1,
-      borderColor: "rgba(248,113,113,0.25)",
+      borderColor: (colors.error as string) + "40",
       borderRadius: 12,
       padding: 14,
       marginBottom: 8,
@@ -304,9 +304,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       marginTop: 8,
     },
     synTag: {
-      backgroundColor: "rgba(108,99,255,0.12)",
+      backgroundColor: (colors.primary as string) + "1F",
       borderWidth: 1,
-      borderColor: "rgba(108,99,255,0.25)",
+      borderColor: (colors.primary as string) + "40",
       borderRadius: 20,
       paddingHorizontal: 10,
       paddingVertical: 3,
@@ -316,9 +316,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.primary2 as string,
     },
     btnWrong: {
-      backgroundColor: "rgba(248,113,113,0.12)",
+      backgroundColor: (colors.error as string) + "1F",
       borderWidth: 2,
-      borderColor: "rgba(248,113,113,0.35)",
+      borderColor: (colors.error as string) + "59",
     },
     btnWrongText: {
       fontSize: 14,

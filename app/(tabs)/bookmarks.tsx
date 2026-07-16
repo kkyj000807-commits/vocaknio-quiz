@@ -12,6 +12,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
+import { SpeakerButton } from "@/components/speaker-button";
 import { VOCAB, type VocabItem } from "@/lib/vocab";
 import { loadBookmarks, toggleBookmark } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
@@ -68,6 +69,7 @@ export default function BookmarksScreen() {
           <Text style={s.wordText}>{item.w}</Text>
           {item.p ? <Text style={s.ipaText}>{item.p}</Text> : null}
         </View>
+        <SpeakerButton text={item.w} size={32} />
         <Pressable
           style={s.removeBtn}
           onPress={() => handleRemoveBookmark(item.num)}
@@ -103,7 +105,7 @@ export default function BookmarksScreen() {
             style={({ pressed }) => [s.quizBtn, pressed && { opacity: 0.85 }]}
             onPress={handleStartQuiz}
           >
-            <Text style={s.quizBtnText}>퀴즈 시작</Text>
+            <Text style={s.quizBtnText}>문제풀이 시작</Text>
           </Pressable>
         )}
       </View>
@@ -113,7 +115,7 @@ export default function BookmarksScreen() {
           <Text style={s.emptyEmoji}>🏷️</Text>
           <Text style={s.emptyTitle}>북마크가 없어요</Text>
           <Text style={s.emptyText}>
-            퀴즈 중 단어 옆 🏷️ 버튼을 눌러{"\n"}북마크에 추가해 보세요
+            문제풀이 중 단어 옆 🏷️ 버튼을 눌러{"\n"}북마크에 추가해 보세요
           </Text>
         </View>
       ) : (
@@ -229,9 +231,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       gap: 6,
     },
     synTag: {
-      backgroundColor: "rgba(108,99,255,0.12)",
+      backgroundColor: (colors.primary as string) + "1F",
       borderWidth: 1,
-      borderColor: "rgba(108,99,255,0.25)",
+      borderColor: (colors.primary as string) + "40",
       borderRadius: 20,
       paddingHorizontal: 10,
       paddingVertical: 3,

@@ -20,16 +20,100 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from "react-native-reanimated";
+import { useRouter } from "expo-router";
 
 import { ScreenContainer } from "@/components/screen-container";
-import { VOCAB, VocabItem } from "@/lib/vocab";
-import { loadBookmarks, toggleBookmark } from "@/lib/store";
+import { SpeakerButton } from "@/components/speaker-button";
+import { VOCAB, VocabItem, synWithKor, QUIZ_MODES, COUNTS, type QuizMode } from "@/lib/vocab";
+import {
+  loadBookmarks,
+  toggleBookmark,
+  loadMastered,
+  addMastered,
+  removeMastered,
+  loadMemos,
+  saveMemo,
+} from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
+import { EXAM_STATS } from "@/lib/exam-stats";
 import * as Haptics from "expo-haptics";
 import { useAudioPlayer, setAudioModeAsync } from "expo-audio";
+import { Modal } from "react-native";
+import conceptGroupsRaw from "@/assets/concept-groups.json";
 
-const RANGE_OPTIONS = [
+const IDIOM_COUNT = VOCAB.filter((v) => v.type === "idiom" || v.type === "phrase").length;
+
+// 개념(동의어) 묶음 데이터 — 같은 뜻 단어끼리 모아 암기
+interface ConceptGroup {
+  label: string;
+  kor: string;
+  nums: number[];
+  isCategory?: boolean;
+}
+const CONCEPT_GROUPS = conceptGroupsRaw as ConceptGroup[];
+const VOCAB_BY_NUM: Map<number, VocabItem> = new Map(VOCAB.map((v) => [v.num, v]));
+
+// 개념별 보기용 리스트 아이템 (헤더 또는 단어)
+type ConceptRow =
+  | { kind: "header"; id: string; label: string; kor: string; count: number; isCategory?: boolean; open?: boolean }
+  | { kind: "word"; id: string; item: VocabItem };
+
+// 기출 표제어: etym 기출 노트에 학교명이 확인된 단어 (기출탭 집계와 동일 기준)
+const EXAM_UNIV_RE =
+  /(한양대|중앙대|동국대|서강대|성균관대|건국대|가천대|경희대|이화여대|한국외대|홍익대|숙명여대|국민대|숭실대|인하대|아주대|단국대)/;
+const EXAM_HEADWORD_NUMS: Set<number> = new Set(
+  VOCAB.filter((v) => {
+    const et = v.etym ?? "";
+    return et.includes("기출") && EXAM_UNIV_RE.test(et);
+  }).map((v) => v.num)
+);
+
+// "25한양대 · 22중앙대" 형식 기출 각주 (최대 3개, 정답 정보 없음)
+function examTagOf(item: VocabItem): string | null {
+  const et = item.etym ?? "";
+  if (!et.includes("기출")) return null;
+  const tags: string[] = [];
+  const seen = new Set<string>();
+  const re = new RegExp(EXAM_UNIV_RE.source, "g");
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(et)) !== null) {
+    const near = et.slice(Math.max(0, m.index - 25), m.index + m[1].length + 25);
+    const y = near.match(/20(\d{2})/);
+    const tag = y ? `${y[1]}${m[1]}` : m[1];
+    if (!seen.has(tag)) {
+      seen.add(tag);
+      tags.push(tag);
+    }
+    if (tags.length >= 3) break;
+  }
+  return tags.length ? tags.join(" · ") : null;
+}
+
+// 정병권 LOGIC TREE 교재 — 권별 수록 순서(배열) 그대로 보존된 num 목록
+import logictreeBooksRaw from "@/assets/logictree-books.json";
+const LOGICTREE_BOOKS = logictreeBooksRaw as { book: string; nums: number[] }[];
+
+type RangeOption = {
+  label: string;
+  start: number;
+  end: number;
+  isIdiom: boolean;
+  isExam?: boolean;
+  bookIdx?: number; // LOGIC TREE 권 인덱스 — 교재 배열 순서 유지
+};
+
+const RANGE_OPTIONS: RangeOption[] = [
+  { label: `⭐ 기출 (${EXAM_HEADWORD_NUMS.size.toLocaleString()})`, start: 0, end: VOCAB.length - 1, isIdiom: false, isExam: true },
   { label: "전체", start: 0, end: VOCAB.length - 1, isIdiom: false },
+  { label: "숙어·표현", start: 0, end: VOCAB.length - 1, isIdiom: true },
+  // 정병권 LOGIC TREE 권별 섹션 (교재 수록 순서 그대로)
+  ...LOGICTREE_BOOKS.map((b, i) => ({
+    label: b.book.replace(/^V/, ""), // "101, 201, 301" 형식
+    start: 0,
+    end: VOCAB.length - 1,
+    isIdiom: false,
+    bookIdx: i,
+  })),
   { label: "1~1000", start: 0, end: 999, isIdiom: false },
   { label: "1001~2000", start: 1000, end: 1999, isIdiom: false },
   { label: "2001~3000", start: 2000, end: 2999, isIdiom: false },
@@ -38,9 +122,26 @@ const RANGE_OPTIONS = [
   { label: "5001~6000", start: 5000, end: 5999, isIdiom: false },
   { label: "6001~7000", start: 6000, end: 6999, isIdiom: false },
   { label: "7001~8000", start: 7000, end: 7999, isIdiom: false },
-  { label: "8001~9517", start: 8000, end: VOCAB.length - 1, isIdiom: false },
-  { label: "숙어·표현", start: 0, end: VOCAB.length - 1, isIdiom: true },
+  { label: "8001~10000", start: 8000, end: 9999, isIdiom: false },
+  { label: `10001~${VOCAB.length.toLocaleString()}`, start: 10000, end: VOCAB.length - 1, isIdiom: false },
 ];
+
+// 단어 길이에 따라 폰트 크기 동적 조절 — 웹(adjustsFontSizeToFit 미지원)에서도 잘림 방지
+// 숙어(공백 포함)는 2줄 허용이라 덜 줄임
+function wordFontSize(w: string): number {
+  const n = w.length;
+  if (w.includes(" ")) {
+    if (n <= 20) return 16;
+    if (n <= 32) return 14;
+    return 13;
+  }
+  if (n <= 8) return 18;
+  if (n <= 10) return 16;
+  if (n <= 13) return 14;
+  if (n <= 17) return 12;
+  if (n <= 24) return 10;
+  return 9;
+}
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -54,20 +155,31 @@ function shuffle<T>(arr: T[]): T[] {
 // ─── 단어 카드 ────────────────────────────────────────────────────────────────
 function WordCard({
   item,
+  displayNum,
   bookmarks,
   onToggleBookmark,
   colors,
   maskMode,
   onPlayHide,
   onPlayReveal,
+  isMastered,
+  onToggleMaster,
+  memo,
+  onEditMemo,
 }: {
   item: VocabItem;
+  /** 표시용 번호 — LOGIC TREE 권 섹션에서는 교재 원본 순번, 그 외에는 num */
+  displayNum?: number;
   bookmarks: Set<number>;
   onToggleBookmark: (num: number) => void;
   colors: ReturnType<typeof useColors>;
   maskMode: boolean;
   onPlayHide: () => void;
   onPlayReveal: () => void;
+  isMastered: boolean;
+  onToggleMaster: (num: number) => void;
+  memo?: string;
+  onEditMemo: (num: number) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   // 전체 가리기 모드에서 개별 공개 여부
@@ -78,19 +190,20 @@ function WordCard({
   const s = cardStyles(colors);
 
   // 개별 가리기 공개 애니메이션 (높이 0 → auto 효과를 opacity+translateY로 구현)
-  const revealAnim = useSharedValue(0); // 0=가려짐, 1=공개
+  // 기본값 1(보임) — 가리기 모드가 아니면 뜻이 항상 보이도록 (웹에서 effect 타이밍으로 숨겨지는 버그 방지)
+  const revealAnim = useSharedValue(1); // 0=가려짐, 1=공개
   const revealStyle = useAnimatedStyle(() => ({
     opacity: revealAnim.value,
     transform: [{ translateY: interpolate(revealAnim.value, [0, 1], [-8, 0], Extrapolation.CLAMP) }],
   }));
 
-  // maskMode가 꺼지면 revealed 초기화
+  // maskMode가 꺼지면 revealed 초기화 (개별 가리기 상태에 맞춰 표시)
   useEffect(() => {
     if (!maskMode) {
       setRevealed(false);
-      revealAnim.value = 0;
+      revealAnim.value = indivMasked ? 0 : 1;
     }
-  }, [maskMode]);
+  }, [maskMode, indivMasked]);
 
   // 전체 가리기 모드에서 탭 → 공개
   const handlePress = useCallback(() => {
@@ -161,19 +274,50 @@ function WordCard({
     >
       <View style={s.topRow}>
         <View style={s.numBadge}>
-          <Text style={s.numText}>{item.num}</Text>
+          <Text style={s.numText}>{displayNum ?? item.num}</Text>
         </View>
         <View style={s.wordArea}>
-          <Text style={s.wordText}>{item.w}</Text>
-          {item.p ? <Text style={s.ipaText}>{item.p}</Text> : null}
+          <Text
+            style={[s.wordText, { fontSize: wordFontSize(item.w) }]}
+            // 숙어(공백 포함)는 2줄까지 줄바꿈 허용, 단일 단어는 1줄 자동 축소.
+            // 카드 탭(펼치기)하면 전체 표시.
+            numberOfLines={expanded ? undefined : item.w.includes(" ") ? 2 : 1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.5}
+          >
+            {item.w}
+          </Text>
+          {item.p ? (
+            <Text style={[s.ipaText, item.p.length > 16 && { fontSize: 9 }]} numberOfLines={1}>
+              {item.p}
+            </Text>
+          ) : null}
         </View>
+        {/* 발음 듣기 */}
+        <SpeakerButton text={item.w} size={32} />
+        {/* 메모 버튼 */}
+        <TouchableOpacity
+          onPress={(e) => { e.stopPropagation?.(); onEditMemo(item.num); }}
+          style={[s.bookmarkBtn, { marginRight: 2 }]}
+          hitSlop={8}
+        >
+          <Text style={{ fontSize: 16 }}>{memo ? "📝" : "🗒️"}</Text>
+        </TouchableOpacity>
+        {/* 마스터 버튼 — 누르면 마스터 섹션으로 이동 */}
+        <TouchableOpacity
+          onPress={(e) => { e.stopPropagation?.(); onToggleMaster(item.num); }}
+          style={[s.bookmarkBtn, { marginRight: 2 }]}
+          hitSlop={8}
+        >
+          <Text style={{ fontSize: 18 }}>{isMastered ? "⭐" : "☆"}</Text>
+        </TouchableOpacity>
         {/* 개별 가리기 버튼 */}
         <TouchableOpacity
           onPress={handleIndivMask}
           style={[s.bookmarkBtn, { marginRight: 4 }]}
           hitSlop={8}
         >
-          <Text style={{ fontSize: 16 }}>{indivMasked ? "🙈" : "👁"}</Text>
+          <Text style={{ fontSize: 16 }}>{indivMasked ? "🔒" : "🔓"}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleBookmark} style={s.bookmarkBtn} hitSlop={8}>
           <Text style={{ fontSize: 18 }}>{isBookmarked ? "🔖" : "🏷️"}</Text>
@@ -187,7 +331,7 @@ function WordCard({
           style={s.maskBox}
         >
           <Text style={s.maskHintText}>
-            {isMaskedByAll ? "👆 탭하여 뜻 보기" : "👁 개별 가리기 중 · 👁 버튼으로 해제"}
+            {isMaskedByAll ? "👆 탭하여 뜻 보기" : "🔒 가림 · 🔓 버튼으로 해제"}
           </Text>
         </Pressable>
       ) : (
@@ -196,16 +340,42 @@ function WordCard({
             {item.k_short}
           </Text>
 
-          {/* 동의어 */}
+          {/* 기출 출처 각주 (학교·연도만 — 정답 정보 없음) */}
+          {examTagOf(item) ? (
+            <Text style={s.examTagText}>📌 {examTagOf(item)}</Text>
+          ) : null}
+
+          {/* 동의어 (한글뜻 병기) */}
           {(maskMode || expanded) && item.s.length > 0 && (
             <View style={s.synRow}>
               {item.s.map((syn, i) => (
                 <View key={i} style={s.synTag}>
-                  <Text style={s.synTagText}>{syn}</Text>
+                  <Text style={s.synTagText}>{synWithKor(syn)}</Text>
                 </View>
               ))}
             </View>
           )}
+
+          {/* 영영 정의 */}
+          {(maskMode || expanded) && item.def ? (
+            <View style={s.defBox}>
+              <Text style={s.defText}>📖 {item.def}</Text>
+            </View>
+          ) : null}
+
+          {/* 첨언 (어원/뉘앙스) — 왜 이런 뜻인지 이해 보조 */}
+          {(maskMode || expanded) && item.etym ? (
+            <View style={s.etymBox}>
+              <Text style={s.etymText}>💡 {item.etym}</Text>
+            </View>
+          ) : null}
+
+          {/* 개인 메모 */}
+          {memo ? (
+            <TouchableOpacity onPress={(e) => { e.stopPropagation?.(); onEditMemo(item.num); }} style={s.memoBox}>
+              <Text style={s.memoText}>📝 {memo}</Text>
+            </TouchableOpacity>
+          ) : null}
         </Animated.View>
       )}
 
@@ -274,6 +444,12 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       lineHeight: 19,
       marginBottom: 4,
     },
+    examTagText: {
+      fontSize: 10.5,
+      color: colors.warningText as string,
+      fontWeight: "700",
+      marginBottom: 4,
+    },
     // 마스크 박스 — 뜻을 가리는 영역
     maskBox: {
       height: 38,
@@ -305,6 +481,49 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       paddingVertical: 3,
     },
     synTagText: { fontSize: 11, color: colors.primary },
+    defBox: {
+      marginTop: 8,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      borderRadius: 8,
+      backgroundColor: colors.primary + "12",
+      borderLeftWidth: 3,
+      borderLeftColor: colors.primary + "88",
+    },
+    defText: {
+      fontSize: 12,
+      lineHeight: 18,
+      color: colors.muted,
+      fontStyle: "italic",
+    },
+    etymBox: {
+      marginTop: 8,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      borderRadius: 8,
+      backgroundColor: colors.warning + "14",
+      borderLeftWidth: 3,
+      borderLeftColor: colors.warning + "88",
+    },
+    etymText: {
+      fontSize: 12,
+      lineHeight: 18,
+      color: colors.muted,
+    },
+    memoBox: {
+      marginTop: 8,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      borderRadius: 8,
+      backgroundColor: colors.success + "14",
+      borderLeftWidth: 3,
+      borderLeftColor: colors.success + "88",
+    },
+    memoText: {
+      fontSize: 12,
+      lineHeight: 18,
+      color: colors.foreground,
+    },
     expandHint: {
       fontSize: 10,
       color: colors.muted,
@@ -316,13 +535,42 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
 // ─── 메인 화면 ────────────────────────────────────────────────────────────────
 export default function WordbookScreen() {
   const colors = useColors();
+  const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState("");
+  // 검색 디바운스 — 9천 단어 필터링이 매 키입력마다 돌지 않도록 200ms 지연
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuery(searchQuery), 200);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
   const [selectedRange, setSelectedRange] = useState(0);
   const [bookmarks, setBookmarks] = useState<Set<number>>(new Set());
   const [showOnlyBookmarks, setShowOnlyBookmarks] = useState(false);
+  // 마스터한 단어 — 본목록에서 제외하고 별도 섹션으로
+  const [mastered, setMastered] = useState<Set<number>>(new Set());
+  const [masterView, setMasterView] = useState(false); // true=마스터 단어만 보기
+  // 개인 메모
+  const [memos, setMemos] = useState<Record<number, string>>({});
+  const [memoEditNum, setMemoEditNum] = useState<number | null>(null);
+  const [memoDraft, setMemoDraft] = useState("");
   const [isShuffled, setIsShuffled] = useState(false);
   const [maskMode, setMaskMode] = useState(false);
+  const [conceptMode, setConceptMode] = useState(false);
+  // 개념별 아코디언 — 펼쳐진 개념 라벨 집합
+  const [expandedConcepts, setExpandedConcepts] = useState<Set<string>>(new Set());
+
+  const toggleConcept = useCallback((label: string) => {
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    setExpandedConcepts((prev) => {
+      const next = new Set(prev);
+      if (next.has(label)) next.delete(label);
+      else next.add(label);
+      return next;
+    });
+  }, []);
 
   // ─── 사운드 (개별/전체 가리기 피드백) ─────────────────────────────────────
   const hidePlayer = useAudioPlayer(require("@/assets/sounds/hide.wav"));
@@ -370,7 +618,29 @@ export default function WordbookScreen() {
 
   useEffect(() => {
     loadBookmarks().then((arr) => setBookmarks(new Set(arr)));
+    loadMastered().then((arr) => setMastered(new Set(arr)));
+    loadMemos().then(setMemos);
   }, []);
+
+  const handleToggleMaster = useCallback(async (num: number) => {
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const isM = mastered.has(num);
+    const updated = isM ? await removeMastered(num) : await addMastered(num);
+    setMastered(new Set(updated));
+  }, [mastered]);
+
+  const openMemo = useCallback((num: number) => {
+    setMemoEditNum(num);
+    setMemoDraft(memos[num] ?? "");
+  }, [memos]);
+
+  const submitMemo = useCallback(async () => {
+    if (memoEditNum == null) return;
+    const updated = await saveMemo(memoEditNum, memoDraft);
+    setMemos(updated);
+    setMemoEditNum(null);
+    setMemoDraft("");
+  }, [memoEditNum, memoDraft]);
 
   const handleToggleBookmark = useCallback(async (num: number) => {
     if (Platform.OS !== "web") {
@@ -383,7 +653,15 @@ export default function WordbookScreen() {
   const filteredVocab = useMemo(() => {
     const range = RANGE_OPTIONS[selectedRange];
     let list: VocabItem[];
-    if (range.isIdiom) {
+    if (range.isExam) {
+      // ⭐ 기출 섹션: 학교 출처가 확인된 기출 표제어만
+      list = VOCAB.filter((v) => EXAM_HEADWORD_NUMS.has(v.num));
+    } else if (range.bookIdx != null) {
+      // 정병권 LOGIC TREE: 교재 수록 순서(배열) 그대로 — 재정렬 금지
+      list = LOGICTREE_BOOKS[range.bookIdx].nums
+        .map((n) => VOCAB_BY_NUM.get(n))
+        .filter((v): v is VocabItem => !!v);
+    } else if (range.isIdiom) {
       list = VOCAB.filter((v) => v.type === "idiom" || v.type === "phrase");
     } else {
       list = VOCAB.slice(range.start, range.end + 1);
@@ -393,8 +671,12 @@ export default function WordbookScreen() {
       list = list.filter((v) => bookmarks.has(v.num));
     }
 
+    // 마스터 단어: 마스터 보기면 마스터만, 아니면 본목록에서 제외
+    if (masterView) list = list.filter((v) => mastered.has(v.num));
+    else if (mastered.size > 0) list = list.filter((v) => !mastered.has(v.num));
+
     if (searchQuery.trim()) {
-      const q = searchQuery.trim().toLowerCase();
+      const q = debouncedQuery.trim().toLowerCase();
 
       // ── 3단계 우선순위 정렬 ────────────────────────────────────────────
       // 0: 단어(w)가 q로 시작  ← 가장 높은 우선순위 (사전식 자동완성)
@@ -445,24 +727,161 @@ export default function WordbookScreen() {
     }
 
     return list;
-  }, [searchQuery, selectedRange, bookmarks, showOnlyBookmarks, isShuffled]);
+  }, [debouncedQuery, selectedRange, bookmarks, showOnlyBookmarks, isShuffled, masterView, mastered]);
+
+  // 개념별 보기 — 사전식 아코디언 (헤더 탭 → 단어 펼침)
+  const conceptRows = useMemo<ConceptRow[]>(() => {
+    if (!conceptMode) return [];
+    const q = debouncedQuery.trim().toLowerCase();
+    const searchActive = q.length > 0;
+    const rows: ConceptRow[] = [];
+    for (const g of CONCEPT_GROUPS) {
+      let items = g.nums
+        .map((n) => VOCAB_BY_NUM.get(n))
+        .filter((v): v is VocabItem => !!v);
+      if (showOnlyBookmarks) items = items.filter((v) => bookmarks.has(v.num));
+      if (masterView) items = items.filter((v) => mastered.has(v.num));
+      else if (mastered.size > 0) items = items.filter((v) => !mastered.has(v.num));
+      if (q) {
+        items = items.filter(
+          (v) =>
+            v.w.toLowerCase().includes(q) ||
+            v.k.toLowerCase().includes(q) ||
+            v.s.some((s) => s.toLowerCase().includes(q))
+        );
+      }
+      if (items.length === 0) continue;
+      // 검색 중이면 자동 펼침, 아니면 펼쳐진 개념만 단어 표시 (사전식 인덱스)
+      const isOpen = searchActive || expandedConcepts.has(g.label);
+      rows.push({
+        kind: "header",
+        id: `h_${g.label}_${rows.length}`,
+        label: g.label,
+        kor: g.kor,
+        count: items.length,
+        isCategory: g.isCategory,
+        open: isOpen,
+      });
+      if (isOpen) {
+        for (const v of items) rows.push({ kind: "word", id: `w_${v.num}`, item: v });
+      }
+    }
+    return rows;
+  }, [conceptMode, debouncedQuery, showOnlyBookmarks, bookmarks, expandedConcepts, masterView, mastered]);
+
+  // 현재 섹션 → 문제풀이: 옵션 시트에서 모드·문항 수를 고른 뒤 시작
+  const [quizSheetOpen, setQuizSheetOpen] = useState(false);
+  const [sheetMode, setSheetMode] = useState<QuizMode>("syn-choice");
+  const [sheetCount, setSheetCount] = useState(20);
+
+  const currentRangeId = useCallback(() => {
+    const range = RANGE_OPTIONS[selectedRange];
+    if (range.isExam) return "examhw";
+    if (range.bookIdx != null) return `lt:${LOGICTREE_BOOKS[range.bookIdx].book}`;
+    if (range.isIdiom) return "idioms";
+    if (range.start === 0 && range.end === VOCAB.length - 1) return "all";
+    return "";
+  }, [selectedRange]);
+
+  const handleQuickQuizStart = useCallback(() => {
+    if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const range = RANGE_OPTIONS[selectedRange];
+    setQuizSheetOpen(false);
+    router.push({
+      pathname: "/quiz",
+      params: {
+        mode: sheetMode,
+        rangeStart: String(range.start),
+        rangeEnd: String(range.end),
+        count: String(sheetCount),
+        rangeId: currentRangeId(),
+      },
+    });
+  }, [selectedRange, sheetMode, sheetCount, currentRangeId, router]);
+
+  // LOGIC TREE 권 선택 시: num → 교재 원본 순번(1부터) 매핑
+  const bookPosMap = useMemo(() => {
+    const bookIdx = RANGE_OPTIONS[selectedRange].bookIdx;
+    if (bookIdx == null) return null;
+    const m = new Map<number, number>();
+    LOGICTREE_BOOKS[bookIdx].nums.forEach((n, i) => {
+      if (!m.has(n)) m.set(n, i + 1);
+    });
+    return m;
+  }, [selectedRange]);
 
   const renderItem = useCallback(
     ({ item }: { item: VocabItem }) => (
       <WordCard
         item={item}
+        displayNum={bookPosMap?.get(item.num)}
         bookmarks={bookmarks}
         onToggleBookmark={handleToggleBookmark}
         colors={colors}
         maskMode={maskMode}
         onPlayHide={playHide}
         onPlayReveal={playReveal}
+        isMastered={mastered.has(item.num)}
+        onToggleMaster={handleToggleMaster}
+        memo={memos[item.num]}
+        onEditMemo={openMemo}
       />
     ),
-    [bookmarks, handleToggleBookmark, colors, maskMode, playHide, playReveal]
+    [bookPosMap, bookmarks, handleToggleBookmark, colors, maskMode, playHide, playReveal, mastered, handleToggleMaster, memos, openMemo]
   );
 
   const keyExtractor = useCallback((item: VocabItem) => String(item.num), []);
+
+  // 개념별 보기 렌더 (헤더 / 단어)
+  const renderConceptRow = useCallback(
+    ({ item: row }: { item: ConceptRow }) => {
+      if (row.kind === "header") {
+        const primaryLabel = row.kor && !row.isCategory ? row.kor : row.label;
+        const subLabel = row.kor && !row.isCategory ? row.label : "";
+        return (
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => toggleConcept(row.label)}
+            style={[
+              styles.conceptHeader,
+              {
+                backgroundColor: row.open ? colors.primary + "22" : colors.primary + "10",
+                borderColor: row.open ? colors.primary + "66" : colors.primary + "2A",
+              },
+            ]}
+          >
+            <Text style={[styles.conceptChevron, { color: colors.primary }]}>
+              {row.open ? "▾" : "▸"}
+            </Text>
+            <Text style={[styles.conceptLabel, { color: colors.primary }]} numberOfLines={1}>
+              {row.isCategory ? "🗂 " : ""}
+              {primaryLabel}
+              {subLabel ? <Text style={[styles.conceptSub, { color: colors.muted }]}>  {subLabel}</Text> : null}
+            </Text>
+            <Text style={[styles.conceptCount, { color: colors.muted }]}>{row.count}</Text>
+          </TouchableOpacity>
+        );
+      }
+      return (
+        <WordCard
+          item={row.item}
+          bookmarks={bookmarks}
+          onToggleBookmark={handleToggleBookmark}
+          colors={colors}
+          maskMode={maskMode}
+          onPlayHide={playHide}
+          onPlayReveal={playReveal}
+          isMastered={mastered.has(row.item.num)}
+          onToggleMaster={handleToggleMaster}
+          memo={memos[row.item.num]}
+          onEditMemo={openMemo}
+        />
+      );
+    },
+    [bookmarks, handleToggleBookmark, colors, maskMode, playHide, playReveal, toggleConcept, mastered, handleToggleMaster, memos, openMemo]
+  );
+
+  const conceptKeyExtractor = useCallback((row: ConceptRow) => row.id, []);
 
   const handleShuffle = useCallback(() => {
     setIsShuffled((v) => !v);
@@ -484,12 +903,20 @@ export default function WordbookScreen() {
       <View style={styles.header}>
         <View>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>단어장</Text>
+          {/* 전체 수가 기본 학습량처럼 보이지 않도록 기출·숙어를 구분해 표기 */}
           <Text style={[styles.headerSub, { color: colors.muted }]}>
-            총 {VOCAB.length.toLocaleString()}개 단어
+            기출 표제어 {(EXAM_STATS.examWords + EXAM_STATS.examIdioms).toLocaleString()} ·
+            숙어·표현 {IDIOM_COUNT.toLocaleString()} · 전체 {VOCAB.length.toLocaleString()}
           </Text>
         </View>
-        {/* 버튼 그룹 */}
-        <View style={styles.headerBtns}>
+        {/* 버튼 그룹 — 좁은 화면에서 가로 스와이프로 스크롤 */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          bounces={false}
+          style={{ flexShrink: 1 }}
+          contentContainerStyle={styles.headerBtns}
+        >
           {/* 뜻 가리기 버튼 */}
           <TouchableOpacity
             style={[
@@ -502,7 +929,7 @@ export default function WordbookScreen() {
             onPress={handleMaskToggle}
           >
             <Text style={[styles.headerBtnText, { color: maskMode ? colors.warning : colors.muted }]}>
-              {maskMode ? "👁 전체 가리기 ON" : "👁 전체 가리기"}
+              {maskMode ? "🔒 전체 가리기 ON" : "🔓 전체 가리기"}
             </Text>
           </TouchableOpacity>
           {/* 셔플 버튼 */}
@@ -520,8 +947,58 @@ export default function WordbookScreen() {
               🔀 {isShuffled ? "랜덤 ON" : "랜덤"}
             </Text>
           </TouchableOpacity>
-        </View>
+          {/* 개념별 보기 버튼 */}
+          <TouchableOpacity
+            style={[
+              styles.headerBtn,
+              {
+                backgroundColor: conceptMode ? colors.primary : colors.surface,
+                borderColor: conceptMode ? colors.primary : colors.border,
+              },
+            ]}
+            onPress={() => {
+              setConceptMode((v) => !v);
+              if (Platform.OS !== "web") {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              }
+            }}
+          >
+            <Text style={[styles.headerBtnText, { color: conceptMode ? "#fff" : colors.muted }]}>
+              🧩 {conceptMode ? "개념별 ON" : "개념별"}
+            </Text>
+          </TouchableOpacity>
+          {/* 마스터 단어 보기 토글 */}
+          <TouchableOpacity
+            style={[
+              styles.headerBtn,
+              {
+                backgroundColor: masterView ? (colors.warning as string) : colors.surface,
+                borderColor: masterView ? (colors.warning as string) : colors.border,
+              },
+            ]}
+            onPress={() => {
+              setMasterView((v) => !v);
+              if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            }}
+          >
+            <Text style={[styles.headerBtnText, { color: masterView ? "#fff" : colors.muted }]}>
+              ⭐ 마스터 {mastered.size > 0 ? `(${mastered.size})` : ""}
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
       </View>
+
+      {/* 마스터 보기 안내 배너 */}
+      {masterView && (
+        <Animated.View
+          entering={FadeIn.duration(200)}
+          style={[styles.maskBanner, { backgroundColor: (colors.warning as string) + "22", borderColor: (colors.warning as string) + "55" }]}
+        >
+          <Text style={[styles.maskBannerText, { color: colors.warningText as string }]}>
+            ⭐ 마스터한 단어 보기 — ☆를 누르면 다시 본목록으로 돌아가요
+          </Text>
+        </Animated.View>
+      )}
 
       {/* 마스크 모드 안내 배너 */}
       {maskMode && (
@@ -534,6 +1011,81 @@ export default function WordbookScreen() {
           </Text>
         </Animated.View>
       )}
+
+      {/* 현재 섹션으로 문제풀이 — 전체 폭 버튼 */}
+      <TouchableOpacity
+        style={[styles.quizWideBtn, { backgroundColor: colors.primary }]}
+        activeOpacity={0.85}
+        onPress={() => {
+          if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          setQuizSheetOpen(true);
+        }}
+      >
+        <Text style={styles.quizWideBtnText}>
+          ▶ {RANGE_OPTIONS[selectedRange].label.replace(/\s*\([\d,]+\)$/, "")} 문제풀이 시작
+        </Text>
+        <Text style={styles.quizWideBtnSub}>모드·문항 수 선택 ›</Text>
+      </TouchableOpacity>
+
+      {/* 문제풀이 옵션 시트 */}
+      <Modal visible={quizSheetOpen} transparent animationType="slide" onRequestClose={() => setQuizSheetOpen(false)}>
+        <Pressable style={styles.sheetBackdrop} onPress={() => setQuizSheetOpen(false)}>
+          <Pressable style={[styles.sheetBox, { backgroundColor: colors.surface, borderColor: colors.border }]} onPress={() => {}}>
+            <Text style={[styles.sheetTitle, { color: colors.foreground }]}>
+              {RANGE_OPTIONS[selectedRange].label} · 문제풀이 옵션
+            </Text>
+            <Text style={[styles.sheetLabel, { color: colors.muted }]}>모드</Text>
+            <View style={styles.sheetGrid}>
+              {QUIZ_MODES.map((m) => {
+                const active = sheetMode === m.id;
+                return (
+                  <TouchableOpacity
+                    key={m.id}
+                    style={[
+                      styles.sheetOpt,
+                      { borderColor: active ? colors.primary : colors.border,
+                        backgroundColor: active ? (colors.primary as string) + "1A" : "transparent" },
+                    ]}
+                    onPress={() => setSheetMode(m.id)}
+                  >
+                    <Text style={[styles.sheetOptText, { color: active ? colors.primary : colors.foreground }]}>
+                      {m.icon} {m.title}
+                    </Text>
+                    <Text style={[styles.sheetOptDesc, { color: colors.dim }]}>{m.desc}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+            <Text style={[styles.sheetLabel, { color: colors.muted }]}>문항 수</Text>
+            <View style={styles.sheetCountRow}>
+              {COUNTS.map((c) => {
+                const active = sheetCount === c;
+                return (
+                  <TouchableOpacity
+                    key={c}
+                    style={[
+                      styles.sheetCountBtn,
+                      { borderColor: active ? colors.primary : colors.border,
+                        backgroundColor: active ? colors.primary : "transparent" },
+                    ]}
+                    onPress={() => setSheetCount(c)}
+                  >
+                    <Text style={{ fontSize: 14, fontWeight: "700", color: active ? "#fff" : (colors.foreground as string) }}>
+                      {c}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+            <TouchableOpacity
+              style={[styles.sheetStartBtn, { backgroundColor: colors.primary }]}
+              onPress={handleQuickQuizStart}
+            >
+              <Text style={styles.quizWideBtnText}>문제풀이 시작 →</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
 
       {/* 검색창 + 북마크 필터 */}
       <View style={styles.searchRow}>
@@ -565,92 +1117,240 @@ export default function WordbookScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* 구간 필터 — 독립적인 View로 높이 고정 */}
-      <View style={styles.rangeWrapper}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.rangeContent}
+      {/* 단어 목록 — 필터·결과를 리스트 헤더로 넣어 함께 스크롤(통일감) */}
+      {conceptMode ? (
+        <FlatList
+          data={conceptRows}
+          keyExtractor={conceptKeyExtractor}
+          renderItem={renderConceptRow}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-          bounces={false}
-        >
-          {RANGE_OPTIONS.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              activeOpacity={0.7}
-              style={[
-                styles.rangeChip,
-                {
-                  backgroundColor:
-                    selectedRange === index ? colors.primary : colors.surface,
-                  borderColor:
-                    selectedRange === index ? colors.primary : colors.border,
-                },
-              ]}
-              onPress={() => {
-                if (index === selectedRange) return;
-                if (Platform.OS !== "web") {
-                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                }
-                // 카테고리 번호가 올라가면 오른쪽에서, 내려가면 왼쪽에서 진입
-                const direction = index > selectedRange ? 'left' : 'right';
-                slideList(direction, () => setSelectedRange(index));
-              }}
-            >
-              <Text
-                style={[
-                  styles.rangeChipText,
-                  {
-                    color: selectedRange === index ? "#fff" : colors.muted,
-                    fontWeight: selectedRange === index ? "700" : "500",
-                  },
-                ]}
-              >
-                {item.label}
+          initialNumToRender={25}
+          maxToRenderPerBatch={25}
+          windowSize={10}
+          removeClippedSubviews={Platform.OS !== "web"}
+          ListHeaderComponent={
+            <View style={styles.conceptInfoRow}>
+              <Text style={[styles.resultText, { color: colors.muted, flex: 1 }]}>
+                🧩 뜻을 탭하면 펼쳐져요 · {CONCEPT_GROUPS.length.toLocaleString()}개 개념
               </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
-
-      {/* 결과 수 */}
-      <View style={styles.resultRow}>
-        <Text style={[styles.resultText, { color: colors.muted }]}>
-          {filteredVocab.length.toLocaleString()}개
-          {searchQuery ? ` · "${searchQuery}" 검색 결과` : ""}
-          {showOnlyBookmarks ? " · 북마크만" : ""}
-          {isShuffled ? " · 랜덤 순서" : ""}
-          {maskMode ? " · 플래시카드 모드" : ""}
-        </Text>
-      </View>
-
-      {/* 단어 목록 */}
-      <Animated.View style={listAnimStyle}>
+              <TouchableOpacity
+                onPress={() => {
+                  if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  setExpandedConcepts((prev) =>
+                    prev.size > 0 ? new Set() : new Set(CONCEPT_GROUPS.map((g) => g.label))
+                  );
+                }}
+                style={[styles.expandAllBtn, { borderColor: colors.border }]}
+              >
+                <Text style={[styles.expandAllText, { color: colors.primary }]}>
+                  {expandedConcepts.size > 0 ? "모두 접기" : "모두 펼치기"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          }
+          ListEmptyComponent={
+            <View style={styles.emptyBox}>
+              <Text style={styles.emptyIcon}>📭</Text>
+              <Text style={[styles.emptyText, { color: colors.muted }]}>
+                검색 결과가 없습니다
+              </Text>
+            </View>
+          }
+        />
+      ) : (
         <FlatList
           data={filteredVocab}
           keyExtractor={keyExtractor}
           renderItem={renderItem}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
           initialNumToRender={20}
           maxToRenderPerBatch={20}
           windowSize={10}
           removeClippedSubviews={Platform.OS !== "web"}
+          ListHeaderComponent={
+            <View>
+              {/* 구간 필터 (리스트와 함께 스크롤) */}
+              <View style={styles.rangeWrapper}>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.rangeContent}
+                  keyboardShouldPersistTaps="handled"
+                  bounces={false}
+                >
+                  {RANGE_OPTIONS.map((item, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      activeOpacity={0.7}
+                      style={[
+                        styles.rangeChip,
+                        {
+                          backgroundColor: selectedRange === index ? colors.primary : colors.surface,
+                          borderColor: selectedRange === index ? colors.primary : colors.border,
+                        },
+                      ]}
+                      onPress={() => {
+                        if (index === selectedRange) return;
+                        if (Platform.OS !== "web") {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        }
+                        setSelectedRange(index);
+                      }}
+                    >
+                      <Text
+                        style={[
+                          styles.rangeChipText,
+                          {
+                            color: selectedRange === index ? "#fff" : colors.muted,
+                            fontWeight: selectedRange === index ? "700" : "500",
+                          },
+                        ]}
+                      >
+                        {item.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+              {/* 결과 수 */}
+              <View style={styles.resultRow}>
+                <Text style={[styles.resultText, { color: colors.muted }]}>
+                  {filteredVocab.length.toLocaleString()}개
+                  {debouncedQuery ? ` · "${debouncedQuery}" 검색 결과` : ""}
+                  {showOnlyBookmarks ? " · 북마크만" : ""}
+                  {isShuffled ? " · 랜덤 순서" : ""}
+                  {maskMode ? " · 플래시카드 모드" : ""}
+                </Text>
+              </View>
+            </View>
+          }
           ListEmptyComponent={
             <View style={styles.emptyBox}>
               <Text style={styles.emptyIcon}>📭</Text>
               <Text style={[styles.emptyText, { color: colors.muted }]}>
-                {searchQuery ? "검색 결과가 없습니다" : "단어가 없습니다"}
+                {debouncedQuery ? "검색 결과가 없습니다" : "단어가 없습니다"}
               </Text>
             </View>
           }
         />
-      </Animated.View>
+      )}
+
+      {/* 개인 메모 편집 모달 */}
+      <Modal visible={memoEditNum != null} transparent animationType="fade" onRequestClose={() => setMemoEditNum(null)}>
+        <Pressable style={styles.memoBackdrop} onPress={() => setMemoEditNum(null)}>
+          <Pressable
+            style={[styles.memoSheet, { backgroundColor: colors.surface, borderColor: colors.border }]}
+            onPress={(e) => e.stopPropagation?.()}
+          >
+            <Text style={[styles.memoTitle, { color: colors.foreground }]}>
+              📝 {memoEditNum != null ? VOCAB_BY_NUM.get(memoEditNum)?.w : ""} — 내 메모
+            </Text>
+            <TextInput
+              style={[styles.memoInput, { backgroundColor: colors.card, borderColor: colors.border, color: colors.foreground }]}
+              value={memoDraft}
+              onChangeText={setMemoDraft}
+              placeholder="이 단어에 대한 나만의 메모를 적어보세요"
+              placeholderTextColor={colors.muted}
+              multiline
+              autoFocus
+            />
+            <View style={styles.memoBtnRow}>
+              <TouchableOpacity style={[styles.memoBtn, { borderColor: colors.border }]} onPress={() => setMemoEditNum(null)}>
+                <Text style={[styles.memoBtnText, { color: colors.muted }]}>취소</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.memoBtn, { backgroundColor: colors.primary, borderColor: colors.primary }]} onPress={submitMemo}>
+                <Text style={[styles.memoBtnText, { color: "#fff" }]}>저장</Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
+  conceptHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginHorizontal: 16,
+    marginTop: 14,
+    marginBottom: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+  conceptInfoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 6,
+    gap: 8,
+  },
+  expandAllBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  expandAllText: {
+    fontSize: 11,
+    fontWeight: "700",
+  },
+  memoBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    justifyContent: "center",
+    padding: 24,
+  },
+  memoSheet: {
+    borderRadius: 18,
+    borderWidth: 1,
+    padding: 20,
+  },
+  memoTitle: { fontSize: 15, fontWeight: "800", marginBottom: 12 },
+  memoInput: {
+    minHeight: 90,
+    borderWidth: 1.5,
+    borderRadius: 12,
+    padding: 12,
+    fontSize: 14,
+    textAlignVertical: "top",
+  },
+  memoBtnRow: { flexDirection: "row", gap: 10, marginTop: 14 },
+  memoBtn: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    alignItems: "center",
+  },
+  memoBtnText: { fontSize: 13, fontWeight: "700" },
+  conceptChevron: {
+    fontSize: 13,
+    fontWeight: "800",
+    marginRight: 8,
+  },
+  conceptLabel: {
+    fontSize: 15,
+    fontWeight: "800",
+    flex: 1,
+  },
+  conceptSub: {
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  conceptCount: {
+    fontSize: 11,
+    fontWeight: "700",
+    fontVariant: ["tabular-nums"],
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -697,6 +1397,46 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     textAlign: "center",
   },
+  quizWideBtn: {
+    marginHorizontal: 20,
+    marginBottom: 10,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  quizWideBtnText: {
+    fontSize: 15,
+    fontWeight: "800",
+    color: "#fff",
+  },
+  quizWideBtnSub: {
+    fontSize: 11,
+    color: "rgba(255,255,255,0.85)",
+    marginTop: 2,
+  },
+  sheetBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.45)",
+    justifyContent: "flex-end",
+  },
+  sheetBox: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderWidth: 1,
+    padding: 20,
+    paddingBottom: 34,
+  },
+  sheetTitle: { fontSize: 16, fontWeight: "800", marginBottom: 12 },
+  sheetLabel: { fontSize: 11, fontWeight: "700", letterSpacing: 0.8, marginBottom: 8, marginTop: 6 },
+  sheetGrid: { gap: 8, marginBottom: 8 },
+  sheetOpt: { borderWidth: 1.5, borderRadius: 10, paddingVertical: 9, paddingHorizontal: 12 },
+  sheetOptText: { fontSize: 13.5, fontWeight: "700" },
+  sheetOptDesc: { fontSize: 11, marginTop: 1 },
+  sheetCountRow: { flexDirection: "row", gap: 8, marginBottom: 14 },
+  sheetCountBtn: {
+    flex: 1, borderWidth: 1.5, borderRadius: 10, paddingVertical: 10, alignItems: "center",
+  },
+  sheetStartBtn: { borderRadius: 12, paddingVertical: 14, alignItems: "center" },
   searchRow: {
     flexDirection: "row",
     alignItems: "center",

@@ -16,7 +16,8 @@ import { VOCAB } from "@/lib/vocab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
 import { useAuth } from "@/hooks/use-auth";
-import { useThemeContext, type ThemeMode } from "@/lib/theme-provider";
+import { useThemeContext } from "@/lib/theme-provider";
+import { AppThemes, APP_THEME_META, type AppThemeName } from "@/constants/theme";
 import { getApiBaseUrl } from "@/constants/oauth";
 import * as Auth from "@/lib/_core/auth";
 import { trpc } from "@/lib/trpc";
@@ -32,15 +33,21 @@ import {
   type ChoiceLang,
 } from "@/lib/store";
 
-type ThemeOption = { mode: ThemeMode; label: string; icon: "sun.max.fill" | "moon.fill" | "circle.lefthalf.filled" };
 type LangOption = { lang: ChoiceLang; label: string; desc: string };
 type AuthTab = "login" | "register";
 
-const THEME_OPTIONS: ThemeOption[] = [
-  { mode: "light", label: "라이트", icon: "sun.max.fill" },
-  { mode: "dark", label: "다크", icon: "moon.fill" },
-  { mode: "system", label: "시스템", icon: "circle.lefthalf.filled" },
-];
+// 4개 테마 모드 — 색 미리보기 스와치와 설명 포함
+const THEME_OPTIONS: {
+  name: AppThemeName;
+  label: string;
+  desc: string;
+  recommended?: boolean;
+}[] = (Object.keys(APP_THEME_META) as AppThemeName[]).map((name) => ({
+  name,
+  label: APP_THEME_META[name].label,
+  desc: APP_THEME_META[name].desc,
+  recommended: APP_THEME_META[name].recommended,
+}));
 
 const LANG_OPTIONS: LangOption[] = [
   { lang: "korean", label: "🇰🇷 한글뜻", desc: "한국어 뜻 4지선다" },
@@ -67,7 +74,7 @@ async function callAuthApi(
 export default function SettingsScreen() {
   const colors = useColors();
   const { user, isAuthenticated, loading: authLoading, logout, refresh: refreshAuth } = useAuth();
-  const { themeMode, setThemeMode } = useThemeContext();
+  const { themeName, setThemeName } = useThemeContext();
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState<string | null>(null);
   const [choiceLang, setChoiceLang] = useState<ChoiceLang>("korean");
@@ -241,9 +248,9 @@ export default function SettingsScreen() {
             <Text style={s.title}>설정</Text>
           </View>
 
-          {/* 퀴즈 선지 언어 섹션 */}
+          {/* 문제풀이 선지 언어 섹션 */}
           <View style={s.section}>
-            <Text style={s.sectionTitle}>퀴즈 선지 언어</Text>
+            <Text style={s.sectionTitle}>문제풀이 선지 언어</Text>
             <View style={s.card}>
               <Text style={s.settingDesc}>
                 "한국어 뜻 고르기" 모드에서 선지를 한글뜻 또는 영어 동의어로 표시합니다.
@@ -271,32 +278,46 @@ export default function SettingsScreen() {
             </View>
           </View>
 
-          {/* 테마 섹션 */}
+          {/* 테마 섹션 — 4개 테마 모드 */}
           <View style={s.section}>
-            <Text style={s.sectionTitle}>화면 테마</Text>
+            <Text style={s.sectionTitle}>테마</Text>
             <View style={s.card}>
-              <View style={s.themeRow}>
-                {THEME_OPTIONS.map((opt) => {
-                  const active = themeMode === opt.mode;
-                  return (
-                    <TouchableOpacity
-                      key={opt.mode}
-                      style={[s.themeBtn, active && s.themeBtnActive]}
-                      onPress={() => setThemeMode(opt.mode)}
-                      activeOpacity={0.75}
-                    >
-                      <IconSymbol
-                        name={opt.icon}
-                        size={20}
-                        color={active ? colors.background : colors.muted}
-                      />
-                      <Text style={[s.themeBtnLabel, active && s.themeBtnLabelActive]}>
+              {THEME_OPTIONS.map((opt, i) => {
+                const active = themeName === opt.name;
+                const pal = AppThemes[opt.name];
+                return (
+                  <TouchableOpacity
+                    key={opt.name}
+                    style={[
+                      s.themeOptRow,
+                      i > 0 && { borderTopWidth: 1, borderTopColor: colors.border },
+                      active && {
+                        backgroundColor: (colors.primary as string) + "14",
+                      },
+                    ]}
+                    onPress={() => setThemeName(opt.name)}
+                    activeOpacity={0.75}
+                  >
+                    {/* 라디오 */}
+                    <View style={[s.radio, { borderColor: active ? colors.primary : colors.border }]}>
+                      {active ? <View style={[s.radioDot, { backgroundColor: colors.primary }]} /> : null}
+                    </View>
+                    {/* 색 미리보기 스와치 */}
+                    <View style={s.swatchRow}>
+                      <View style={[s.swatch, { backgroundColor: pal.background, borderColor: pal.border }]} />
+                      <View style={[s.swatch, { backgroundColor: pal.card, borderColor: pal.border }]} />
+                      <View style={[s.swatch, { backgroundColor: pal.primary, borderColor: pal.primary }]} />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={[s.themeOptLabel, active && { color: colors.primary }]}>
                         {opt.label}
+                        {opt.recommended ? "  ★ 추천" : ""}
                       </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
+                      <Text style={s.themeOptDesc}>{opt.desc}</Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
             </View>
           </View>
 
@@ -467,7 +488,7 @@ export default function SettingsScreen() {
                 플래시카드에서 ⭐ 마스터한 단어 목록을 초기화합니다.{"\n"}모르는 단어 위주로 다시 학습하려면 리셋하세요.
               </Text>
               <TouchableOpacity
-                style={[s.syncBtn, { backgroundColor: "rgba(251,191,36,0.12)", borderColor: "rgba(251,191,36,0.35)", flex: 1, width: "100%" }]}
+                style={[s.syncBtn, { backgroundColor: (colors.warning as string) + "1F", borderColor: (colors.warning as string) + "59", flex: 1, width: "100%" }]}
                 onPress={async () => {
                   Alert.alert(
                     "마스터 목록 초기화",
@@ -488,7 +509,7 @@ export default function SettingsScreen() {
                 }}
                 activeOpacity={0.75}
               >
-                <Text style={[s.syncBtnText, { color: "#F59E0B" }]}>⭐ 마스터 목록 초기화</Text>
+                <Text style={[s.syncBtnText, { color: colors.warningText as string }]}>⭐ 마스터 목록 초기화</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -532,15 +553,19 @@ const styles = (c: ReturnType<typeof useColors>) =>
       borderWidth: 0.5, borderColor: c.border, padding: 16, gap: 12,
     },
     // Theme
-    themeRow: { flexDirection: "row", gap: 10 },
-    themeBtn: {
-      flex: 1, flexDirection: "column", alignItems: "center", gap: 6,
-      paddingVertical: 14, borderRadius: 14, borderWidth: 1.5,
-      borderColor: c.border, backgroundColor: c.surface,
+    themeOptRow: {
+      flexDirection: "row", alignItems: "center", gap: 12,
+      paddingVertical: 13, paddingHorizontal: 4, borderRadius: 10,
     },
-    themeBtnActive: { backgroundColor: c.primary, borderColor: c.primary },
-    themeBtnLabel: { fontSize: 12, fontWeight: "600", color: c.muted },
-    themeBtnLabelActive: { color: c.background },
+    radio: {
+      width: 20, height: 20, borderRadius: 10, borderWidth: 2,
+      alignItems: "center", justifyContent: "center",
+    },
+    radioDot: { width: 10, height: 10, borderRadius: 5 },
+    swatchRow: { flexDirection: "row", gap: 3 },
+    swatch: { width: 16, height: 16, borderRadius: 5, borderWidth: 1 },
+    themeOptLabel: { fontSize: 14, fontWeight: "700", color: c.foreground },
+    themeOptDesc: { fontSize: 11.5, color: c.muted, marginTop: 1 },
     // Account
     accountRow: { flexDirection: "row", alignItems: "center", gap: 14 },
     accountInfo: { flex: 1 },

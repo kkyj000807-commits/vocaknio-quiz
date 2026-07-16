@@ -254,9 +254,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     encourageCard: {
       marginHorizontal: 16,
       marginTop: 8,
-      backgroundColor: "rgba(108,99,255,0.08)",
+      backgroundColor: (colors.primary as string) + "14",
       borderWidth: 1,
-      borderColor: "rgba(108,99,255,0.2)",
+      borderColor: (colors.primary as string) + "33",
       borderRadius: 16,
       padding: 20,
     },

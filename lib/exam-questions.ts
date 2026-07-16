@@ -13,22 +13,144 @@ export type QuestionType =
   | "reading-title"
   | "grammar";
 
+/** 동의어 정답의 관계 유형 — 정답 제출 후 해설에 표시 */
+export type SynonymRelation =
+  | "exact-synonym"          // 거의 그대로 교체 가능
+  | "near-synonym"           // 의미가 가깝지만 뉘앙스 차이 존재
+  | "contextual-equivalent"  // 해당 문맥에서만 정답 가능
+  | "invalid";               // 정답으로 인정 불가 (차단 대상)
+
+// ─── 골드 문항 검수 스키마 (센텐스 컴플리션 개편 지침) ─────────────────────────
+
+/** 검증 근거 자료 — AI 기억은 근거가 아님. 확인하지 않은 출처 생성 금지. */
+export interface Reference {
+  title: string;
+  authorOrPublisher: string;
+  urlOrBibliography: string;
+  accessedAt: string;
+  supportedClaim: string;
+}
+
+/** 함의 신뢰도 — plausible/speculative 만으로 정답 결정 시 출제 금지 */
+export type InferenceConfidence =
+  | "explicit" | "strongly-implied" | "plausible" | "speculative";
+
+/** 비유적 표현 분석 — 문자 그대로만 번역 금지 */
+export interface FigurativeAnalysis {
+  expression: string;
+  literalMeaning: string;
+  contextualMeaning: string;
+  conceptualMapping: string;   // 예: "발전은 목적지를 향한 이동이다"
+  rhetoricalFunction: string;
+  evidence: string[];
+}
+
+/** 문항 분석 — 선택지를 보기 전에 문장이 요구하는 조건을 먼저 기록 (최종 지침 11절) */
+export interface QuestionAnalysis {
+  mainPoint?: string;             // 문단의 메인포인트 한 문장
+  requiredPartOfSpeech: string;   // 빈칸의 품사
+  grammarConstraint: string;      // 문형 조건
+  blankFunction?: string;         // 빈칸이 문단에서 수행하는 역할
+  discourseRelation:
+    | "cause" | "contrast" | "concession" | "addition"
+    | "example" | "conclusion" | "other";
+  polarity: "positive" | "negative" | "neutral" | "mixed";
+  literalMeaning?: string;        // 표면 의미
+  contextualMeaning?: string;     // 문맥 의미
+  impliedMeaning?: string;        // 언외적 함의 (실제 표현 근거 필수)
+  authorTone: string;             // 필자의 태도·어조 (authorStance)
+  presupposition?: string;        // 전제
+  inferenceTriggers?: string[];   // 함의를 유발하는 실제 표현들
+  inferenceConfidence?: InferenceConfidence;
+  semanticPlaceholder: string;    // 선택지 보기 전 예상 개념 (쉬운 영어/한국어)
+  evidenceSpan: string;           // 지문 내부 핵심 근거 표현
+  expectedRegister: string;       // 격식·분야
+  expectedCollocation: string;    // 기대 연어
+  strongestRival?: string;        // 가장 강한 경쟁 선지
+  rivalRejectionReason?: string;  // 그 선지가 덜 적절한 이유 (반박 증명)
+  figurative?: FigurativeAnalysis; // 비유 표현이 정답 판단에 관여할 때
+}
+
+/** 선택지별 독립 판정 — 단순 총점으로 정답 확정 금지, 즉시탈락 조건 우선 */
+export interface ChoiceAnalysis {
+  choice: string;                 // 선지 문자열로 매칭 (셔플되므로 인덱스 금지)
+  grammaticalFit: boolean;        // false면 즉시 탈락
+  semanticFit: number;            // 0~3
+  discourseFit: number;           // 0~3
+  pragmaticFit?: number;          // 0~3 (태도·함의 적합성)
+  collocationFit: number;         // 0~2
+  registerFit: number;            // 0~1
+  relation: "exact" | "near" | "contextual" | "wrong" | "unverified";
+  definition?: string;            // 실제 확인한 영영 정의
+  reason: string;                 // 이 선지가 정답/오답인 구체적 이유
+  references: Reference[];
+}
+
+/**
+ * 검수 판정 (최종 지침 10·11절).
+ * grade: A 공식정답 확인 / B 독립 답지 3+ 일치 + 언어학적 근거 / C 근거로 유일답 확정
+ *        / D 복수 방어 가능·근거 부족 / X 판정 불가. A~C만 정상 출제.
+ * references 없는 문항은 verified 불가.
+ */
+export interface QuestionVerification {
+  status: "verified" | "probable" | "ambiguous" | "blocked";
+  grade: "A" | "B" | "C" | "D" | "X";
+  reviewedBy: string[];           // 검수 역할 파이프라인 (연구자/풀이자/반론자/판정자)
+  reviewedAt: string;
+  sourceCommit?: string;          // 검수 시점 소스 커밋
+  dataVersion?: string;
+  trap?: string;                  // 출제자가 설계한 함정
+  keyLogic?: string;              // 정답 한 줄 핵심 논리
+}
+
+/** 기출 원문 증거 — 정답 제출 후에만 노출. 원문 미확보 시 만들어내지 않는다. */
+export interface ExamEvidence {
+  originalSentenceEn?: string;  // 빈칸/밑줄이 있는 실제 기출 문장 (원문 그대로)
+  restoredSentenceEn?: string;  // 빈칸에 정답을 넣은 복원 문장
+  contextClues?: string[];      // 정답을 결정하는 문맥 단서
+  logicRelation?: string;       // 대조·인과·양보·예시·부연·순접·역접·어조 전환
+  relation?: SynonymRelation;   // 동의어 문제의 정답 관계 유형
+  needsSourceCheck?: boolean;   // 기출 원문 확인 필요 (원문 미확보)
+}
+
+/**
+ * 선택지 — 정답 제출 전에는 text만 노출, 제출 후 koreanGloss·explanation 공개.
+ * koreanGloss는 검수된 경로(자기 표제어 → syn-gloss 사전)로만 채운다.
+ */
+export interface ExamChoice {
+  text: string;
+  koreanGloss?: string;   // 한국어 뜻 (없으면 UI에서 '뜻 정보 검수 필요' 표시)
+  explanation?: string;   // 이 선지가 정답/오답인 이유
+}
+
 export interface ExamQuestion {
   id: string;
   school?: string;        // 학교명 (한양대, 성균관대 등)
   year: number;
   qNum: number;
   type: QuestionType;
-  passage?: string;       // 독해 지문
-  question: string;       // 문제 지문/질문 (밑줄 단어 포함)
+  passage?: string;       // 독해 지문 (영어 원문만)
+  question: string;       // 문제 지문/질문 — 영어 원문만, 한국어 번역 금지 (translationKo로 분리)
+  translationKo?: string; // 한국어 해석 — 정답 확인 후에만 표시
   underlined?: string;    // 밑줄 친 단어/구
-  choices: string[];      // 선택지 (4~5개)
+  choices: ExamChoice[];  // 선택지 (4~5개)
   answer: number;         // 정답 인덱스 (0-based)
-  explanation: string;    // 해설
+  explanation: string;    // 상세 해설 (정답→완성문장→문맥의미→단서→오답이유→해석→출처)
+  evidence?: ExamEvidence; // 기출 원문 증거 (정답 확인 후 전구 박스에 사용)
+  // ── 골드 검수 필드 (optional — 골드 문항부터 채움) ──
+  analysis?: QuestionAnalysis;
+  choiceAnalysis?: ChoiceAnalysis[];
+  verification?: QuestionVerification;
   points: number;         // 배점
 }
 
-export const examQuestions: ExamQuestion[] = [
+// 원본 리터럴은 문자열 선지를 유지한다 (3,600줄 데이터 무수정 원칙) —
+// 모듈 로드 시 normalizeChoices()가 ExamChoice 객체로 변환·뜻·이유를 채운다.
+type RawExamQuestion = Omit<ExamQuestion, "choices"> & {
+  choices: (string | ExamChoice)[];
+};
+
+const rawExamQuestions: RawExamQuestion[] = [
   // ─────────────────────────────────────────────
   // 2026 어휘 동의어 (Q2~Q5)
   // ─────────────────────────────────────────────
@@ -53,7 +175,9 @@ export const examQuestions: ExamQuestion[] = [
     question:
       "The senator's [obstreperous] refusal to yield the floor—marked by raised voice and calculated belligerence—disrupted the proceedings.",
     underlined: "obstreperous",
-    choices: ["unruly", "defiant", "reticent", "vociferous", "conciliatory"],
+    // 검수: defiant(반항적)·vociferous(소리 높은)는 사전·문맥상 정답 방어 가능 → 중복정답 방지 위해
+    // 반의어 방향(docile)·무관어(perfunctory)로 교체
+    choices: ["unruly", "docile", "reticent", "perfunctory", "conciliatory"],
     answer: 0,
     explanation: "obstreperous = 소란스럽고 다루기 힘든 → unruly(제멋대로인, 다루기 힘든)",
     points: 2,
@@ -66,7 +190,8 @@ export const examQuestions: ExamQuestion[] = [
     question:
       "He remained [circumspect] when addressing the sensitive topic.",
     underlined: "circumspect",
-    choices: ["evasive", "cautious", "resigned", "dogmatic", "indifferent"],
+    // 검수: evasive(회피하는)는 '민감한 주제' 문맥에서 정답 방어 가능 → 반의어 방향(reckless)으로 교체
+    choices: ["reckless", "cautious", "resigned", "dogmatic", "indifferent"],
     answer: 1,
     explanation: "circumspect = 신중한, 조심스러운 → cautious(조심스러운)",
     points: 2,
@@ -1311,7 +1436,7 @@ export function shuffleChoices(question: ExamQuestion): ExamQuestion {
 // ─────────────────────────────────────────────
 // 성균관대 2022 기출 문제
 // ─────────────────────────────────────────────
-const skku2022Questions: ExamQuestion[] = [
+const skku2022Questions: RawExamQuestion[] = [
   {
     id: "skku2022-33",
     school: "성균관대",
@@ -1459,7 +1584,7 @@ In the end the Democratic-run legislature passed several gun laws, including a n
 // ─────────────────────────────────────────────
 // 한양대 기출 문제 (어휘 동의어)
 // ─────────────────────────────────────────────
-const hanyang2022Questions: ExamQuestion[] = [
+const hanyang2022Questions: RawExamQuestion[] = [
   {
     id: "hyu2022-21",
     school: "한양대",
@@ -1505,7 +1630,7 @@ const hanyang2022Questions: ExamQuestion[] = [
 // ─────────────────────────────────────────────
 // 성균관대 2021 기출 문제
 // ─────────────────────────────────────────────
-const skku2021Questions: ExamQuestion[] = [
+const skku2021Questions: RawExamQuestion[] = [
   {
     id: "skku2021-22",
     school: "성균관대",
@@ -1567,11 +1692,11 @@ const skku2021Questions: ExamQuestion[] = [
 ];
 
 // 전체 배열에 추가
-examQuestions.push(...skku2022Questions, ...hanyang2022Questions, ...skku2021Questions);
+rawExamQuestions.push(...skku2022Questions, ...hanyang2022Questions, ...skku2021Questions);
 
 // 논리완성 문제 데이터 (TOP2/TOP3 스타일앤톤 시리즈)
 // 출처: 스타일앤톤 편입 논리완성 강의 자료
-const logicQuestions: ExamQuestion[] = [
+const logicQuestions: RawExamQuestion[] = [
   {
     id: "logic-top23강-01",
     school: "logic",
@@ -1962,10 +2087,10 @@ const logicQuestions: ExamQuestion[] = [
     year: 2024,
     qNum: 11,
     type: "logic-blank",
-    question: `Despite his huge wealth Kamprad was typically known as a(n) businessman who lived the lifestyle he preached for his company (in which) executives travel on low-cost airlines and stay in budget hotels. 그의 엄청난 부에도 불구하고 캄프라드는 자신의 회사를 위해 그가 설교한 생활방식대로 살았던 검소한 사업가로 일반적으로 알려져 있는데， 그의 회사의 임원들은 저가항공사를 이용하고 저렴한 호텔에서 묵는다`,
+    question: `Despite his huge wealth Kamprad was typically known as a(n) ______ businessman who lived the lifestyle he preached for his company, in which executives travel on low-cost airlines and stay in budget hotels. 그의 엄청난 부에도 불구하고 캄프라드는 자신의 회사를 위해 그가 설교한 생활방식대로 살았던 검소한 사업가로 일반적으로 알려져 있는데， 그의 회사의 임원들은 저가항공사를 이용하고 저렴한 호텔에서 묵는다`,
     choices: ["frugal", "radical", "reclusive", "arrogant"],
-    answer: 2,
-    explanation: `[TOP2-4강] 빈칸에는 'reclusive(은둔한)'이 적절합니다. 문맥 힌트: n, in which`,
+    answer: 0,
+    explanation: `[TOP2-4강] 빈칸에는 'frugal(검소한)'이 적절합니다. 근거: Despite his huge wealth(막대한 부에도 불구하고) + 저가 항공(low-cost airlines)·저가 호텔(budget hotels) 문맥 → 부유하지만 '검소한' 사업가. reclusive(은둔한)는 사교성 관련으로 항공·호텔 근거와 무관.`,
     points: 2,
   },
   {
@@ -3553,7 +3678,162 @@ const logicQuestions: ExamQuestion[] = [
     points: 2,
   },
 ];
-examQuestions.push(...logicQuestions);
+rawExamQuestions.push(...logicQuestions);
+
+// ─── 정규화 오버레이 적용 ─────────────────────────────────────────────────────
+// 원본 리터럴은 보존하고, 검수 완료된 항목만 원문(영어)·한국어 해석·구조 해설로 덮는다.
+// (검수에서 정답 오류·복수정답·빈칸 유실로 판정된 문항은 provenance="blocked"로 출제 차단)
+import examNormalized from "@/assets/exam-normalized.json";
+import examGold from "@/assets/exam-gold.json";
+
+type NormOverlay = { question?: string; translationKo?: string; explanation?: string };
+const NORM = examNormalized as Record<string, NormOverlay>;
+for (const q of rawExamQuestions) {
+  const ov = NORM[q.id];
+  if (!ov) continue;
+  if (ov.question) q.question = ov.question;
+  if (ov.translationKo) q.translationKo = ov.translationKo;
+  if (ov.explanation) q.explanation = ov.explanation;
+}
+
+// ─── 골드 문항 오버레이 ───────────────────────────────────────────────────────
+// 역할 분담 검수(조사→풀이→반론→최종)를 통과한 문항의 전체 분석·판정·근거를 병합.
+// 정규화 오버레이보다 뒤에 적용되어 우선한다.
+type GoldOverlay = {
+  question?: string;
+  translationKo?: string;
+  explanation?: string;
+  answer?: number;
+  analysis?: QuestionAnalysis;
+  choiceAnalysis?: ChoiceAnalysis[];
+  verification?: QuestionVerification;
+  evidence?: ExamEvidence;
+};
+const GOLD = examGold as Record<string, GoldOverlay>;
+for (const q of rawExamQuestions) {
+  const g = GOLD[q.id];
+  if (!g) continue;
+  if (g.question) q.question = g.question;
+  if (g.translationKo) q.translationKo = g.translationKo;
+  if (g.explanation) q.explanation = g.explanation;
+  if (typeof g.answer === "number") q.answer = g.answer;
+  if (g.analysis) q.analysis = g.analysis;
+  if (g.choiceAnalysis) q.choiceAnalysis = g.choiceAnalysis;
+  if (g.verification) q.verification = g.verification;
+  if (g.evidence) q.evidence = g.evidence;
+}
+
+// ─── 선지 정규화: string → ExamChoice (뜻·이유 채움) ─────────────────────────
+// koreanGloss: 검수된 경로만 — ① 자기 표제어 k_short ② syn-gloss 사전. 실패 시 undefined
+// ("뜻 정보 검수 필요"로 표시). 다른 표제어의 동의어 배열에서 뜻을 가져오는 것은 금지.
+import { VOCAB, korGloss } from "./vocab";
+
+const WORD_KSHORT = new Map<string, string>();
+for (const v of VOCAB) {
+  const key = v.w.trim().toLowerCase();
+  if (!WORD_KSHORT.has(key) && v.k_short) WORD_KSHORT.set(key, v.k_short);
+}
+
+/** 단어형 선지인가 (문장·한국어 선지는 뜻 표시 대상 아님) */
+export function isWordChoice(text: string): boolean {
+  return /^[A-Za-z][A-Za-z '’\-()]{0,34}$/.test(text.trim());
+}
+
+function glossFor(text: string): string | undefined {
+  if (!isWordChoice(text)) return undefined;
+  const key = text.trim().toLowerCase().replace(/^[①②③④⑤]\s*/, "");
+  return WORD_KSHORT.get(key) ?? korGloss(key) ?? undefined;
+}
+
+/** 구조 해설의 "오답 이유: ① … ② …"를 선지 인덱스별로 분해 */
+function splitWrongReasons(explanation: string): Record<number, string> {
+  const map: Record<number, string> = {};
+  const m = explanation.match(
+    /(?:^|\n)오답 이유\s*[:：]\s*([\s\S]*?)(?=\n(?:정답|완성 문장|문맥 의미|핵심 단서|해석|출처|핵심 논리|근거 표현|문법·논리·어조|영영 정의|정답 이유|함정)\s*[:：]|$)/
+  );
+  if (!m) return map;
+  for (const seg of m[1].split(/(?=[①②③④⑤])/)) {
+    const mm = seg.match(/^([①②③④⑤])\s*([\s\S]*)$/);
+    if (mm && mm[2].trim()) {
+      map["①②③④⑤".indexOf(mm[1])] = mm[2].trim().replace(/[.。]\s*$/, "");
+    }
+  }
+  return map;
+}
+
+function normalizeChoices(q: RawExamQuestion): ExamChoice[] {
+  const wrong = splitWrongReasons(q.explanation);
+  return q.choices.map((c, i) => {
+    const base: ExamChoice = typeof c === "string" ? { text: c } : { ...c };
+    if (!base.koreanGloss) base.koreanGloss = glossFor(base.text);
+    if (!base.explanation) {
+      // 골드 choiceAnalysis(선지 문자열 매칭) 우선, 없으면 구조 해설의 오답 이유
+      const ca = q.choiceAnalysis?.find((x) => x.choice === base.text);
+      base.explanation = ca?.reason ?? (i !== q.answer ? wrong[i] : undefined);
+    }
+    return base;
+  });
+}
+
+export const examQuestions: ExamQuestion[] = rawExamQuestions.map((q) => ({
+  ...q,
+  choices: normalizeChoices(q),
+}));
+
+/** 골드 검수 완료(분석·판정 보유) 문항 여부 */
+export function isGoldQuestion(q: ExamQuestion): boolean {
+  return !!q.verification && !!q.choiceAnalysis && q.choiceAnalysis.length > 0;
+}
+
+// ─── 섹션 분류 (지시문·요구 사고 기준 — 파일명/기존 라벨 아님) ─────────────────
+export type SectionType =
+  | "vocabulary"          // 어휘: 밑줄 단어·표현의 의미 (synonym/closest in meaning)
+  | "sentence_completion" // 논리완성·빈칸완성 (문맥·논리·collocation·register)
+  | "reading"             // 독해: 주제·제목·요지·일치·추론·순서
+  | "grammar"             // 문법: 어법상 틀린 것
+  | "discourse";          // 표현/담화: 연결사·지시·어조
+
+// 지시문 감사 결과 수동 확정 (지시문이 형식상 빈칸이지만 실제로는 어휘 문제인 케이스 등)
+const SECTION_OVERRIDE: Record<string, SectionType> = {
+  "skku2022-33": "vocabulary",          // underlined "booked solid" means … (밑줄 의미)
+  "skku2022-34": "vocabulary",
+  "skku2022-44": "vocabulary",
+  "skku2022-35": "sentence_completion", // 지문 빈칸
+  "skku2022-45": "sentence_completion",
+  "skku2022-25": "sentence_completion",
+  "skku2022-26": "sentence_completion",
+  "skku2021-25": "sentence_completion",
+};
+
+const SECTION_BY_TYPE: Record<QuestionType, SectionType> = {
+  "vocab-synonym": "vocabulary",
+  "reading-vocab": "vocabulary",
+  "vocab-blank": "sentence_completion",
+  "logic-blank": "sentence_completion",
+  "reading-blank": "sentence_completion",
+  "reading-main": "reading",
+  "reading-title": "reading",
+  "grammar": "grammar",
+};
+
+/** 문항의 섹션 — 지시문 우선, 수동 확정 오버라이드, 마지막으로 유형 필드 */
+export function sectionOf(q: ExamQuestion): SectionType {
+  const ov = SECTION_OVERRIDE[q.id];
+  if (ov) return ov;
+  const t = `${q.question} ${q.underlined ?? ""}`;
+  if (/어법상|문법적으로/.test(t)) return "grammar";
+  if (/의미가 가장 가까운|뜻과 가장 가까운|closest in meaning|뜻으로 가장|underlined.*means/i.test(t))
+    return "vocabulary";
+  if (/주제|제목|요지|일치|무관한|순서|삽입|필자의 태도|글의 내용/.test(t)) return "reading";
+  if (/연결사|지시하는 것|가리키는 것|어조로 가장/.test(t)) return "discourse";
+  if (/빈칸|들어갈 (가장 )?(적절|알맞)|_{2,}/.test(t)) return "sentence_completion";
+  return SECTION_BY_TYPE[q.type];
+}
+
+/** 정답 선지 텍스트 — 정답 번호만 믿지 말고 항상 문자열로 연결 */
+export function correctAnswerText(q: ExamQuestion): string {
+  return q.choices[q.answer]?.text ?? "";
+}
 
 // 학교별 필터링
 export function getQuestionsBySchool(school: string): ExamQuestion[] {
