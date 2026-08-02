@@ -1,428 +1,287 @@
-import vocabRaw from "@/assets/vocab.json";
+import vocabRaw from "@/assets/vocab-v1.4.json";
+import vocabMetaRaw from "@/assets/vocab-meta-v1.4.json";
 
-export interface VocabItem {
+export type VocabGroup =
+  | "V101"
+  | "V201"
+  | "V301"
+  | "V401"
+  | "V501"
+  | "V502"
+  | "V601"
+  | "APPENDIX";
+
+interface RawVocabItem {
   num: number;
-  w: string;     // word
-  k: string;     // Korean meaning (full)
-  k_short: string; // Korean meaning (short)
-  s: string[];   // synonyms
-  p: string;     // IPA pronunciation
-  category?: string; // semantic category
-  type?: 'word' | 'idiom' | 'phrase'; // entry type
-  antonym?: string[]; // antonyms (반의어) - 오답 선지 우선 사용
+  id: string;
+  sourceIndex: number;
+  sourceNumber: number | string;
+  w: string;
+  k: string;
+  p: string;
+  group: VocabGroup;
+  conceptId: string;
+  conceptLabel: string;
+  majorConceptLabel: string;
+  s: string[];
 }
 
-// antonym -> 해당 반의어를 가진 단어(w)들의 집합 (역방향 인덱스)
-const ANTONYM_TO_WORDS: Map<string, Set<string>> = new Map();
-
-export const VOCAB: VocabItem[] = vocabRaw as VocabItem[];
-
-export const VOCAB_WITH_SYNONYMS = VOCAB.filter(
-  (v) => v.s && v.s.length > 0
-);
-
-// All unique synonyms for distractor generation
-export const ALL_SYNONYMS: string[] = Array.from(
-  new Set(VOCAB.flatMap((v) => v.s))
-);
-
-// ─── 역방향 인덱스 빌드 ───────────────────────────────────────────────────────
-// syn -> 해당 동의어를 가진 단어(w)들의 집합
-const SYN_TO_WORDS: Map<string, Set<string>> = new Map();
-for (const item of VOCAB) {
-  for (const s of item.s) {
-    if (!SYN_TO_WORDS.has(s)) SYN_TO_WORDS.set(s, new Set());
-    SYN_TO_WORDS.get(s)!.add(item.w);
-  }
+interface VocabMeta {
+  version: string;
+  sourceRows: number;
+  sourceEntries: number;
+  sourceSha256: string;
+  groupCounts: Record<VocabGroup, number>;
+  sections: Array<{
+    id: string;
+    group: VocabGroup;
+    label: string;
+    start: number;
+    end: number;
+    count: number;
+  }>;
+  concepts: Array<{
+    id: string;
+    group: VocabGroup;
+    label: string;
+    majorLabel: string;
+    words: string[];
+  }>;
+  confirmedPairCount: number;
+  synonymEntryCount: number;
+  legacyMigration: {
+    sourceCount: number;
+    mappedCount: number;
+    unresolvedCount: number;
+    numMap: Record<string, number>;
+    unresolvedNums: number[];
+  };
 }
 
-// word -> 동의어 집합
-const WORD_TO_SYNS: Map<string, Set<string>> = new Map();
-for (const item of VOCAB) {
-  WORD_TO_SYNS.set(item.w, new Set(item.s));
+export interface VocabItem extends RawVocabItem {
+  k_short: string;
+  category: string;
+  type: "word" | "idiom" | "phrase";
 }
 
-// antonym 역방향 인덱스 빌드
-for (const item of VOCAB) {
-  if (!item.antonym) continue;
-  for (const ant of item.antonym) {
-    if (!ANTONYM_TO_WORDS.has(ant)) ANTONYM_TO_WORDS.set(ant, new Set());
-    ANTONYM_TO_WORDS.get(ant)!.add(item.w);
-  }
+export interface SynonymDetail {
+  word: string;
+  meaning: string;
+  conceptId: string;
 }
 
-/**
- * 특정 단어의 반의어 목록을 반환한다.
- * vocab.json의 antonym 필드 + 역방향 인덱스(다른 단어의 antonym에 이 단어가 포함된 경우) 합산.
- */
-export function getAntonyms(item: VocabItem): string[] {
-  const result = new Set<string>(item.antonym ?? []);
-  // 다른 단어들의 antonym에 이 단어(w)가 포함되어 있으면, 그 단어의 antonym들도 반의어
-  const reverseAnts = ANTONYM_TO_WORDS.get(item.w);
-  if (reverseAnts) {
-    for (const antWord of reverseAnts) {
-      const antItem = VOCAB.find(v => v.w === antWord);
-      if (antItem?.antonym) {
-        for (const a of antItem.antonym) result.add(a);
-      }
-    }
-  }
-  // 자기 자신과 자신의 동의어는 제외
-  result.delete(item.w);
-  for (const s of item.s) result.delete(s);
-  return Array.from(result);
+export interface VocabRange {
+  id: string;
+  label: string;
+  start: number;
+  end: number;
+  count: number;
+  group?: VocabGroup;
+  kind: "section" | "all" | "idioms";
+  core?: boolean;
 }
 
-/**
- * 특정 단어에 대해 오답 보기로 사용할 수 없는 동의어 집합을 반환한다.
- *
- * 금지 범위:
- *  1. 단어 자신 (w)
- *  2. 단어의 직접 동의어 (s[])
- *  3. 직접 동의어를 공유하는 다른 단어들의 동의어
- *     (= 같은 의미 그룹에 속하는 "형제 동의어")
- *
- * 이렇게 하면 정답과 의미적으로 겹치는 단어가 오답 보기에 나오지 않는다.
- */
-export function getForbiddenSyns(item: VocabItem): Set<string> {
-  const forbidden = new Set<string>(item.s);
-  forbidden.add(item.w);
+export const VOCAB_META = vocabMetaRaw as VocabMeta;
 
-  for (const syn of item.s) {
-    const siblingWords = SYN_TO_WORDS.get(syn);
-    if (!siblingWords) continue;
-    for (const siblingWord of siblingWords) {
-      if (siblingWord === item.w) continue;
-      const sibSyns = WORD_TO_SYNS.get(siblingWord);
-      if (sibSyns) {
-        for (const ss of sibSyns) forbidden.add(ss);
-      }
-    }
-  }
-
-  return forbidden;
+function inferType(word: string): VocabItem["type"] {
+  if (!/\s/.test(word.trim())) return "word";
+  return /\b(to|one|one's|someone|something)\b|\b(by|for|from|in|into|of|on|out|over|up|with)\b/i.test(
+    word,
+  )
+    ? "idiom"
+    : "phrase";
 }
 
-export const RANGES = [
-  // ── DAY 단위 (50개씩, 1~1000번) ─────────────────────────────────────────
-  { id: "d01", label: "DAY 01  (1~50)", start: 0, end: 49 },
-  { id: "d02", label: "DAY 02  (51~100)", start: 50, end: 99 },
-  { id: "d03", label: "DAY 03  (101~150)", start: 100, end: 149 },
-  { id: "d04", label: "DAY 04  (151~200)", start: 150, end: 199 },
-  { id: "d05", label: "DAY 05  (201~250)", start: 200, end: 249 },
-  { id: "d06", label: "DAY 06  (251~300)", start: 250, end: 299 },
-  { id: "d07", label: "DAY 07  (301~350)", start: 300, end: 349 },
-  { id: "d08", label: "DAY 08  (351~400)", start: 350, end: 399 },
-  { id: "d09", label: "DAY 09  (401~450)", start: 400, end: 449 },
-  { id: "d10", label: "DAY 10  (451~500)", start: 450, end: 499 },
-  { id: "d11", label: "DAY 11  (501~550)", start: 500, end: 549 },
-  { id: "d12", label: "DAY 12  (551~600)", start: 550, end: 599 },
-  { id: "d13", label: "DAY 13  (601~650)", start: 600, end: 649 },
-  { id: "d14", label: "DAY 14  (651~700)", start: 650, end: 699 },
-  { id: "d15", label: "DAY 15  (701~750)", start: 700, end: 749 },
-  { id: "d16", label: "DAY 16  (751~800)", start: 750, end: 799 },
-  { id: "d17", label: "DAY 17  (801~850)", start: 800, end: 849 },
-  { id: "d18", label: "DAY 18  (851~900)", start: 850, end: 899 },
-  { id: "d19", label: "DAY 19  (901~950)", start: 900, end: 949 },
-  { id: "d20", label: "DAY 20  (951~1000)", start: 950, end: 999 },
-  // ── 100단위 (1001번 이후) ────────────────────────────────────────────────
-  { id: "w1000", label: "1001~1100번", start: 1000, end: 1099 },
-  { id: "w1100", label: "1101~1200번", start: 1100, end: 1199 },
-  { id: "w1200", label: "1201~1300번", start: 1200, end: 1299 },
-  { id: "w1300", label: "1301~1400번", start: 1300, end: 1399 },
-  { id: "w1400", label: "1401~1500번", start: 1400, end: 1499 },
-  { id: "w1500", label: "1501~1600번", start: 1500, end: 1599 },
-  { id: "w1600", label: "1601~1700번", start: 1600, end: 1699 },
-  { id: "w1700", label: "1701~1800번", start: 1700, end: 1799 },
-  { id: "w1800", label: "1801~1900번", start: 1800, end: 1899 },
-  { id: "w1900", label: "1901~2000번", start: 1900, end: 1999 },
-  { id: "w2000", label: "2001~2100번", start: 2000, end: 2099 },
-  { id: "w2100", label: "2101~2200번", start: 2100, end: 2199 },
-  { id: "w2200", label: "2201~2300번", start: 2200, end: 2299 },
-  { id: "w2300", label: "2301~2400번", start: 2300, end: 2399 },
-  { id: "w2400", label: "2401~2500번", start: 2400, end: 2499 },
-  { id: "w2500", label: "2501~2600번", start: 2500, end: 2599 },
-  { id: "w2600", label: "2601~2700번", start: 2600, end: 2699 },
-  { id: "w2700", label: "2701~2800번", start: 2700, end: 2799 },
-  { id: "w2800", label: "2801~2900번", start: 2800, end: 2899 },
-  { id: "w2900", label: "2901~3000번", start: 2900, end: 2999 },
-  { id: "w3000", label: "3001~3100번", start: 3000, end: 3099 },
-  { id: "w3100", label: "3101~3200번", start: 3100, end: 3199 },
-  { id: "w3200", label: "3201~3300번", start: 3200, end: 3299 },
-  { id: "w3300", label: "3301~3400번", start: 3300, end: 3399 },
-  { id: "w3400", label: "3401~3500번", start: 3400, end: 3499 },
-  { id: "w3500", label: "3501~3600번", start: 3500, end: 3599 },
-  { id: "w3600", label: "3601~3700번", start: 3600, end: 3699 },
-  { id: "w3700", label: "3701~3800번", start: 3700, end: 3799 },
-  { id: "w3800", label: "3801~3900번", start: 3800, end: 3899 },
-  { id: "w3900", label: "3901~4000번", start: 3900, end: 3999 },
-  { id: "w4000", label: "4001~4100번", start: 4000, end: 4099 },
-  { id: "w4100", label: "4101~4200번", start: 4100, end: 4199 },
-  { id: "w4200", label: "4201~4300번", start: 4200, end: 4299 },
-  { id: "w4300", label: "4301~4400번", start: 4300, end: 4399 },
-  { id: "w4400", label: "4401~4500번", start: 4400, end: 4499 },
-  { id: "w4500", label: "4501~4600번", start: 4500, end: 4599 },
-  { id: "w4600", label: "4601~4700번", start: 4600, end: 4699 },
-  { id: "w4700", label: "4701~4800번", start: 4700, end: 4799 },
-  { id: "w4800", label: "4801~4900번", start: 4800, end: 4899 },
-  { id: "w4900", label: "4901~5000번", start: 4900, end: 4999 },
-  { id: "w5000", label: "5001~5100번", start: 5000, end: 5099 },
-  { id: "w5100", label: "5101~5200번", start: 5100, end: 5199 },
-  { id: "w5200", label: "5201~5300번", start: 5200, end: 5299 },
-  { id: "w5300", label: "5301~5400번", start: 5300, end: 5399 },
-  { id: "w5400", label: "5401~5500번", start: 5400, end: 5499 },
-  { id: "w5500", label: "5501~5600번", start: 5500, end: 5599 },
-  { id: "w5600", label: "5601~5700번", start: 5600, end: 5699 },
-  { id: "w5700", label: "5701~5800번", start: 5700, end: 5799 },
-  { id: "w5800", label: "5801~5900번", start: 5800, end: 5899 },
-  { id: "w5900", label: "5901~6000번", start: 5900, end: 5999 },
-  { id: "w6000", label: "6001~6100번", start: 6000, end: 6099 },
-  { id: "w6100", label: "6101~6200번", start: 6100, end: 6199 },
-  { id: "w6200", label: "6201~6300번", start: 6200, end: 6299 },
-  { id: "w6300", label: "6301~6400번", start: 6300, end: 6399 },
-  { id: "w6400", label: "6401~6500번", start: 6400, end: 6499 },
-  { id: "w6500", label: "6501~6600번", start: 6500, end: 6599 },
-  { id: "w6600", label: "6601~6700번", start: 6600, end: 6699 },
-  { id: "w6700", label: "6701~6800번", start: 6700, end: 6799 },
-  { id: "w6800", label: "6801~6900번", start: 6800, end: 6899 },
-  { id: "w6900", label: "6901~7000번", start: 6900, end: 6999 },
-  { id: "w7000", label: "7001~7100번", start: 7000, end: 7099 },
-  { id: "w7100", label: "7101~7200번", start: 7100, end: 7199 },
-  { id: "w7200", label: "7201~7300번", start: 7200, end: 7299 },
-  { id: "w7300", label: "7301~7400번", start: 7300, end: 7399 },
-  { id: "w7400", label: "7401~7500번", start: 7400, end: 7499 },
-  { id: "w7500", label: "7501~7600번", start: 7500, end: 7599 },
-  { id: "w7600", label: "7601~7700번", start: 7600, end: 7699 },
-  { id: "w7700", label: "7701~7800번", start: 7700, end: 7799 },
-  { id: "w7800", label: "7801~7900번", start: 7800, end: 7899 },
-  { id: "w7900", label: "7901~8000번", start: 7900, end: 7999 },
-  { id: "w8000", label: "8001~8100번", start: 8000, end: 8099 },
-  { id: "w8100", label: "8101~8200번", start: 8100, end: 8199 },
-  { id: "w8200", label: "8201~8300번", start: 8200, end: 8299 },
-  { id: "w8300", label: "8301~8400번", start: 8300, end: 8399 },
-  { id: "w8400", label: "8401~8500번", start: 8400, end: 8499 },
-  { id: "w8500", label: "8501~8600번", start: 8500, end: 8599 },
-  { id: "w8600", label: "8601~8700번", start: 8600, end: 8699 },
-  { id: "w8700", label: "8701~8800번", start: 8700, end: 8799 },
-  { id: "w8800", label: "8801~8900번", start: 8800, end: 8899 },
-  { id: "w8900", label: "8901~9000번", start: 8900, end: 8999 },
-  { id: "w9000", label: "9001~9100번", start: 9000, end: 9099 },
-  { id: "w9100", label: "9101~9200번", start: 9100, end: 9199 },
-  { id: "w9200", label: "9201~9300번", start: 9200, end: 9299 },
-  { id: "w9300", label: "9301~9400번", start: 9300, end: 9399 },
-  { id: "w9400", label: "9401~9500번", start: 9400, end: 9499 },
-  { id: "w9500", label: "9501~9517번", start: 9500, end: 9516 },
-  { id: "idioms", label: "숙어·표현",    start: 0,    end: VOCAB.length - 1 },
-  { id: "all",    label: "전체",         start: 0,    end: VOCAB.length - 1 },
-];
+export const VOCAB: VocabItem[] = (vocabRaw as RawVocabItem[]).map((item) => ({
+  ...item,
+  k_short: item.k,
+  category: item.majorConceptLabel || item.conceptLabel || item.group,
+  type: inferType(item.w),
+}));
 
-// 숙어 필터
+export const VOCAB_BY_NUM = new Map(VOCAB.map((item) => [item.num, item]));
+export const VOCAB_WITH_SYNONYMS = VOCAB.filter((item) => item.s.length > 0);
 export const VOCAB_IDIOMS = VOCAB.filter(
-  (v) => v.type === 'idiom' || v.type === 'phrase'
+  (item) => item.type === "idiom" || item.type === "phrase",
 );
+export const VOCAB_WORDS_ONLY = VOCAB.filter((item) => item.type === "word");
 
-// 단어만 (숙어 제외)
-export const VOCAB_WORDS_ONLY = VOCAB.filter(
-  (v) => !v.type || v.type === 'word'
-);
+const CORE_GROUPS = new Set<VocabGroup>(["V301", "V501", "V502"]);
 
-export const COUNTS = [10, 20, 30, 50];
-
-export type QuizMode = "syn-choice" | "kor-choice" | "syn-kor-choice" | "flashcard" | "syn-type";
-
-export const QUIZ_MODES: { id: QuizMode; icon: string; title: string; desc: string }[] = [
-  { id: "syn-choice",     icon: "🔗", title: "동의어 고르기",       desc: "영어 단어 → 동의어 4택" },
-  { id: "kor-choice",     icon: "🇰🇷", title: "한국어 뜻 고르기",   desc: "영어 단어 → 한국어 뜻 4택" },
-  { id: "syn-kor-choice", icon: "🔀", title: "동의어+뜻 고르기",   desc: "동의어(한글뜻) 복합 4택" },
-  { id: "flashcard",      icon: "⚡", title: "플래시카드",          desc: "뜻 확인 후 자가 채점" },
-  { id: "syn-type",       icon: "✍️", title: "동의어 입력",         desc: "동의어를 직접 타이핑" },
+export const RANGES: VocabRange[] = [
+  ...VOCAB_META.sections.map((section) => ({
+    ...section,
+    kind: "section" as const,
+    core: CORE_GROUPS.has(section.group),
+  })),
+  {
+    id: "idioms",
+    label: "숙어·표현",
+    start: 0,
+    end: VOCAB.length - 1,
+    count: VOCAB_IDIOMS.length,
+    kind: "idioms",
+  },
+  {
+    id: "all",
+    label: "전체",
+    start: 0,
+    end: VOCAB.length - 1,
+    count: VOCAB.length,
+    kind: "all",
+  },
 ];
 
-// Shuffle array (Fisher-Yates)
-export function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
+export const CORE_RANGES = RANGES.filter((range) => range.core);
+export const SECTION_RANGES = RANGES.filter((range) => range.kind === "section");
+export const COUNTS = [10, 20, 30];
+
+export type QuizMode =
+  | "syn-choice"
+  | "kor-choice"
+  | "syn-kor-choice"
+  | "flashcard"
+  | "syn-type";
+
+export const QUIZ_MODES: Array<{
+  id: QuizMode;
+  icon: string;
+  title: string;
+  desc: string;
+  primary?: boolean;
+}> = [
+  { id: "syn-choice", icon: "🔗", title: "동의어", desc: "검증된 동의어 4택", primary: true },
+  { id: "kor-choice", icon: "🇰🇷", title: "뜻", desc: "정확한 뜻 4택", primary: true },
+  { id: "flashcard", icon: "⚡", title: "빠른 암기", desc: "뜻 확인 후 채점", primary: true },
+  { id: "syn-kor-choice", icon: "🔀", title: "동의어+뜻", desc: "뜻까지 함께 구분" },
+  { id: "syn-type", icon: "✍️", title: "직접 입력", desc: "동의어 타이핑" },
+];
+
+export function shuffle<T>(items: readonly T[]): T[] {
+  const shuffled = [...items];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const target = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[target]] = [shuffled[target], shuffled[index]];
   }
-  return a;
+  return shuffled;
 }
 
-/**
- * 동의어 고르기 모드용 오답 보기 생성
- *
- * 개선점:
- * - 반의어(antonym)를 오답 선지로 우선 사용 → 편입 시험 사고 훈련에 적합
- * - getForbiddenSyns()로 의미적으로 겹치는 동의어 전체를 금지
- * - 오답 보기가 부족할 경우 fallback으로 단순 단어(w) 목록에서 보충
- */
-export function getSynDistractors(
-  target: VocabItem,
-  correctSyn: string,
-  count = 3
-): string[] {
-  const forbidden = getForbiddenSyns(target);
-  forbidden.add(correctSyn);
-
-  const distractors: string[] = [];
-
-  // 1순위: 반의어를 오답 선지로 우선 사용
-  const antonyms = shuffle(getAntonyms(target));
-  for (const ant of antonyms) {
-    if (!forbidden.has(ant) && distractors.length < count) {
-      distractors.push(ant);
-      forbidden.add(ant);
-    }
-  }
-
-  // 2순위: 반의어가 부족하면 일반 동의어 풀에서 보충
-  if (distractors.length < count) {
-    const pool = shuffle(ALL_SYNONYMS);
-    for (const syn of pool) {
-      if (!forbidden.has(syn)) {
-        distractors.push(syn);
-        forbidden.add(syn);
-      }
-      if (distractors.length >= count) break;
-    }
-  }
-
-  // 3순위: 풀이 부족한 극단적 케이스 - 단어 자체(w)로 보충
-  if (distractors.length < count) {
-    const wordPool = shuffle(VOCAB.map((v) => v.w));
-    for (const w of wordPool) {
-      if (!forbidden.has(w) && distractors.length < count) {
-        distractors.push(w);
-        forbidden.add(w);
-      }
-    }
-  }
-
-  return distractors.slice(0, count);
+export function normalizeWord(value: string): string {
+  return value.trim().toLowerCase();
 }
 
-/**
- * 동의어+한글뜻 복합 모드용 보기 생성
- * 각 보기는 "synonym (\ud55c글뜻)" 형태의 문자열.
- */
-export function getSynWithKorDistractors(
-  target: VocabItem,
-  correctSyn: string,
-  count = 3
-): string[] {
-  const forbidden = getForbiddenSyns(target);
-  forbidden.add(correctSyn);
-
-  const forbiddenK = new Set<string>();
-  if (target.k_short) forbiddenK.add(target.k_short);
-  if (target.k) forbiddenK.add(target.k);
-  for (const item of VOCAB) {
-    if (item.w !== target.w && item.s.some((s) => forbidden.has(s))) {
-      if (item.k_short) forbiddenK.add(item.k_short);
-      if (item.k) forbiddenK.add(item.k);
-    }
-  }
-
-  const distractors: string[] = [];
-  const usedSyn = new Set<string>(forbidden);
-  const usedK = new Set<string>(forbiddenK);
-
-  const shuffledVocab = shuffle(VOCAB);
-  for (const item of shuffledVocab) {
-    if (item.w === target.w) continue;
-    if (!item.s || item.s.length === 0) continue;
-    if (!item.k_short || item.k_short.length < 2) continue;
-    if (usedK.has(item.k_short) || usedK.has(item.k)) continue;
-    const availableSyns = item.s.filter((s) => !usedSyn.has(s));
-    if (availableSyns.length === 0) continue;
-    const syn = availableSyns[Math.floor(Math.random() * availableSyns.length)];
-    distractors.push(`${syn} (${item.k_short})`);
-    usedSyn.add(syn);
-    usedK.add(item.k_short);
-    if (item.k) usedK.add(item.k);
-    if (distractors.length >= count) break;
-  }
-
-  if (distractors.length < count) {
-    for (const item of shuffledVocab) {
-      if (item.w === target.w) continue;
-      if (!item.k_short || item.k_short.length < 2) continue;
-      if (usedK.has(item.k_short)) continue;
-      distractors.push(`${item.w} (${item.k_short})`);
-      usedK.add(item.k_short);
-      if (distractors.length >= count) break;
-    }
-  }
-
-  return distractors.slice(0, count);
+export function normalizeMeaning(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/[^a-z가-힣]+/g, " ")
+    .trim();
 }
 
-export function makeSynKorLabel(syn: string, item: VocabItem): string {
-  return `${syn} (${item.k_short || item.k})`;
+function meaningTokens(value: string): Set<string> {
+  return new Set(
+    normalizeMeaning(value)
+      .split(/\s+/)
+      .filter((token) => token.length > 1),
+  );
 }
 
-/**
- * 한국어 뜻 고르기 모드용 오답 보기 생성
- *
- * 개선점:
- * - 정답(k)과 동일한 k를 가진 항목 제외 (k 중복 방지)
- * - k_short 기준으로도 중복 체크 (의미 유사 뜻 제거)
- * - 정답 단어의 동의어들이 가진 k도 금지 (의미 그룹 중복 방지)
- */
-export function getKorDistractors(
-  target: VocabItem,
-  pool: VocabItem[],
-  count = 3
-): string[] {
-  // 금지할 k 값 집합 구성
-  const forbiddenK = new Set<string>();
-  forbiddenK.add(target.k);
-  if (target.k_short) forbiddenK.add(target.k_short);
+export function meaningsOverlap(left: string, right: string): boolean {
+  const normalizedLeft = normalizeMeaning(left);
+  const normalizedRight = normalizeMeaning(right);
+  if (!normalizedLeft || !normalizedRight) return false;
+  if (normalizedLeft === normalizedRight) return true;
+  if (normalizedLeft.includes(normalizedRight) || normalizedRight.includes(normalizedLeft)) return true;
 
-  // 정답 단어의 동의어들을 가진 단어들의 k도 금지
-  const forbidden = getForbiddenSyns(target);
-  for (const item of VOCAB) {
-    if (item.w !== target.w && item.s.some((s) => forbidden.has(s))) {
-      if (item.k) forbiddenK.add(item.k);
-      if (item.k_short) forbiddenK.add(item.k_short);
-    }
+  const leftTokens = meaningTokens(normalizedLeft);
+  const rightTokens = meaningTokens(normalizedRight);
+  for (const token of leftTokens) {
+    if (rightTokens.has(token)) return true;
   }
+  return false;
+}
 
-  const distractors: string[] = [];
-  const usedK = new Set<string>(forbiddenK);
-  const shuffled = shuffle(pool);
+const CONCEPTS_BY_ID = new Map(VOCAB_META.concepts.map((concept) => [concept.id, concept]));
+const ITEMS_BY_CONCEPT_AND_WORD = new Map<string, VocabItem[]>();
+const ITEMS_BY_WORD = new Map<string, VocabItem[]>();
+const RELATED_WORDS_BY_WORD = new Map<string, Set<string>>();
 
-  for (const item of shuffled) {
-    if (
-      item.w !== target.w &&
-      item.k &&
-      item.k.length > 2 &&
-      !usedK.has(item.k)
-    ) {
-      distractors.push(item.k);
-      usedK.add(item.k);
-      // k_short도 중복 방지용으로 등록
-      if (item.k_short) usedK.add(item.k_short);
-    }
-    if (distractors.length >= count) break;
+for (const concept of VOCAB_META.concepts) {
+  for (const word of concept.words) {
+    if (!RELATED_WORDS_BY_WORD.has(word)) RELATED_WORDS_BY_WORD.set(word, new Set());
+    const related = RELATED_WORDS_BY_WORD.get(word)!;
+    for (const candidate of concept.words) related.add(candidate);
   }
+}
 
-  // 풀 부족 시 전체 VOCAB에서 보충
-  if (distractors.length < count) {
-    const globalPool = shuffle(VOCAB);
-    for (const item of globalPool) {
-      if (
-        item.w !== target.w &&
-        item.k &&
-        item.k.length > 2 &&
-        !usedK.has(item.k) &&
-        distractors.length < count
-      ) {
-        distractors.push(item.k);
-        usedK.add(item.k);
-      }
-    }
+for (const item of VOCAB) {
+  const normalized = normalizeWord(item.w);
+  if (!ITEMS_BY_WORD.has(normalized)) ITEMS_BY_WORD.set(normalized, []);
+  ITEMS_BY_WORD.get(normalized)!.push(item);
+
+  if (item.conceptId) {
+    const key = `${item.conceptId}\u0000${normalized}`;
+    if (!ITEMS_BY_CONCEPT_AND_WORD.has(key)) ITEMS_BY_CONCEPT_AND_WORD.set(key, []);
+    ITEMS_BY_CONCEPT_AND_WORD.get(key)!.push(item);
   }
+}
 
-  return distractors.slice(0, count);
+export function getVocabItem(num: number): VocabItem | undefined {
+  return VOCAB_BY_NUM.get(num);
+}
+
+export function getRangeItems(range: VocabRange): VocabItem[] {
+  if (range.kind === "idioms") return VOCAB_IDIOMS;
+  if (range.kind === "all") return VOCAB;
+  return VOCAB.slice(range.start, range.end + 1);
+}
+
+export function getAcceptedSynonyms(item: VocabItem): string[] {
+  return item.s;
+}
+
+export function isAcceptedSynonym(item: VocabItem, candidate: string): boolean {
+  const normalized = normalizeWord(candidate);
+  return item.s.some((synonym) => normalizeWord(synonym) === normalized);
+}
+
+export function getRelatedWords(item: VocabItem): Set<string> {
+  const related = new Set<string>([normalizeWord(item.w), ...item.s.map(normalizeWord)]);
+  const wordsToExpand = [...related];
+  for (const word of wordsToExpand) {
+    for (const candidate of RELATED_WORDS_BY_WORD.get(word) ?? []) related.add(candidate);
+  }
+  return related;
+}
+
+export function getSynonymDetails(item: VocabItem): SynonymDetail[] {
+  const details: SynonymDetail[] = [];
+  for (const synonym of item.s) {
+    const normalized = normalizeWord(synonym);
+    const conceptMatches = item.conceptId
+      ? ITEMS_BY_CONCEPT_AND_WORD.get(`${item.conceptId}\u0000${normalized}`) ?? []
+      : [];
+    const candidates = conceptMatches.length > 0 ? conceptMatches : ITEMS_BY_WORD.get(normalized) ?? [];
+    const meanings = [...new Set(candidates.map((candidate) => candidate.k).filter(Boolean))];
+    if (meanings.length === 0) continue;
+    details.push({
+      word: candidates[0]?.w ?? synonym,
+      meaning: meanings.join(" / "),
+      conceptId: item.conceptId,
+    });
+  }
+  return details;
+}
+
+export function getConceptWords(item: VocabItem): string[] {
+  if (!item.conceptId) return [];
+  return CONCEPTS_BY_ID.get(item.conceptId)?.words ?? [];
+}
+
+export function migrateLegacyNum(num: number): number | undefined {
+  return VOCAB_META.legacyMigration.numMap[String(num)];
+}
+
+export function isLegacyNumUnresolved(num: number): boolean {
+  return VOCAB_META.legacyMigration.unresolvedNums.includes(num);
 }

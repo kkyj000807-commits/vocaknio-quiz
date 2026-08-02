@@ -24,99 +24,16 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { FlipCard } from "@/components/flip-card";
+import { type QuizMode, type VocabItem } from "@/lib/vocab";
 import {
-  VOCAB,
-  VocabItem,
-  type QuizMode,
-  shuffle,
-  getSynDistractors,
-  getKorDistractors,
-  getSynWithKorDistractors,
-  makeSynKorLabel,
-} from "@/lib/vocab";
+  buildQuizQuestions,
+  isChoiceCorrect,
+  isTypedAnswerCorrect,
+  type ChoiceLang,
+  type QuizQuestion,
+} from "@/lib/quiz-engine";
 import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords, recordOneAnswer, loadMastered, addMastered } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
-
-interface QuizQuestion {
-  item: VocabItem;
-  choices: string[];
-  correct: string;
-}
-
-function buildQuestions(
-  mode: QuizMode,
-  rangeStart: number,
-  rangeEnd: number,
-  count: number,
-  rangeId?: string,
-  choiceLang?: string,
-  masteredNums?: number[]
-): QuizQuestion[] {
-  // 숙어 범위 선택 시 숙어만 필터
-  let pool: VocabItem[];
-  if (rangeId === 'idioms') {
-    pool = VOCAB.filter((v) => v.type === 'idiom' || v.type === 'phrase').filter((v) => v.k && v.k.length > 2);
-  } else {
-    pool = VOCAB.slice(rangeStart, rangeEnd + 1).filter(
-      (v) => v.k && v.k.length > 2
-    );
-  }
-  // 플래시카드 모드에서 마스터된 단어 제외
-  if (mode === 'flashcard' && masteredNums && masteredNums.length > 0) {
-    const masteredSet = new Set(masteredNums);
-    pool = pool.filter((v) => !masteredSet.has(v.num));
-  }
-
-  let candidates: VocabItem[];
-  if (mode === "syn-choice" || mode === "syn-type" || mode === "syn-kor-choice") {
-    candidates = pool.filter((v) => v.s && v.s.length > 0);
-  } else if (mode === "kor-choice") {
-    // 영어 선지 모드에서는 동의어가 있는 단어만 출제
-    if (choiceLang === "english") {
-      candidates = pool.filter((v) => v.s && v.s.length > 0);
-    } else {
-      candidates = pool;
-    }
-  } else {
-    candidates = pool;
-  }
-
-  const selected = shuffle(candidates).slice(0, Math.min(count, candidates.length));
-
-  return selected.map((item) => {
-    if (mode === "syn-choice") {
-      const correctSyn = item.s[Math.floor(Math.random() * item.s.length)];
-      const distractors = getSynDistractors(item, correctSyn, 3);
-      const choices = shuffle([correctSyn, ...distractors]);
-      return { item, choices, correct: correctSyn };
-    } else if (mode === "kor-choice") {
-      if (choiceLang === "english") {
-        // 영어 선지 모드: 동의어 선지로 출제 (단어의 뜻을 영어 동의어로 고르기)
-        const correctSyn = item.s[Math.floor(Math.random() * item.s.length)];
-        const distractors = getSynDistractors(item, correctSyn, 3);
-        const choices = shuffle([correctSyn, ...distractors]);
-        return { item, choices, correct: correctSyn };
-      } else {
-        // 한글 선지 모드 (기본)
-        const distractors = getKorDistractors(item, pool, 3);
-        const choices = shuffle([item.k, ...distractors]);
-        return { item, choices, correct: item.k };
-      }
-    } else if (mode === "syn-kor-choice") {
-      const correctSyn = item.s[Math.floor(Math.random() * item.s.length)];
-      const correctLabel = makeSynKorLabel(correctSyn, item);
-      const distractors = getSynWithKorDistractors(item, correctSyn, 3);
-      const choices = shuffle([correctLabel, ...distractors]);
-      return { item, choices, correct: correctLabel };
-    } else if (mode === "flashcard") {
-      return { item, choices: [], correct: item.k };
-    } else {
-      // syn-type
-      const correctSyn = item.s[Math.floor(Math.random() * item.s.length)];
-      return { item, choices: [], correct: correctSyn };
-    }
-  });
-}
 
 export default function QuizScreen() {
   const colors = useColors();
@@ -135,11 +52,13 @@ export default function QuizScreen() {
   const rangeEnd = parseInt(params.rangeEnd ?? "999");
   const count = parseInt(params.count ?? "20");
   const rangeId = params.rangeId ?? "";
-  const choiceLang = params.choiceLang ?? "korean";
+  const choiceLang: ChoiceLang = params.choiceLang === "english" ? "english" : "korean";
 
   const [masteredNums, setMasteredNums] = useState<number[]>([]);
-  const [questions] = useState<QuizQuestion[]>(() =>
-    buildQuestions(mode, rangeStart, rangeEnd, count, rangeId, choiceLang)
+  const [questions, setQuestions] = useState<QuizQuestion[]>(() =>
+    mode === "flashcard"
+      ? []
+      : buildQuizQuestions({ mode, rangeStart, rangeEnd, count, rangeId, choiceLang })
   );
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answered, setAnswered] = useState(false);
@@ -170,10 +89,23 @@ export default function QuizScreen() {
 
   useEffect(() => {
     loadBookmarks().then(setBookmarks);
-    if (mode === 'flashcard') {
-      loadMastered().then(setMasteredNums);
+    if (mode === "flashcard") {
+      loadMastered().then((loadedMastered) => {
+        setMasteredNums(loadedMastered);
+        setQuestions(
+          buildQuizQuestions({
+            mode,
+            rangeStart,
+            rangeEnd,
+            count,
+            rangeId,
+            choiceLang,
+            masteredNums: loadedMastered,
+          }),
+        );
+      });
     }
-  }, [mode]);
+  }, [choiceLang, count, mode, rangeEnd, rangeId, rangeStart]);
 
   const haptic = useCallback((type: "light" | "success" | "error" = "light") => {
     if (Platform.OS === "web") return;
@@ -222,7 +154,8 @@ export default function QuizScreen() {
       setAnswered(true);
       setSkipped(false);
 
-      const isCorrect = q.choices[idx] === q.correct;
+      const choice = q.choices[idx];
+      const isCorrect = choice ? isChoiceCorrect(q, choice) : false;
       if (isCorrect) {
         haptic("success");
         setCorrectCount((c) => c + 1);
@@ -302,9 +235,7 @@ export default function QuizScreen() {
   const handleTypeSubmit = useCallback(() => {
     if (!typedAnswer.trim()) return;
     haptic("light");
-    const userAns = typedAnswer.trim().toLowerCase();
-    const allAccepted = [q.correct, ...q.item.s].map((s) => s.toLowerCase());
-    const isCorrect = allAccepted.includes(userAns);
+    const isCorrect = isTypedAnswerCorrect(q, typedAnswer);
     setTypeResult(isCorrect ? "correct" : "wrong");
     setAnswered(true);
     if (isCorrect) {
@@ -454,10 +385,11 @@ export default function QuizScreen() {
                 <Text style={s.hintText}>{getHintText()}</Text>
                 <View style={s.choicesContainer}>
                   {q.choices.map((choice, idx) => {
+                    const choiceIsCorrect = isChoiceCorrect(q, choice);
                     let choiceStyle = s.choiceBtn;
                     let textStyle = s.choiceText;
                     if (answered) {
-                      if (choice === q.correct) {
+                      if (choiceIsCorrect) {
                         choiceStyle = { ...s.choiceBtn, ...s.choiceCorrect };
                         textStyle = { ...s.choiceText, color: colors.success };
                       } else if (idx === selectedChoice) {
@@ -467,39 +399,30 @@ export default function QuizScreen() {
                     }
                     return (
                       <Pressable
-                        key={idx}
+                        key={choice.id}
                         style={choiceStyle}
                         onPress={() => handleChoiceSelect(idx)}
                         disabled={answered}
                       >
                         <View style={[
                           s.choiceNum,
-                          answered && choice === q.correct && { backgroundColor: colors.success },
-                          answered && idx === selectedChoice && choice !== q.correct && { backgroundColor: colors.error },
+                          answered && choiceIsCorrect && { backgroundColor: colors.success },
+                          answered && idx === selectedChoice && !choiceIsCorrect && { backgroundColor: colors.error },
                         ]}>
                           <Text style={[
                             s.choiceNumText,
-                            answered && (choice === q.correct || idx === selectedChoice) && { color: "#000" },
+                            answered && (choiceIsCorrect || idx === selectedChoice) && { color: "#000" },
                           ]}>
                             {["①", "②", "③", "④"][idx]}
                           </Text>
                         </View>
                         <View style={{ flex: 1 }}>
                           <Text style={textStyle} numberOfLines={3}>
-                            {choice}
+                            {choice.label}
                           </Text>
-                          {/* 정답 확인 후 선지 한글뜻 표시 */}
-                          {answered && (() => {
-                            const choiceItem = VOCAB.find((v) =>
-                              v.w === choice ||
-                              (v.s && v.s.includes(choice))
-                            );
-                            const kor = choiceItem?.k_short;
-                            if (!kor) return null;
-                            return (
-                              <Text style={s.choiceKorText}>{kor}</Text>
-                            );
-                          })()}
+                          {answered && choice.meaning && choice.meaning !== choice.label ? (
+                            <Text style={s.choiceKorText}>{choice.meaning}</Text>
+                          ) : null}
                         </View>
                       </Pressable>
                     );

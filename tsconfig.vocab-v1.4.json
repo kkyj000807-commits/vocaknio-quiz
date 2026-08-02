@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "lib/vocab.ts",
+    "lib/quiz-engine.ts",
+    "lib/vocab-migration.ts",
+    "components/synonym-details.tsx",
+    "app/(tabs)/index.tsx",
+    "app/quiz.tsx",
+    "app/wrong-quiz.tsx",
+    "tests/vocab-v1.4.test.ts",
+    "tests/vocab-migration-v1.4.test.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "app",
+    "tests/vocab.test.ts"
+  ]
+}

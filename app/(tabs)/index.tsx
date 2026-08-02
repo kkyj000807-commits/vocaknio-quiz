@@ -20,25 +20,30 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { ScreenContainer } from "@/components/screen-container";
-import { VOCAB, RANGES, COUNTS, QUIZ_MODES, type QuizMode } from "@/lib/vocab";
+import {
+  CORE_RANGES,
+  COUNTS,
+  QUIZ_MODES,
+  RANGES,
+  SECTION_RANGES,
+  VOCAB,
+  type QuizMode,
+} from "@/lib/vocab";
 import { useColors } from "@/hooks/use-colors";
 import { loadQuizSettings, saveQuizSettings, type ChoiceLang } from "@/lib/store";
 
 const { width: SCREEN_W } = Dimensions.get("window");
 
-// DAY 범위만 필터 (d01~d20)
-const DAY_RANGES = RANGES.filter((r) => r.id.startsWith("d"));
-// 100단위 범위 (r01~)
-const BULK_RANGES = RANGES.filter((r) => r.id.startsWith("r"));
+const DEFAULT_RANGE_ID = CORE_RANGES[0]?.id ?? SECTION_RANGES[0]?.id ?? "all";
 
 export default function HomeScreen() {
   const colors = useColors();
   const router = useRouter();
   const [selectedMode, setSelectedMode] = useState<QuizMode>("syn-choice");
-  const [selectedRange, setSelectedRange] = useState("d01");
+  const [selectedRange, setSelectedRange] = useState(DEFAULT_RANGE_ID);
   const [selectedCount, setSelectedCount] = useState(20);
   const [choiceLang, setChoiceLang] = useState<ChoiceLang>("korean");
-  const [rangeTab, setRangeTab] = useState<"day" | "bulk">("day");
+  const [rangeTab, setRangeTab] = useState<"core" | "all">("core");
 
   useEffect(() => {
     loadQuizSettings().then((s) => setChoiceLang(s.choiceLang));
@@ -60,7 +65,8 @@ export default function HomeScreen() {
     if (Platform.OS !== "web") {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
-    const range = RANGES.find((r) => r.id === selectedRange)!;
+    const range = RANGES.find((r) => r.id === selectedRange);
+    if (!range) return;
     router.push({
       pathname: "/quiz",
       params: {
@@ -75,7 +81,7 @@ export default function HomeScreen() {
   }, [selectedMode, selectedRange, selectedCount, choiceLang, router]);
 
   const isChoiceLangRelevant = selectedMode === "kor-choice";
-  const currentRanges = rangeTab === "day" ? DAY_RANGES : BULK_RANGES;
+  const currentRanges = rangeTab === "core" ? CORE_RANGES : RANGES;
   const s = styles(colors);
 
   return (
@@ -103,8 +109,8 @@ export default function HomeScreen() {
             </View>
             <View style={s.statDivider} />
             <View style={s.statItem}>
-              <Text style={s.statNum}>{DAY_RANGES.length}</Text>
-              <Text style={s.statLabel}>DAY</Text>
+              <Text style={s.statNum}>{SECTION_RANGES.length}</Text>
+              <Text style={s.statLabel}>구간</Text>
             </View>
             <View style={s.statDivider} />
             <View style={s.statItem}>
@@ -172,22 +178,30 @@ export default function HomeScreen() {
         <View style={s.section}>
           <View style={s.sectionTitleRow}>
             <Text style={s.sectionTitle}>단어 범위</Text>
-            {/* DAY / 100단위 탭 */}
+            {/* 핵심 / 전체 구간 탭 */}
             <View style={s.rangeTabRow}>
               <Pressable
-                style={[s.rangeTab, rangeTab === "day" && s.rangeTabActive]}
-                onPress={() => { haptic(); setRangeTab("day"); setSelectedRange("d01"); }}
+                style={[s.rangeTab, rangeTab === "core" && s.rangeTabActive]}
+                onPress={() => {
+                  haptic();
+                  setRangeTab("core");
+                  setSelectedRange(DEFAULT_RANGE_ID);
+                }}
               >
-                <Text style={[s.rangeTabText, rangeTab === "day" && s.rangeTabTextActive]}>
-                  DAY (50)
+                <Text style={[s.rangeTabText, rangeTab === "core" && s.rangeTabTextActive]}>
+                  핵심
                 </Text>
               </Pressable>
               <Pressable
-                style={[s.rangeTab, rangeTab === "bulk" && s.rangeTabActive]}
-                onPress={() => { haptic(); setRangeTab("bulk"); setSelectedRange("r01"); }}
+                style={[s.rangeTab, rangeTab === "all" && s.rangeTabActive]}
+                onPress={() => {
+                  haptic();
+                  setRangeTab("all");
+                  setSelectedRange(SECTION_RANGES[0]?.id ?? "all");
+                }}
               >
-                <Text style={[s.rangeTabText, rangeTab === "bulk" && s.rangeTabTextActive]}>
-                  100단위
+                <Text style={[s.rangeTabText, rangeTab === "all" && s.rangeTabTextActive]}>
+                  전체 구간
                 </Text>
               </Pressable>
             </View>

@@ -19,44 +19,14 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { ScreenContainer } from "@/components/screen-container";
+import { type VocabItem } from "@/lib/vocab";
 import {
-  VOCAB,
-  VocabItem,
-  shuffle,
-  getSynDistractors,
-  getKorDistractors,
-} from "@/lib/vocab";
+  buildReviewQuestions,
+  isChoiceCorrect,
+  type QuizQuestion,
+} from "@/lib/quiz-engine";
 import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
-
-interface QuizQuestion {
-  item: VocabItem;
-  choices: string[];
-  correct: string;
-}
-
-function buildWrongQuestions(wrongNums: number[], count: number): QuizQuestion[] {
-  const items = wrongNums
-    .map((num) => VOCAB.find((v) => v.num === num))
-    .filter(Boolean) as VocabItem[];
-
-  const selected = shuffle(items).slice(0, Math.min(count, items.length));
-
-  return selected.map((item) => {
-    const hasSyn = item.s && item.s.length > 0;
-    if (hasSyn) {
-      const correctSyn = item.s[Math.floor(Math.random() * item.s.length)];
-      const distractors = getSynDistractors(item, correctSyn, 3);
-      const choices = shuffle([correctSyn, ...distractors]);
-      return { item, choices, correct: correctSyn };
-    } else {
-      const pool = VOCAB.filter((v) => v.k && v.k.length > 2);
-      const distractors = getKorDistractors(item, pool, 3);
-      const choices = shuffle([item.k, ...distractors]);
-      return { item, choices, correct: item.k };
-    }
-  });
-}
 
 export default function WrongQuizScreen() {
   const colors = useColors();
@@ -72,7 +42,7 @@ export default function WrongQuizScreen() {
   const count = parseInt(params.count ?? "20");
 
   const [questions] = useState<QuizQuestion[]>(() =>
-    buildWrongQuestions(wrongNums, count)
+    buildReviewQuestions(wrongNums, count)
   );
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answered, setAnswered] = useState(false);
@@ -125,7 +95,8 @@ export default function WrongQuizScreen() {
       setAnswered(true);
       setSkipped(false);
 
-      const isCorrect = q.choices[idx] === q.correct;
+      const choice = q.choices[idx];
+      const isCorrect = choice ? isChoiceCorrect(q, choice) : false;
       if (isCorrect) {
         haptic("success");
         setCorrectCount((c) => c + 1);
@@ -221,7 +192,9 @@ export default function WrongQuizScreen() {
         {/* Question Card */}
         <Animated.View style={[s.questionCard, cardAnimStyle]}>
           <View style={s.questionHeader}>
-            <Text style={s.questionNum}>문제 {currentIdx + 1} · 동의어 고르기</Text>
+            <Text style={s.questionNum}>
+              문제 {currentIdx + 1} · {q.answerKind === "synonym" ? "동의어 고르기" : "한국어 뜻 고르기"}
+            </Text>
             <Pressable onPress={handleBookmark} style={s.bookmarkBtn}>
               <Text style={{ fontSize: 20 }}>{isBookmarked ? "🔖" : "🏷️"}</Text>
             </Pressable>
@@ -230,13 +203,16 @@ export default function WrongQuizScreen() {
           <Text style={s.wordText}>{q.item.w}</Text>
           {q.item.p ? <Text style={s.ipaText}>{q.item.p}</Text> : null}
 
-          <Text style={s.hintText}>올바른 동의어는?</Text>
+          <Text style={s.hintText}>
+            {q.answerKind === "synonym" ? "올바른 동의어는?" : "올바른 한국어 뜻은?"}
+          </Text>
           <View style={s.choicesContainer}>
             {q.choices.map((choice, idx) => {
+              const choiceIsCorrect = isChoiceCorrect(q, choice);
               let choiceStyle = s.choiceBtn;
               let textStyle = s.choiceText;
               if (answered) {
-                if (choice === q.correct) {
+                if (choiceIsCorrect) {
                   choiceStyle = { ...s.choiceBtn, ...s.choiceCorrect };
                   textStyle = { ...s.choiceText, color: colors.success };
                 } else if (idx === selectedChoice) {
@@ -246,24 +222,29 @@ export default function WrongQuizScreen() {
               }
               return (
                 <Pressable
-                  key={idx}
+                  key={choice.id}
                   style={choiceStyle}
                   onPress={() => handleChoiceSelect(idx)}
                   disabled={answered}
                 >
                   <View style={[
                     s.choiceNum,
-                    answered && choice === q.correct && { backgroundColor: colors.success },
-                    answered && idx === selectedChoice && choice !== q.correct && { backgroundColor: colors.error },
+                    answered && choiceIsCorrect && { backgroundColor: colors.success },
+                    answered && idx === selectedChoice && !choiceIsCorrect && { backgroundColor: colors.error },
                   ]}>
                     <Text style={[
                       s.choiceNumText,
-                      answered && (choice === q.correct || idx === selectedChoice) && { color: "#000" },
+                      answered && (choiceIsCorrect || idx === selectedChoice) && { color: "#000" },
                     ]}>
                       {["①", "②", "③", "④"][idx]}
                     </Text>
                   </View>
-                  <Text style={textStyle} numberOfLines={2}>{choice}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={textStyle} numberOfLines={2}>{choice.label}</Text>
+                    {answered && choice.meaning && choice.meaning !== choice.label ? (
+                      <Text style={s.choiceMeaning}>{choice.meaning}</Text>
+                    ) : null}
+                  </View>
                 </Pressable>
               );
             })}
@@ -477,6 +458,12 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.foreground,
       flex: 1,
       lineHeight: 20,
+    },
+    choiceMeaning: {
+      fontSize: 11,
+      color: colors.dim,
+      marginTop: 3,
+      lineHeight: 16,
     },
     explPanel: {
       backgroundColor: colors.card,
