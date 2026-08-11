@@ -7,7 +7,7 @@ import { SchemeColors, type ColorScheme } from "@/constants/theme";
 
 export type ThemeMode = "dark" | "light" | "system";
 
-const THEME_KEY = "vocaknio_theme_mode";
+const THEME_KEY = "vocaknio_theme_mode_v2";
 
 type ThemeContextValue = {
   colorScheme: ColorScheme;
@@ -32,10 +32,9 @@ function isThemeMode(value: string | null): value is ThemeMode {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // 초기값을 시스템 테마로 설정 (다크 하드코딩 제거)
-  const initialSystemScheme = getSystemScheme();
-  const [themeMode, setThemeModeState] = useState<ThemeMode>("system");
-  const [colorScheme, setColorSchemeState] = useState<ColorScheme>(initialSystemScheme);
+  // 브라우저별 시스템 설정과 무관하게 검증된 밝은 팔레트로 시작한다.
+  const [themeMode, setThemeModeState] = useState<ThemeMode>("light");
+  const [colorScheme, setColorSchemeState] = useState<ColorScheme>("light");
   // AsyncStorage 로드 완료 여부 — 로드 전까지 렌더링 지연으로 색상 플래시 방지
   const [ready, setReady] = useState(false);
 
@@ -68,15 +67,30 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   // Load persisted theme on mount
   useEffect(() => {
-    AsyncStorage.getItem(THEME_KEY).then((saved) => {
-      // 저장된 값이 없으면 시스템 테마 사용 (기존 "dark" 기본값 제거)
-      const mode: ThemeMode = isThemeMode(saved) ? saved : "system";
+    let active = true;
+
+    const loadTheme = async () => {
+      let mode: ThemeMode = "light";
+
+      try {
+        const saved = await AsyncStorage.getItem(THEME_KEY);
+        mode = isThemeMode(saved) ? saved : "light";
+      } catch {
+        // Safari private mode or blocked storage must not leave a blank screen.
+      }
+
+      if (!active) return;
       const scheme = resolveScheme(mode);
       setThemeModeState(mode);
       setColorSchemeState(scheme);
       applyScheme(scheme);
       setReady(true);
-    });
+    };
+
+    void loadTheme();
+    return () => {
+      active = false;
+    };
   }, [applyScheme]);
 
   // Listen for system theme changes when mode is "system"
