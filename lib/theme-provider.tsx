@@ -27,6 +27,10 @@ function resolveScheme(mode: ThemeMode): ColorScheme {
   return mode;
 }
 
+function isThemeMode(value: string | null): value is ThemeMode {
+  return value === "dark" || value === "light" || value === "system";
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // 초기값을 시스템 테마로 설정 (다크 하드코딩 제거)
   const initialSystemScheme = getSystemScheme();
@@ -66,7 +70,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     AsyncStorage.getItem(THEME_KEY).then((saved) => {
       // 저장된 값이 없으면 시스템 테마 사용 (기존 "dark" 기본값 제거)
-      const mode: ThemeMode = (saved as ThemeMode) ?? "system";
+      const mode: ThemeMode = isThemeMode(saved) ? saved : "system";
       const scheme = resolveScheme(mode);
       setThemeModeState(mode);
       setColorSchemeState(scheme);

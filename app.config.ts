@@ -121,6 +121,7 @@ const config: ExpoConfig = {
     ],
   ],
   experiments: {
+    baseUrl: "/vocaknio-quiz",
     typedRoutes: true,
     reactCompiler: true,
   },
