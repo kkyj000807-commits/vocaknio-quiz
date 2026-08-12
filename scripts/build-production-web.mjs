@@ -31,7 +31,7 @@ console.log(`Production 빌드 시각: ${releasedAtKst}`);
 
 const result = spawnSync(
   process.execPath,
-  [expoCli, "export", "--platform", "web", "--output-dir", outputDir],
+  [expoCli, "export", "--platform", "web", "--clear", "--output-dir", outputDir],
   {
     cwd: process.cwd(),
     env: {
