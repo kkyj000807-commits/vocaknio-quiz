@@ -1,6 +1,9 @@
 // Load environment variables with proper priority (system > .env)
 import "./scripts/load-env.js";
 import type { ExpoConfig } from "expo/config";
+import releaseConfig from "./release.config.json";
+
+const APP_VERSION = releaseConfig.version;
 
 // Bundle ID format: space.manus.<project_name_dots>.<timestamp>
 // e.g., "my-app" created at 2024-01-15 10:30:45 -> "space.manus.my.app.t20240115103045"
@@ -40,7 +43,7 @@ const env = {
 const config: ExpoConfig = {
   name: env.appName,
   slug: env.appSlug,
-  version: "1.0.0",
+  version: APP_VERSION,
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: env.scheme,
@@ -82,6 +85,13 @@ const config: ExpoConfig = {
     bundler: "metro",
     output: "static",
     favicon: "./assets/images/favicon.png",
+  },
+  extra: {
+    productionRelease: {
+      version: APP_VERSION,
+      modifiedAtKst: process.env.EXPO_PUBLIC_RELEASED_AT_KST ?? "미배포 빌드",
+      channel: process.env.EXPO_PUBLIC_RELEASE_CHANNEL ?? "development",
+    },
   },
   plugins: [
     "expo-router",

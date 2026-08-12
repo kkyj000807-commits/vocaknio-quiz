@@ -20,6 +20,7 @@ import { useThemeContext, type ThemeMode } from "@/lib/theme-provider";
 import { getApiBaseUrl } from "@/constants/oauth";
 import * as Auth from "@/lib/_core/auth";
 import { trpc } from "@/lib/trpc";
+import { RELEASE_LABEL } from "@/lib/release-info";
 import {
   loadStats,
   loadBookmarks,
@@ -506,8 +507,8 @@ export default function SettingsScreen() {
                 <Text style={s.infoValue}>{VOCAB.length.toLocaleString()}개</Text>
               </View>
               <View style={[s.infoRow, { borderTopWidth: 0.5, borderTopColor: colors.border }]}>
-                <Text style={s.infoLabel}>버전</Text>
-                <Text style={s.infoValue}>1.0.0</Text>
+                <Text style={s.infoLabel}>배포 정보</Text>
+                <Text style={[s.infoValue, s.releaseValue]}>{RELEASE_LABEL}</Text>
               </View>
             </View>
           </View>
@@ -589,6 +590,7 @@ const styles = (c: ReturnType<typeof useColors>) =>
     infoRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 8 },
     infoLabel: { fontSize: 14, color: c.muted },
     infoValue: { fontSize: 14, fontWeight: "600", color: c.foreground },
+    releaseValue: { flex: 1, marginLeft: 16, fontSize: 12, lineHeight: 18, textAlign: "right" },
     // Quiz Lang
     settingDesc: { fontSize: 13, color: c.muted, lineHeight: 18, marginBottom: 4 },
     langRow: { flexDirection: "row", gap: 10 },
