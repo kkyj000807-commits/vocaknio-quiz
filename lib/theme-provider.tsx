@@ -5,7 +5,7 @@ import { colorScheme as nativewindColorScheme, vars } from "nativewind";
 
 import { SchemeColors, type ColorScheme } from "@/constants/theme";
 
-export type ThemeMode = "dark" | "light" | "system";
+export type ThemeMode = "dark" | "light";
 
 const THEME_KEY = "vocaknio_theme_mode_v2";
 
@@ -17,18 +17,8 @@ type ThemeContextValue = {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-function getSystemScheme(): ColorScheme {
-  const sys = Appearance.getColorScheme();
-  return sys === "light" ? "light" : "dark";
-}
-
-function resolveScheme(mode: ThemeMode): ColorScheme {
-  if (mode === "system") return getSystemScheme();
-  return mode;
-}
-
 function isThemeMode(value: string | null): value is ThemeMode {
-  return value === "dark" || value === "light" || value === "system";
+  return value === "dark" || value === "light";
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
@@ -55,7 +45,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const setThemeMode = useCallback(
     async (mode: ThemeMode) => {
       setThemeModeState(mode);
-      const scheme = resolveScheme(mode);
+      const scheme = mode;
       setColorSchemeState(scheme);
       applyScheme(scheme);
       try {
@@ -75,12 +65,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       try {
         const saved = await AsyncStorage.getItem(THEME_KEY);
         mode = isThemeMode(saved) ? saved : "light";
+        if (saved !== mode) {
+          await AsyncStorage.setItem(THEME_KEY, mode);
+        }
       } catch {
         // Safari private mode or blocked storage must not leave a blank screen.
       }
 
       if (!active) return;
-      const scheme = resolveScheme(mode);
+      const scheme = mode;
       setThemeModeState(mode);
       setColorSchemeState(scheme);
       applyScheme(scheme);
@@ -92,17 +85,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       active = false;
     };
   }, [applyScheme]);
-
-  // Listen for system theme changes when mode is "system"
-  useEffect(() => {
-    if (themeMode !== "system") return;
-    const sub = Appearance.addChangeListener(({ colorScheme: sys }) => {
-      const scheme = sys === "light" ? "light" : "dark";
-      setColorSchemeState(scheme);
-      applyScheme(scheme);
-    });
-    return () => sub.remove();
-  }, [themeMode, applyScheme]);
 
   const themeVariables = useMemo(
     () =>

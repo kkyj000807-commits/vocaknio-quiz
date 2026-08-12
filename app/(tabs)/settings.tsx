@@ -33,14 +33,13 @@ import {
   type ChoiceLang,
 } from "@/lib/store";
 
-type ThemeOption = { mode: ThemeMode; label: string; icon: "sun.max.fill" | "moon.fill" | "circle.lefthalf.filled" };
+type ThemeOption = { mode: ThemeMode; label: string; icon: "sun.max.fill" | "moon.fill" };
 type LangOption = { lang: ChoiceLang; label: string; desc: string };
 type AuthTab = "login" | "register";
 
 const THEME_OPTIONS: ThemeOption[] = [
   { mode: "light", label: "라이트", icon: "sun.max.fill" },
   { mode: "dark", label: "다크", icon: "moon.fill" },
-  { mode: "system", label: "시스템", icon: "circle.lefthalf.filled" },
 ];
 
 const LANG_OPTIONS: LangOption[] = [
