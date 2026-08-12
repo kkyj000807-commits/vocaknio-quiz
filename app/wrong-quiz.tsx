@@ -145,9 +145,23 @@ export default function WrongQuizScreen() {
   }, [currentIdx, questions.length, correctCount, wrongItems, haptic, router]);
 
   const s = styles(colors);
-  const pct = Math.round((currentIdx / questions.length) * 100);
 
-  if (!q) return null;
+  if (!q) {
+    return (
+      <ScreenContainer containerClassName="bg-background">
+        <View style={s.emptyContainer}>
+          <Text style={s.emptyEmoji}>📭</Text>
+          <Text style={s.emptyTitle}>복습할 오답이 없습니다</Text>
+          <Text style={s.emptyText}>오답 목록으로 돌아가 학습할 단어를 확인해 주세요.</Text>
+          <Pressable style={s.emptyButton} onPress={() => router.replace("/(tabs)/wrong")}>
+            <Text style={s.emptyButtonText}>오답 목록으로 돌아가기</Text>
+          </Pressable>
+        </View>
+      </ScreenContainer>
+    );
+  }
+
+  const pct = Math.round((currentIdx / questions.length) * 100);
 
   return (
     <ScreenContainer containerClassName="bg-background">
@@ -304,6 +318,17 @@ export default function WrongQuizScreen() {
 
 const styles = (colors: ReturnType<typeof useColors>) =>
   StyleSheet.create({
+    emptyContainer: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: 32,
+    },
+    emptyEmoji: { fontSize: 48, marginBottom: 16 },
+    emptyTitle: { fontSize: 19, fontWeight: "700", color: colors.foreground },
+    emptyText: { marginTop: 8, fontSize: 14, lineHeight: 21, textAlign: "center", color: colors.dim },
+    emptyButton: { marginTop: 20, borderRadius: 12, paddingHorizontal: 18, paddingVertical: 12, backgroundColor: colors.primary },
+    emptyButtonText: { color: "#FFFFFF", fontWeight: "700" },
     wrongBanner: {
       marginHorizontal: 16,
       marginTop: 16,

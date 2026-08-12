@@ -1,4 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  migrateVocabStorage,
+  VOCAB_LIST_STORAGE_KEYS,
+} from "@/lib/vocab-storage-migration";
 
 export interface StatsData {
   totalAnswered: number;
@@ -10,8 +14,16 @@ export interface StatsData {
 }
 
 const STATS_KEY = "vocaknio_stats";
-const BOOKMARKS_KEY = "vocaknio_bookmarks";
-const WRONG_WORDS_KEY = "vocaknio_wrong_words";
+const BOOKMARKS_KEY = VOCAB_LIST_STORAGE_KEYS.bookmarks;
+const WRONG_WORDS_KEY = VOCAB_LIST_STORAGE_KEYS.wrongWords;
+
+export async function migrateStoredVocabLists() {
+  return migrateVocabStorage({
+    getItem: (key) => AsyncStorage.getItem(key),
+    setItem: (key, value) => AsyncStorage.setItem(key, value),
+    setItems: (entries) => AsyncStorage.multiSet(entries),
+  });
+}
 
 // ─── Stats ────────────────────────────────────────────────────────────────────
 
@@ -185,7 +197,7 @@ export async function recordOneAnswer(
 
 // ─── Mastered Words (플래시카드 마스터 제외) ─────────────────────────────────────
 
-const MASTERED_KEY = "vocaknio_mastered";
+const MASTERED_KEY = VOCAB_LIST_STORAGE_KEYS.mastered;
 
 /**
  * 마스터 처리된 단어 num 목록을 불러옵니다.

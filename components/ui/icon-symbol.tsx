@@ -31,6 +31,8 @@ const MAPPING = {
   "play.fill": "play-arrow",
   "eye.fill": "visibility",
   "eye.slash.fill": "visibility-off",
+  "lock.fill": "lock",
+  "lock.open.fill": "lock-open",
   "lightbulb.fill": "lightbulb",
   "gear": "settings",
   "square.and.arrow.up": "share",

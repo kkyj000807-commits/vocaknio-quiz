@@ -12,6 +12,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import { VOCAB, type VocabItem } from "@/lib/vocab";
 import {
   loadWrongWords,
@@ -180,8 +181,13 @@ export default function WrongScreen() {
               style={[s.hideBtn, hideMode && s.hideBtnActive]}
               onPress={toggleHideMode}
             >
+              <IconSymbol
+                name={hideMode ? "lock.open.fill" : "lock.fill"}
+                size={14}
+                color={hideMode ? colors.primary : colors.muted}
+              />
               <Text style={[s.hideBtnText, hideMode && s.hideBtnTextActive]}>
-                {hideMode ? "👁 보이기" : "🙈 가리기"}
+                {hideMode ? "보기" : "가리기"}
               </Text>
             </Pressable>
             <Pressable
@@ -220,7 +226,7 @@ export default function WrongScreen() {
             hideMode ? (
               <View style={s.hideModeInfoBox}>
                 <Text style={s.hideModeInfoText}>
-                  🙈 뜻 가리기 모드 — 각 카드를 탭하면 뜻이 공개됩니다
+                  뜻 가리기 모드 — 각 카드를 탭하면 뜻이 공개됩니다
                 </Text>
                 <Text style={[s.hideModeInfoText, { marginTop: 4, color: colors.dim }]}>
                   {Object.values(revealed).filter(Boolean).length} / {wrongItems.length}개 확인
@@ -270,12 +276,17 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       maxWidth: 200,
     },
     hideBtn: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
       backgroundColor: colors.surface,
       borderWidth: 1,
       borderColor: colors.border,
       borderRadius: 12,
       paddingHorizontal: 10,
       paddingVertical: 7,
+      minHeight: 44,
+      justifyContent: "center",
     },
     hideBtnActive: {
       backgroundColor: "rgba(108,99,255,0.15)",
@@ -294,6 +305,8 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       borderRadius: 12,
       paddingHorizontal: 12,
       paddingVertical: 7,
+      minHeight: 44,
+      justifyContent: "center",
     },
     quizBtnText: {
       fontSize: 11,
@@ -307,6 +320,8 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       borderRadius: 12,
       paddingHorizontal: 10,
       paddingVertical: 7,
+      minHeight: 44,
+      justifyContent: "center",
     },
     clearBtnText: {
       fontSize: 11,

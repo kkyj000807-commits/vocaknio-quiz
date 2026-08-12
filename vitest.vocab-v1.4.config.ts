@@ -12,6 +12,7 @@ export default defineConfig({
     include: [
       "tests/vocab-v1.4.test.ts",
       "tests/vocab-migration-v1.4.test.ts",
+      "tests/vocab-storage-migration-v1.4.test.ts",
     ],
     exclude: [
       "node_modules/**",

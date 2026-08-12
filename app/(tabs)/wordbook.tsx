@@ -22,6 +22,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { ScreenContainer } from "@/components/screen-container";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import { VOCAB, VocabItem } from "@/lib/vocab";
 import { loadBookmarks, toggleBookmark } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
@@ -173,7 +174,11 @@ function WordCard({
           style={[s.bookmarkBtn, { marginRight: 4 }]}
           hitSlop={8}
         >
-          <Text style={{ fontSize: 16 }}>{indivMasked ? "🙈" : "👁"}</Text>
+          <IconSymbol
+            name={indivMasked ? "lock.fill" : "lock.open.fill"}
+            size={17}
+            color={indivMasked ? colors.warning : colors.muted}
+          />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleBookmark} style={s.bookmarkBtn} hitSlop={8}>
           <Text style={{ fontSize: 18 }}>{isBookmarked ? "🔖" : "🏷️"}</Text>
@@ -187,7 +192,7 @@ function WordCard({
           style={s.maskBox}
         >
           <Text style={s.maskHintText}>
-            {isMaskedByAll ? "👆 탭하여 뜻 보기" : "👁 개별 가리기 중 · 👁 버튼으로 해제"}
+            {isMaskedByAll ? "탭하여 뜻 보기" : "개별 가리기 중 · 잠금 버튼으로 해제"}
           </Text>
         </Pressable>
       ) : (
@@ -267,7 +272,13 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       marginTop: 2,
       letterSpacing: 0.3,
     },
-    bookmarkBtn: { padding: 2, flexShrink: 0 },
+    bookmarkBtn: {
+      width: 44,
+      height: 44,
+      alignItems: "center",
+      justifyContent: "center",
+      flexShrink: 0,
+    },
     korText: {
       fontSize: 13,
       color: colors.muted,
@@ -501,8 +512,13 @@ export default function WordbookScreen() {
             ]}
             onPress={handleMaskToggle}
           >
+            <IconSymbol
+              name={maskMode ? "lock.fill" : "lock.open.fill"}
+              size={15}
+              color={maskMode ? colors.warning : colors.muted}
+            />
             <Text style={[styles.headerBtnText, { color: maskMode ? colors.warning : colors.muted }]}>
-              {maskMode ? "👁 전체 가리기 ON" : "👁 전체 가리기"}
+              {maskMode ? "전체 가리기 ON" : "전체 가리기"}
             </Text>
           </TouchableOpacity>
           {/* 셔플 버튼 */}
@@ -674,10 +690,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   headerBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
     paddingHorizontal: 11,
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
+    minHeight: 44,
+    justifyContent: "center",
   },
   headerBtnText: {
     fontSize: 12,
@@ -721,8 +742,8 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   iconBtn: {
-    width: 42,
-    height: 42,
+    width: 44,
+    height: 44,
     borderRadius: 12,
     borderWidth: 1,
     alignItems: "center",
@@ -742,6 +763,8 @@ const styles = StyleSheet.create({
   rangeChip: {
     paddingHorizontal: 14,
     paddingVertical: 7,
+    minHeight: 44,
+    justifyContent: "center",
     borderRadius: 20,
     borderWidth: 1,
   },

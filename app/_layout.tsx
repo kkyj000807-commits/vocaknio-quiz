@@ -5,7 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
-import { Platform } from "react-native";
+import { ActivityIndicator, Platform, Pressable, Text, View } from "react-native";
 import "@/lib/_core/nativewind-pressable";
 import { ThemeProvider } from "@/lib/theme-provider";
 import {
@@ -19,6 +19,7 @@ import type { EdgeInsets, Metrics, Rect } from "react-native-safe-area-context";
 import { trpc, createTRPCClient } from "@/lib/trpc";
 import { initManusRuntime, subscribeSafeAreaInsets } from "@/lib/_core/manus-runtime";
 import { useStudyTimer } from "@/hooks/use-study-timer";
+import { migrateStoredVocabLists } from "@/lib/store";
 
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
 const DEFAULT_WEB_FRAME: Rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -36,6 +37,21 @@ export default function RootLayout() {
 
   const [insets, setInsets] = useState<EdgeInsets>(initialInsets);
   const [frame, setFrame] = useState<Rect>(initialFrame);
+  const [migrationStatus, setMigrationStatus] = useState<"loading" | "ready" | "error">("loading");
+
+  const runStorageMigration = useCallback(() => {
+    setMigrationStatus("loading");
+    migrateStoredVocabLists()
+      .then(() => setMigrationStatus("ready"))
+      .catch((error) => {
+        console.error("Vocabulary storage migration failed", error);
+        setMigrationStatus("error");
+      });
+  }, []);
+
+  useEffect(() => {
+    runStorageMigration();
+  }, [runStorageMigration]);
 
   // Initialize Manus runtime for cookie injection from parent container
   useEffect(() => {
@@ -101,6 +117,46 @@ export default function RootLayout() {
       </trpc.Provider>
     </GestureHandlerRootView>
   );
+
+  if (migrationStatus !== "ready") {
+    return (
+      <ThemeProvider>
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            paddingHorizontal: 32,
+            backgroundColor: "#F5F0E6",
+          }}
+        >
+          {migrationStatus === "loading" ? (
+            <>
+              <ActivityIndicator size="large" color="#5B50E8" />
+              <Text style={{ color: "#2B261F", marginTop: 16, fontSize: 15 }}>
+                학습 기록을 확인하고 있습니다
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text style={{ color: "#2B261F", fontSize: 18, fontWeight: "700" }}>
+                학습 기록을 불러오지 못했습니다
+              </Text>
+              <Text style={{ color: "#6F6558", marginTop: 8, textAlign: "center", lineHeight: 20 }}>
+                기존 기록은 삭제되지 않았습니다. 다시 시도해 주세요.
+              </Text>
+              <Pressable
+                onPress={runStorageMigration}
+                style={{ marginTop: 20, minHeight: 48, justifyContent: "center", backgroundColor: "#5B50E8", borderRadius: 12, paddingHorizontal: 20, paddingVertical: 12 }}
+              >
+                <Text style={{ color: "#FFFFFF", fontWeight: "700" }}>다시 시도</Text>
+              </Pressable>
+            </>
+          )}
+        </View>
+      </ThemeProvider>
+    );
+  }
 
   const shouldOverrideSafeArea = Platform.OS === "web";
 

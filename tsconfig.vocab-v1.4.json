@@ -7,12 +7,17 @@
     "lib/vocab.ts",
     "lib/quiz-engine.ts",
     "lib/vocab-migration.ts",
+    "lib/vocab-storage-migration.ts",
+    "lib/store.ts",
     "components/synonym-details.tsx",
+    "app/_layout.tsx",
     "app/(tabs)/index.tsx",
+    "app/(tabs)/bookmarks.tsx",
     "app/quiz.tsx",
     "app/wrong-quiz.tsx",
     "tests/vocab-v1.4.test.ts",
-    "tests/vocab-migration-v1.4.test.ts"
+    "tests/vocab-migration-v1.4.test.ts",
+    "tests/vocab-storage-migration-v1.4.test.ts"
   ],
   "exclude": [
     "node_modules",

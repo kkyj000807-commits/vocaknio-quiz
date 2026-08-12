@@ -126,4 +126,22 @@ describe("shared quiz engine", () => {
     expect(questions).toHaveLength(20);
     expect(questions.every(validateQuestion)).toBe(true);
   });
+
+  it("restricts a bookmarked quiz to the explicitly supplied item numbers", () => {
+    const bookmarked = VOCAB_WITH_SYNONYMS.slice(0, 7).map((item) => item.num);
+    const questions = buildQuizQuestions({
+      mode: "syn-choice",
+      count: 20,
+      itemNums: bookmarked,
+    });
+
+    expect(questions).toHaveLength(bookmarked.length);
+    expect(questions.every((question) => bookmarked.includes(question.item.num))).toBe(true);
+    expect(new Set(questions.map((question) => question.item.num))).toEqual(new Set(bookmarked));
+  });
+
+  it("returns an empty flashcard session when every selected item is mastered", () => {
+    const nums = VOCAB.slice(0, 5).map((item) => item.num);
+    expect(buildQuizQuestions({ mode: "flashcard", count: 5, itemNums: nums, masteredNums: nums })).toEqual([]);
+  });
 });

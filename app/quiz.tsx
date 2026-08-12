@@ -24,6 +24,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { FlipCard } from "@/components/flip-card";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import { type QuizMode, type VocabItem } from "@/lib/vocab";
 import {
   buildQuizQuestions,
@@ -38,6 +39,7 @@ import { useColors } from "@/hooks/use-colors";
 export default function QuizScreen() {
   const colors = useColors();
   const router = useRouter();
+  const isMovingRef = useRef(false);
   const params = useLocalSearchParams<{
     mode: QuizMode;
     rangeStart: string;
@@ -45,6 +47,7 @@ export default function QuizScreen() {
     count: string;
     rangeId?: string;
     choiceLang?: string;
+    bookmarkNums?: string;
   }>();
 
   const mode = params.mode ?? "syn-choice";
@@ -53,12 +56,27 @@ export default function QuizScreen() {
   const count = parseInt(params.count ?? "20");
   const rangeId = params.rangeId ?? "";
   const choiceLang: ChoiceLang = params.choiceLang === "english" ? "english" : "korean";
+  const itemNums = [...new Set(
+    (params.bookmarkNums ?? "")
+      .split(",")
+      .map((value) => Number(value))
+      .filter((value) => Number.isInteger(value) && value > 0),
+  )];
 
   const [masteredNums, setMasteredNums] = useState<number[]>([]);
+  const [questionsReady, setQuestionsReady] = useState(mode !== "flashcard");
   const [questions, setQuestions] = useState<QuizQuestion[]>(() =>
     mode === "flashcard"
       ? []
-      : buildQuizQuestions({ mode, rangeStart, rangeEnd, count, rangeId, choiceLang })
+      : buildQuizQuestions({
+          mode,
+          rangeStart,
+          rangeEnd,
+          count,
+          rangeId,
+          choiceLang,
+          itemNums: itemNums.length > 0 ? itemNums : undefined,
+        })
   );
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answered, setAnswered] = useState(false);
@@ -101,11 +119,13 @@ export default function QuizScreen() {
             rangeId,
             choiceLang,
             masteredNums: loadedMastered,
+            itemNums: itemNums.length > 0 ? itemNums : undefined,
           }),
         );
+        setQuestionsReady(true);
       });
     }
-  }, [choiceLang, count, mode, rangeEnd, rangeId, rangeStart]);
+  }, [choiceLang, count, mode, params.bookmarkNums, rangeEnd, rangeId, rangeStart]);
 
   const haptic = useCallback((type: "light" | "success" | "error" = "light") => {
     if (Platform.OS === "web") return;
@@ -251,6 +271,8 @@ export default function QuizScreen() {
   }, [typedAnswer, q, haptic]);
 
   const handleNext = useCallback(async () => {
+    if (isMovingRef.current) return;
+    isMovingRef.current = true;
     haptic("light");
     if (currentIdx + 1 >= questions.length) {
       const finalWrongNums = wrongItems.map((w) => w.num);
@@ -275,6 +297,7 @@ export default function QuizScreen() {
       setTypedAnswer("");
       setTypeResult(null);
       setHintLevel(0);
+      isMovingRef.current = false;
     });
   }, [currentIdx, questions.length, correctCount, wrongItems, haptic, router, slideToNext]);
 
@@ -289,9 +312,31 @@ export default function QuizScreen() {
     });
 
   const s = styles(colors);
-  const pct = Math.round((currentIdx / questions.length) * 100);
 
-  if (!q) return null;
+  if (!q) {
+    return (
+      <ScreenContainer containerClassName="bg-background">
+        <View style={s.emptyContainer}>
+          <Text style={s.emptyEmoji}>{questionsReady ? "📭" : "⏳"}</Text>
+          <Text style={s.emptyTitle}>
+            {questionsReady ? "출제할 문제가 없습니다" : "문제를 준비하고 있습니다"}
+          </Text>
+          {questionsReady ? (
+            <>
+              <Text style={s.emptyText}>
+                선택한 범위나 모드를 바꾼 뒤 다시 시도해 주세요.
+              </Text>
+              <Pressable style={s.emptyButton} onPress={() => router.replace("/")}>
+                <Text style={s.emptyButtonText}>퀴즈 설정으로 돌아가기</Text>
+              </Pressable>
+            </>
+          ) : null}
+        </View>
+      </ScreenContainer>
+    );
+  }
+
+  const pct = Math.round((currentIdx / questions.length) * 100);
 
   const isChoiceMode = mode === "syn-choice" || mode === "kor-choice" || mode === "syn-kor-choice";
 
@@ -336,6 +381,23 @@ export default function QuizScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
+          <View style={s.navigationRow}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="퀴즈 설정으로 돌아가기"
+              hitSlop={6}
+              style={({ pressed }) => [s.backBtn, pressed && { opacity: 0.7 }]}
+              onPress={() => {
+                if (router.canGoBack()) router.back();
+                else router.replace("/");
+              }}
+            >
+              <IconSymbol name="arrow.left" size={20} color={colors.foreground} />
+              <Text style={s.backBtnText}>퀴즈 설정</Text>
+            </Pressable>
+            <Text style={s.swipeHint}>정답 후 왼쪽으로 밀어 넘기기</Text>
+          </View>
+
           {/* Stats Row */}
           <View style={s.statsRow}>
             <View style={[s.statBox, s.statOk]}>
@@ -597,12 +659,53 @@ export default function QuizScreen() {
 
 const styles = (colors: ReturnType<typeof useColors>) =>
   StyleSheet.create({
+    emptyContainer: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: 32,
+    },
+    emptyEmoji: { fontSize: 48, marginBottom: 16 },
+    emptyTitle: { fontSize: 19, fontWeight: "700", color: colors.foreground },
+    emptyText: { marginTop: 8, fontSize: 14, lineHeight: 21, textAlign: "center", color: colors.dim },
+    emptyButton: { marginTop: 20, borderRadius: 12, paddingHorizontal: 18, paddingVertical: 12, backgroundColor: colors.primary },
+    emptyButtonText: { color: "#FFFFFF", fontWeight: "700" },
     statsRow: {
       flexDirection: "row",
       gap: 8,
       paddingHorizontal: 16,
-      paddingTop: 16,
+      paddingTop: 4,
       marginBottom: 14,
+    },
+    navigationRow: {
+      minHeight: 52,
+      paddingHorizontal: 16,
+      paddingTop: 6,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 12,
+    },
+    backBtn: {
+      minWidth: 44,
+      minHeight: 44,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 4,
+      paddingHorizontal: 8,
+      borderRadius: 10,
+    },
+    backBtnText: {
+      fontSize: 13,
+      fontWeight: "700",
+      color: colors.foreground,
+    },
+    swipeHint: {
+      flexShrink: 1,
+      fontSize: 10,
+      color: colors.dim,
+      textAlign: "right",
     },
     statBox: {
       flex: 1,
@@ -672,7 +775,10 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       textTransform: "uppercase",
     },
     bookmarkBtn: {
-      padding: 4,
+      width: 44,
+      height: 44,
+      alignItems: "center",
+      justifyContent: "center",
     },
     wordText: {
       fontSize: 30,
@@ -705,6 +811,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       flexDirection: "row",
       alignItems: "center",
       gap: 12,
+      minHeight: 52,
     },
     choiceCorrect: {
       borderColor: colors.success,
@@ -740,6 +847,8 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       borderColor: colors.border,
       borderRadius: 10,
       paddingVertical: 11,
+      minHeight: 44,
+      justifyContent: "center",
       alignItems: "center",
       backgroundColor: "rgba(255,255,255,0.03)",
     },
@@ -980,6 +1089,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       backgroundColor: colors.primary,
       borderRadius: 12,
       paddingVertical: 15,
+      minHeight: 50,
       alignItems: "center",
       marginTop: 14,
     },

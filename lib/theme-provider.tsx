@@ -33,6 +33,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     Appearance.setColorScheme?.(scheme);
     if (typeof document !== "undefined") {
       const root = document.documentElement;
+      root.style.colorScheme = scheme;
       root.dataset.theme = scheme;
       root.classList.toggle("dark", scheme === "dark");
       const palette = SchemeColors[scheme];
@@ -113,7 +114,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeContext.Provider value={value}>
-      <View style={[{ flex: 1 }, themeVariables]}>
+      <View style={[{ flex: 1, backgroundColor: SchemeColors[colorScheme].background }, themeVariables]}>
         {/* AsyncStorage 로드 완료 후에만 렌더링 — 색상 플래시(flash) 방지 */}
         {ready ? children : null}
       </View>

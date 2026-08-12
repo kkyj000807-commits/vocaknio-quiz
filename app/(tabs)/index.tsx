@@ -41,7 +41,7 @@ export default function HomeScreen() {
   const router = useRouter();
   const [selectedMode, setSelectedMode] = useState<QuizMode>("syn-choice");
   const [selectedRange, setSelectedRange] = useState(DEFAULT_RANGE_ID);
-  const [selectedCount, setSelectedCount] = useState(20);
+  const [selectedCount, setSelectedCount] = useState(10);
   const [choiceLang, setChoiceLang] = useState<ChoiceLang>("korean");
   const [rangeTab, setRangeTab] = useState<"core" | "all">("core");
 

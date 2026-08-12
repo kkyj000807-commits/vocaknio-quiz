@@ -107,10 +107,14 @@ export default function ResultScreen() {
             style={({ pressed }) => [s.btn, s.btnSecondary, pressed && { opacity: 0.85 }]}
             onPress={() => {
               haptic();
-              router.back();
+              if (router.canGoBack()) {
+                router.back();
+              } else {
+                router.replace("/");
+              }
             }}
           >
-            <Text style={s.btnSecondaryText}>↩ 다시 풀기</Text>
+            <Text style={s.btnSecondaryText}>← 이전 화면</Text>
           </Pressable>
         </View>
         {/* 오답 전용 퀴즈 바로 시작 */}
@@ -236,6 +240,8 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       flex: 1,
       borderRadius: 12,
       paddingVertical: 14,
+      minHeight: 48,
+      justifyContent: "center",
       alignItems: "center",
     },
     btnPrimary: {
