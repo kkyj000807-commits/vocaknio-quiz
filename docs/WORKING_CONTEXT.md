@@ -38,24 +38,27 @@
 ## 현재 배포
 
 - 소스 브랜치: `main`.
-- 앱 버전 단일 원본은 `release.config.json`이며 현재 Production 버전은 `1.7.0`이다.
-- 설정 화면은 `버전 1.7.0 · 최근 수정 2026.08.12 14:11 KST · Production 기준`을 표시한다.
-- Production 소스 커밋: `04721ed`.
+- 앱 버전 단일 원본은 `release.config.json`이며 현재 Production 버전은 `1.8.0`이다.
+- 설정 화면은 `버전 1.8.0 · 최근 수정 2026.08.12 17:25 KST · Production 기준`을 표시한다.
+- Production 소스 커밋: `70b3fe2`.
 - 공개 브랜치: `gh-pages`.
-- 원격 `gh-pages`: `d42a7b5`.
+- 원격 `gh-pages`: `cdf5ee6`.
 - 공개 주소: `https://kkyj000807-commits.github.io/vocaknio-quiz/`.
-- 최신 공개 번들: `entry-29037ba8cff1295f8d6d1c1da5dfddc9.js`.
+- 최신 공개 번들: `entry-e0a583cb3bb38e62a7187229f17bc01b.js`.
 - 직전 번들도 남겨 HTML 캐시가 이전 번들을 요청해도 흰 화면이 되지 않게 했다.
-- Chrome 공개 사이트에서 미색 `#F5F0E6`, 검은 배경 요소 0개, 버전·기준시점, 퀴즈 진입과 뒤로가기를 확인했다.
-- 쿼리 없는 기본 공개 URL에서도 버전 1.7.0과 새 시각을 확인했다.
-- Safari 실제 기기 확인은 아직 하지 못했으므로 전체 완료가 아니라 Safari 확인 필요 상태다.
+- `release.json`과 모든 HTML의 자동 갱신 장치가 오래 열린 Safari·Chrome 탭의 새 버전을 확인한다.
+- 일반 화면은 새 배포 감지 시 한 번 자동 갱신하며, 진행 중인 퀴즈 화면은 진도 보호를 위해 갱신을 보류한다.
+- Chrome 390px 공개 사이트에서 미색 `#F5F0E6`, 검은 배경 요소 0개, `시스템` 선택지 제거, 버전·기준시점을 확인했다.
+- 쿼리 없는 기본 공개 URL에서도 버전 1.8.0과 새 시각을 확인했다.
+- 사용자 Safari 사진은 1.8.0 배포 전 구버전 화면이었다. 1.8.0 실제 Safari 화면 확인은 한 번 더 필요하다.
 
 ## 검증 상태
 
 - Expo Production 웹 내보내기: 통과.
 - Pages HTML 참조 자산: 누락 0개, 하위경로 없는 `/assets/` 참조 0개.
 - 새 JavaScript·CSS 자산: 공개 URL HTTP 200.
-- GitHub Pages Actions: `d42a7b5` 배포 성공.
+- GitHub Pages Actions: `cdf5ee6` 배포 성공.
+- 공개 `release.json`, 새 HTML 갱신 장치와 새 번들: HTTP 200 및 내용 일치.
 - v1.4 전용 타입 검사: 통과.
 - v1.4 테스트: 3파일 13테스트 통과.
 - 전체 타입 검사는 기존 `tests/vocab.test.ts`가 삭제된 구 API 3개를 import하여 실패한다.
