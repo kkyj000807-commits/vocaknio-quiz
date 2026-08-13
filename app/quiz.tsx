@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, type ReactElement } from "react";
 import {
   View,
   Text,
@@ -35,6 +35,17 @@ import {
 } from "@/lib/quiz-engine";
 import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords, recordOneAnswer, loadMastered, addMastered } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
+
+function NativeSwipeBoundary({
+  gesture,
+  children,
+}: {
+  gesture: ReturnType<typeof Gesture.Pan>;
+  children: ReactElement;
+}) {
+  if (Platform.OS === "web") return children;
+  return <GestureDetector gesture={gesture}>{children}</GestureDetector>;
+}
 
 export default function QuizScreen() {
   const colors = useColors();
@@ -371,7 +382,7 @@ export default function QuizScreen() {
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <GestureDetector gesture={swipeGesture} touchAction="pan-y">
+        <NativeSwipeBoundary gesture={swipeGesture}>
         <ScrollView
           style={{ flex: 1 }}
           contentContainerStyle={{ paddingBottom: 32 }}
@@ -392,7 +403,11 @@ export default function QuizScreen() {
               <IconSymbol name="arrow.left" size={20} color={colors.foreground} />
               <Text style={s.backBtnText}>퀴즈 설정</Text>
             </Pressable>
-            <Text style={s.swipeHint}>정답 후 왼쪽으로 밀어 넘기기</Text>
+            <Text style={s.swipeHint}>
+              {Platform.OS === "web"
+                ? "위아래로 스크롤 · 다음 버튼으로 이동"
+                : "정답 후 왼쪽으로 밀어 넘기기"}
+            </Text>
           </View>
 
           {/* Stats Row */}
@@ -648,7 +663,7 @@ export default function QuizScreen() {
             )}
           </Animated.View>
         </ScrollView>
-        </GestureDetector>
+        </NativeSwipeBoundary>
       </KeyboardAvoidingView>
     </ScreenContainer>
   );

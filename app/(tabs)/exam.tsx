@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, type ReactElement } from "react";
 import {
   View,
   Text,
@@ -32,6 +32,17 @@ import {
   type ExamQuestion,
   type QuestionType,
 } from "@/lib/exam-questions";
+
+function NativeSwipeBoundary({
+  gesture,
+  children,
+}: {
+  gesture: ReturnType<typeof Gesture.Pan>;
+  children: ReactElement;
+}) {
+  if (Platform.OS === "web") return children;
+  return <GestureDetector gesture={gesture}>{children}</GestureDetector>;
+}
 
 type FilterYear = "all" | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 | 2026;
 type FilterType = "all" | "vocab" | "reading" | "logic";
@@ -284,7 +295,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
   const typeColor = getTypeColor(q.type, colors);
 
   return (
-    <GestureDetector gesture={swipeGesture} touchAction="pan-y">
+    <NativeSwipeBoundary gesture={swipeGesture}>
     <ScrollView
       style={{ flex: 1 }}
       contentContainerStyle={{ paddingBottom: 40 }}
@@ -404,7 +415,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
         )}
       </Animated.View>
     </ScrollView>
-    </GestureDetector>
+    </NativeSwipeBoundary>
   );
 }
 
