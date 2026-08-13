@@ -141,18 +141,13 @@ export default function QuizScreen() {
     );
   }, [cardScale]);
 
-  // 카드 슬라이드 전환 애니메이션 (다음 문제로 이동 시)
-  const slideToNext = useCallback((onComplete: () => void) => {
-    // 현재 카드를 왼쪽으로 슬라이드 아웃
-    cardTranslateX.value = withTiming(-60, { duration: 180 });
-    cardOpacity.value = withTiming(0, { duration: 180 }, () => {
-      // 오른쪽에서 새 카드 진입
-      cardTranslateX.value = 60;
-      cardOpacity.value = 0;
-      runOnJS(onComplete)();
-      cardTranslateX.value = withTiming(0, { duration: 220 });
-      cardOpacity.value = withTiming(1, { duration: 220 });
-    });
+  // 문제 상태 전환은 애니메이션 완료 콜백에 의존하지 않는다.
+  // Safari/RN Web에서 완료 콜백이 누락돼도 학습 진행이 멈추지 않아야 한다.
+  const animateNextCard = useCallback(() => {
+    cardTranslateX.value = 36;
+    cardOpacity.value = 0;
+    cardTranslateX.value = withTiming(0, { duration: 200 });
+    cardOpacity.value = withTiming(1, { duration: 200 });
   }, [cardTranslateX, cardOpacity]);
 
   const q = questions[currentIdx];
@@ -286,20 +281,22 @@ export default function QuizScreen() {
       });
       return;
     }
-    // 슬라이드 애니메이션 후 다음 문제로 전환
-    slideToNext(() => {
-      setCurrentIdx((i) => i + 1);
-      setAnswered(false);
-      setSelectedChoice(null);
-      setSkipped(false);
-      setRevealed(false);
-      setFlashGrade(null);
-      setTypedAnswer("");
-      setTypeResult(null);
-      setHintLevel(0);
+    // 상태를 즉시 바꾸고 애니메이션은 보조 효과로만 실행한다.
+    // 다음 버튼은 answered=false가 되면서 즉시 사라지고, 짧은 잠금은 연속 탭만 막는다.
+    setCurrentIdx((i) => i + 1);
+    setAnswered(false);
+    setSelectedChoice(null);
+    setSkipped(false);
+    setRevealed(false);
+    setFlashGrade(null);
+    setTypedAnswer("");
+    setTypeResult(null);
+    setHintLevel(0);
+    animateNextCard();
+    setTimeout(() => {
       isMovingRef.current = false;
-    });
-  }, [currentIdx, questions.length, correctCount, wrongItems, haptic, router, slideToNext]);
+    }, 240);
+  }, [currentIdx, questions.length, correctCount, wrongItems, haptic, router, animateNextCard]);
 
   // 스와이프 제스처 — 정답 확인 후 왼쪽 스와이프로 다음 문제
   const swipeGesture = Gesture.Pan()
@@ -374,7 +371,7 @@ export default function QuizScreen() {
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <GestureDetector gesture={swipeGesture}>
+        <GestureDetector gesture={swipeGesture} touchAction="pan-y">
         <ScrollView
           style={{ flex: 1 }}
           contentContainerStyle={{ paddingBottom: 32 }}

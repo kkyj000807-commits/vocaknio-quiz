@@ -284,7 +284,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
   const typeColor = getTypeColor(q.type, colors);
 
   return (
-    <GestureDetector gesture={swipeGesture}>
+    <GestureDetector gesture={swipeGesture} touchAction="pan-y">
     <ScrollView
       style={{ flex: 1 }}
       contentContainerStyle={{ paddingBottom: 40 }}
