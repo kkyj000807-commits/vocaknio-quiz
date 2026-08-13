@@ -32,33 +32,37 @@
 - 저장소 접근이 실패해도 테마 로딩이 빈 화면으로 멈추지 않는다.
 - 퀴즈에는 44px 이상의 명시적 뒤로가기 버튼과 스와이프 안내가 있다.
 - 연속 터치로 문제가 두 칸 넘어가지 않게 전환을 잠근다.
+- 모바일 웹의 퀴즈 스크롤 영역은 `touch-action: pan-y`로 세로 터치·스크롤을 허용한다.
+- 다음 문제 상태는 애니메이션 완료 콜백과 분리되어 Safari에서 애니메이션 콜백이 누락돼도 진행된다.
 - 단어장·오답·결과·하단 탭의 주요 터치 영역은 44px 이상이다.
 - 눈·원숭이 이모지는 중립적인 잠금 아이콘으로 교체했다.
 
 ## 현재 배포
 
 - 소스 브랜치: `main`.
-- 앱 버전 단일 원본은 `release.config.json`이며 현재 Production 버전은 `1.8.0`이다.
-- 설정 화면은 `버전 1.8.0 · 최근 수정 2026.08.12 17:25 KST · Production 기준`을 표시한다.
-- Production 소스 커밋: `70b3fe2`.
+- 앱 버전 단일 원본은 `release.config.json`이며 현재 Production 버전은 `1.8.1`이다.
+- 설정 화면은 `버전 1.8.1 · 최근 수정 2026.08.13 18:44 KST · Production 기준`을 표시한다.
+- Production 소스 커밋: `e503069`.
 - 공개 브랜치: `gh-pages`.
-- 원격 `gh-pages`: `cdf5ee6`.
+- 원격 `gh-pages`: `ee6b288`.
 - 공개 주소: `https://kkyj000807-commits.github.io/vocaknio-quiz/`.
-- 최신 공개 번들: `entry-e0a583cb3bb38e62a7187229f17bc01b.js`.
+- 최신 공개 번들: `entry-a1cd1b2d5db27150ca7e48e71fff8d58.js`.
 - 직전 번들도 남겨 HTML 캐시가 이전 번들을 요청해도 흰 화면이 되지 않게 했다.
 - `release.json`과 모든 HTML의 자동 갱신 장치가 오래 열린 Safari·Chrome 탭의 새 버전을 확인한다.
 - 일반 화면은 새 배포 감지 시 한 번 자동 갱신하며, 진행 중인 퀴즈 화면은 진도 보호를 위해 갱신을 보류한다.
-- Chrome 390px 공개 사이트에서 미색 `#F5F0E6`, 검은 배경 요소 0개, `시스템` 선택지 제거, 버전·기준시점을 확인했다.
-- 쿼리 없는 기본 공개 URL에서도 버전 1.8.0과 새 시각을 확인했다.
-- 사용자 Safari 사진은 1.8.0 배포 전 구버전 화면이었다. 1.8.0 실제 Safari 화면 확인은 한 번 더 필요하다.
+- 390×844 Chromium 공개 사이트에서 선택지 터치 후 `1 / 10`에서 `2 / 10`으로 진행되고 스크롤 영역의 `touch-action: pan-y`를 확인했다.
+- 쿼리 없는 기본 공개 URL과 설정 화면에서 버전 1.8.1 및 기준시점을 확인했다.
+- 이 Windows 환경에는 연결된 외부 Chrome 제어가 없어 실제 Chrome 확장 세션 확인은 하지 못했다.
+- 실제 iOS Safari 화면 확인은 한 번 더 필요하다.
 
 ## 검증 상태
 
 - Expo Production 웹 내보내기: 통과.
 - Pages HTML 참조 자산: 누락 0개, 하위경로 없는 `/assets/` 참조 0개.
 - 새 JavaScript·CSS 자산: 공개 URL HTTP 200.
-- GitHub Pages Actions: `cdf5ee6` 배포 성공.
+- GitHub Pages Actions: `ee6b288` 배포 성공.
 - 공개 `release.json`, 새 HTML 갱신 장치와 새 번들: HTTP 200 및 내용 일치.
+- 공개 모바일 퀴즈에서 선택지 → 피드백 → 다음 문제 이동: 통과.
 - v1.4 전용 타입 검사: 통과.
 - v1.4 테스트: 3파일 13테스트 통과.
 - 전체 타입 검사는 기존 `tests/vocab.test.ts`가 삭제된 구 API 3개를 import하여 실패한다.
