@@ -23,25 +23,27 @@ import Animated, {
 
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { VOCAB, VocabItem } from "@/lib/vocab";
+import {
+  getRangeItems,
+  RANGES,
+  VOCAB,
+  type VocabItem,
+} from "@/lib/vocab";
 import { loadBookmarks, toggleBookmark } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
 import * as Haptics from "expo-haptics";
 import { useAudioPlayer, setAudioModeAsync } from "expo-audio";
 
 const RANGE_OPTIONS = [
-  { label: "전체", start: 0, end: VOCAB.length - 1, isIdiom: false },
-  { label: "1~1000", start: 0, end: 999, isIdiom: false },
-  { label: "1001~2000", start: 1000, end: 1999, isIdiom: false },
-  { label: "2001~3000", start: 2000, end: 2999, isIdiom: false },
-  { label: "3001~4000", start: 3000, end: 3999, isIdiom: false },
-  { label: "4001~5000", start: 4000, end: 4999, isIdiom: false },
-  { label: "5001~6000", start: 5000, end: 5999, isIdiom: false },
-  { label: "6001~7000", start: 6000, end: 6999, isIdiom: false },
-  { label: "7001~8000", start: 7000, end: 7999, isIdiom: false },
-  { label: "8001~9517", start: 8000, end: VOCAB.length - 1, isIdiom: false },
-  { label: "숙어·표현", start: 0, end: VOCAB.length - 1, isIdiom: true },
+  ...RANGES.filter((range) => range.kind === "all"),
+  ...RANGES.filter((range) => range.kind === "section"),
+  ...RANGES.filter((range) => range.kind === "idioms"),
 ];
+
+function getRangeChipLabel(range: (typeof RANGE_OPTIONS)[number]) {
+  if (range.group === "APPENDIX") return "부록";
+  return range.group ?? range.label;
+}
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -393,12 +395,7 @@ export default function WordbookScreen() {
 
   const filteredVocab = useMemo(() => {
     const range = RANGE_OPTIONS[selectedRange];
-    let list: VocabItem[];
-    if (range.isIdiom) {
-      list = VOCAB.filter((v) => v.type === "idiom" || v.type === "phrase");
-    } else {
-      list = VOCAB.slice(range.start, range.end + 1);
-    }
+    let list: VocabItem[] = getRangeItems(range);
 
     if (showOnlyBookmarks) {
       list = list.filter((v) => bookmarks.has(v.num));
@@ -592,7 +589,7 @@ export default function WordbookScreen() {
         >
           {RANGE_OPTIONS.map((item, index) => (
             <TouchableOpacity
-              key={index}
+              key={item.id}
               activeOpacity={0.7}
               style={[
                 styles.rangeChip,
@@ -622,7 +619,7 @@ export default function WordbookScreen() {
                   },
                 ]}
               >
-                {item.label}
+                {getRangeChipLabel(item)}
               </Text>
             </TouchableOpacity>
           ))}
