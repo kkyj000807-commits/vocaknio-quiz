@@ -1,12 +1,10 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import {
   View,
   Text,
   ScrollView,
   Pressable,
   StyleSheet,
-  TextInput,
-  KeyboardAvoidingView,
   Platform,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -19,6 +17,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { ScreenContainer } from "@/components/screen-container";
+import { PronunciationButton } from "@/components/pronunciation-button";
 import { type VocabItem } from "@/lib/vocab";
 import {
   buildReviewQuestions,
@@ -27,6 +26,20 @@ import {
 } from "@/lib/quiz-engine";
 import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
+
+type WrongQuizQuestionViewState = {
+  answered: boolean;
+  selectedChoice: number | null;
+  skipped: boolean;
+};
+
+function createEmptyQuestionViewState(): WrongQuizQuestionViewState {
+  return {
+    answered: false,
+    selectedChoice: null,
+    skipped: false,
+  };
+}
 
 export default function WrongQuizScreen() {
   const colors = useColors();
@@ -52,6 +65,9 @@ export default function WrongQuizScreen() {
   const [wrongCount, setWrongCount] = useState(0);
   const [wrongItems, setWrongItems] = useState<VocabItem[]>([]);
   const [bookmarks, setBookmarks] = useState<number[]>([]);
+  const scrollRef = useRef<ScrollView>(null);
+  const isMovingRef = useRef(false);
+  const questionViewStatesRef = useRef(new Map<number, WrongQuizQuestionViewState>());
 
   const cardScale = useSharedValue(1);
   const cardAnimStyle = useAnimatedStyle(() => ({
@@ -79,6 +95,27 @@ export default function WrongQuizScreen() {
   const q = questions[currentIdx];
   const isBookmarked = q ? bookmarks.includes(q.item.num) : false;
 
+  const captureQuestionViewState = useCallback(() => {
+    questionViewStatesRef.current.set(currentIdx, {
+      answered,
+      selectedChoice,
+      skipped,
+    });
+  }, [answered, currentIdx, selectedChoice, skipped]);
+
+  const restoreQuestionViewState = useCallback((index: number) => {
+    const saved = questionViewStatesRef.current.get(index) ?? createEmptyQuestionViewState();
+    setAnswered(saved.answered);
+    setSelectedChoice(saved.selectedChoice);
+    setSkipped(saved.skipped);
+  }, []);
+
+  const releaseMovingLock = useCallback(() => {
+    setTimeout(() => {
+      isMovingRef.current = false;
+    }, 180);
+  }, []);
+
   const handleBookmark = useCallback(async () => {
     if (!q) return;
     haptic("light");
@@ -88,9 +125,14 @@ export default function WrongQuizScreen() {
 
   const handleChoiceSelect = useCallback(
     (idx: number) => {
-      if (answered) return;
+      if (answered || questionViewStatesRef.current.get(currentIdx)?.answered) return;
       haptic("light");
       animateCard();
+      questionViewStatesRef.current.set(currentIdx, {
+        answered: true,
+        selectedChoice: idx,
+        skipped: false,
+      });
       setSelectedChoice(idx);
       setAnswered(true);
       setSkipped(false);
@@ -106,43 +148,91 @@ export default function WrongQuizScreen() {
         setWrongItems((prev) => [...prev, q.item]);
       }
     },
-    [answered, q, haptic, animateCard]
+    [answered, currentIdx, q, haptic, animateCard]
   );
 
   const handleSkip = useCallback(() => {
-    if (answered) return;
+    if (answered || questionViewStatesRef.current.get(currentIdx)?.answered) return;
     haptic("error");
     animateCard();
+    questionViewStatesRef.current.set(currentIdx, {
+      answered: true,
+      selectedChoice: null,
+      skipped: true,
+    });
     setAnswered(true);
     setSkipped(true);
     setSelectedChoice(null);
     setWrongCount((w) => w + 1);
     setWrongItems((prev) => [...prev, q.item]);
-  }, [answered, q, haptic, animateCard]);
+  }, [answered, currentIdx, q, haptic, animateCard]);
 
   const handleNext = useCallback(async () => {
+    if (isMovingRef.current || !answered) return;
+    isMovingRef.current = true;
     haptic("light");
+    captureQuestionViewState();
     if (currentIdx + 1 >= questions.length) {
       const finalWrongNums = wrongItems.map((w) => w.num);
-      await Promise.all([
-        updateStatsAfterQuiz(correctCount, questions.length),
-        addWrongWords(finalWrongNums),
-      ]);
-      router.replace({
-        pathname: "/result",
-        params: {
-          correct: correctCount,
-          total: questions.length,
-          wrongNums: finalWrongNums.join(","),
-        },
-      });
+      try {
+        await Promise.all([
+          updateStatsAfterQuiz(correctCount, questions.length),
+          addWrongWords(finalWrongNums),
+        ]);
+        router.replace({
+          pathname: "/result",
+          params: {
+            correct: correctCount,
+            total: questions.length,
+            wrongNums: finalWrongNums.join(","),
+          },
+        });
+      } catch (error) {
+        isMovingRef.current = false;
+        console.error("[WrongQuiz] Failed to save result:", error);
+      }
       return;
     }
-    setCurrentIdx((i) => i + 1);
-    setAnswered(false);
-    setSelectedChoice(null);
-    setSkipped(false);
-  }, [currentIdx, questions.length, correctCount, wrongItems, haptic, router]);
+    const targetIndex = currentIdx + 1;
+    restoreQuestionViewState(targetIndex);
+    setCurrentIdx(targetIndex);
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
+    releaseMovingLock();
+  }, [
+    answered,
+    captureQuestionViewState,
+    correctCount,
+    currentIdx,
+    haptic,
+    questions.length,
+    releaseMovingLock,
+    restoreQuestionViewState,
+    router,
+    wrongItems,
+  ]);
+
+  const handlePrevious = useCallback(() => {
+    if (isMovingRef.current || currentIdx <= 0) return;
+    isMovingRef.current = true;
+    haptic("light");
+    captureQuestionViewState();
+    const targetIndex = currentIdx - 1;
+    restoreQuestionViewState(targetIndex);
+    setCurrentIdx(targetIndex);
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
+    releaseMovingLock();
+  }, [
+    captureQuestionViewState,
+    currentIdx,
+    haptic,
+    releaseMovingLock,
+    restoreQuestionViewState,
+  ]);
+
+  const handleBackToWrongList = useCallback(() => {
+    if (router.canGoBack()) router.back();
+    else router.replace("/(tabs)/wrong");
+  }, [router]);
 
   const s = styles(colors);
 
@@ -166,10 +256,21 @@ export default function WrongQuizScreen() {
   return (
     <ScreenContainer containerClassName="bg-background">
       <ScrollView
+        ref={scrollRef}
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
       >
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="오답 목록으로 돌아가기"
+          hitSlop={4}
+          onPress={handleBackToWrongList}
+          style={({ pressed }) => [s.backToListBtn, pressed && { opacity: 0.72 }]}
+        >
+          <Text style={s.backToListText}>← 오답 목록</Text>
+        </Pressable>
+
         {/* Header Banner */}
         <View style={s.wrongBanner}>
           <Text style={s.wrongBannerText}>🔴 오답 전용 퀴즈</Text>
@@ -209,12 +310,20 @@ export default function WrongQuizScreen() {
             <Text style={s.questionNum}>
               문제 {currentIdx + 1} · {q.answerKind === "synonym" ? "동의어 고르기" : "한국어 뜻 고르기"}
             </Text>
-            <Pressable onPress={handleBookmark} style={s.bookmarkBtn}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={isBookmarked ? "북마크 해제" : "북마크 추가"}
+              onPress={handleBookmark}
+              style={s.bookmarkBtn}
+            >
               <Text style={{ fontSize: 20 }}>{isBookmarked ? "🔖" : "🏷️"}</Text>
             </Pressable>
           </View>
 
-          <Text style={s.wordText}>{q.item.w}</Text>
+          <View style={s.wordPronunciationRow}>
+            <Text style={s.wordText}>{q.item.w}</Text>
+            <PronunciationButton text={q.item.w} />
+          </View>
           {q.item.p ? <Text style={s.ipaText}>{q.item.p}</Text> : null}
 
           <Text style={s.hintText}>
@@ -300,15 +409,31 @@ export default function WrongQuizScreen() {
             </View>
           )}
 
-          {answered && (
-            <Pressable
-              style={({ pressed }) => [s.nextBtn, pressed && { opacity: 0.85 }]}
-              onPress={handleNext}
-            >
-              <Text style={s.nextBtnText}>
-                {currentIdx + 1 >= questions.length ? "결과 보기 →" : "다음 →"}
-              </Text>
-            </Pressable>
+          {(currentIdx > 0 || answered) && (
+            <View style={s.questionNavRow}>
+              {currentIdx > 0 ? (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="이전 문제"
+                  style={({ pressed }) => [s.previousBtn, pressed && { opacity: 0.78 }]}
+                  onPress={handlePrevious}
+                >
+                  <Text style={s.previousBtnText}>← 이전 문제</Text>
+                </Pressable>
+              ) : null}
+              {answered ? (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={currentIdx + 1 >= questions.length ? "결과 보기" : "다음 문제"}
+                  style={({ pressed }) => [s.nextBtn, pressed && { opacity: 0.85 }]}
+                  onPress={handleNext}
+                >
+                  <Text style={s.nextBtnText}>
+                    {currentIdx + 1 >= questions.length ? "결과 보기 →" : "다음 문제 →"}
+                  </Text>
+                </Pressable>
+              ) : null}
+            </View>
           )}
         </Animated.View>
       </ScrollView>
@@ -327,11 +452,34 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     emptyEmoji: { fontSize: 48, marginBottom: 16 },
     emptyTitle: { fontSize: 19, fontWeight: "700", color: colors.foreground },
     emptyText: { marginTop: 8, fontSize: 14, lineHeight: 21, textAlign: "center", color: colors.dim },
-    emptyButton: { marginTop: 20, borderRadius: 12, paddingHorizontal: 18, paddingVertical: 12, backgroundColor: colors.primary },
+    emptyButton: {
+      marginTop: 20,
+      minHeight: 44,
+      borderRadius: 12,
+      paddingHorizontal: 18,
+      paddingVertical: 12,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: colors.primary,
+    },
     emptyButtonText: { color: "#FFFFFF", fontWeight: "700" },
+    backToListBtn: {
+      alignSelf: "flex-start",
+      minHeight: 44,
+      marginTop: 8,
+      marginHorizontal: 16,
+      paddingHorizontal: 4,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    backToListText: {
+      fontSize: 14,
+      fontWeight: "700",
+      color: colors.foreground,
+    },
     wrongBanner: {
       marginHorizontal: 16,
-      marginTop: 16,
+      marginTop: 4,
       marginBottom: 12,
       backgroundColor: "rgba(248,113,113,0.1)",
       borderWidth: 1,
@@ -422,14 +570,25 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       textTransform: "uppercase",
     },
     bookmarkBtn: {
-      padding: 4,
+      width: 44,
+      height: 44,
+      borderRadius: 12,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    wordPronunciationRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 12,
+      marginBottom: 4,
     },
     wordText: {
+      flex: 1,
       fontSize: 30,
       fontWeight: "800",
       color: colors.foreground,
       letterSpacing: -1,
-      marginBottom: 4,
     },
     ipaText: {
       fontSize: 13,
@@ -447,6 +606,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       gap: 10,
     },
     choiceBtn: {
+      minHeight: 52,
       backgroundColor: colors.card,
       borderWidth: 2,
       borderColor: colors.border,
@@ -547,11 +707,12 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.primary2 as string,
     },
     nextBtn: {
+      flex: 1,
+      minHeight: 50,
       backgroundColor: colors.error,
       borderRadius: 12,
-      paddingVertical: 15,
       alignItems: "center",
-      marginTop: 14,
+      justifyContent: "center",
     },
     nextBtnText: {
       fontSize: 14,
@@ -561,12 +722,33 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     skipBtn: {
       marginTop: 12,
+      minHeight: 44,
       borderWidth: 1,
       borderColor: colors.border,
       borderRadius: 10,
       paddingVertical: 11,
       alignItems: "center" as const,
       backgroundColor: "rgba(255,255,255,0.03)",
+    },
+    questionNavRow: {
+      flexDirection: "row",
+      gap: 10,
+      marginTop: 14,
+    },
+    previousBtn: {
+      flex: 1,
+      minHeight: 50,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 12,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: colors.card,
+    },
+    previousBtnText: {
+      fontSize: 14,
+      fontWeight: "700",
+      color: colors.foreground,
     },
     skipBtnText: {
       fontSize: 13,

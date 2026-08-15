@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, type ReactElement } from "react";
+import React, { useState, useCallback, useMemo, useRef, type ReactElement } from "react";
 import {
   View,
   Text,
@@ -13,8 +13,6 @@ import Animated, {
   withTiming,
   withSequence,
   FadeIn,
-  FadeOut,
-  SlideInRight,
   runOnJS,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -205,12 +203,31 @@ interface QuizSessionProps {
   onFinish: (correct: number, total: number) => void;
 }
 
+type ExamQuestionViewState = {
+  answered: boolean;
+  selected: number | null;
+};
+
+const EMPTY_EXAM_QUESTION_STATE: ExamQuestionViewState = {
+  answered: false,
+  selected: null,
+};
+
 function QuizSession({ questions, onFinish }: QuizSessionProps) {
   const colors = useColors();
   const [idx, setIdx] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [selected, setSelected] = useState<number | null>(null);
   const [correct, setCorrect] = useState(0);
+  const scrollRef = useRef<ScrollView>(null);
+  const isMovingRef = useRef(false);
+  const questionViewStatesRef = useRef(new Map<number, ExamQuestionViewState>());
+
+  // 선택지는 세션 시작 시 한 번만 섞어 이전 문제로 돌아가도 같은 순서를 유지합니다.
+  const sessionQuestions = useMemo(
+    () => questions.map((question) => shuffleChoices(question)),
+    [questions]
+  );
 
   const cardScale = useSharedValue(1);
   const cardTranslateX = useSharedValue(0);
@@ -223,19 +240,26 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
     opacity: cardOpacity.value,
   }));
 
-  // 카드 슬라이드 전환 애니메이션
-  const slideToNext = useCallback((onComplete: () => void) => {
-    cardTranslateX.value = withTiming(-60, { duration: 180 });
-    cardOpacity.value = withTiming(0, { duration: 180 }, () => {
-      cardTranslateX.value = 60;
-      cardOpacity.value = 0;
-      runOnJS(onComplete)();
-      cardTranslateX.value = withTiming(0, { duration: 220 });
-      cardOpacity.value = withTiming(1, { duration: 220 });
-    });
+  const animateMove = useCallback((direction: "next" | "previous") => {
+    cardTranslateX.value = direction === "next" ? 44 : -44;
+    cardOpacity.value = 0.72;
+    cardTranslateX.value = withTiming(0, { duration: 220 });
+    cardOpacity.value = withTiming(1, { duration: 220 });
   }, [cardTranslateX, cardOpacity]);
 
-  const q = useMemo(() => shuffleChoices(questions[idx]), [questions, idx]);
+  const restoreQuestionState = useCallback((targetIdx: number) => {
+    const state = questionViewStatesRef.current.get(targetIdx) ?? EMPTY_EXAM_QUESTION_STATE;
+    setAnswered(state.answered);
+    setSelected(state.selected);
+  }, []);
+
+  const releaseMovingLock = useCallback(() => {
+    setTimeout(() => {
+      isMovingRef.current = false;
+    }, 240);
+  }, []);
+
+  const q = sessionQuestions[idx];
 
   const haptic = useCallback((type: "light" | "success" | "error") => {
     if (Platform.OS === "web") return;
@@ -246,7 +270,11 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
 
   const handleSelect = useCallback(
     (choiceIdx: number) => {
-      if (answered) return;
+      if (
+        answered ||
+        isMovingRef.current ||
+        questionViewStatesRef.current.get(idx)?.answered
+      ) return;
       haptic("light");
       cardScale.value = withSequence(
         withTiming(0.97, { duration: 80 }),
@@ -254,6 +282,10 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
       );
       setSelected(choiceIdx);
       setAnswered(true);
+      questionViewStatesRef.current.set(idx, {
+        answered: true,
+        selected: choiceIdx,
+      });
       const isCorrect = choiceIdx === q.answer;
       if (isCorrect) {
         haptic("success");
@@ -264,21 +296,36 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
       // 한 문제 단위 즉시 저장 (기출 퀴즈는 vocab num이 없으므로 오답노트 num은 저장 불가)
       recordOneAnswer(isCorrect);
     },
-    [answered, q.answer, haptic, cardScale]
+    [answered, idx, q.answer, haptic, cardScale]
   );
 
   const handleNext = useCallback(() => {
+    if (isMovingRef.current || !answered) return;
+    isMovingRef.current = true;
     haptic("light");
     if (idx + 1 >= questions.length) {
       onFinish(correct, questions.length);
       return;
     }
-    slideToNext(() => {
-      setIdx((i) => i + 1);
-      setAnswered(false);
-      setSelected(null);
-    });
-  }, [idx, questions.length, correct, haptic, onFinish, slideToNext]);
+    const targetIdx = idx + 1;
+    restoreQuestionState(targetIdx);
+    setIdx(targetIdx);
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
+    animateMove("next");
+    releaseMovingLock();
+  }, [answered, idx, questions.length, correct, haptic, onFinish, restoreQuestionState, animateMove, releaseMovingLock]);
+
+  const handlePrevious = useCallback(() => {
+    if (isMovingRef.current || idx === 0) return;
+    haptic("light");
+    isMovingRef.current = true;
+    const targetIdx = idx - 1;
+    restoreQuestionState(targetIdx);
+    setIdx(targetIdx);
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
+    animateMove("previous");
+    releaseMovingLock();
+  }, [idx, haptic, restoreQuestionState, animateMove, releaseMovingLock]);
 
   // 스와이프 제스처 — 정답 확인 후 왼쪽 스와이프로 다음 문제
   const swipeGesture = Gesture.Pan()
@@ -297,6 +344,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
   return (
     <NativeSwipeBoundary gesture={swipeGesture}>
     <ScrollView
+      ref={scrollRef}
       style={{ flex: 1 }}
       contentContainerStyle={{ paddingBottom: 40 }}
       showsVerticalScrollIndicator={false}
@@ -400,17 +448,31 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
           </Animated.View>
         )}
 
-        {/* 다음 버튼 */}
-        {answered && (
-          <Animated.View entering={FadeIn.duration(200)}>
+        {/* 이전/다음 문제 이동 */}
+        {(idx > 0 || answered) && (
+          <Animated.View entering={FadeIn.duration(200)} style={s.questionNavRow}>
+            {idx > 0 && (
+              <Pressable
+                style={({ pressed }) => [s.previousBtn, pressed && { opacity: 0.75 }]}
+                onPress={handlePrevious}
+                accessibilityRole="button"
+                accessibilityLabel="이전 문제로 돌아가기"
+              >
+                <Text style={s.previousBtnText}>← 이전 문제</Text>
+              </Pressable>
+            )}
+            {answered && (
             <Pressable
               style={({ pressed }) => [s.nextBtn, pressed && { opacity: 0.85 }]}
               onPress={handleNext}
+              accessibilityRole="button"
+              accessibilityLabel={idx + 1 >= questions.length ? "결과 보기" : "다음 문제로 이동"}
             >
               <Text style={s.nextBtnText}>
                 {idx + 1 >= questions.length ? "결과 보기 →" : "다음 →"}
               </Text>
             </Pressable>
+            )}
           </Animated.View>
         )}
       </Animated.View>
@@ -491,11 +553,17 @@ export default function ExamScreen() {
     return (
       <ScreenContainer containerClassName="bg-background">
         <View style={s.sessionHeader}>
-          <Pressable onPress={() => setQuizQuestions(null)} style={s.backBtn}>
+          <Pressable
+            onPress={() => setQuizQuestions(null)}
+            style={({ pressed }) => [s.backBtn, pressed && { opacity: 0.72 }]}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel="기출 퀴즈 나가기"
+          >
             <Text style={s.backBtnText}>← 나가기</Text>
           </Pressable>
           <Text style={s.sessionTitle}>기출 퀴즈</Text>
-          <View style={{ width: 60 }} />
+          <View style={{ width: 72 }} />
         </View>
         <QuizSession questions={quizQuestions} onFinish={handleFinish} />
       </ScreenContainer>
@@ -805,7 +873,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       borderBottomColor: colors.border as string,
     },
     backBtn: {
-      width: 60,
+      width: 72,
+      minHeight: 44,
+      justifyContent: "center",
     },
     backBtnText: {
       fontSize: 13,
@@ -935,16 +1005,37 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       lineHeight: 20,
     },
     nextBtn: {
-      marginTop: 16,
+      flex: 1,
+      minHeight: 48,
       backgroundColor: colors.primary as string,
       borderRadius: 14,
-      paddingVertical: 14,
       alignItems: "center",
+      justifyContent: "center",
     },
     nextBtnText: {
       fontSize: 15,
       fontWeight: "800",
       color: "#fff",
+    },
+    questionNavRow: {
+      flexDirection: "row",
+      gap: 10,
+      marginTop: 16,
+    },
+    previousBtn: {
+      flex: 1,
+      minHeight: 48,
+      borderRadius: 14,
+      borderWidth: 1.5,
+      borderColor: colors.border as string,
+      backgroundColor: colors.background as string,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    previousBtnText: {
+      fontSize: 15,
+      fontWeight: "700",
+      color: colors.foreground as string,
     },
     // 결과
     resultBox: {

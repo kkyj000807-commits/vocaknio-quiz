@@ -29,6 +29,7 @@ const MAPPING = {
   "xmark": "close",
   "checkmark": "check",
   "play.fill": "play-arrow",
+  "speaker.wave.2.fill": "volume-up",
   "eye.fill": "visibility",
   "eye.slash.fill": "visibility-off",
   "lock.fill": "lock",

@@ -229,12 +229,14 @@ H. 테스트하지 못한 사항을 “정상 작동한다”고 단정하지 �
 
 ## 9. 앱 내부 Production 버전 및 최근 수정 시각
 
-- 모든 Production 배포는 설정 화면의 앱 정보에 `버전 X.Y.Z · 최근 수정 YYYY.MM.DD HH:mm KST`를 표시한다.
+- 모든 Production 배포는 설정 화면의 앱 정보에 `버전 X.Y · 최근 수정 YYYY.MM.DD HH:mm KST`를 표시한다.
 - 버전은 `release.config.json` 한곳에서 관리하고 화면에 직접 중복 입력하지 않는다.
 - Production 웹 빌드는 `scripts/build-production-web.mjs`를 사용해 `Asia/Seoul` 기준 빌드 시각을 자동 주입한다.
 - Preview와 development 빌드는 Production으로 보고하지 않는다.
 - 배포에 실패하면 공개 앱의 버전과 최근 수정 시각은 이전 값으로 남아야 한다.
-- 오타와 미세 조정은 patch, 기능 또는 UI·UX 개선은 minor, 큰 구조 변경은 major 버전을 올린다.
+- 2026.08.15부터 공개 버전은 `1.1`을 기준으로 다시 시작한다.
+- Production 수정·배포가 실제 공개 URL에 성공할 때마다 `0.1`씩 올린다. 예: `1.1 → 1.2 → 1.3`.
+- 코드만 수정했거나 Production 배포가 실패한 경우에는 버전을 올린 것으로 보고하지 않는다.
 - 배포 후 실제 공개 URL의 설정 화면에서 버전과 시각이 새 빌드와 일치하는지 확인한다.
 - Safari와 Chrome에서 같은 버전과 시각이 보여야 하며, 다르면 캐시와 서비스 워커를 먼저 점검한다.
 - 사용자가 강력 새로고침하지 않아도 최신 버전을 받도록 HTML 캐시와 정적 자산 해시를 확인한다.

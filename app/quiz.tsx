@@ -24,6 +24,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { FlipCard } from "@/components/flip-card";
+import { PronunciationButton } from "@/components/pronunciation-button";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { type QuizMode, type VocabItem } from "@/lib/vocab";
 import {
@@ -33,7 +34,7 @@ import {
   type ChoiceLang,
   type QuizQuestion,
 } from "@/lib/quiz-engine";
-import { updateStatsAfterQuiz, toggleBookmark, loadBookmarks, addWrongWords, recordOneAnswer, loadMastered, addMastered } from "@/lib/store";
+import { toggleBookmark, loadBookmarks, recordOneAnswer, loadMastered, addMastered } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
 
 function NativeSwipeBoundary({
@@ -47,10 +48,38 @@ function NativeSwipeBoundary({
   return <GestureDetector gesture={gesture}>{children}</GestureDetector>;
 }
 
+type QuizQuestionViewState = {
+  answered: boolean;
+  selectedChoice: number | null;
+  skipped: boolean;
+  revealed: boolean;
+  flashGrade: "correct" | "wrong" | null;
+  typedAnswer: string;
+  typeResult: "correct" | "wrong" | null;
+  hintLevel: number;
+  mastered: boolean;
+};
+
+function createEmptyQuestionViewState(): QuizQuestionViewState {
+  return {
+    answered: false,
+    selectedChoice: null,
+    skipped: false,
+    revealed: false,
+    flashGrade: null,
+    typedAnswer: "",
+    typeResult: null,
+    hintLevel: 0,
+    mastered: false,
+  };
+}
+
 export default function QuizScreen() {
   const colors = useColors();
   const router = useRouter();
   const isMovingRef = useRef(false);
+  const scrollRef = useRef<ScrollView>(null);
+  const questionViewStatesRef = useRef(new Map<number, QuizQuestionViewState>());
   const params = useLocalSearchParams<{
     mode: QuizMode;
     rangeStart: string;
@@ -102,6 +131,7 @@ export default function QuizScreen() {
   const [typeResult, setTypeResult] = useState<"correct" | "wrong" | null>(null);
   const [bookmarks, setBookmarks] = useState<number[]>([]);
   const [hintLevel, setHintLevel] = useState(0);
+  const [masteredOnCard, setMasteredOnCard] = useState(false);
 
   const cardScale = useSharedValue(1);
   // 카드 슬라이드 전환용 shared values
@@ -154,12 +184,62 @@ export default function QuizScreen() {
 
   // 문제 상태 전환은 애니메이션 완료 콜백에 의존하지 않는다.
   // Safari/RN Web에서 완료 콜백이 누락돼도 학습 진행이 멈추지 않아야 한다.
-  const animateNextCard = useCallback(() => {
-    cardTranslateX.value = 36;
+  const animateMoveCard = useCallback((direction: "next" | "previous") => {
+    cardTranslateX.value = direction === "next" ? 36 : -36;
     cardOpacity.value = 0;
     cardTranslateX.value = withTiming(0, { duration: 200 });
     cardOpacity.value = withTiming(1, { duration: 200 });
   }, [cardTranslateX, cardOpacity]);
+
+  const captureQuestionViewState = useCallback(
+    (overrides: Partial<QuizQuestionViewState> = {}) => {
+      const snapshot: QuizQuestionViewState = {
+        answered,
+        selectedChoice,
+        skipped,
+        revealed,
+        flashGrade,
+        typedAnswer,
+        typeResult,
+        hintLevel,
+        mastered: masteredOnCard,
+        ...overrides,
+      };
+      questionViewStatesRef.current.set(currentIdx, snapshot);
+      return snapshot;
+    },
+    [
+      answered,
+      currentIdx,
+      flashGrade,
+      hintLevel,
+      masteredOnCard,
+      revealed,
+      selectedChoice,
+      skipped,
+      typeResult,
+      typedAnswer,
+    ],
+  );
+
+  const restoreQuestionViewState = useCallback((index: number) => {
+    const snapshot = questionViewStatesRef.current.get(index) ?? createEmptyQuestionViewState();
+    setAnswered(snapshot.answered);
+    setSelectedChoice(snapshot.selectedChoice);
+    setSkipped(snapshot.skipped);
+    setRevealed(snapshot.revealed);
+    setFlashGrade(snapshot.flashGrade);
+    setTypedAnswer(snapshot.typedAnswer);
+    setTypeResult(snapshot.typeResult);
+    setHintLevel(snapshot.hintLevel);
+    setMasteredOnCard(snapshot.mastered);
+  }, []);
+
+  const releaseMovingLock = useCallback(() => {
+    setTimeout(() => {
+      isMovingRef.current = false;
+    }, 240);
+  }, []);
 
   const q = questions[currentIdx];
   const isBookmarked = q ? bookmarks.includes(q.item.num) : false;
@@ -173,7 +253,11 @@ export default function QuizScreen() {
 
   const handleChoiceSelect = useCallback(
     (idx: number) => {
-      if (answered) return;
+      if (
+        answered ||
+        isMovingRef.current ||
+        questionViewStatesRef.current.get(currentIdx)?.answered
+      ) return;
       haptic("light");
       animateCard();
       setSelectedChoice(idx);
@@ -190,15 +274,24 @@ export default function QuizScreen() {
         setWrongCount((w) => w + 1);
         setWrongItems((prev) => [...prev, q.item]);
       }
+      captureQuestionViewState({
+        answered: true,
+        selectedChoice: idx,
+        skipped: false,
+      });
       // 한 문제 단위 즉시 저장
       recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num);
     },
-    [answered, q, haptic, animateCard]
+    [answered, currentIdx, q, haptic, animateCard, captureQuestionViewState]
   );
 
   // "모르겠다" 패스 — 오답 처리 + 오답 노트 저장
   const handleSkip = useCallback(() => {
-    if (answered) return;
+    if (
+      answered ||
+      isMovingRef.current ||
+      questionViewStatesRef.current.get(currentIdx)?.answered
+    ) return;
     haptic("error");
     animateCard();
     setAnswered(true);
@@ -206,17 +299,28 @@ export default function QuizScreen() {
     setSelectedChoice(null);
     setWrongCount((w) => w + 1);
     setWrongItems((prev) => [...prev, q.item]);
+    captureQuestionViewState({
+      answered: true,
+      selectedChoice: null,
+      skipped: true,
+    });
     // 패스도 오답으로 즉시 저장
     recordOneAnswer(false, q.item.num);
-  }, [answered, q, haptic, animateCard]);
+  }, [answered, currentIdx, q, haptic, animateCard, captureQuestionViewState]);
 
   const handleReveal = useCallback(() => {
     haptic("light");
     setRevealed(true);
-  }, [haptic]);
+    captureQuestionViewState({ revealed: true });
+  }, [haptic, captureQuestionViewState]);
 
   const handleFlashGrade = useCallback(
     (grade: "correct" | "wrong") => {
+      if (
+        answered ||
+        isMovingRef.current ||
+        questionViewStatesRef.current.get(currentIdx)?.answered
+      ) return;
       haptic(grade === "correct" ? "success" : "error");
       setFlashGrade(grade);
       setAnswered(true);
@@ -226,40 +330,88 @@ export default function QuizScreen() {
         setWrongCount((w) => w + 1);
         setWrongItems((prev) => [...prev, q.item]);
       }
+      captureQuestionViewState({
+        answered: true,
+        revealed: true,
+        flashGrade: grade,
+      });
       // 플래시카드 채점 즉시 저장
       recordOneAnswer(grade === "correct", grade === "correct" ? undefined : q.item.num);
     },
-    [haptic, q]
+    [answered, currentIdx, haptic, q, captureQuestionViewState]
   );
 
   // 플래시카드 마스터 처리 — 이 단어를 마스터 목록에 추가
   const handleFlashMaster = useCallback(async () => {
-    if (!q) return;
+    if (
+      !q ||
+      answered ||
+      isMovingRef.current ||
+      questionViewStatesRef.current.get(currentIdx)?.answered
+    ) return;
+    isMovingRef.current = true;
     haptic("success");
-    const updated = await addMastered(q.item.num);
+    let updated: number[];
+    try {
+      updated = await addMastered(q.item.num);
+    } catch {
+      isMovingRef.current = false;
+      return;
+    }
     setMasteredNums(updated);
+    const nextCorrectCount = correctCount + 1;
+    setCorrectCount(nextCorrectCount);
+    setAnswered(true);
+    setRevealed(true);
+    setMasteredOnCard(true);
+    captureQuestionViewState({
+      answered: true,
+      revealed: true,
+      flashGrade: null,
+      mastered: true,
+    });
+    // '마스터'는 알고 있는 단어로 한 번만 채점한다.
+    recordOneAnswer(true);
     // 마스터 처리 후 자동으로 다음 문제로 이동
     if (currentIdx + 1 >= questions.length) {
       router.replace({
         pathname: "/result",
         params: {
-          correct: correctCount,
+          correct: nextCorrectCount,
           total: questions.length,
           wrongNums: wrongItems.map((w) => w.num).join(","),
         },
       });
       return;
     }
-    setCurrentIdx((i) => i + 1);
-    setAnswered(false);
-    setSelectedChoice(null);
-    setSkipped(false);
-    setRevealed(false);
-    setFlashGrade(null);
-  }, [q, haptic, currentIdx, questions.length, correctCount, wrongItems, router]);
+    const targetIndex = currentIdx + 1;
+    restoreQuestionViewState(targetIndex);
+    setCurrentIdx(targetIndex);
+    animateMoveCard("next");
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
+    releaseMovingLock();
+  }, [
+    answered,
+    q,
+    haptic,
+    currentIdx,
+    questions.length,
+    correctCount,
+    wrongItems,
+    router,
+    captureQuestionViewState,
+    restoreQuestionViewState,
+    animateMoveCard,
+    releaseMovingLock,
+  ]);
 
   const handleTypeSubmit = useCallback(() => {
-    if (!typedAnswer.trim()) return;
+    if (
+      answered ||
+      isMovingRef.current ||
+      questionViewStatesRef.current.get(currentIdx)?.answered ||
+      !typedAnswer.trim()
+    ) return;
     haptic("light");
     const isCorrect = isTypedAnswerCorrect(q, typedAnswer);
     setTypeResult(isCorrect ? "correct" : "wrong");
@@ -272,14 +424,20 @@ export default function QuizScreen() {
       setWrongCount((w) => w + 1);
       setWrongItems((prev) => [...prev, q.item]);
     }
+    captureQuestionViewState({
+      answered: true,
+      typedAnswer,
+      typeResult: isCorrect ? "correct" : "wrong",
+    });
     // 타이핑 정답 즉시 저장
     recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num);
-  }, [typedAnswer, q, haptic]);
+  }, [answered, currentIdx, typedAnswer, q, haptic, captureQuestionViewState]);
 
   const handleNext = useCallback(async () => {
     if (isMovingRef.current) return;
     isMovingRef.current = true;
     haptic("light");
+    captureQuestionViewState();
     if (currentIdx + 1 >= questions.length) {
       const finalWrongNums = wrongItems.map((w) => w.num);
       router.replace({
@@ -292,22 +450,44 @@ export default function QuizScreen() {
       });
       return;
     }
-    // 상태를 즉시 바꾸고 애니메이션은 보조 효과로만 실행한다.
-    // 다음 버튼은 answered=false가 되면서 즉시 사라지고, 짧은 잠금은 연속 탭만 막는다.
-    setCurrentIdx((i) => i + 1);
-    setAnswered(false);
-    setSelectedChoice(null);
-    setSkipped(false);
-    setRevealed(false);
-    setFlashGrade(null);
-    setTypedAnswer("");
-    setTypeResult(null);
-    setHintLevel(0);
-    animateNextCard();
-    setTimeout(() => {
-      isMovingRef.current = false;
-    }, 240);
-  }, [currentIdx, questions.length, correctCount, wrongItems, haptic, router, animateNextCard]);
+    const targetIndex = currentIdx + 1;
+    restoreQuestionViewState(targetIndex);
+    setCurrentIdx(targetIndex);
+    animateMoveCard("next");
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
+    releaseMovingLock();
+  }, [
+    currentIdx,
+    questions.length,
+    correctCount,
+    wrongItems,
+    haptic,
+    router,
+    captureQuestionViewState,
+    restoreQuestionViewState,
+    animateMoveCard,
+    releaseMovingLock,
+  ]);
+
+  const handlePrevious = useCallback(() => {
+    if (currentIdx <= 0 || isMovingRef.current) return;
+    isMovingRef.current = true;
+    haptic("light");
+    captureQuestionViewState();
+    const targetIndex = currentIdx - 1;
+    restoreQuestionViewState(targetIndex);
+    setCurrentIdx(targetIndex);
+    animateMoveCard("previous");
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
+    releaseMovingLock();
+  }, [
+    currentIdx,
+    haptic,
+    captureQuestionViewState,
+    restoreQuestionViewState,
+    animateMoveCard,
+    releaseMovingLock,
+  ]);
 
   // 스와이프 제스처 — 정답 확인 후 왼쪽 스와이프로 다음 문제
   const swipeGesture = Gesture.Pan()
@@ -384,6 +564,7 @@ export default function QuizScreen() {
       >
         <NativeSwipeBoundary gesture={swipeGesture}>
         <ScrollView
+          ref={scrollRef}
           style={{ flex: 1 }}
           contentContainerStyle={{ paddingBottom: 32 }}
           showsVerticalScrollIndicator={false}
@@ -448,10 +629,15 @@ export default function QuizScreen() {
               </Pressable>
             </View>
 
-            <Text style={s.wordText}>{q.item.w}</Text>
-            {q.item.p ? (
-              <Text style={s.ipaText}>{q.item.p}</Text>
-            ) : null}
+            <View style={s.wordPronunciationRow}>
+              <View style={{ flex: 1 }}>
+                <Text style={s.wordText}>{q.item.w}</Text>
+                {q.item.p ? (
+                  <Text style={s.ipaText}>{q.item.p}</Text>
+                ) : null}
+              </View>
+              <PronunciationButton text={q.item.w} />
+            </View>
 
             {/* 4지선다 모드 */}
             {isChoiceMode && (
@@ -576,6 +762,11 @@ export default function QuizScreen() {
                     </Pressable>
                   </View>
                 )}
+                {masteredOnCard && (
+                  <View style={s.masteredInfo}>
+                    <Text style={s.masteredInfoText}>⭐ 마스터 완료 · 다시 채점되지 않습니다</Text>
+                  </View>
+                )}
               </View>
             )}
 
@@ -650,16 +841,31 @@ export default function QuizScreen() {
               </View>
             )}
 
-            {/* 다음 버튼 */}
-            {answered && (
-              <Pressable
-                style={({ pressed }) => [s.nextBtn, pressed && { opacity: 0.85 }]}
-                onPress={handleNext}
-              >
-                <Text style={s.nextBtnText}>
-                  {currentIdx + 1 >= questions.length ? "결과 보기 →" : "다음 →"}
-                </Text>
-              </Pressable>
+            {/* 문제 이동 */}
+            {(currentIdx > 0 || answered) && (
+              <View style={s.questionNavRow}>
+                {currentIdx > 0 && (
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel="이전 문제로 돌아가기"
+                    style={({ pressed }) => [s.previousBtn, pressed && { opacity: 0.75 }]}
+                    onPress={handlePrevious}
+                  >
+                    <Text style={s.previousBtnText}>← 이전 문제</Text>
+                  </Pressable>
+                )}
+                {answered && (
+                  <Pressable
+                    accessibilityRole="button"
+                    style={({ pressed }) => [s.nextBtn, pressed && { opacity: 0.85 }]}
+                    onPress={handleNext}
+                  >
+                    <Text style={s.nextBtnText}>
+                      {currentIdx + 1 >= questions.length ? "결과 보기 →" : "다음 문제 →"}
+                    </Text>
+                  </Pressable>
+                )}
+              </View>
             )}
           </Animated.View>
         </ScrollView>
@@ -791,6 +997,11 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       height: 44,
       alignItems: "center",
       justifyContent: "center",
+    },
+    wordPronunciationRow: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: 12,
     },
     wordText: {
       fontSize: 30,
@@ -1097,13 +1308,35 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontSize: 11,
       color: colors.primary2 as string,
     },
+    questionNavRow: {
+      flexDirection: "row",
+      gap: 10,
+      marginTop: 14,
+    },
+    previousBtn: {
+      flex: 1,
+      minHeight: 50,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.card,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: 12,
+    },
+    previousBtnText: {
+      fontSize: 14,
+      fontWeight: "700",
+      color: colors.foreground,
+    },
     nextBtn: {
+      flex: 1,
       backgroundColor: colors.primary,
       borderRadius: 12,
       paddingVertical: 15,
       minHeight: 50,
       alignItems: "center",
-      marginTop: 14,
+      justifyContent: "center",
     },
     nextBtnText: {
       fontSize: 14,
@@ -1129,5 +1362,22 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontSize: 13,
       fontWeight: "700",
       color: "#F59E0B",
+    },
+    masteredInfo: {
+      marginTop: 14,
+      minHeight: 44,
+      borderRadius: 12,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: 12,
+      backgroundColor: "rgba(251,191,36,0.12)",
+      borderWidth: 1,
+      borderColor: "rgba(251,191,36,0.35)",
+    },
+    masteredInfoText: {
+      fontSize: 12,
+      fontWeight: "700",
+      color: "#F59E0B",
+      textAlign: "center",
     },
   });

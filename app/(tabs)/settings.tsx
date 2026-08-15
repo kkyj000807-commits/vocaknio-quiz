@@ -548,14 +548,14 @@ const styles = (c: ReturnType<typeof useColors>) =>
     accountEmail: { fontSize: 13, color: c.muted, marginTop: 2 },
     accountMethod: { fontSize: 11, color: c.primary, marginTop: 2, fontWeight: "600" },
     logoutBtn: {
-      paddingVertical: 10, borderRadius: 10,
-      borderWidth: 1, borderColor: c.error, alignItems: "center",
+      minHeight: 44, paddingVertical: 10, borderRadius: 10,
+      borderWidth: 1, borderColor: c.error, alignItems: "center", justifyContent: "center",
     },
     logoutBtnText: { fontSize: 14, fontWeight: "600", color: c.error },
     loginDesc: { fontSize: 14, color: c.muted, lineHeight: 20, textAlign: "center" },
     // Auth tabs
     tabRow: { flexDirection: "row", borderRadius: 10, overflow: "hidden", borderWidth: 1, borderColor: c.border },
-    tab: { flex: 1, paddingVertical: 10, alignItems: "center", backgroundColor: c.surface },
+    tab: { flex: 1, minHeight: 44, paddingVertical: 10, alignItems: "center", justifyContent: "center", backgroundColor: c.surface },
     tabActive: { backgroundColor: c.primary },
     tabLabel: { fontSize: 14, fontWeight: "600", color: c.muted },
     tabLabelActive: { color: c.background },
@@ -571,7 +571,7 @@ const styles = (c: ReturnType<typeof useColors>) =>
     },
     errorText: { fontSize: 13, color: c.error, fontWeight: "600" },
     loginBtn: {
-      flexDirection: "row", alignItems: "center", justifyContent: "center",
+      minHeight: 44, flexDirection: "row", alignItems: "center", justifyContent: "center",
       gap: 8, backgroundColor: c.primary, paddingVertical: 13, borderRadius: 12,
     },
     loginBtnText: { fontSize: 15, fontWeight: "700", color: c.background },
@@ -581,7 +581,7 @@ const styles = (c: ReturnType<typeof useColors>) =>
     syncMsgText: { fontSize: 13, fontWeight: "600" },
     syncBtnRow: { flexDirection: "row", gap: 10 },
     syncBtn: {
-      flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center",
+      flex: 1, minHeight: 44, flexDirection: "row", alignItems: "center", justifyContent: "center",
       gap: 6, paddingVertical: 12, borderRadius: 12, borderWidth: 1, borderColor: "transparent",
     },
     syncBtnText: { fontSize: 14, fontWeight: "700" },

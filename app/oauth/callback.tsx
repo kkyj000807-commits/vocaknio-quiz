@@ -4,7 +4,7 @@ import * as Auth from "@/lib/_core/auth";
 import * as Linking from "expo-linking";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Text } from "react-native";
+import { ActivityIndicator, Pressable, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function OAuthCallback() {
@@ -263,6 +263,25 @@ export default function OAuthCallback() {
             <Text className="text-base leading-6 text-center text-foreground">
               {errorMessage}
             </Text>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="설정으로 돌아가기"
+              onPress={() => router.replace("/(tabs)/settings")}
+              style={({ pressed }) => ({
+                minHeight: 44,
+                marginTop: 12,
+                paddingHorizontal: 20,
+                borderRadius: 12,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "#6C63FF",
+                opacity: pressed ? 0.78 : 1,
+              })}
+            >
+              <Text style={{ color: "#FFFFFF", fontSize: 15, fontWeight: "700" }}>
+                설정으로 돌아가기
+              </Text>
+            </Pressable>
           </>
         )}
       </ThemedView>

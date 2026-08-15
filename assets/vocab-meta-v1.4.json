@@ -17535,7 +17535,63 @@
     }
   ],
   "confirmedPairCount": 5585,
-  "synonymEntryCount": 11318,
+  "synonymEntryCount": 11277,
+  "semanticGuard": {
+    "version": "v1",
+    "ruleCount": 8,
+    "rawSynonymEntryCount": 11318,
+    "rawLinkedSynonymCount": 65589,
+    "blockedEntryCount": 41,
+    "removedLinkCount": 370,
+    "linkedSynonymCount": 65219,
+    "rules": [
+      {
+        "id": "appropriate-adjective-sense",
+        "affectedRows": 5,
+        "removedLinks": 30
+      },
+      {
+        "id": "benign-beneficial-sense",
+        "affectedRows": 12,
+        "removedLinks": 96
+      },
+      {
+        "id": "smolder-restriction-sense",
+        "affectedRows": 8,
+        "removedLinks": 64
+      },
+      {
+        "id": "explicit-ending-sense",
+        "affectedRows": 2,
+        "removedLinks": 16
+      },
+      {
+        "id": "envoy-ending-sense",
+        "affectedRows": 2,
+        "removedLinks": 16
+      },
+      {
+        "id": "effeminate-part-of-speech",
+        "affectedRows": 11,
+        "removedLinks": 110
+      },
+      {
+        "id": "refrain-verb-sense",
+        "affectedRows": 1,
+        "removedLinks": 3
+      },
+      {
+        "id": "carnage-noun-only",
+        "affectedRows": 5,
+        "removedLinks": 35
+      }
+    ],
+    "samePromptConflicts": {
+      "groupCount": 296,
+      "affectedRowCount": 741,
+      "disjointGroupCount": 65
+    }
+  },
   "legacyMigration": {
     "sourceCount": 9517,
     "mappedCount": 3599,

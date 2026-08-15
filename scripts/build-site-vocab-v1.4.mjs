@@ -32,6 +32,58 @@ const GROUP_LABELS = {
   APPENDIX: "파이널 보카니오 부록",
 };
 
+// These rules only remove links that are unsafe for the Korean meaning shown on
+// the same row. They intentionally operate after the two-source pair check so a
+// useful sense of a polysemous word can remain available on its own rows.
+const SYNONYM_SENSE_RULES = [
+  {
+    id: "appropriate-adjective-sense",
+    word: "appropriate",
+    triggerSynonyms: ["apposite"],
+    requiredMeaningFragments: ["적절", "적합", "타당", "알맞"],
+  },
+  {
+    id: "benign-beneficial-sense",
+    word: "benign",
+    triggerSynonyms: ["profitable"],
+    requiredMeaningFragments: ["유익", "이익", "이로운", "유리", "도움", "좋은"],
+  },
+  {
+    id: "smolder-restriction-sense",
+    word: "smolder",
+    triggerSynonyms: ["restrict"],
+    requiredMeaningFragments: ["제한", "억제", "보류", "제약"],
+  },
+  {
+    id: "explicit-ending-sense",
+    word: "explicit",
+    triggerSynonyms: ["coda"],
+    requiredMeaningFragments: ["종결", "끝", "完", "대미", "결말", "마지막"],
+  },
+  {
+    id: "envoy-ending-sense",
+    word: "envoy",
+    triggerSynonyms: ["coda"],
+    requiredMeaningFragments: ["종결", "끝", "完", "대미", "결말", "마지막"],
+  },
+  {
+    id: "effeminate-part-of-speech",
+    word: "effeminate",
+    triggerSynonyms: ["weaken"],
+  },
+  {
+    id: "refrain-verb-sense",
+    word: "refrain",
+    triggerSynonyms: ["abstain"],
+    requiredMeaningFragments: ["삼가", "자제", "절제", "그만두", "하지 않고", "참다"],
+  },
+  {
+    id: "carnage-noun-only",
+    word: "carnage",
+    allowedSynonyms: ["holocaust", "massacre"],
+  },
+];
+
 function walkForFiles(root, predicate) {
   const queue = [root];
   const matches = [];
@@ -140,6 +192,108 @@ function meaningTokens(value) {
       .split(/\s+/)
       .filter((token) => token.length > 1),
   );
+}
+
+function applySynonymSenseRules(siteItems) {
+  const ruleStats = new Map(
+    SYNONYM_SENSE_RULES.map((rule) => [rule.id, { affectedRows: 0, removedLinks: 0 }]),
+  );
+  let blockedEntryCount = 0;
+
+  const guardedItems = siteItems.map((item) => {
+    const normalizedWord = normalizeWord(item.w);
+    let synonyms = [...item.s];
+
+    for (const rule of SYNONYM_SENSE_RULES) {
+      if (normalizedWord !== rule.word) continue;
+      if (
+        rule.triggerSynonyms &&
+        !rule.triggerSynonyms.some((synonym) => synonyms.includes(synonym))
+      ) {
+        continue;
+      }
+      if (
+        rule.requiredMeaningFragments?.some((fragment) => item.k.includes(fragment))
+      ) {
+        continue;
+      }
+
+      const before = synonyms.length;
+      if (rule.allowedSynonyms) {
+        const allowed = new Set(rule.allowedSynonyms);
+        synonyms = synonyms.filter((synonym) => allowed.has(synonym));
+      } else {
+        synonyms = [];
+      }
+      if (before === synonyms.length) continue;
+
+      const stat = ruleStats.get(rule.id);
+      stat.affectedRows += 1;
+      stat.removedLinks += before - synonyms.length;
+    }
+
+    if (item.s.length > 0 && synonyms.length === 0) blockedEntryCount += 1;
+    return { ...item, s: synonyms };
+  });
+
+  const rawLinkedSynonymCount = siteItems.reduce((sum, item) => sum + item.s.length, 0);
+  const linkedSynonymCount = guardedItems.reduce((sum, item) => sum + item.s.length, 0);
+  return {
+    items: guardedItems,
+    report: {
+      version: "v1",
+      ruleCount: SYNONYM_SENSE_RULES.length,
+      rawSynonymEntryCount: siteItems.filter((item) => item.s.length > 0).length,
+      rawLinkedSynonymCount,
+      blockedEntryCount,
+      removedLinkCount: rawLinkedSynonymCount - linkedSynonymCount,
+      linkedSynonymCount,
+      rules: SYNONYM_SENSE_RULES.map((rule) => ({
+        id: rule.id,
+        ...ruleStats.get(rule.id),
+      })),
+    },
+  };
+}
+
+function auditSamePromptConflicts(siteItems) {
+  const grouped = new Map();
+  for (const item of siteItems) {
+    if (item.s.length === 0) continue;
+    const key = `${normalizeWord(item.w)}\u0000${normalizeMeaning(item.k)}`;
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key).push(item);
+  }
+
+  let groupCount = 0;
+  let affectedRowCount = 0;
+  let disjointGroupCount = 0;
+  for (const items of grouped.values()) {
+    const signatures = [
+      ...new Map(
+        items.map((item) => {
+          const words = [...item.s].map(normalizeWord).sort();
+          return [words.join("\u0000"), new Set(words)];
+        }),
+      ).values(),
+    ];
+    if (signatures.length <= 1) continue;
+
+    groupCount += 1;
+    affectedRowCount += items.length;
+    let hasDisjointPair = false;
+    for (let left = 0; left < signatures.length && !hasDisjointPair; left += 1) {
+      for (let right = left + 1; right < signatures.length; right += 1) {
+        if (![...signatures[left]].some((word) => signatures[right].has(word))) {
+          hasDisjointPair = true;
+          break;
+        }
+      }
+    }
+    if (hasDisjointPair) disjointGroupCount += 1;
+  }
+
+  return { groupCount, affectedRowCount, disjointGroupCount };
 }
 
 function meaningScore(meaning, sense) {
@@ -378,7 +532,7 @@ function main() {
 
   const entries = rows.filter((row) => row.kind === "entry");
   const semantic = buildSemanticModel(rows);
-  const siteItems = entries.map((row, index) => {
+  const rawSiteItems = entries.map((row, index) => {
     const sense = semantic.pickSense(row);
     return {
       num: index + 1,
@@ -395,6 +549,9 @@ function main() {
       s: sense?.synonyms ?? [],
     };
   });
+  const guarded = applySynonymSenseRules(rawSiteItems);
+  const siteItems = guarded.items;
+  const samePromptConflicts = auditSamePromptConflicts(siteItems);
 
   const sections = GROUP_ORDER.map((group) => {
     const items = siteItems.filter((item) => item.group === group);
@@ -428,6 +585,10 @@ function main() {
       (support) => support.has("V301") && support.has("V502"),
     ).length,
     synonymEntryCount: mappedWithSynonyms.length,
+    semanticGuard: {
+      ...guarded.report,
+      samePromptConflicts,
+    },
     legacyMigration: {
       sourceCount: legacyItems.length,
       mappedCount: Object.keys(legacy.mapping).length,
@@ -439,7 +600,16 @@ function main() {
 
   validate(siteItems, meta);
 
-  if (!checkOnly) {
+  if (checkOnly) {
+    const currentItems = JSON.parse(fs.readFileSync(VOCAB_OUTPUT_PATH, "utf8"));
+    const currentMeta = JSON.parse(fs.readFileSync(META_OUTPUT_PATH, "utf8"));
+    if (JSON.stringify(currentItems) !== JSON.stringify(siteItems)) {
+      throw new Error("Generated vocabulary differs from assets/vocab-v1.4.json");
+    }
+    if (JSON.stringify(currentMeta) !== JSON.stringify(meta)) {
+      throw new Error("Generated metadata differs from assets/vocab-meta-v1.4.json");
+    }
+  } else {
     fs.writeFileSync(VOCAB_OUTPUT_PATH, JSON.stringify(siteItems), "utf8");
     fs.writeFileSync(META_OUTPUT_PATH, `${JSON.stringify(meta, null, 2)}\n`, "utf8");
   }
@@ -455,6 +625,7 @@ function main() {
         groupCounts,
         confirmedPairCount: meta.confirmedPairCount,
         synonymEntryCount: meta.synonymEntryCount,
+        semanticGuard: meta.semanticGuard,
         legacyMapped: meta.legacyMigration.mappedCount,
         legacyUnresolved: meta.legacyMigration.unresolvedCount,
         sourceSha256: computedHash,

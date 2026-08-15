@@ -6,6 +6,7 @@ import {
   VOCAB_META,
   VOCAB_WITH_SYNONYMS,
   getSynonymDetails,
+  getVocabItem,
   normalizeWord,
 } from "../lib/vocab";
 import {
@@ -37,7 +38,35 @@ function auditQuestions(label: string, questions: QuizQuestion[], expected: numb
 
 assert.equal(VOCAB.length, 38163);
 assert.equal(VOCAB_META.sourceEntries, 38163);
-assert.equal(VOCAB_WITH_SYNONYMS.length, 11318);
+assert.equal(VOCAB_WITH_SYNONYMS.length, 11277);
+assert.equal(VOCAB_META.synonymEntryCount, 11277);
+assert.equal(VOCAB_META.semanticGuard.ruleCount, 8);
+assert.equal(VOCAB_META.semanticGuard.rawSynonymEntryCount, 11318);
+assert.equal(VOCAB_META.semanticGuard.rawLinkedSynonymCount, 65589);
+assert.equal(VOCAB_META.semanticGuard.blockedEntryCount, 41);
+assert.equal(VOCAB_META.semanticGuard.removedLinkCount, 370);
+assert.equal(VOCAB_META.semanticGuard.linkedSynonymCount, 65219);
+
+const blockedSenseCases = [198, 1023, 9270, 1784, 380, 1881, 26006];
+for (const num of blockedSenseCases) {
+  const item = getVocabItem(num);
+  assert.ok(item, `missing guarded row: ${num}`);
+  assert.deepEqual(item.s, [], `unsafe synonyms remain: ${item.id}`);
+  assert.deepEqual(
+    buildQuizQuestions({ mode: "syn-choice", itemNums: [num], count: 1 }),
+    [],
+    `unsafe choice question remains: ${item.id}`,
+  );
+  assert.deepEqual(
+    buildQuizQuestions({ mode: "syn-type", itemNums: [num], count: 1 }),
+    [],
+    `unsafe typed question remains: ${item.id}`,
+  );
+}
+
+const carnage = getVocabItem(347);
+assert.ok(carnage, "missing carnage regression row");
+assert.deepEqual(carnage.s, ["holocaust", "massacre"]);
 
 let linkedSynonymCount = 0;
 for (const item of VOCAB_WITH_SYNONYMS) {
@@ -56,15 +85,15 @@ for (const item of VOCAB_WITH_SYNONYMS) {
 
 const modeCounts: Record<string, number> = {};
 const fullAudits = [
-  { label: "syn-choice", mode: "syn-choice" as const, expected: 11318 },
-  { label: "syn-kor-choice", mode: "syn-kor-choice" as const, expected: 11318 },
-  { label: "syn-type", mode: "syn-type" as const, expected: 11318 },
+  { label: "syn-choice", mode: "syn-choice" as const, expected: 11277 },
+  { label: "syn-kor-choice", mode: "syn-kor-choice" as const, expected: 11277 },
+  { label: "syn-type", mode: "syn-type" as const, expected: 11277 },
   { label: "kor-choice", mode: "kor-choice" as const, expected: 38163 },
   {
     label: "kor-choice-english",
     mode: "kor-choice" as const,
     choiceLang: "english" as const,
-    expected: 11318,
+    expected: 11277,
   },
   { label: "flashcard", mode: "flashcard" as const, expected: 38163 },
 ];
@@ -101,6 +130,7 @@ console.log(
       sourceEntries: VOCAB.length,
       synonymEntries: VOCAB_WITH_SYNONYMS.length,
       linkedSynonymCount,
+      semanticGuard: VOCAB_META.semanticGuard,
       modeCounts,
       sectionAvailability,
     },

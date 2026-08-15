@@ -22,6 +22,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { ScreenContainer } from "@/components/screen-container";
+import { PronunciationButton } from "@/components/pronunciation-button";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import {
   getRangeItems,
@@ -170,6 +171,7 @@ function WordCard({
           <Text style={s.wordText}>{item.w}</Text>
           {item.p ? <Text style={s.ipaText}>{item.p}</Text> : null}
         </View>
+        <PronunciationButton text={item.w} style={{ marginRight: 4 }} />
         {/* 개별 가리기 버튼 */}
         <TouchableOpacity
           onPress={handleIndivMask}

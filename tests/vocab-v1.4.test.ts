@@ -8,6 +8,7 @@ import {
   VOCAB_WITH_SYNONYMS,
   getRelatedWords,
   getSynonymDetails,
+  getVocabItem,
   isAcceptedSynonym,
   normalizeWord,
 } from "@/lib/vocab";
@@ -15,6 +16,7 @@ import {
   buildQuizQuestions,
   buildReviewQuestions,
   isChoiceCorrect,
+  isTypedAnswerCorrect,
   validateQuestion,
 } from "@/lib/quiz-engine";
 
@@ -55,7 +57,7 @@ describe("final vocabulary v1.4", () => {
   });
 
   it("links every accepted synonym to its own exact meaning", () => {
-    expect(VOCAB_WITH_SYNONYMS).toHaveLength(11318);
+    expect(VOCAB_WITH_SYNONYMS).toHaveLength(11277);
 
     for (const item of VOCAB_WITH_SYNONYMS) {
       const details = getSynonymDetails(item);
@@ -69,6 +71,70 @@ describe("final vocabulary v1.4", () => {
         expect(related.has(normalizeWord(detail.word))).toBe(true);
       }
     }
+  });
+
+  it("blocks confirmed wrong-sense and wrong-part-of-speech synonym answers", () => {
+    const blockedCases = [
+      { num: 198, id: "JBKROW000203", w: "appropriate", k: "착복하다" },
+      { num: 1023, id: "JBKROW001045", w: "benign", k: "양성의" },
+      { num: 9270, id: "JBKROW009645", w: "smolder", k: "(감정이) 속에서 맺히다; 그을다" },
+      { num: 1784, id: "JBKROW001820", w: "explicit", k: "노골적인" },
+      { num: 380, id: "JBKROW000388", w: "envoy", k: "특사" },
+      { num: 1881, id: "JBKROW001919", w: "effeminate", k: "여성적인" },
+      { num: 26006, id: "JBKROW027217", w: "refrain", k: "후렴구" },
+    ];
+
+    for (const expected of blockedCases) {
+      const item = getVocabItem(expected.num);
+      expect(item).toMatchObject(expected);
+      expect(item?.s).toEqual([]);
+      expect(
+        buildQuizQuestions({ mode: "syn-choice", itemNums: [expected.num], count: 1 }),
+      ).toEqual([]);
+      expect(
+        buildQuizQuestions({ mode: "syn-type", itemNums: [expected.num], count: 1 }),
+      ).toEqual([]);
+    }
+
+    const carnage = getVocabItem(347);
+    expect(carnage).toMatchObject({ id: "JBKROW000355", w: "carnage", k: "대학살" });
+    expect(carnage?.s).toEqual(["holocaust", "massacre"]);
+    expect(carnage?.s).not.toContain("annihilate");
+    expect(carnage?.s).not.toContain("sterilize");
+
+    const carnageChoice = buildQuizQuestions({ mode: "syn-choice", itemNums: [347], count: 1 })[0];
+    const carnageTyped = buildQuizQuestions({ mode: "syn-type", itemNums: [347], count: 1 })[0];
+    for (const invalidAnswer of ["annihilate", "sterilize"]) {
+      expect(
+        isChoiceCorrect(carnageChoice, {
+          id: invalidAnswer,
+          value: invalidAnswer,
+          label: invalidAnswer,
+          word: invalidAnswer,
+          meaning: "",
+          isCorrect: true,
+        }),
+      ).toBe(false);
+      expect(isTypedAnswerCorrect(carnageTyped, invalidAnswer)).toBe(false);
+    }
+  });
+
+  it("preserves useful synonyms on rows whose displayed sense matches", () => {
+    expect(getVocabItem(23486)?.s).toContain("apposite");
+    expect(getVocabItem(23179)?.s).toContain("coda");
+    expect(getVocabItem(10571)?.s).toContain("epilogue");
+    expect(getVocabItem(27531)?.s).toContain("abstain");
+    expect(getVocabItem(18506)?.s).toEqual(["holocaust", "massacre"]);
+
+    expect(VOCAB_META.semanticGuard).toMatchObject({
+      version: "v1",
+      ruleCount: 8,
+      rawSynonymEntryCount: 11318,
+      rawLinkedSynonymCount: 65589,
+      blockedEntryCount: 41,
+      removedLinkCount: 370,
+      linkedSynonymCount: 65219,
+    });
   });
 
   it("does not label a clear-sense synonym with the target word's meaning", () => {

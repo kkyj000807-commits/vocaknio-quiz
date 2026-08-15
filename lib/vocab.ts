@@ -49,6 +49,25 @@ interface VocabMeta {
   }>;
   confirmedPairCount: number;
   synonymEntryCount: number;
+  semanticGuard: {
+    version: string;
+    ruleCount: number;
+    rawSynonymEntryCount: number;
+    rawLinkedSynonymCount: number;
+    blockedEntryCount: number;
+    removedLinkCount: number;
+    linkedSynonymCount: number;
+    rules: {
+      id: string;
+      affectedRows: number;
+      removedLinks: number;
+    }[];
+    samePromptConflicts: {
+      groupCount: number;
+      affectedRowCount: number;
+      disjointGroupCount: number;
+    };
+  };
   legacyMigration: {
     sourceCount: number;
     mappedCount: number;
