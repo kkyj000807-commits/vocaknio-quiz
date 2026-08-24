@@ -197,7 +197,7 @@ function getTypeColor(type: QuestionType, colors: ReturnType<typeof useColors>):
   return colors.muted as string;
 }
 
-// ─── 퀴즈 세션 컴포넌트 ──────────────────────────────────────────────────────
+// ─── 문제 풀이 세션 컴포넌트 ─────────────────────────────────────────────────
 interface QuizSessionProps {
   questions: ExamQuestion[];
   onFinish: (correct: number, total: number) => void;
@@ -293,7 +293,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
       } else {
         haptic("error");
       }
-      // 한 문제 단위 즉시 저장 (기출 퀴즈는 vocab num이 없으므로 오답노트 num은 저장 불가)
+      // 한 문제 단위 즉시 저장 (기출 문제는 vocab num이 없으므로 오답노트 num은 저장 불가)
       recordOneAnswer(isCorrect);
     },
     [answered, idx, q.answer, haptic, cardScale]
@@ -548,7 +548,7 @@ export default function ExamScreen() {
 
   const s = styles(colors);
 
-  // 퀴즈 진행 중
+  // 문제 풀이 진행 중
   if (quizQuestions) {
     return (
       <ScreenContainer containerClassName="bg-background">
@@ -558,11 +558,11 @@ export default function ExamScreen() {
             style={({ pressed }) => [s.backBtn, pressed && { opacity: 0.72 }]}
             hitSlop={8}
             accessibilityRole="button"
-            accessibilityLabel="기출 퀴즈 나가기"
+            accessibilityLabel="기출 문제 풀이 나가기"
           >
             <Text style={s.backBtnText}>← 나가기</Text>
           </Pressable>
-          <Text style={s.sessionTitle}>기출 퀴즈</Text>
+          <Text style={s.sessionTitle}>기출 문제 풀이</Text>
           <View style={{ width: 72 }} />
         </View>
         <QuizSession questions={quizQuestions} onFinish={handleFinish} />
@@ -589,7 +589,7 @@ export default function ExamScreen() {
       >
         {/* 헤더 */}
         <View style={s.header}>
-          <Text style={s.headerTitle}>기출 퀴즈</Text>
+          <Text style={s.headerTitle}>기출 문제 풀이</Text>
           <Text style={s.headerSub}>편입 기출 {examQuestions.length}문항 · 한양·성균관·논리 시리즈 · 2020~2026</Text>
         </View>
 
@@ -674,7 +674,7 @@ export default function ExamScreen() {
           disabled={filteredQuestions.length === 0}
         >
           <Text style={s.startBtnText}>
-            {filteredQuestions.length > 0 ? `기출 퀴즈 시작 →` : "해당 문항 없음"}
+            {filteredQuestions.length > 0 ? `기출 문제 풀기 →` : "해당 문항 없음"}
           </Text>
         </Pressable>
 
@@ -862,7 +862,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.muted as string,
       paddingVertical: 10,
     },
-    // 퀴즈 세션
+    // 문제 풀이 세션
     sessionHeader: {
       flexDirection: "row",
       alignItems: "center",

@@ -1,8 +1,18 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
+  deserializeAdaptiveHistory,
+  recordAdaptiveAnswer,
+  recordAdaptiveSession,
+  selectAdaptiveItemNums,
+  serializeAdaptiveHistory,
+  type AdaptiveAnswerInput,
+  type AdaptiveCandidate,
+} from "@/lib/adaptive-quiz";
+import {
   migrateVocabStorage,
   VOCAB_LIST_STORAGE_KEYS,
 } from "@/lib/vocab-storage-migration";
+import type { QuizMode } from "@/lib/vocab";
 
 export interface StatsData {
   totalAnswered: number;
@@ -16,6 +26,69 @@ export interface StatsData {
 const STATS_KEY = "vocaknio_stats";
 const BOOKMARKS_KEY = VOCAB_LIST_STORAGE_KEYS.bookmarks;
 const WRONG_WORDS_KEY = VOCAB_LIST_STORAGE_KEYS.wrongWords;
+export const ADAPTIVE_QUIZ_HISTORY_KEY = "vocaknio_adaptive_quiz_history_v1";
+
+let learningStorageQueue: Promise<void> = Promise.resolve();
+
+/**
+ * Stats, wrong-word and adaptive-history mutations are read-modify-write
+ * operations. Serializing them prevents a fast second answer from overwriting
+ * the first answer with a stale AsyncStorage snapshot. A rejected task is
+ * deliberately swallowed only by the queue tail so later tasks can continue;
+ * the original caller still receives the rejection.
+ */
+function enqueueLearningStorageTask<T>(task: () => Promise<T>): Promise<T> {
+  const result = learningStorageQueue.then(task, task);
+  learningStorageQueue = result.then(
+    () => undefined,
+    () => undefined,
+  );
+  return result;
+}
+
+const EMPTY_STATS: StatsData = {
+  totalAnswered: 0,
+  totalCorrect: 0,
+  todayAnswered: 0,
+  todayDate: "",
+  streak: 0,
+  lastStudyDate: "",
+};
+
+async function readStatsUnsafe(): Promise<StatsData> {
+  try {
+    const raw = await AsyncStorage.getItem(STATS_KEY);
+    if (raw)
+      return { ...EMPTY_STATS, ...(JSON.parse(raw) as Partial<StatsData>) };
+  } catch {}
+  return { ...EMPTY_STATS };
+}
+
+function parseNumberList(raw: string | null): number[] {
+  if (!raw) return [];
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return [
+      ...new Set(
+        parsed.filter(
+          (value): value is number =>
+            Number.isInteger(value) && (value as number) > 0,
+        ),
+      ),
+    ];
+  } catch {
+    return [];
+  }
+}
+
+async function readWrongWordsUnsafe(): Promise<number[]> {
+  try {
+    return parseNumberList(await AsyncStorage.getItem(WRONG_WORDS_KEY));
+  } catch {
+    return [];
+  }
+}
 
 export async function migrateStoredVocabLists() {
   return migrateVocabStorage({
@@ -28,52 +101,49 @@ export async function migrateStoredVocabLists() {
 // ─── Stats ────────────────────────────────────────────────────────────────────
 
 export async function loadStats(): Promise<StatsData> {
-  try {
-    const raw = await AsyncStorage.getItem(STATS_KEY);
-    if (raw) return JSON.parse(raw) as StatsData;
-  } catch {}
-  return {
-    totalAnswered: 0,
-    totalCorrect: 0,
-    todayAnswered: 0,
-    todayDate: "",
-    streak: 0,
-    lastStudyDate: "",
-  };
+  return enqueueLearningStorageTask(readStatsUnsafe);
 }
 
 export async function saveStats(stats: StatsData): Promise<void> {
   try {
-    await AsyncStorage.setItem(STATS_KEY, JSON.stringify(stats));
+    await enqueueLearningStorageTask(() =>
+      AsyncStorage.setItem(STATS_KEY, JSON.stringify(stats)),
+    );
   } catch {}
 }
 
 export async function updateStatsAfterQuiz(
   correct: number,
-  total: number
+  total: number,
 ): Promise<StatsData> {
-  const stats = await loadStats();
-  const today = new Date().toISOString().slice(0, 10);
+  return enqueueLearningStorageTask(async () => {
+    const stats = await readStatsUnsafe();
+    const today = new Date().toISOString().slice(0, 10);
 
-  if (stats.todayDate !== today) {
-    stats.todayAnswered = 0;
-    stats.todayDate = today;
-  }
+    if (stats.todayDate !== today) {
+      stats.todayAnswered = 0;
+      stats.todayDate = today;
+    }
 
-  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-  if (stats.lastStudyDate === yesterday) {
-    stats.streak += 1;
-  } else if (stats.lastStudyDate !== today) {
-    stats.streak = 1;
-  }
-  stats.lastStudyDate = today;
+    const yesterday = new Date(Date.now() - 86400000)
+      .toISOString()
+      .slice(0, 10);
+    if (stats.lastStudyDate === yesterday) {
+      stats.streak += 1;
+    } else if (stats.lastStudyDate !== today) {
+      stats.streak = 1;
+    }
+    stats.lastStudyDate = today;
 
-  stats.totalAnswered += total;
-  stats.totalCorrect += correct;
-  stats.todayAnswered += total;
+    stats.totalAnswered += total;
+    stats.totalCorrect += correct;
+    stats.todayAnswered += total;
 
-  await saveStats(stats);
-  return stats;
+    try {
+      await AsyncStorage.setItem(STATS_KEY, JSON.stringify(stats));
+    } catch {}
+    return stats;
+  });
 }
 
 // ─── Bookmarks ────────────────────────────────────────────────────────────────
@@ -110,11 +180,7 @@ export async function toggleBookmark(num: number): Promise<number[]> {
  * 오답 단어 num 목록을 불러옵니다.
  */
 export async function loadWrongWords(): Promise<number[]> {
-  try {
-    const raw = await AsyncStorage.getItem(WRONG_WORDS_KEY);
-    if (raw) return JSON.parse(raw) as number[];
-  } catch {}
-  return [];
+  return enqueueLearningStorageTask(readWrongWordsUnsafe);
 }
 
 /**
@@ -122,7 +188,12 @@ export async function loadWrongWords(): Promise<number[]> {
  */
 export async function saveWrongWords(nums: number[]): Promise<void> {
   try {
-    await AsyncStorage.setItem(WRONG_WORDS_KEY, JSON.stringify(nums));
+    const normalized = [
+      ...new Set(nums.filter((value) => Number.isInteger(value) && value > 0)),
+    ];
+    await enqueueLearningStorageTask(() =>
+      AsyncStorage.setItem(WRONG_WORDS_KEY, JSON.stringify(normalized)),
+    );
   } catch {}
 }
 
@@ -131,28 +202,111 @@ export async function saveWrongWords(nums: number[]): Promise<void> {
  * 중복은 제거됩니다.
  */
 export async function addWrongWords(newNums: number[]): Promise<number[]> {
-  if (newNums.length === 0) return loadWrongWords();
-  const existing = await loadWrongWords();
-  const merged = Array.from(new Set([...existing, ...newNums]));
-  await saveWrongWords(merged);
-  return merged;
+  return enqueueLearningStorageTask(async () => {
+    const existing = await readWrongWordsUnsafe();
+    if (newNums.length === 0) return existing;
+    const merged = [
+      ...new Set([
+        ...existing,
+        ...newNums.filter((value) => Number.isInteger(value) && value > 0),
+      ]),
+    ];
+    try {
+      await AsyncStorage.setItem(WRONG_WORDS_KEY, JSON.stringify(merged));
+    } catch {}
+    return merged;
+  });
 }
 
 /**
  * 특정 단어를 오답 목록에서 제거합니다 (마스터 처리).
  */
 export async function removeWrongWord(num: number): Promise<number[]> {
-  const existing = await loadWrongWords();
-  const updated = existing.filter((n) => n !== num);
-  await saveWrongWords(updated);
-  return updated;
+  return enqueueLearningStorageTask(async () => {
+    const existing = await readWrongWordsUnsafe();
+    const updated = existing.filter((n) => n !== num);
+    try {
+      await AsyncStorage.setItem(WRONG_WORDS_KEY, JSON.stringify(updated));
+    } catch {}
+    return updated;
+  });
 }
 
 /**
  * 오답 목록 전체를 초기화합니다.
  */
 export async function clearWrongWords(): Promise<void> {
-  await saveWrongWords([]);
+  try {
+    await enqueueLearningStorageTask(() =>
+      AsyncStorage.setItem(WRONG_WORDS_KEY, JSON.stringify([])),
+    );
+  } catch {}
+}
+
+// ─── Adaptive quiz history ──────────────────────────────────────────────────
+
+export interface PrepareAdaptiveQuizSessionInput {
+  sessionId: string;
+  rangeId: string;
+  mode: QuizMode;
+  candidates: AdaptiveCandidate[];
+  count: number;
+}
+
+export type AdaptiveAnswerContext = AdaptiveAnswerInput;
+
+async function readAdaptiveHistoryUnsafe() {
+  try {
+    return deserializeAdaptiveHistory(
+      await AsyncStorage.getItem(ADAPTIVE_QUIZ_HISTORY_KEY),
+    );
+  } catch {
+    return deserializeAdaptiveHistory(null);
+  }
+}
+
+/**
+ * Selects and records one quiz session inside the same storage queue. Existing
+ * wrong words seed the first adaptive sessions, so legacy users do not lose
+ * their known weak-word signal while the new item history is still empty.
+ */
+export async function prepareAdaptiveQuizSession({
+  sessionId,
+  rangeId,
+  mode,
+  candidates,
+  count,
+}: PrepareAdaptiveQuizSessionInput): Promise<number[]> {
+  return enqueueLearningStorageTask(async () => {
+    const [history, legacyWrongNums] = await Promise.all([
+      readAdaptiveHistoryUnsafe(),
+      readWrongWordsUnsafe(),
+    ]);
+    const itemNums = selectAdaptiveItemNums({
+      candidates,
+      count,
+      mode,
+      history,
+      legacyWrongNums,
+    });
+    const nextHistory = recordAdaptiveSession(history, {
+      sessionId,
+      rangeId,
+      mode,
+      itemNums,
+    });
+    try {
+      await AsyncStorage.setItem(
+        ADAPTIVE_QUIZ_HISTORY_KEY,
+        serializeAdaptiveHistory(nextHistory),
+      );
+    } catch {}
+    return itemNums;
+  });
+}
+
+export async function loadAdaptiveQuizHistory() {
+  return enqueueLearningStorageTask(readAdaptiveHistoryUnsafe);
 }
 
 // ─── Per-question realtime update ───────────────────────────────────────────────
@@ -161,37 +315,63 @@ export async function clearWrongWords(): Promise<void> {
  * 한 문제 결과를 즉시 통계에 반영합니다.
  * - isCorrect: 정답 여부
  * - wrongNum: 오답일 경우 단어 num (정답이면 undefined)
+ * - context: 새 적응형 출제에 필요한 항목별 응답 정보 (선택)
  */
 export async function recordOneAnswer(
   isCorrect: boolean,
-  wrongNum?: number
+  wrongNum?: number,
+  context?: AdaptiveAnswerContext,
 ): Promise<void> {
-  // 1) 통계 업데이트
-  const stats = await loadStats();
-  const today = new Date().toISOString().slice(0, 10);
+  try {
+    await enqueueLearningStorageTask(async () => {
+      const stats = await readStatsUnsafe();
+      const today = new Date().toISOString().slice(0, 10);
 
-  if (stats.todayDate !== today) {
-    stats.todayAnswered = 0;
-    stats.todayDate = today;
-  }
+      if (stats.todayDate !== today) {
+        stats.todayAnswered = 0;
+        stats.todayDate = today;
+      }
 
-  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-  if (stats.lastStudyDate === yesterday) {
-    stats.streak += 1;
-  } else if (stats.lastStudyDate !== today) {
-    stats.streak = 1;
-  }
-  stats.lastStudyDate = today;
+      const yesterday = new Date(Date.now() - 86400000)
+        .toISOString()
+        .slice(0, 10);
+      if (stats.lastStudyDate === yesterday) {
+        stats.streak += 1;
+      } else if (stats.lastStudyDate !== today) {
+        stats.streak = 1;
+      }
+      stats.lastStudyDate = today;
+      stats.totalAnswered += 1;
+      stats.todayAnswered += 1;
+      if (isCorrect) stats.totalCorrect += 1;
 
-  stats.totalAnswered += 1;
-  stats.todayAnswered += 1;
-  if (isCorrect) stats.totalCorrect += 1;
+      const entries: [string, string][] = [[STATS_KEY, JSON.stringify(stats)]];
 
-  await saveStats(stats);
+      const wrongItemNum = !isCorrect
+        ? (context?.itemNum ?? wrongNum)
+        : undefined;
+      if (wrongItemNum !== undefined) {
+        const wrongWords = await readWrongWordsUnsafe();
+        entries.push([
+          WRONG_WORDS_KEY,
+          JSON.stringify([...new Set([...wrongWords, wrongItemNum])]),
+        ]);
+      }
 
-  // 2) 오답이면 오답노트에 추가
-  if (!isCorrect && wrongNum !== undefined) {
-    await addWrongWords([wrongNum]);
+      if (context) {
+        const history = await readAdaptiveHistoryUnsafe();
+        const nextHistory = recordAdaptiveAnswer(history, context);
+        entries.push([
+          ADAPTIVE_QUIZ_HISTORY_KEY,
+          serializeAdaptiveHistory(nextHistory),
+        ]);
+      }
+
+      await AsyncStorage.multiSet(entries);
+    });
+  } catch {
+    // A persistence failure must not freeze quiz interaction. The queue tail is
+    // already recovered by enqueueLearningStorageTask, so later answers retry.
   }
 }
 
@@ -289,7 +469,9 @@ function getWeekKey(date = new Date()): string {
   d.setHours(0, 0, 0, 0);
   d.setDate(d.getDate() + 4 - (d.getDay() || 7));
   const yearStart = new Date(d.getFullYear(), 0, 1);
-  const weekNo = Math.ceil(((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+  const weekNo = Math.ceil(
+    ((d.getTime() - yearStart.getTime()) / 86400000 + 1) / 7,
+  );
   return `${d.getFullYear()}-W${String(weekNo).padStart(2, "0")}`;
 }
 
@@ -361,6 +543,7 @@ export function formatStudyTime(seconds: number): string {
   const mins = Math.floor(seconds / 60);
   const hours = Math.floor(mins / 60);
   const remainMins = mins % 60;
-  if (hours > 0) return remainMins > 0 ? `${hours}시간 ${remainMins}분` : `${hours}시간`;
+  if (hours > 0)
+    return remainMins > 0 ? `${hours}시간 ${remainMins}분` : `${hours}시간`;
   return `${mins}분`;
 }

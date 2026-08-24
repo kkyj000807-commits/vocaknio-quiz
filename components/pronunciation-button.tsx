@@ -14,9 +14,14 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 type PronunciationButtonProps = {
   text: string;
   style?: StyleProp<ViewStyle>;
+  compact?: boolean;
 };
 
-export function PronunciationButton({ text, style }: PronunciationButtonProps) {
+export function PronunciationButton({
+  text,
+  style,
+  compact = false,
+}: PronunciationButtonProps) {
   const colors = useColors();
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const [speaking, setSpeaking] = useState(false);
@@ -63,10 +68,11 @@ export function PronunciationButton({ text, style }: PronunciationButtonProps) {
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={`${text} 발음 듣기`}
-      hitSlop={4}
+      hitSlop={compact ? 5 : 4}
       onPress={handlePress}
       style={({ pressed }) => [
         styles.button,
+        compact && styles.compactButton,
         {
           backgroundColor: speaking ? `${colors.primary}22` : colors.card,
           borderColor: speaking ? colors.primary : colors.border,
@@ -77,7 +83,7 @@ export function PronunciationButton({ text, style }: PronunciationButtonProps) {
     >
       <IconSymbol
         name="speaker.wave.2.fill"
-        size={20}
+        size={compact ? 16 : 20}
         color={speaking ? colors.primary : colors.muted}
       />
     </Pressable>
@@ -93,6 +99,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
+  },
+  compactButton: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
   },
   pressed: {
     opacity: 0.72,

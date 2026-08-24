@@ -16,7 +16,6 @@ body,
 
 body {
   margin: 0;
-  overscroll-behavior-y: none;
 }
 
 button,

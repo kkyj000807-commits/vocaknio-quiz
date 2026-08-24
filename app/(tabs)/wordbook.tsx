@@ -15,22 +15,21 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
-  withSpring,
-  runOnJS,
   interpolate,
   Extrapolation,
 } from "react-native-reanimated";
+import { useRouter } from "expo-router";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { PronunciationButton } from "@/components/pronunciation-button";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { getRangeItems, RANGES, VOCAB, type VocabItem } from "@/lib/vocab";
 import {
-  getRangeItems,
-  RANGES,
-  VOCAB,
-  type VocabItem,
-} from "@/lib/vocab";
-import { loadBookmarks, toggleBookmark } from "@/lib/store";
+  loadBookmarks,
+  loadQuizSettings,
+  toggleBookmark,
+  type ChoiceLang,
+} from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
 import * as Haptics from "expo-haptics";
 import { useAudioPlayer, setAudioModeAsync } from "expo-audio";
@@ -74,95 +73,58 @@ function WordCard({
   onPlayReveal: () => void;
 }) {
   const [expanded, setExpanded] = useState(false);
-  // 전체 가리기 모드에서 개별 공개 여부
-  const [revealed, setRevealed] = useState(false);
-  // 개별 가리기 (전체 가리기 모드와 독립)
-  const [indivMasked, setIndivMasked] = useState(false);
+  const [meaningHidden, setMeaningHidden] = useState(maskMode);
   const isBookmarked = bookmarks.has(item.num);
   const s = cardStyles(colors);
 
-  // 개별 가리기 공개 애니메이션 (높이 0 → auto 효과를 opacity+translateY로 구현)
-  const revealAnim = useSharedValue(0); // 0=가려짐, 1=공개
-  const revealStyle = useAnimatedStyle(() => ({
-    opacity: revealAnim.value,
-    transform: [{ translateY: interpolate(revealAnim.value, [0, 1], [-8, 0], Extrapolation.CLAMP) }],
+  // 상태는 즉시 바꾸고 회전은 표시 효과만 담당해 Safari에서도 멈추지 않습니다.
+  const flipRotation = useSharedValue(0);
+  const meaningFlipStyle = useAnimatedStyle(() => ({
+    transform: [{ perspective: 900 }, { rotateY: `${flipRotation.value}deg` }],
+    opacity: interpolate(
+      Math.abs(flipRotation.value),
+      [0, 74, 82],
+      [1, 0.35, 0],
+      Extrapolation.CLAMP,
+    ),
+    backfaceVisibility: "hidden",
   }));
 
-  // maskMode가 꺼지면 revealed 초기화
+  const handleMeaningPress = useCallback(() => {
+    const nextHidden = !meaningHidden;
+    setMeaningHidden(nextHidden);
+    flipRotation.value = nextHidden ? 82 : -82;
+    flipRotation.value = withTiming(0, { duration: 190 });
+    if (nextHidden) onPlayHide();
+    else onPlayReveal();
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+  }, [flipRotation, meaningHidden, onPlayHide, onPlayReveal]);
+
+  const handleSynonymToggle = useCallback(() => {
+    setExpanded((value) => !value);
+    if (Platform.OS !== "web") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+  }, []);
+
+  // 전체 가리기 전환 시 모든 카드가 같은 기준 상태에서 시작합니다.
   useEffect(() => {
-    if (!maskMode) {
-      setRevealed(false);
-      revealAnim.value = 0;
-    }
-  }, [maskMode]);
-
-  // 전체 가리기 모드에서 탭 → 공개
-  const handlePress = useCallback(() => {
-    if (maskMode) {
-      const next = !revealed;
-      setRevealed(next);
-      if (next) {
-        // 공개
-        revealAnim.value = withSpring(1, { damping: 18, stiffness: 200 });
-        runOnJS(onPlayReveal)();
-        if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      } else {
-        // 다시 가리기
-        revealAnim.value = withTiming(0, { duration: 150 });
-        runOnJS(onPlayHide)();
-        if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      }
-    } else {
-      // 일반 모드: 동의어 펼치기/접기
-      setExpanded((v) => !v);
-      if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    }
-  }, [maskMode, revealed, onPlayReveal, onPlayHide]);
-
-  // 개별 가리기 토글 (전체 가리기 모드와 무관하게 동작)
-  const handleIndivMask = useCallback(
-    (e: any) => {
-      e.stopPropagation?.();
-      const next = !indivMasked;
-      setIndivMasked(next);
-      if (next) {
-        revealAnim.value = withTiming(0, { duration: 150 });
-        runOnJS(onPlayHide)();
-        if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      } else {
-        revealAnim.value = withSpring(1, { damping: 18, stiffness: 200 });
-        runOnJS(onPlayReveal)();
-        if (Platform.OS !== "web") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      }
-    },
-    [indivMasked, onPlayHide, onPlayReveal]
-  );
+    flipRotation.value = 0;
+    setMeaningHidden(maskMode);
+  }, [flipRotation, item.num, maskMode]);
 
   const handleBookmark = useCallback(
     (e: any) => {
       e.stopPropagation?.();
       onToggleBookmark(item.num);
     },
-    [item.num, onToggleBookmark]
+    [item.num, onToggleBookmark],
   );
 
-  // 개별 가리기 초기화 (카드가 처음 마운트될 때 revealAnim 초기화)
-  useEffect(() => {
-    if (!indivMasked) {
-      revealAnim.value = 1; // 기본은 공개 상태
-    }
-  }, []);
-
-  // 전체 가리기 모드일 때: maskMode && !revealed → 가림
-  // 개별 가리기일 때: indivMasked → 가림
-  const isMaskedByAll = maskMode && !revealed;
-  const isHidden = isMaskedByAll || indivMasked;
-
   return (
-    <Pressable
-      onPress={handlePress}
-      style={({ pressed }) => [s.card, pressed && { opacity: 0.85 }]}
-    >
+    <View style={s.card}>
       <View style={s.topRow}>
         <View style={s.numBadge}>
           <Text style={s.numText}>{item.num}</Text>
@@ -171,61 +133,70 @@ function WordCard({
           <Text style={s.wordText}>{item.w}</Text>
           {item.p ? <Text style={s.ipaText}>{item.p}</Text> : null}
         </View>
-        <PronunciationButton text={item.w} style={{ marginRight: 4 }} />
-        {/* 개별 가리기 버튼 */}
+        <PronunciationButton text={item.w} compact style={{ marginRight: 2 }} />
         <TouchableOpacity
-          onPress={handleIndivMask}
-          style={[s.bookmarkBtn, { marginRight: 4 }]}
-          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={`${item.w} ${isBookmarked ? "북마크 해제" : "북마크 추가"}`}
+          onPress={handleBookmark}
+          style={s.bookmarkBtn}
+          hitSlop={4}
         >
-          <IconSymbol
-            name={indivMasked ? "lock.fill" : "lock.open.fill"}
-            size={17}
-            color={indivMasked ? colors.warning : colors.muted}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleBookmark} style={s.bookmarkBtn} hitSlop={8}>
           <Text style={{ fontSize: 18 }}>{isBookmarked ? "🔖" : "🏷️"}</Text>
         </TouchableOpacity>
       </View>
 
-      {/* 한글 뜻 — 가려진 상태 */}
-      {isHidden ? (
-        <Pressable
-          onPress={handlePress}
-          style={s.maskBox}
-        >
-          <Text style={s.maskHintText}>
-            {isMaskedByAll ? "탭하여 뜻 보기" : "개별 가리기 중 · 잠금 버튼으로 해제"}
-          </Text>
-        </Pressable>
-      ) : (
-        <Animated.View style={revealStyle}>
-          <Text style={s.korText} numberOfLines={maskMode ? undefined : (expanded ? undefined : 2)}>
-            {item.k_short}
-          </Text>
-
-          {/* 동의어 */}
-          {(maskMode || expanded) && item.s.length > 0 && (
-            <View style={s.synRow}>
-              {item.s.map((syn, i) => (
-                <View key={i} style={s.synTag}>
-                  <Text style={s.synTagText}>{syn}</Text>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={`${item.w} 한글 뜻 ${meaningHidden ? "보기" : "가리기"}`}
+        accessibilityHint="누르면 카드가 뒤집힙니다"
+        accessibilityState={{ expanded: !meaningHidden }}
+        onPress={handleMeaningPress}
+        style={({ pressed }) => [
+          s.meaningTouch,
+          pressed && s.meaningTouchPressed,
+        ]}
+      >
+        <Animated.View style={[s.meaningFace, meaningFlipStyle]}>
+          {meaningHidden ? (
+            <View style={s.maskBox}>
+              <Text style={s.maskHintText}>탭하여 한글 뜻 보기</Text>
+            </View>
+          ) : (
+            <View>
+              <Text style={s.korText} numberOfLines={expanded ? undefined : 2}>
+                {item.k_short}
+              </Text>
+              {expanded && item.s.length > 0 && (
+                <View style={s.synRow}>
+                  {item.s.map((syn, i) => (
+                    <View key={`${item.num}-${syn}-${i}`} style={s.synTag}>
+                      <Text style={s.synTagText}>{syn}</Text>
+                    </View>
+                  ))}
                 </View>
-              ))}
+              )}
             </View>
           )}
         </Animated.View>
-      )}
+      </Pressable>
 
-      {/* 힌트 텍스트 */}
-      {!maskMode && !indivMasked && (
-        <Text style={s.expandHint}>{expanded ? "▲ 접기" : "▼ 동의어 보기"}</Text>
+      {!meaningHidden && item.s.length > 0 && (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`${item.w} 동의어 ${expanded ? "접기" : "보기"}`}
+          accessibilityState={{ expanded }}
+          onPress={handleSynonymToggle}
+          style={({ pressed }) => [
+            s.expandButton,
+            pressed && { opacity: 0.65 },
+          ]}
+        >
+          <Text style={s.expandHint}>
+            {expanded ? "▲ 동의어 접기" : "▼ 동의어 보기"}
+          </Text>
+        </Pressable>
       )}
-      {maskMode && !isMaskedByAll && !indivMasked && (
-        <Text style={s.expandHint}>👆 탭하여 다시 가리기</Text>
-      )}
-    </Pressable>
+    </View>
   );
 }
 
@@ -242,9 +213,9 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
     },
     topRow: {
       flexDirection: "row",
-      alignItems: "flex-start",
+      alignItems: "center",
       gap: 10,
-      marginBottom: 6,
+      marginBottom: 8,
     },
     numBadge: {
       minWidth: 40,
@@ -287,16 +258,30 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       fontSize: 13,
       color: colors.muted,
       lineHeight: 19,
-      marginBottom: 4,
+    },
+    meaningTouch: {
+      minHeight: 48,
+      borderRadius: 9,
+      justifyContent: "center",
+      overflow: "hidden",
+    },
+    meaningTouchPressed: {
+      opacity: 0.78,
+    },
+    meaningFace: {
+      minHeight: 48,
+      justifyContent: "center",
+      paddingHorizontal: 2,
+      paddingVertical: 5,
     },
     // 마스크 박스 — 뜻을 가리는 영역
     maskBox: {
-      height: 38,
+      minHeight: 48,
       borderRadius: 8,
       backgroundColor: colors.border,
       alignItems: "center",
       justifyContent: "center",
-      marginBottom: 4,
+      paddingHorizontal: 12,
       overflow: "hidden",
     },
     maskHintText: {
@@ -323,14 +308,21 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
     expandHint: {
       fontSize: 10,
       color: colors.muted,
-      marginTop: 4,
       textAlign: "right",
+    },
+    expandButton: {
+      minHeight: 44,
+      alignSelf: "flex-end",
+      justifyContent: "center",
+      paddingHorizontal: 4,
+      marginTop: 2,
     },
   });
 
 // ─── 메인 화면 ────────────────────────────────────────────────────────────────
 export default function WordbookScreen() {
   const colors = useColors();
+  const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRange, setSelectedRange] = useState(0);
@@ -338,6 +330,7 @@ export default function WordbookScreen() {
   const [showOnlyBookmarks, setShowOnlyBookmarks] = useState(false);
   const [isShuffled, setIsShuffled] = useState(false);
   const [maskMode, setMaskMode] = useState(false);
+  const [choiceLang, setChoiceLang] = useState<ChoiceLang>("korean");
 
   // ─── 사운드 (개별/전체 가리기 피드백) ─────────────────────────────────────
   const hidePlayer = useAudioPlayer(require("@/assets/sounds/hide.wav"));
@@ -351,40 +344,25 @@ export default function WordbookScreen() {
 
   const playHide = useCallback(() => {
     if (Platform.OS !== "web") {
-      try { hidePlayer.seekTo(0); hidePlayer.play(); } catch {}
+      try {
+        hidePlayer.seekTo(0);
+        hidePlayer.play();
+      } catch {}
     }
   }, [hidePlayer]);
 
   const playReveal = useCallback(() => {
     if (Platform.OS !== "web") {
-      try { revealPlayer.seekTo(0); revealPlayer.play(); } catch {}
+      try {
+        revealPlayer.seekTo(0);
+        revealPlayer.play();
+      } catch {}
     }
   }, [revealPlayer]);
 
-  // 리스트 전환 애니메이션
-  const listTranslateX = useSharedValue(0);
-  const listOpacity = useSharedValue(1);
-  const listAnimStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: listTranslateX.value }],
-    opacity: listOpacity.value,
-    flex: 1,
-  }));
-
-  const slideList = useCallback((direction: 'left' | 'right', onComplete: () => void) => {
-    const outX = direction === 'left' ? -40 : 40;
-    const inX = direction === 'left' ? 40 : -40;
-    listTranslateX.value = withTiming(outX, { duration: 160 });
-    listOpacity.value = withTiming(0, { duration: 160 }, () => {
-      listTranslateX.value = inX;
-      listOpacity.value = 0;
-      runOnJS(onComplete)();
-      listTranslateX.value = withTiming(0, { duration: 200 });
-      listOpacity.value = withTiming(1, { duration: 200 });
-    });
-  }, [listTranslateX, listOpacity]);
-
   useEffect(() => {
     loadBookmarks().then((arr) => setBookmarks(new Set(arr)));
+    loadQuizSettings().then((settings) => setChoiceLang(settings.choiceLang));
   }, []);
 
   const handleToggleBookmark = useCallback(async (num: number) => {
@@ -469,7 +447,7 @@ export default function WordbookScreen() {
         onPlayReveal={playReveal}
       />
     ),
-    [bookmarks, handleToggleBookmark, colors, maskMode, playHide, playReveal]
+    [bookmarks, handleToggleBookmark, colors, maskMode, playHide, playReveal],
   );
 
   const keyExtractor = useCallback((item: VocabItem) => String(item.num), []);
@@ -488,36 +466,67 @@ export default function WordbookScreen() {
     }
   }, []);
 
-  return (
-    <ScreenContainer containerClassName="bg-background">
+  const activeRange = RANGE_OPTIONS[selectedRange];
+  const directProblemCount = Math.min(10, activeRange?.count ?? 0);
+
+  const handleStartRangeProblems = useCallback(() => {
+    const range = RANGE_OPTIONS[selectedRange];
+    if (!range || range.count === 0) return;
+    if (Platform.OS !== "web") {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
+    router.push({
+      pathname: "/quiz",
+      params: {
+        mode: "syn-choice",
+        rangeStart: range.start,
+        rangeEnd: range.end,
+        count: Math.min(10, range.count),
+        rangeId: range.id,
+        choiceLang,
+      },
+    });
+  }, [choiceLang, router, selectedRange]);
+
+  const listHeader = (
+    <>
       {/* 헤더 */}
       <View style={styles.header}>
         <View>
-          <Text style={[styles.headerTitle, { color: colors.foreground }]}>단어장</Text>
+          <Text style={[styles.headerTitle, { color: colors.foreground }]}>
+            단어장
+          </Text>
           <Text style={[styles.headerSub, { color: colors.muted }]}>
             총 {VOCAB.length.toLocaleString()}개 단어
           </Text>
         </View>
         {/* 버튼 그룹 */}
         <View style={styles.headerBtns}>
-          {/* 뜻 가리기 버튼 */}
+          {/* 전체 카드 학습 버튼 */}
           <TouchableOpacity
             style={[
               styles.headerBtn,
               {
-                backgroundColor: maskMode ? colors.warning + "22" : colors.surface,
+                backgroundColor: maskMode
+                  ? colors.warning + "22"
+                  : colors.surface,
                 borderColor: maskMode ? colors.warning : colors.border,
               },
             ]}
             onPress={handleMaskToggle}
+            accessibilityRole="button"
+            accessibilityLabel={
+              maskMode ? "전체 한글 뜻 보이기" : "전체 한글 뜻 가리기"
+            }
+            accessibilityState={{ selected: maskMode }}
           >
-            <IconSymbol
-              name={maskMode ? "lock.fill" : "lock.open.fill"}
-              size={15}
-              color={maskMode ? colors.warning : colors.muted}
-            />
-            <Text style={[styles.headerBtnText, { color: maskMode ? colors.warning : colors.muted }]}>
-              {maskMode ? "전체 가리기 ON" : "전체 가리기"}
+            <Text
+              style={[
+                styles.headerBtnText,
+                { color: maskMode ? colors.warning : colors.muted },
+              ]}
+            >
+              {maskMode ? "카드 학습 ON" : "전체 뜻 가리기"}
             </Text>
           </TouchableOpacity>
           {/* 셔플 버튼 */}
@@ -531,7 +540,12 @@ export default function WordbookScreen() {
             ]}
             onPress={handleShuffle}
           >
-            <Text style={[styles.headerBtnText, { color: isShuffled ? "#fff" : colors.muted }]}>
+            <Text
+              style={[
+                styles.headerBtnText,
+                { color: isShuffled ? "#fff" : colors.muted },
+              ]}
+            >
               🔀 {isShuffled ? "랜덤 ON" : "랜덤"}
             </Text>
           </TouchableOpacity>
@@ -542,17 +556,28 @@ export default function WordbookScreen() {
       {maskMode && (
         <Animated.View
           entering={FadeIn.duration(200)}
-          style={[styles.maskBanner, { backgroundColor: colors.warning + "18", borderColor: colors.warning + "55" }]}
+          style={[
+            styles.maskBanner,
+            {
+              backgroundColor: colors.warning + "18",
+              borderColor: colors.warning + "55",
+            },
+          ]}
         >
           <Text style={[styles.maskBannerText, { color: colors.warning }]}>
-            📖 플래시카드 모드 — 카드를 탭하면 뜻이 보입니다
+            카드 학습 — 한글 뜻 영역을 눌러 뒤집어 확인하세요
           </Text>
         </Animated.View>
       )}
 
       {/* 검색창 + 북마크 필터 */}
       <View style={styles.searchRow}>
-        <View style={[styles.searchBox, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+        <View
+          style={[
+            styles.searchBox,
+            { backgroundColor: colors.surface, borderColor: colors.border },
+          ]}
+        >
           <Text style={styles.searchIcon}>🔍</Text>
           <TextInput
             style={[styles.searchInput, { color: colors.foreground }]}
@@ -570,7 +595,9 @@ export default function WordbookScreen() {
           style={[
             styles.iconBtn,
             {
-              backgroundColor: showOnlyBookmarks ? colors.primary + "22" : colors.surface,
+              backgroundColor: showOnlyBookmarks
+                ? colors.primary + "22"
+                : colors.surface,
               borderColor: showOnlyBookmarks ? colors.primary : colors.border,
             },
           ]}
@@ -584,10 +611,16 @@ export default function WordbookScreen() {
       <View style={styles.rangeWrapper}>
         <ScrollView
           horizontal
+          style={
+            Platform.OS === "web"
+              ? ({ touchAction: "pan-x pan-y" } as any)
+              : undefined
+          }
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.rangeContent}
           keyboardShouldPersistTaps="handled"
-          bounces={false}
+          directionalLockEnabled
+          nestedScrollEnabled
         >
           {RANGE_OPTIONS.map((item, index) => (
             <TouchableOpacity
@@ -607,9 +640,7 @@ export default function WordbookScreen() {
                 if (Platform.OS !== "web") {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 }
-                // 카테고리 번호가 올라가면 오른쪽에서, 내려가면 왼쪽에서 진입
-                const direction = index > selectedRange ? 'left' : 'right';
-                slideList(direction, () => setSelectedRange(index));
+                setSelectedRange(index);
               }}
             >
               <Text
@@ -637,35 +668,60 @@ export default function WordbookScreen() {
           {isShuffled ? " · 랜덤 순서" : ""}
           {maskMode ? " · 플래시카드 모드" : ""}
         </Text>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`${activeRange?.label ?? "선택 범위"}에서 ${directProblemCount}문제 풀기`}
+          disabled={directProblemCount === 0}
+          onPress={handleStartRangeProblems}
+          style={({ pressed }) => [
+            styles.directProblemButton,
+            { backgroundColor: colors.primary },
+            pressed && { opacity: 0.78, transform: [{ scale: 0.98 }] },
+            directProblemCount === 0 && { opacity: 0.45 },
+          ]}
+        >
+          <IconSymbol name="play.fill" size={15} color="#fff" />
+          <Text style={styles.directProblemButtonText}>
+            {directProblemCount}문제 풀기
+          </Text>
+        </Pressable>
       </View>
+    </>
+  );
 
-      {/* 단어 목록 */}
-      <Animated.View style={listAnimStyle}>
-        <FlatList
-          data={filteredVocab}
-          keyExtractor={keyExtractor}
-          renderItem={renderItem}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-          initialNumToRender={20}
-          maxToRenderPerBatch={20}
-          windowSize={10}
-          removeClippedSubviews={Platform.OS !== "web"}
-          ListEmptyComponent={
-            <View style={styles.emptyBox}>
-              <Text style={styles.emptyIcon}>📭</Text>
-              <Text style={[styles.emptyText, { color: colors.muted }]}>
-                {searchQuery ? "검색 결과가 없습니다" : "단어가 없습니다"}
-              </Text>
-            </View>
-          }
-        />
-      </Animated.View>
+  return (
+    <ScreenContainer containerClassName="bg-background">
+      <FlatList
+        style={styles.list}
+        data={filteredVocab}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        ListHeaderComponent={listHeader}
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode={Platform.OS === "ios" ? "interactive" : "on-drag"}
+        initialNumToRender={20}
+        maxToRenderPerBatch={20}
+        windowSize={10}
+        removeClippedSubviews={Platform.OS !== "web"}
+        ListEmptyComponent={
+          <View style={styles.emptyBox}>
+            <Text style={styles.emptyIcon}>📭</Text>
+            <Text style={[styles.emptyText, { color: colors.muted }]}>
+              {searchQuery ? "검색 결과가 없습니다" : "단어가 없습니다"}
+            </Text>
+          </View>
+        }
+      />
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
+  list: {
+    flex: 1,
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -771,11 +827,31 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   resultRow: {
+    minHeight: 52,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 10,
     paddingHorizontal: 20,
     paddingTop: 6,
     paddingBottom: 6,
   },
-  resultText: { fontSize: 11 },
+  resultText: { fontSize: 11, flex: 1 },
+  directProblemButton: {
+    minHeight: 44,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    flexShrink: 0,
+  },
+  directProblemButtonText: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "800",
+  },
   listContent: {
     paddingTop: 4,
     paddingBottom: 32,

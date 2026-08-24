@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -6,18 +6,10 @@ import {
   Pressable,
   StyleSheet,
   Platform,
-  Dimensions,
 } from "react-native";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  withSequence,
-  withSpring,
-  FadeIn,
-} from "react-native-reanimated";
+import Animated, { FadeIn } from "react-native-reanimated";
 
 import { ScreenContainer } from "@/components/screen-container";
 import {
@@ -30,9 +22,11 @@ import {
   type QuizMode,
 } from "@/lib/vocab";
 import { useColors } from "@/hooks/use-colors";
-import { loadQuizSettings, saveQuizSettings, type ChoiceLang } from "@/lib/store";
-
-const { width: SCREEN_W } = Dimensions.get("window");
+import {
+  loadQuizSettings,
+  saveQuizSettings,
+  type ChoiceLang,
+} from "@/lib/store";
 
 const DEFAULT_RANGE_ID = CORE_RANGES[0]?.id ?? SECTION_RANGES[0]?.id ?? "all";
 
@@ -55,11 +49,14 @@ export default function HomeScreen() {
     }
   }, []);
 
-  const handleChoiceLangToggle = useCallback(async (lang: ChoiceLang) => {
-    haptic();
-    setChoiceLang(lang);
-    await saveQuizSettings({ choiceLang: lang });
-  }, [haptic]);
+  const handleChoiceLangToggle = useCallback(
+    async (lang: ChoiceLang) => {
+      haptic();
+      setChoiceLang(lang);
+      await saveQuizSettings({ choiceLang: lang });
+    },
+    [haptic],
+  );
 
   const handleStart = useCallback(() => {
     if (Platform.OS !== "web") {
@@ -98,10 +95,8 @@ export default function HomeScreen() {
               <Text style={s.headerBadgeText}>VOCA NEXUS</Text>
             </View>
           </View>
-          <Text style={s.headerTitle}>편입VOCA</Text>
-          <Text style={s.headerSub}>
-            기출 어휘 암기를 위한 초율적 학습 앱
-          </Text>
+          <Text style={s.headerTitle}>문제 풀이</Text>
+          <Text style={s.headerSub}>편입 어휘 암기를 위한 초효율 학습 앱</Text>
           <View style={s.statRow}>
             <View style={s.statItem}>
               <Text style={s.statNum}>{VOCAB.length.toLocaleString()}</Text>
@@ -120,9 +115,9 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* ── 퀴즈 모드 ─────────────────────────── */}
+        {/* ── 문제 풀이 방식 ─────────────────────── */}
         <View style={s.section}>
-          <Text style={s.sectionTitle}>퀴즈 모드</Text>
+          <Text style={s.sectionTitle}>문제 풀이 방식</Text>
           <View style={s.modeGrid}>
             {QUIZ_MODES.map((mode) => {
               const active = selectedMode === mode.id;
@@ -164,7 +159,12 @@ export default function HomeScreen() {
                     style={[s.langBtn, choiceLang === lang && s.langBtnActive]}
                     onPress={() => handleChoiceLangToggle(lang)}
                   >
-                    <Text style={[s.langBtnText, choiceLang === lang && s.langBtnTextActive]}>
+                    <Text
+                      style={[
+                        s.langBtnText,
+                        choiceLang === lang && s.langBtnTextActive,
+                      ]}
+                    >
                       {lang === "korean" ? "🇰🇷 한글뜻" : "🔤 영어 동의어"}
                     </Text>
                   </Pressable>
@@ -188,7 +188,12 @@ export default function HomeScreen() {
                   setSelectedRange(DEFAULT_RANGE_ID);
                 }}
               >
-                <Text style={[s.rangeTabText, rangeTab === "core" && s.rangeTabTextActive]}>
+                <Text
+                  style={[
+                    s.rangeTabText,
+                    rangeTab === "core" && s.rangeTabTextActive,
+                  ]}
+                >
                   핵심
                 </Text>
               </Pressable>
@@ -200,7 +205,12 @@ export default function HomeScreen() {
                   setSelectedRange(SECTION_RANGES[0]?.id ?? "all");
                 }}
               >
-                <Text style={[s.rangeTabText, rangeTab === "all" && s.rangeTabTextActive]}>
+                <Text
+                  style={[
+                    s.rangeTabText,
+                    rangeTab === "all" && s.rangeTabTextActive,
+                  ]}
+                >
                   전체 구간
                 </Text>
               </Pressable>
@@ -214,15 +224,16 @@ export default function HomeScreen() {
                 <Pressable
                   key={r.id}
                   style={[s.rangeCard, active && s.rangeCardActive]}
-                  onPress={() => { haptic(); setSelectedRange(r.id); }}
+                  onPress={() => {
+                    haptic();
+                    setSelectedRange(r.id);
+                  }}
                 >
                   {active && <View style={s.rangeGlow} />}
                   <Text style={[s.rangeLabel, active && s.rangeLabelActive]}>
                     {r.label}
                   </Text>
-                  {active && (
-                    <View style={s.rangeCheckDot} />
-                  )}
+                  {active && <View style={s.rangeCheckDot} />}
                 </Pressable>
               );
             })}
@@ -239,13 +250,18 @@ export default function HomeScreen() {
                 <Pressable
                   key={c}
                   style={[s.countBtn, active && s.countBtnActive]}
-                  onPress={() => { haptic(); setSelectedCount(c); }}
+                  onPress={() => {
+                    haptic();
+                    setSelectedCount(c);
+                  }}
                 >
                   {active && <View style={s.countGlow} />}
                   <Text style={[s.countText, active && s.countTextActive]}>
                     {c}
                   </Text>
-                  <Text style={[s.countUnit, active && s.countUnitActive]}>문제</Text>
+                  <Text style={[s.countUnit, active && s.countUnitActive]}>
+                    문제
+                  </Text>
                 </Pressable>
               );
             })}
@@ -262,11 +278,11 @@ export default function HomeScreen() {
             onPress={handleStart}
           >
             <View style={s.startGlow} />
-            <Text style={s.startBtnText}>퀴즈 시작</Text>
+            <Text style={s.startBtnText}>문제 풀기</Text>
             <Text style={s.startBtnArrow}>→</Text>
           </Pressable>
           <Text style={s.startNote}>
-            동의어가 있는 단어 기준으로 출제됩니다
+            검증된 동의어가 없으면 한국어 뜻 문제로 자동 전환됩니다
           </Text>
         </View>
       </ScrollView>
@@ -303,7 +319,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     headerTitle: {
       fontSize: 36,
       fontWeight: "900",
-      color: "#FFFFFF",
+      color: colors.foreground as string,
       letterSpacing: -1,
       marginBottom: 6,
     },
@@ -410,7 +426,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       marginBottom: 3,
     },
     modeTitleActive: {
-      color: "#FFFFFF",
+      color: colors.primary as string,
     },
     modeDesc: {
       fontSize: 10,
@@ -447,6 +463,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     langBtn: {
       flex: 1,
+      minHeight: 44,
       backgroundColor: colors.card as string,
       borderWidth: 1.5,
       borderColor: colors.border as string,
@@ -464,7 +481,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.muted as string,
     },
     langBtnTextActive: {
-      color: "#FFFFFF",
+      color: colors.primary as string,
     },
     // ── 범위 탭
     rangeTabRow: {
@@ -473,12 +490,15 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       marginBottom: 0,
     },
     rangeTab: {
+      minHeight: 44,
       paddingHorizontal: 10,
       paddingVertical: 5,
       borderRadius: 8,
       backgroundColor: colors.card as string,
       borderWidth: 1,
       borderColor: colors.border as string,
+      alignItems: "center",
+      justifyContent: "center",
     },
     rangeTabActive: {
       backgroundColor: (colors.primary as string) + "20",
@@ -500,6 +520,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     rangeCard: {
       minWidth: 80,
+      minHeight: 44,
       backgroundColor: colors.card as string,
       borderWidth: 1.5,
       borderColor: colors.border as string,
@@ -530,7 +551,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       letterSpacing: 0.3,
     },
     rangeLabelActive: {
-      color: "#FFFFFF",
+      color: colors.primary as string,
     },
     rangeCheckDot: {
       position: "absolute",
@@ -576,7 +597,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.muted as string,
     },
     countTextActive: {
-      color: "#FFFFFF",
+      color: colors.primary as string,
     },
     countUnit: {
       fontSize: 10,

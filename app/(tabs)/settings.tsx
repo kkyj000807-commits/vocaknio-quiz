@@ -241,12 +241,13 @@ export default function SettingsScreen() {
             <Text style={s.title}>설정</Text>
           </View>
 
-          {/* 퀴즈 선지 언어 섹션 */}
+          {/* 문제 풀이 선지 언어 섹션 */}
           <View style={s.section}>
-            <Text style={s.sectionTitle}>퀴즈 선지 언어</Text>
+            <Text style={s.sectionTitle}>문제 풀이 선지 언어</Text>
             <View style={s.card}>
               <Text style={s.settingDesc}>
-                "한국어 뜻 고르기" 모드에서 선지를 한글뜻 또는 영어 동의어로 표시합니다.
+                ‘한국어 뜻 고르기’ 모드에서 선지를 한글뜻 또는 영어 동의어로
+                표시합니다.
               </Text>
               <View style={s.langRow}>
                 {LANG_OPTIONS.map((opt) => {

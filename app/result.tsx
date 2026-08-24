@@ -117,7 +117,7 @@ export default function ResultScreen() {
             <Text style={s.btnSecondaryText}>← 이전 화면</Text>
           </Pressable>
         </View>
-        {/* 오답 전용 퀴즈 바로 시작 */}
+        {/* 오답 문제 풀이 바로 시작 */}
         {wrongNums.length > 0 && (
           <View style={{ paddingHorizontal: 16, marginBottom: 16 }}>
             <Pressable

@@ -46,14 +46,20 @@ describe("final vocabulary v1.4", () => {
   it("keeps stable unique numbers and complete section coverage", () => {
     expect(VOCAB.every((item, index) => item.num === index + 1)).toBe(true);
     expect(new Set(VOCAB.map((item) => item.id)).size).toBe(VOCAB.length);
-    expect(SECTION_RANGES.reduce((sum, range) => sum + range.count, 0)).toBe(VOCAB.length);
+    expect(SECTION_RANGES.reduce((sum, range) => sum + range.count, 0)).toBe(
+      VOCAB.length,
+    );
 
     for (const range of SECTION_RANGES) {
       expect(range.end - range.start + 1).toBe(range.count);
       expect(VOCAB[range.start]?.group).toBe(range.group);
       expect(VOCAB[range.end]?.group).toBe(range.group);
     }
-    expect(RANGES.some((range) => range.id === "all" && range.count === VOCAB.length)).toBe(true);
+    expect(
+      RANGES.some(
+        (range) => range.id === "all" && range.count === VOCAB.length,
+      ),
+    ).toBe(true);
   });
 
   it("links every accepted synonym to its own exact meaning", () => {
@@ -62,7 +68,9 @@ describe("final vocabulary v1.4", () => {
     for (const item of VOCAB_WITH_SYNONYMS) {
       const details = getSynonymDetails(item);
       expect(details).toHaveLength(item.s.length);
-      expect(new Set(details.map((detail) => normalizeWord(detail.word))).size).toBe(details.length);
+      expect(
+        new Set(details.map((detail) => normalizeWord(detail.word))).size,
+      ).toBe(details.length);
 
       const related = getRelatedWords(item);
       for (const detail of details) {
@@ -77,7 +85,12 @@ describe("final vocabulary v1.4", () => {
     const blockedCases = [
       { num: 198, id: "JBKROW000203", w: "appropriate", k: "착복하다" },
       { num: 1023, id: "JBKROW001045", w: "benign", k: "양성의" },
-      { num: 9270, id: "JBKROW009645", w: "smolder", k: "(감정이) 속에서 맺히다; 그을다" },
+      {
+        num: 9270,
+        id: "JBKROW009645",
+        w: "smolder",
+        k: "(감정이) 속에서 맺히다; 그을다",
+      },
       { num: 1784, id: "JBKROW001820", w: "explicit", k: "노골적인" },
       { num: 380, id: "JBKROW000388", w: "envoy", k: "특사" },
       { num: 1881, id: "JBKROW001919", w: "effeminate", k: "여성적인" },
@@ -89,21 +102,41 @@ describe("final vocabulary v1.4", () => {
       expect(item).toMatchObject(expected);
       expect(item?.s).toEqual([]);
       expect(
-        buildQuizQuestions({ mode: "syn-choice", itemNums: [expected.num], count: 1 }),
+        buildQuizQuestions({
+          mode: "syn-choice",
+          itemNums: [expected.num],
+          count: 1,
+        }),
       ).toEqual([]);
       expect(
-        buildQuizQuestions({ mode: "syn-type", itemNums: [expected.num], count: 1 }),
+        buildQuizQuestions({
+          mode: "syn-type",
+          itemNums: [expected.num],
+          count: 1,
+        }),
       ).toEqual([]);
     }
 
     const carnage = getVocabItem(347);
-    expect(carnage).toMatchObject({ id: "JBKROW000355", w: "carnage", k: "대학살" });
+    expect(carnage).toMatchObject({
+      id: "JBKROW000355",
+      w: "carnage",
+      k: "대학살",
+    });
     expect(carnage?.s).toEqual(["holocaust", "massacre"]);
     expect(carnage?.s).not.toContain("annihilate");
     expect(carnage?.s).not.toContain("sterilize");
 
-    const carnageChoice = buildQuizQuestions({ mode: "syn-choice", itemNums: [347], count: 1 })[0];
-    const carnageTyped = buildQuizQuestions({ mode: "syn-type", itemNums: [347], count: 1 })[0];
+    const carnageChoice = buildQuizQuestions({
+      mode: "syn-choice",
+      itemNums: [347],
+      count: 1,
+    })[0];
+    const carnageTyped = buildQuizQuestions({
+      mode: "syn-type",
+      itemNums: [347],
+      count: 1,
+    })[0];
     for (const invalidAnswer of ["annihilate", "sterilize"]) {
       expect(
         isChoiceCorrect(carnageChoice, {
@@ -139,11 +172,16 @@ describe("final vocabulary v1.4", () => {
 
   it("does not label a clear-sense synonym with the target word's meaning", () => {
     const transparent = VOCAB.find(
-      (item) => item.w === "transparent" && item.group === "V301" && item.s.includes("limpid"),
+      (item) =>
+        item.w === "transparent" &&
+        item.group === "V301" &&
+        item.s.includes("limpid"),
     );
     expect(transparent).toBeDefined();
 
-    const limpid = getSynonymDetails(transparent!).find((detail) => detail.word === "limpid");
+    const limpid = getSynonymDetails(transparent!).find(
+      (detail) => detail.word === "limpid",
+    );
     expect(limpid?.meaning).toContain("맑은");
     expect(limpid?.meaning).not.toBe(transparent!.k);
   });
@@ -155,7 +193,11 @@ describe("shared quiz engine", () => {
 
     for (const range of SECTION_RANGES) {
       for (const mode of modes) {
-        const questions = buildQuizQuestions({ mode, rangeId: range.id, count: 12 });
+        const questions = buildQuizQuestions({
+          mode,
+          rangeId: range.id,
+          count: 12,
+        });
         const rangeItems = VOCAB.slice(range.start, range.end + 1);
         const availableCount =
           mode === "kor-choice"
@@ -166,11 +208,55 @@ describe("shared quiz engine", () => {
         for (const question of questions) {
           expect(validateQuestion(question)).toBe(true);
           expect(question.choices).toHaveLength(4);
-          expect(new Set(question.choices.map((choice) => choice.label)).size).toBe(4);
-          expect(question.choices.filter((choice) => isChoiceCorrect(question, choice))).toHaveLength(1);
+          expect(
+            new Set(question.choices.map((choice) => choice.label)).size,
+          ).toBe(4);
+          expect(
+            question.choices.filter((choice) =>
+              isChoiceCorrect(question, choice),
+            ),
+          ).toHaveLength(1);
         }
       }
     }
+  });
+
+  it("fills sparse-synonym ranges with validated meaning questions", () => {
+    for (const rangeId of ["idioms", "v601", "appendix"] as const) {
+      const questions = buildQuizQuestions({
+        mode: "syn-choice",
+        rangeId,
+        count: 20,
+        allowMeaningFallback: true,
+      });
+
+      expect(questions).toHaveLength(20);
+      expect(new Set(questions.map((question) => question.item.num)).size).toBe(
+        20,
+      );
+      expect(questions.every(validateQuestion)).toBe(true);
+      expect(
+        questions.some((question) => question.answerKind === "meaning"),
+      ).toBe(true);
+    }
+  });
+
+  it("does not restore blocked synonyms when a question falls back to meaning", () => {
+    const question = buildQuizQuestions({
+      mode: "syn-choice",
+      itemNums: [198],
+      count: 1,
+      allowMeaningFallback: true,
+      preserveItemOrder: true,
+    })[0];
+
+    expect(question).toBeDefined();
+    if (!question) throw new Error("meaning fallback question was not created");
+    expect(question.answerKind).toBe("meaning");
+    expect(question.mode).toBe("kor-choice");
+    expect(
+      question.choices.filter((choice) => isChoiceCorrect(question, choice)),
+    ).toHaveLength(1);
   });
 
   it("accepts every verified answer in direct-input questions", () => {
@@ -202,12 +288,23 @@ describe("shared quiz engine", () => {
     });
 
     expect(questions).toHaveLength(bookmarked.length);
-    expect(questions.every((question) => bookmarked.includes(question.item.num))).toBe(true);
-    expect(new Set(questions.map((question) => question.item.num))).toEqual(new Set(bookmarked));
+    expect(
+      questions.every((question) => bookmarked.includes(question.item.num)),
+    ).toBe(true);
+    expect(new Set(questions.map((question) => question.item.num))).toEqual(
+      new Set(bookmarked),
+    );
   });
 
   it("returns an empty flashcard session when every selected item is mastered", () => {
     const nums = VOCAB.slice(0, 5).map((item) => item.num);
-    expect(buildQuizQuestions({ mode: "flashcard", count: 5, itemNums: nums, masteredNums: nums })).toEqual([]);
+    expect(
+      buildQuizQuestions({
+        mode: "flashcard",
+        count: 5,
+        itemNums: nums,
+        masteredNums: nums,
+      }),
+    ).toEqual([]);
   });
 });

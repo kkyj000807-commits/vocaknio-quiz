@@ -1,4 +1,11 @@
-import { useState, useCallback, useRef, useEffect, type ReactElement } from "react";
+import {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  useMemo,
+  type ReactElement,
+} from "react";
 import {
   View,
   Text,
@@ -8,6 +15,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  type GestureResponderEvent,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
@@ -17,8 +25,6 @@ import Animated, {
   withTiming,
   withSequence,
   runOnJS,
-  interpolate,
-  Extrapolation,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
@@ -29,12 +35,21 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { type QuizMode, type VocabItem } from "@/lib/vocab";
 import {
   buildQuizQuestions,
+  getQuizCandidateItems,
   isChoiceCorrect,
   isTypedAnswerCorrect,
   type ChoiceLang,
   type QuizQuestion,
 } from "@/lib/quiz-engine";
-import { toggleBookmark, loadBookmarks, recordOneAnswer, loadMastered, addMastered } from "@/lib/store";
+import {
+  addMastered,
+  loadBookmarks,
+  loadMastered,
+  prepareAdaptiveQuizSession,
+  recordOneAnswer,
+  toggleBookmark,
+  type AdaptiveAnswerContext,
+} from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
 
 function NativeSwipeBoundary({
@@ -60,6 +75,21 @@ type QuizQuestionViewState = {
   mastered: boolean;
 };
 
+type WebSwipeTrace = {
+  startX: number;
+  startY: number;
+  lastX: number;
+  lastY: number;
+};
+
+function getTouchPoint(event: GestureResponderEvent, useChangedTouch = false) {
+  const nativeEvent = event.nativeEvent;
+  const touch = useChangedTouch
+    ? (nativeEvent.changedTouches[0] ?? nativeEvent)
+    : (nativeEvent.touches[0] ?? nativeEvent.changedTouches[0] ?? nativeEvent);
+  return { x: touch.pageX, y: touch.pageY };
+}
+
 function createEmptyQuestionViewState(): QuizQuestionViewState {
   return {
     answered: false,
@@ -79,7 +109,11 @@ export default function QuizScreen() {
   const router = useRouter();
   const isMovingRef = useRef(false);
   const scrollRef = useRef<ScrollView>(null);
-  const questionViewStatesRef = useRef(new Map<number, QuizQuestionViewState>());
+  const webSwipeTraceRef = useRef<WebSwipeTrace | null>(null);
+  const questionViewStatesRef = useRef(
+    new Map<number, QuizQuestionViewState>(),
+  );
+  const sessionIdRef = useRef("");
   const params = useLocalSearchParams<{
     mode: QuizMode;
     rangeStart: string;
@@ -95,29 +129,22 @@ export default function QuizScreen() {
   const rangeEnd = parseInt(params.rangeEnd ?? "999");
   const count = parseInt(params.count ?? "20");
   const rangeId = params.rangeId ?? "";
-  const choiceLang: ChoiceLang = params.choiceLang === "english" ? "english" : "korean";
-  const itemNums = [...new Set(
-    (params.bookmarkNums ?? "")
-      .split(",")
-      .map((value) => Number(value))
-      .filter((value) => Number.isInteger(value) && value > 0),
-  )];
-
-  const [masteredNums, setMasteredNums] = useState<number[]>([]);
-  const [questionsReady, setQuestionsReady] = useState(mode !== "flashcard");
-  const [questions, setQuestions] = useState<QuizQuestion[]>(() =>
-    mode === "flashcard"
-      ? []
-      : buildQuizQuestions({
-          mode,
-          rangeStart,
-          rangeEnd,
-          count,
-          rangeId,
-          choiceLang,
-          itemNums: itemNums.length > 0 ? itemNums : undefined,
-        })
+  const choiceLang: ChoiceLang =
+    params.choiceLang === "english" ? "english" : "korean";
+  const itemNums = useMemo(
+    () => [
+      ...new Set(
+        (params.bookmarkNums ?? "")
+          .split(",")
+          .map((value) => Number(value))
+          .filter((value) => Number.isInteger(value) && value > 0),
+      ),
+    ],
+    [params.bookmarkNums],
   );
+
+  const [questionsReady, setQuestionsReady] = useState(false);
+  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
@@ -126,9 +153,13 @@ export default function QuizScreen() {
   const [wrongCount, setWrongCount] = useState(0);
   const [wrongItems, setWrongItems] = useState<VocabItem[]>([]);
   const [revealed, setRevealed] = useState(false);
-  const [flashGrade, setFlashGrade] = useState<"correct" | "wrong" | null>(null);
+  const [flashGrade, setFlashGrade] = useState<"correct" | "wrong" | null>(
+    null,
+  );
   const [typedAnswer, setTypedAnswer] = useState("");
-  const [typeResult, setTypeResult] = useState<"correct" | "wrong" | null>(null);
+  const [typeResult, setTypeResult] = useState<"correct" | "wrong" | null>(
+    null,
+  );
   const [bookmarks, setBookmarks] = useState<number[]>([]);
   const [hintLevel, setHintLevel] = useState(0);
   const [masteredOnCard, setMasteredOnCard] = useState(false);
@@ -147,49 +178,125 @@ export default function QuizScreen() {
   }));
 
   useEffect(() => {
-    loadBookmarks().then(setBookmarks);
-    if (mode === "flashcard") {
-      loadMastered().then((loadedMastered) => {
-        setMasteredNums(loadedMastered);
-        setQuestions(
-          buildQuizQuestions({
-            mode,
-            rangeStart,
-            rangeEnd,
-            count,
-            rangeId,
-            choiceLang,
-            masteredNums: loadedMastered,
-            itemNums: itemNums.length > 0 ? itemNums : undefined,
-          }),
-        );
-        setQuestionsReady(true);
-      });
-    }
-  }, [choiceLang, count, mode, params.bookmarkNums, rangeEnd, rangeId, rangeStart]);
+    let cancelled = false;
+    loadBookmarks().then((loaded) => {
+      if (!cancelled) setBookmarks(loaded);
+    });
 
-  const haptic = useCallback((type: "light" | "success" | "error" = "light") => {
-    if (Platform.OS === "web") return;
-    if (type === "light") Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    else if (type === "success") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    else if (type === "error") Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-  }, []);
+    const prepareQuestions = async () => {
+      setQuestionsReady(false);
+      setQuestions([]);
+      isMovingRef.current = false;
+      const loadedMastered = mode === "flashcard" ? await loadMastered() : [];
+      if (cancelled) return;
+
+      const baseOptions = {
+        mode,
+        rangeStart,
+        rangeEnd,
+        count,
+        rangeId,
+        choiceLang,
+        masteredNums: loadedMastered,
+        itemNums: itemNums.length > 0 ? itemNums : undefined,
+        allowMeaningFallback: true,
+      } as const;
+      const candidates = getQuizCandidateItems(baseOptions);
+      const sessionId = `problem-${Date.now().toString(36)}-${Math.random()
+        .toString(36)
+        .slice(2, 10)}`;
+      sessionIdRef.current = sessionId;
+      const selectedNums = await prepareAdaptiveQuizSession({
+        sessionId,
+        rangeId: rangeId || "custom",
+        mode,
+        candidates: candidates.map((item) => ({
+          num: item.num,
+          conceptId: item.conceptId,
+          word: item.w,
+        })),
+        count,
+      });
+      if (cancelled) return;
+
+      const nextQuestions = buildQuizQuestions({
+        ...baseOptions,
+        itemNums: selectedNums,
+        preserveItemOrder: true,
+      });
+      questionViewStatesRef.current.clear();
+      setCurrentIdx(0);
+      setAnswered(false);
+      setSelectedChoice(null);
+      setSkipped(false);
+      setCorrectCount(0);
+      setWrongCount(0);
+      setWrongItems([]);
+      setRevealed(false);
+      setFlashGrade(null);
+      setTypedAnswer("");
+      setTypeResult(null);
+      setHintLevel(0);
+      setMasteredOnCard(false);
+      setQuestions(nextQuestions);
+      setQuestionsReady(true);
+    };
+
+    prepareQuestions().catch(async () => {
+      if (cancelled) return;
+      const loadedMastered = mode === "flashcard" ? await loadMastered() : [];
+      if (cancelled) return;
+      setQuestions(
+        buildQuizQuestions({
+          mode,
+          rangeStart,
+          rangeEnd,
+          count,
+          rangeId,
+          choiceLang,
+          masteredNums: loadedMastered,
+          itemNums: itemNums.length > 0 ? itemNums : undefined,
+          allowMeaningFallback: true,
+        }),
+      );
+      setQuestionsReady(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [choiceLang, count, itemNums, mode, rangeEnd, rangeId, rangeStart]);
+
+  const haptic = useCallback(
+    (type: "light" | "success" | "error" = "light") => {
+      if (Platform.OS === "web") return;
+      if (type === "light")
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      else if (type === "success")
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      else if (type === "error")
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    },
+    [],
+  );
 
   const animateCard = useCallback(() => {
     cardScale.value = withSequence(
       withTiming(0.97, { duration: 80 }),
-      withTiming(1, { duration: 120 })
+      withTiming(1, { duration: 120 }),
     );
   }, [cardScale]);
 
   // 문제 상태 전환은 애니메이션 완료 콜백에 의존하지 않는다.
   // Safari/RN Web에서 완료 콜백이 누락돼도 학습 진행이 멈추지 않아야 한다.
-  const animateMoveCard = useCallback((direction: "next" | "previous") => {
-    cardTranslateX.value = direction === "next" ? 36 : -36;
-    cardOpacity.value = 0;
-    cardTranslateX.value = withTiming(0, { duration: 200 });
-    cardOpacity.value = withTiming(1, { duration: 200 });
-  }, [cardTranslateX, cardOpacity]);
+  const animateMoveCard = useCallback(
+    (direction: "next" | "previous") => {
+      cardTranslateX.value = direction === "next" ? 36 : -36;
+      cardOpacity.value = 0;
+      cardTranslateX.value = withTiming(0, { duration: 200 });
+      cardOpacity.value = withTiming(1, { duration: 200 });
+    },
+    [cardTranslateX, cardOpacity],
+  );
 
   const captureQuestionViewState = useCallback(
     (overrides: Partial<QuizQuestionViewState> = {}) => {
@@ -223,7 +330,9 @@ export default function QuizScreen() {
   );
 
   const restoreQuestionViewState = useCallback((index: number) => {
-    const snapshot = questionViewStatesRef.current.get(index) ?? createEmptyQuestionViewState();
+    const snapshot =
+      questionViewStatesRef.current.get(index) ??
+      createEmptyQuestionViewState();
     setAnswered(snapshot.answered);
     setSelectedChoice(snapshot.selectedChoice);
     setSkipped(snapshot.skipped);
@@ -244,6 +353,24 @@ export default function QuizScreen() {
   const q = questions[currentIdx];
   const isBookmarked = q ? bookmarks.includes(q.item.num) : false;
 
+  const makeAdaptiveAnswerContext = useCallback(
+    (
+      outcome: AdaptiveAnswerContext["outcome"],
+      responseKey?: string,
+    ): AdaptiveAnswerContext | undefined => {
+      if (!q || !sessionIdRef.current) return undefined;
+      return {
+        sessionId: sessionIdRef.current,
+        itemNum: q.item.num,
+        mode,
+        outcome,
+        responseKey,
+        answeredAt: Date.now(),
+      };
+    },
+    [mode, q],
+  );
+
   const handleBookmark = useCallback(async () => {
     if (!q) return;
     haptic("light");
@@ -257,7 +384,8 @@ export default function QuizScreen() {
         answered ||
         isMovingRef.current ||
         questionViewStatesRef.current.get(currentIdx)?.answered
-      ) return;
+      )
+        return;
       haptic("light");
       animateCard();
       setSelectedChoice(idx);
@@ -280,9 +408,24 @@ export default function QuizScreen() {
         skipped: false,
       });
       // 한 문제 단위 즉시 저장
-      recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num);
+      recordOneAnswer(
+        isCorrect,
+        isCorrect ? undefined : q.item.num,
+        makeAdaptiveAnswerContext(
+          isCorrect ? "correct" : "wrong",
+          choice?.value,
+        ),
+      );
     },
-    [answered, currentIdx, q, haptic, animateCard, captureQuestionViewState]
+    [
+      answered,
+      currentIdx,
+      q,
+      haptic,
+      animateCard,
+      captureQuestionViewState,
+      makeAdaptiveAnswerContext,
+    ],
   );
 
   // "모르겠다" 패스 — 오답 처리 + 오답 노트 저장
@@ -291,7 +434,8 @@ export default function QuizScreen() {
       answered ||
       isMovingRef.current ||
       questionViewStatesRef.current.get(currentIdx)?.answered
-    ) return;
+    )
+      return;
     haptic("error");
     animateCard();
     setAnswered(true);
@@ -305,8 +449,16 @@ export default function QuizScreen() {
       skipped: true,
     });
     // 패스도 오답으로 즉시 저장
-    recordOneAnswer(false, q.item.num);
-  }, [answered, currentIdx, q, haptic, animateCard, captureQuestionViewState]);
+    recordOneAnswer(false, q.item.num, makeAdaptiveAnswerContext("skip"));
+  }, [
+    answered,
+    currentIdx,
+    q,
+    haptic,
+    animateCard,
+    captureQuestionViewState,
+    makeAdaptiveAnswerContext,
+  ]);
 
   const handleReveal = useCallback(() => {
     haptic("light");
@@ -320,7 +472,8 @@ export default function QuizScreen() {
         answered ||
         isMovingRef.current ||
         questionViewStatesRef.current.get(currentIdx)?.answered
-      ) return;
+      )
+        return;
       haptic(grade === "correct" ? "success" : "error");
       setFlashGrade(grade);
       setAnswered(true);
@@ -336,9 +489,20 @@ export default function QuizScreen() {
         flashGrade: grade,
       });
       // 플래시카드 채점 즉시 저장
-      recordOneAnswer(grade === "correct", grade === "correct" ? undefined : q.item.num);
+      recordOneAnswer(
+        grade === "correct",
+        grade === "correct" ? undefined : q.item.num,
+        makeAdaptiveAnswerContext(grade, grade),
+      );
     },
-    [answered, currentIdx, haptic, q, captureQuestionViewState]
+    [
+      answered,
+      currentIdx,
+      haptic,
+      q,
+      captureQuestionViewState,
+      makeAdaptiveAnswerContext,
+    ],
   );
 
   // 플래시카드 마스터 처리 — 이 단어를 마스터 목록에 추가
@@ -348,17 +512,16 @@ export default function QuizScreen() {
       answered ||
       isMovingRef.current ||
       questionViewStatesRef.current.get(currentIdx)?.answered
-    ) return;
+    )
+      return;
     isMovingRef.current = true;
     haptic("success");
-    let updated: number[];
     try {
-      updated = await addMastered(q.item.num);
+      await addMastered(q.item.num);
     } catch {
       isMovingRef.current = false;
       return;
     }
-    setMasteredNums(updated);
     const nextCorrectCount = correctCount + 1;
     setCorrectCount(nextCorrectCount);
     setAnswered(true);
@@ -371,7 +534,7 @@ export default function QuizScreen() {
       mastered: true,
     });
     // '마스터'는 알고 있는 단어로 한 번만 채점한다.
-    recordOneAnswer(true);
+    recordOneAnswer(true, undefined, makeAdaptiveAnswerContext("mastered"));
     // 마스터 처리 후 자동으로 다음 문제로 이동
     if (currentIdx + 1 >= questions.length) {
       router.replace({
@@ -403,6 +566,7 @@ export default function QuizScreen() {
     restoreQuestionViewState,
     animateMoveCard,
     releaseMovingLock,
+    makeAdaptiveAnswerContext,
   ]);
 
   const handleTypeSubmit = useCallback(() => {
@@ -411,7 +575,8 @@ export default function QuizScreen() {
       isMovingRef.current ||
       questionViewStatesRef.current.get(currentIdx)?.answered ||
       !typedAnswer.trim()
-    ) return;
+    )
+      return;
     haptic("light");
     const isCorrect = isTypedAnswerCorrect(q, typedAnswer);
     setTypeResult(isCorrect ? "correct" : "wrong");
@@ -430,8 +595,20 @@ export default function QuizScreen() {
       typeResult: isCorrect ? "correct" : "wrong",
     });
     // 타이핑 정답 즉시 저장
-    recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num);
-  }, [answered, currentIdx, typedAnswer, q, haptic, captureQuestionViewState]);
+    recordOneAnswer(
+      isCorrect,
+      isCorrect ? undefined : q.item.num,
+      makeAdaptiveAnswerContext(isCorrect ? "correct" : "wrong", typedAnswer),
+    );
+  }, [
+    answered,
+    currentIdx,
+    typedAnswer,
+    q,
+    haptic,
+    captureQuestionViewState,
+    makeAdaptiveAnswerContext,
+  ]);
 
   const handleNext = useCallback(async () => {
     if (isMovingRef.current) return;
@@ -489,13 +666,53 @@ export default function QuizScreen() {
     releaseMovingLock,
   ]);
 
-  // 스와이프 제스처 — 정답 확인 후 왼쪽 스와이프로 다음 문제
+  const handleWebTouchStart = useCallback((event: GestureResponderEvent) => {
+    if (Platform.OS !== "web") return;
+    const point = getTouchPoint(event);
+    webSwipeTraceRef.current = {
+      startX: point.x,
+      startY: point.y,
+      lastX: point.x,
+      lastY: point.y,
+    };
+  }, []);
+
+  const handleWebTouchMove = useCallback((event: GestureResponderEvent) => {
+    if (Platform.OS !== "web" || !webSwipeTraceRef.current) return;
+    const point = getTouchPoint(event);
+    webSwipeTraceRef.current.lastX = point.x;
+    webSwipeTraceRef.current.lastY = point.y;
+  }, []);
+
+  const handleWebTouchEnd = useCallback(
+    (event: GestureResponderEvent) => {
+      if (Platform.OS !== "web") return;
+      const trace = webSwipeTraceRef.current;
+      webSwipeTraceRef.current = null;
+      if (!trace) return;
+
+      const point = getTouchPoint(event, true);
+      const deltaX = point.x - trace.startX;
+      const deltaY = point.y - trace.startY;
+      const isClearHorizontalSwipe =
+        Math.abs(deltaX) >= 56 && Math.abs(deltaX) > Math.abs(deltaY) * 1.35;
+
+      if (!isClearHorizontalSwipe) return;
+      if (deltaX < 0 && answered) handleNext();
+      else if (deltaX > 0 && currentIdx > 0) handlePrevious();
+    },
+    [answered, currentIdx, handleNext, handlePrevious],
+  );
+
+  // 네이티브 제스처도 세로 스크롤보다 명확한 가로 이동에만 반응한다.
   const swipeGesture = Gesture.Pan()
-    .activeOffsetX([-20, 20])
-    .failOffsetY([-15, 15])
+    .activeOffsetX([-24, 24])
+    .failOffsetY([-18, 18])
     .onEnd((e) => {
       if (answered && e.translationX < -50) {
         runOnJS(handleNext)();
+      } else if (currentIdx > 0 && e.translationX > 50) {
+        runOnJS(handlePrevious)();
       }
     });
 
@@ -507,15 +724,22 @@ export default function QuizScreen() {
         <View style={s.emptyContainer}>
           <Text style={s.emptyEmoji}>{questionsReady ? "📭" : "⏳"}</Text>
           <Text style={s.emptyTitle}>
-            {questionsReady ? "출제할 문제가 없습니다" : "문제를 준비하고 있습니다"}
+            {questionsReady
+              ? "출제할 문제가 없습니다"
+              : "문제를 준비하고 있습니다"}
           </Text>
           {questionsReady ? (
             <>
               <Text style={s.emptyText}>
                 선택한 범위나 모드를 바꾼 뒤 다시 시도해 주세요.
               </Text>
-              <Pressable style={s.emptyButton} onPress={() => router.replace("/")}>
-                <Text style={s.emptyButtonText}>퀴즈 설정으로 돌아가기</Text>
+              <Pressable
+                style={s.emptyButton}
+                onPress={() => router.replace("/")}
+              >
+                <Text style={s.emptyButtonText}>
+                  문제 풀이 설정으로 돌아가기
+                </Text>
               </Pressable>
             </>
           ) : null}
@@ -526,24 +750,25 @@ export default function QuizScreen() {
 
   const pct = Math.round((currentIdx / questions.length) * 100);
 
-  const isChoiceMode = mode === "syn-choice" || mode === "kor-choice" || mode === "syn-kor-choice";
+  const questionMode = q.mode;
+  const isChoiceMode = q.choices.length > 0;
 
   const getModeLabel = () => {
-    if (mode === "syn-choice") return "동의어 고르기";
-    if (mode === "kor-choice") {
-      return choiceLang === "english" ? "동의어 고르기 (영어)" : "한국어 뜻 고르기";
+    if (questionMode === "syn-choice") return "동의어 고르기";
+    if (questionMode === "kor-choice") {
+      return q.answerKind === "synonym"
+        ? "동의어 고르기 (영어)"
+        : "한국어 뜻 고르기";
     }
-    if (mode === "syn-kor-choice") return "동의어+뜻 고르기";
-    if (mode === "flashcard") return "플래시카드";
+    if (questionMode === "syn-kor-choice") return "동의어+뜻 고르기";
+    if (questionMode === "flashcard") return "플래시카드";
     return "동의어 입력";
   };
 
   const getHintText = () => {
-    if (mode === "syn-choice") return "올바른 동의어는?";
-    if (mode === "kor-choice") {
-      return choiceLang === "english" ? "올바른 동의어는? (영어)" : "올바른 한국어 뜻은?";
-    }
-    return "올바른 동의어(한글뜻)는?";
+    if (q.answerKind === "meaning") return "올바른 한국어 뜻은?";
+    if (questionMode === "syn-kor-choice") return "올바른 동의어(한글뜻)는?";
+    return "올바른 동의어는?";
   };
 
   const getHint = () => {
@@ -563,312 +788,378 @@ export default function QuizScreen() {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <NativeSwipeBoundary gesture={swipeGesture}>
-        <ScrollView
-          ref={scrollRef}
-          style={{ flex: 1 }}
-          contentContainerStyle={{ paddingBottom: 32 }}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-        >
-          <View style={s.navigationRow}>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="퀴즈 설정으로 돌아가기"
-              hitSlop={6}
-              style={({ pressed }) => [s.backBtn, pressed && { opacity: 0.7 }]}
-              onPress={() => {
-                if (router.canGoBack()) router.back();
-                else router.replace("/");
-              }}
-            >
-              <IconSymbol name="arrow.left" size={20} color={colors.foreground} />
-              <Text style={s.backBtnText}>퀴즈 설정</Text>
-            </Pressable>
-            <Text style={s.swipeHint}>
-              {Platform.OS === "web"
-                ? "위아래로 스크롤 · 다음 버튼으로 이동"
-                : "정답 후 왼쪽으로 밀어 넘기기"}
-            </Text>
-          </View>
-
-          {/* Stats Row */}
-          <View style={s.statsRow}>
-            <View style={[s.statBox, s.statOk]}>
-              <Text style={[s.statNum, { color: colors.success }]}>{correctCount}</Text>
-              <Text style={s.statLabel}>정답</Text>
-            </View>
-            <View style={[s.statBox, s.statErr]}>
-              <Text style={[s.statNum, { color: colors.error }]}>{wrongCount}</Text>
-              <Text style={s.statLabel}>오답</Text>
-            </View>
-            <View style={s.statBox}>
-              <Text style={[s.statNum, { color: colors.primary2 as string }]}>{currentIdx}</Text>
-              <Text style={s.statLabel}>진행</Text>
-            </View>
-          </View>
-
-          {/* Progress Bar */}
-          <View style={s.progressContainer}>
-            <View style={s.progressInfo}>
-              <Text style={s.progressText}>{currentIdx + 1} / {questions.length}</Text>
-              <Text style={s.progressText}>{pct}%</Text>
-            </View>
-            <View style={s.progressBar}>
-              <View style={[s.progressFill, { width: `${pct}%` as any }]} />
-            </View>
-          </View>
-
-          {/* Question Card */}
-          <Animated.View style={[s.questionCard, cardAnimStyle]}>
-            <View style={s.questionHeader}>
-              <Text style={s.questionNum}>
-                문제 {currentIdx + 1} · {getModeLabel()}
-              </Text>
-              <Pressable onPress={handleBookmark} style={s.bookmarkBtn}>
-                <Text style={{ fontSize: 20 }}>{isBookmarked ? "🔖" : "🏷️"}</Text>
-              </Pressable>
-            </View>
-
-            <View style={s.wordPronunciationRow}>
-              <View style={{ flex: 1 }}>
-                <Text style={s.wordText}>{q.item.w}</Text>
-                {q.item.p ? (
-                  <Text style={s.ipaText}>{q.item.p}</Text>
-                ) : null}
-              </View>
-              <PronunciationButton text={q.item.w} />
-            </View>
-
-            {/* 4지선다 모드 */}
-            {isChoiceMode && (
-              <>
-                <Text style={s.hintText}>{getHintText()}</Text>
-                <View style={s.choicesContainer}>
-                  {q.choices.map((choice, idx) => {
-                    const choiceIsCorrect = isChoiceCorrect(q, choice);
-                    let choiceStyle = s.choiceBtn;
-                    let textStyle = s.choiceText;
-                    if (answered) {
-                      if (choiceIsCorrect) {
-                        choiceStyle = { ...s.choiceBtn, ...s.choiceCorrect };
-                        textStyle = { ...s.choiceText, color: colors.success };
-                      } else if (idx === selectedChoice) {
-                        choiceStyle = { ...s.choiceBtn, ...s.choiceWrong };
-                        textStyle = { ...s.choiceText, color: colors.error };
-                      }
-                    }
-                    return (
-                      <Pressable
-                        key={choice.id}
-                        style={choiceStyle}
-                        onPress={() => handleChoiceSelect(idx)}
-                        disabled={answered}
-                      >
-                        <View style={[
-                          s.choiceNum,
-                          answered && choiceIsCorrect && { backgroundColor: colors.success },
-                          answered && idx === selectedChoice && !choiceIsCorrect && { backgroundColor: colors.error },
-                        ]}>
-                          <Text style={[
-                            s.choiceNumText,
-                            answered && (choiceIsCorrect || idx === selectedChoice) && { color: "#000" },
-                          ]}>
-                            {["①", "②", "③", "④"][idx]}
-                          </Text>
-                        </View>
-                        <View style={{ flex: 1 }}>
-                          <Text style={textStyle} numberOfLines={3}>
-                            {choice.label}
-                          </Text>
-                          {answered && choice.meaning && choice.meaning !== choice.label ? (
-                            <Text style={s.choiceKorText}>{choice.meaning}</Text>
-                          ) : null}
-                        </View>
-                      </Pressable>
-                    );
-                  })}
-                </View>
-
-                {/* 모르겠다 버튼 */}
-                {!answered && (
-                  <Pressable style={s.skipBtn} onPress={handleSkip}>
-                    <Text style={s.skipBtnText}>🤷 모르겠다 (패스)</Text>
-                  </Pressable>
-                )}
-
-                {/* 패스 후 정답 표시 */}
-                {answered && skipped && (
-                  <View style={s.skipResultBox}>
-                    <Text style={s.skipResultLabel}>정답</Text>
-                    <Text style={s.skipResultAnswer}>{q.correct}</Text>
-                  </View>
-                )}
-              </>
-            )}
-
-            {/* 플래시카드 모드 */}
-            {mode === "flashcard" && (
-              <View style={s.flashContainer}>
-                <FlipCard
-                  flipped={revealed}
-                  style={s.flipCardWrapper}
-                  front={
-                    <View style={s.flipFront}>
-                      <Text style={s.flashHint}>뜻을 떠올린 후 확인 버튼을 누르세요</Text>
-                      <Pressable style={s.revealBtn} onPress={handleReveal}>
-                        <Text style={s.revealBtnText}>🔍 뜻 확인</Text>
-                      </Pressable>
-                    </View>
-                  }
-                  back={
-                    <View style={s.flipBack}>
-                      <View style={s.flashAnswer}>
-                        <Text style={s.flashKorText}>{q.item.k_short}</Text>
-                        {q.item.s.length > 0 && (
-                          <View style={s.synTagRow}>
-                            {q.item.s.slice(0, 4).map((syn, i) => (
-                              <View key={i} style={s.synTag}>
-                                <Text style={s.synTagText}>{syn}</Text>
-                              </View>
-                            ))}
-                          </View>
-                        )}
-                      </View>
-                    </View>
-                  }
+          <ScrollView
+            ref={scrollRef}
+            style={[
+              { flex: 1 },
+              Platform.OS === "web" && ({ touchAction: "pan-y" } as any),
+            ]}
+            contentContainerStyle={{ paddingBottom: 32 }}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            onTouchStart={handleWebTouchStart}
+            onTouchMove={handleWebTouchMove}
+            onTouchEnd={handleWebTouchEnd}
+            onScrollBeginDrag={() => {
+              webSwipeTraceRef.current = null;
+            }}
+          >
+            <View style={s.navigationRow}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="문제 풀이 설정으로 돌아가기"
+                hitSlop={6}
+                style={({ pressed }) => [
+                  s.backBtn,
+                  pressed && { opacity: 0.7 },
+                ]}
+                onPress={() => {
+                  if (router.canGoBack()) router.back();
+                  else router.replace("/");
+                }}
+              >
+                <IconSymbol
+                  name="arrow.left"
+                  size={20}
+                  color={colors.foreground}
                 />
-                {revealed && !answered && (
-                  <View style={{ marginTop: 14, gap: 8 }}>
-                    <View style={s.gradeRow}>
+                <Text style={s.backBtnText}>문제 풀이 설정</Text>
+              </Pressable>
+              <Text style={s.swipeHint}>
+                위아래 스크롤 · 정답 후 왼쪽=다음 · 오른쪽=이전
+              </Text>
+            </View>
+
+            {/* Stats Row */}
+            <View style={s.statsRow}>
+              <View style={[s.statBox, s.statOk]}>
+                <Text style={[s.statNum, { color: colors.success }]}>
+                  {correctCount}
+                </Text>
+                <Text style={s.statLabel}>정답</Text>
+              </View>
+              <View style={[s.statBox, s.statErr]}>
+                <Text style={[s.statNum, { color: colors.error }]}>
+                  {wrongCount}
+                </Text>
+                <Text style={s.statLabel}>오답</Text>
+              </View>
+              <View style={s.statBox}>
+                <Text style={[s.statNum, { color: colors.primary2 as string }]}>
+                  {currentIdx}
+                </Text>
+                <Text style={s.statLabel}>진행</Text>
+              </View>
+            </View>
+
+            {/* Progress Bar */}
+            <View style={s.progressContainer}>
+              <View style={s.progressInfo}>
+                <Text style={s.progressText}>
+                  {currentIdx + 1} / {questions.length}
+                </Text>
+                <Text style={s.progressText}>{pct}%</Text>
+              </View>
+              <View style={s.progressBar}>
+                <View style={[s.progressFill, { width: `${pct}%` as any }]} />
+              </View>
+            </View>
+
+            {/* Question Card */}
+            <Animated.View style={[s.questionCard, cardAnimStyle]}>
+              <View style={s.questionHeader}>
+                <Text style={s.questionNum}>
+                  문제 {currentIdx + 1} · {getModeLabel()}
+                </Text>
+                <Pressable onPress={handleBookmark} style={s.bookmarkBtn}>
+                  <Text style={{ fontSize: 20 }}>
+                    {isBookmarked ? "🔖" : "🏷️"}
+                  </Text>
+                </Pressable>
+              </View>
+
+              <View style={s.wordPronunciationRow}>
+                <View style={{ flex: 1 }}>
+                  <Text style={s.wordText}>{q.item.w}</Text>
+                  {q.item.p ? <Text style={s.ipaText}>{q.item.p}</Text> : null}
+                </View>
+                <PronunciationButton text={q.item.w} />
+              </View>
+
+              {/* 4지선다 모드 */}
+              {isChoiceMode && (
+                <>
+                  <Text style={s.hintText}>{getHintText()}</Text>
+                  <View style={s.choicesContainer}>
+                    {q.choices.map((choice, idx) => {
+                      const choiceIsCorrect = isChoiceCorrect(q, choice);
+                      let choiceStyle = s.choiceBtn;
+                      let textStyle = s.choiceText;
+                      if (answered) {
+                        if (choiceIsCorrect) {
+                          choiceStyle = { ...s.choiceBtn, ...s.choiceCorrect };
+                          textStyle = {
+                            ...s.choiceText,
+                            color: colors.success,
+                          };
+                        } else if (idx === selectedChoice) {
+                          choiceStyle = { ...s.choiceBtn, ...s.choiceWrong };
+                          textStyle = { ...s.choiceText, color: colors.error };
+                        }
+                      }
+                      return (
+                        <Pressable
+                          key={choice.id}
+                          style={choiceStyle}
+                          onPress={() => handleChoiceSelect(idx)}
+                          disabled={answered}
+                        >
+                          <View
+                            style={[
+                              s.choiceNum,
+                              answered &&
+                                choiceIsCorrect && {
+                                  backgroundColor: colors.success,
+                                },
+                              answered &&
+                                idx === selectedChoice &&
+                                !choiceIsCorrect && {
+                                  backgroundColor: colors.error,
+                                },
+                            ]}
+                          >
+                            <Text
+                              style={[
+                                s.choiceNumText,
+                                answered &&
+                                  (choiceIsCorrect ||
+                                    idx === selectedChoice) && {
+                                    color: "#000",
+                                  },
+                              ]}
+                            >
+                              {["①", "②", "③", "④"][idx]}
+                            </Text>
+                          </View>
+                          <View style={{ flex: 1 }}>
+                            <Text style={textStyle} numberOfLines={3}>
+                              {choice.label}
+                            </Text>
+                            {answered &&
+                            choice.meaning &&
+                            choice.meaning !== choice.label ? (
+                              <Text style={s.choiceKorText}>
+                                {choice.meaning}
+                              </Text>
+                            ) : null}
+                          </View>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+
+                  {/* 모르겠다 버튼 */}
+                  {!answered && (
+                    <Pressable style={s.skipBtn} onPress={handleSkip}>
+                      <Text style={s.skipBtnText}>🤷 모르겠다 (패스)</Text>
+                    </Pressable>
+                  )}
+
+                  {/* 패스 후 정답 표시 */}
+                  {answered && skipped && (
+                    <View style={s.skipResultBox}>
+                      <Text style={s.skipResultLabel}>정답</Text>
+                      <Text style={s.skipResultAnswer}>{q.correct}</Text>
+                    </View>
+                  )}
+                </>
+              )}
+
+              {/* 플래시카드 모드 */}
+              {questionMode === "flashcard" && (
+                <View style={s.flashContainer}>
+                  <FlipCard
+                    flipped={revealed}
+                    style={s.flipCardWrapper}
+                    front={
+                      <View style={s.flipFront}>
+                        <Text style={s.flashHint}>
+                          뜻을 떠올린 후 확인 버튼을 누르세요
+                        </Text>
+                        <Pressable style={s.revealBtn} onPress={handleReveal}>
+                          <Text style={s.revealBtnText}>🔍 뜻 확인</Text>
+                        </Pressable>
+                      </View>
+                    }
+                    back={
+                      <View style={s.flipBack}>
+                        <View style={s.flashAnswer}>
+                          <Text style={s.flashKorText}>{q.item.k_short}</Text>
+                          {q.item.s.length > 0 && (
+                            <View style={s.synTagRow}>
+                              {q.item.s.slice(0, 4).map((syn, i) => (
+                                <View key={i} style={s.synTag}>
+                                  <Text style={s.synTagText}>{syn}</Text>
+                                </View>
+                              ))}
+                            </View>
+                          )}
+                        </View>
+                      </View>
+                    }
+                  />
+                  {revealed && !answered && (
+                    <View style={{ marginTop: 14, gap: 8 }}>
+                      <View style={s.gradeRow}>
+                        <Pressable
+                          style={[s.gradeBtn, s.gradeBtnWrong]}
+                          onPress={() => handleFlashGrade("wrong")}
+                        >
+                          <Text
+                            style={[s.gradeBtnText, { color: colors.error }]}
+                          >
+                            ❌ 모르겠어요
+                          </Text>
+                        </Pressable>
+                        <Pressable
+                          style={[s.gradeBtn, s.gradeBtnCorrect]}
+                          onPress={() => handleFlashGrade("correct")}
+                        >
+                          <Text
+                            style={[s.gradeBtnText, { color: colors.success }]}
+                          >
+                            ✅ 알았어요
+                          </Text>
+                        </Pressable>
+                      </View>
+                      {/* 마스터 버튼 — 이 단어는 완전히 알아서 앞으로 출제 제외 */}
                       <Pressable
-                        style={[s.gradeBtn, s.gradeBtnWrong]}
-                        onPress={() => handleFlashGrade("wrong")}
+                        style={s.masterBtn}
+                        onPress={handleFlashMaster}
                       >
-                        <Text style={[s.gradeBtnText, { color: colors.error }]}>❌ 모르겠어요</Text>
-                      </Pressable>
-                      <Pressable
-                        style={[s.gradeBtn, s.gradeBtnCorrect]}
-                        onPress={() => handleFlashGrade("correct")}
-                      >
-                        <Text style={[s.gradeBtnText, { color: colors.success }]}>✅ 알았어요</Text>
+                        <Text style={s.masterBtnText}>
+                          ⭐ 마스터 — 다음부터 이 단어 제외
+                        </Text>
                       </Pressable>
                     </View>
-                    {/* 마스터 버튼 — 이 단어는 완전히 알아서 앞으로 출제 제외 */}
-                    <Pressable
-                      style={s.masterBtn}
-                      onPress={handleFlashMaster}
-                    >
-                      <Text style={s.masterBtnText}>⭐ 마스터 — 다음부터 이 단어 제외</Text>
-                    </Pressable>
-                  </View>
-                )}
-                {masteredOnCard && (
-                  <View style={s.masteredInfo}>
-                    <Text style={s.masteredInfoText}>⭐ 마스터 완료 · 다시 채점되지 않습니다</Text>
-                  </View>
-                )}
-              </View>
-            )}
+                  )}
+                  {masteredOnCard && (
+                    <View style={s.masteredInfo}>
+                      <Text style={s.masteredInfoText}>
+                        ⭐ 마스터 완료 · 다시 채점되지 않습니다
+                      </Text>
+                    </View>
+                  )}
+                </View>
+              )}
 
-            {/* 동의어 입력 모드 */}
-            {mode === "syn-type" && (
-              <View style={s.typeContainer}>
-                <Text style={s.hintText}>동의어를 입력하세요</Text>
-                <View style={s.hintRow}>
-                  <View style={s.hintBox}>
-                    <Text style={s.hintBoxText}>{getHint()}</Text>
+              {/* 동의어 입력 모드 */}
+              {questionMode === "syn-type" && (
+                <View style={s.typeContainer}>
+                  <Text style={s.hintText}>동의어를 입력하세요</Text>
+                  <View style={s.hintRow}>
+                    <View style={s.hintBox}>
+                      <Text style={s.hintBoxText}>{getHint()}</Text>
+                    </View>
+                    {!answered && (
+                      <Pressable
+                        style={s.hintBtn}
+                        onPress={() => setHintLevel((h) => Math.min(h + 1, 3))}
+                      >
+                        <Text style={s.hintBtnText}>힌트</Text>
+                      </Pressable>
+                    )}
                   </View>
+                  <TextInput
+                    style={[
+                      s.typeInput,
+                      typeResult === "correct" && s.typeInputCorrect,
+                      typeResult === "wrong" && s.typeInputWrong,
+                    ]}
+                    value={typedAnswer}
+                    onChangeText={setTypedAnswer}
+                    placeholder="동의어 입력..."
+                    placeholderTextColor={colors.dim}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    editable={!answered}
+                    returnKeyType="done"
+                    onSubmitEditing={handleTypeSubmit}
+                  />
                   {!answered && (
+                    <Pressable style={s.submitBtn} onPress={handleTypeSubmit}>
+                      <Text style={s.submitBtnText}>확인</Text>
+                    </Pressable>
+                  )}
+                  {typeResult === "wrong" && (
+                    <View style={s.typeWrongInfo}>
+                      <Text style={s.typeWrongText}>정답: {q.correct}</Text>
+                    </View>
+                  )}
+                </View>
+              )}
+
+              {/* 해설 패널 */}
+              {answered && questionMode !== "flashcard" && (
+                <View style={s.explPanel}>
+                  <Text style={s.explHeader}>해설</Text>
+                  <View style={s.explWordRow}>
+                    <Text style={s.explWord}>{q.item.w}</Text>
+                    {q.item.p ? (
+                      <Text style={s.explIpa}>{q.item.p}</Text>
+                    ) : null}
+                  </View>
+                  <Text style={s.explKor} numberOfLines={3}>
+                    {q.item.k_short}
+                  </Text>
+                  {q.item.s.length > 0 && (
+                    <View style={s.synTagRow}>
+                      {q.item.s.slice(0, 5).map((syn, i) => (
+                        <View key={i} style={s.synTag}>
+                          <Text style={s.synTagText}>{syn}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  )}
+                </View>
+              )}
+
+              {/* 문제 이동 */}
+              {(currentIdx > 0 || answered) && (
+                <View style={s.questionNavRow}>
+                  {currentIdx > 0 && (
                     <Pressable
-                      style={s.hintBtn}
-                      onPress={() => setHintLevel((h) => Math.min(h + 1, 3))}
+                      accessibilityRole="button"
+                      accessibilityLabel="이전 문제로 돌아가기"
+                      style={({ pressed }) => [
+                        s.previousBtn,
+                        pressed && { opacity: 0.75 },
+                      ]}
+                      onPress={handlePrevious}
                     >
-                      <Text style={s.hintBtnText}>힌트</Text>
+                      <Text style={s.previousBtnText}>← 이전 문제</Text>
+                    </Pressable>
+                  )}
+                  {answered && (
+                    <Pressable
+                      accessibilityRole="button"
+                      style={({ pressed }) => [
+                        s.nextBtn,
+                        pressed && { opacity: 0.85 },
+                      ]}
+                      onPress={handleNext}
+                    >
+                      <Text style={s.nextBtnText}>
+                        {currentIdx + 1 >= questions.length
+                          ? "결과 보기 →"
+                          : "다음 문제 →"}
+                      </Text>
                     </Pressable>
                   )}
                 </View>
-                <TextInput
-                  style={[
-                    s.typeInput,
-                    typeResult === "correct" && s.typeInputCorrect,
-                    typeResult === "wrong" && s.typeInputWrong,
-                  ]}
-                  value={typedAnswer}
-                  onChangeText={setTypedAnswer}
-                  placeholder="동의어 입력..."
-                  placeholderTextColor={colors.dim}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  editable={!answered}
-                  returnKeyType="done"
-                  onSubmitEditing={handleTypeSubmit}
-                />
-                {!answered && (
-                  <Pressable style={s.submitBtn} onPress={handleTypeSubmit}>
-                    <Text style={s.submitBtnText}>확인</Text>
-                  </Pressable>
-                )}
-                {typeResult === "wrong" && (
-                  <View style={s.typeWrongInfo}>
-                    <Text style={s.typeWrongText}>정답: {q.correct}</Text>
-                  </View>
-                )}
-              </View>
-            )}
-
-            {/* 해설 패널 */}
-            {answered && mode !== "flashcard" && (
-              <View style={s.explPanel}>
-                <Text style={s.explHeader}>해설</Text>
-                <View style={s.explWordRow}>
-                  <Text style={s.explWord}>{q.item.w}</Text>
-                  {q.item.p ? (
-                    <Text style={s.explIpa}>{q.item.p}</Text>
-                  ) : null}
-                </View>
-                <Text style={s.explKor} numberOfLines={3}>
-                  {q.item.k_short}
-                </Text>
-                {q.item.s.length > 0 && (
-                  <View style={s.synTagRow}>
-                    {q.item.s.slice(0, 5).map((syn, i) => (
-                      <View key={i} style={s.synTag}>
-                        <Text style={s.synTagText}>{syn}</Text>
-                      </View>
-                    ))}
-                  </View>
-                )}
-              </View>
-            )}
-
-            {/* 문제 이동 */}
-            {(currentIdx > 0 || answered) && (
-              <View style={s.questionNavRow}>
-                {currentIdx > 0 && (
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel="이전 문제로 돌아가기"
-                    style={({ pressed }) => [s.previousBtn, pressed && { opacity: 0.75 }]}
-                    onPress={handlePrevious}
-                  >
-                    <Text style={s.previousBtnText}>← 이전 문제</Text>
-                  </Pressable>
-                )}
-                {answered && (
-                  <Pressable
-                    accessibilityRole="button"
-                    style={({ pressed }) => [s.nextBtn, pressed && { opacity: 0.85 }]}
-                    onPress={handleNext}
-                  >
-                    <Text style={s.nextBtnText}>
-                      {currentIdx + 1 >= questions.length ? "결과 보기 →" : "다음 문제 →"}
-                    </Text>
-                  </Pressable>
-                )}
-              </View>
-            )}
-          </Animated.View>
-        </ScrollView>
+              )}
+            </Animated.View>
+          </ScrollView>
         </NativeSwipeBoundary>
       </KeyboardAvoidingView>
     </ScreenContainer>
@@ -885,8 +1176,20 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     emptyEmoji: { fontSize: 48, marginBottom: 16 },
     emptyTitle: { fontSize: 19, fontWeight: "700", color: colors.foreground },
-    emptyText: { marginTop: 8, fontSize: 14, lineHeight: 21, textAlign: "center", color: colors.dim },
-    emptyButton: { marginTop: 20, borderRadius: 12, paddingHorizontal: 18, paddingVertical: 12, backgroundColor: colors.primary },
+    emptyText: {
+      marginTop: 8,
+      fontSize: 14,
+      lineHeight: 21,
+      textAlign: "center",
+      color: colors.dim,
+    },
+    emptyButton: {
+      marginTop: 20,
+      borderRadius: 12,
+      paddingHorizontal: 18,
+      paddingVertical: 12,
+      backgroundColor: colors.primary,
+    },
     emptyButtonText: { color: "#FFFFFF", fontWeight: "700" },
     statsRow: {
       flexDirection: "row",

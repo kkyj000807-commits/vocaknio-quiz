@@ -10,6 +10,8 @@ export default defineConfig({
   test: {
     environment: "node",
     include: [
+      "tests/adaptive-quiz.test.ts",
+      "tests/adaptive-store.test.ts",
       "tests/vocab-v1.4.test.ts",
       "tests/vocab-migration-v1.4.test.ts",
       "tests/vocab-storage-migration-v1.4.test.ts",

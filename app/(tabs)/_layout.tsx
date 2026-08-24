@@ -40,7 +40,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "퀴즈",
+          title: "문풀",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={24} name="book.fill" color={color} />
           ),
@@ -58,7 +58,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="wrong"
         options={{
-          title: "오답노트",
+          title: "오답",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={24} name="xmark.circle.fill" color={color} />
           ),
@@ -74,30 +74,24 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="bookmarks"
-        options={{
-          title: "북마크",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={24} name="bookmark.fill" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="exam"
-        options={{
-          title: "기출",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={24} name="graduationcap.fill" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="settings"
         options={{
           title: "설정",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={24} name="gear" color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="bookmarks"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="exam"
+        options={{
+          href: null,
         }}
       />
     </Tabs>

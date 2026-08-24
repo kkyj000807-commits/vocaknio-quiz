@@ -194,7 +194,7 @@ export default function WrongScreen() {
               style={({ pressed }) => [s.quizBtn, pressed && { opacity: 0.85 }]}
               onPress={handleStartQuiz}
             >
-              <Text style={s.quizBtnText}>오답 퀴즈</Text>
+              <Text style={s.quizBtnText}>오답 문제 풀기</Text>
             </Pressable>
             <Pressable
               style={({ pressed }) => [s.clearBtn, pressed && { opacity: 0.85 }]}
@@ -211,7 +211,7 @@ export default function WrongScreen() {
           <Text style={s.emptyEmoji}>🎯</Text>
           <Text style={s.emptyTitle}>오답 단어가 없어요</Text>
           <Text style={s.emptyText}>
-            퀴즈를 풀면 틀린 단어가{"\n"}여기에 자동으로 쌓입니다
+            문제 풀이에서 틀린 단어가{"\n"}여기에 자동으로 쌓입니다
           </Text>
         </View>
       ) : (

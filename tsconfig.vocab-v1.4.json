@@ -5,23 +5,28 @@
   },
   "include": [
     "lib/vocab.ts",
+    "lib/adaptive-quiz.ts",
     "lib/quiz-engine.ts",
     "lib/vocab-migration.ts",
     "lib/vocab-storage-migration.ts",
     "lib/store.ts",
     "components/synonym-details.tsx",
+    "components/pronunciation-button.tsx",
     "app/_layout.tsx",
+    "app/(tabs)/_layout.tsx",
     "app/(tabs)/index.tsx",
     "app/(tabs)/bookmarks.tsx",
+    "app/(tabs)/exam.tsx",
+    "app/(tabs)/settings.tsx",
+    "app/(tabs)/wordbook.tsx",
+    "app/(tabs)/wrong.tsx",
     "app/quiz.tsx",
     "app/wrong-quiz.tsx",
+    "tests/adaptive-quiz.test.ts",
+    "tests/adaptive-store.test.ts",
     "tests/vocab-v1.4.test.ts",
     "tests/vocab-migration-v1.4.test.ts",
     "tests/vocab-storage-migration-v1.4.test.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "app",
-    "tests/vocab.test.ts"
-  ]
+  "exclude": ["node_modules", "app", "tests/vocab.test.ts"]
 }
