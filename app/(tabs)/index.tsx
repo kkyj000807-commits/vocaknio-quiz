@@ -282,7 +282,9 @@ export default function HomeScreen() {
             <Text style={s.startBtnArrow}>→</Text>
           </Pressable>
           <Text style={s.startNote}>
-            검증된 동의어가 없으면 한국어 뜻 문제로 자동 전환됩니다
+            {selectedMode === "syn-kor-choice"
+              ? "영어 동의어와 한글 뜻이 함께 검증된 문항만 출제됩니다"
+              : "검증된 동의어가 없으면 한국어 뜻 문제로 자동 전환됩니다"}
           </Text>
         </View>
       </ScrollView>
