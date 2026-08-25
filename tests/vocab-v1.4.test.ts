@@ -241,6 +241,34 @@ describe("shared quiz engine", () => {
     }
   });
 
+  it("keeps synonym-plus-meaning questions in their requested format", () => {
+    const questions = buildQuizQuestions({
+      mode: "syn-kor-choice",
+      itemNums: [1, 2],
+      count: 2,
+      allowMeaningFallback: true,
+      preserveItemOrder: true,
+    });
+
+    expect(questions).toHaveLength(1);
+    expect(questions[0]?.item.num).toBe(1);
+    expect(questions[0]?.mode).toBe("syn-kor-choice");
+    expect(questions[0]?.answerKind).toBe("synonym");
+    expect(
+      questions[0]?.choices.every(
+        (choice) =>
+          Boolean(choice.word) &&
+          Boolean(choice.meaning) &&
+          choice.label === `${choice.word} (${choice.meaning})`,
+      ),
+    ).toBe(true);
+    expect(
+      questions[0]?.choices.filter((choice) =>
+        isChoiceCorrect(questions[0]!, choice),
+      ),
+    ).toHaveLength(1);
+  });
+
   it("does not restore blocked synonyms when a question falls back to meaning", () => {
     const question = buildQuizQuestions({
       mode: "syn-choice",

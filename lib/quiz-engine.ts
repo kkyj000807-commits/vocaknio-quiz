@@ -264,7 +264,6 @@ function resolvePool(options: BuildQuizOptions): VocabItem[] {
 function canFallBackToMeaning(mode: QuizMode, choiceLang: ChoiceLang): boolean {
   return (
     mode === "syn-choice" ||
-    mode === "syn-kor-choice" ||
     (mode === "kor-choice" && choiceLang === "english")
   );
 }
