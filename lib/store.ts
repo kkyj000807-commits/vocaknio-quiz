@@ -547,3 +547,122 @@ export function formatStudyTime(seconds: number): string {
     return remainMins > 0 ? `${hours}시간 ${remainMins}분` : `${hours}시간`;
   return `${mins}분`;
 }
+
+// ─── Study Schedule (학습 일정 관리) ─────────────────────────────────────────────
+
+const SCHEDULE_KEY = "vocaknio_schedule";
+
+export interface ScheduleItem {
+  /** 고유 ID */
+  id: string;
+  /** 일정 제목 (예: "동의어 100단어 복습") */
+  title: string;
+  /** 날짜 (YYYY-MM-DD) */
+  date: string;
+  /** 시간 (HH:MM) — 선택 */
+  time?: string;
+  /** 메모 — 선택 */
+  memo?: string;
+  /** 완료 여부 */
+  done: boolean;
+  /** 생성 시각 (ms) */
+  createdAt: number;
+}
+
+/** 일정 정렬: 날짜 → 시간(없으면 뒤) → 생성순 */
+function sortSchedules(items: ScheduleItem[]): ScheduleItem[] {
+  return [...items].sort((a, b) => {
+    if (a.date !== b.date) return a.date < b.date ? -1 : 1;
+    const at = a.time ?? "99:99";
+    const bt = b.time ?? "99:99";
+    if (at !== bt) return at < bt ? -1 : 1;
+    return a.createdAt - b.createdAt;
+  });
+}
+
+/** 일정 목록을 불러옵니다 (날짜·시간순 정렬). */
+export async function loadSchedules(): Promise<ScheduleItem[]> {
+  try {
+    const raw = await AsyncStorage.getItem(SCHEDULE_KEY);
+    if (raw) return sortSchedules(JSON.parse(raw) as ScheduleItem[]);
+  } catch {}
+  return [];
+}
+
+/** 일정 목록을 저장합니다. */
+export async function saveSchedules(items: ScheduleItem[]): Promise<void> {
+  try {
+    await AsyncStorage.setItem(SCHEDULE_KEY, JSON.stringify(items));
+  } catch {}
+}
+
+/** 새 일정을 추가하고 정렬된 전체 목록을 반환합니다. */
+export async function addSchedule(input: {
+  title: string;
+  date: string;
+  time?: string;
+  memo?: string;
+}): Promise<ScheduleItem[]> {
+  const items = await loadSchedules();
+  const now = Date.now();
+  const item: ScheduleItem = {
+    id: `${now}_${Math.floor(Math.random() * 1e6)}`,
+    title: input.title.trim(),
+    date: input.date,
+    time: input.time?.trim() || undefined,
+    memo: input.memo?.trim() || undefined,
+    done: false,
+    createdAt: now,
+  };
+  const updated = sortSchedules([...items, item]);
+  await saveSchedules(updated);
+  return updated;
+}
+
+/** 기존 일정을 수정합니다. */
+export async function updateSchedule(
+  id: string,
+  patch: Partial<Omit<ScheduleItem, "id" | "createdAt">>
+): Promise<ScheduleItem[]> {
+  const items = await loadSchedules();
+  const updated = sortSchedules(
+    items.map((it) =>
+      it.id === id
+        ? {
+            ...it,
+            ...patch,
+            time: patch.time !== undefined ? patch.time || undefined : it.time,
+            memo: patch.memo !== undefined ? patch.memo || undefined : it.memo,
+          }
+        : it
+    )
+  );
+  await saveSchedules(updated);
+  return updated;
+}
+
+/** 일정 완료 상태를 토글합니다. */
+export async function toggleSchedule(id: string): Promise<ScheduleItem[]> {
+  const items = await loadSchedules();
+  const updated = items.map((it) =>
+    it.id === id ? { ...it, done: !it.done } : it
+  );
+  await saveSchedules(updated);
+  return sortSchedules(updated);
+}
+
+/** 일정을 삭제합니다. */
+export async function removeSchedule(id: string): Promise<ScheduleItem[]> {
+  const items = await loadSchedules();
+  const updated = items.filter((it) => it.id !== id);
+  await saveSchedules(updated);
+  return updated;
+}
+
+/** 완료된 일정을 모두 삭제합니다. */
+export async function clearDoneSchedules(): Promise<ScheduleItem[]> {
+  const items = await loadSchedules();
+  const updated = items.filter((it) => !it.done);
+  await saveSchedules(updated);
+  return updated;
+}
