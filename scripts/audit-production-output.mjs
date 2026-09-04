@@ -41,7 +41,9 @@ const learningFiles = fs.existsSync(learningDirectory)
   ? fs.readdirSync(learningDirectory).filter((name) => name.endsWith(".json"))
   : [];
 const release = JSON.parse(fs.readFileSync(path.join(outputRoot, "release.json"), "utf8"));
-const bundle = files.find((file) => /entry-[a-f0-9]+\.js$/.test(file));
+const indexHtml = fs.readFileSync(path.join(outputRoot, "index.html"), "utf8");
+const bundleUrl = indexHtml.match(/src="\/vocaknio-quiz\/([^\"]*entry-[a-f0-9]+\.js)"/)?.[1];
+const bundle = bundleUrl ? path.join(outputRoot, ...bundleUrl.split("/")) : undefined;
 const bundleText = bundle ? fs.readFileSync(bundle, "utf8") : "";
 const result = {
   status:
