@@ -27,6 +27,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { PronunciationButton } from "@/components/pronunciation-button";
+import { LearningDetails } from "@/components/learning-details";
 import { type VocabItem } from "@/lib/vocab";
 import {
   buildReviewQuestions,
@@ -464,7 +465,7 @@ export default function WrongQuizScreen() {
 
             <View style={s.wordPronunciationRow}>
               <Text style={s.wordText}>{q.item.w}</Text>
-              <PronunciationButton text={q.item.w} />
+              <PronunciationButton itemId={q.item.id} text={q.item.w} />
             </View>
             {q.item.p ? <Text style={s.ipaText}>{q.item.p}</Text> : null}
 
@@ -570,6 +571,8 @@ export default function WrongQuizScreen() {
                 )}
               </View>
             )}
+
+            {answered && <LearningDetails itemId={q.item.id} />}
 
             {(currentIdx > 0 || answered) && (
               <View style={s.questionNavRow}>

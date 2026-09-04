@@ -10,6 +10,7 @@ import {
   View,
   KeyboardAvoidingView,
   Platform,
+  Linking,
 } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
 import { VOCAB } from "@/lib/vocab";
@@ -21,6 +22,7 @@ import { getApiBaseUrl } from "@/constants/oauth";
 import * as Auth from "@/lib/_core/auth";
 import { trpc } from "@/lib/trpc";
 import { RELEASE_LABEL } from "@/lib/release-info";
+import { LEARNING_COVERAGE } from "@/lib/vocab-learning";
 import {
   loadStats,
   loadBookmarks,
@@ -510,6 +512,42 @@ export default function SettingsScreen() {
                 <Text style={s.infoLabel}>배포 정보</Text>
                 <Text style={[s.infoValue, s.releaseValue]}>{RELEASE_LABEL}</Text>
               </View>
+              <View style={[s.infoRow, { borderTopWidth: 0.5, borderTopColor: colors.border }]}>
+                <Text style={s.infoLabel}>깊이 학습 해설</Text>
+                <Text style={[s.infoValue, s.releaseValue]}>
+                  {LEARNING_COVERAGE.senses.toLocaleString()}개 뜻 · {LEARNING_COVERAGE.rows.toLocaleString()}개 목록 항목에 연결
+                </Text>
+              </View>
+              <Text style={s.learningNote}>해설 검수 기준: {LEARNING_COVERAGE.checkedAtKst}</Text>
+              <Text style={s.learningNote}>
+                확인된 일부 뜻부터 제공합니다. 학습 해설·예문은 AI 편집 검수 자료이며, 사전의 공식 번역이나 인증이 아닙니다.
+              </Text>
+              <TouchableOpacity
+                accessibilityRole="link"
+                accessibilityLabel="Open English WordNet 출처 열기"
+                style={s.learningSourceLink}
+                onPress={() => Linking.openURL("https://en-word.net/").catch(() => Alert.alert("안내", "출처 페이지를 열지 못했습니다."))}
+              >
+                <Text style={s.learningSourceText}>영영 정의 · Open English WordNet 2025 ↗</Text>
+                <Text style={s.learningNote}>Princeton WordNet 기반 · CC BY 4.0 · 양쪽 제작자 표시</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                accessibilityRole="link"
+                accessibilityLabel="Wiktionary 출처 열기"
+                style={s.learningSourceLink}
+                onPress={() => Linking.openURL("https://en.wiktionary.org/wiki/Wiktionary:Main_Page").catch(() => Alert.alert("안내", "출처 페이지를 열지 못했습니다."))}
+              >
+                <Text style={s.learningSourceText}>뜻 교차 대조 · Wiktionary ↗</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                accessibilityRole="link"
+                accessibilityLabel="학습 해설 데이터 CC BY-SA 4.0 이용 조건 열기"
+                style={s.learningSourceLink}
+                onPress={() => Linking.openURL("https://creativecommons.org/licenses/by-sa/4.0/").catch(() => Alert.alert("안내", "이용 조건 페이지를 열지 못했습니다."))}
+              >
+                <Text style={s.learningSourceText}>학습 해설 데이터 · CC BY-SA 4.0 ↗</Text>
+                <Text style={s.learningNote}>학습 해설 데이터에만 적용하며, 앱 코드 전체의 라이선스를 뜻하지 않습니다.</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
@@ -591,6 +629,9 @@ const styles = (c: ReturnType<typeof useColors>) =>
     infoLabel: { fontSize: 14, color: c.muted },
     infoValue: { fontSize: 14, fontWeight: "600", color: c.foreground },
     releaseValue: { flex: 1, marginLeft: 16, fontSize: 12, lineHeight: 18, textAlign: "right" },
+    learningNote: { fontSize: 11, lineHeight: 18, color: c.muted },
+    learningSourceLink: { minHeight: 44, justifyContent: "center", paddingVertical: 7, gap: 4 },
+    learningSourceText: { fontSize: 12, lineHeight: 18, color: c.primary, fontWeight: "600", textDecorationLine: "underline" },
     // Quiz Lang
     settingDesc: { fontSize: 13, color: c.muted, lineHeight: 18, marginBottom: 4 },
     langRow: { flexDirection: "row", gap: 10 },

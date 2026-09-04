@@ -31,6 +31,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { ScreenContainer } from "@/components/screen-container";
 import { FlipCard } from "@/components/flip-card";
 import { PronunciationButton } from "@/components/pronunciation-button";
+import { LearningDetails } from "@/components/learning-details";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { type QuizMode, type VocabItem } from "@/lib/vocab";
 import {
@@ -883,7 +884,7 @@ export default function QuizScreen() {
                   <Text style={s.wordText}>{q.item.w}</Text>
                   {q.item.p ? <Text style={s.ipaText}>{q.item.p}</Text> : null}
                 </View>
-                <PronunciationButton text={q.item.w} />
+                <PronunciationButton itemId={q.item.id} text={q.item.w} />
               </View>
 
               {/* 4지선다 모드 */}
@@ -1123,6 +1124,8 @@ export default function QuizScreen() {
                   )}
                 </View>
               )}
+
+              {answered && <LearningDetails itemId={q.item.id} />}
 
               {/* 문제 이동 */}
               {(currentIdx > 0 || answered) && (

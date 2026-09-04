@@ -1,0 +1,1345 @@
+[
+  {
+    "id": "learn:02554908-v",
+    "headword": "abet",
+    "group": "V501",
+    "partOfSpeech": "verb",
+    "itemIds": [
+      "JBKROW005373",
+      "JBKROW006148",
+      "JBKROW017594",
+      "JBKROW020629"
+    ],
+    "localGlosses": [
+      "부추기다"
+    ],
+    "definitionEn": "assist or encourage, usually in some wrongdoing",
+    "definitionKo": "보통 어떤 잘못을 저지르도록 돕거나 부추기다.",
+    "memoryKo": "나쁜 일에 힘을 보태는 것이 핵심이다.",
+    "usageKo": "사람이 범죄나 부정행위를 돕거나 조장하는 맥락에서 주로 쓴다.",
+    "examTrapKo": "단순히 돕는 aid와 달리, 부정적인 행위를 돕는다는 뜻이 자주 포함된다.",
+    "contrasts": [
+      {
+        "word": "aid",
+        "noteKo": "일반적인 도움을 뜻하며, 잘못을 돕는다는 의미가 필수는 아니다."
+      }
+    ],
+    "example": {
+      "en": "They abetted the fraud by hiding the records.",
+      "ko": "그들은 기록을 숨겨 그 사기 행위를 도왔다.",
+      "kind": "editorial"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abet.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abet.jsonl",
+          "result": "agree",
+          "contentSha256": "da9d081d2aa573a26787e767819875c18ef42528996562f67dbe8656de46d339"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:14034107-n",
+    "headword": "abeyance",
+    "group": "V501",
+    "partOfSpeech": "noun",
+    "itemIds": [
+      "JBKROW017595",
+      "JBKROW020630"
+    ],
+    "localGlosses": [
+      "중지 상태"
+    ],
+    "definitionEn": "temporary cessation or suspension",
+    "definitionKo": "일시적인 중단 또는 보류 상태.",
+    "memoryKo": "끝난 것이 아니라 잠시 잠들어 있는 상태다.",
+    "usageKo": "계획, 권리, 결정 등이 당분간 효력을 내지 않거나 실행되지 않는 상태를 나타낸다.",
+    "examTrapKo": "영구 폐지가 아니라 다시 시행될 수 있는 일시적 보류라는 점을 확인한다.",
+    "contrasts": [
+      {
+        "word": "abolition",
+        "noteKo": "제도 등을 없애는 영구적인 폐지를 뜻한다."
+      }
+    ],
+    "example": {
+      "en": "The expansion plan remains in abeyance.",
+      "ko": "그 확장 계획은 여전히 보류 상태다.",
+      "kind": "editorial"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abeyance.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abeyance.jsonl",
+          "result": "agree",
+          "contentSha256": "b35ffe72921a89aeb458e2873e20609ef4fccf15868838fbdfb892d7236c623b"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:02484173-v",
+    "headword": "abrogate",
+    "group": "V501",
+    "partOfSpeech": "verb",
+    "itemIds": [
+      "JBKROW004299",
+      "JBKROW006158",
+      "JBKROW014826",
+      "JBKROW017599",
+      "JBKROW020633"
+    ],
+    "localGlosses": [
+      "폐지하다"
+    ],
+    "definitionEn": "revoke formally",
+    "definitionKo": "공식적으로 폐지하거나 철회하다.",
+    "memoryKo": "권한 있는 주체가 규칙의 효력을 끊는 장면을 떠올린다.",
+    "usageKo": "법률, 조약, 권리처럼 공식적인 효력을 가진 것을 권위 있는 결정으로 없앨 때 쓴다.",
+    "examTrapKo": "내용 일부를 고치는 amend가 아니라, 효력 자체를 없애는 뜻에 가깝다.",
+    "contrasts": [
+      {
+        "word": "amend",
+        "noteKo": "법이나 문서의 일부를 고치거나 보완하는 것을 뜻한다."
+      }
+    ],
+    "example": {
+      "en": "The legislature voted to abrogate the outdated law.",
+      "ko": "입법부는 그 낡은 법률을 폐지하기로 의결했다.",
+      "kind": "editorial"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abrogate.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abrogate.jsonl",
+          "result": "agree",
+          "contentSha256": "549d0b65a502b5d6ad03f99816fad8acecffc075b1c997ec80bbbbfd29e6650f"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:01237093-n",
+    "headword": "absenteeism",
+    "group": "V501",
+    "partOfSpeech": "noun",
+    "itemIds": [
+      "JBKROW017600",
+      "JBKROW020634"
+    ],
+    "localGlosses": [
+      "결석; 결근"
+    ],
+    "definitionEn": "habitual absence from work",
+    "definitionKo": "직장 등에 상습적으로 결근하는 현상 또는 관행.",
+    "memoryKo": "한 번의 결석이 아니라 반복되는 결근 습관이다.",
+    "usageKo": "조직에서 정당한 이유 없이 자주 자리를 비우는 문제를 말할 때 쓴다.",
+    "examTrapKo": "단발적인 absence가 아니라 반복성과 습관성을 나타내는 명사다.",
+    "contrasts": [
+      {
+        "word": "absence",
+        "noteKo": "특정 시점에 자리에 없는 상태나 한 번의 부재도 가리킬 수 있다."
+      }
+    ],
+    "example": {
+      "en": "Chronic absenteeism disrupted the team's schedule.",
+      "ko": "상습적인 결근이 팀의 일정을 흐트러뜨렸다.",
+      "kind": "editorial"
+    },
+    "audio": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/b/b7/LL-Q1860_%28eng%29-Vininn126-absenteeism.wav/LL-Q1860_%28eng%29-Vininn126-absenteeism.wav.mp3",
+      "region": "US",
+      "source": "Wikimedia Commons",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:LL-Q1860_(eng)-Vininn126-absenteeism.wav",
+      "license": "CC BY-SA 4.0",
+      "attribution": "Vininn126 (speaker and recorder)"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/a/ab/absenteeism.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/a/ab/absenteeism.jsonl",
+          "result": "agree",
+          "contentSha256": "3e2d3c2091eee600a048ec6196a20ba51c67cd9bcd3a8e889ba322c38cd19e3f"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:00902519-s",
+    "headword": "abstruse",
+    "group": "V501",
+    "partOfSpeech": "adjective",
+    "itemIds": [
+      "JBKROW008748",
+      "JBKROW011270",
+      "JBKROW013804",
+      "JBKROW015612",
+      "JBKROW017601",
+      "JBKROW020635",
+      "JBKROW028269",
+      "JBKROW030079"
+    ],
+    "localGlosses": [
+      "난해한"
+    ],
+    "definitionEn": "difficult to penetrate; incomprehensible to one of ordinary understanding or knowledge",
+    "definitionKo": "보통 수준의 이해나 지식으로는 파악하기 어려운, 난해한.",
+    "memoryKo": "내용이 깊숙이 숨어 쉽게 뚫고 들어가기 어렵다는 느낌이다.",
+    "usageKo": "이론, 논의, 강의처럼 내용이 지나치게 전문적이거나 복잡해 이해하기 어려울 때 쓴다.",
+    "examTrapKo": "ambiguous는 뜻이 여러 갈래라 모호한 것이고, abstruse는 내용 자체가 어려운 것이다.",
+    "contrasts": [
+      {
+        "word": "ambiguous",
+        "noteKo": "둘 이상의 해석이 가능해 의미가 분명하지 않은 상태를 뜻한다."
+      }
+    ],
+    "example": {
+      "en": "the professor's lectures were so abstruse that students tended to avoid them",
+      "ko": "그 교수의 강의는 너무 난해해서 학생들이 피하는 경향이 있었다.",
+      "kind": "source"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abstruse.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abstruse.jsonl",
+          "result": "agree",
+          "contentSha256": "32d08750ef4b51a637c9c561db42b9409ebc9863eb57843cb9a541d11e63f3bc"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:02675578-v",
+    "headword": "suffice",
+    "group": "V502",
+    "partOfSpeech": "verb",
+    "itemIds": [
+      "JBKROW023562",
+      "JBKROW033856"
+    ],
+    "localGlosses": [
+      "충분하다"
+    ],
+    "definitionEn": "be sufficient; be adequate, either in quality or quantity",
+    "definitionKo": "질이나 양에서 충분하거나 적절하다.",
+    "memoryKo": "요구선을 딱 넘길 만큼이면 suffice다.",
+    "usageKo": "필요한 기준을 충족할 만큼 충분하다는 뜻으로, 주어가 필요한 역할을 해낼 때 쓴다.",
+    "examTrapKo": "감정적 만족을 주는 satisfy보다, 필요량이나 기준을 충족한다는 뜻에 초점을 둔다.",
+    "contrasts": [
+      {
+        "word": "satisfy",
+        "noteKo": "욕구를 충족시키거나 사람을 만족하게 한다는 뜻까지 포함한다."
+      }
+    ],
+    "example": {
+      "en": "A ‘B’ grade doesn't suffice to get me into medical school",
+      "ko": "B 학점으로는 의과대학에 들어가기에 충분하지 않다.",
+      "kind": "source"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/s/su/suffice.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/s/su/suffice.jsonl",
+          "result": "agree",
+          "contentSha256": "81a8a9276a6efa9cc213bd0df51042cd954c1a9b5df19475d1cd35cfa0516cd0"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:00519932-v",
+    "headword": "demystify",
+    "group": "V502",
+    "partOfSpeech": "verb",
+    "itemIds": [
+      "JBKROW023566",
+      "JBKROW030991"
+    ],
+    "localGlosses": [
+      "이해하기 쉽게 해주다"
+    ],
+    "definitionEn": "make less mysterious or remove the mystery from",
+    "definitionKo": "어떤 것의 신비성을 없애거나 덜 신비롭게 만들다.",
+    "memoryKo": "안개 같은 mystery를 걷어 이해 가능하게 만든다.",
+    "usageKo": "복잡하거나 막연하게 느껴지는 주제의 원리를 설명해 이해하기 쉽게 만들 때 쓴다.",
+    "examTrapKo": "단순히 내용을 줄이는 simplify와 달리, 오해나 신비감을 걷어 내는 데 초점이 있다.",
+    "contrasts": [
+      {
+        "word": "simplify",
+        "noteKo": "복잡한 것을 더 단순하게 만드는 것이며 신비감 제거가 핵심은 아니다."
+      }
+    ],
+    "example": {
+      "en": "let's demystify the event by explaining what it is all about",
+      "ko": "그 행사가 무엇에 관한 것인지 설명해서 막연함을 걷어 내자.",
+      "kind": "source"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/d/de/demystify.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/d/de/demystify.jsonl",
+          "result": "agree",
+          "contentSha256": "c590371adc5901c2c163ac627b3bc8d82ef234d2efd81913de119c1889d20b1f"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:00607995-v",
+    "headword": "inculcate",
+    "group": "V502",
+    "partOfSpeech": "verb",
+    "itemIds": [
+      "JBKROW023570"
+    ],
+    "localGlosses": [
+      "(사상을) 심어주다"
+    ],
+    "definitionEn": "teach and impress by frequent repetitions or admonitions",
+    "definitionKo": "반복적인 가르침이나 훈계를 통해 가르치고 마음에 깊이 새기다.",
+    "memoryKo": "한 번 말하는 것이 아니라 반복해 가치관을 박아 넣는다.",
+    "usageKo": "가치, 태도, 원칙 등을 반복 교육하여 습관이나 신념으로 자리 잡게 할 때 쓴다.",
+    "examTrapKo": "정보를 한 번 알려 주는 inform보다 반복과 내면화가 강하게 드러난다.",
+    "contrasts": [
+      {
+        "word": "inform",
+        "noteKo": "정보를 전달한다는 뜻으로 반복 교육이나 내면화를 요구하지 않는다."
+      }
+    ],
+    "example": {
+      "en": "inculcate values into the young generation",
+      "ko": "젊은 세대에게 가치관을 반복해서 심어 주다.",
+      "kind": "source"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/i/in/inculcate.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/i/in/inculcate.jsonl",
+          "result": "agree",
+          "contentSha256": "31e65bd7ec883bcda7853196c38d134992f8809946ba99efe2cdc3161552789d"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:05786128-n",
+    "headword": "astrology",
+    "group": "V502",
+    "partOfSpeech": "noun",
+    "itemIds": [
+      "JBKROW023586",
+      "JBKROW030307"
+    ],
+    "localGlosses": [
+      "점성술, 가짜 천문학"
+    ],
+    "definitionEn": "a pseudoscience claiming divination by the positions of the planets and sun and moon",
+    "definitionKo": "행성·태양·달의 위치로 인간사나 미래를 점칠 수 있다고 주장하는 유사과학.",
+    "memoryKo": "별을 관측하는 과학이 아니라 별자리로 점치는 체계다.",
+    "usageKo": "천체의 위치를 사람의 성격이나 사건과 연결해 해석하는 점성 체계를 가리킨다.",
+    "examTrapKo": "천체를 과학적으로 연구하는 astronomy와 철자가 비슷하므로 구분한다.",
+    "contrasts": [
+      {
+        "word": "astronomy",
+        "noteKo": "천체와 우주를 관찰하고 연구하는 자연과학이다."
+      }
+    ],
+    "example": {
+      "en": "She reads about astrology but studies astronomy at university.",
+      "ko": "그녀는 점성술에 관한 글을 읽지만 대학에서는 천문학을 공부한다.",
+      "kind": "editorial"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/a/as/astrology.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/a/as/astrology.jsonl",
+          "result": "agree",
+          "contentSha256": "7813d21e7829a6bae4ab5a60dad7234c3fc70a3275cf5d1bbab06f5599e1d3af"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:05903745-n",
+    "headword": "sophism",
+    "group": "V502",
+    "partOfSpeech": "noun",
+    "itemIds": [
+      "JBKROW023593",
+      "JBKROW033697"
+    ],
+    "localGlosses": [
+      "궤변, 가짜 추론"
+    ],
+    "definitionEn": "a deliberately invalid argument displaying ingenuity in reasoning in the hope of deceiving someone",
+    "definitionKo": "남을 속이려는 목적으로 교묘하게 꾸민, 의도적으로 타당하지 않은 논증.",
+    "memoryKo": "겉은 논리처럼 보이지만 속에는 속임수가 있는 주장이다.",
+    "usageKo": "그럴듯한 형식을 갖췄지만 실제로는 오류가 있으며 상대를 현혹하려는 논증을 가리킨다.",
+    "examTrapKo": "단순한 실수보다 의도적인 기만성이 강조되는 뜻으로 출제될 수 있다.",
+    "contrasts": [
+      {
+        "word": "syllogism",
+        "noteKo": "전제들에서 결론을 이끌어 내는 논증 형식이며 그 자체가 궤변을 뜻하지 않는다."
+      }
+    ],
+    "example": {
+      "en": "The claim was a sophism designed to distract the audience.",
+      "ko": "그 주장은 청중의 주의를 돌리려고 꾸민 궤변이었다.",
+      "kind": "editorial"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/s/so/sophism.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/s/so/sophism.jsonl",
+          "result": "agree",
+          "contentSha256": "417a0001b1dc04fcf7afba03566f20a271340f6b86ca1b87002a508d613c62cd"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:01803805-v",
+    "headword": "abase",
+    "group": "V601",
+    "partOfSpeech": "verb",
+    "itemIds": [
+      "JBKROW034466"
+    ],
+    "localGlosses": [
+      "(지위를) 떨어뜨리다"
+    ],
+    "definitionEn": "cause to feel shame; hurt the pride of",
+    "definitionKo": "수치심을 느끼게 하거나 자존심을 상하게 하다.",
+    "memoryKo": "사람의 자존감이나 지위를 아래로 낮춘다.",
+    "usageKo": "사람을 모욕하거나 비하해 위신과 자존심을 떨어뜨리는 상황에서 쓴다.",
+    "examTrapKo": "debase는 가치나 품질을 떨어뜨리는 데 널리 쓰이고, abase는 사람을 낮추고 모욕하는 뜻이 중심이다.",
+    "contrasts": [
+      {
+        "word": "debase",
+        "noteKo": "화폐·품질·가치·도덕적 수준 등을 떨어뜨리는 뜻으로도 쓰인다."
+      }
+    ],
+    "example": {
+      "en": "The tyrant tried to abase his critics in public.",
+      "ko": "그 폭군은 공개적으로 비판자들을 비하하려 했다.",
+      "kind": "editorial"
+    },
+    "audio": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/6/60/En-us-abase.ogg/En-us-abase.ogg.mp3",
+      "region": "US",
+      "source": "Wikimedia Commons",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:En-us-abase.ogg",
+      "license": "CC BY-SA 3.0",
+      "attribution": "Dvortygirl"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abase.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abase.jsonl",
+          "result": "agree",
+          "contentSha256": "8149ca04ace07b7e59af4bcdf8f84eb7cd871898bb1c2f6e19ff4e8061d49d74"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:01796126-v",
+    "headword": "abash",
+    "group": "V601",
+    "partOfSpeech": "verb",
+    "itemIds": [
+      "JBKROW034467"
+    ],
+    "localGlosses": [
+      "얼굴을 붉히게 하다"
+    ],
+    "definitionEn": "cause to be embarrassed; cause to feel self-conscious",
+    "definitionKo": "당황하게 하거나 자의식을 느끼게 하다.",
+    "memoryKo": "갑자기 얼굴이 붉어지고 몸 둘 바를 모르게 만든다.",
+    "usageKo": "실수나 열등감 등을 의식하게 만들어 순간적으로 부끄럽고 당황하게 할 때 쓴다.",
+    "examTrapKo": "강한 공개적 모욕을 뜻하는 humiliate보다, 당황하여 평정심을 잃는 느낌에 가깝다.",
+    "contrasts": [
+      {
+        "word": "humiliate",
+        "noteKo": "사람의 존엄이나 자존심을 심하게 깎아내리는 뜻이 강하다."
+      }
+    ],
+    "example": {
+      "en": "The unexpected question did not abash her.",
+      "ko": "그 뜻밖의 질문도 그녀를 당황하게 하지 못했다.",
+      "kind": "editorial"
+    },
+    "audio": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/b/ba/En-us-abash.ogg/En-us-abash.ogg.mp3",
+      "region": "US",
+      "source": "Wikimedia Commons",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:En-us-abash.ogg",
+      "license": "CC BY-SA 3.0",
+      "attribution": "Dvortygirl"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abash.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abash.jsonl",
+          "result": "agree",
+          "contentSha256": "59b7295253db3dae00f8b16ab294bfb567898f2a87f89c45017d3090a06d5722"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:02384340-v",
+    "headword": "abdicate",
+    "group": "V601",
+    "partOfSpeech": "verb",
+    "itemIds": [
+      "JBKROW034468"
+    ],
+    "localGlosses": [
+      "포기하다"
+    ],
+    "definitionEn": "give up, such as power, as of monarchs and emperors, or duties and obligations",
+    "definitionKo": "군주가 권력을 내려놓듯, 권한·직위·의무나 책임을 포기하다.",
+    "memoryKo": "왕좌에서 스스로 내려오는 장면이 중심 이미지다.",
+    "usageKo": "왕위나 높은 직위를 공식적으로 내려놓거나, 비유적으로 책임을 저버릴 때 쓴다.",
+    "examTrapKo": "일반 직장을 그만두는 resign보다 군주권·고위 권력 또는 중대한 책임의 포기가 두드러진다.",
+    "contrasts": [
+      {
+        "word": "resign",
+        "noteKo": "직위나 직장을 사임한다는 일반적인 표현이다."
+      }
+    ],
+    "example": {
+      "en": "The King abdicated when he married a divorcee",
+      "ko": "그 왕은 이혼 경력이 있는 사람과 결혼하면서 왕위에서 물러났다.",
+      "kind": "source"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abdicate.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abdicate.jsonl",
+          "result": "agree",
+          "contentSha256": "19e0853b85fcc29307ecc3ba2e525b42218c7d11252e6acba8fda43b367b3075"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:09229873-n",
+    "headword": "acclivity",
+    "group": "V601",
+    "partOfSpeech": "noun",
+    "itemIds": [
+      "JBKROW001773",
+      "JBKROW002069",
+      "JBKROW004090",
+      "JBKROW034478"
+    ],
+    "localGlosses": [
+      "오르막 경사"
+    ],
+    "definitionEn": "an upward slope or grade (as in a road)",
+    "definitionKo": "도로 등에서 위로 올라가는 경사 또는 오르막.",
+    "memoryKo": "올라가는 경사에는 acclivity, 내려가는 경사에는 declivity다.",
+    "usageKo": "지형이나 도로가 위쪽으로 기울어진 경사를 가리키는 명사다.",
+    "examTrapKo": "반대 방향의 내리막을 뜻하는 declivity와 방향을 바꾸어 출제하기 쉽다.",
+    "contrasts": [
+      {
+        "word": "declivity",
+        "noteKo": "아래쪽으로 내려가는 경사나 내리막을 뜻한다."
+      }
+    ],
+    "example": {
+      "en": "The steep acclivity slowed the hikers.",
+      "ko": "가파른 오르막 경사가 등산객들의 속도를 늦췄다.",
+      "kind": "editorial"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/a/ac/acclivity.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/a/ac/acclivity.jsonl",
+          "result": "agree",
+          "contentSha256": "6fa072a5c4ff695182fad86f23ed0620c3a08a99188cededfcea72a59af6a42a"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:02347012-v",
+    "headword": "accouter",
+    "group": "V601",
+    "partOfSpeech": "verb",
+    "itemIds": [
+      "JBKROW034480"
+    ],
+    "localGlosses": [
+      "장비를 갖추다"
+    ],
+    "definitionEn": "provide with military equipment",
+    "definitionKo": "군사 장비를 지급하거나 갖추게 하다.",
+    "memoryKo": "군인을 전투 장비로 차려 입히는 장면을 떠올린다.",
+    "usageKo": "특히 군인이나 부대에 복장과 장비를 갖추어 줄 때 쓰는 동사다.",
+    "examTrapKo": "일반적인 equip보다 군복·무기 등 군사 장비의 맥락이 뚜렷하다.",
+    "contrasts": [
+      {
+        "word": "equip",
+        "noteKo": "목적에 필요한 장비를 갖추게 한다는 일반적인 표현이다."
+      }
+    ],
+    "example": {
+      "en": "The recruits were accoutered for field training.",
+      "ko": "신병들은 야외 훈련에 필요한 군사 장비를 갖추었다.",
+      "kind": "editorial"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/a/ac/accouter.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/a/ac/accouter.jsonl",
+          "result": "agree",
+          "contentSha256": "7161a8e5a2096376941869a5ad525c32b2807cb92781e570b6007dca27995091"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:00533833-s",
+    "headword": "abashed",
+    "group": "APPENDIX",
+    "partOfSpeech": "adjective",
+    "itemIds": [
+      "APPROW00001"
+    ],
+    "localGlosses": [
+      "당황한 (embarrassed) cf) abash 당황하다(주로 p.p)"
+    ],
+    "definitionEn": "feeling or caused to feel ill at ease or self-conscious or ashamed",
+    "definitionKo": "마음이 불편하거나 자의식이 생겨 당황하거나 부끄러워진.",
+    "memoryKo": "칭찬이나 실수 앞에서 얼굴이 붉어져 몸 둘 바를 모르는 상태다.",
+    "usageKo": "자신의 행동이나 타인의 시선을 의식해 당황하고 수줍어하는 상태를 나타낸다.",
+    "examTrapKo": "도덕적 잘못에 대한 깊은 죄책감만을 뜻하지 않고, 어색한 칭찬 때문에도 abashed할 수 있다.",
+    "contrasts": [
+      {
+        "word": "ashamed",
+        "noteKo": "잘못이나 결함에 대한 수치심을 나타내는 경우가 많다."
+      }
+    ],
+    "example": {
+      "en": "felt abashed at the extravagant praise",
+      "ko": "지나친 칭찬에 몸 둘 바를 몰랐다.",
+      "kind": "source"
+    },
+    "audio": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/7/73/LL-Q1860_%28eng%29-Wodencafe-abashed.wav/LL-Q1860_%28eng%29-Wodencafe-abashed.wav.mp3",
+      "region": "US",
+      "source": "Wikimedia Commons",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:LL-Q1860_(eng)-Wodencafe-abashed.wav",
+      "license": "CC0",
+      "attribution": "Wodencafe (speaker and recorder)"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abashed.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abashed.jsonl",
+          "result": "agree",
+          "contentSha256": "413a06e1ab6e0873807e3c325500c43c06fcc6af9ecb914349d00a553ba3a54a"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:09775380-n",
+    "headword": "abettor",
+    "group": "APPENDIX",
+    "partOfSpeech": "noun",
+    "itemIds": [
+      "APPROW00004"
+    ],
+    "localGlosses": [
+      "교사자, 선동자(부추겨서 안 좋은 짓을 하게 하는 사람)"
+    ],
+    "definitionEn": "one who helps or encourages or incites another",
+    "definitionKo": "다른 사람을 돕거나 격려하거나 부추기는 사람.",
+    "memoryKo": "abet하는 사람을 나타내는 -or형 명사다.",
+    "usageKo": "특히 범죄나 잘못을 돕거나 선동한 사람을 법률적·비판적 맥락에서 가리킬 수 있다.",
+    "examTrapKo": "직접 범행하지 않았더라도 실행을 돕거나 부추긴 사람일 수 있다.",
+    "contrasts": [
+      {
+        "word": "accomplice",
+        "noteKo": "범죄 계획이나 실행에 함께 가담한 공범을 뜻한다."
+      }
+    ],
+    "example": {
+      "en": "The court treated him as an abettor of the crime.",
+      "ko": "법원은 그를 그 범죄의 교사·방조자로 보았다.",
+      "kind": "editorial"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abettor.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abettor.jsonl",
+          "result": "agree",
+          "contentSha256": "9a0c2a11f00d04dbdeb461283f48412f36a8a306fadc0081db724dbe9d7f0fca"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:81484980-r",
+    "headword": "abruptly",
+    "group": "APPENDIX",
+    "partOfSpeech": "adverb",
+    "itemIds": [
+      "APPROW00009"
+    ],
+    "localGlosses": [
+      "갑자기, 급격히 (suddenly, sharply)"
+    ],
+    "definitionEn": "quickly and without warning",
+    "definitionKo": "빠르게, 그리고 사전 경고 없이 갑자기.",
+    "memoryKo": "예고 없이 장면이 뚝 끊겨 바뀌는 느낌이다.",
+    "usageKo": "행동, 말, 변화가 갑작스럽게 일어나거나 매끄럽지 않게 끝날 때 쓰는 부사다.",
+    "examTrapKo": "속도만 빠른 rapidly와 달리 예고 없음과 갑작스러운 단절이 핵심이다.",
+    "contrasts": [
+      {
+        "word": "gradually",
+        "noteKo": "시간을 두고 점차적으로 변하는 방식을 뜻한다."
+      }
+    ],
+    "example": {
+      "en": "The meeting ended abruptly after the alarm rang.",
+      "ko": "경보가 울린 뒤 회의가 갑자기 끝났다.",
+      "kind": "editorial"
+    },
+    "audio": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/21/En-us-abruptly.ogg/En-us-abruptly.ogg.mp3",
+      "region": "US",
+      "source": "Wikimedia Commons",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:En-us-abruptly.ogg",
+      "license": "CC BY-SA 3.0",
+      "attribution": "Dvortygirl"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abruptly.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abruptly.jsonl",
+          "result": "agree",
+          "contentSha256": "a583997695611d687c089d0507a9d74172e01711f75bca563e29c4f2e15eff70"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:14335599-n",
+    "headword": "abscess",
+    "group": "APPENDIX",
+    "partOfSpeech": "noun",
+    "itemIds": [
+      "APPROW00010"
+    ],
+    "localGlosses": [
+      "종기, 염증 / 농양, 고름"
+    ],
+    "definitionEn": "symptom consisting of a localized collection of pus surrounded by inflamed tissue",
+    "definitionKo": "염증이 생긴 조직에 둘러싸여 국소적으로 고름이 고인 증상.",
+    "memoryKo": "염증 조직 안에 고름이 갇힌 주머니를 떠올린다.",
+    "usageKo": "감염 등으로 조직이 손상되어 고름이 고인 농양을 가리키는 의학 명사다.",
+    "examTrapKo": "단순한 물집이 아니라 염증 조직과 고름이 함께 있는 병변이다.",
+    "contrasts": [
+      {
+        "word": "blister",
+        "noteKo": "마찰이나 화상 등으로 피부에 맑은 액체가 차는 물집을 주로 뜻한다."
+      }
+    ],
+    "example": {
+      "en": "The dentist drained the abscess near the tooth.",
+      "ko": "치과의사는 치아 근처의 농양에서 고름을 빼냈다.",
+      "kind": "editorial"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abscess.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abscess.jsonl",
+          "result": "agree",
+          "contentSha256": "ca153794985513e3ccb8e4c36a47c7b4d335399ffcc277201c9b80346c1dcf02"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:04677185-n",
+    "headword": "accountability",
+    "group": "APPENDIX",
+    "partOfSpeech": "noun",
+    "itemIds": [
+      "APPROW00020"
+    ],
+    "localGlosses": [
+      "책임, 의무 (responsibility)"
+    ],
+    "definitionEn": "responsibility to someone or for some activity",
+    "definitionKo": "누군가 또는 어떤 활동에 대해 설명하고 책임져야 하는 상태.",
+    "memoryKo": "결과를 설명하고 그에 따른 책임까지 지는 것이다.",
+    "usageKo": "결정이나 행동의 결과를 공개적으로 설명하고 평가와 결과를 받아들여야 하는 책임을 말한다.",
+    "examTrapKo": "responsibility가 맡은 의무 자체라면, accountability는 그 수행 결과에 답하고 책임지는 측면이 두드러진다.",
+    "contrasts": [
+      {
+        "word": "responsibility",
+        "noteKo": "해야 할 의무나 맡은 역할 자체를 넓게 뜻한다."
+      }
+    ],
+    "example": {
+      "en": "Public officials must accept accountability for their decisions.",
+      "ko": "공직자들은 자신의 결정에 대한 설명 책임을 받아들여야 한다.",
+      "kind": "editorial"
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025"
+      },
+      {
+        "name": "English Wiktionary via Kaikki",
+        "url": "https://kaikki.org/dictionary/English/meaning/a/ac/accountability.jsonl",
+        "license": "CC BY-SA 4.0 / GFDL 1.3",
+        "edition": "accessed 2026.09.04"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial cross-check",
+      "checkedAtKst": "2026.09.04",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+          "result": "agree",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+        },
+        {
+          "source": "English Wiktionary via Kaikki",
+          "independenceGroup": "Wiktionary",
+          "url": "https://kaikki.org/dictionary/English/meaning/a/ac/accountability.jsonl",
+          "result": "agree",
+          "contentSha256": "93e8ceedb4a4fe18a15ca9ea0473a4631371556bceade11f5bbec30fe7bafec1"
+        }
+      ]
+    }
+  }
+]

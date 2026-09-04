@@ -15,6 +15,8 @@ export default defineConfig({
       "tests/vocab-v1.4.test.ts",
       "tests/vocab-migration-v1.4.test.ts",
       "tests/vocab-storage-migration-v1.4.test.ts",
+      "tests/vocab-learning.test.ts",
+      "tests/us-pronunciation.test.ts",
     ],
     exclude: [
       "node_modules/**",

@@ -22,6 +22,7 @@ import { useRouter } from "expo-router";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { PronunciationButton } from "@/components/pronunciation-button";
+import { LearningDetails } from "@/components/learning-details";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { getRangeItems, RANGES, VOCAB, type VocabItem } from "@/lib/vocab";
 import {
@@ -133,7 +134,7 @@ function WordCard({
           <Text style={s.wordText}>{item.w}</Text>
           {item.p ? <Text style={s.ipaText}>{item.p}</Text> : null}
         </View>
-        <PronunciationButton text={item.w} compact style={{ marginRight: 2 }} />
+        <PronunciationButton itemId={item.id} text={item.w} compact style={{ marginRight: 2 }} />
         <TouchableOpacity
           accessibilityRole="button"
           accessibilityLabel={`${item.w} ${isBookmarked ? "북마크 해제" : "북마크 추가"}`}
@@ -196,6 +197,7 @@ function WordCard({
           </Text>
         </Pressable>
       )}
+      {!meaningHidden && <LearningDetails itemId={item.id} />}
     </View>
   );
 }

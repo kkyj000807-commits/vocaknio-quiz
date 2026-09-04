@@ -1,0 +1,724 @@
+{
+  "version": "1.4",
+  "coverage": {
+    "senses": 40,
+    "rows": 119,
+    "checkedAtKst": "2026.09.04"
+  },
+  "items": {
+    "APPROW00001": {
+      "group": "APPENDIX",
+      "entryIds": [
+        "learn:00533833-s"
+      ]
+    },
+    "APPROW00004": {
+      "group": "APPENDIX",
+      "entryIds": [
+        "learn:09775380-n"
+      ]
+    },
+    "APPROW00009": {
+      "group": "APPENDIX",
+      "entryIds": [
+        "learn:81484980-r"
+      ]
+    },
+    "APPROW00010": {
+      "group": "APPENDIX",
+      "entryIds": [
+        "learn:14335599-n"
+      ]
+    },
+    "APPROW00020": {
+      "group": "APPENDIX",
+      "entryIds": [
+        "learn:04677185-n"
+      ]
+    },
+    "JBKROW000003": {
+      "group": "V101",
+      "entryIds": [
+        "learn:00722886-s"
+      ]
+    },
+    "JBKROW000011": {
+      "group": "V101",
+      "entryIds": [
+        "learn:01288942-s"
+      ]
+    },
+    "JBKROW000024": {
+      "group": "V101",
+      "entryIds": [
+        "learn:01074673-v"
+      ]
+    },
+    "JBKROW000031": {
+      "group": "V101",
+      "entryIds": [
+        "learn:00884747-v"
+      ]
+    },
+    "JBKROW000032": {
+      "group": "V101",
+      "entryIds": [
+        "learn:00940267-s"
+      ]
+    },
+    "JBKROW001435": {
+      "group": "V201",
+      "entryIds": [
+        "learn:01693210-s"
+      ]
+    },
+    "JBKROW001538": {
+      "group": "V301",
+      "entryIds": [
+        "learn:01764521-v"
+      ]
+    },
+    "JBKROW001773": {
+      "group": "V601",
+      "entryIds": [
+        "learn:09229873-n"
+      ]
+    },
+    "JBKROW001793": {
+      "group": "V401",
+      "entryIds": [
+        "learn:10574739-n"
+      ]
+    },
+    "JBKROW002069": {
+      "group": "V601",
+      "entryIds": [
+        "learn:09229873-n"
+      ]
+    },
+    "JBKROW002168": {
+      "group": "V201",
+      "entryIds": [
+        "learn:01693210-s"
+      ]
+    },
+    "JBKROW002206": {
+      "group": "V101",
+      "entryIds": [
+        "learn:00884747-v"
+      ]
+    },
+    "JBKROW002250": {
+      "group": "V101",
+      "entryIds": [
+        "learn:00940267-s"
+      ]
+    },
+    "JBKROW002257": {
+      "group": "V101",
+      "entryIds": [
+        "learn:00722886-s"
+      ]
+    },
+    "JBKROW003008": {
+      "group": "V301",
+      "entryIds": [
+        "learn:01764521-v"
+      ]
+    },
+    "JBKROW003241": {
+      "group": "V101",
+      "entryIds": [
+        "learn:01288942-s"
+      ]
+    },
+    "JBKROW003687": {
+      "group": "V401",
+      "entryIds": [
+        "learn:10574739-n"
+      ]
+    },
+    "JBKROW003994": {
+      "group": "V101",
+      "entryIds": [
+        "learn:01074673-v"
+      ]
+    },
+    "JBKROW004090": {
+      "group": "V601",
+      "entryIds": [
+        "learn:09229873-n"
+      ]
+    },
+    "JBKROW004103": {
+      "group": "V201",
+      "entryIds": [
+        "learn:00905999-v"
+      ]
+    },
+    "JBKROW004104": {
+      "group": "V201",
+      "entryIds": [
+        "learn:02434522-s"
+      ]
+    },
+    "JBKROW004114": {
+      "group": "V201",
+      "entryIds": [
+        "learn:00531862-s"
+      ]
+    },
+    "JBKROW004122": {
+      "group": "V201",
+      "entryIds": [
+        "learn:00451803-s"
+      ]
+    },
+    "JBKROW004146": {
+      "group": "V201",
+      "entryIds": [
+        "learn:01693210-s"
+      ]
+    },
+    "JBKROW004299": {
+      "group": "V501",
+      "entryIds": [
+        "learn:02484173-v"
+      ]
+    },
+    "JBKROW004315": {
+      "group": "V401",
+      "entryIds": [
+        "learn:00177411-a"
+      ]
+    },
+    "JBKROW004759": {
+      "group": "V301",
+      "entryIds": [
+        "learn:00299633-a"
+      ]
+    },
+    "JBKROW004867": {
+      "group": "V401",
+      "entryIds": [
+        "learn:02186120-s"
+      ]
+    },
+    "JBKROW005373": {
+      "group": "V501",
+      "entryIds": [
+        "learn:02554908-v"
+      ]
+    },
+    "JBKROW005429": {
+      "group": "V301",
+      "entryIds": [
+        "learn:00770823-v"
+      ]
+    },
+    "JBKROW006148": {
+      "group": "V501",
+      "entryIds": [
+        "learn:02554908-v"
+      ]
+    },
+    "JBKROW006158": {
+      "group": "V501",
+      "entryIds": [
+        "learn:02484173-v"
+      ]
+    },
+    "JBKROW006336": {
+      "group": "V401",
+      "entryIds": [
+        "learn:00177411-a"
+      ]
+    },
+    "JBKROW006359": {
+      "group": "V201",
+      "entryIds": [
+        "learn:01693210-s"
+      ]
+    },
+    "JBKROW006436": {
+      "group": "V301",
+      "entryIds": [
+        "learn:00299633-a"
+      ]
+    },
+    "JBKROW006438": {
+      "group": "V301",
+      "entryIds": [
+        "learn:00770823-v"
+      ]
+    },
+    "JBKROW006881": {
+      "group": "V201",
+      "entryIds": [
+        "learn:00905999-v"
+      ]
+    },
+    "JBKROW007274": {
+      "group": "V401",
+      "entryIds": [
+        "learn:02186120-s"
+      ]
+    },
+    "JBKROW007301": {
+      "group": "V201",
+      "entryIds": [
+        "learn:00451803-s"
+      ]
+    },
+    "JBKROW007823": {
+      "group": "V201",
+      "entryIds": [
+        "learn:00531862-s"
+      ]
+    },
+    "JBKROW007847": {
+      "group": "V201",
+      "entryIds": [
+        "learn:02434522-s"
+      ]
+    },
+    "JBKROW008184": {
+      "group": "V301",
+      "entryIds": [
+        "learn:01810472-v"
+      ]
+    },
+    "JBKROW008187": {
+      "group": "V301",
+      "entryIds": [
+        "learn:01764521-v"
+      ]
+    },
+    "JBKROW008207": {
+      "group": "V301",
+      "entryIds": [
+        "learn:07519226-n"
+      ]
+    },
+    "JBKROW008231": {
+      "group": "V301",
+      "entryIds": [
+        "learn:00299633-a"
+      ]
+    },
+    "JBKROW008253": {
+      "group": "V301",
+      "entryIds": [
+        "learn:00770823-v"
+      ]
+    },
+    "JBKROW008630": {
+      "group": "V301",
+      "entryIds": [
+        "learn:00770823-v"
+      ]
+    },
+    "JBKROW008748": {
+      "group": "V501",
+      "entryIds": [
+        "learn:00902519-s"
+      ]
+    },
+    "JBKROW010203": {
+      "group": "V301",
+      "entryIds": [
+        "learn:00299633-a"
+      ]
+    },
+    "JBKROW011270": {
+      "group": "V501",
+      "entryIds": [
+        "learn:00902519-s"
+      ]
+    },
+    "JBKROW011540": {
+      "group": "V301",
+      "entryIds": [
+        "learn:00299633-a"
+      ]
+    },
+    "JBKROW011541": {
+      "group": "V301",
+      "entryIds": [
+        "learn:00770823-v"
+      ]
+    },
+    "JBKROW011553": {
+      "group": "V301",
+      "entryIds": [
+        "learn:01810472-v"
+      ]
+    },
+    "JBKROW012385": {
+      "group": "V301",
+      "entryIds": [
+        "learn:01764521-v"
+      ]
+    },
+    "JBKROW013000": {
+      "group": "V301",
+      "entryIds": [
+        "learn:07519226-n"
+      ]
+    },
+    "JBKROW013564": {
+      "group": "V401",
+      "entryIds": [
+        "learn:02654355-v"
+      ]
+    },
+    "JBKROW013575": {
+      "group": "V401",
+      "entryIds": [
+        "learn:10574739-n"
+      ]
+    },
+    "JBKROW013593": {
+      "group": "V401",
+      "entryIds": [
+        "learn:00177411-a"
+      ]
+    },
+    "JBKROW013637": {
+      "group": "V401",
+      "entryIds": [
+        "learn:02186120-s"
+      ]
+    },
+    "JBKROW013639": {
+      "group": "V401",
+      "entryIds": [
+        "learn:04759785-n"
+      ]
+    },
+    "JBKROW013804": {
+      "group": "V501",
+      "entryIds": [
+        "learn:00902519-s"
+      ]
+    },
+    "JBKROW014053": {
+      "group": "V401",
+      "entryIds": [
+        "learn:02186120-s"
+      ]
+    },
+    "JBKROW014091": {
+      "group": "V101",
+      "entryIds": [
+        "learn:00940267-s"
+      ]
+    },
+    "JBKROW014826": {
+      "group": "V501",
+      "entryIds": [
+        "learn:02484173-v"
+      ]
+    },
+    "JBKROW015612": {
+      "group": "V501",
+      "entryIds": [
+        "learn:00902519-s"
+      ]
+    },
+    "JBKROW015766": {
+      "group": "V401",
+      "entryIds": [
+        "learn:00177411-a"
+      ]
+    },
+    "JBKROW016149": {
+      "group": "V401",
+      "entryIds": [
+        "learn:04759785-n"
+      ]
+    },
+    "JBKROW016641": {
+      "group": "V401",
+      "entryIds": [
+        "learn:02186120-s"
+      ]
+    },
+    "JBKROW016925": {
+      "group": "V401",
+      "entryIds": [
+        "learn:02654355-v"
+      ]
+    },
+    "JBKROW017196": {
+      "group": "V401",
+      "entryIds": [
+        "learn:10574739-n"
+      ]
+    },
+    "JBKROW017550": {
+      "group": "V401",
+      "entryIds": [
+        "learn:00177411-a"
+      ]
+    },
+    "JBKROW017594": {
+      "group": "V501",
+      "entryIds": [
+        "learn:02554908-v"
+      ]
+    },
+    "JBKROW017595": {
+      "group": "V501",
+      "entryIds": [
+        "learn:14034107-n"
+      ]
+    },
+    "JBKROW017599": {
+      "group": "V501",
+      "entryIds": [
+        "learn:02484173-v"
+      ]
+    },
+    "JBKROW017600": {
+      "group": "V501",
+      "entryIds": [
+        "learn:01237093-n"
+      ]
+    },
+    "JBKROW017601": {
+      "group": "V501",
+      "entryIds": [
+        "learn:00902519-s"
+      ]
+    },
+    "JBKROW018140": {
+      "group": "V401",
+      "entryIds": [
+        "learn:10574739-n"
+      ]
+    },
+    "JBKROW018724": {
+      "group": "V401",
+      "entryIds": [
+        "learn:10574739-n"
+      ]
+    },
+    "JBKROW020629": {
+      "group": "V501",
+      "entryIds": [
+        "learn:02554908-v"
+      ]
+    },
+    "JBKROW020630": {
+      "group": "V501",
+      "entryIds": [
+        "learn:14034107-n"
+      ]
+    },
+    "JBKROW020633": {
+      "group": "V501",
+      "entryIds": [
+        "learn:02484173-v"
+      ]
+    },
+    "JBKROW020634": {
+      "group": "V501",
+      "entryIds": [
+        "learn:01237093-n"
+      ]
+    },
+    "JBKROW020635": {
+      "group": "V501",
+      "entryIds": [
+        "learn:00902519-s"
+      ]
+    },
+    "JBKROW022130": {
+      "group": "V401",
+      "entryIds": [
+        "learn:10574739-n"
+      ]
+    },
+    "JBKROW023562": {
+      "group": "V502",
+      "entryIds": [
+        "learn:02675578-v"
+      ]
+    },
+    "JBKROW023566": {
+      "group": "V502",
+      "entryIds": [
+        "learn:00519932-v"
+      ]
+    },
+    "JBKROW023570": {
+      "group": "V502",
+      "entryIds": [
+        "learn:00607995-v"
+      ]
+    },
+    "JBKROW023586": {
+      "group": "V502",
+      "entryIds": [
+        "learn:05786128-n"
+      ]
+    },
+    "JBKROW023593": {
+      "group": "V502",
+      "entryIds": [
+        "learn:05903745-n"
+      ]
+    },
+    "JBKROW024016": {
+      "group": "V301",
+      "entryIds": [
+        "learn:07519226-n"
+      ]
+    },
+    "JBKROW024543": {
+      "group": "V301",
+      "entryIds": [
+        "learn:00299633-a"
+      ]
+    },
+    "JBKROW025612": {
+      "group": "V301",
+      "entryIds": [
+        "learn:01764521-v"
+      ]
+    },
+    "JBKROW026187": {
+      "group": "V101",
+      "entryIds": [
+        "learn:00722886-s"
+      ]
+    },
+    "JBKROW026521": {
+      "group": "V301",
+      "entryIds": [
+        "learn:07519226-n"
+      ]
+    },
+    "JBKROW027365": {
+      "group": "V301",
+      "entryIds": [
+        "learn:07519226-n"
+      ]
+    },
+    "JBKROW028123": {
+      "group": "V301",
+      "entryIds": [
+        "learn:00770823-v"
+      ]
+    },
+    "JBKROW028269": {
+      "group": "V501",
+      "entryIds": [
+        "learn:00902519-s"
+      ]
+    },
+    "JBKROW028758": {
+      "group": "V301",
+      "entryIds": [
+        "learn:00299633-a"
+      ]
+    },
+    "JBKROW029645": {
+      "group": "V101",
+      "entryIds": [
+        "learn:00884747-v"
+      ]
+    },
+    "JBKROW029685": {
+      "group": "V301",
+      "entryIds": [
+        "learn:07519226-n"
+      ]
+    },
+    "JBKROW030079": {
+      "group": "V501",
+      "entryIds": [
+        "learn:00902519-s"
+      ]
+    },
+    "JBKROW030307": {
+      "group": "V502",
+      "entryIds": [
+        "learn:05786128-n"
+      ]
+    },
+    "JBKROW030559": {
+      "group": "V301",
+      "entryIds": [
+        "learn:00299633-a"
+      ]
+    },
+    "JBKROW030584": {
+      "group": "V101",
+      "entryIds": [
+        "learn:00722886-s"
+      ]
+    },
+    "JBKROW030991": {
+      "group": "V502",
+      "entryIds": [
+        "learn:00519932-v"
+      ]
+    },
+    "JBKROW032062": {
+      "group": "V301",
+      "entryIds": [
+        "learn:01764521-v"
+      ]
+    },
+    "JBKROW033355": {
+      "group": "V301",
+      "entryIds": [
+        "learn:07519226-n"
+      ]
+    },
+    "JBKROW033697": {
+      "group": "V502",
+      "entryIds": [
+        "learn:05903745-n"
+      ]
+    },
+    "JBKROW033856": {
+      "group": "V502",
+      "entryIds": [
+        "learn:02675578-v"
+      ]
+    },
+    "JBKROW034466": {
+      "group": "V601",
+      "entryIds": [
+        "learn:01803805-v"
+      ]
+    },
+    "JBKROW034467": {
+      "group": "V601",
+      "entryIds": [
+        "learn:01796126-v"
+      ]
+    },
+    "JBKROW034468": {
+      "group": "V601",
+      "entryIds": [
+        "learn:02384340-v"
+      ]
+    },
+    "JBKROW034478": {
+      "group": "V601",
+      "entryIds": [
+        "learn:09229873-n"
+      ]
+    },
+    "JBKROW034480": {
+      "group": "V601",
+      "entryIds": [
+        "learn:02347012-v"
+      ]
+    }
+  }
+}
