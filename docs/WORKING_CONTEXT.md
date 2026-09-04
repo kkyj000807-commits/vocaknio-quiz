@@ -15,7 +15,7 @@
 - 최근 수정: `2026.09.05 00:02 KST`
 - 공개 URL: `https://kkyj000807-commits.github.io/vocaknio-quiz/`
 - Production 기능 커밋: `697db35`
-- 현재 main 커밋: `f9aab5b`
+- 배포 감사 스크립트 커밋: `f9aab5b`
 - Pages 커밋: `6a4b7f9`
 - 새 번들: `entry-d0854076c746b0a83e4fbfd0c4402ca2.js`
 - Pages Actions `33887417534`: 성공
