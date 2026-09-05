@@ -3,6 +3,618 @@
   "definitionPolicy": "영영 풀이·한국어 해설·예문은 출처의 뜻을 대조한 자체 작성이며 사전 원문 또는 공식 번역이 아님.",
   "entries": [
     {
+      "key": "abide-by",
+      "partOfSpeech": "phrasal verb",
+      "targets": [
+        {
+          "id": "JBKROW000004",
+          "headword": "abide by",
+          "before": "준수하다"
+        },
+        {
+          "id": "JBKROW002049",
+          "headword": "abide by",
+          "before": "준수하다"
+        }
+      ],
+      "meaningKo": "규칙·결정·약속을 따르고 지키다",
+      "definitionEn": "To follow a rule or decision, or honour an agreement that governs what you should do.",
+      "definitionKo": "규칙을 알기만 하는 것이 아니라 그 기준대로 행동하고, 받아들인 결정이나 약속을 지키다.",
+      "memoryKo": "경기 결과가 마음에 들지 않아도 합의한 판정 기준에 따라 행동하는 장면이다.",
+      "usageKo": "abide by + rules/law/decision/agreement. 다소 격식 있는 표현이다. 실제로 사용할 때는 by까지 묶는다.",
+      "examTrapKo": "can't abide + 대상은 ~을 참을 수 없다라는 별도 구조다. abide by를 참다로 바꾸지 않는다.",
+      "contrasts": [
+        {
+          "word": "agree with",
+          "noteKo": "의견이 같다는 뜻이다. abide by는 개인적인 찬반과 별개로 규칙·결정대로 행동함에 초점이 있다."
+        }
+      ],
+      "example": {
+        "en": "Even when we disagree with the result, we must abide by the agreed procedure.",
+        "ko": "결과에 동의하지 않더라도 우리가 합의한 절차는 지켜야 한다."
+      },
+      "sources": [
+        {
+          "name": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/abide-by",
+          "independenceGroup": "Collins",
+          "noteKo": "규칙·결정·약속대로 행동하는 뜻 확인."
+        },
+        {
+          "name": "Cambridge Dictionary",
+          "url": "https://dictionary.cambridge.org/us/dictionary/english/abide-by",
+          "independenceGroup": "Cambridge",
+          "noteKo": "합의·결정·규칙을 받아들이거나 준수하는 격식 용법 대조."
+        }
+      ]
+    },
+    {
+      "key": "teem-with",
+      "partOfSpeech": "phrasal verb",
+      "targets": [
+        {
+          "id": "JBKROW000005",
+          "headword": "teem with",
+          "before": "가득 차다"
+        },
+        {
+          "id": "JBKROW003863",
+          "headword": "teem with",
+          "before": "가득 차다"
+        }
+      ],
+      "meaningKo": "사람·생물 등으로 가득하다; 북적거리다",
+      "definitionEn": "To contain very many people, animals, or other things, often giving an impression of active abundance.",
+      "definitionKo": "단순히 빈 공간이 없다는 말보다, 수많은 사람이나 생물이 모여 움직이는 풍성한 모습을 그린다.",
+      "memoryKo": "물고기가 빽빽하게 헤엄치는 물속이나 관광객으로 북적이는 거리를 떠올린다.",
+      "usageKo": "장소 + teem with + 가득한 대상. 특히 be teeming with 형태가 흔하다. with 뒤의 대상을 빼면 무엇이 많은지 알 수 없다.",
+      "examTrapKo": "team with나 team up with(함께 팀을 이루다)와 철자를 구분한다. 사람·동물만 가능하다고 지나치게 제한하지 않는다.",
+      "contrasts": [
+        {
+          "word": "be full of",
+          "noteKo": "무언가 가득한 상태를 넓게 말한다. teem with는 많은 수와 활발한 밀집 장면을 더 생생하게 묘사한다."
+        }
+      ],
+      "example": {
+        "en": "The shallow pools were teeming with tiny fish.",
+        "ko": "얕은 웅덩이마다 작은 물고기들이 가득 헤엄치고 있었다."
+      },
+      "sources": [
+        {
+          "name": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/teem-with",
+          "independenceGroup": "Oxford",
+          "noteKo": "많은 사람·동물이 움직이는 밀집 상태 확인."
+        },
+        {
+          "name": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/teem",
+          "independenceGroup": "Collins",
+          "noteKo": "가득함·풍부함 및 be teeming with 용법 대조."
+        }
+      ]
+    },
+    {
+      "key": "wrap-up",
+      "partOfSpeech": "phrasal verb",
+      "targets": [
+        {
+          "id": "JBKROW000016",
+          "headword": "wrap up",
+          "before": "마무리 짓다"
+        },
+        {
+          "id": "JBKROW004042",
+          "headword": "wrap up",
+          "before": "마무리 짓다"
+        }
+      ],
+      "meaningKo": "일·회의 등을 마무리 짓다",
+      "definitionEn": "To bring an activity, discussion, or arrangement to a satisfactory close.",
+      "definitionKo": "진행하던 일을 정리하고 필요한 마무리를 해서 끝내다.",
+      "memoryKo": "흩어진 물건을 포장해 묶듯, 진행 중인 일을 정리해 끝맺는 모습이다.",
+      "usageKo": "wrap up a meeting/project. 대명사는 wrap it up 순서다. 이 뜻은 비교적 비격식적이다.",
+      "examTrapKo": "옷을 따뜻하게 껴입다는 wrap up warm도 있다. 이 항목은 회의·업무를 끝내는 뜻이며, 문장 속 목적어를 확인한다.",
+      "contrasts": [
+        {
+          "word": "put off",
+          "noteKo": "나중으로 미루는 것이다. wrap up은 지금 진행한 것을 끝맺는다."
+        }
+      ],
+      "example": {
+        "en": "Let's wrap up the meeting by agreeing on one next step.",
+        "ko": "다음에 할 일 한 가지를 합의하고 회의를 마무리하자."
+      },
+      "sources": [
+        {
+          "name": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/wrap-up",
+          "independenceGroup": "Oxford",
+          "noteKo": "회의·합의 등을 마무리하는 비격식 용법 확인."
+        },
+        {
+          "name": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/wrap-up",
+          "independenceGroup": "Collins",
+          "noteKo": "일·합의의 만족스러운 완료와 따뜻하게 입는 별도 뜻 대조."
+        }
+      ]
+    },
+    {
+      "key": "capitalize-on",
+      "partOfSpeech": "phrasal verb",
+      "targets": [
+        {
+          "id": "JBKROW000036",
+          "headword": "capitalize (on)",
+          "before": "이용하다"
+        },
+        {
+          "id": "JBKROW002255",
+          "headword": "capitalize (on)",
+          "before": "이용하다"
+        }
+      ],
+      "meaningKo": "기회·상황을 활용해 이익을 얻다",
+      "definitionEn": "To use an existing opportunity or situation to gain an advantage for yourself.",
+      "definitionKo": "눈앞의 기회나 이미 유리한 조건을 그냥 두지 않고 자신의 성과나 이익으로 이어 가다.",
+      "memoryKo": "유리한 상황을 잡아 실제 성과로 바꾸는 단계다. 기회가 있는 것과 활용하는 것은 다르다.",
+      "usageKo": "이 뜻으로는 capitalize on/upon + opportunity/success/advantage처럼 쓴다. 표제어 괄호와 달리 문장에서는 on을 포함해 익힌다.",
+      "examTrapKo": "capitalize a word는 대문자로 쓰다라는 다른 뜻이다. 기회를 활용한다는 표현을 언제나 비윤리적인 착취로 번역하지 않는다.",
+      "contrasts": [
+        {
+          "word": "miss an opportunity",
+          "noteKo": "기회를 놓치는 것이다. capitalize on은 기회를 성과로 연결한다."
+        }
+      ],
+      "example": {
+        "en": "The small publisher capitalized on renewed interest in local history.",
+        "ko": "그 작은 출판사는 지역사에 대한 관심이 다시 높아진 기회를 활용했다."
+      },
+      "sources": [
+        {
+          "name": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/capitalize-on",
+          "independenceGroup": "Oxford",
+          "noteKo": "상황에서 자신에게 더 유리한 점을 얻는 on/upon 용법 확인."
+        },
+        {
+          "name": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/capitalize",
+          "independenceGroup": "Collins",
+          "noteKo": "기회를 이익으로 활용함과 대문자·자본 관련 별도 의미 대조."
+        }
+      ]
+    },
+    {
+      "key": "clamp-down-on",
+      "partOfSpeech": "phrasal verb",
+      "targets": [
+        {
+          "id": "JBKROW000039",
+          "headword": "clamp down on",
+          "before": "단속하다"
+        },
+        {
+          "id": "JBKROW002277",
+          "headword": "clamp down on",
+          "before": "단속하다"
+        }
+      ],
+      "meaningKo": "강하게 단속하다; 엄격한 조치로 억제하다",
+      "definitionEn": "To use strict official measures to stop or control an activity considered unacceptable.",
+      "definitionKo": "문제가 되는 행동을 못 하게 하거나 통제하려고 당국 등이 강한 조치를 취하다.",
+      "memoryKo": "clamp로 움직이는 부분을 꽉 고정하듯, 느슨하던 통제를 강하게 조이는 장면이다.",
+      "usageKo": "clamp down on + crime/bullying/rule-breaking. 보도문에서 자주 보이는 단속·규제 표현이다.",
+      "examTrapKo": "권한을 사용한 강한 통제이므로 단순히 자세히 살펴본다는 monitor보다 강하다. 단속 대상이 도덕적으로 나쁘다는 화자의 동의까지 자동으로 뜻하지 않는다.",
+      "contrasts": [
+        {
+          "word": "crack down on",
+          "noteKo": "의미가 크게 겹치며 바꿔 쓸 수 있는 경우가 많다. 둘 사이에 고정된 강도 순위가 있다고 외우지 않는다."
+        }
+      ],
+      "example": {
+        "en": "The regulator clamped down on misleading advertisements.",
+        "ko": "감독 기관은 소비자를 오도하는 광고를 강하게 단속했다."
+      },
+      "sources": [
+        {
+          "name": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/clamp-down",
+          "independenceGroup": "Oxford",
+          "noteKo": "특히 범죄 등을 막으려는 엄격한 조치 확인."
+        },
+        {
+          "name": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/clamp-down",
+          "independenceGroup": "Collins",
+          "noteKo": "사람·활동을 막거나 통제하는 강한 공식 조치 대조."
+        }
+      ]
+    },
+    {
+      "key": "work-out",
+      "partOfSpeech": "phrasal verb",
+      "targets": [
+        {
+          "id": "JBKROW000044",
+          "headword": "work out",
+          "before": "해결되다; 운동하다"
+        },
+        {
+          "id": "JBKROW004038",
+          "headword": "work out",
+          "before": "해결되다; 운동하다"
+        },
+        {
+          "id": "JBKROW006121",
+          "headword": "work out",
+          "before": "잘 해결하다"
+        },
+        {
+          "id": "JBKROW008146",
+          "headword": "work out",
+          "before": "잘 해결하다"
+        }
+      ],
+      "meaningKo": "문제를 해결하다·계산하다; 일이 잘 풀리다; 운동하다",
+      "definitionEn": "To solve or calculate something; for a situation to develop satisfactorily; or to exercise the body.",
+      "definitionKo": "목적어가 있으면 해법을 찾거나 계산하다, 상황이 주어면 잘 풀리다, 사람이 몸을 움직이는 문맥이면 운동하다다.",
+      "memoryKo": "같은 두 단어라도 무엇을 주어로 두고 무엇을 목적어로 두는지에 따라 다른 길로 간다.",
+      "usageKo": "work out the answer는 답을 구하다, things work out은 일이 잘 풀리다, work out at the gym은 운동하다다. work it out처럼 대명사는 가운데 둔다.",
+      "examTrapKo": "out 때문에 밖에서 일하다라고 단정하지 않는다. workout은 한 단어로 쓰는 운동이라는 명사이고, work out은 동사구다.",
+      "contrasts": [
+        {
+          "word": "work on",
+          "noteKo": "어떤 과제를 계속 다루고 있는 과정이다. work out a solution은 해법을 찾아내는 데 초점이 있다."
+        }
+      ],
+      "example": {
+        "en": "We worked out a simpler plan, and everything worked out well.",
+        "ko": "우리는 더 간단한 계획을 짜냈고, 모든 일이 잘 풀렸다."
+      },
+      "sources": [
+        {
+          "name": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
+          "independenceGroup": "Oxford",
+          "noteKo": "해결·계산·계획, 잘 풀림, 운동의 구조별 의미 확인."
+        },
+        {
+          "name": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/work-out",
+          "independenceGroup": "Collins",
+          "noteKo": "해결·계산·상황의 결과·신체 운동 용법을 독립 대조."
+        }
+      ]
+    },
+    {
+      "key": "crack-down-on",
+      "partOfSpeech": "phrasal verb",
+      "targets": [
+        {
+          "id": "JBKROW000048",
+          "headword": "crack down on",
+          "before": "단속하다"
+        },
+        {
+          "id": "JBKROW002377",
+          "headword": "crack down on",
+          "before": "단속하다"
+        }
+      ],
+      "meaningKo": "강하게 단속하다; 엄격한 조치로 억제하다",
+      "definitionEn": "To enforce rules more severely in order to stop violations or deal with those responsible.",
+      "definitionKo": "규칙 위반을 막거나 위반자를 더 엄격하게 처리하기 위해 단속을 강화하다.",
+      "memoryKo": "이전에는 넘어가던 위반도 더는 봐주지 않겠다고 집행을 강화하는 장면이다.",
+      "usageKo": "crack down on + illegal activity/offenders. 명사 crackdown은 붙여 쓰고, 동사 crack down은 띄어 쓴다.",
+      "examTrapKo": "제재·집행을 강화하는 표현이지 문제를 이해한다는 figure out이 아니다. 항상 물리적 폭력이 따른다는 뜻도 아니다.",
+      "contrasts": [
+        {
+          "word": "clamp down on",
+          "noteKo": "강한 단속이라는 핵심이 겹친다. crack down의 엄격한 집행 뉘앙스를 참고하되 두 표현을 항상 다른 뜻으로 나누지 않는다."
+        }
+      ],
+      "example": {
+        "en": "The school cracked down on cheating after repeated complaints.",
+        "ko": "학교는 불만이 반복해서 제기되자 부정행위 단속을 강화했다."
+      },
+      "sources": [
+        {
+          "name": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/crack-down",
+          "independenceGroup": "Oxford",
+          "noteKo": "불법 행위를 더 적극적으로 막고 적발자를 엄하게 처리함을 확인."
+        },
+        {
+          "name": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/crack-down",
+          "independenceGroup": "Collins",
+          "noteKo": "법·규칙 준수를 더 엄격하게 집행하는 의미 대조."
+        }
+      ]
+    },
+    {
+      "key": "delve-into",
+      "partOfSpeech": "phrasal verb",
+      "targets": [
+        {
+          "id": "JBKROW000055",
+          "headword": "delve into",
+          "before": "탐구하다"
+        },
+        {
+          "id": "JBKROW002456",
+          "headword": "delve into",
+          "before": "탐구하다"
+        }
+      ],
+      "meaningKo": "~을 깊이 조사하다; 자세히 파고들다",
+      "definitionEn": "To investigate a subject closely in an effort to uncover more information about it.",
+      "definitionKo": "겉에 드러난 설명에서 멈추지 않고, 더 많은 정보나 숨은 사정을 알아내려고 깊이 파고들다.",
+      "memoryKo": "표면 아래의 자료와 사정을 캐내는 탐사처럼, 질문을 한 단계 더 깊게 던진다.",
+      "usageKo": "delve into the past/history/details처럼 탐구 대상을 into 뒤에 놓는다. 가방 등 실제 용기가 목적어라면 안을 뒤지다는 뜻도 가능하다.",
+      "examTrapKo": "delve into와 dive into는 다르다. dive into에는 망설임 없이 어떤 일에 뛰어든다는 뜻이 있다.",
+      "contrasts": [
+        {
+          "word": "skim",
+          "noteKo": "핵심만 빠르게 훑는 것이다. delve into는 정보를 더 얻으려고 깊게 조사한다."
+        }
+      ],
+      "example": {
+        "en": "Instead of repeating the summary, she delved into the original records.",
+        "ko": "그녀는 요약을 되풀이하는 대신 원본 기록을 깊이 파고들었다."
+      },
+      "sources": [
+        {
+          "name": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/definition/english/delve-into",
+          "independenceGroup": "Oxford",
+          "noteKo": "더 많은 정보를 알아내려 노력하는 뜻 확인."
+        },
+        {
+          "name": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/delve",
+          "independenceGroup": "Collins",
+          "noteKo": "정보를 깊이 조사하는 뜻 및 용기 안을 뒤지는 별도 뜻 대조."
+        }
+      ]
+    },
+    {
+      "key": "put-at-ease",
+      "partOfSpeech": "idiom",
+      "targets": [
+        {
+          "id": "JBKROW000069",
+          "headword": "put A at ease",
+          "before": "A를 편하게 만들다"
+        },
+        {
+          "id": "JBKROW003555",
+          "headword": "put A at ease",
+          "before": "A를 편하게 만들다"
+        }
+      ],
+      "meaningKo": "A의 긴장을 풀어 주다; A를 편안하게 해 주다",
+      "definitionEn": "To help someone feel relaxed and confident rather than nervous or embarrassed.",
+      "definitionKo": "어색하거나 긴장한 사람이 불안감을 내려놓고 편하게 말하고 행동할 수 있도록 해 주다.",
+      "memoryKo": "낯선 자리에 온 사람에게 따뜻한 질문을 건네 굳은 어깨가 풀리는 모습이다.",
+      "usageKo": "put someone at ease 또는 at their ease. A에는 편안해지는 사람이 들어간다. be at ease는 그 결과 상태다.",
+      "examTrapKo": "with ease는 쉽게라는 방식 표현이다. at ease는 긴장이 없는 상태이므로 전치사를 바꾸지 않는다.",
+      "contrasts": [
+        {
+          "word": "ill at ease",
+          "noteKo": "불편하고 어색하거나 긴장한 상태다. ill이 들어가면 편안함이 사라진다."
+        }
+      ],
+      "example": {
+        "en": "The interviewer's friendly greeting put the applicant at ease.",
+        "ko": "면접관의 다정한 인사에 지원자의 긴장이 풀렸다."
+      },
+      "sources": [
+        {
+          "name": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/ease_1",
+          "independenceGroup": "Oxford",
+          "noteKo": "put somebody at (their) ease의 긴장·당혹감 완화 의미 확인."
+        },
+        {
+          "name": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/at-ease",
+          "independenceGroup": "Collins",
+          "noteKo": "편안하고 자신 있는 상태 및 누군가를 그 상태로 만드는 용법 대조."
+        }
+      ]
+    },
+    {
+      "key": "to-boot",
+      "partOfSpeech": "idiom",
+      "targets": [
+        {
+          "id": "JBKROW000075",
+          "headword": "to boot",
+          "before": "게다가"
+        },
+        {
+          "id": "JBKROW003886",
+          "headword": "to boot",
+          "before": "게다가"
+        },
+        {
+          "id": "JBKROW004990",
+          "headword": "to boot",
+          "before": "게다가"
+        },
+        {
+          "id": "JBKROW008006",
+          "headword": "to boot",
+          "before": "게다가"
+        },
+        {
+          "id": "JBKROW017980",
+          "headword": "to boot",
+          "before": "게다가"
+        },
+        {
+          "id": "JBKROW023103",
+          "headword": "to boot",
+          "before": "게다가"
+        }
+      ],
+      "meaningKo": "게다가; 덤으로",
+      "definitionEn": "Used to add one more fact or quality to what has already been mentioned.",
+      "definitionKo": "이미 말한 내용에 한 가지가 더 있다고 덧붙이며 강조한다.",
+      "memoryKo": "조건을 하나씩 말하다가 마지막 장점이나 단점 하나를 덤으로 얹는 장면이다.",
+      "usageKo": "and + 추가 정보 + to boot처럼 뒤쪽에서 덧붙이는 일이 많다. 긍정적인 장점뿐 아니라 나쁜 점을 더할 때도 쓴다.",
+      "examTrapKo": "신발이나 컴퓨터 부팅이라는 boot의 현대적 뜻으로 풀이하지 않는다. 인과나 반대가 아니라 추가다.",
+      "contrasts": [
+        {
+          "word": "nevertheless",
+          "noteKo": "그럼에도 불구하고라는 양보·반전이다. to boot는 같은 목록에 내용을 더한다."
+        }
+      ],
+      "example": {
+        "en": "The room was quiet, close to campus, and inexpensive to boot.",
+        "ko": "그 방은 조용하고 학교와 가까웠으며, 게다가 가격도 저렴했다."
+      },
+      "sources": [
+        {
+          "name": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/us/dictionary/english/to-boot",
+          "independenceGroup": "Collins",
+          "noteKo": "이미 언급한 것에 추가 사실을 더하며 강조하는 뜻 확인."
+        },
+        {
+          "name": "Merriam-Webster",
+          "url": "https://www.merriam-webster.com/dictionary/to%20boot",
+          "independenceGroup": "Merriam-Webster",
+          "noteKo": "besides의 추가 의미를 독립 대조."
+        }
+      ]
+    },
+    {
+      "key": "same-token",
+      "partOfSpeech": "idiom",
+      "targets": [
+        {
+          "id": "JBKROW000132",
+          "headword": "by the same token",
+          "before": "동일한 논리로"
+        },
+        {
+          "id": "JBKROW002242",
+          "headword": "by the same token",
+          "before": "동일한 논리로"
+        },
+        {
+          "id": "JBKROW020396",
+          "headword": "by the same token",
+          "before": "같은 이유로"
+        },
+        {
+          "id": "JBKROW022737",
+          "headword": "by the same token",
+          "before": "같은 이유로"
+        }
+      ],
+      "meaningKo": "같은 이유로; 같은 논리를 적용하면",
+      "definitionEn": "Used when the reasoning behind one statement also supports the statement that follows.",
+      "definitionKo": "앞 문장을 성립시킨 이유나 원리가 뒤 문장에도 똑같이 적용된다고 연결한다.",
+      "memoryKo": "첫 사례에 쓴 판단 기준을 두 번째 사례에도 그대로 대어 본다.",
+      "usageKo": "앞과 뒤가 서로 반대 방향의 결과여도 같은 원리로 설명되면 쓸 수 있다. 사실을 나열하는 also보다 논리의 공통점이 중요하다.",
+      "examTrapKo": "token을 표나 동전으로 직역하지 않는다. 같은 이유가 무엇인지 말할 수 있어야 문장 연결을 제대로 읽은 것이다.",
+      "contrasts": [
+        {
+          "word": "for a different reason",
+          "noteKo": "결론이 비슷해도 근거는 다를 때다. by the same token은 근거·논리의 공통성을 강조한다."
+        }
+      ],
+      "example": {
+        "en": "If clear labels help beginners, by the same token, vague labels can confuse them.",
+        "ko": "명확한 이름표가 초보자에게 도움이 된다면, 같은 논리로 모호한 이름표는 초보자를 헷갈리게 할 수 있다."
+      },
+      "sources": [
+        {
+          "name": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/token_1",
+          "independenceGroup": "Oxford",
+          "noteKo": "앞과 같은 이유를 적용하는 관용구 의미 확인."
+        },
+        {
+          "name": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/us/dictionary/english/by-the-same-token",
+          "independenceGroup": "Collins",
+          "noteKo": "앞 진술의 근거가 다음 진술에도 적용되는 논리 연결 대조."
+        }
+      ]
+    },
+    {
+      "key": "in-face-of",
+      "partOfSpeech": "idiom",
+      "targets": [
+        {
+          "id": "JBKROW000555",
+          "headword": "in the face of A",
+          "before": "A에도 불구하고"
+        },
+        {
+          "id": "JBKROW002985",
+          "headword": "in the face of A",
+          "before": "A에도 불구하고"
+        },
+        {
+          "id": "JBKROW004705",
+          "headword": "in the face of A",
+          "before": "A에도 불구하고"
+        },
+        {
+          "id": "JBKROW007195",
+          "headword": "in the face of A",
+          "before": "A에도 불구하고"
+        },
+        {
+          "id": "JBKROW015519",
+          "headword": "in the face of A",
+          "before": "A에도 불구하고"
+        },
+        {
+          "id": "JBKROW016571",
+          "headword": "in the face of A",
+          "before": "A에도 불구하고"
+        }
+      ],
+      "meaningKo": "A에 직면하여; A에도 불구하고",
+      "definitionEn": "When confronted with a difficulty or fact, or despite the obstacle it presents.",
+      "definitionKo": "곤란이나 사실을 맞닥뜨린 상황을 말한다. 그 상황을 버텨 낸 문맥에서는 ~에도 불구하고가 된다.",
+      "memoryKo": "문제가 바로 눈앞에 닥쳐 있는 장면이다. 버티는지 물러서는지는 뒤의 반응을 읽어 판단한다.",
+      "usageKo": "continue in the face of opposition은 반대에도 계속하다다. 증거 앞에서 부인을 포기했다면 증거에 직면해서로 읽는 편이 자연스럽다.",
+      "examTrapKo": "무조건 ~에도 불구하고라고 외우면, 증거 때문에 태도를 바꾼 문장을 거꾸로 읽을 수 있다. 반응 동사와 원인·양보 관계를 함께 본다.",
+      "contrasts": [
+        {
+          "word": "in spite of",
+          "noteKo": "장애가 있는데도라는 양보를 직접 드러낸다. in the face of는 어려움·사실에 직면한 상황 자체를 말할 수도 있다."
+        }
+      ],
+      "example": {
+        "en": "In the face of new evidence, he could no longer deny the mistake.",
+        "ko": "새 증거에 직면하자 그는 더 이상 그 실수를 부인할 수 없었다."
+      },
+      "sources": [
+        {
+          "name": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/definition/american_english/face_1",
+          "independenceGroup": "Oxford",
+          "noteKo": "어려움에도 불구함과 새 사실의 결과라는 두 용법 확인."
+        },
+        {
+          "name": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/in-the-face-of",
+          "independenceGroup": "Collins",
+          "noteKo": "~에 직면하여와 ~에도 불구하고의 의미 대조."
+        }
+      ]
+    },
+    {
       "key": "all-but",
       "targets": [
         {

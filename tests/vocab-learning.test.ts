@@ -38,4 +38,13 @@ describe("깊이 학습 인덱스", () => {
     expect(hasLearningEntry(firstItemId)).toBe(true);
     expect(hasLearningEntry("missing-item")).toBe(false);
   });
+
+  it("비슷한 숙어를 임의로 다른 정답으로 나누지 않고 다의어의 문맥을 보존한다", () => {
+    const byKey = new Map(corrections.entries.map((entry) => [entry.key, entry]));
+    expect(byKey.get("clamp-down-on")?.meaningKo).toBe(byKey.get("crack-down-on")?.meaningKo);
+    expect(byKey.get("in-face-of")?.meaningKo).toBe("A에 직면하여; A에도 불구하고");
+    expect(byKey.get("work-out")?.targets).toHaveLength(4);
+    expect(byKey.get("work-out")?.meaningKo).toContain("운동하다");
+    expect(byKey.get("work-out")?.meaningKo).toContain("계산하다");
+  });
 });

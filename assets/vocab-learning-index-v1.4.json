@@ -1,8 +1,8 @@
 {
-  "version": "1.6",
+  "version": "1.7",
   "coverage": {
-    "senses": 103,
-    "rows": 182,
+    "senses": 139,
+    "rows": 218,
     "checkedAtKst": "2026.09.05"
   },
   "items": {
@@ -60,10 +60,28 @@
         "learn:00722886-s"
       ]
     },
+    "JBKROW000004": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW000004"
+      ]
+    },
+    "JBKROW000005": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW000005"
+      ]
+    },
     "JBKROW000011": {
       "group": "V101",
       "entryIds": [
         "learn:01288942-s"
+      ]
+    },
+    "JBKROW000016": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW000016"
       ]
     },
     "JBKROW000024": {
@@ -84,6 +102,54 @@
         "learn:00940267-s"
       ]
     },
+    "JBKROW000036": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW000036"
+      ]
+    },
+    "JBKROW000039": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW000039"
+      ]
+    },
+    "JBKROW000044": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW000044"
+      ]
+    },
+    "JBKROW000048": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW000048"
+      ]
+    },
+    "JBKROW000055": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW000055"
+      ]
+    },
+    "JBKROW000069": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW000069"
+      ]
+    },
+    "JBKROW000075": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW000075"
+      ]
+    },
+    "JBKROW000132": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW000132"
+      ]
+    },
     "JBKROW000287": {
       "group": "V101",
       "entryIds": [
@@ -94,6 +160,12 @@
       "group": "V101",
       "entryIds": [
         "learn:correction:JBKROW000327"
+      ]
+    },
+    "JBKROW000555": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW000555"
       ]
     },
     "JBKROW000819": {
@@ -138,6 +210,12 @@
         "learn:correction:JBKROW002043"
       ]
     },
+    "JBKROW002049": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW002049"
+      ]
+    },
     "JBKROW002069": {
       "group": "V601",
       "entryIds": [
@@ -168,16 +246,52 @@
         "learn:00884747-v"
       ]
     },
+    "JBKROW002242": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW002242"
+      ]
+    },
     "JBKROW002250": {
       "group": "V101",
       "entryIds": [
         "learn:00940267-s"
       ]
     },
+    "JBKROW002255": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW002255"
+      ]
+    },
     "JBKROW002257": {
       "group": "V101",
       "entryIds": [
         "learn:00722886-s"
+      ]
+    },
+    "JBKROW002277": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW002277"
+      ]
+    },
+    "JBKROW002377": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW002377"
+      ]
+    },
+    "JBKROW002456": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW002456"
+      ]
+    },
+    "JBKROW002985": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW002985"
       ]
     },
     "JBKROW003008": {
@@ -198,16 +312,46 @@
         "learn:01288942-s"
       ]
     },
+    "JBKROW003555": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW003555"
+      ]
+    },
     "JBKROW003687": {
       "group": "V401",
       "entryIds": [
         "learn:10574739-n"
       ]
     },
+    "JBKROW003863": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW003863"
+      ]
+    },
+    "JBKROW003886": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW003886"
+      ]
+    },
     "JBKROW003994": {
       "group": "V101",
       "entryIds": [
         "learn:01074673-v"
+      ]
+    },
+    "JBKROW004038": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW004038"
+      ]
+    },
+    "JBKROW004042": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW004042"
       ]
     },
     "JBKROW004090": {
@@ -270,6 +414,12 @@
         "learn:correction:JBKROW004704"
       ]
     },
+    "JBKROW004705": {
+      "group": "V201",
+      "entryIds": [
+        "learn:correction:JBKROW004705"
+      ]
+    },
     "JBKROW004759": {
       "group": "V301",
       "entryIds": [
@@ -282,6 +432,12 @@
         "learn:02186120-s"
       ]
     },
+    "JBKROW004990": {
+      "group": "V201",
+      "entryIds": [
+        "learn:correction:JBKROW004990"
+      ]
+    },
     "JBKROW005373": {
       "group": "V501",
       "entryIds": [
@@ -292,6 +448,12 @@
       "group": "V301",
       "entryIds": [
         "learn:00770823-v"
+      ]
+    },
+    "JBKROW006121": {
+      "group": "V201",
+      "entryIds": [
+        "learn:correction:JBKROW006121"
       ]
     },
     "JBKROW006148": {
@@ -348,6 +510,12 @@
         "learn:correction:JBKROW007192"
       ]
     },
+    "JBKROW007195": {
+      "group": "V201",
+      "entryIds": [
+        "learn:correction:JBKROW007195"
+      ]
+    },
     "JBKROW007274": {
       "group": "V401",
       "entryIds": [
@@ -370,6 +538,18 @@
       "group": "V201",
       "entryIds": [
         "learn:02434522-s"
+      ]
+    },
+    "JBKROW008006": {
+      "group": "V201",
+      "entryIds": [
+        "learn:correction:JBKROW008006"
+      ]
+    },
+    "JBKROW008146": {
+      "group": "V201",
+      "entryIds": [
+        "learn:correction:JBKROW008146"
       ]
     },
     "JBKROW008184": {
@@ -558,6 +738,12 @@
         "learn:correction:JBKROW015000"
       ]
     },
+    "JBKROW015519": {
+      "group": "V401",
+      "entryIds": [
+        "learn:correction:JBKROW015519"
+      ]
+    },
     "JBKROW015612": {
       "group": "V501",
       "entryIds": [
@@ -592,6 +778,12 @@
       "group": "V401",
       "entryIds": [
         "learn:04759785-n"
+      ]
+    },
+    "JBKROW016571": {
+      "group": "V401",
+      "entryIds": [
+        "learn:correction:JBKROW016571"
       ]
     },
     "JBKROW016572": {
@@ -678,6 +870,12 @@
         "learn:00902519-s"
       ]
     },
+    "JBKROW017980": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW017980"
+      ]
+    },
     "JBKROW018069": {
       "group": "V501",
       "entryIds": [
@@ -718,6 +916,12 @@
       "group": "V501",
       "entryIds": [
         "learn:correction:JBKROW020096"
+      ]
+    },
+    "JBKROW020396": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW020396"
       ]
     },
     "JBKROW020504": {
@@ -778,6 +982,12 @@
       "group": "V501",
       "entryIds": [
         "learn:correction:JBKROW022680"
+      ]
+    },
+    "JBKROW022737": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW022737"
       ]
     },
     "JBKROW022770": {
@@ -850,6 +1060,12 @@
       "group": "V501",
       "entryIds": [
         "learn:correction:JBKROW023091"
+      ]
+    },
+    "JBKROW023103": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW023103"
       ]
     },
     "JBKROW023223": {

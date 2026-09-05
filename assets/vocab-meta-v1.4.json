@@ -6,8 +6,8 @@
   "releaseSourceSha256": "6ad8b6941e8746992440ac10ec08c1ca641b37d022bffff7c65ea1236f916a84",
   "editorialCorrections": {
     "checkedAtKst": "2026.09.05",
-    "rows": 63,
-    "sha256": "3876f136d1e3d1b9dd40bed5d37000beea0ae82e25e655e590c3ec86894bc2b9"
+    "rows": 99,
+    "sha256": "cb036a4d1eaa13cbaa5b45213eb63e6630a925c0fde0bcf69f0070cb1e10d58b"
   },
   "groupCounts": {
     "V101": 4028,
