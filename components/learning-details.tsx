@@ -117,7 +117,7 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
       </View>
 
       <View style={s.section}>
-        <Text style={s.label}>영영 정의</Text>
+        <Text style={s.label}>{entry.definitionKind === "editorial" ? "영영 풀이 · 사전 대조" : "영영 정의"}</Text>
         <Text style={s.english}>{entry.definitionEn}</Text>
         <Text style={s.text}>{entry.definitionKo}</Text>
       </View>

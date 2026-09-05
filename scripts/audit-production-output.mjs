@@ -36,11 +36,11 @@ for (const file of textFiles) {
   }
 }
 
-const learningDirectory = path.join(outputRoot, "data", "vocab-learning", "1.4");
+const release = JSON.parse(fs.readFileSync(path.join(outputRoot, "release.json"), "utf8"));
+const learningDirectory = path.join(outputRoot, "data", "vocab-learning", release.version);
 const learningFiles = fs.existsSync(learningDirectory)
   ? fs.readdirSync(learningDirectory).filter((name) => name.endsWith(".json"))
   : [];
-const release = JSON.parse(fs.readFileSync(path.join(outputRoot, "release.json"), "utf8"));
 const indexHtml = fs.readFileSync(path.join(outputRoot, "index.html"), "utf8");
 const bundleUrl = indexHtml.match(/src="\/vocaknio-quiz\/([^\"]*entry-[a-f0-9]+\.js)"/)?.[1];
 const bundle = bundleUrl ? path.join(outputRoot, ...bundleUrl.split("/")) : undefined;

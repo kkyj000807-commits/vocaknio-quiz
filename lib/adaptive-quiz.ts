@@ -56,6 +56,7 @@ export interface SelectAdaptiveItemNumsOptions {
   candidates: AdaptiveCandidate[];
   count: number;
   mode: string;
+  rangeId?: string;
   history: AdaptiveHistory;
   legacyWrongNums?: number[];
   random?: () => number;
@@ -765,17 +766,18 @@ function weaknessScore(
   conceptScores: Map<string, number>,
   confusionScores: ConfusionPriority,
 ): number {
+  // A successful latest answer resolves the old mistake; the notebook remains intact.
+  if (stats.lastOutcome === "correct" || stats.lastOutcome === "mastered") return 0;
   const failures = stats.wrong + stats.skips;
   const errorRate = stats.attempts > 0 ? failures / stats.attempts : 0;
   const skipRate = stats.attempts > 0 ? stats.skips / stats.attempts : 0;
   const recentFailure =
     stats.lastOutcome === "skip" ? 2.5 : stats.lastOutcome === "wrong" ? 2 : 0;
-  const legacy = legacyWrong.has(candidate.num) ? 2 : 0;
+  const legacy = legacyWrong.has(candidate.num) && stats.attempts === 0 ? 2 : 0;
   const concept = conceptScores.get(cleanString(candidate.conceptId)) ?? 0;
   const confusion = confusionScores.item.get(candidate.num) ?? 0;
   const conceptConfusion =
     confusionScores.concept.get(cleanString(candidate.conceptId)) ?? 0;
-  const masteredPenalty = stats.lastOutcome === "mastered" ? 100 : 0;
   return (
     legacy +
     recentFailure +
@@ -784,8 +786,7 @@ function weaknessScore(
     skipRate * 1.5 +
     concept * 1.5 +
     Math.min(confusion, 12) * 1.5 +
-    Math.min(conceptConfusion, 12) * 0.5 -
-    masteredPenalty
+    Math.min(conceptConfusion, 12) * 0.5
   );
 }
 
@@ -795,12 +796,14 @@ function selectWithConceptDiversity(
   selectedNums: Set<number>,
   usedConcepts: Set<string>,
   usedWords: Set<string>,
+  allowRepeatedWords = true,
 ): RankedCandidate[] {
   const selected: RankedCandidate[] = [];
   const trySelect = (candidate: RankedCandidate, enforceConcept: boolean) => {
     if (selected.length >= limit || selectedNums.has(candidate.num)) return;
     const conceptId = cleanString(candidate.conceptId);
     const word = normalizePromptWord(candidate.word);
+    if (!allowRepeatedWords && word && usedWords.has(word)) return;
     if (
       enforceConcept &&
       ((conceptId && usedConcepts.has(conceptId)) ||
@@ -848,12 +851,45 @@ export function selectAdaptiveItemNums(
   if (count <= 0) return [];
 
   const history = sanitizeAdaptiveHistory(options.history);
-  const lastSession = history.recentSessions[history.recentSessions.length - 1];
-  const lastNums = new Set(lastSession?.itemNums ?? []);
-  const withoutLast = allCandidates.filter(
-    (candidate) => !lastNums.has(candidate.num),
+  // Different source rows for the same prompt share exposure and answer history.
+  const promptKey = (candidate: AdaptiveCandidate) =>
+    normalizePromptWord(candidate.word) || `num:${candidate.num}`;
+  const promptStats = new Map<string, AdaptiveItemStats>();
+  for (const candidate of allCandidates) {
+    const key = promptKey(candidate);
+    const stats = history.stats[statsKey(mode, candidate.num)] ?? emptyStats(mode, candidate.num);
+    const previous = promptStats.get(key);
+    if (!previous) {
+      promptStats.set(key, { ...stats });
+      continue;
+    }
+    const latest = stats.lastAnsweredAt >= previous.lastAnsweredAt && stats.lastOutcome !== null ? stats : previous;
+    promptStats.set(key, {
+      ...latest,
+      exposures: previous.exposures + stats.exposures,
+      attempts: previous.attempts + stats.attempts,
+      correct: previous.correct + stats.correct,
+      wrong: previous.wrong + stats.wrong,
+      skips: previous.skips + stats.skips,
+      mastered: previous.mastered + stats.mastered,
+      lastSeenSequence: Math.max(previous.lastSeenSequence, stats.lastSeenSequence),
+    });
+  }
+  const recent = history.recentSessions.filter((session) =>
+    session.mode === mode && session.itemNums.some((num) => candidateMap.has(num)),
   );
-  const eligible = withoutLast.length >= count ? withoutLast : allCandidates;
+  const protection = new Map<string, number>();
+  recent.slice(-3).forEach((session, index, sessions) => {
+    session.itemNums.forEach((num) => {
+      const candidate = candidateMap.get(num);
+      if (!candidate) return;
+      const key = promptKey(candidate);
+      const outcome = promptStats.get(key)?.lastOutcome;
+      if (index === sessions.length - 1 || outcome === "correct" || outcome === "mastered") {
+        protection.set(key, index + 1);
+      }
+    });
+  });
   const legacyWrong = new Set(uniqueNums(options.legacyWrongNums));
   const conceptScores = conceptWeakness(allCandidates, mode, history);
   const confusionScores = confusionPriority(allCandidates, mode, history);
@@ -864,10 +900,8 @@ export function selectAdaptiveItemNums(
   );
   const random = options.random ?? seededRandom(defaultSeed);
 
-  const ranked: RankedCandidate[] = eligible.map((candidate) => {
-    const stats =
-      history.stats[statsKey(mode, candidate.num)] ??
-      emptyStats(mode, candidate.num);
+  const ranked: RankedCandidate[] = allCandidates.map((candidate) => {
+    const stats = promptStats.get(promptKey(candidate))!;
     return {
       ...candidate,
       stats,
@@ -884,7 +918,7 @@ export function selectAdaptiveItemNums(
 
   const reviewLimit = Math.floor(count * 0.25);
   const reviewRanked = ranked
-    .filter((candidate) => candidate.weakness > 0)
+    .filter((candidate) => candidate.weakness > 0 && !protection.has(promptKey(candidate)))
     .sort(
       (left, right) =>
         right.weakness - left.weakness ||
@@ -894,7 +928,10 @@ export function selectAdaptiveItemNums(
     );
   const coverageRanked = [...ranked].sort(
     (left, right) =>
+      (protection.get(promptKey(left)) ?? 0) - (protection.get(promptKey(right)) ?? 0) ||
       left.stats.exposures - right.stats.exposures ||
+      Number(left.stats.lastOutcome === "correct" || left.stats.lastOutcome === "mastered") -
+        Number(right.stats.lastOutcome === "correct" || right.stats.lastOutcome === "mastered") ||
       left.stats.lastSeenSequence - right.stats.lastSeenSequence ||
       left.tie - right.tie ||
       left.num - right.num,
@@ -909,14 +946,24 @@ export function selectAdaptiveItemNums(
     selectedNums,
     usedConcepts,
     usedWords,
+    false,
   );
-  const coverage = selectWithConceptDiversity(
-    coverageRanked,
-    count - review.length,
-    selectedNums,
-    usedConcepts,
-    usedWords,
-  );
+  // Do not let concept diversity jump over unseen words to a recently correct prompt.
+  const coverage: RankedCandidate[] = [];
+  for (const tier of [...new Set(coverageRanked.map((candidate) => protection.get(promptKey(candidate)) ?? 0))].sort((a, b) => a - b)) {
+    const pool = coverageRanked.filter((candidate) => (protection.get(promptKey(candidate)) ?? 0) === tier);
+    for (const seen of [false, true]) {
+      coverage.push(...selectWithConceptDiversity(
+        pool.filter((candidate) => (candidate.stats.exposures > 0) === seen),
+        count - review.length - coverage.length, selectedNums, usedConcepts, usedWords, false,
+      ));
+    }
+  }
+  if (review.length + coverage.length < count) {
+    coverage.push(...selectWithConceptDiversity(
+      coverageRanked, count - review.length - coverage.length, selectedNums, usedConcepts, usedWords,
+    ));
+  }
   const selected = [...review, ...coverage];
 
   // 학습 흐름에서 약점 문제가 한곳에 몰리지 않도록 주입된 RNG로 최종 순서만 섞는다.

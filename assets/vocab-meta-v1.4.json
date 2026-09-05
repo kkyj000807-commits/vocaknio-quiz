@@ -4,6 +4,11 @@
   "sourceEntries": 38163,
   "sourceSha256": "6ad8b6941e8746992440ac10ec08c1ca641b37d022bffff7c65ea1236f916a84",
   "releaseSourceSha256": "6ad8b6941e8746992440ac10ec08c1ca641b37d022bffff7c65ea1236f916a84",
+  "editorialCorrections": {
+    "checkedAtKst": "2026.09.05",
+    "rows": 20,
+    "sha256": "2d40784b23f99a054d284ec44bde049a362779e625e6ccb5c1cab7e722fa9a00"
+  },
   "groupCounts": {
     "V101": 4028,
     "V201": 4016,

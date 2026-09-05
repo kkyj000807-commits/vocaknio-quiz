@@ -235,6 +235,48 @@ describe("adaptive quiz history", () => {
 });
 
 describe("adaptive quiz selection", () => {
+  it("does not repeat a correct prompt under a different source number", () => {
+    let history = recordAdaptiveSession(createEmptyAdaptiveHistory(), { sessionId: "duplicate-word", rangeId: "idioms", mode: MODE, itemNums: [1] });
+    history = recordAdaptiveAnswer(history, { sessionId: "duplicate-word", itemNum: 1, mode: MODE, outcome: "correct", answeredAt: 1000 });
+    const selected = selectAdaptiveItemNums({
+      candidates: [{ num: 1, word: "sort out" }, { num: 2, word: " SORT   OUT " }, { num: 3, word: "give up" }],
+      count: 1, mode: MODE, history, random: constantRandom(),
+    });
+    expect(selected).toEqual([3]);
+  });
+
+  it("covers unseen prompts before reusing answered-correct rows despite old wrong records", () => {
+    const pool = candidates(160).map((item) => ({ ...item, word: `word ${item.num}` }));
+    let history = createEmptyAdaptiveHistory();
+    const seen = new Set<number>();
+    const oldWrong: number[] = [];
+    for (let session = 0; session < 8; session += 1) {
+      const itemNums = selectAdaptiveItemNums({ candidates: pool, count: 20, mode: MODE, history, legacyWrongNums: oldWrong });
+      expect(itemNums.filter((num) => seen.has(num))).toEqual([]);
+      history = recordAdaptiveSession(history, { sessionId: `correct-${session}`, rangeId: "v601", mode: MODE, itemNums });
+      for (const itemNum of itemNums) {
+        seen.add(itemNum);
+        oldWrong.push(itemNum);
+        history = recordAdaptiveAnswer(history, { sessionId: `correct-${session}`, itemNum, mode: MODE, outcome: "correct", answeredAt: 1000 + session });
+      }
+    }
+    expect(seen.size).toBe(160);
+  });
+
+  it("protects correct prompts for three relevant sessions after full coverage", () => {
+    const pool = candidates(80);
+    let history = createEmptyAdaptiveHistory();
+    const sessions: number[][] = [];
+    for (let session = 0; session < 10; session += 1) {
+      const selected = selectAdaptiveItemNums({ candidates: pool, count: 20, mode: MODE, history });
+      const protectedNums = new Set(sessions.slice(-3).flat());
+      expect(selected.some((num) => protectedNums.has(num))).toBe(false);
+      history = recordAdaptiveSession(history, { sessionId: `cycle-${session}`, rangeId: "idioms", mode: MODE, itemNums: selected });
+      for (const itemNum of selected) history = recordAdaptiveAnswer(history, { sessionId: `cycle-${session}`, itemNum, mode: MODE, outcome: "correct", answeredAt: 1000 + session });
+      sessions.push(selected);
+    }
+  });
+
   it("excludes the immediately previous session whenever enough alternatives exist", () => {
     const history = recordAdaptiveSession(createEmptyAdaptiveHistory(), {
       sessionId: "previous",
@@ -376,10 +418,10 @@ describe("adaptive quiz selection", () => {
     expect(nextSession).toEqual(expect.arrayContaining([1, 2]));
   });
 
-  it("uses legacy wrong numbers as a bounded weak-review prior", () => {
+  it("retires the legacy wrong prior after a correct adaptive answer", () => {
     const history = createEmptyAdaptiveHistory();
-    putStats(history, MODE, 1, { exposures: 8, attempts: 8, correct: 8 });
-    putStats(history, MODE, 2, { exposures: 8, attempts: 8, correct: 8 });
+    putStats(history, MODE, 1, { exposures: 8, attempts: 8, correct: 8, lastOutcome: "correct" });
+    putStats(history, MODE, 2, { exposures: 8, attempts: 8, correct: 8, lastOutcome: "correct" });
 
     const selected = selectAdaptiveItemNums({
       candidates: candidates(20),
@@ -390,8 +432,7 @@ describe("adaptive quiz selection", () => {
       random: constantRandom(),
     });
 
-    expect(selected).toEqual(expect.arrayContaining([1, 2]));
-    expect(selected.filter((num) => num <= 2)).toHaveLength(2);
+    expect(selected.filter((num) => num <= 2)).toHaveLength(0);
   });
 
   it("promotes a repeatedly selected wrong item and its concept without exceeding 25 percent review", () => {

@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { applyIdiomCorrections, loadIdiomCorrections, isMissingMeaning } from "./lib/idiom-corrections.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUTPUT_ROOT = path.join(ROOT, "output");
@@ -500,7 +501,7 @@ function validate(siteItems, meta) {
   }
 
   for (const item of siteItems) {
-    if (!item.w || !item.k || !item.group) {
+    if (!item.w || isMissingMeaning(item.k) || !item.group) {
       throw new Error(`Missing required data for ${item.id}`);
     }
     if (item.s.includes(normalizeWord(item.w))) {
@@ -549,6 +550,8 @@ function main() {
       s: sense?.synonyms ?? [],
     };
   });
+  const corrections = loadIdiomCorrections(ROOT);
+  applyIdiomCorrections(rawSiteItems, corrections);
   const guarded = applySynonymSenseRules(rawSiteItems);
   const siteItems = guarded.items;
   const samePromptConflicts = auditSamePromptConflicts(siteItems);
@@ -578,6 +581,11 @@ function main() {
     sourceEntries: entries.length,
     sourceSha256: computedHash,
     releaseSourceSha256: release.corrected_source_sha256,
+    editorialCorrections: {
+      checkedAtKst: corrections.checkedAtKst,
+      rows: corrections.entries.reduce((sum, entry) => sum + entry.targets.length, 0),
+      sha256: crypto.createHash("sha256").update(JSON.stringify(corrections)).digest("hex"),
+    },
     groupCounts,
     sections,
     concepts,

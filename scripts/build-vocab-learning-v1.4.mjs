@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { correctionLearningEntries, loadIdiomCorrections } from "./lib/idiom-corrections.mjs";
 
 const root = process.cwd();
 const sourceDirectory = path.join(root, "data", "vocab-learning");
@@ -8,7 +9,8 @@ const sourcePaths = ["reviewed-a-v1.4.json", "reviewed-b-v1.4.json"].map((name) 
 );
 const vocabPath = path.join(root, "assets", "vocab-v1.4.json");
 const indexPath = path.join(root, "assets", "vocab-learning-index-v1.4.json");
-const outputRoot = path.join(root, "public", "data", "vocab-learning", "1.4");
+const learningVersion = JSON.parse(fs.readFileSync(path.join(root, "release.config.json"), "utf8")).version;
+const outputRoot = path.join(root, "public", "data", "vocab-learning", learningVersion);
 const groups = ["V101", "V201", "V301", "V401", "V501", "V502", "V601", "APPENDIX"];
 const audioLicensePattern = /^(CC0(?: \d\.\d)?|Public Domain|CC BY(?:-SA)?(?: \d\.\d)?)$/i;
 
@@ -25,6 +27,7 @@ const entries = sourcePaths.flatMap((sourcePath) => {
   return value;
 });
 const vocab = JSON.parse(fs.readFileSync(vocabPath, "utf8"));
+entries.push(...correctionLearningEntries(vocab, loadIdiomCorrections(root)));
 if (!Array.isArray(entries) || entries.length === 0) fail("검수 완료 항목이 없습니다.");
 
 const vocabById = new Map(vocab.map((item) => [item.id, item]));
@@ -47,9 +50,14 @@ for (const entry of entries) {
   if (!Array.isArray(entry.sources) || entry.sources.length < 2) fail(`${entry.id}: 독립 출처 2개 미만`);
 
   const names = entry.sources.map((source) => String(source.name).toLowerCase());
-  if (!names.some((name) => name.includes("open english wordnet"))) fail(`${entry.id}: Open English WordNet 출처 없음`);
-  if (!names.some((name) => name.includes("wiktionary"))) fail(`${entry.id}: Wiktionary 대조 근거 없음`);
-  if (names.some((name) => /oxford|cambridge|merriam|webster/.test(name))) fail(`${entry.id}: 재배포 허가가 확인되지 않은 사전 원문 포함`);
+  if (entry.definitionKind === "editorial") {
+    if (entry.sources.some((source) => source.role !== "reference")) fail(`${entry.id}: 자체 풀이의 대조 출처 표시 누락`);
+    if (new Set(entry.sources.map((source) => source.independenceGroup)).size < 2) fail(`${entry.id}: 독립 대조 출처 부족`);
+  } else {
+    if (!names.some((name) => name.includes("open english wordnet"))) fail(`${entry.id}: Open English WordNet 출처 없음`);
+    if (!names.some((name) => name.includes("wiktionary"))) fail(`${entry.id}: Wiktionary 대조 근거 없음`);
+    if (names.some((name) => /oxford|cambridge|merriam|webster/.test(name))) fail(`${entry.id}: 재배포 허가가 확인되지 않은 사전 원문 포함`);
+  }
   for (const source of entry.sources) {
     if (!source.url || !source.edition || !source.license) fail(`${entry.id}: 불완전한 출처 정보`);
   }
@@ -81,7 +89,7 @@ const checkedAtKst = [...entries]
   .sort()
   .at(-1);
 const index = {
-  version: "1.4",
+  version: learningVersion,
   coverage: { senses: entries.length, rows: Object.keys(itemPointers).length, checkedAtKst },
   items: Object.fromEntries(Object.entries(itemPointers).sort(([left], [right]) => left.localeCompare(right))),
 };
@@ -99,7 +107,7 @@ for (const group of groups) {
         : source,
     ),
   }));
-  const payload = { version: "1.4", group, entries: normalizedEntries };
+  const payload = { version: learningVersion, group, entries: normalizedEntries };
   fs.writeFileSync(path.join(outputRoot, `${group.toLowerCase()}.json`), `${JSON.stringify(payload)}\n`, "utf8");
 }
 fs.writeFileSync(indexPath, `${JSON.stringify(index, null, 2)}\n`, "utf8");

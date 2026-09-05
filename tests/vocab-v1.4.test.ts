@@ -32,6 +32,10 @@ const EXPECTED_GROUP_COUNTS = {
 } as const;
 
 describe("final vocabulary v1.4", () => {
+  it("contains no blank meanings or page references and preserves the corrected idiom", () => {
+    expect(VOCAB.filter((item) => !item.k.trim() || /^p\s*\.?\s*\d+$/i.test(item.k.trim()))).toEqual([]);
+    expect(getVocabItem(22182)).toMatchObject({ id: "JBKROW022984", w: "put the cart before the horse", k: "일의 앞뒤 순서를 거꾸로 하다; 선후를 뒤바꾸다" });
+  });
   it("loads the verified final source without dropping entries", () => {
     expect(VOCAB_META.version).toBe("v1.4");
     expect(VOCAB_META.sourceRows).toBe(39750);
@@ -188,6 +192,16 @@ describe("final vocabulary v1.4", () => {
 });
 
 describe("shared quiz engine", () => {
+  it("fills sparse idiom and appendix pools in every synonym mode", () => {
+    for (const rangeId of ["idioms", "appendix"]) {
+      for (const mode of ["syn-kor-choice", "syn-type"] as const) {
+        const questions = buildQuizQuestions({ mode, rangeId, count: 30, allowMeaningFallback: true });
+        expect(questions).toHaveLength(30);
+        expect(questions.every(validateQuestion)).toBe(true);
+        expect(questions.some((question) => question.answerKind === "meaning")).toBe(true);
+      }
+    }
+  });
   it("creates every available validated question up to the requested count", () => {
     const modes = ["syn-choice", "kor-choice", "syn-kor-choice"] as const;
 
@@ -241,7 +255,7 @@ describe("shared quiz engine", () => {
     }
   });
 
-  it("keeps synonym-plus-meaning questions in their requested format", () => {
+  it("keeps verified synonym format and fills missing synonyms with meaning questions", () => {
     const questions = buildQuizQuestions({
       mode: "syn-kor-choice",
       itemNums: [1, 2],
@@ -250,7 +264,9 @@ describe("shared quiz engine", () => {
       preserveItemOrder: true,
     });
 
-    expect(questions).toHaveLength(1);
+    expect(questions).toHaveLength(2);
+    expect(questions[1]?.mode).toBe("kor-choice");
+    expect(questions[1]?.answerKind).toBe("meaning");
     expect(questions[0]?.item.num).toBe(1);
     expect(questions[0]?.mode).toBe("syn-kor-choice");
     expect(questions[0]?.answerKind).toBe("synonym");

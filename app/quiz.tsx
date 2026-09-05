@@ -759,7 +759,7 @@ export default function QuizScreen() {
     if (questionMode === "kor-choice") {
       return q.answerKind === "synonym"
         ? "동의어 고르기 (영어)"
-        : "한국어 뜻 고르기";
+        : mode !== "kor-choice" ? "한국어 뜻 고르기 · 동의어 자료 부족" : "한국어 뜻 고르기";
     }
     if (questionMode === "syn-kor-choice") return "동의어+뜻 고르기";
     if (questionMode === "flashcard") return "플래시카드";

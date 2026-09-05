@@ -1,9 +1,9 @@
 {
-  "version": "1.4",
+  "version": "1.5",
   "coverage": {
-    "senses": 40,
-    "rows": 119,
-    "checkedAtKst": "2026.09.04"
+    "senses": 60,
+    "rows": 139,
+    "checkedAtKst": "2026.09.05"
   },
   "items": {
     "APPROW00001": {
@@ -538,6 +538,126 @@
       "group": "V401",
       "entryIds": [
         "learn:10574739-n"
+      ]
+    },
+    "JBKROW022770": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW022770"
+      ]
+    },
+    "JBKROW022820": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW022820"
+      ]
+    },
+    "JBKROW022968": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW022968"
+      ]
+    },
+    "JBKROW022969": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW022969"
+      ]
+    },
+    "JBKROW022984": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW022984"
+      ]
+    },
+    "JBKROW022992": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW022992"
+      ]
+    },
+    "JBKROW023078": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW023078"
+      ]
+    },
+    "JBKROW023090": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW023090"
+      ]
+    },
+    "JBKROW023091": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW023091"
+      ]
+    },
+    "JBKROW023223": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW023223"
+      ]
+    },
+    "JBKROW023245": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW023245"
+      ]
+    },
+    "JBKROW023302": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW023302"
+      ]
+    },
+    "JBKROW023335": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW023335"
+      ]
+    },
+    "JBKROW023367": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW023367"
+      ]
+    },
+    "JBKROW023368": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW023368"
+      ]
+    },
+    "JBKROW023444": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW023444"
+      ]
+    },
+    "JBKROW023456": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW023456"
+      ]
+    },
+    "JBKROW023462": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW023462"
+      ]
+    },
+    "JBKROW023465": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW023465"
+      ]
+    },
+    "JBKROW023466": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW023466"
       ]
     },
     "JBKROW023562": {

@@ -29,6 +29,36 @@ const WRONG_WORDS_KEY = VOCAB_LIST_STORAGE_KEYS.wrongWords;
 export const ADAPTIVE_QUIZ_HISTORY_KEY = "vocaknio_adaptive_quiz_history_v1";
 
 let learningStorageQueue: Promise<void> = Promise.resolve();
+const pendingLearningWrites = new Map<string, string>();
+const lastLearningValues = new Map<string, string>();
+
+async function readLearningItem(key: string): Promise<string | null> {
+  if (pendingLearningWrites.has(key)) return pendingLearningWrites.get(key)!;
+  try {
+    const value = await AsyncStorage.getItem(key);
+    if (value === null) lastLearningValues.delete(key);
+    else lastLearningValues.set(key, value);
+    return value;
+  } catch {
+    return lastLearningValues.get(key) ?? null;
+  }
+}
+
+async function persistLearningEntries(entries: [string, string][]): Promise<void> {
+  for (const [key, value] of entries) {
+    pendingLearningWrites.set(key, value);
+    lastLearningValues.set(key, value);
+  }
+  const pending = [...pendingLearningWrites.entries()];
+  try {
+    await AsyncStorage.multiSet(pending);
+    for (const [key, value] of pending) {
+      if (pendingLearningWrites.get(key) === value) pendingLearningWrites.delete(key);
+    }
+  } catch {
+    // Keep answers and sessions in this tab and retry them on the next mutation.
+  }
+}
 
 /**
  * Stats, wrong-word and adaptive-history mutations are read-modify-write
@@ -57,7 +87,7 @@ const EMPTY_STATS: StatsData = {
 
 async function readStatsUnsafe(): Promise<StatsData> {
   try {
-    const raw = await AsyncStorage.getItem(STATS_KEY);
+    const raw = await readLearningItem(STATS_KEY);
     if (raw)
       return { ...EMPTY_STATS, ...(JSON.parse(raw) as Partial<StatsData>) };
   } catch {}
@@ -84,7 +114,7 @@ function parseNumberList(raw: string | null): number[] {
 
 async function readWrongWordsUnsafe(): Promise<number[]> {
   try {
-    return parseNumberList(await AsyncStorage.getItem(WRONG_WORDS_KEY));
+    return parseNumberList(await readLearningItem(WRONG_WORDS_KEY));
   } catch {
     return [];
   }
@@ -258,7 +288,7 @@ export type AdaptiveAnswerContext = AdaptiveAnswerInput;
 async function readAdaptiveHistoryUnsafe() {
   try {
     return deserializeAdaptiveHistory(
-      await AsyncStorage.getItem(ADAPTIVE_QUIZ_HISTORY_KEY),
+      await readLearningItem(ADAPTIVE_QUIZ_HISTORY_KEY),
     );
   } catch {
     return deserializeAdaptiveHistory(null);
@@ -286,6 +316,7 @@ export async function prepareAdaptiveQuizSession({
       candidates,
       count,
       mode,
+      rangeId,
       history,
       legacyWrongNums,
     });
@@ -295,12 +326,9 @@ export async function prepareAdaptiveQuizSession({
       mode,
       itemNums,
     });
-    try {
-      await AsyncStorage.setItem(
-        ADAPTIVE_QUIZ_HISTORY_KEY,
-        serializeAdaptiveHistory(nextHistory),
-      );
-    } catch {}
+    await persistLearningEntries([
+      [ADAPTIVE_QUIZ_HISTORY_KEY, serializeAdaptiveHistory(nextHistory)],
+    ]);
     return itemNums;
   });
 }
@@ -367,7 +395,7 @@ export async function recordOneAnswer(
         ]);
       }
 
-      await AsyncStorage.multiSet(entries);
+      await persistLearningEntries(entries);
     });
   } catch {
     // A persistence failure must not freeze quiz interaction. The queue tail is

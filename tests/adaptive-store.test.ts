@@ -3,17 +3,21 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const storageMock = vi.hoisted(() => {
   const values = new Map<string, string>();
   let failNextMultiSet = false;
+  let storageUnavailable = false;
 
   return {
     values,
     reset() {
       values.clear();
       failNextMultiSet = false;
+      storageUnavailable = false;
     },
     failOneMultiSet() {
       failNextMultiSet = true;
     },
+    setUnavailable(value: boolean) { storageUnavailable = value; },
     async getItem(key: string) {
+      if (storageUnavailable) throw new Error("storage unavailable");
       // Yield once so parallel answer calls would overlap without serialization.
       await Promise.resolve();
       return values.get(key) ?? null;
@@ -23,6 +27,7 @@ const storageMock = vi.hoisted(() => {
       values.set(key, value);
     },
     async multiSet(entries: [string, string][]) {
+      if (storageUnavailable) throw new Error("storage unavailable");
       await Promise.resolve();
       if (failNextMultiSet) {
         failNextMultiSet = false;
@@ -107,10 +112,10 @@ describe("adaptive quiz storage", () => {
       loadWrongWords(),
       loadAdaptiveQuizHistory(),
     ]);
-    expect(stats.totalAnswered).toBe(1);
+    expect(stats.totalAnswered).toBe(2);
     expect(stats.totalCorrect).toBe(1);
-    expect(wrongWords).toEqual([]);
-    expect(Object.keys(history.stats)).toHaveLength(1);
+    expect(wrongWords).toEqual([2001]);
+    expect(Object.keys(history.stats)).toHaveLength(2);
   });
 
   it("keeps legacy recordOneAnswer calls compatible and does not create adaptive data", async () => {
@@ -123,6 +128,27 @@ describe("adaptive quiz storage", () => {
     });
     expect(await loadWrongWords()).toEqual([777]);
     expect(storageMock.values.has(ADAPTIVE_QUIZ_HISTORY_KEY)).toBe(false);
+  });
+
+  it("retains answers and rotates sessions through storage failure, then persists them", async () => {
+    const options = {
+      rangeId: "idioms", mode: "kor-choice" as const, count: 8,
+      candidates: Array.from({ length: 40 }, (_, i) => ({ num: i + 1, word: `phrase ${i + 1}` })),
+    };
+    const first = await prepareAdaptiveQuizSession({ ...options, sessionId: "offline-first" });
+    await loadStats();
+    storageMock.setUnavailable(true);
+    for (const itemNum of first) await recordOneAnswer(true, undefined, { sessionId: "offline-first", itemNum, mode: options.mode, outcome: "correct" });
+    const second = await prepareAdaptiveQuizSession({ ...options, sessionId: "offline-second" });
+    expect(second.some((num) => first.includes(num))).toBe(false);
+    const third = await prepareAdaptiveQuizSession({ ...options, sessionId: "offline-third" });
+    expect(third.some((num) => first.includes(num) || second.includes(num))).toBe(false);
+    storageMock.setUnavailable(false);
+    await prepareAdaptiveQuizSession({ ...options, sessionId: "online-fourth" });
+    const history = await loadAdaptiveQuizHistory();
+    expect(history.recentSessions).toHaveLength(4);
+    expect(Object.values(history.stats).filter((item) => item.lastOutcome === "correct")).toHaveLength(8);
+    expect((await loadStats()).totalCorrect).toBe(8);
   });
 
   it("falls back from corrupt history and changes only the new adaptive key", async () => {

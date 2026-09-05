@@ -23,6 +23,7 @@ export interface LearningEntry {
   headword: string;
   partOfSpeech: string;
   definitionEn: string;
+  definitionKind?: "editorial";
   definitionKo: string;
   memoryKo: string;
   usageKo: string;
