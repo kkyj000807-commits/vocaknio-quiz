@@ -140,6 +140,7 @@ export const RANGES: VocabRange[] = [
     end: VOCAB.length - 1,
     count: VOCAB_IDIOMS.length,
     kind: "idioms",
+    core: true,
   },
   {
     id: "all",
@@ -151,8 +152,16 @@ export const RANGES: VocabRange[] = [
   },
 ];
 
-export const CORE_RANGES = RANGES.filter((range) => range.core);
+export const CORE_RANGES = [
+  ...RANGES.filter((range) => range.kind === "idioms"),
+  ...RANGES.filter((range) => range.kind !== "idioms" && range.core),
+];
 export const SECTION_RANGES = RANGES.filter((range) => range.kind === "section");
+export const WORDBOOK_RANGES = [
+  ...RANGES.filter((range) => range.kind === "idioms"),
+  ...RANGES.filter((range) => range.kind === "all"),
+  ...SECTION_RANGES,
+];
 export const COUNTS = [10, 20, 30];
 
 export type QuizMode =

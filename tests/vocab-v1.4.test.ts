@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import {
   RANGES,
+  CORE_RANGES,
+  WORDBOOK_RANGES,
   SECTION_RANGES,
   VOCAB,
   VOCAB_META,
@@ -32,6 +34,14 @@ const EXPECTED_GROUP_COUNTS = {
 } as const;
 
 describe("final vocabulary v1.4", () => {
+  it("puts idioms first in core practice and the wordbook without losing sections", () => {
+    expect(CORE_RANGES[0]).toMatchObject({ id: "idioms", core: true });
+    expect(WORDBOOK_RANGES[0].id).toBe("idioms");
+    expect(WORDBOOK_RANGES.map((range) => range.id)).toEqual([
+      "idioms", "all", ...SECTION_RANGES.map((range) => range.id),
+    ]);
+    expect(new Set(WORDBOOK_RANGES.map((range) => range.id)).size).toBe(RANGES.length);
+  });
   it("contains no blank meanings or page references and preserves the corrected idiom", () => {
     expect(VOCAB.filter((item) => !item.k.trim() || /^p\s*\.?\s*\d+$/i.test(item.k.trim()))).toEqual([]);
     expect(getVocabItem(22182)).toMatchObject({ id: "JBKROW022984", w: "put the cart before the horse", k: "일의 앞뒤 순서를 거꾸로 하다; 선후를 뒤바꾸다" });

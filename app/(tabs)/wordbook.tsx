@@ -24,7 +24,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { PronunciationButton } from "@/components/pronunciation-button";
 import { LearningDetails } from "@/components/learning-details";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { getRangeItems, RANGES, VOCAB, type VocabItem } from "@/lib/vocab";
+import { getRangeItems, WORDBOOK_RANGES, VOCAB, type VocabItem } from "@/lib/vocab";
 import {
   loadBookmarks,
   loadQuizSettings,
@@ -35,11 +35,7 @@ import { useColors } from "@/hooks/use-colors";
 import * as Haptics from "expo-haptics";
 import { useAudioPlayer, setAudioModeAsync } from "expo-audio";
 
-const RANGE_OPTIONS = [
-  ...RANGES.filter((range) => range.kind === "all"),
-  ...RANGES.filter((range) => range.kind === "section"),
-  ...RANGES.filter((range) => range.kind === "idioms"),
-];
+const RANGE_OPTIONS = WORDBOOK_RANGES;
 
 function getRangeChipLabel(range: (typeof RANGE_OPTIONS)[number]) {
   if (range.group === "APPENDIX") return "부록";

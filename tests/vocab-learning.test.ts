@@ -1,18 +1,36 @@
 import { describe, expect, it } from "vitest";
 
 import learningIndex from "@/assets/vocab-learning-index-v1.4.json";
+import corrections from "@/data/idiom-corrections.json";
+import release from "@/release.config.json";
+import { VOCAB } from "@/lib/vocab";
 import { hasLearningEntry, LEARNING_COVERAGE } from "@/lib/vocab-learning";
 
 describe("깊이 학습 인덱스", () => {
-  it("검수된 해설과 20개 오류 보완을 8개 구간에 연결한다", () => {
-    expect(LEARNING_COVERAGE.senses).toBe(60);
+  it("기존 검수 해설과 모든 숙어 보완을 학습 인덱스에 연결한다", () => {
+    expect(LEARNING_COVERAGE.senses).toBe(40 + corrections.entries.reduce((sum, entry) => sum + entry.targets.length, 0));
     expect(LEARNING_COVERAGE.rows).toBe(Object.keys(learningIndex.items).length);
     expect(LEARNING_COVERAGE.rows).toBeGreaterThanOrEqual(40);
   });
 
   it("쪽수로 남아 있던 숙어에 실제 해설이 연결된다", () => {
     expect(hasLearningEntry("JBKROW022984")).toBe(true);
-    expect(learningIndex.version).toBe("1.5");
+    expect(learningIndex.version).toBe(release.version);
+  });
+
+  it("모든 숙어 보완에 실제 뜻, 한영 해설, 예문과 독립 근거가 있다", () => {
+    const byId = new Map(VOCAB.map((item) => [item.id, item]));
+    for (const entry of corrections.entries) {
+      for (const value of [entry.meaningKo, entry.definitionEn, entry.definitionKo, entry.memoryKo, entry.usageKo, entry.examTrapKo, entry.example.en, entry.example.ko]) {
+        expect(value.trim().length).toBeGreaterThan(3);
+        expect(value).not.toMatch(/^p\s*\.?\s*\d+$/i);
+      }
+      expect(new Set(entry.sources.map((source) => source.independenceGroup)).size).toBeGreaterThanOrEqual(2);
+      for (const target of entry.targets) {
+        expect(byId.get(target.id)).toMatchObject({ w: target.headword, k: entry.meaningKo });
+        expect(hasLearningEntry(target.id)).toBe(true);
+      }
+    }
   });
 
   it("존재하는 항목만 동기적으로 노출한다", () => {

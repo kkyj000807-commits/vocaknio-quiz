@@ -6,8 +6,8 @@
   "releaseSourceSha256": "6ad8b6941e8746992440ac10ec08c1ca641b37d022bffff7c65ea1236f916a84",
   "editorialCorrections": {
     "checkedAtKst": "2026.09.05",
-    "rows": 20,
-    "sha256": "2d40784b23f99a054d284ec44bde049a362779e625e6ccb5c1cab7e722fa9a00"
+    "rows": 63,
+    "sha256": "3876f136d1e3d1b9dd40bed5d37000beea0ae82e25e655e590c3ec86894bc2b9"
   },
   "groupCounts": {
     "V101": 4028,
@@ -17599,8 +17599,8 @@
   },
   "legacyMigration": {
     "sourceCount": 9517,
-    "mappedCount": 3599,
-    "unresolvedCount": 5918,
+    "mappedCount": 3598,
+    "unresolvedCount": 5919,
     "numMap": {
       "5": 34210,
       "6": 33261,
@@ -20988,7 +20988,6 @@
       "7353": 35471,
       "7356": 33224,
       "7357": 35906,
-      "7358": 281,
       "7361": 34283,
       "7363": 37326,
       "7364": 37050,
@@ -25174,6 +25173,7 @@
       7352,
       7354,
       7355,
+      7358,
       7359,
       7360,
       7362,
