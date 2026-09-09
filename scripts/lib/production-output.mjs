@@ -14,3 +14,7 @@ export function requireEmptyOutput(directory) {
   }
   return target;
 }
+
+export function createPagesFallback(directory) {
+  fs.copyFileSync(path.join(directory, "+not-found.html"), path.join(directory, "404.html"));
+}

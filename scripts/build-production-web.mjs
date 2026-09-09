@@ -1,7 +1,7 @@
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
-import { requireEmptyOutput } from "./lib/production-output.mjs";
+import { createPagesFallback, requireEmptyOutput } from "./lib/production-output.mjs";
 
 const outputDir = process.argv[2];
 
@@ -89,6 +89,7 @@ const collectHtml = (directory) => {
   }
 };
 
+createPagesFallback(outputDir);
 collectHtml(outputDir);
 for (const htmlPath of htmlFiles) {
   const html = fs.readFileSync(htmlPath, "utf8");
