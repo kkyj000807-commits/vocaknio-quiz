@@ -3,6 +3,7 @@ import path from "path";
 
 export default defineConfig({
   test: {
+    dir: "./tests",
     environment: "node",
     globals: true,
   },

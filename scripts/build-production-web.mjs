@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import { requireEmptyOutput } from "./lib/production-output.mjs";
 
 const outputDir = process.argv[2];
 
@@ -8,6 +9,13 @@ if (!outputDir) {
   console.error("사용법: node scripts/build-production-web.mjs <빈 출력 폴더>");
   process.exit(1);
 }
+
+requireEmptyOutput(outputDir);
+const learningBuild = spawnSync(process.execPath, ["scripts/build-vocab-learning-v1.4.mjs"], {
+  cwd: process.cwd(), stdio: "inherit", shell: false,
+});
+if (learningBuild.error) console.error(learningBuild.error.message);
+if (learningBuild.status !== 0) process.exit(learningBuild.status ?? 1);
 
 const parts = new Intl.DateTimeFormat("en-CA", {
   timeZone: "Asia/Seoul",
@@ -91,3 +99,9 @@ for (const htmlPath of htmlFiles) {
 
 console.log(`Production 릴리스 확인 파일: ${releaseManifest.target}`);
 console.log(`자동 갱신 스크립트 적용 HTML: ${htmlFiles.length}개`);
+
+const audit = spawnSync(process.execPath, ["scripts/audit-production-output.mjs", outputDir], {
+  cwd: process.cwd(), stdio: "inherit", shell: false,
+});
+if (audit.error) console.error(audit.error.message);
+process.exitCode = audit.status ?? 1;
