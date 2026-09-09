@@ -6,6 +6,14 @@ export const isMissingMeaning = (value) => !String(value ?? "").trim() || /^(?:p
 export function loadIdiomCorrections(root) {
   const file = path.join(root, "data", "idiom-corrections.json");
   const data = JSON.parse(fs.readFileSync(file, "utf8"));
+  const compositions = JSON.parse(fs.readFileSync(path.join(root, "data/expression-composition.json"), "utf8"));
+  const compositionKeys = new Set();
+  for (const composition of compositions.entries) {
+    if (compositionKeys.has(composition.key) || !data.entries.some((entry) => entry.key === composition.key)) throw new Error(`Invalid composition mapping: ${composition.key}`);
+    compositionKeys.add(composition.key);
+    if (!Array.isArray(composition.parts) || composition.parts.length < 2 || composition.parts.some((part) => !part.text?.trim() || !part.roleKo?.trim()) || !composition.combinedKo?.trim() || !composition.limitKo?.trim()) throw new Error(`Incomplete composition: ${composition.key}`);
+    data.entries.find((entry) => entry.key === composition.key).composition = { ...composition, checkedAtKst: compositions.checkedAtKst, policy: compositions.policy };
+  }
   const seen = new Set();
   for (const entry of data.entries) {
     for (const field of ["meaningKo", "definitionEn", "definitionKo", "memoryKo", "usageKo", "examTrapKo"]) {
@@ -49,6 +57,7 @@ export function correctionLearningEntries(vocab, data) {
       definitionKind: "editorial", definitionEn: entry.definitionEn, definitionKo: entry.definitionKo,
       memoryKo: entry.memoryKo, usageKo: entry.usageKo, examTrapKo: entry.examTrapKo,
       contrasts: entry.contrasts ?? [], example: { ...entry.example, kind: "editorial" },
+      ...(entry.composition ? { composition: entry.composition } : {}),
       sources: entry.sources.map((source) => ({ ...source, edition: `확인 ${data.checkedAtKst}`, license: "대조 출처 · 원문 미수록", role: "reference" })),
       verification: { status: "cross-agreed", checkedAtKst: data.checkedAtKst,
         reviewer: "Codex · 독립 출처 의미 대조 및 한영 학습 해설 검수", evidence: entry.sources },

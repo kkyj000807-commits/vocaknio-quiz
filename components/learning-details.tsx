@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, Linking, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useColors } from "@/hooks/use-colors";
+import { ReasoningPractice } from "@/components/reasoning-practice";
 import {
   hasLearningEntry,
   loadLearningEntries,
@@ -33,13 +34,10 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
     setError(false);
     loadLearningEntries(itemId)
       .then((loaded: LearningEntry[]) => {
-        if (!cancelled) setEntries(loaded);
+        if (!cancelled) { setLoading(false); setEntries(loaded); }
       })
       .catch(() => {
-        if (!cancelled) setError(true);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) { setLoading(false); setError(true); }
       });
     return () => {
       cancelled = true;
@@ -122,6 +120,13 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
         <Text style={s.text}>{entry.definitionKo}</Text>
       </View>
 
+      {entry.composition && <View style={s.section}>
+        <Text style={s.label}>왜 이 조합이 이 뜻일까?</Text>
+        {entry.composition.parts.map((part) => <Text key={part.text} style={s.text}><Text style={s.contrastWord}>{part.text}</Text> — {part.roleKo}</Text>)}
+        <Text style={s.text}>{entry.composition.combinedKo}</Text>
+        <Text style={s.note}>주의: {entry.composition.limitKo}</Text>
+      </View>}
+
       <View style={s.section}>
         <Text style={s.label}>쓰임과 뉘앙스</Text>
         {nuance?.register && <Text style={s.text}>격식·문체: {nuance.register}</Text>}
@@ -151,6 +156,20 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
         <Text style={s.label}>문제에서 주의할 점</Text>
         <Text style={s.text}>{entry.examTrapKo}</Text>
       </View>
+
+      {entry.reasoning && <>
+        <View style={s.section}>
+          <Text style={s.label}>직역 → 의미 연결</Text>
+          <Text style={s.text}>{entry.reasoning.literalKo}</Text>
+          <Text style={s.text}>{entry.reasoning.bridgeKo}</Text>
+          <Text style={s.note}>{entry.reasoning.originNoteKo}</Text>
+        </View>
+        <View style={s.section}>
+          <Text style={s.label}>같은 의미로 묶되, 차이는 기억하기</Text>
+          {entry.reasoning.neighbors.map((neighbor) => <Text key={neighbor.expression} style={s.text}><Text style={s.contrastWord}>{neighbor.expression}</Text> — {neighbor.noteKo}</Text>)}
+        </View>
+        <ReasoningPractice lesson={entry.reasoning} />
+      </>}
 
       <View style={s.exampleBox}>
         <Text style={s.label}>예문 · {entry.example.kind === "editorial" ? "학습용 창작" : "출처 원문"}</Text>

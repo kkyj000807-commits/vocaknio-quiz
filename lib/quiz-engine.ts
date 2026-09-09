@@ -244,7 +244,7 @@ function makeQuestion(
 
 function resolvePool(options: BuildQuizOptions): VocabItem[] {
   if (options.itemNums) {
-    return options.itemNums
+    return [...new Set(options.itemNums)]
       .map(getVocabItem)
       .filter((item): item is VocabItem => Boolean(item));
   }
@@ -275,6 +275,8 @@ function canFallBackToMeaning(mode: QuizMode, choiceLang: ChoiceLang): boolean {
  * 적응형 선정기는 이 목록만 받아 최근 노출과 정답률을 기준으로 순서를 정합니다.
  */
 export function getQuizCandidateItems(options: BuildQuizOptions): VocabItem[] {
+  if (!Number.isInteger(options.count) || options.count <= 0 || options.count > 200 ||
+      !["syn-choice", "syn-kor-choice", "syn-type", "kor-choice", "flashcard"].includes(options.mode)) return [];
   const choiceLang = options.choiceLang ?? "korean";
   const mastered = new Set(options.masteredNums ?? []);
   let pool = resolvePool(options).filter((item) => item.k.length > 0);
@@ -331,9 +333,10 @@ export function buildReviewQuestions(
   itemNums: number[],
   count: number,
 ): QuizQuestion[] {
+  if (!Number.isInteger(count) || count <= 0 || count > 200) return [];
   const questions: QuizQuestion[] = [];
   const items = shuffle(
-    itemNums
+    [...new Set(itemNums)]
       .map(getVocabItem)
       .filter((item): item is VocabItem => Boolean(item)),
   );

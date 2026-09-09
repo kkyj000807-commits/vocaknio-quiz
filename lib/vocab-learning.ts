@@ -1,4 +1,5 @@
 import learningIndexRaw from "@/assets/vocab-learning-index-v1.4.json";
+import type { ReasoningLesson } from "@/lib/reasoning-practice";
 
 export interface LearningSource {
   name: string;
@@ -42,6 +43,14 @@ export interface LearningEntry {
     reviewer: string;
   };
   audio?: LearningAudio;
+  reasoning?: ReasoningLesson;
+  composition?: {
+    parts: Array<{ text: string; roleKo: string }>;
+    combinedKo: string;
+    limitKo: string;
+    policy: string;
+    checkedAtKst: string;
+  };
 }
 
 interface LearningIndex {

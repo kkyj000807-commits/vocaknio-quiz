@@ -288,8 +288,7 @@ export default function WrongQuizScreen() {
   ]);
 
   const handleBackToWrongList = useCallback(() => {
-    if (router.canGoBack()) router.back();
-    else router.replace("/(tabs)/wrong");
+    router.replace("/(tabs)/wrong");
   }, [router]);
 
   const handleWebTouchStart = useCallback((event: GestureResponderEvent) => {

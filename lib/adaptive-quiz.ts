@@ -363,6 +363,29 @@ export function createEmptyAdaptiveHistory(): AdaptiveHistory {
   };
 }
 
+/** Storage must distinguish absent history from an unreadable/version-mismatched envelope. */
+export function isReadableAdaptiveHistory(value: unknown): boolean {
+  if (Array.isArray(value) && (value.length !== 7 || !Array.isArray(value[3])))
+    return false;
+  const expanded = compactToObject(value);
+  if (!expanded || typeof expanded !== "object" || Array.isArray(expanded))
+    return false;
+  const history = expanded as Partial<AdaptiveHistory>;
+  return (
+    history.schemaVersion === ADAPTIVE_HISTORY_SCHEMA_VERSION &&
+    Number.isInteger(history.revision) &&
+    (history.revision ?? -1) >= 0 &&
+    Number.isInteger(history.nextSessionSequence) &&
+    (history.nextSessionSequence ?? 0) > 0 &&
+    !!history.stats &&
+    typeof history.stats === "object" &&
+    !Array.isArray(history.stats) &&
+    Array.isArray(history.recentSessions) &&
+    Array.isArray(history.seenSessionIds) &&
+    Array.isArray(history.processedAnswerKeys)
+  );
+}
+
 export function sanitizeAdaptiveHistory(value: unknown): AdaptiveHistory {
   if (typeof value === "string") {
     try {

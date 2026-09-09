@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { correctionLearningEntries, loadIdiomCorrections } from "./lib/idiom-corrections.mjs";
+import { attachReasoningLessons } from "./lib/reasoning-lessons.mjs";
 
 const root = process.cwd();
 const sourceDirectory = path.join(root, "data", "vocab-learning");
@@ -28,6 +29,7 @@ const entries = sourcePaths.flatMap((sourcePath) => {
 });
 const vocab = JSON.parse(fs.readFileSync(vocabPath, "utf8"));
 entries.push(...correctionLearningEntries(vocab, loadIdiomCorrections(root)));
+attachReasoningLessons(root, entries);
 if (!Array.isArray(entries) || entries.length === 0) fail("검수 완료 항목이 없습니다.");
 
 const vocabById = new Map(vocab.map((item) => [item.id, item]));

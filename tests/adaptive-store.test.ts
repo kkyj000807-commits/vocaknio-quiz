@@ -53,11 +53,34 @@ import {
   loadWrongWords,
   prepareAdaptiveQuizSession,
   recordOneAnswer,
+  getLearningStorageIssue,
+  retryLearningStorage,
 } from "@/lib/store";
 
 describe("adaptive quiz storage", () => {
   beforeEach(() => {
     storageMock.reset();
+  });
+
+  it("counts one answer once even when the same event is delivered in parallel", async () => {
+    const answer = { sessionId: "double-tap", itemNum: 900, mode: "kor-choice", outcome: "wrong" as const };
+    await Promise.all(Array.from({ length: 8 }, () => recordOneAnswer(false, 900, answer)));
+    expect(await loadStats()).toMatchObject({ totalAnswered: 1, totalCorrect: 0 });
+    expect(await loadWrongWords()).toEqual([900]);
+    const history = await loadAdaptiveQuizHistory();
+    expect(Object.values(history.stats)[0].attempts).toBe(1);
+    await recordOneAnswer(true, undefined, { ...answer, sessionId: "next-session", outcome: "correct" });
+    expect(await loadStats()).toMatchObject({ totalAnswered: 2, totalCorrect: 1 });
+  });
+
+  it("reports unsaved writes and retries without adding another answer", async () => {
+    await loadStats(); await loadWrongWords(); await loadAdaptiveQuizHistory();
+    storageMock.failOneMultiSet();
+    await recordOneAnswer(true, undefined, { sessionId: "retry-test", itemNum: 800, mode: "kor-choice", outcome: "correct" });
+    expect(getLearningStorageIssue()).not.toBeNull();
+    await retryLearningStorage();
+    expect(getLearningStorageIssue()).toBeNull();
+    expect(await loadStats()).toMatchObject({ totalAnswered: 1, totalCorrect: 1 });
   });
 
   it("serializes 20 parallel answers without losing stats, wrong words, or item history", async () => {
@@ -151,7 +174,7 @@ describe("adaptive quiz storage", () => {
     expect((await loadStats()).totalCorrect).toBe(8);
   });
 
-  it("falls back from corrupt history and changes only the new adaptive key", async () => {
+  it("can show questions without overwriting corrupt history or unrelated records", async () => {
     storageMock.values.set(ADAPTIVE_QUIZ_HISTORY_KEY, "{broken");
     storageMock.values.set("vocaknio_wrong_words", JSON.stringify([2]));
     storageMock.values.set("vocaknio_bookmarks", "bookmark-sentinel");
@@ -168,9 +191,10 @@ describe("adaptive quiz storage", () => {
 
     expect(selected).toHaveLength(2);
     expect(new Set(selected).size).toBe(2);
-    expect(() =>
-      JSON.parse(storageMock.values.get(ADAPTIVE_QUIZ_HISTORY_KEY)!),
-    ).not.toThrow();
+    expect(storageMock.values.get(ADAPTIVE_QUIZ_HISTORY_KEY)).toBe("{broken");
+    expect(getLearningStorageIssue()).not.toBeNull();
+    await retryLearningStorage();
+    expect(storageMock.values.get(ADAPTIVE_QUIZ_HISTORY_KEY)).toBe("{broken");
     expect(storageMock.values.get("vocaknio_wrong_words")).toBe(
       JSON.stringify([2]),
     );

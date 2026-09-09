@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   deserializeAdaptiveHistory,
+  isReadableAdaptiveHistory,
   recordAdaptiveAnswer,
   recordAdaptiveSession,
   selectAdaptiveItemNums,
@@ -26,38 +27,136 @@ export interface StatsData {
 const STATS_KEY = "vocaknio_stats";
 const BOOKMARKS_KEY = VOCAB_LIST_STORAGE_KEYS.bookmarks;
 const WRONG_WORDS_KEY = VOCAB_LIST_STORAGE_KEYS.wrongWords;
+const MASTERED_KEY = VOCAB_LIST_STORAGE_KEYS.mastered;
+const STUDY_TIME_KEY = "vocaknio_study_time";
+const NUMBER_LIST_KEYS: readonly string[] = [BOOKMARKS_KEY, WRONG_WORDS_KEY, MASTERED_KEY];
 export const ADAPTIVE_QUIZ_HISTORY_KEY = "vocaknio_adaptive_quiz_history_v1";
 
 let learningStorageQueue: Promise<void> = Promise.resolve();
 const pendingLearningWrites = new Map<string, string>();
 const lastLearningValues = new Map<string, string>();
+const unreadableLearningKeys = new Set<string>();
+const knownLearningKeys = new Set<string>();
+let learningWriteFailed = false;
+const learningStorageListeners = new Set<() => void>();
+
+function validateLearningValue(key: string, raw: string): void {
+  const value: unknown = JSON.parse(raw);
+  const isObject = (v: unknown): v is Record<string, unknown> =>
+    !!v && typeof v === "object" && !Array.isArray(v);
+  const isCount = (v: unknown) =>
+    typeof v === "number" && Number.isFinite(v) && v >= 0;
+  let valid = false;
+  if (NUMBER_LIST_KEYS.includes(key)) {
+    valid =
+      Array.isArray(value) && value.every((n) => Number.isInteger(n) && n > 0);
+  } else if (key === ADAPTIVE_QUIZ_HISTORY_KEY) {
+    valid = isReadableAdaptiveHistory(value);
+  } else if (isObject(value)) {
+    const counts =
+      key === STATS_KEY
+        ? ["totalAnswered", "totalCorrect", "todayAnswered", "streak"]
+        : ["todaySeconds", "weekSeconds", "totalSeconds"];
+    const dates =
+      key === STATS_KEY
+        ? ["todayDate", "lastStudyDate"]
+        : ["todayDate", "weekKey"];
+    valid =
+      counts.every(
+        (field) => value[field] === undefined || isCount(value[field]),
+      ) &&
+      dates.every(
+        (field) =>
+          value[field] === undefined || typeof value[field] === "string",
+      );
+    if (key === STUDY_TIME_KEY)
+      valid &&=
+        value.dailyLog === undefined ||
+        (isObject(value.dailyLog) &&
+          Object.values(value.dailyLog).every(isCount));
+  }
+  if (!valid) throw new Error(`Unreadable learning record: ${key}`);
+}
+
+export function getLearningStorageIssue(): string | null {
+  if (unreadableLearningKeys.size)
+    return "기존 학습 기록을 읽지 못해 덮어쓰기를 막았습니다. 이번 응답은 저장되지 않을 수 있어요.";
+  if (pendingLearningWrites.size && learningWriteFailed)
+    return "아직 이 기기에 저장되지 않은 학습 기록이 있습니다. 저장될 때까지 이 창을 닫지 마세요.";
+  return null;
+}
+function notifyLearningStorage() {
+  learningStorageListeners.forEach((listener) => listener());
+}
+export function subscribeLearningStorage(listener: () => void) {
+  learningStorageListeners.add(listener);
+  return () => {
+    learningStorageListeners.delete(listener);
+  };
+}
+export async function retryLearningStorage(): Promise<void> {
+  await enqueueLearningStorageTask(async () => {
+    for (const key of [...unreadableLearningKeys]) await readLearningItem(key);
+    if (!unreadableLearningKeys.size) await persistLearningEntries([]);
+  });
+}
 
 async function readLearningItem(key: string): Promise<string | null> {
   if (pendingLearningWrites.has(key)) return pendingLearningWrites.get(key)!;
   try {
     const value = await AsyncStorage.getItem(key);
+    if (value !== null) {
+      try {
+        validateLearningValue(key, value);
+      } catch {
+        // Preserve the exact on-disk bytes; retry may re-read a repaired record,
+        // but must never silently reset corrupt data to an empty history.
+        unreadableLearningKeys.add(key);
+        notifyLearningStorage();
+        return null;
+      }
+    }
+    knownLearningKeys.add(key);
+    unreadableLearningKeys.delete(key);
+    notifyLearningStorage();
     if (value === null) lastLearningValues.delete(key);
     else lastLearningValues.set(key, value);
     return value;
   } catch {
+    if (!knownLearningKeys.has(key)) {
+      unreadableLearningKeys.add(key);
+      notifyLearningStorage();
+    }
     return lastLearningValues.get(key) ?? null;
   }
 }
 
-async function persistLearningEntries(entries: [string, string][]): Promise<void> {
+async function persistLearningEntries(
+  entries: [string, string][],
+): Promise<void> {
+  // Never replace unreadable prior records with a new empty baseline.
+  if (unreadableLearningKeys.size) {
+    notifyLearningStorage();
+    return;
+  }
   for (const [key, value] of entries) {
     pendingLearningWrites.set(key, value);
     lastLearningValues.set(key, value);
   }
+  notifyLearningStorage();
   const pending = [...pendingLearningWrites.entries()];
   try {
     await AsyncStorage.multiSet(pending);
+    learningWriteFailed = false;
     for (const [key, value] of pending) {
-      if (pendingLearningWrites.get(key) === value) pendingLearningWrites.delete(key);
+      if (pendingLearningWrites.get(key) === value)
+        pendingLearningWrites.delete(key);
     }
   } catch {
     // Keep answers and sessions in this tab and retry them on the next mutation.
+    learningWriteFailed = true;
   }
+  notifyLearningStorage();
 }
 
 /**
@@ -135,11 +234,10 @@ export async function loadStats(): Promise<StatsData> {
 }
 
 export async function saveStats(stats: StatsData): Promise<void> {
-  try {
-    await enqueueLearningStorageTask(() =>
-      AsyncStorage.setItem(STATS_KEY, JSON.stringify(stats)),
-    );
-  } catch {}
+  await enqueueLearningStorageTask(async () => {
+    await readStatsUnsafe();
+    await persistLearningEntries([[STATS_KEY, JSON.stringify(stats)]]);
+  });
 }
 
 export async function updateStatsAfterQuiz(
@@ -169,9 +267,7 @@ export async function updateStatsAfterQuiz(
     stats.totalCorrect += correct;
     stats.todayAnswered += total;
 
-    try {
-      await AsyncStorage.setItem(STATS_KEY, JSON.stringify(stats));
-    } catch {}
+    await persistLearningEntries([[STATS_KEY, JSON.stringify(stats)]]);
     return stats;
   });
 }
@@ -179,29 +275,37 @@ export async function updateStatsAfterQuiz(
 // ─── Bookmarks ────────────────────────────────────────────────────────────────
 
 export async function loadBookmarks(): Promise<number[]> {
-  try {
-    const raw = await AsyncStorage.getItem(BOOKMARKS_KEY);
-    if (raw) return JSON.parse(raw) as number[];
-  } catch {}
-  return [];
+  return enqueueLearningStorageTask(() => readNumberListUnsafe(BOOKMARKS_KEY));
 }
 
 export async function saveBookmarks(nums: number[]): Promise<void> {
-  try {
-    await AsyncStorage.setItem(BOOKMARKS_KEY, JSON.stringify(nums));
-  } catch {}
+  await saveNumberList(BOOKMARKS_KEY, nums);
 }
 
 export async function toggleBookmark(num: number): Promise<number[]> {
-  const bookmarks = await loadBookmarks();
-  const idx = bookmarks.indexOf(num);
-  if (idx >= 0) {
-    bookmarks.splice(idx, 1);
-  } else {
-    bookmarks.push(num);
-  }
-  await saveBookmarks(bookmarks);
-  return bookmarks;
+  return enqueueLearningStorageTask(async () => {
+    const bookmarks = await readNumberListUnsafe(BOOKMARKS_KEY);
+    if (!Number.isInteger(num) || num <= 0) return bookmarks;
+    const updated = bookmarks.includes(num)
+      ? bookmarks.filter((n) => n !== num)
+      : [...bookmarks, num];
+    await persistLearningEntries([[BOOKMARKS_KEY, JSON.stringify(updated)]]);
+    return updated;
+  });
+}
+
+async function readNumberListUnsafe(key: string): Promise<number[]> {
+  return parseNumberList(await readLearningItem(key));
+}
+
+async function saveNumberList(key: string, nums: number[]): Promise<void> {
+  await enqueueLearningStorageTask(async () => {
+    await readNumberListUnsafe(key);
+    const normalized = [
+      ...new Set(nums.filter((n) => Number.isInteger(n) && n > 0)),
+    ];
+    await persistLearningEntries([[key, JSON.stringify(normalized)]]);
+  });
 }
 
 // ─── Wrong Words (오답 누적) ──────────────────────────────────────────────────
@@ -217,14 +321,7 @@ export async function loadWrongWords(): Promise<number[]> {
  * 오답 단어 num 목록을 저장합니다.
  */
 export async function saveWrongWords(nums: number[]): Promise<void> {
-  try {
-    const normalized = [
-      ...new Set(nums.filter((value) => Number.isInteger(value) && value > 0)),
-    ];
-    await enqueueLearningStorageTask(() =>
-      AsyncStorage.setItem(WRONG_WORDS_KEY, JSON.stringify(normalized)),
-    );
-  } catch {}
+  await saveNumberList(WRONG_WORDS_KEY, nums);
 }
 
 /**
@@ -241,9 +338,7 @@ export async function addWrongWords(newNums: number[]): Promise<number[]> {
         ...newNums.filter((value) => Number.isInteger(value) && value > 0),
       ]),
     ];
-    try {
-      await AsyncStorage.setItem(WRONG_WORDS_KEY, JSON.stringify(merged));
-    } catch {}
+    await persistLearningEntries([[WRONG_WORDS_KEY, JSON.stringify(merged)]]);
     return merged;
   });
 }
@@ -255,9 +350,7 @@ export async function removeWrongWord(num: number): Promise<number[]> {
   return enqueueLearningStorageTask(async () => {
     const existing = await readWrongWordsUnsafe();
     const updated = existing.filter((n) => n !== num);
-    try {
-      await AsyncStorage.setItem(WRONG_WORDS_KEY, JSON.stringify(updated));
-    } catch {}
+    await persistLearningEntries([[WRONG_WORDS_KEY, JSON.stringify(updated)]]);
     return updated;
   });
 }
@@ -266,11 +359,7 @@ export async function removeWrongWord(num: number): Promise<number[]> {
  * 오답 목록 전체를 초기화합니다.
  */
 export async function clearWrongWords(): Promise<void> {
-  try {
-    await enqueueLearningStorageTask(() =>
-      AsyncStorage.setItem(WRONG_WORDS_KEY, JSON.stringify([])),
-    );
-  } catch {}
+  await saveWrongWords([]);
 }
 
 // ─── Adaptive quiz history ──────────────────────────────────────────────────
@@ -352,6 +441,12 @@ export async function recordOneAnswer(
 ): Promise<void> {
   try {
     await enqueueLearningStorageTask(async () => {
+      const history = context ? await readAdaptiveHistoryUnsafe() : null;
+      const nextHistory =
+        history && context ? recordAdaptiveAnswer(history, context) : null;
+      // A duplicate response must not increment global stats while adaptive stats reject it.
+      if (history && nextHistory && nextHistory.revision === history.revision)
+        return;
       const stats = await readStatsUnsafe();
       const today = new Date().toISOString().slice(0, 10);
 
@@ -386,9 +481,7 @@ export async function recordOneAnswer(
         ]);
       }
 
-      if (context) {
-        const history = await readAdaptiveHistoryUnsafe();
-        const nextHistory = recordAdaptiveAnswer(history, context);
+      if (nextHistory) {
         entries.push([
           ADAPTIVE_QUIZ_HISTORY_KEY,
           serializeAdaptiveHistory(nextHistory),
@@ -405,39 +498,32 @@ export async function recordOneAnswer(
 
 // ─── Mastered Words (플래시카드 마스터 제외) ─────────────────────────────────────
 
-const MASTERED_KEY = VOCAB_LIST_STORAGE_KEYS.mastered;
-
 /**
  * 마스터 처리된 단어 num 목록을 불러옵니다.
  */
 export async function loadMastered(): Promise<number[]> {
-  try {
-    const raw = await AsyncStorage.getItem(MASTERED_KEY);
-    if (raw) return JSON.parse(raw) as number[];
-  } catch {}
-  return [];
+  return enqueueLearningStorageTask(() => readNumberListUnsafe(MASTERED_KEY));
 }
 
 /**
  * 단어를 마스터 목록에 추가합니다.
  */
 export async function addMastered(num: number): Promise<number[]> {
-  const existing = await loadMastered();
-  if (existing.includes(num)) return existing;
-  const updated = [...existing, num];
-  try {
-    await AsyncStorage.setItem(MASTERED_KEY, JSON.stringify(updated));
-  } catch {}
-  return updated;
+  return enqueueLearningStorageTask(async () => {
+    const existing = await readNumberListUnsafe(MASTERED_KEY);
+    if (!Number.isInteger(num) || num <= 0 || existing.includes(num))
+      return existing;
+    const updated = [...existing, num];
+    await persistLearningEntries([[MASTERED_KEY, JSON.stringify(updated)]]);
+    return updated;
+  });
 }
 
 /**
  * 마스터 목록 전체를 초기화합니다 (리셋).
  */
 export async function clearMastered(): Promise<void> {
-  try {
-    await AsyncStorage.setItem(MASTERED_KEY, JSON.stringify([]));
-  } catch {}
+  await saveNumberList(MASTERED_KEY, []);
 }
 
 // ─── Quiz Settings ────────────────────────────────────────────────────────────────
@@ -469,8 +555,6 @@ export async function saveQuizSettings(settings: QuizSettings): Promise<void> {
 }
 
 // ─── Study Time (순공부 시간) ─────────────────────────────────────────────────
-
-const STUDY_TIME_KEY = "vocaknio_study_time";
 
 export interface StudyTimeData {
   /** 오늘 날짜 (YYYY-MM-DD) */
@@ -504,11 +588,11 @@ function getWeekKey(date = new Date()): string {
 }
 
 export async function loadStudyTime(): Promise<StudyTimeData> {
-  try {
-    const raw = await AsyncStorage.getItem(STUDY_TIME_KEY);
-    if (raw) return JSON.parse(raw) as StudyTimeData;
-  } catch {}
-  return {
+  return enqueueLearningStorageTask(readStudyTimeUnsafe);
+}
+
+async function readStudyTimeUnsafe(): Promise<StudyTimeData> {
+  const empty: StudyTimeData = {
     todayDate: "",
     todaySeconds: 0,
     weekSeconds: 0,
@@ -516,12 +600,15 @@ export async function loadStudyTime(): Promise<StudyTimeData> {
     totalSeconds: 0,
     dailyLog: {},
   };
+  const raw = await readLearningItem(STUDY_TIME_KEY);
+  return raw ? { ...empty, ...JSON.parse(raw) } : empty;
 }
 
 export async function saveStudyTime(data: StudyTimeData): Promise<void> {
-  try {
-    await AsyncStorage.setItem(STUDY_TIME_KEY, JSON.stringify(data));
-  } catch {}
+  await enqueueLearningStorageTask(async () => {
+    await readStudyTimeUnsafe();
+    await persistLearningEntries([[STUDY_TIME_KEY, JSON.stringify(data)]]);
+  });
 }
 
 /**
@@ -530,39 +617,41 @@ export async function saveStudyTime(data: StudyTimeData): Promise<void> {
  * - dailyLog는 최근 30일만 유지
  */
 export async function addStudySeconds(seconds: number): Promise<StudyTimeData> {
-  if (seconds <= 0) return loadStudyTime();
+  if (!Number.isFinite(seconds) || seconds <= 0) return loadStudyTime();
 
-  const data = await loadStudyTime();
-  const today = getTodayKey();
-  const weekKey = getWeekKey();
+  return enqueueLearningStorageTask(async () => {
+    const data = await readStudyTimeUnsafe();
+    const today = getTodayKey();
+    const weekKey = getWeekKey();
 
-  // 날짜 리셋
-  if (data.todayDate !== today) {
-    data.todaySeconds = 0;
-    data.todayDate = today;
-  }
+    // 날짜 리셋
+    if (data.todayDate !== today) {
+      data.todaySeconds = 0;
+      data.todayDate = today;
+    }
 
-  // 주차 리셋
-  if (data.weekKey !== weekKey) {
-    data.weekSeconds = 0;
-    data.weekKey = weekKey;
-  }
+    // 주차 리셋
+    if (data.weekKey !== weekKey) {
+      data.weekSeconds = 0;
+      data.weekKey = weekKey;
+    }
 
-  data.todaySeconds += seconds;
-  data.weekSeconds += seconds;
-  data.totalSeconds += seconds;
+    data.todaySeconds += seconds;
+    data.weekSeconds += seconds;
+    data.totalSeconds += seconds;
 
-  // dailyLog 업데이트
-  data.dailyLog[today] = (data.dailyLog[today] ?? 0) + seconds;
+    // dailyLog 업데이트
+    data.dailyLog[today] = (data.dailyLog[today] ?? 0) + seconds;
 
-  // 최근 30일만 유지
-  const keys = Object.keys(data.dailyLog).sort();
-  if (keys.length > 30) {
-    keys.slice(0, keys.length - 30).forEach((k) => delete data.dailyLog[k]);
-  }
+    // 최근 30일만 유지
+    const keys = Object.keys(data.dailyLog).sort();
+    if (keys.length > 30) {
+      keys.slice(0, keys.length - 30).forEach((k) => delete data.dailyLog[k]);
+    }
 
-  await saveStudyTime(data);
-  return data;
+    await persistLearningEntries([[STUDY_TIME_KEY, JSON.stringify(data)]]);
+    return data;
+  });
 }
 
 /** 초를 "X시간 Y분" 또는 "Y분" 형식으로 변환 */
