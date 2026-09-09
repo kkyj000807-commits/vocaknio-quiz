@@ -1,0 +1,6 @@
+interface:
+  display_name: "편입 실전 어휘·논리"
+  short_description: "문맥 근거와 오답 반례로 숙어·단어의 편입 실전 적용 문제를 검수"
+  default_prompt: "$transfer-english-reasoning으로 숙어부터 의미를 검증하고 새로운 독해 문맥의 문제와 해설을 만들어줘."
+policy:
+  allow_implicit_invocation: true

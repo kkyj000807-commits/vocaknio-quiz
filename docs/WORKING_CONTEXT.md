@@ -1,81 +1,74 @@
 # VOCA NEXUS 현재 작업 상태
 
-이 문서는 대화 원문이 아니라 다음 작업을 위한 현재 사실만 유지한다.
+기준: 2026.09.10 05:19 KST. 파일 위치·실행 명령은 docs/DEVELOPMENT.md, 운영 규칙은 docs/AI_WORK_RULES.md를 참조한다.
 
-## 제품 기준
+## 목표와 우선순위
 
-- 5~10분의 짧은 편입영어 학습, 정답·뜻 정확성, 실제 공개 사이트 사용이 우선이다.
-- 숙어가 최우선이다. 숙어·표현은 핵심 탭과 단어장 첫 칸이며 기본 선택이다. 전체 구간 안에만 숨기지 않는다.
-- 미색 #F5F0E6, 시스템과 독립된 앱 테마, 자연스러운 세로 스크롤을 유지한다.
-- 사용자 표시 명칭은 문제 풀이(하단 문풀), 하단 메뉴는 문풀 → 단어장 → 오답 → 통계 → 설정이다.
-- 기출·북마크는 하단에서만 숨겼으며 데이터와 별도 화면은 보존한다.
+- 편입영어 논리·독해에서 단어·숙어를 적용해 점수를 얻는다. 숙어 우선, 단어장 첫 칸/기본 선택 유지.
+- 미색 #F5F0E6, OS와 독립된 앱 테마, 세로 스크롤 우선. 문풀 → 단어장 → 오답 → 통계 → 설정.
+- 기록 보존·정답 정확성 → 장애/회귀 → 학습 흐름 → 필수 기능 → 근거 있는 사용성 개선.
+- 최신 지시: 적은 변경으로 반복 오류·검증 누락·재탐색을 줄인다. 새 구조/라이브러리/전면 디자인 변경은 필요성이 확인되기 전 도입하지 않는다.
+- 해설·문항 작성 시 .agents/skills/transfer-english-reasoning/SKILL.md 적용. 독립 사전 근거, 강사 공개 원칙, 앱의 추론, 실측 효과를 구분한다.
+- 한 대화와 같은 main에 누적한다. 사용자 미커밋 작업 보존. 비용/권한/복구 어려운 변경/중요 요구 충돌만 질문한다.
 
-## 현재 Production
+## Production — 1.8 반영 확인
 
-- 버전: 1.7 (직전 공개 1.6)
-- 앱 표시: 버전 1.7 · 최근 수정 2026.09.06 00:06 KST · Production 기준
-- 공개 URL: https://kkyj000807-commits.github.io/vocaknio-quiz/
-- 소스: 2ac375b / Pages: 544854bdce951768037bfd57272b519ca789c5f5
-- Pages Actions 33973916372: 2026.09.06 00:09:41 KST 성공 확인.
-- 공개 HTTP 검증: 2026.09.06 00:15 KST, 홈·설정·단어장·문제 풀이 HTTP 200, 모두 새 번들 참조.
-- 번들: entry-1022726008137d5d7ed8cdfb8e3b80da.js
-- 공개/로컬 번들 SHA256 일치: 916470857dc49064d813346674f9c0dff767ca03b1a669a8bcf137680ff160f9
-- 1.7 학습 JSON 8개: HTTP 200, 버전 및 전체 JSON 내용이 빌드본과 일치.
-- 기존 해시 자산과 이전 학습 파일은 보존했다. 새 학습 데이터는 /data/vocab-learning/1.7/에 있다.
+- URL: https://kkyj000807-commits.github.io/vocaknio-quiz/
+- 이전: 1.7 / 2026.09.06 00:06 KST → 현재: 1.8 / 2026.09.10 05:12 KST.
+- 05:12는 빌드에 기록한 최근 수정 기준 시각, Pages 게시 성공 05:16 KST. 둘을 같은 시각이라고 보고하지 않는다.
+- 앱 소스: 159c8fd. 검증 파이프라인 fdd0556, Pages 404 개선 6738f2c.
+- Pages: ea90d04a8b52cc7098fc0b8cae01ee4f9e21726d. Actions 34399933521 success 확인.
+- 공개 번들: entry-e046800c4d1a9f612f77b1a5dd598eda.js.
+- SHA256: fae81631b201297a39f9257c86d311439a367c1d58c869adf8a1b566b042c878. 로컬 배포본=공개 번들 일치.
+- 05:16 공개 홈/settings/wordbook/quiz HTTP 200, 학습 JSON 8개 모두 로컬 일치.
+- 실제 Windows Chrome: 기존1.7 화면에서 일반 새로고침으로1.8 시각 표시. 공개 구성 해설·문맥 연습 펼치기·미색·390×844 세로 스크롤 확인. 가로 넘침 없음, 콘솔 error 0.
+- Safari/실제 iOS·Android Chrome, 모든 캐시 조건은 미검증. 데스크톱 좁은 폭 검증을 실제 모바일 검증으로 보고하지 않는다.
+- 최신 배포 산출물: C:\Users\USER\Documents\Codex\2026-08-03\realtime-voice-chat\work\vocanexus-production-1.8-20260910-release
+- Pages worktree: C:\Users\USER\Documents\Codex\2026-08-03\realtime-voice-chat\work\vocanexus-pages-1.8-20260910
+- 이전 버전의 해시 자산/학습 JSON은 삭제·변경하지 않았다. 00:22/00:24/00:28 빌드는 구 후보이며 재배포하지 않는다.
 
-## 이번 변경과 데이터 범위
+## 이번에 해결한 병목과 검증
 
-- 단어장 순서: 숙어·표현 → 전체 → V101 → V201 → V301 → V401 → V501 → V502 → V601 → 부록.
-- 숙어·표현은 핵심 범위 첫 번째이며 단어장 기본 선택이다. 기존 모든 구간과 38,163개 ID·번호를 보존했다.
-- 1.5: p.14 등 쪽수만 남은 20개 항목의 실제 뜻과 해설·예문을 복구했다.
-- 1.6: 17개 추가 표현을 독립 사전 2곳씩 대조해 43개 반복 수록 항목에 해설을 연결했다.
-- 1.7: 12개 추가 표현/36개 반복 수록 행의 뜻·한영 해설·뉘앙스·혼동 구분·예문을 독립 사전 2곳씩 대조해 보완했다.
-- 이번 표현: abide by, teem with, wrap up, capitalize (on), clamp down on, work out, crack down on, delve into, put A at ease, to boot, by the same token, in the face of A.
-- clamp down on/crack down on은 근거 없는 고정 강도 순위를 만들지 않고 같은 기본 뜻으로 정리했다. work out의 해결·계산·잘 풀림·운동, in the face of의 직면/양보를 문맥에 따라 구분했다.
-- data/idiom-corrections.json이 수정 뜻·한영 풀이·기억 고리·쓰임·편입 함정·예문·검수 출처를 관리한다.
-- 재배포 허가 없는 사전 정의 원문은 복제하지 않는다. Oxford·Collins·Merriam-Webster 등의 뜻을 대조한 자체 영영 풀이·한국어 해설·창작 예문이다. 앱에서는 영영 풀이 · 사전 대조로 구별한다.
-- 기존 WordNet 원문 40개 학습 엔트리 + 보완 99개 행별 엔트리 = 139개 엔트리, 218개 목록 연결. 이는 서로 다른 숙어 139개가 검수됐다는 뜻이 아니다.
-- 이번 숙어 검수 날짜는 2026.09.05이며 공개 빌드는 자정을 넘어 2026.09.06이다. 검수일과 배포 시각을 같은 날짜로 임의 덮어쓰지 않는다.
-- 앱의 숙어·표현 필터: 3,731개 수록 행, 정확한 소문자 표제어 기준 1,877개. 구동사·연어·고유명사도 포함되어 있다. 이 전 범위 해설 검수는 아직 완료되지 않았다.
-- 기존 Claude 검수는 옛 번호 체계다. look after·run into는 현재 표제어와 사전 대조로 재활용했고, put on은 현재 형용사 풀이여서 옛 착용하다 동사 풀이로 덮지 않았다.
-- 발음은 허가된 미국식 실제 녹음 17개, 나머지 en-US 합성음이다. 전부 공식 사전 녹음이라고 보고하지 않는다.
+1. 기록 저장 경로 분리: 병렬 북마크12개 중1개만 남음, 저장 실패 중 삭제한 오답 부활, 깨진 통계 덮어쓰기, 병렬 학습 시간 유실을 재현했다. 통계/오답/북마크/마스터/시간을 기존 큐와 미저장 재시도 경로에 통합했다. 읽기 불가·깨진 기록의 원본은 그대로 두고 경고한다.
+2. 테스트 탐색 오류: 기본 Vitest가 tmp/pydeps2/bin EPERM으로 중단했다. tests/만 탐색하도록 수정. Metro도 그 Python 임시 트리만 제외하여 재빌드에서 EPERM 사라짐. 권한/사용자 파일 변경 없음.
+3. 배포 준비 누락: node scripts/verify-project.mjs가 데이터 생성→타입→전체 테스트를 수행한다. Production 빌더는 최신 데이터 생성→export→KST 정보→경로 감사, 빈 출력 보호, 최신404까지 담당한다. 검증 실패 시 즉시 중단.
+4. 실제 UI 복귀 오류: 결과에서 오답 복습 후 '오답 목록' 버튼이 방문 이력을 따라 홈으로 이동했다. 명시적 /(tabs)/wrong 이동으로 수정. 홈 이력이 있는 상태에서 실제 Chrome 재검증 통과.
+5. 개발 지도: docs/DEVELOPMENT.md와 AGENTS 진입 연결. 오래된 todo.md는 이력이며 현재 완료 근거가 아니다.
 
-## 학습·출제 상태
+검증 근거:
+- 00:21 전체 검사 103테스트 통과/기존 인증1건 조건부 건너뜀, 전체 tsc 통과.
+- 저장 신규8개 테스트는 수정 전8실패 → 수정 후8통과. 기존 적응형/채점/이관 테스트 유지.
+- 05:14 Pages 출력 회귀2개 통과(기존 빈 폴더 검사 + 신규404 연결). 이를 전체 검사를 새로104개 실행했다고 표현하지 않는다.
+- 변경 파일 lint 오류0. 기존 tests/adaptive-store import 순서 경고1 및 도구 모듈형식/Browserslist 경고는 남음.
+- 최신 Production export·자산 감사 통과: HTML22/학습JSON8/누락경로0/루트경로오류0.
+- 로컬 실제 Chrome: 10문제(1정답/9오답), 빠른 두 번 클릭은1회 채점, 이전 응답 복원, 결과→오답9개, 새로고침·새 탭 후 통계/오답/북마크 유지. 실행 원본은 배포한 앱 코드와 동일하며 최종 배포 번들 SHA도 대조함.
 
-- 단어장 현재 범위에서 10문제 직행, 작게 보이는 발음 버튼(실효 터치 44px), 뜻 터치 가림·복원을 유지한다.
-- 일반·오답 문제 풀이의 이전·다음과 답·해설 복원, 명확한 가로 제스처를 유지한다. 세로 스크롤이 우선이다.
-- 1.5에서 최근 세션 전체 문항 + 최근 3개 관련 세션의 정답·마스터 표제어를 우선 제외하고 저노출 문항을 먼저 출제한다. 풀이 대상이 부족할 때만 오래된 보호부터 완화한다.
-- 같은 표제어의 여러 수록 행은 통합 학습 이력으로 판단한다. 최신 정답은 과거 오답 가산점을 해제한다.
-- 세션 최소 75%는 범위 순환, 최대 25%는 약점 복습이다.
-- 동의어 부족 시 syn-choice·syn-kor-choice·syn-type에서 한국어 뜻 문제로 전환하여 요청 문항 수를 확보하고 전환 이유를 표시한다.
-- 적응형 이력은 브라우저 로컬이다. 저장 실패 시 현재 실행 중 기록을 유지하고 다음 변경 때 재시도한다. 브라우저 종료 후 영속성이 보장되는 것은 저장 성공분뿐이다.
-- 기기·브라우저 간 동기화와 개인별 오답 보기 생성은 아직 미완료다.
+## 기존 1.8 학습 개선도 배포됨
 
-## 검증과 한계
+- 숙어6개/새 문맥12문항/반복 목록17행에 의미 연결·문맥 근거·오답 이유를 연결.
+- 숙어13개 구성 요소 설명: 단어/전치사/소사 → 결합 뜻 → 일반화 금지. 배포 JSON 연결 테스트 추가.
+- 문맥 연습 첫 응답은 기기 로컬 저장, 본 적응형 성적과 분리. 전용 검사 통과, 로컬/공개 UI 연결 확인.
+- 해설 로딩 경합, 응답 재전달 이중 집계, 잘못된 문제 수/중복 지정 항목 방어 포함.
+- 전체 학습 해설139개 엔트리/218행 연결은 서로 다른 검수 숙어139개라는 뜻이 아니다.
 
-- 전용 TypeScript: 통과.
-- 관련 Vitest: 7파일 55테스트 통과(2026.09.06 00:15~00:16 KST). 명령에 --dir tests를 넣어 사용자 tmp/pydeps2의 OneDrive 접근 오류를 피한다.
-- 정본 감사: 38,163개, 동의어 항목 11,277개, 유효 연결 65,219개 통과.
-- Production 빌드: 성공. HTML 21개, 경로 누락·참조 누락·루트 /assets/ 및 /_expo/ 참조 0.
-- 남아 있는 빌드 경고: 사용자 tmp/pydeps2 일부 EPERM 스캔 제외, 오래된 Browserslist, NO_COLOR/FORCE_COLOR 충돌. 앱 자산 누락은 없다.
-- 실제 Windows Chrome: 1.6을 표시하던 설정 화면을 일반 새로고침하여 1.7/2026.09.06 00:06 KST로 갱신됨을 확인했다. 캐시 삭제·강력 새로고침·버전 쿼리는 사용하지 않았다.
-- 공개 Chrome 단어장: 숙어 첫 칸/기본 선택/3,731개, abide by의 새 뜻·한영 해설·예문·사전 출처 펼침, 검색과 미색 화면·세로 스크롤을 확인했다. in the face of 검색 결과 6개 행도 모두 새 뜻으로 표시됐다.
-- 1.6에서 인앱 Chromium의 숙어 10문제 진입, 정답→다음→이전 시 정답 1 유지까지 확인했다. 이 학습 흐름은 1.7에서 코드를 변경하지 않았다.
-- 실제 iOS Safari/모바일 Chrome 터치 확인은 아직 하지 못했다. Windows Chrome 결과를 모바일 양쪽 확인으로 대체하지 않는다.
-- Chrome 해설 확장 패널에는 내용이 표시된 뒤에도 로딩 문구가 남는 현상을 관찰했다. 해설은 읽을 수 있으나 로딩 상태 종료·재시도 처리 추가 점검이 필요하다.
-- 전체 tsc: tests/vocab.test.ts의 삭제 API 3개(getForbiddenSyns/getSynDistractors/getKorDistractors) import로 실패. 관련 전용 통과와 구분한다.
-- 기존 Pages 404.html은 이전 호환 파일을 유지한다. 정상 공개 라우트 4개는 200 확인했지만 존재하지 않는 경로/복구 동작은 이번에 추가 검증하지 않았다.
+## 남은 중요한 문제와 다음 행동
 
-## 다음 한 가지
+1. 다음 최우선: 본 문제풀이 도중 새로고침하면 세션이 새로 만들어지는 문제를 좁게 재현하고 현재 문제/응답의 중단 복원을 검토. 누적 기록 복원과 별개다.
+2. 여러 탭이 동시에 기록하는 상황의 충돌 보호는 아직 없다. 현재 큐는 한 앱 실행 안에서만 보호.
+3. 깨진 기존 기록을 자동 삭제하지 않는다. 원본 보존/쓰기 차단은 구현했으나 사용자가 안전하게 백업·복구하는 도구는 미완료. 개별 적응형 항목의 모든 손상 형태까지 검증했다고 과장하지 않는다.
+4. 숙어 전체는 3,731수록 행/소문자 표제어1,877개(연어/고유명사 포함). 전 범위 뜻·해설·예문 검수 미완료. 독립 사전 대조로 점진 완성한 뒤 일반 단어로 확장.
+5. 미국식 허가 녹음17개, 나머지 en-US 합성음. 전부 공식 사전 녹음 아님.
+6. 기기 간 적응형 이력 동기화, 개인별 오답 보기 생성, 지연된 새 문맥 성취 측정은 미완료. 별도 서버의 인증/동기화 배포를 Pages 성공으로 간주하지 않는다.
+7. 실제 모바일 Safari/Chrome의 터치·캐시 재검증 필요.
 
-숙어 해설 미연결 표현을 우선순위화하여 실제 사전 대조 → 자체 한영 설명·예문 → 같은 뜻의 반복 행 연결 → 공개 검증 순서로 확장한다. 빈 칸을 채우려고 미검증 내용을 대량 생성하지 않는다.
+## 자동 재개
 
-## 보존 및 재개 절차
+- ID voca-nexus / heartbeat / ACTIVE / 매시간 / 이 대화 019fc31d-adea-7f83-b2c0-81d298e78fdd.
+- 2026.09.10 01:07, 02:08, 03:08, 04:08, 05:10 KST 예약 신호 수신을 실제 관찰. 신호 도착과 개발 실행 완료는 다르다. 전체 공백 동안 코딩했다고 보고하지 않는다.
+- 수정 전 docs/AUTOMATION_RUNBOOK.md에 따라 python scripts/hold-development-lock.py를 대화형 실행, LOCK_ACQUIRED 후 수정, 종료 시 Enter 해제. 중복 실행은 건너뛴다.
+- PC·앱·프로젝트 접근이 필요. 앱 종료/절전 후 무인 복귀, 사용량 제한 후 복구는 미검증. 복구 시각이 있으면 그전 재시도 보류, 없으면 다음 주기. 추가 크레딧/API 구매 금지.
+- 기존 자동화를 매회 새로 만들지 않는다. 변경 없으면 전수 검사/알림을 반복하지 않는다.
 
-- 사용자 소유 server/auth.ts, analysis/, build/, output/, pnpm-workspace.yaml, qa_claude/, scripts의 exam 분석 파일, tmp/, vocab_project/는 수정·커밋하지 않았다.
-- auth 상태/원격 SHA 확인 → 관련 검사 → node scripts/build-production-web.mjs <새 출력 폴더> → node scripts/audit-production-output.mjs <출력 폴더> → 목적 파일만 main 커밋/push → 별도 Pages worktree에 빌드 덮어쓰기(기존 해시 자산 보존) → gh-pages push → Actions/공개 JSON/실제 화면 확인.
-- 버전은 release.config.json 한곳, Production 성공 시 +0.1. 다음 후보는 1.8.
-- 제한된 실행 환경의 gh keyring 접근 실패는 token invalid로, pnpm 링크 접근 실패는 패키지 누락으로 보일 수 있다. 이번에는 승인된 정상 실행 환경에서 인증·dry-run·55테스트가 통과했다. 이를 확인하지 않고 재로그인·재설치를 사용자에게 반복 요구하지 않는다.
-- 전용 검사: node node_modules/typescript/bin/tsc --noEmit -p tsconfig.vocab-v1.4.json
-- 테스트: node node_modules/vitest/vitest.mjs run --dir tests tests/adaptive-quiz.test.ts tests/adaptive-store.test.ts tests/us-pronunciation.test.ts tests/vocab-learning.test.ts tests/vocab-migration-v1.4.test.ts tests/vocab-storage-migration-v1.4.test.ts tests/vocab-v1.4.test.ts
-- 감사: node node_modules/tsx/dist/cli.mjs scripts/audit-quiz-engine-v1.4.ts
+## 보존 대상
+
+server/auth.ts, analysis/, build/, output/, pnpm-workspace.yaml, qa_claude/, scripts/analyze_exam_corpus.py, scripts/build_exam_analysis_queue.py, scripts/incremental_exam_corpus_update.mjs, scripts/incremental_exam_corpus_update.py, tmp/, vocab_project/는 사용자 소유다. 수정·커밋·삭제하지 않았다. scripts/__pycache__/는 로컬 검사 캐시로 커밋하지 않았다.
