@@ -14,6 +14,7 @@ import {
   VOCAB_LIST_STORAGE_KEYS,
 } from "@/lib/vocab-storage-migration";
 import type { QuizMode } from "@/lib/vocab";
+import { QUIZ_SESSION_KEY, parseQuizSession, type QuizSession } from "@/lib/quiz-session";
 
 export interface StatsData {
   totalAnswered: number;
@@ -52,6 +53,8 @@ function validateLearningValue(key: string, raw: string): void {
       Array.isArray(value) && value.every((n) => Number.isInteger(n) && n > 0);
   } else if (key === ADAPTIVE_QUIZ_HISTORY_KEY) {
     valid = isReadableAdaptiveHistory(value);
+  } else if (key === QUIZ_SESSION_KEY) {
+    valid = parseQuizSession(value) !== null;
   } else if (isObject(value)) {
     const counts =
       key === STATS_KEY
@@ -426,6 +429,26 @@ export async function loadAdaptiveQuizHistory() {
   return enqueueLearningStorageTask(readAdaptiveHistoryUnsafe);
 }
 
+async function readQuizSessionUnsafe(): Promise<QuizSession | null> {
+  const raw = await readLearningItem(QUIZ_SESSION_KEY);
+  return raw ? parseQuizSession(JSON.parse(raw)) : null;
+}
+
+export function loadQuizSession(): Promise<QuizSession | null> {
+  return enqueueLearningStorageTask(readQuizSessionUnsafe);
+}
+
+export function saveQuizSession(session: QuizSession): Promise<void> {
+  // Capture before joining the queue, so later UI edits cannot change this write.
+  const raw = JSON.stringify(session);
+  validateLearningValue(QUIZ_SESSION_KEY, raw);
+  return enqueueLearningStorageTask(async () => {
+    const previous = await readQuizSessionUnsafe();
+    if (previous?.sessionId === session.sessionId && previous.completed && !session.completed) return;
+    await persistLearningEntries([[QUIZ_SESSION_KEY, raw]]);
+  });
+}
+
 // ─── Per-question realtime update ───────────────────────────────────────────────
 
 /**
@@ -438,9 +461,13 @@ export async function recordOneAnswer(
   isCorrect: boolean,
   wrongNum?: number,
   context?: AdaptiveAnswerContext,
+  session?: QuizSession,
 ): Promise<void> {
+  const sessionRaw = session ? JSON.stringify(session) : null;
+  if (sessionRaw) validateLearningValue(QUIZ_SESSION_KEY, sessionRaw);
   try {
     await enqueueLearningStorageTask(async () => {
+      if (sessionRaw) await readQuizSessionUnsafe();
       const history = context ? await readAdaptiveHistoryUnsafe() : null;
       const nextHistory =
         history && context ? recordAdaptiveAnswer(history, context) : null;
@@ -469,6 +496,7 @@ export async function recordOneAnswer(
       if (isCorrect) stats.totalCorrect += 1;
 
       const entries: [string, string][] = [[STATS_KEY, JSON.stringify(stats)]];
+      if (sessionRaw) entries.push([QUIZ_SESSION_KEY, sessionRaw]);
 
       const wrongItemNum = !isCorrect
         ? (context?.itemNum ?? wrongNum)

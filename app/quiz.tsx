@@ -46,12 +46,21 @@ import {
   addMastered,
   loadBookmarks,
   loadMastered,
+  loadQuizSession,
+  saveQuizSession,
   prepareAdaptiveQuizSession,
   recordOneAnswer,
   toggleBookmark,
   type AdaptiveAnswerContext,
 } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
+import {
+  createEmptyQuestionViewState,
+  resumableQuizSession,
+  summarizeQuizSession,
+  type QuizQuestionViewState,
+  type QuizSession,
+} from "@/lib/quiz-session";
 
 function NativeSwipeBoundary({
   gesture,
@@ -63,18 +72,6 @@ function NativeSwipeBoundary({
   if (Platform.OS === "web") return children;
   return <GestureDetector gesture={gesture}>{children}</GestureDetector>;
 }
-
-type QuizQuestionViewState = {
-  answered: boolean;
-  selectedChoice: number | null;
-  skipped: boolean;
-  revealed: boolean;
-  flashGrade: "correct" | "wrong" | null;
-  typedAnswer: string;
-  typeResult: "correct" | "wrong" | null;
-  hintLevel: number;
-  mastered: boolean;
-};
 
 type WebSwipeTrace = {
   startX: number;
@@ -91,20 +88,6 @@ function getTouchPoint(event: GestureResponderEvent, useChangedTouch = false) {
   return { x: touch.pageX, y: touch.pageY };
 }
 
-function createEmptyQuestionViewState(): QuizQuestionViewState {
-  return {
-    answered: false,
-    selectedChoice: null,
-    skipped: false,
-    revealed: false,
-    flashGrade: null,
-    typedAnswer: "",
-    typeResult: null,
-    hintLevel: 0,
-    mastered: false,
-  };
-}
-
 export default function QuizScreen() {
   const colors = useColors();
   const router = useRouter();
@@ -115,6 +98,9 @@ export default function QuizScreen() {
     new Map<number, QuizQuestionViewState>(),
   );
   const sessionIdRef = useRef("");
+  const sessionCompletedRef = useRef(false);
+  const [restartToken, setRestartToken] = useState(0);
+  const [sessionNotice, setSessionNotice] = useState("");
   const params = useLocalSearchParams<{
     mode: QuizMode;
     rangeStart: string;
@@ -164,6 +150,21 @@ export default function QuizScreen() {
   const [bookmarks, setBookmarks] = useState<number[]>([]);
   const [hintLevel, setHintLevel] = useState(0);
   const [masteredOnCard, setMasteredOnCard] = useState(false);
+  const requestKey = useMemo(() => JSON.stringify({ mode, rangeStart, rangeEnd, count, rangeId, choiceLang, itemNums }),
+    [mode, rangeStart, rangeEnd, count, rangeId, choiceLang, itemNums]);
+
+  const restoreQuestionViewState = useCallback((index: number) => {
+    const snapshot = questionViewStatesRef.current.get(index) ?? createEmptyQuestionViewState();
+    setAnswered(snapshot.answered);
+    setSelectedChoice(snapshot.selectedChoice);
+    setSkipped(snapshot.skipped);
+    setRevealed(snapshot.revealed);
+    setFlashGrade(snapshot.flashGrade);
+    setTypedAnswer(snapshot.typedAnswer);
+    setTypeResult(snapshot.typeResult);
+    setHintLevel(snapshot.hintLevel);
+    setMasteredOnCard(snapshot.mastered);
+  }, []);
 
   const cardScale = useSharedValue(1);
   // 카드 슬라이드 전환용 shared values
@@ -188,6 +189,24 @@ export default function QuizScreen() {
       setQuestionsReady(false);
       setQuestions([]);
       isMovingRef.current = false;
+      sessionCompletedRef.current = false;
+      setSessionNotice("");
+      const saved = resumableQuizSession(await loadQuizSession(), requestKey);
+      if (cancelled) return;
+      if (saved) {
+        sessionIdRef.current = saved.sessionId;
+        questionViewStatesRef.current = new Map(saved.states.map((state, i) => [i, state]));
+        const summary = summarizeQuizSession(saved);
+        setCorrectCount(summary.correctCount);
+        setWrongCount(summary.wrongCount);
+        setWrongItems(summary.wrongItems);
+        restoreQuestionViewState(saved.currentIndex);
+        setCurrentIdx(saved.currentIndex);
+        setQuestions(saved.questions);
+        setSessionNotice(`이전에 풀던 ${saved.currentIndex + 1}번 문제부터 이어갑니다. 이미 낸 답은 다시 채점하지 않습니다.`);
+        setQuestionsReady(true);
+        return;
+      }
       const loadedMastered = mode === "flashcard" ? await loadMastered() : [];
       if (cancelled) return;
 
@@ -239,12 +258,18 @@ export default function QuizScreen() {
       setTypeResult(null);
       setHintLevel(0);
       setMasteredOnCard(false);
+      if (nextQuestions.length) await saveQuizSession({
+        schema: 1, requestKey, sessionId, questions: nextQuestions,
+        states: nextQuestions.map(() => createEmptyQuestionViewState()), currentIndex: 0, completed: false,
+      });
+      if (cancelled) return;
       setQuestions(nextQuestions);
       setQuestionsReady(true);
     };
 
     prepareQuestions().catch(async () => {
       if (cancelled) return;
+      setSessionNotice("이어 풀기 기록을 준비하지 못했습니다. 이번 진행은 복원되지 않을 수 있어요.");
       const loadedMastered = mode === "flashcard" ? await loadMastered() : [];
       if (cancelled) return;
       setQuestions(
@@ -265,7 +290,7 @@ export default function QuizScreen() {
     return () => {
       cancelled = true;
     };
-  }, [choiceLang, count, itemNums, mode, rangeEnd, rangeId, rangeStart]);
+  }, [choiceLang, count, itemNums, mode, rangeEnd, rangeId, rangeStart, requestKey, restartToken, restoreQuestionViewState]);
 
   const haptic = useCallback(
     (type: "light" | "success" | "error" = "light") => {
@@ -330,20 +355,23 @@ export default function QuizScreen() {
     ],
   );
 
-  const restoreQuestionViewState = useCallback((index: number) => {
-    const snapshot =
-      questionViewStatesRef.current.get(index) ??
-      createEmptyQuestionViewState();
-    setAnswered(snapshot.answered);
-    setSelectedChoice(snapshot.selectedChoice);
-    setSkipped(snapshot.skipped);
-    setRevealed(snapshot.revealed);
-    setFlashGrade(snapshot.flashGrade);
-    setTypedAnswer(snapshot.typedAnswer);
-    setTypeResult(snapshot.typeResult);
-    setHintLevel(snapshot.hintLevel);
-    setMasteredOnCard(snapshot.mastered);
-  }, []);
+  const makeSessionSnapshot = useCallback((completed = false): QuizSession => ({
+    schema: 1, requestKey, sessionId: sessionIdRef.current, questions, currentIndex: currentIdx, completed,
+    states: questions.map((_, i) => questionViewStatesRef.current.get(i) ?? createEmptyQuestionViewState()),
+  }), [requestKey, questions, currentIdx]);
+
+  useEffect(() => {
+    if (!questionsReady || !questions.length || sessionCompletedRef.current) return;
+    captureQuestionViewState();
+    void saveQuizSession(makeSessionSnapshot()).catch(() => {
+      setSessionNotice("이어 풀기 기록을 저장하지 못했습니다. 이번 진행은 복원되지 않을 수 있어요.");
+    });
+  }, [questionsReady, questions.length, captureQuestionViewState, makeSessionSnapshot]);
+
+  const finishSession = useCallback(async () => {
+    sessionCompletedRef.current = true;
+    await saveQuizSession(makeSessionSnapshot(true));
+  }, [makeSessionSnapshot]);
 
   const releaseMovingLock = useCallback(() => {
     setTimeout(() => {
@@ -416,6 +444,7 @@ export default function QuizScreen() {
           isCorrect ? "correct" : "wrong",
           choice?.value,
         ),
+        makeSessionSnapshot(),
       );
     },
     [
@@ -426,6 +455,7 @@ export default function QuizScreen() {
       animateCard,
       captureQuestionViewState,
       makeAdaptiveAnswerContext,
+      makeSessionSnapshot,
     ],
   );
 
@@ -450,7 +480,7 @@ export default function QuizScreen() {
       skipped: true,
     });
     // 패스도 오답으로 즉시 저장
-    recordOneAnswer(false, q.item.num, makeAdaptiveAnswerContext("skip"));
+    recordOneAnswer(false, q.item.num, makeAdaptiveAnswerContext("skip"), makeSessionSnapshot());
   }, [
     answered,
     currentIdx,
@@ -459,6 +489,7 @@ export default function QuizScreen() {
     animateCard,
     captureQuestionViewState,
     makeAdaptiveAnswerContext,
+    makeSessionSnapshot,
   ]);
 
   const handleReveal = useCallback(() => {
@@ -494,6 +525,7 @@ export default function QuizScreen() {
         grade === "correct",
         grade === "correct" ? undefined : q.item.num,
         makeAdaptiveAnswerContext(grade, grade),
+        makeSessionSnapshot(),
       );
     },
     [
@@ -503,6 +535,7 @@ export default function QuizScreen() {
       q,
       captureQuestionViewState,
       makeAdaptiveAnswerContext,
+      makeSessionSnapshot,
     ],
   );
 
@@ -535,9 +568,10 @@ export default function QuizScreen() {
       mastered: true,
     });
     // '마스터'는 알고 있는 단어로 한 번만 채점한다.
-    recordOneAnswer(true, undefined, makeAdaptiveAnswerContext("mastered"));
+    recordOneAnswer(true, undefined, makeAdaptiveAnswerContext("mastered"), makeSessionSnapshot());
     // 마스터 처리 후 자동으로 다음 문제로 이동
     if (currentIdx + 1 >= questions.length) {
+      await finishSession();
       router.replace({
         pathname: "/result",
         params: {
@@ -568,6 +602,8 @@ export default function QuizScreen() {
     animateMoveCard,
     releaseMovingLock,
     makeAdaptiveAnswerContext,
+    finishSession,
+    makeSessionSnapshot,
   ]);
 
   const handleTypeSubmit = useCallback(() => {
@@ -600,6 +636,7 @@ export default function QuizScreen() {
       isCorrect,
       isCorrect ? undefined : q.item.num,
       makeAdaptiveAnswerContext(isCorrect ? "correct" : "wrong", typedAnswer),
+      makeSessionSnapshot(),
     );
   }, [
     answered,
@@ -609,6 +646,7 @@ export default function QuizScreen() {
     haptic,
     captureQuestionViewState,
     makeAdaptiveAnswerContext,
+    makeSessionSnapshot,
   ]);
 
   const handleNext = useCallback(async () => {
@@ -617,6 +655,7 @@ export default function QuizScreen() {
     haptic("light");
     captureQuestionViewState();
     if (currentIdx + 1 >= questions.length) {
+      await finishSession();
       const finalWrongNums = wrongItems.map((w) => w.num);
       router.replace({
         pathname: "/result",
@@ -645,6 +684,7 @@ export default function QuizScreen() {
     restoreQuestionViewState,
     animateMoveCard,
     releaseMovingLock,
+    finishSession,
   ]);
 
   const handlePrevious = useCallback(() => {
@@ -831,6 +871,15 @@ export default function QuizScreen() {
               </Text>
             </View>
 
+            {sessionNotice ? <Text accessibilityLiveRegion="polite" style={{ color: colors.foreground, paddingHorizontal: 20, paddingBottom: 12, fontSize: 13, lineHeight: 20 }}>{sessionNotice}</Text> : null}
+            <Pressable accessibilityRole="button" accessibilityLabel="같은 범위에서 새 문제 시작" style={{ padding: 12, alignSelf: "flex-end" }} onPress={async () => {
+              if (isMovingRef.current) return;
+              isMovingRef.current = true;
+              await finishSession();
+              setRestartToken((value) => value + 1);
+            }}>
+              <Text style={{ color: colors.primary, fontSize: 13 }}>같은 범위 · 새 문제 시작</Text>
+            </Pressable>
             {/* Stats Row */}
             <View style={s.statsRow}>
               <View style={[s.statBox, s.statOk]}>
