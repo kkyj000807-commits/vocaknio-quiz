@@ -102,6 +102,35 @@
     },
     {
       "id": "all-but",
+      "coreMeaning": {
+        "keyMeaningKo": "거의; 특정 대상을 제외한 모두",
+        "semanticCoreEn": "Use a whole as the reference, leaving an exception or a gap before completeness.",
+        "bridgeKo": "먼저 '전체'를 그린다. 무엇을 빼는지 세면 '~를 제외한 모두', 완전한 상태에 얼마나 가까운지 보면 '거의'다. 같은 전체 기준이라도 뒤 구문이 가리키는 것이 대상인지, 정도인지 구별한다.",
+        "kind": "conceptual",
+        "evidenceNoteKo": "두 사전의 현재 쓰임을 비교해 만든 학습용 개념 설명이다. 두 뜻이 이 순서로 역사적으로 생겼다거나 모든 원어민이 같은 심상을 가진다는 주장은 아니다.",
+        "limitsKo": "'제외' 구문에서 빠지는 수가 반드시 적은 것은 아니다. all but를 항상 almost로 바꾸지 말고, 뒤 구문의 대상과 정도를 확인한다.",
+        "extensions": [
+          {
+            "senseKo": "대상을 셀 때: ~를 제외한 모두",
+            "stepsKo": ["전체 집합을 기준으로 잡음", "지정된 대상만 뺌", "그 밖의 모두"],
+            "exampleEn": "All but three of the twenty files were recovered.",
+            "exampleKo": "파일 스무 개 중 세 개를 제외한 나머지 열일곱 개가 복구됐다.",
+            "cueKo": "three가 제외할 수를, twenty files가 전체를 정한다. 20−3=17."
+          },
+          {
+            "senseKo": "상태·정도를 말할 때: 거의",
+            "stepsKo": ["완전한 상태를 기준으로 잡음", "그 끝에 조금 못 미침", "거의 그 상태"],
+            "exampleEn": "The recovery is all but complete; only one damaged file remains.",
+            "exampleKo": "복구가 거의 끝났고 손상된 파일 하나만 남아 있다.",
+            "cueKo": "complete가 완료 정도를, one damaged file remains가 남은 차이를 보여 준다."
+          }
+        ],
+        "sources": [
+          {"name": "Cambridge Dictionary · all but", "url": "https://dictionary.cambridge.org/us/dictionary/english/all-but", "independenceGroup": "Cambridge University Press"},
+          {"name": "Collins Dictionary · all but", "url": "https://www.collinsdictionary.com/us/dictionary/english/all-but", "independenceGroup": "HarperCollins"}
+        ],
+        "checkedAtKst": "2026.09.10 15:22 KST"
+      },
       "entryIds": [
         "learn:correction:JBKROW000287",
         "learn:correction:JBKROW002103"
@@ -194,8 +223,23 @@
             "All but two of the twelve"
           ],
           "translationKo": "위원 열두 명 중 두 명을 제외한 모두가 제안을 승인했다.",
-          "relationKo": "집합 12 − 예외 2 = 승인 10. 같은 표현도 구문에 따라 뜻이 달라진다."
-        }
+            "relationKo": "집합 12 − 예외 2 = 승인 10. 같은 표현도 구문에 따라 뜻이 달라진다."
+          },
+          {
+            "id": "allbut-core-transfer-1",
+            "passageEn": "All but five of the twenty laboratories reopened. In a separate report, reconstruction of the central laboratory was described as all but complete, with only the entrance unfinished.",
+            "promptKo": "두 all but를 함께 설명하되 문맥의 차이도 보존한 것은?",
+            "choices": [
+              {"id": "a", "text": "Both express near completion, so the exact number of reopened laboratories is unknown.", "errorType": "sense", "explanationKo": "첫 구문은 20개에서 5개를 빼므로 15개다. almost로만 읽으면 정확한 수를 놓친다. 수가 제시되지 않은 nearly all이라면 정확한 수를 모를 수 있다."},
+              {"id": "b", "text": "A whole is the reference: five laboratories are excluded, while completion lacks its final part.", "errorType": "supported", "explanationKo": "첫 문장은 집합에서 다섯을 제외하고, 둘째는 완료에 조금 못 미친다. 전체를 기준으로 삼되 제외 대상과 완료 정도를 구별했다."},
+              {"id": "c", "text": "Both deny the following description, so no laboratories reopened and reconstruction made no progress.", "errorType": "polarity", "explanationKo": "전체에서 일부 제외와 거의 완료를 전면 부정으로 뒤집었다. none reopened와 no progress라는 별도 진술이 있어야 맞는다."},
+              {"id": "d", "text": "A whole is the reference: five laboratories reopened, while every part of reconstruction is finished.", "errorType": "scope", "explanationKo": "제외된 다섯을 재개 수로 착각했고, 입구가 미완성이라는 예외도 지웠다. only five reopened 및 completely finished라면 맞을 수 있다."}
+            ],
+            "correctChoiceId": "b",
+            "evidence": ["All but five of the twenty laboratories", "all but complete", "only the entrance unfinished"],
+            "translationKo": "실험실 스무 곳 중 다섯 곳을 제외한 열다섯 곳이 다시 문을 열었다. 별도 보고서는 중앙 실험실의 재건이 입구만 미완성으로 남아 거의 끝났다고 설명했다.",
+            "relationKo": "공통 기준은 전체지만, 첫째는 집합의 예외(20−5), 둘째는 상태의 미완료 부분이다. 의미핵은 구문을 지우는 만능 번역이 아니라 두 뜻을 구별하는 출발점이다."
+          }
       ]
     },
     {

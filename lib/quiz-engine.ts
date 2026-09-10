@@ -59,15 +59,20 @@ interface SynonymOption extends SynonymDetail {
   key: string;
 }
 
-const synonymOptionMap = new Map<string, SynonymOption>();
-for (const item of VOCAB_WITH_SYNONYMS) {
-  for (const detail of getSynonymDetails(item)) {
-    const key = `${normalizeWord(detail.word)}\u0000${normalizeMeaning(detail.meaning)}`;
-    if (!synonymOptionMap.has(key))
-      synonymOptionMap.set(key, { ...detail, key });
+let synonymOptions: SynonymOption[] | undefined;
+function getSynonymOptions(): SynonymOption[] {
+  if (synonymOptions) return synonymOptions;
+  // Restoring or grading an existing question does not need the distractor pool.
+  const options = new Map<string, SynonymOption>();
+  for (const item of VOCAB_WITH_SYNONYMS) {
+    for (const detail of getSynonymDetails(item)) {
+      const key = `${normalizeWord(detail.word)}\u0000${normalizeMeaning(detail.meaning)}`;
+      if (!options.has(key)) options.set(key, { ...detail, key });
+    }
   }
+  synonymOptions = [...options.values()];
+  return synonymOptions;
 }
-const SYNONYM_OPTIONS = [...synonymOptionMap.values()];
 
 function pickUnique<T>(
   pool: readonly T[],
@@ -126,7 +131,7 @@ function buildSynonymChoices(
     ...correctDetails.map((detail) => detail.meaning),
   ].filter(Boolean);
   const distractors = pickUnique(
-    SYNONYM_OPTIONS,
+    getSynonymOptions(),
     3,
     (option) => normalizeWord(option.word),
     (option) => {

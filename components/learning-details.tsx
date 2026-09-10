@@ -93,6 +93,7 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
   const [sourcesOpen, setSourcesOpen] = useState(false);
   const [linkError, setLinkError] = useState(false);
   const nuance = entry.nuance;
+  const core = entry.reasoning?.coreMeaning;
 
   const openSource = async (url: string) => {
     setLinkError(false);
@@ -109,10 +110,30 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
         {count > 1 ? `${index + 1}. ` : ""}{entry.headword} · {entry.partOfSpeech}
       </Text>
 
-      <View style={s.memoryBox}>
+      {core && <View style={s.memoryBox}>
+        <Text style={s.label}>1. 핵심 뜻</Text>
+        <Text style={s.text}>{core.keyMeaningKo}</Text>
+        <Text style={s.label}>2. 영영 의미핵 · 사전 대조 후 편집</Text>
+        <Text style={s.english}>{core.semanticCoreEn}</Text>
+        <Text style={s.label}>3. 초월번역 · 쉽게 이해하기</Text>
+        <Text style={s.text}>{core.bridgeKo}</Text>
+        <Text style={s.label}>4. 의미 확장 지도</Text>
+        {core.extensions.map((extension) => <View key={extension.senseKo} style={s.section}>
+          <Text style={s.contrastWord}>{extension.senseKo}</Text>
+          <Text style={s.text}>{extension.stepsKo.join(" → ")}</Text>
+          <Text style={s.english}>{extension.exampleEn}</Text>
+          <Text style={s.text}>{extension.exampleKo}</Text>
+          <Text style={s.note}>문맥 단서: {extension.cueKo}</Text>
+        </View>)}
+        <Text style={s.note}>구분: 현대 의미의 개념 설명 · 역사적 어원 아님</Text>
+        <Text style={s.note}>{core.evidenceNoteKo}</Text>
+        <Text style={s.note}>적용 한계: {core.limitsKo}</Text>
+      </View>}
+
+      {!core && <View style={s.memoryBox}>
         <Text style={s.label}>기억 고리</Text>
         <Text style={s.text}>{entry.memoryKo}</Text>
-      </View>
+      </View>}
 
       <View style={s.section}>
         <Text style={s.label}>{entry.definitionKind === "editorial" ? "영영 풀이 · 사전 대조" : "영영 정의"}</Text>
@@ -158,12 +179,12 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
       </View>
 
       {entry.reasoning && <>
-        <View style={s.section}>
+        {!core && <View style={s.section}>
           <Text style={s.label}>직역 → 의미 연결</Text>
           <Text style={s.text}>{entry.reasoning.literalKo}</Text>
           <Text style={s.text}>{entry.reasoning.bridgeKo}</Text>
           <Text style={s.note}>{entry.reasoning.originNoteKo}</Text>
-        </View>
+        </View>}
         <View style={s.section}>
           <Text style={s.label}>같은 의미로 묶되, 차이는 기억하기</Text>
           {entry.reasoning.neighbors.map((neighbor) => <Text key={neighbor.expression} style={s.text}><Text style={s.contrastWord}>{neighbor.expression}</Text> — {neighbor.noteKo}</Text>)}
@@ -196,6 +217,12 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
         <View style={s.sourceBody}>
           <Text style={s.note}>뜻 대조 일치 · {entry.verification.checkedAtKst}</Text>
           <Text style={s.note}>검수: {entry.verification.reviewer}</Text>
+          {core && <>
+            <Text style={s.note}>의미핵 대조: {core.checkedAtKst} · 영영 의미핵/한국어 설명/대조 예문은 자체 편집·창작</Text>
+            {core.sources.map((source) => <Pressable key={source.url} accessibilityRole="link" accessibilityLabel={`${source.name} 의미핵 근거 열기`} onPress={() => void openSource(source.url)} style={s.sourceLink}>
+              <Text style={s.linkText}>{source.name} · 의미핵 근거 ↗</Text>
+            </Pressable>)}
+          </>}
           {entry.sources.map((source: LearningEntry["sources"][number], sourceIndex: number) => (
             <Pressable
               key={`${source.url}-${sourceIndex}`}

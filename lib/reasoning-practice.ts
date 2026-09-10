@@ -4,7 +4,7 @@ export interface ReasoningQuestion {
   id: string;
   passageEn: string;
   promptKo: string;
-  choices: Array<{ id: string; text: string; errorType: string; explanationKo: string }>;
+  choices: { id: string; text: string; errorType: string; explanationKo: string }[];
   correctChoiceId: string;
   evidence: string[];
   translationKo: string;
@@ -17,10 +17,21 @@ export interface ReasoningLesson {
   bridgeKo: string;
   originStatus: "mnemonic";
   originNoteKo: string;
-  neighbors: Array<{ expression: string; noteKo: string }>;
+  neighbors: { expression: string; noteKo: string }[];
   questions: ReasoningQuestion[];
   authorship: string;
   checkedAtKst: string;
+  coreMeaning?: {
+    keyMeaningKo: string;
+    semanticCoreEn: string;
+    bridgeKo: string;
+    kind: "conceptual";
+    evidenceNoteKo: string;
+    limitsKo: string;
+    extensions: { senseKo: string; stepsKo: string[]; exampleEn: string; exampleKo: string; cueKo: string }[];
+    sources: { name: string; url: string; independenceGroup: string }[];
+    checkedAtKst: string;
+  };
 }
 
 export interface PracticeAttempt {

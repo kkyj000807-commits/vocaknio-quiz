@@ -26,15 +26,34 @@ describe("문맥 출제 계약", () => {
       }
     }
   });
-  it("숙어 6개/12개 고유 문맥과 모든 반복 목록을 실제 배포 데이터에 연결한다", () => {
+  it("숙어 6개/13개 고유 문맥과 모든 반복 목록을 실제 배포 데이터에 연결한다", () => {
     expect(validateReasoningLessons(bank, entries)).toBe(bank);
     expect(bank.lessons).toHaveLength(6);
-    expect(bank.lessons.flatMap((l) => l.questions)).toHaveLength(12);
+    expect(bank.lessons.flatMap((l) => l.questions)).toHaveLength(13);
     const mapped = entries.filter((e) => e.reasoning);
     expect(mapped).toHaveLength(17);
     for (const lesson of bank.lessons) {
       for (const entryId of lesson.entryIds) expect(mapped.find((e) => e.id === entryId)?.reasoning.questions).toEqual(lesson.questions);
     }
+  });
+  it("의미핵 실제 데이터·대조 예문·새 문항을 두 목록 행 모두에 연결한다", () => {
+    const lesson = bank.lessons.find((l) => l.id === "all-but");
+    expect(lesson.coreMeaning.kind).toBe("conceptual");
+    expect(lesson.coreMeaning.extensions).toHaveLength(2);
+    expect(lesson.coreMeaning.limitsKo).toContain("반드시 적은 것은 아니다");
+    expect(lesson.questions.find(q => q.id === "allbut-core-transfer-1")?.correctChoiceId).toBe("b");
+    for (const id of lesson.entryIds) {
+      expect(entries.find(e => e.id === id)?.reasoning.coreMeaning).toEqual(lesson.coreMeaning);
+    }
+  });
+  it("누락된 의미 경로·같은 편집 출처·근거 없는 어원 승격을 막는다", () => {
+    const a = clone(); a.lessons.find(l => l.id === "all-but").coreMeaning.extensions[0].stepsKo = [];
+    expect(() => validateReasoningLessons(a, entries)).toThrow(/meaning path/);
+    const b = clone(); const core = b.lessons.find(l => l.id === "all-but").coreMeaning;
+    core.sources[1].independenceGroup = core.sources[0].independenceGroup;
+    expect(() => validateReasoningLessons(b, entries)).toThrow(/independent sources/);
+    const c = clone(); c.lessons.find(l => l.id === "all-but").coreMeaning.kind = "historical";
+    expect(() => validateReasoningLessons(c, entries)).toThrow(/historical evidence/);
   });
   it("정답을 두 개로 표시하거나 정답 ID를 바꾸면 출판을 막는다", () => {
     const a = clone(); a.lessons[0].questions[0].choices[0].errorType = "supported";

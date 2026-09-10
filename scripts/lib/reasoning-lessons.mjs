@@ -17,6 +17,24 @@ export function validateReasoningLessons(data, entries) {
     ids.add(lesson.id);
     // This first batch uses learning imagery only, not unverified historical origins.
     if (lesson.originStatus !== "mnemonic") throw new Error("Reasoning: origin evidence needs a separately reviewed schema");
+    if (lesson.coreMeaning !== undefined) {
+      const core = lesson.coreMeaning;
+      for (const key of ["keyMeaningKo", "semanticCoreEn", "bridgeKo", "evidenceNoteKo", "limitsKo", "checkedAtKst"]) required(core[key], `core ${key}`);
+      // This contract supports modern conceptual explanations only. Historical
+      // claims need claim-level evidence and a separately reviewed extension.
+      if (core.kind !== "conceptual") throw new Error("Reasoning: core historical evidence is not supported");
+      if (!Array.isArray(core.extensions) || !core.extensions.length) throw new Error("Reasoning: core needs sense paths");
+      for (const extension of core.extensions) {
+        for (const key of ["senseKo", "exampleEn", "exampleKo", "cueKo"]) required(extension[key], `core ${key}`);
+        if (!Array.isArray(extension.stepsKo) || extension.stepsKo.length < 2) throw new Error("Reasoning: core needs a meaning path");
+        extension.stepsKo.forEach((step) => required(step, "core step"));
+      }
+      if (!Array.isArray(core.sources) || new Set(core.sources.map((s) => s.independenceGroup)).size < 2) throw new Error("Reasoning: core needs independent sources");
+      for (const source of core.sources) {
+        required(source.name, "core source name"); required(source.independenceGroup, "core source group");
+        if (typeof source.url !== "string" || !source.url.startsWith("https://")) throw new Error("Reasoning: core needs a source URL");
+      }
+    }
     if (!Array.isArray(lesson.entryIds) || !lesson.entryIds.length) throw new Error("Reasoning: no entry mapping");
     for (const id of lesson.entryIds) {
       if (!known.has(id) || usedEntries.has(id)) throw new Error(`Reasoning: invalid or duplicate entry ${id}`);
