@@ -1,6 +1,11 @@
 {
-  "version": "2.0",
-  "modifiedAtKst": "2026.09.10 15:36 KST",
+  "version": "2.1",
+  "sourceCommit": "56b677e1c8d1236e2b74ff10a291061d93cac8cc",
+  "sourceDirty": true,
+  "dataVersion": "v1.4",
+  "learningDataVersion": "2.1",
+  "builtAt": "2026-09-13T13:46:00.630Z",
+  "modifiedAtKst": "2026.09.13 22:46 KST",
   "channel": "production",
-  "target": "2.0|2026.09.10 15:36 KST"
+  "target": "2.1|2026.09.13 22:46 KST"
 }
