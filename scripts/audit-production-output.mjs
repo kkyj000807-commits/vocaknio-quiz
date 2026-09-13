@@ -37,6 +37,10 @@ for (const file of textFiles) {
 }
 
 const release = JSON.parse(fs.readFileSync(path.join(outputRoot, "release.json"), "utf8"));
+const releaseMetadataValid = /^[a-f0-9]{40}$/.test(release.sourceCommit ?? "") &&
+  typeof release.sourceDirty === "boolean" && typeof release.dataVersion === "string" &&
+  Number.isFinite(Date.parse(release.builtAt)) && release.learningDataVersion === release.version &&
+  release.channel === "production" && release.target === `${release.version}|${release.modifiedAtKst}`;
 const learningDirectory = path.join(outputRoot, "data", "vocab-learning", release.version);
 const learningFiles = fs.existsSync(learningDirectory)
   ? fs.readdirSync(learningDirectory).filter((name) => name.endsWith(".json"))
@@ -48,6 +52,7 @@ const bundleText = bundle ? fs.readFileSync(bundle, "utf8") : "";
 const result = {
   status:
     missing.size === 0 &&
+    releaseMetadataValid &&
     rootExpoReferences === 0 &&
     rootAssetReferences === 0 &&
     learningFiles.length === 8 &&
@@ -57,6 +62,7 @@ const result = {
       ? "pass"
       : "fail",
   release,
+  releaseMetadataValid,
   htmlFiles: htmlFiles.length,
   missingReferences: [...missing],
   rootExpoReferences,

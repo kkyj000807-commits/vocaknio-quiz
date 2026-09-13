@@ -7,7 +7,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 import { ActivityIndicator, Platform, Pressable, Text, View } from "react-native";
 import "@/lib/_core/nativewind-pressable";
-import { ThemeProvider } from "@/lib/theme-provider";
+import { ThemeProvider, useThemeContext } from "@/lib/theme-provider";
+import { useColors } from "@/hooks/use-colors";
 import {
   SafeAreaFrameContext,
   SafeAreaInsetsContext,
@@ -30,6 +31,12 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
+  return <ThemeProvider><RootContents /></ThemeProvider>;
+}
+
+function RootContents() {
+  const colors = useColors();
+  const { themeMode } = useThemeContext();
   const initialInsets = initialWindowMetrics?.insets ?? DEFAULT_WEB_INSETS;
   const initialFrame = initialWindowMetrics?.frame ?? DEFAULT_WEB_FRAME;
 
@@ -107,14 +114,14 @@ export default function RootLayout() {
           {/* Default to hiding native headers so raw route segments don't appear (e.g. "(tabs)", "products/[id]"). */}
           {/* If a screen needs the native header, explicitly enable it and set a human title via Stack.Screen options. */}
           {/* in order for ios apps tab switching to work properly, use presentation: "fullScreenModal" for login page, whenever you decide to use presentation: "modal*/}
-          <Stack screenOptions={{ headerShown: false }}>
+          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="quiz" />
             <Stack.Screen name="result" />
             <Stack.Screen name="wrong-quiz" />
             <Stack.Screen name="oauth/callback" />
           </Stack>
-          <StatusBar style="auto" />
+          <StatusBar style={themeMode === "dark" ? "light" : "dark"} />
         </QueryClientProvider>
       </trpc.Provider>
     </GestureHandlerRootView>
@@ -122,41 +129,39 @@ export default function RootLayout() {
 
   if (migrationStatus !== "ready") {
     return (
-      <ThemeProvider>
         <View
           style={{
             flex: 1,
             alignItems: "center",
             justifyContent: "center",
             paddingHorizontal: 32,
-            backgroundColor: "#F5F0E6",
+            backgroundColor: colors.background,
           }}
         >
           {migrationStatus === "loading" ? (
             <>
-              <ActivityIndicator size="large" color="#5B50E8" />
-              <Text style={{ color: "#2B261F", marginTop: 16, fontSize: 15 }}>
+              <ActivityIndicator size="large" color={colors.primary} />
+              <Text style={{ color: colors.foreground, marginTop: 16, fontSize: 15 }}>
                 학습 기록을 확인하고 있습니다
               </Text>
             </>
           ) : (
             <>
-              <Text style={{ color: "#2B261F", fontSize: 18, fontWeight: "700" }}>
+              <Text style={{ color: colors.foreground, fontSize: 18, fontWeight: "700" }}>
                 학습 기록을 불러오지 못했습니다
               </Text>
-              <Text style={{ color: "#6F6558", marginTop: 8, textAlign: "center", lineHeight: 20 }}>
+              <Text style={{ color: colors.muted, marginTop: 8, textAlign: "center", lineHeight: 20 }}>
                 기존 기록은 삭제되지 않았습니다. 다시 시도해 주세요.
               </Text>
               <Pressable
                 onPress={runStorageMigration}
-                style={{ marginTop: 20, minHeight: 48, justifyContent: "center", backgroundColor: "#5B50E8", borderRadius: 12, paddingHorizontal: 20, paddingVertical: 12 }}
+                style={{ marginTop: 20, minHeight: 48, justifyContent: "center", backgroundColor: colors.primary, borderRadius: 12, paddingHorizontal: 20, paddingVertical: 12 }}
               >
                 <Text style={{ color: "#FFFFFF", fontWeight: "700" }}>다시 시도</Text>
               </Pressable>
             </>
           )}
         </View>
-      </ThemeProvider>
     );
   }
 
@@ -164,7 +169,6 @@ export default function RootLayout() {
 
   if (shouldOverrideSafeArea) {
     return (
-      <ThemeProvider>
         <SafeAreaProvider initialMetrics={providerInitialMetrics}>
           <SafeAreaFrameContext.Provider value={frame}>
             <SafeAreaInsetsContext.Provider value={insets}>
@@ -172,13 +176,10 @@ export default function RootLayout() {
             </SafeAreaInsetsContext.Provider>
           </SafeAreaFrameContext.Provider>
         </SafeAreaProvider>
-      </ThemeProvider>
     );
   }
 
   return (
-    <ThemeProvider>
       <SafeAreaProvider initialMetrics={providerInitialMetrics}>{content}</SafeAreaProvider>
-    </ThemeProvider>
   );
 }

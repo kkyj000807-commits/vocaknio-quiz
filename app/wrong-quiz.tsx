@@ -1,3 +1,4 @@
+import { ProblemSenseContext } from "@/components/problem-sense-context";
 import {
   useState,
   useCallback,
@@ -468,8 +469,10 @@ export default function WrongQuizScreen() {
             </View>
             {q.item.p ? <Text style={s.ipaText}>{q.item.p}</Text> : null}
 
+            <ProblemSenseContext sense={q.sense} />
+
             <Text style={s.hintText}>
-              {q.answerKind === "synonym"
+              {q.sense ? "이 문맥에서 뜻이 같은 것은?" : q.answerKind === "synonym"
                 ? "올바른 동의어는?"
                 : "올바른 한국어 뜻은?"}
             </Text>
@@ -549,7 +552,8 @@ export default function WrongQuizScreen() {
             )}
 
             {/* Explanation Panel */}
-            {answered && (
+            {answered && q.sense && <ProblemSenseContext sense={q.sense} answered />}
+            {answered && !q.sense && (
               <View style={s.explPanel}>
                 <Text style={s.explHeader}>해설</Text>
                 <View style={s.explWordRow}>

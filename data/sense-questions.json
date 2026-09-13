@@ -1,0 +1,273 @@
+{
+  "schema": 1,
+  "entries": [
+    {
+      "status": "production",
+      "quality": "A",
+      "reviewedAt": "2026.09.13 KST",
+      "reviewer": "AI editorial review; dictionary meaning cross-check, not independent human evaluation",
+      "id": "all-but.almost.v1",
+      "headword": "all but",
+      "itemIds": [
+        "JBKROW000287",
+        "JBKROW002103"
+      ],
+      "senseId": "all-but:degree",
+      "conceptId": "near-completion",
+      "partOfSpeech": "부사구",
+      "definitionKo": "거의 ~한",
+      "bridgeKo": "끝에 아주 조금만 남겨 둔 상태다. ‘완전히’라고 확정하면 마지막 남은 부분을 지워 버린다.",
+      "contextEn": "The restoration was all but complete; the team still had to replace one damaged tile.",
+      "contextKo": "복원은 거의 끝났지만, 팀은 손상된 타일 하나를 아직 교체해야 했다.",
+      "evidence": "still had to replace one damaged tile",
+      "correctId": "almost",
+      "sources": [
+        {
+          "publisher": "Cambridge",
+          "url": "https://dictionary.cambridge.org/us/dictionary/english/all-but",
+          "note": "현재 뜻 대조. 직접 페이지 요청 실패 시 검색 색인에서 해당 정의 확인."
+        },
+        {
+          "publisher": "Collins",
+          "url": "https://www.collinsdictionary.com/dictionary/english/all-but",
+          "note": "현재 뜻·구문·유의어 대조. 자체 작성 해설·문항이며 원문 복제 아님."
+        }
+      ],
+      "choices": [
+        {
+          "id": "almost",
+          "en": "almost",
+          "ko": "거의",
+          "reasonKo": "남은 타일 하나가 있으므로 완료 직전이다.",
+          "plausible": true
+        },
+        {
+          "id": "entirely",
+          "en": "entirely",
+          "ko": "완전히",
+          "reasonKo": "아직 교체할 타일이 남아 있어 완전한 완료는 아니다.",
+          "plausible": true
+        },
+        {
+          "id": "barely",
+          "en": "barely",
+          "ko": "겨우 조금",
+          "reasonKo": "완료가 거의 이루어졌다는 뜻을 아주 적게 진행됐다는 뜻으로 바꾼다.",
+          "plausible": true
+        },
+        {
+          "id": "not-at-all",
+          "en": "not at all",
+          "ko": "전혀 ~않게",
+          "reasonKo": "부정처럼 읽기 쉽지만 작업이 거의 끝난 상황과 반대다.",
+          "plausible": true
+        }
+      ],
+      "reviewNote": "네 부사구를 complete 앞에 대입. 거의/완전히/겨우 조금/전혀의 정도가 다르며 마지막 미완료 단서가 하나만 지지한다."
+    },
+    {
+      "status": "production",
+      "quality": "A",
+      "reviewedAt": "2026.09.13 KST",
+      "reviewer": "AI editorial review; dictionary meaning cross-check, not independent human evaluation",
+      "id": "all-but.except.v1",
+      "headword": "all but",
+      "itemIds": [
+        "JBKROW000287",
+        "JBKROW002103"
+      ],
+      "senseId": "all-but:exception",
+      "conceptId": "set-exclusion",
+      "partOfSpeech": "수량 표현",
+      "definitionKo": "지정된 대상만 제외하고 모두",
+      "bridgeKo": "but 뒤의 대상을 전체 집합에서 빼고 나머지를 남긴다. ‘그 대상만’으로 읽으면 포함 범위가 뒤집힌다.",
+      "contextEn": "All but two of the twelve proposals survived the first review.",
+      "contextKo": "열두 제안 중 두 개를 제외한 모두가 1차 심사를 통과했다.",
+      "evidence": "two of the twelve proposals",
+      "correctId": "except-two",
+      "sources": [
+        {
+          "publisher": "Cambridge",
+          "url": "https://dictionary.cambridge.org/us/dictionary/english/all-but",
+          "note": "현재 뜻 대조. 직접 페이지 요청 실패 시 검색 색인에서 해당 정의 확인."
+        },
+        {
+          "publisher": "Collins",
+          "url": "https://www.collinsdictionary.com/dictionary/english/all-but",
+          "note": "현재 뜻·구문·유의어 대조. 자체 작성 해설·문항이며 원문 복제 아님."
+        }
+      ],
+      "choices": [
+        {
+          "id": "except-two",
+          "en": "the ten proposals other than those two",
+          "ko": "그 두 개를 뺀 열 개",
+          "reasonKo": "전체 열두 개에서 제외된 두 개를 빼면 열 개다.",
+          "plausible": true
+        },
+        {
+          "id": "only-two",
+          "en": "those two proposals and no others",
+          "ko": "그 두 개만",
+          "reasonKo": "제외 대상을 통과 대상으로 뒤집었다.",
+          "plausible": true
+        },
+        {
+          "id": "all-twelve",
+          "en": "all twelve proposals, including those two",
+          "ko": "그 두 개까지 포함한 열두 개 모두",
+          "reasonKo": "but이 표시한 예외를 없앴다.",
+          "plausible": true
+        },
+        {
+          "id": "none",
+          "en": "none of the twelve proposals",
+          "ko": "열두 개 중 아무것도 없음",
+          "reasonKo": "제한된 제외를 전체 부정으로 확대했다.",
+          "plausible": true
+        }
+      ],
+      "reviewNote": "동일 명사구 범주의 집합 대조: 10/2/12/0개로 서로 배타적. '거의 모두'처럼 정답과 겹칠 수 있는 보기는 제외했다."
+    },
+    {
+      "status": "production",
+      "quality": "A",
+      "reviewedAt": "2026.09.13 KST",
+      "reviewer": "AI editorial review; dictionary meaning cross-check, not independent human evaluation",
+      "id": "sanction.authorize.v1",
+      "headword": "sanction",
+      "itemIds": [
+        "JBKROW000507",
+        "JBKROW003677",
+        "JBKROW005679",
+        "JBKROW007787",
+        "JBKROW008450",
+        "JBKROW013028",
+        "JBKROW027196",
+        "JBKROW033437"
+      ],
+      "senseId": "sanction:authorize:v",
+      "conceptId": "official-permission",
+      "partOfSpeech": "타동사",
+      "definitionKo": "공식적으로 허가하다",
+      "bridgeKo": "권한을 가진 쪽이 행동에 진행 허가를 준다. 같은 철자라도 위반자에게 불이익을 주는 sanction과 방향이 반대다.",
+      "contextEn": "Only the ethics board can sanction the trial; without its consent, recruitment cannot begin.",
+      "contextKo": "그 실험을 허가할 수 있는 곳은 윤리위원회뿐이며, 위원회의 동의 없이는 모집을 시작할 수 없다.",
+      "evidence": "without its consent, recruitment cannot begin",
+      "correctId": "authorize",
+      "sources": [
+        {
+          "publisher": "Cambridge",
+          "url": "https://dictionary.cambridge.org/us/dictionary/english/sanction",
+          "note": "현재 뜻 대조. 직접 페이지 요청 실패 시 검색 색인에서 해당 정의 확인."
+        },
+        {
+          "publisher": "Collins",
+          "url": "https://www.collinsdictionary.com/dictionary/english/sanction",
+          "note": "현재 뜻·구문·유의어 대조. 자체 작성 해설·문항이며 원문 복제 아님."
+        }
+      ],
+      "choices": [
+        {
+          "id": "authorize",
+          "en": "authorize",
+          "ko": "공식적으로 허가하다",
+          "reasonKo": "실험을 시작하기 위한 위원회의 동의를 뜻한다.",
+          "plausible": true
+        },
+        {
+          "id": "prohibit",
+          "en": "prohibit",
+          "ko": "금지하다",
+          "reasonKo": "모집을 가능하게 하는 허가를 그 반대인 금지로 바꾼다.",
+          "plausible": true
+        },
+        {
+          "id": "postpone",
+          "en": "postpone",
+          "ko": "연기하다",
+          "reasonKo": "시작 시점을 미루는 판단이 아니라 시작할 권한을 주는 판단이다.",
+          "plausible": true
+        },
+        {
+          "id": "monitor",
+          "en": "monitor",
+          "ko": "감시하다",
+          "reasonKo": "진행 중의 관찰이 아니라 시작 전에 필요한 동의다.",
+          "plausible": true
+        }
+      ],
+      "reviewNote": "모두 trial을 목적어로 취할 수 있는 타동사. 허가/금지/연기/관찰은 서로 다른 행정적 결정으로 두 개 이상이 그럴듯하지만 consent 단서가 허가만 지지한다."
+    },
+    {
+      "status": "production",
+      "quality": "A",
+      "reviewedAt": "2026.09.13 KST",
+      "reviewer": "AI editorial review; dictionary meaning cross-check, not independent human evaluation",
+      "id": "sanction.penalize.v1",
+      "headword": "sanction",
+      "itemIds": [
+        "JBKROW000507",
+        "JBKROW003677",
+        "JBKROW005679",
+        "JBKROW007787",
+        "JBKROW008450",
+        "JBKROW013028",
+        "JBKROW027196",
+        "JBKROW033437"
+      ],
+      "senseId": "sanction:penalize:v",
+      "conceptId": "official-penalty",
+      "partOfSpeech": "타동사",
+      "definitionKo": "위반에 대해 제재를 가하다",
+      "bridgeKo": "이번에는 위반자에게 공식 불이익을 주는 쪽이다. ‘허가하다’라는 다른 뜻을 그대로 가져오면 제재의 방향이 뒤집힌다.",
+      "contextEn": "The regulator will sanction the bank for concealing losses by imposing a substantial fine.",
+      "contextKo": "감독 기관은 손실을 은폐한 은행에 상당한 벌금을 부과해 제재할 것이다.",
+      "evidence": "by imposing a substantial fine",
+      "correctId": "penalize",
+      "sources": [
+        {
+          "publisher": "Cambridge",
+          "url": "https://dictionary.cambridge.org/us/dictionary/english/sanction",
+          "note": "현재 뜻 대조. 직접 페이지 요청 실패 시 검색 색인에서 해당 정의 확인."
+        },
+        {
+          "publisher": "Collins",
+          "url": "https://www.collinsdictionary.com/dictionary/english/sanction",
+          "note": "현재 뜻·구문·유의어 대조. 자체 작성 해설·문항이며 원문 복제 아님."
+        }
+      ],
+      "choices": [
+        {
+          "id": "penalize",
+          "en": "penalize",
+          "ko": "제재를 가하다",
+          "reasonKo": "벌금을 부과하는 행위이므로 불이익을 주는 뜻이다.",
+          "plausible": true
+        },
+        {
+          "id": "exonerate",
+          "en": "exonerate",
+          "ko": "혐의를 벗겨 주다",
+          "reasonKo": "벌금으로 책임을 묻는 것을 무혐의로 바꾼다.",
+          "plausible": true
+        },
+        {
+          "id": "reimburse",
+          "en": "reimburse",
+          "ko": "비용을 돌려주다",
+          "reasonKo": "돈을 내게 하는 것과 돈을 돌려주는 방향이 반대다.",
+          "plausible": true
+        },
+        {
+          "id": "commend",
+          "en": "commend",
+          "ko": "칭찬하다",
+          "reasonKo": "위반에 대한 처벌을 긍정적 평가로 뒤집었다.",
+          "plausible": true
+        }
+      ],
+      "reviewNote": "모두 bank를 목적어로 취할 수 있는 타동사. 처벌/면책/환급/칭찬을 구별하고 벌금 단서로 단일 정답 확인. 과거 synonym 배열의 approve는 이 sense에서 채점에 사용하지 않는다."
+    }
+  ]
+}

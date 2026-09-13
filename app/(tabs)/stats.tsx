@@ -1,3 +1,4 @@
+import { SCROLL_END_PADDING } from "@/lib/layout";
 import { useState, useCallback } from "react";
 import {
   View,
@@ -35,7 +36,7 @@ export default function StatsScreen() {
     <ScreenContainer containerClassName="bg-background">
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingBottom: 40 }}
+        contentContainerStyle={{ paddingBottom: SCROLL_END_PADDING }}
         showsVerticalScrollIndicator={false}
       >
         {/* Header */}

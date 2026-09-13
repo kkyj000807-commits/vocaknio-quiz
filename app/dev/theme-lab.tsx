@@ -50,6 +50,7 @@ export default function ThemeLabScreen() {
     });
     return {
       light: build("light"),
+      paper: build("paper"),
       dark: build("dark"),
     };
   }, []);
@@ -59,7 +60,7 @@ export default function ThemeLabScreen() {
       <ScrollView className="flex-1">
         <View className="gap-4 pb-8">
           <View className="flex-row gap-2">
-            {(["light", "dark"] as ColorScheme[]).map((scheme) => (
+            {(["light", "paper", "dark"] as ColorScheme[]).map((scheme) => (
               <Pressable
                 key={scheme}
                 style={[
@@ -91,7 +92,7 @@ export default function ThemeLabScreen() {
                     },
                   ]}
                 >
-                  {scheme === "light" ? "Light preview" : "Dark preview"}
+                  {scheme === "light" ? "Light preview" : scheme === "paper" ? "미색 preview" : "Dark preview"}
                 </Text>
                 <Text
                   style={[

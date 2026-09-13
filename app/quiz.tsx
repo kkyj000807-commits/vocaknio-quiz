@@ -1,3 +1,4 @@
+import { ProblemSenseContext } from "@/components/problem-sense-context";
 import {
   useState,
   useCallback,
@@ -807,6 +808,7 @@ export default function QuizScreen() {
   };
 
   const getHintText = () => {
+    if (q.sense) return q.answerKind === "meaning" ? "이 문맥에서 표현의 뜻은?" : "이 문맥에서 뜻이 같은 표현은?";
     if (q.answerKind === "meaning") return "올바른 한국어 뜻은?";
     if (questionMode === "syn-kor-choice") return "올바른 동의어(한글뜻)는?";
     return "올바른 동의어는?";
@@ -937,6 +939,7 @@ export default function QuizScreen() {
               </View>
 
               {/* 4지선다 모드 */}
+              <ProblemSenseContext sense={q.sense} />
               {isChoiceMode && (
                 <>
                   <Text style={s.hintText}>{getHintText()}</Text>
@@ -1150,7 +1153,8 @@ export default function QuizScreen() {
               )}
 
               {/* 해설 패널 */}
-              {answered && questionMode !== "flashcard" && (
+              {answered && q.sense && <ProblemSenseContext sense={q.sense} answered />}
+              {answered && !q.sense && questionMode !== "flashcard" && (
                 <View style={s.explPanel}>
                   <Text style={s.explHeader}>해설</Text>
                   <View style={s.explWordRow}>

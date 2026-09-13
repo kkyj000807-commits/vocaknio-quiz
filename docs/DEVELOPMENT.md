@@ -11,13 +11,15 @@
 | 시작·기록 이관·전역 오류 안내 | app/_layout.tsx | lib/vocab-storage-migration.ts, components/learning-storage-notice.tsx |
 | 탭·범위 선택 | app/(tabs)/_layout.tsx, index.tsx | lib/vocab.ts |
 | 문제 생성·정답 판정 | lib/quiz-engine.ts | app/quiz.tsx, app/wrong-quiz.tsx |
+| 검수된 sense 문항 경계 | data/sense-questions.json, lib/sense-questions.ts | 공통 엔진/복원/ProblemSenseContext/결과; audit-sense-questions.ts. 나머지 legacy 출제와 coverage를 구분 |
 | 비중복·약점 출제 | lib/adaptive-quiz.ts | lib/store.ts의 세션 선택/응답 기록 |
 | 본 문제풀이 중단 복원 | lib/quiz-session.ts | app/quiz.tsx → lib/store.ts의 공통 큐; 마지막 요청 조건/문제/선택지/응답 저장 |
 | 통계·오답·북마크·마스터·학습 시간 | lib/store.ts | 각 화면과 hooks/use-study-timer.ts |
 | 해설과 문맥 연습 | components/learning-details.tsx, reasoning-practice.tsx | lib/vocab-learning.ts, lib/reasoning-practice.ts |
 | 기본 어휘 정본 | assets/vocab-v1.4.json | lib/vocab.ts → 출제 엔진 |
 | 검수 해설 원본 | data/vocab-learning/, idiom-corrections.json, expression-composition.json, reasoning-lessons.json | scripts/build-vocab-learning-v1.4.mjs → 인덱스와 public/data/vocab-learning/<버전>/ |
-| 미색·앱 테마 | lib/theme-provider.tsx, hooks/use-colors.ts, theme.config.js, global.css | 모든 화면/공통 컴포넌트 |
+| Light/Paper/Dark·앱 테마 | lib/theme-provider.tsx, lib/theme-preference.ts, lib/web-theme.ts, theme.config.js | app/+html.tsx 초기 paint/모든 화면/저장 큐. v2 light→v3 paper, 신규light |
+| 웹 공간·반응형 | lib/layout.ts, components/screen-container.tsx | 탭52px, 끝padding48, 웹max-width880, native inset 보존 |
 | 버전·배포 시각 | release.config.json, lib/release-info.ts | app.config.ts, 설정 화면, Production 빌더 |
 
 server/, drizzle/, lib/_core/는 별도 인증·API 경로다. GitHub Pages는 정적 웹이며 서버 배포/계정 동기화까지 완료된 것으로 간주하지 않는다. 사용자 소유 server/auth.ts를 포함한 보존 목록은 WORKING_CONTEXT에 있다.
@@ -26,13 +28,14 @@ server/, drizzle/, lib/_core/는 별도 인증·API 경로다. GitHub Pages는 �
 
 1. 잠금: `python scripts/hold-development-lock.py` (대화형 세션 유지, 종료 시 Enter)
 2. 변경 후 기본 검증: `node scripts/verify-project.mjs` 또는 `pnpm verify`
-   - 학습 데이터 생성·계약 검사 → 전체 타입 검사 → 전체 테스트, 실패 시 즉시 중단.
+   - 학습 데이터 생성·계약 검사 → sense 문항 상태/매핑 감사 → 전체 타입 검사 → 전체 테스트, 실패 시 즉시 중단.
    - 기본 `pnpm test`도 tests/만 탐색한다. 임시 분석 자료를 테스트로 읽지 않는다.
 3. 빠른 단위 검증: `node node_modules/vitest/vitest.mjs run tests/learning-storage.test.ts`
 4. 변경 파일 lint: `node node_modules/eslint/bin/eslint.js <수정한 ts/tsx/js/mjs 파일>`
 5. 웹 개발: `node node_modules/expo/bin/cli start --web --port 8081`
 6. Production: `node scripts/build-production-web.mjs <새 빈 출력 폴더>`
-   - 최신 학습 데이터 생성 → Expo export → KST 버전 정보 → 경로/자산 감사까지 자동 실행한다.
+   - sense 감사/최신 학습 데이터 생성 → Expo export → KST 버전 정보 → 경로/자산/manifest 감사까지 자동 실행한다.
+   - release.json은 version/sourceCommit/sourceDirty/dataVersion/learningDataVersion/builtAt을 기록한다. sourceDirty=true는 커밋만으로 실제 빌드를 재현할 수 없다는 표시다. 공개 HTML/번들 해시와 함께 대조한다.
    - 기존 출력은 덮지 않는다. 이전 빌드와 최신 코드를 혼합하지 않는다.
    - `scripts/audit-production-output.mjs <폴더>`는 복사된 Pages 산출물 재감사에도 쓴다.
 

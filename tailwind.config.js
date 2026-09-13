@@ -7,6 +7,7 @@ const tailwindColors = Object.fromEntries(
     {
       DEFAULT: `var(--color-${name})`,
       light: swatch.light,
+      paper: swatch.paper,
       dark: swatch.dark,
     },
   ]),

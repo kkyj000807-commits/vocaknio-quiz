@@ -1,8 +1,10 @@
 import { z } from "zod";
 import { getVocabItem, type VocabItem } from "@/lib/vocab";
+import { senseQuestionSchema } from "@/lib/sense-questions";
 import {
   isChoiceCorrect,
   isTypedAnswerCorrect,
+  validateQuestion,
   type QuizQuestion,
 } from "@/lib/quiz-engine";
 
@@ -88,8 +90,15 @@ const questionSchema = z
       .max(4),
     correct: z.string(),
     acceptedAnswers: z.array(z.string()),
+    sense: senseQuestionSchema.optional(),
   })
   .refine((q) => {
+    if (q.sense && !validateQuestion(q as QuizQuestion)) return false;
+    if (q.sense && (!q.sense.itemIds.includes(q.item.id) || q.sense.headword !== q.item.w ||
+      q.sense.status !== "production" ||
+      !q.choices.every(c => q.sense!.choices.some(source => c.id === `${q.sense!.id}:${source.id}` &&
+        c.value === (q.answerKind === "synonym" ? source.en : source.ko) &&
+        c.isCorrect === (source.id === q.sense!.correctId))))) return false;
     if (q.mode === "flashcard" || q.mode === "syn-type")
       return q.choices.length === 0;
     return (

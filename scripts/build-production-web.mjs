@@ -11,6 +11,15 @@ if (!outputDir) {
 }
 
 requireEmptyOutput(outputDir);
+const source = spawnSync("git", ["rev-parse", "HEAD"], { encoding: "utf8", shell: false });
+if (source.status !== 0 || !/^[a-f0-9]{40}$/.test(source.stdout.trim())) throw new Error("Cannot identify source commit");
+const sourceCommit = source.stdout.trim();
+const dirty = spawnSync("git", ["diff", "--quiet", "HEAD"], { shell: false });
+if (![0, 1].includes(dirty.status)) throw new Error("Cannot identify source working state");
+const builtAt = new Date().toISOString();
+const dataVersion = JSON.parse(fs.readFileSync("assets/vocab-meta-v1.4.json", "utf8")).version;
+const senseAudit = spawnSync(process.execPath, ["--import", "tsx", "scripts/audit-sense-questions.ts"], { stdio: "inherit", shell: false });
+if (senseAudit.status !== 0) process.exit(senseAudit.status ?? 1);
 const learningBuild = spawnSync(process.execPath, ["scripts/build-vocab-learning-v1.4.mjs"], {
   cwd: process.cwd(), stdio: "inherit", shell: false,
 });
@@ -25,7 +34,7 @@ const parts = new Intl.DateTimeFormat("en-CA", {
   hour: "2-digit",
   minute: "2-digit",
   hourCycle: "h23",
-}).formatToParts(new Date());
+}).formatToParts(new Date(builtAt));
 const value = (type) => parts.find((part) => part.type === type)?.value ?? "";
 const releasedAtKst = `${value("year")}.${value("month")}.${value("day")} ${value("hour")}:${value("minute")} KST`;
 const releaseConfig = JSON.parse(
@@ -67,6 +76,11 @@ if (result.status !== 0) {
 
 const releaseManifest = {
   version: releaseConfig.version,
+  sourceCommit,
+  sourceDirty: dirty.status === 1,
+  dataVersion,
+  learningDataVersion: releaseConfig.version,
+  builtAt,
   modifiedAtKst: releasedAtKst,
   channel: "production",
   target: releaseTarget,

@@ -5,12 +5,12 @@ import { Platform } from "react-native";
 import { HapticTab } from "@/components/haptic-tab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
+import { getTabMetrics } from "@/lib/layout";
 
 export default function TabLayout() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
-  const bottomPadding = Math.max(insets.bottom, Platform.OS === "web" ? 12 : 8);
-  const tabBarHeight = 56 + bottomPadding;
+  const metrics = getTabMetrics(Platform.OS === "web", insets.bottom);
 
   return (
     <Tabs
@@ -18,22 +18,24 @@ export default function TabLayout() {
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.dim,
         headerShown: false,
+        sceneStyle: { backgroundColor: colors.background },
         tabBarButton: HapticTab,
+        tabBarLabelPosition: Platform.OS === "web" ? "below-icon" : undefined,
         tabBarStyle: {
-          paddingTop: 8,
-          paddingBottom: bottomPadding,
-          height: tabBarHeight,
+          paddingTop: metrics.paddingTop,
+          paddingBottom: metrics.paddingBottom,
+          height: metrics.height,
           backgroundColor: colors.surface,
           borderTopColor: colors.border,
           borderTopWidth: 0.5,
         },
         tabBarLabelStyle: {
-          fontSize: 10,
+          fontSize: metrics.labelSize,
           fontWeight: "600",
-          marginTop: 2,
+          marginTop: metrics.labelMarginTop,
         },
         tabBarItemStyle: {
-          minHeight: 48,
+          minHeight: metrics.minTouchHeight,
         },
       }}
     >
@@ -42,7 +44,7 @@ export default function TabLayout() {
         options={{
           title: "문풀",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={24} name="book.fill" color={color} />
+            <IconSymbol size={metrics.iconSize} name="book.fill" color={color} />
           ),
         }}
       />
@@ -51,7 +53,7 @@ export default function TabLayout() {
         options={{
           title: "단어장",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={24} name="text.book.closed.fill" color={color} />
+            <IconSymbol size={metrics.iconSize} name="text.book.closed.fill" color={color} />
           ),
         }}
       />
@@ -60,7 +62,7 @@ export default function TabLayout() {
         options={{
           title: "오답",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={24} name="xmark.circle.fill" color={color} />
+            <IconSymbol size={metrics.iconSize} name="xmark.circle.fill" color={color} />
           ),
         }}
       />
@@ -69,7 +71,7 @@ export default function TabLayout() {
         options={{
           title: "통계",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={24} name="chart.bar.fill" color={color} />
+            <IconSymbol size={metrics.iconSize} name="chart.bar.fill" color={color} />
           ),
         }}
       />
@@ -78,7 +80,7 @@ export default function TabLayout() {
         options={{
           title: "설정",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={24} name="gear" color={color} />
+            <IconSymbol size={metrics.iconSize} name="gear" color={color} />
           ),
         }}
       />

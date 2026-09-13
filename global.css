@@ -3,19 +3,23 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
-  background: #f5f0e6;
+  color-scheme: only light;
+  background: var(--color-background, #F8FAFC);
 }
 
 html,
 body,
 #root {
   min-height: 100%;
-  background: var(--color-background, #f5f0e6);
+  background: var(--color-background, #F8FAFC);
 }
 
 body {
   margin: 0;
+}
+
+@supports (height: 100dvh) {
+  html, body, #root { height: 100dvh; min-height: 0; }
 }
 
 button,

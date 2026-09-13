@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,6 +12,7 @@ import * as Haptics from "expo-haptics";
 import { ScreenContainer } from "@/components/screen-container";
 import { VOCAB } from "@/lib/vocab";
 import { useColors } from "@/hooks/use-colors";
+import { getProductionSenseQuestions } from "@/lib/sense-questions";
 
 export default function ResultScreen() {
   const colors = useColors();
@@ -150,10 +150,19 @@ export default function ResultScreen() {
                     <Text style={s.wrongIpa}>{item!.p}</Text>
                   ) : null}
                 </View>
-                <Text style={s.wrongKor} numberOfLines={2}>
-                  {item!.k_short}
-                </Text>
-                {item!.s.length > 0 && (
+                {getProductionSenseQuestions(item!.id).length > 0 ? (
+                  <View style={{ gap: 8 }}>
+                    <Text style={s.wrongKor}>다의어 복습 · 아래 뜻은 문맥별로 구분합니다</Text>
+                    {getProductionSenseQuestions(item!.id).map(sense => (
+                      <View key={sense.id}>
+                        <Text style={s.wrongKor}>{sense.definitionKo}</Text>
+                        <Text style={s.wrongKor}>{sense.contextEn}</Text>
+                        <Text style={s.synTagText}>{sense.choices.find(c => c.id === sense.correctId)!.en}</Text>
+                      </View>
+                    ))}
+                  </View>
+                ) : <Text style={s.wrongKor} numberOfLines={2}>{item!.k_short}</Text>}
+                {getProductionSenseQuestions(item!.id).length === 0 && item!.s.length > 0 && (
                   <View style={s.synTagRow}>
                     {item!.s.slice(0, 3).map((syn, i) => (
                       <View key={i} style={s.synTag}>

@@ -1,3 +1,4 @@
+import { SCROLL_END_PADDING } from "@/lib/layout";
 import { useState, useCallback, useMemo, useEffect } from "react";
 import {
   View,
@@ -852,7 +853,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingTop: 4,
-    paddingBottom: 32,
+    paddingBottom: SCROLL_END_PADDING,
   },
   emptyBox: {
     alignItems: "center",

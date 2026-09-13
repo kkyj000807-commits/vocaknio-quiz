@@ -14,6 +14,7 @@ import {
   type SynonymDetail,
   type VocabItem,
 } from "@/lib/vocab";
+import { getProductionSenseQuestions, hasSenseQuestionMapping, senseQuestionSchema, type SenseQuestion } from "@/lib/sense-questions";
 
 export type ChoiceLang = "korean" | "english";
 export type QuizAnswerKind = "synonym" | "meaning" | "self";
@@ -35,6 +36,8 @@ export interface QuizQuestion {
   choices: QuizChoice[];
   correct: string;
   acceptedAnswers: string[];
+  /** Present only for independently cross-checked, contextualized questions. */
+  sense?: SenseQuestion;
 }
 
 export interface BuildQuizOptions {
@@ -228,6 +231,27 @@ function makeQuestion(
     mode === "syn-choice" ||
     mode === "syn-kor-choice" ||
     (mode === "kor-choice" && choiceLang === "english");
+  const reviewed = getProductionSenseQuestions(item.id);
+  // A withheld sense must not quietly fall back to the old headword-level question.
+  if (hasSenseQuestionMapping(item.id) && reviewed.length === 0) return null;
+  if (reviewed.length) {
+    const sense = reviewed[Math.floor(Math.random() * reviewed.length)];
+    const choices = shuffle(sense.choices.map((choice): QuizChoice => ({
+      id: `${sense.id}:${choice.id}`,
+      value: asksForSynonym ? choice.en : choice.ko,
+      label: asksForSynonym ? mode === "syn-kor-choice" ? `${choice.en} (${choice.ko})` : choice.en : choice.ko,
+      word: choice.en,
+      meaning: choice.ko,
+      isCorrect: choice.id === sense.correctId,
+    })));
+    const correct = choices.find(c => c.isCorrect)!;
+    const question: QuizQuestion = {
+      id: `${item.id}-${mode}-${sense.id}`, item, mode,
+      answerKind: asksForSynonym ? "synonym" : "meaning",
+      choices, correct: correct.label, acceptedAnswers: [correct.value], sense,
+    };
+    return validateQuestion(question) ? question : null;
+  }
   const choices = asksForSynonym
     ? buildSynonymChoices(item, mode === "syn-kor-choice")
     : buildMeaningChoices(item);
@@ -297,14 +321,15 @@ export function getQuizCandidateItems(options: BuildQuizOptions): VocabItem[] {
       options.mode === "syn-kor-choice" ||
       options.mode === "syn-type")
   ) {
-    pool = pool.filter((item) => item.s.length > 0);
+    pool = pool.filter((item) => item.s.length > 0 ||
+      (options.mode !== "syn-type" && getProductionSenseQuestions(item.id).length > 0));
   }
   if (
     !meaningFallback &&
     options.mode === "kor-choice" &&
     choiceLang === "english"
   ) {
-    pool = pool.filter((item) => item.s.length > 0);
+    pool = pool.filter((item) => item.s.length > 0 || getProductionSenseQuestions(item.id).length > 0);
   }
   return pool;
 }
@@ -358,6 +383,11 @@ export function isChoiceCorrect(
   question: QuizQuestion,
   choice: QuizChoice,
 ): boolean {
+  if (question.sense) {
+    // Never regrade a contextual answer against the headword-level synonym list.
+    return question.choices.some(c => c.id === choice.id && c.value === choice.value &&
+      c.id === `${question.sense!.id}:${question.sense!.correctId}` && c.isCorrect);
+  }
   if (question.answerKind === "synonym") {
     return isAcceptedSynonym(question.item, choice.value);
   }
@@ -373,9 +403,22 @@ export function isTypedAnswerCorrect(
 }
 
 export function validateQuestion(question: QuizQuestion): boolean {
+  if (question.sense) {
+    const sense = question.sense;
+    if (!senseQuestionSchema.safeParse(sense).success || sense.status !== "production" ||
+      !sense.itemIds.includes(question.item.id) || sense.headword !== question.item.w ||
+      !question.choices.every(c => sense.choices.some(source => {
+        const value = question.answerKind === "synonym" ? source.en : source.ko;
+        const label = question.answerKind === "synonym" && question.mode === "syn-kor-choice" ? `${source.en} (${source.ko})` : value;
+        return c.id === `${sense.id}:${source.id}` && c.value === value && c.label === label &&
+          c.meaning === source.ko && c.isCorrect === (source.id === sense.correctId);
+      }))) return false;
+  }
   if (question.answerKind === "self") return question.choices.length === 0;
   if (question.mode === "syn-type") return question.acceptedAnswers.length > 0;
   if (question.choices.length !== 4) return false;
+  if (new Set(question.choices.map(choice => choice.id)).size !== 4) return false;
+  if (!question.choices.some(choice => choice.isCorrect && choice.label === question.correct)) return false;
   if (new Set(question.choices.map((choice) => choice.label)).size !== 4)
     return false;
   return (

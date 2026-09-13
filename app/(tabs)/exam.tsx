@@ -1,3 +1,4 @@
+import { SCROLL_END_PADDING } from "@/lib/layout";
 import React, { useState, useCallback, useMemo, useRef, type ReactElement } from "react";
 import {
   View,
@@ -346,7 +347,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
     <ScrollView
       ref={scrollRef}
       style={{ flex: 1 }}
-      contentContainerStyle={{ paddingBottom: 40 }}
+      contentContainerStyle={{ paddingBottom: SCROLL_END_PADDING }}
       showsVerticalScrollIndicator={false}
     >
       {/* 진행 바 */}
@@ -584,7 +585,7 @@ export default function ExamScreen() {
     <ScreenContainer containerClassName="bg-background">
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingBottom: 40 }}
+        contentContainerStyle={{ paddingBottom: SCROLL_END_PADDING }}
         showsVerticalScrollIndicator={false}
       >
         {/* 헤더 */}

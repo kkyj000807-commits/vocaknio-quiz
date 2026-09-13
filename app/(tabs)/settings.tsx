@@ -1,3 +1,4 @@
+import { SCROLL_END_PADDING } from "@/lib/layout";
 import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -35,12 +36,13 @@ import {
   type ChoiceLang,
 } from "@/lib/store";
 
-type ThemeOption = { mode: ThemeMode; label: string; icon: "sun.max.fill" | "moon.fill" };
+type ThemeOption = { mode: ThemeMode; label: string; icon: "sun.max.fill" | "moon.fill" | "doc.text.fill" };
 type LangOption = { lang: ChoiceLang; label: string; desc: string };
 type AuthTab = "login" | "register";
 
 const THEME_OPTIONS: ThemeOption[] = [
   { mode: "light", label: "라이트", icon: "sun.max.fill" },
+  { mode: "paper", label: "미색", icon: "doc.text.fill" },
   { mode: "dark", label: "다크", icon: "moon.fill" },
 ];
 
@@ -69,7 +71,7 @@ async function callAuthApi(
 export default function SettingsScreen() {
   const colors = useColors();
   const { user, isAuthenticated, loading: authLoading, logout, refresh: refreshAuth } = useAuth();
-  const { themeMode, setThemeMode } = useThemeContext();
+  const { themeMode, themeStorageIssue, setThemeMode } = useThemeContext();
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState<string | null>(null);
   const [choiceLang, setChoiceLang] = useState<ChoiceLang>("korean");
@@ -284,6 +286,9 @@ export default function SettingsScreen() {
                   return (
                     <TouchableOpacity
                       key={opt.mode}
+                      accessibilityRole="button"
+                      accessibilityLabel={`${opt.label} 테마`}
+                      accessibilityState={{ selected: active }}
                       style={[s.themeBtn, active && s.themeBtnActive]}
                       onPress={() => setThemeMode(opt.mode)}
                       activeOpacity={0.75}
@@ -302,6 +307,8 @@ export default function SettingsScreen() {
               </View>
             </View>
           </View>
+
+          {themeStorageIssue && <Text accessibilityRole="alert" style={s.errorText}>{themeStorageIssue}</Text>}
 
           {/* 계정 섹션 */}
           <View style={s.section}>
@@ -558,7 +565,7 @@ export default function SettingsScreen() {
 
 const styles = (c: ReturnType<typeof useColors>) =>
   StyleSheet.create({
-    scroll: { padding: 20, paddingBottom: 40 },
+    scroll: { padding: 20, paddingBottom: SCROLL_END_PADDING },
     header: { marginBottom: 24 },
     title: { fontSize: 28, fontWeight: "700", color: c.foreground },
     section: { marginBottom: 28 },

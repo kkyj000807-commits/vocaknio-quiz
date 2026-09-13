@@ -15,6 +15,7 @@ import {
 } from "@/lib/vocab-storage-migration";
 import type { QuizMode } from "@/lib/vocab";
 import { QUIZ_SESSION_KEY, parseQuizSession, type QuizSession } from "@/lib/quiz-session";
+import { THEME_KEY, LEGACY_THEME_KEY, isThemeMode, resolveThemePreference, type ThemeMode } from "@/lib/theme-preference";
 
 export interface StatsData {
   totalAnswered: number;
@@ -176,6 +177,25 @@ function enqueueLearningStorageTask<T>(task: () => Promise<T>): Promise<T> {
     () => undefined,
   );
   return result;
+}
+
+// Share the write queue, but an unreadable theme must not disable scoring.
+export function loadThemePreference(): Promise<ThemeMode> {
+  return enqueueLearningStorageTask(async () => {
+    const current = pendingLearningWrites.get(THEME_KEY) ?? await AsyncStorage.getItem(THEME_KEY);
+    const legacy = current === null ? await AsyncStorage.getItem(LEGACY_THEME_KEY) : null;
+    const mode = resolveThemePreference(current, legacy);
+    if (current === null) await persistLearningEntries([[THEME_KEY, JSON.stringify(mode)]]);
+    return mode;
+  });
+}
+
+export function saveThemePreference(mode: ThemeMode): Promise<void> {
+  return enqueueLearningStorageTask(async () => {
+    if (!isThemeMode(mode)) throw new Error("Invalid theme preference");
+    // Explicit selection replaces only this preference, never learning data.
+    await persistLearningEntries([[THEME_KEY, JSON.stringify(mode)]]);
+  });
 }
 
 const EMPTY_STATS: StatsData = {

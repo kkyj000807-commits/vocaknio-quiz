@@ -1,3 +1,4 @@
+import { SCROLL_END_PADDING } from "@/lib/layout";
 import { useState, useCallback } from "react";
 import {
   View,
@@ -219,7 +220,7 @@ export default function WrongScreen() {
           data={wrongItems}
           keyExtractor={(item) => item.num.toString()}
           renderItem={renderItem}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40 }}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: SCROLL_END_PADDING }}
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
           ListHeaderComponent={

@@ -1,3 +1,4 @@
+import { SCROLL_END_PADDING } from "@/lib/layout";
 import { useState, useEffect, useCallback } from "react";
 import {
   View,
@@ -38,6 +39,7 @@ export default function HomeScreen() {
   const [selectedCount, setSelectedCount] = useState(10);
   const [choiceLang, setChoiceLang] = useState<ChoiceLang>("korean");
   const [rangeTab, setRangeTab] = useState<"core" | "all">("core");
+  const [showAuxiliary, setShowAuxiliary] = useState(false);
 
   useEffect(() => {
     loadQuizSettings().then((s) => setChoiceLang(s.choiceLang));
@@ -85,7 +87,7 @@ export default function HomeScreen() {
     <ScreenContainer containerClassName="bg-background">
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingBottom: 40 }}
+        contentContainerStyle={{ paddingBottom: SCROLL_END_PADDING }}
         showsVerticalScrollIndicator={false}
       >
         {/* ── 헤더 ─────────────────────────────── */}
@@ -119,7 +121,7 @@ export default function HomeScreen() {
         <View style={s.section}>
           <Text style={s.sectionTitle}>문제 풀이 방식</Text>
           <View style={s.modeGrid}>
-            {QUIZ_MODES.map((mode) => {
+            {QUIZ_MODES.filter(mode => showAuxiliary || !["flashcard", "syn-type"].includes(mode.id)).map((mode) => {
               const active = selectedMode === mode.id;
               return (
                 <Pressable
@@ -147,6 +149,19 @@ export default function HomeScreen() {
               );
             })}
           </View>
+
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="보조 학습 설정"
+            accessibilityState={{ expanded: showAuxiliary }}
+            onPress={() => {
+              if (showAuxiliary && ["flashcard", "syn-type"].includes(selectedMode)) setSelectedMode("syn-choice");
+              setShowAuxiliary(value => !value);
+            }}
+            style={{ minHeight: 44, justifyContent: "center", marginTop: 8 }}
+          >
+            <Text style={{ color: colors.primary, fontSize: 13 }}>보조 학습 · 플래시카드/직접 입력 {showAuxiliary ? "접기 ▴" : "펼치기 ▾"}</Text>
+          </Pressable>
 
           {/* 선지 언어 토글 */}
           {isChoiceLangRelevant && (

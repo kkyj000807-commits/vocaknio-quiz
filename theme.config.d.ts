@@ -1,21 +1,8 @@
-export const themeColors: {
-  primary: { light: string; dark: string };
-  primary2: { light: string; dark: string };
-  background: { light: string; dark: string };
-  surface: { light: string; dark: string };
-  card: { light: string; dark: string };
-  foreground: { light: string; dark: string };
-  muted: { light: string; dark: string };
-  dim: { light: string; dark: string };
-  border: { light: string; dark: string };
-  success: { light: string; dark: string };
-  warning: { light: string; dark: string };
-  error: { light: string; dark: string };
-  tint: { light: string; dark: string };
-};
-
-declare const themeConfig: {
-  themeColors: typeof themeColors;
-};
-
+export type ThemeSwatch = Record<"light" | "paper" | "dark", string>;
+export const themeColors: Record<
+  "primary" | "primary2" | "background" | "surface" | "card" |
+  "foreground" | "muted" | "dim" | "border" | "success" |
+  "warning" | "error" | "tint", ThemeSwatch
+>;
+declare const themeConfig: { themeColors: typeof themeColors };
 export default themeConfig;

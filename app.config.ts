@@ -2,6 +2,7 @@
 import "./scripts/load-env.js";
 import type { ExpoConfig } from "expo/config";
 import releaseConfig from "./release.config.json";
+import themeConfig from "./theme.config";
 
 const APP_VERSION = releaseConfig.version;
 
@@ -114,9 +115,9 @@ const config: ExpoConfig = {
         image: "./assets/images/splash-icon.png",
         imageWidth: 200,
         resizeMode: "contain",
-        backgroundColor: "#F5F0E6",
+        backgroundColor: themeConfig.themeColors.background.light,
         dark: {
-          backgroundColor: "#F5F0E6",
+          backgroundColor: themeConfig.themeColors.background.dark,
         },
       },
     ],
