@@ -1,6 +1,6 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.15 00:52 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.15 01:58 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
 ## 현재 배포 — 2.2, 전체 로드맵은 부분 완료
 
@@ -28,7 +28,17 @@
 - 현대 개념 설명·기억용 연상·확인된 의미 변화·역사적 어원 구분. 무료 열람과 복제 허가는 다르다. 사전 정의/예문을 무단 대량 복제하거나 미검증 내용을 정답에 넣지 않는다.
 - 내용 작업 전 .agents/skills/transfer-english-reasoning/SKILL.md와 두 references를 읽는다. 공개 강의 원칙과 앱의 독자 추론/효과 실측을 구분한다.
 
-## 현재 batch — 채점/복원 계약 P0, VERIFIED / 2.2 배포
+## 현재 batch — legacy 의미 경계 검수 후보 추출, VERIFIED 도구 / 앱은 2.2 유지
+
+- 09.15 01:52~01:58: scripts/audit-legacy-synonyms.ts + scripts/lib/legacy-synonym-audit.ts 구현. 숙어/표현 우선, 안정적 행ID·연결 대상·결합 표시 뜻을 가진 candidate만 추출한다. 표제어 인자/--all 사용법은 DEVELOPMENT.md. 후보를 정답이나 오류로 자동 확정하지 않으며 원본/런타임/학습 기록은 수정하지 않음.
+- 실제 38,163행: legacy 관계65,171, 별도 contextual 관계48. 여러 뜻 문구 결합 후보23,564관계 / 8,616행 / 1,660표현, 이 중 숙어/표현15행. 이는 오답 수 또는 검수 완료율이 아니다. 같은 뜻의 번역 차이도 포함하고, 한 문자열 안의 다의어는 놓칠 수 있음.
+- 진단 정정: 이번 전체 현행 데이터에서 headword fallback0, 연결누락0. 실제 후보는 모두 concept 내부에서 여러 한국어 뜻이 결합된 경로다. 따라서 fallback 제거만으로 해결된다고 판단하지 않는다. concept=단일sense라는 가정부터 바로잡아야 함.
+- VERIFIED: 신규3테스트(전체 후보의 getSynonymDetails 출력 일치·데이터 불변·누락/다중의미/개념우선 fixture), 전체 verify149통과/인증1skip/tsc/data audit, 변경3파일 lint 오류/경고0(기존 도구 module-format 경고 별도).
+- 앱 소스/학습 데이터/버전은 변경하지 않아 2.2 빌드·Pages 배포를 불필요하게 반복하지 않았다. 이번은 개발용 검수 도구 완료이며, 사용자 화면의 선지가 개선됐다고 보고하지 않는다.
+- NEXT: 숙어 blind alley8972 → cul-de-sac의 '막다른 골목/궁지/맹장' 혼합부터 단일sense 관계 계약을 시험한다. [Collins](https://www.collinsdictionary.com/dictionary/english/cul-de-sac) 본문에서 도로/상황/해부학 뜻이 분리됨을 확인했으나 두 번째 독립 사전 대조는 NOT DONE. Cambridge 직접 페이지403(검색 결과만 확보). 사전 원문을 데이터에 복제하지 않았고 candidate 유지.
+- capricious의 기존 재현도 유지. 후보에는 fickle의 유사한 한국어 풀이 차이처럼 오류가 아닐 수 있는 사례가 있어 문자열 차이만으로 대량 차단하지 않는다. 독립 사전 대조→명시 sense-target 연결→공통 엔진/단어장/복원 회귀가 다음 기능 batch다.
+
+## 이전 batch — 채점/복원 계약 P0, VERIFIED / 2.2 배포
 
 - VERIFIED 재현: 기존 한글/동의어 문항 모두 다른 문항의 선택지 ID도 정답으로 인정. 정답 flag와 표시 답을 오답으로 옮겨도 validateQuestion이 통과함. 새 회귀6개 중4개가 수정 전 실패, 정상 JSON/역순 복원2개 통과.
 - 원인: 한글 채점은 인자로 받은 isCorrect를 신뢰, 동의어 채점은 현재 선택지 소속 없이 표제어 배열만 확인. 세션은 legacy에 공통 validateQuestion을 적용하지 않음.
@@ -41,7 +51,7 @@
 
 ## 이전 batch — VERIFIED
 
-- 재현: sanction496의 승인/제재가 한 뜻에 섞이고 동사 문항에 erratic/faddish/fickle(형용사)이 생성됨. getSynonymDetails의 headword fallback/뜻 결합과 배열 기반 채점이 원인 경로다.
+- 재현: sanction496의 승인/제재가 한 뜻에 섞이고 동사 문항에 erratic/faddish/fickle(형용사)이 생성됨. getSynonymDetails의 뜻 결합과 배열 기반 채점이 원인 경로다. headword fallback도 코드에는 존재하지만 현행 전수 감사에서는 실행된 관계0으로 확인했다.
 - data/sense-questions.json: sanction/all but 2표현·4sense·4문항·기존10행. 각 문맥에 정답/3오답/이유/2사전 근거를 분리했다. Cambridge 검색 색인과 Collins 본문 대조; Cambridge 직접 페이지 접근 실패를 출처 메모에 명시했다.
 - 새 production 상태는 출제 적격 데이터 상태이며 전체 품질 인증이 아니다. 내부 A등급은 AI 편집 검수 판단, 학습 효과의 증명이 아니다. 전체 기존 어휘를 A로 인증하지 않는다.
 - 새 경로: 본·오답 공통 문맥/해설, 정답 ID 판정, 실제 sense/선택지 snapshot 복원. 후보/보류/C가 legacy fallback으로 우회하지 않게 검사한다.
@@ -65,7 +75,7 @@
 
 ## 남은 우선순위 — 전체 작업은 부분 완료
 
-1. NEXT / P0: 나머지 어휘의 headword/sense/POS/source 경계. 대표 다의어/동의어 밀집군/반의어/숙어/비슷한 한국어 번역별 재현 fixture를 확보하고, 현재 새4문항 밖 legacy 출제의 복수정답·뜻 겹침·품사 문제부터 수정한다. .p는 POS가 아니라 IPA임에 주의. 충분한 정답 근거/서로 겹치지 않는3오답/그럴듯한2오답이 없으면 안전한 비출제를 지원해야 한다.
+1. NEXT / P0: 나머지 어휘의 headword/sense/POS/source 경계. 재실행 가능한 후보 추출기는 완료(위 batch), 의미 검수/런타임 해결은 미완료. blind alley→cul-de-sac의 상황/해부학 혼합을 첫 숙어 fixture로 독립 사전 대조 후 sense 연결 계약에 적용한다. .p는 POS가 아니라 IPA임에 주의. 충분한 정답 근거/서로 겹치지 않는3오답/그럴듯한2오답이 없으면 안전한 비출제를 지원해야 한다.
 2. P0/P2: 본/오답 기록은 여전히 headword번호 중심. 실패한 특정 sense를 다음 오답 문제로 유지하는 것은 NOT DONE. 기존 오답 번호/성적을 임의 변환하지 말고 additive 저장/복원 계약과 회귀 테스트부터 설계한다. 옛 중단 세션은 보존하며 자동 재채점하지 않는다.
 3. P1: 자동 오늘학습 queue, 네 기본 유형(영한sense/영영관계/문맥/contrast) 전체 연결 미완료. 기존 세부 모드 보존. 모바일 실기기 검증과 랜덤 순서 안정성도 남음.
 4. P1/P2: 단어장 검색 실측38163행/8검색×10 median14.97ms,p95 70.21ms. 북마크 state 변경 시 filteredVocab의 shuffle 재실행 코드 확인, 수정 보류. 새 검색엔진 도입 없이 순서 생명주기 분리부터 검증한다.
@@ -87,6 +97,6 @@
 
 - 같은 main/같은 대화/heartbeat voca-nexus 매시간. 기존 예약을 매회 새로 만들지 않는다.09.15 00:50 KST 실제 신호 수신 후 진행 중 2.2 공개 확인을 이어서 마감. 신호 수신≠지속 코딩. 절전/앱 종료/크레딧 소진 뒤 무인 복구는 미검증. 새 비용/API 전환 금지.
 - 재개: Git/status→이 상태→최근 diff→NEXT P0→관련 검사.2.2 재빌드/재배포나 옛1.8 작업 반복 불필요.
-- 이번 잠금 session19773/PID4164를 두 신호 사이에도 유지했음. 마감 시 Enter 해제, 다음 회차는 새로 획득. 로컬 검증 서버session78889/port4132는 마감 시 종료.
+- 2.2 작업 잠금session19773/PID4164 및 로컬 서버port4132는 종료 확인. 이번 감사 잠금session85232/PID11108 획득, 마감 시 Enter 해제. 다음 회차는 새로 획득.
 - 사용자 보존: server/auth.ts, analysis/, build/, output/, pnpm-workspace.yaml, qa_claude/, scripts/analyze_exam_corpus.py, scripts/build_exam_analysis_queue.py, scripts/incremental_exam_corpus_update.mjs, scripts/incremental_exam_corpus_update.py, tmp/, vocab_project/를 수정·커밋·삭제하지 않았다. scripts/__pycache__도 커밋하지 않음.
 - 다음 실기기 확인 필요 외에 현재 사용자 인증/설정 행동은 요구하지 않는다.

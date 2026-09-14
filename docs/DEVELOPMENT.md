@@ -41,6 +41,15 @@ server/, drizzle/, lib/_core/는 별도 인증·API 경로다. GitHub Pages는 �
 
 브라우저 확인은 코드 검사와 별도다. 답→채점→이전/다음→결과→오답, 북마크, 재접속 복원, 좁은 화면 스크롤을 직접 확인한다. 실제 모바일 Safari를 데스크톱 Chrome으로 대체했다고 보고하지 않는다.
 
+## 기존 동의어 경계 검수 후보 추출
+
+`node --import tsx scripts/audit-legacy-synonyms.ts`는 현재 데이터로 검수 후보와 전체 건수를 계산한다. 숙어/표현 우선 12개만 표시한다. `"capricious"` 같은 표제어 인자로 좁히거나 `--all`로 전체 후보를 출력할 수 있다. 저장/데이터 변경/자동 출제 제외는 하지 않는다.
+
+- `scripts/lib/legacy-synonym-audit.ts`: concept 우선 조회/표제어 fallback/여러 한국어 뜻 결합을 추적하고 원본 행 ID와 표시 뜻을 남긴다. published/withheld sense 문항에 매핑된 행은 기존 객관식 경로를 타지 않으므로 별도 집계한다.
+- `tests/legacy-synonym-audit.test.ts`: 후보 전부의 표시 뜻을 실제 getSynonymDetails와 대조하여 감사 로직의 드리프트를 검출한다.
+- 모든 결과는 candidate다. 번역 문구가 다르다고 다른 sense/오답이라고 확정하지 않으며, 후보에 없다고 검수 통과도 아니다. .p는 발음이고 POS가 아니다. 품사/독립 사전/sense/문맥을 확인한 뒤에만 production 데이터를 수정한다.
+- 이 검사는 내용이 바뀌지 않은 매시간 자동 실행에서 반복하지 않는다. 관련 데이터/조회 경로가 바뀌었거나 다음 후보를 선정할 때 재사용한다.
+
 ## 저장 변경의 계약
 
 - 통계·목록·학습 시간 변경은 기존 learningStorageQueue와 persistLearningEntries를 거친다. AsyncStorage 직접 쓰기를 새로 추가하면 실패 재시도 중 예전 값이 최신 변경을 덮을 수 있다.
