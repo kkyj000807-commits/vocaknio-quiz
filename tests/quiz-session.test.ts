@@ -181,6 +181,20 @@ describe("문제 풀이 중단 복원", () => {
     expect(store.getLearningStorageIssue()).not.toBeNull();
   });
 
+  it.each<QuizMode>(["kor-choice", "syn-choice"])("%s 잘못된 정답 키도 원본을 보존하며 복원을 거절한다", async (mode) => {
+    const corrupt = session(mode);
+    const q = corrupt.questions[0];
+    const wrong = q.choices.find(c => !c.isCorrect)!;
+    q.choices.forEach(c => { c.isCorrect = c.id === wrong.id; });
+    q.correct = wrong.label;
+    const raw = JSON.stringify(corrupt);
+    disk.values.set(QUIZ_SESSION_KEY, raw);
+    expect(await store.loadQuizSession()).toBeNull();
+    await store.saveQuizSession(session(mode));
+    expect(disk.values.get(QUIZ_SESSION_KEY)).toBe(raw);
+    expect(store.getLearningStorageIssue()).not.toBeNull();
+  });
+
   it("중복 선택지·정답 누락·범위 밖 위치·모순된 응답은 거절한다", () => {
     const s = session();
     expect(parseQuizSession({ ...s, currentIndex: 3 })).toBeNull();

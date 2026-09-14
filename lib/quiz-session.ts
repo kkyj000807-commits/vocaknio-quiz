@@ -93,7 +93,8 @@ const questionSchema = z
     sense: senseQuestionSchema.optional(),
   })
   .refine((q) => {
-    if (q.sense && !validateQuestion(q as QuizQuestion)) return false;
+    // Legacy and sense questions must share the generation/grading contract.
+    if (!validateQuestion(q as QuizQuestion)) return false;
     if (q.sense && (!q.sense.itemIds.includes(q.item.id) || q.sense.headword !== q.item.w ||
       q.sense.status !== "production" ||
       !q.choices.every(c => q.sense!.choices.some(source => c.id === `${q.sense!.id}:${source.id}` &&

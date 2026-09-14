@@ -383,15 +383,24 @@ export function isChoiceCorrect(
   question: QuizQuestion,
   choice: QuizChoice,
 ): boolean {
+  const selected = question.choices.find(c => c.id === choice.id && c.value === choice.value);
+  if (!selected) return false;
+  return selected.isCorrect && matchesAnswerKey(question, selected);
+}
+
+// Check the stored key independently of its display flag. Otherwise a corrupt
+// flag can make both grading and validation agree on the same wrong answer.
+function matchesAnswerKey(question: QuizQuestion, choice: QuizChoice): boolean {
   if (question.sense) {
     // Never regrade a contextual answer against the headword-level synonym list.
-    return question.choices.some(c => c.id === choice.id && c.value === choice.value &&
-      c.id === `${question.sense!.id}:${question.sense!.correctId}` && c.isCorrect);
+    const correct = question.sense.choices.find(c => c.id === question.sense!.correctId);
+    return choice.id === `${question.sense.id}:${question.sense.correctId}` &&
+      choice.value === (question.answerKind === "synonym" ? correct?.en : correct?.ko);
   }
   if (question.answerKind === "synonym") {
     return isAcceptedSynonym(question.item, choice.value);
   }
-  return choice.isCorrect;
+  return question.answerKind === "meaning" && choice.value === question.item.k;
 }
 
 export function isTypedAnswerCorrect(
@@ -420,6 +429,8 @@ export function validateQuestion(question: QuizQuestion): boolean {
   if (new Set(question.choices.map(choice => choice.id)).size !== 4) return false;
   if (!question.choices.some(choice => choice.isCorrect && choice.label === question.correct)) return false;
   if (new Set(question.choices.map((choice) => choice.label)).size !== 4)
+    return false;
+  if (!question.choices.every(choice => choice.isCorrect === matchesAnswerKey(question, choice)))
     return false;
   return (
     question.choices.filter((choice) => isChoiceCorrect(question, choice))
