@@ -53,6 +53,10 @@ server/, drizzle/, lib/_core/는 별도 인증·API 경로다. GitHub Pages는 �
 
 ## 저장 변경의 계약
 
+- `sense-questions`의 선택적 relation은 source 행ID/뜻/concept와 targetSense를 묶는다. `audit-sense-questions`가 별도 교차검수 snapshot과 대조하며 오래된 근거는 빌드를 막는다. production 적격 문항만 본·오답·단어장에 사용한다.
+- 복원/채점은 저장된 sense의 자체 production flag가 아니라 현재 승인 문항과 대조한다. 내용이 바뀐 중단 문항을 자동 재채점하거나 원본을 삭제하지 않는다. 기본 legacy 문항과 보조 모드의 남은 검수 범위는 WORKING_CONTEXT를 참조한다.
+- synonym 감사의 reviewState는 교차검수 원본 상태(직접 production0)이고, 실제 출제 coverage는 sense 감사의 production 문항/고유sense/연결행 수다. 두 지표를 합쳐 전체 어휘 검증률로 보고하지 않는다.
+
 - 통계·목록·학습 시간 변경은 기존 learningStorageQueue와 persistLearningEntries를 거친다. AsyncStorage 직접 쓰기를 새로 추가하면 실패 재시도 중 예전 값이 최신 변경을 덮을 수 있다.
 - 읽을 수 없는 기존 기록은 원본 그대로 유지하고 저장 경고를 표시한다. 임의 초기화/자동 삭제하지 않는다.
 - 저장 실패 시 현재 탭에 미저장 값을 보관한다. 재시도 성공 전 탭 종료까지의 영속성은 보장할 수 없다.

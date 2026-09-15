@@ -43,7 +43,7 @@
       ],
       "checkedAt": "2026-09-15",
       "reviewer": "AI editorial cross-check",
-      "remaining": "명시 sense 관계를 단어장/문제 생성/채점/복원에 연결하고 문맥별 4개 선지와 반례를 검수해야 함. 기본 의미가 도로만인 다른 blind alley 행에는 이 비유적 검수를 자동 전파하지 않음. 학습 효과 및 사람의 독립 검수 미확인."
+      "remaining": "이 교차검수는 source 근거이며 직접적인 runtime whitelist가 아니다. sense-questions의 blind-alley.fruitless-course.v1이 별도 production 적격 문항(B)으로 2행에 연결됨. 도로 뜻만인 다른 blind alley 행과 다른 동의어들은 이 비유적 검수를 자동 전파하지 않음. 학습 효과 및 사람의 독립 검수 미확인."
     }
   ]
 }

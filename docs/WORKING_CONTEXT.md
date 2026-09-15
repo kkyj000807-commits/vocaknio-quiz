@@ -1,21 +1,20 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.15 11:50 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.16 01:04 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 배포 — 2.2, 전체 로드맵은 부분 완료
+## 현재 배포 — 2.3, 전체 로드맵은 부분 완료
 
 - Production: https://kkyj000807-commits.github.io/vocaknio-quiz/
-- 배포 전2.1 → 배포 후2.2. 앱 표시: 버전 2.2 · 최근 수정 2026.09.14 23:54 KST.
-- 소스a6dbf27b615e21e235913495dcd982287947f4af, Pages5a9e167b1c70e44fccb7f4faca22e0f6f4f9b3be. 이후 상태 문서만 추가 커밋될 수 있으며 앱 소스는 manifest의 SHA가 기준이다.
-- GitHub Actions34858991854 성공, 실제 게시09.14 23:58:35 KST. HTTP/해시 확인09.15 00:50 KST. 개발/검사09.14 23:50~23:57, 공개 확인/마감09.15 00:50~. 중간 실행 공백을 개발시간으로 합산하지 않는다.
-- manifest: version2.2 / dataVersion v1.4 / learningDataVersion2.2 / builtAt2026-09-14T14:54:41.611Z / sourceDirty=true. 보존한 server/auth.ts 및 당시 상태 문서의 미커밋 변경 때문에 true이며 숨기지 않았다.
-- 번들 entry-78886793ef5803822e4c431f8e1f8630.js / SHA256 c189f18935137df0bf7bb72ca78433a2dee0ee8466773a62f8cb87b7e8134634.
-- 공개 root/settings/wordbook/quiz HTTP200, release.json·번들·학습JSON8개가 최종 로컬 산출물과 일치.
-- 공개 내장 브라우저09.15 00:51: 홈 기본3모드/보조 학습, 설정2.2/23:54/3테마 버튼 및 실제 화면 확인. 사용자 성적에 테스트 응답을 추가하지 않았다.
-- 이번 회차 Chrome/Safari/Samsung Internet 연결 없음. 내장 브라우저를 해당 브라우저/실기기 검증으로 대신하지 않는다.
-- 캐시: 이미 열려 있던 공개 탭이 release=2.2-2026.09.14-23-54-KST로 갱신되어 설정2.2 표시 확인. 모든 기기의 이전 캐시 잔존이 해결됐다는 주장은 하지 않는다.
-- 최종 산출물: C:\Users\USER\Documents\Codex\2026-08-03\realtime-voice-chat\work\vocanexus-production-2.2-20260914
-- Pages worktree: 같은 work 아래 vocanexus-pages-2.2-20260914. 이전 해시 자산/학습JSON1.4~2.1은 변경·삭제하지 않았다(복사 때 줄바꿈 차이만 staging에서 정규화됨). 직전 안정 Pages7f2d4ba(2.1) 보존.
+- 배포 전2.2 → 배포 후2.3. 앱 표시: 버전 2.3 · 최근 수정 2026.09.15 12:05 KST. 이는 실제 소스 수정/빌드 기준 시각이며, 공개 게시 확인은09.16 01:03 KST다.
+- 앱 소스4cd5ff7699e5b1e211d4009c81fb4d8b0bd2a2d2 / Pages ca64fb26fd34484b4ad710794d316ce965ca4d14. 이후 문서·개발용 검수 메모 커밋과 앱 소스 SHA는 구분한다.
+- Actions34992406981 success(09.16 01:03:19 KST 확인값). release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion2.3 / builtAt2026-09-15T03:05:00.860Z.
+- 번들 entry-0aa46f768ed4ab12fbfc5829cdf3a47a.js / SHA256 1e4647df0fa5ea1b0dd965d928e0ac94a3bb523721ad8d5147b507b29fe1d0dd.
+- 공개 root/settings/wordbook/quiz HTTP200, release.json·번들·학습JSON8개가 로컬 산출물과 일치(09.16 01:03:34). Windows Chrome 공개 설정2.3/12:05, 단어장 blind alley의 문맥별 관계·해설 표시 및 console error0 확인.
+- 사용자 공개 저장소에는 테스트 답변/북마크를 추가하지 않았다. 문제풀이 행동 검증은 별도 localhost:4133에서 수행.
+- Chrome 일반 공개 URL 접속에서 최신2.3 표시(강력 새로고침 안 함). 실제 iPhone Safari/Galaxy Tab Samsung Internet/모바일 Chrome 및 모든 기기 캐시는 미검증.
+- 산출물: C:/Users/USER/Documents/Codex/2026-08-03/realtime-voice-chat/work/vocanexus-production-2.3-20260915
+- Pages worktree: 같은 work 아래 vocanexus-pages-2.3-20260915. 이전 해시 자산/학습JSON1.4~2.2를 삭제·변경하지 않음. 직전 안정 Pages5a9e167(2.2) 보존.
+- 코드/검사/빌드09.15 11:56~12:06, 브라우저/배포09.16 00:58~01:04. 신호 사이 공백은 원인 미확인으로 연속 개발시간에 합산하지 않는다.
 
 ## 최신 제품 계약
 
@@ -28,14 +27,18 @@
 - 현대 개념 설명·기억용 연상·확인된 의미 변화·역사적 어원 구분. 무료 열람과 복제 허가는 다르다. 사전 정의/예문을 무단 대량 복제하거나 미검증 내용을 정답에 넣지 않는다.
 - 내용 작업 전 .agents/skills/transfer-english-reasoning/SKILL.md와 두 references를 읽는다. 공개 강의 원칙과 앱의 독자 추론/효과 실측을 구분한다.
 
-## 진행 중 09.15 11:56~ — 첫 숙어 sense 관계 런타임 연결 / 공개는 아직 2.2
+## 현재 batch — 첫 숙어 관계 연결 VERIFIED / 2.3 공개 확인
 
-- 잠금 session5834/PID21628 획득. 기존 user dirty 보존, main/origin98e7c43 및 Pages5a9e167 확인, GitHub 인증 정상.
-- DONE not fully verified: blind alley→cul-de-sac의 비유적 명사 sense 1문항/2행만 production 적격 자료로 연결. 명시 source 행/뜻/concept→targetSense/excludedSense 계약을 본·오답 공통 엔진과 단어장 펼치기에 사용. 교차검수 JSON 자체는 production whitelist로 import하지 않는다.
-- 사전 본문을 다시 대조한 결과 bottleneck에는 impasse 뜻도 있어 오답 후보에서 제외했다. temporary setback/detour/turning point를 문맥 제한과 함께 편집했다. B등급(내부 판단), 사람 검수·학습 효과 미검증.
-- DONE: 복원된 문항이 자기 자신의 production/정답 flag만으로 승인되지 않도록 현행 승인 문항과 대조. 이전 headword 문항/변조된 sense/철회된 문항은 원본을 보존하며 복원을 거절, 자동 재채점 금지. 보조 flashcard/직접입력 유지.
-- VERIFIED: 관련 기존25테스트 + 새 relation5테스트 통과. 전체 verify/lint/build 및 브라우저는 다음 단계. release.config2.3은 후보이며 아직 배포 아님.
-- NEXT: 전체검증→2.3빌드/audit→별도 로컬 브라우저에서 단어장 펼치기/뜻 가림/문제 답→복원→결과→오답 확인→선별 커밋/Pages/공개확인. 실패 시 정확한 단계 기록.
+- 편입 실전 출제 스킬의 의미→문맥→경쟁 답 반례 검수를 적용. blind alley→cul-de-sac의 비유적 명사1sense/1문항/2원본행만 연결했다. 전체 생산 문항은3표현/5sense/5문항/12행, 전 어휘 개선 완료가 아니다.
+- 명시 source 행/뜻/concept→targetSense/excludedSense 계약을 본·오답 엔진과 단어장 펼치기에 사용. 생성/출력은 같은 production 문항을 공유하며 교차검수 JSON 자체를 승인 정답 목록으로 import하지 않는다. 건물 도로/해부학 sense나 다른 미검수 동의어를 섞지 않는다.
+- 사전 본문 대조에서 bottleneck에는 impasse 뜻도 있어 오답 후보에서 제외. temporary setback/detour/turning point를 문맥 제한과 함께 편집. B등급은 내부 판단이며 독립 인간 검수/학습 효과 미검증.
+- 저장 sense의 자체 production/정답 flag를 믿지 않고 현행 승인 문항과 대조한다. 이전 headword 문항·변조된 sense·철회된 문항은 원본을 보존하며 복원을 거절, 자동 재채점하지 않는다. 보조 flashcard/직접입력 및 기존 점수/번호는 보존.
+- VERIFIED: 전체 verify156통과/인증1skip/전체tsc/data·sense audit(09.15 12:04), 변경8파일 lint 오류/경고0(기존 도구 module-format 경고 별도), Production 빌드 및 Pages 복사본 audit HTML22/학습JSON8/참조누락0/루트자산0. basepath experimental/Browserslist/NO_COLOR 경고는 기존과 같음.
+- 신규5회귀: 두행×3모드×12반복72조합·다른2행에 전파하지 않음·원본 불변·선지 역순·본/오답/복원 공유·정답/관계/flag를 함께 위조한 snapshot 거절·철회/원본변경/옛 legacy snapshot 거절·보조모드 유지.
+- Windows Chrome 로컬: 검색4행→첫행 관계 펼치기→뜻 숨길 때 상세 DOM 제거→영영 문맥 문제 temporary setback 오답→일반 새로고침→같은 문맥/선지/오답1 복원→결과0/1→오답 복습 cul-de-sac 더블클릭→결과1/1, console error0.
+- Chrome viewport390×844에서 해설/마지막 출처 버튼 접근과 1280×800에서 본문 폭/해설 줄바꿈 확인, 이후 override 해제. 실제 터치/Safari/Samsung Internet을 대신한 검증이 아니다.
+- NOT DONE: 다른 blind alley 2행/다른 동의어와 나머지 어휘의 sense 경계, 일반 distractor/POS quality gate, 오답의 특정 sense 보존, 자동 오늘학습. 현재 하나의 연결 batch만 닫았다.
+- NEXT/P0: 기존 재현 capricious 한글/영어 선지의 POS·의미중복부터 검수한다. 감사 후보를 전부 오류로 단정하지 말고 독립 사전과 현행 구조에서 같은 원인을 좁혀 처리. 이미 닫은2.3을 재빌드하지 않는다.
 
 ## 이전 batch — 숙어 관계 교차검수와 검수 상태 보호 / 앱 2.2 유지
 
@@ -95,7 +98,7 @@
 
 ## 남은 우선순위 — 전체 작업은 부분 완료
 
-1. NEXT / P0: 나머지 어휘의 headword/sense/POS/source 경계. 후보 추출 및 첫 숙어 관계 교차검수는 위 batch 참조. blind alley→cul-de-sac의 비유적 sense를 런타임 관계 계약으로 연결하고 문맥/단어장/복원까지 검증한다. .p는 POS가 아니라 IPA임에 주의. 충분한 정답 근거/서로 겹치지 않는3오답/그럴듯한2오답이 없으면 안전한 비출제를 지원해야 한다.
+1. NEXT / P0: 나머지 어휘의 headword/sense/POS/source 경계. 첫 숙어 비유적 관계2행 연결은2.3으로 닫았다. 다음은 기존 재현 capricious 선지의 품사/의미 중복을 근거 기반으로 검수한다. .p는 POS가 아니라 IPA임에 주의. 충분한 정답 근거/서로 겹치지 않는3오답/그럴듯한2오답이 없으면 안전한 비출제를 지원해야 한다.
 2. P0/P2: 본/오답 기록은 여전히 headword번호 중심. 실패한 특정 sense를 다음 오답 문제로 유지하는 것은 NOT DONE. 기존 오답 번호/성적을 임의 변환하지 말고 additive 저장/복원 계약과 회귀 테스트부터 설계한다. 옛 중단 세션은 보존하며 자동 재채점하지 않는다.
 3. P1: 자동 오늘학습 queue, 네 기본 유형(영한sense/영영관계/문맥/contrast) 전체 연결 미완료. 기존 세부 모드 보존. 모바일 실기기 검증과 랜덤 순서 안정성도 남음.
 4. P1/P2: 단어장 검색 실측38163행/8검색×10 median14.97ms,p95 70.21ms. 북마크 state 변경 시 filteredVocab의 shuffle 재실행 코드 확인, 수정 보류. 새 검색엔진 도입 없이 순서 생명주기 분리부터 검증한다.
@@ -107,7 +110,7 @@
 ## 데이터 및 이전 안정 기능 보존
 
 - 정본38163행. 숙어·표현3731행/소문자 표제어1877개(연어·고유명사 포함).
-- 깊이 학습139sense/218행, 문맥 연습6표현/13문항/17행, 구성요소 해설13표현, 새 본문풀4문항/10행은 서로 다른 지표다.
+- 깊이 학습139sense/218행, 문맥 연습6표현/13문항/17행, 구성요소 해설13표현, 새 본문풀5문항/12행은 서로 다른 지표다.
 - 기존 all but 의미핵1표현/2행과 문맥연습3문항 유지. 미국식 허가 녹음17개, 나머지en-US합성음.
 - 1.9 본 문풀 마지막 세션 문제/보기/응답/이전위치/입력초안/힌트/플래시 상태 복원 유지. 완료/다른 요청/정본 변경 때 재사용하지 않음.
 - 1.8의 공통 learningStorageQueue/persistLearningEntries와 실패 재시도/깨진 원본 보존 유지. 병렬 북마크 유실·오답 부활·오래된 값 덮기를 회귀 검사했다. 여러 탭 원자성까지 보장하지 않는다.
@@ -116,7 +119,7 @@
 ## 재개와 사용자 작업 보호
 
 - 같은 main/같은 대화/heartbeat voca-nexus 매시간. 기존 예약을 매회 새로 만들지 않는다.09.15 00:50 KST 실제 신호 수신 후 진행 중 2.2 공개 확인을 이어서 마감. 신호 수신≠지속 코딩. 절전/앱 종료/크레딧 소진 뒤 무인 복구는 미검증. 새 비용/API 전환 금지.
-- 재개: Git/status→이 상태→최근 diff→NEXT P0→관련 검사.2.2 재빌드/재배포나 옛1.8 작업 반복 불필요.
-- 이전 잠금session85232/PID11108은 해제 확인. 이번 잠금session61380/PID14524 획득 후 작업, 마감 시 Enter 해제. 다음 회차는 새로 획득.
+- 재개: Git/status→이 상태→최근 diff→NEXT P0→관련 검사.2.3 재빌드/재배포나 옛1.8 작업 반복 불필요.
+- 이전 잠금61380/PID14524 해제 확인. 이번 잠금5834/PID21628은09.16 재개 때 동일 소유 프로세스 확인 후 이어서 작업, 마감 시 Enter 해제. localhost 서버86154는 검증 뒤 종료한다. 다음 회차는 새로 잠금 획득.
 - 사용자 보존: server/auth.ts, analysis/, build/, output/, pnpm-workspace.yaml, qa_claude/, scripts/analyze_exam_corpus.py, scripts/build_exam_analysis_queue.py, scripts/incremental_exam_corpus_update.mjs, scripts/incremental_exam_corpus_update.py, tmp/, vocab_project/를 수정·커밋·삭제하지 않았다. scripts/__pycache__도 커밋하지 않음.
 - 다음 실기기 확인 필요 외에 현재 사용자 인증/설정 행동은 요구하지 않는다.
