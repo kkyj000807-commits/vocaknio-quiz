@@ -2,6 +2,48 @@
   "schema": 1,
   "entries": [
     {
+      "id": "blind-alley.fruitless-course.v1",
+      "headword": "blind alley",
+      "itemIds": ["JBKROW009289", "JBKROW011482"],
+      "senseId": "blind-alley:fruitless-course",
+      "conceptId": "fruitless-course",
+      "partOfSpeech": "명사구",
+      "status": "production",
+      "quality": "B",
+      "definitionKo": "성과나 진전으로 이어지지 않는 접근·방향",
+      "bridgeKo": "길을 따라갔는데 끝이 막혀 더 나아가지 못하는 모습이다. 이 문맥에서는 도로가 아니라, 계속 시도해도 필요한 답에 도달하지 못하는 접근을 뜻한다. 어려워도 더 노력하면 해결되는 길과는 다르다. 현대 의미를 잇는 학습용 이미지이며 역사적 어원 설명은 아니다.",
+      "contextEn": "The historian called the search for a single author a blind alley: the manuscript was the work of several writers, so no amount of searching could identify one author.",
+      "contextKo": "역사학자는 단 한 명의 저자를 찾는 일이 성과 없는 접근이라고 했다. 원고는 여러 사람이 썼으므로, 아무리 찾아도 한 명의 저자를 특정할 수 없었기 때문이다.",
+      "evidence": "no amount of searching could identify one author",
+      "correctId": "cul-de-sac",
+      "choices": [
+        { "id": "cul-de-sac", "en": "cul-de-sac", "ko": "성과에 이르지 못하는 막다른 방향", "plausible": true, "reasonKo": "단일 저자라는 전제 자체가 맞지 않아 탐색을 계속해도 목표에 도달할 수 없다. 이 문맥에서는 성과 없는 접근이라는 비유적 뜻만 연결한다." },
+        { "id": "temporary-setback", "en": "temporary setback", "ko": "잠시 진행을 늦추는 차질", "plausible": true, "reasonKo": "목표는 달성 가능하지만 일시적으로 진행이 늦어졌다면 맞을 수 있다. 여기서는 단일 저자라는 전제 자체가 틀려 더 찾아도 목표에 도달하지 못하므로 temporary와 다르다." },
+        { "id": "detour", "en": "detour", "ko": "목표로 돌아가는 우회 경로", "plausible": true, "reasonKo": "다른 길로 돌아가 목표에 도달한다면 맞을 수 있다. 이 탐색은 길을 바꿔도 존재하지 않는 한 명의 저자를 찾을 수 없다." },
+        { "id": "turning-point", "en": "turning point", "ko": "흐름이 달라지는 전환점", "plausible": false, "reasonKo": "연구의 방향이 바뀌는 계기를 가리킨다면 맞을 수 있다. 목표 표현은 변화의 시점이 아니라 성과 없는 탐색 방향을 평가한다." }
+      ],
+      "sources": [
+        { "publisher": "Oxford University Press", "url": "https://www.oxfordlearnersdictionaries.com/definition/english/blind-alley", "note": "본문 대조: 유용한 결과로 이어지지 않는 접근. 해설·문항은 자체 작성." },
+        { "publisher": "Merriam-Webster", "url": "https://www.merriam-webster.com/dictionary/cul-de-sac", "note": "본문 sense 3의 성과 없는 방향을 blind alley 정의와 대조. 도로/해부학 뜻은 제외." },
+        { "publisher": "HarperCollins", "url": "https://www.collinsdictionary.com/dictionary/english/cul-de-sac", "note": "도로·진전이 막힌 상황·해부학을 분리해 대조. 전재 사전은 별도 출처로 세지 않음." }
+      ],
+      "reviewedAt": "2026.09.15 KST",
+      "reviewer": "AI editorial review; not independent human evaluation",
+      "reviewNote": "2개 명시 원본행에만 적용. 방향/일시 차질/우회/변화 초점을 분리했다. bottleneck은 Merriam-Webster에 impasse 뜻도 있어 경쟁 답이 될 수 있으므로 제외했다. temporary setback과 detour는 진행 이미지의 그럴듯한 오답이고 turning point는 변별력이 낮아 B. 사전 검수 자료 blind-alley-cul-de-sac-fruitless-course에 연결하며 효과는 미검증.",
+      "relation": {
+        "reviewId": "blind-alley-cul-de-sac-fruitless-course",
+        "targetWord": "cul-de-sac",
+        "targetSenseId": "cul-de-sac:fruitless-course",
+        "excludedTargetSenseIds": ["cul-de-sac:anatomical-pouch", "cul-de-sac:dead-end-street"],
+        "constraintKo": "blind alley ↔ cul-de-sac: 성과 없는 접근·방향이라는 비유적 명사 문맥에서 연결한다. 도로·신체 기관의 뜻을 합치지 않으며, 다른 구문에서 무조건 교체하지 않는다.",
+        "sourceConceptId": "JBKROW009276",
+        "sourceRows": [
+          { "id": "JBKROW009289", "meaning": "막다른 골목; 가망이 없는 일" },
+          { "id": "JBKROW011482", "meaning": "막다른 골목; 가망이 없는 일" }
+        ]
+      }
+    },
+    {
       "status": "production",
       "quality": "A",
       "reviewedAt": "2026.09.13 KST",

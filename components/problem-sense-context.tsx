@@ -14,6 +14,7 @@ export function ProblemSenseContext({ sense, answered = false }: { sense?: Sense
         <Text style={{ color: colors.foreground, fontSize: 15, lineHeight: 24 }}>{sense.contextKo}</Text>
         <Text style={{ color: colors.primary, fontWeight: "700", lineHeight: 22 }}>{sense.definitionKo}</Text>
         <Text style={{ color: colors.foreground, lineHeight: 23 }}>{sense.bridgeKo}</Text>
+        {sense.relation && <Text style={{ color: colors.muted, lineHeight: 23 }}>{sense.relation.constraintKo}</Text>}
         {sense.choices.map(c => <Text key={c.id} style={{ color: c.id === sense.correctId ? colors.success : colors.muted, lineHeight: 23 }}>{c.en}: {c.reasonKo}</Text>)}
         <Text style={{ color: colors.muted, fontSize: 11, lineHeight: 18 }}>사전 뜻 교차 대조 · 자체 작성 문항/AI 편집 검수 · 시험 효과 미검증</Text>
         {sense.sources.map(source => <Pressable key={source.publisher} accessibilityRole="link" accessibilityLabel={`${source.publisher} 뜻 근거 열기`} onPress={() => { void Linking.openURL(source.url); }} style={{ minHeight: 44, justifyContent: "center" }}><Text style={{ color: colors.primary }}>{source.publisher} 뜻 근거 ↗</Text></Pressable>)}

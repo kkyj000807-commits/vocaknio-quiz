@@ -24,6 +24,8 @@ import { useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/screen-container";
 import { PronunciationButton } from "@/components/pronunciation-button";
 import { LearningDetails } from "@/components/learning-details";
+import { ProblemSenseContext } from "@/components/problem-sense-context";
+import { getProductionSenseQuestions, hasSenseQuestionMapping, senseMatchesItem } from "@/lib/sense-questions";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { getRangeItems, WORDBOOK_RANGES, VOCAB, type VocabItem } from "@/lib/vocab";
 import {
@@ -74,6 +76,8 @@ function WordCard({
   const [meaningHidden, setMeaningHidden] = useState(maskMode);
   const isBookmarked = bookmarks.has(item.num);
   const s = cardStyles(colors);
+  const hasReviewedMapping = hasSenseQuestionMapping(item.id);
+  const reviewedSenses = getProductionSenseQuestions(item.id).filter(sense => senseMatchesItem(sense, item));
 
   // 상태는 즉시 바꾸고 회전은 표시 효과만 담당해 Safari에서도 멈추지 않습니다.
   const flipRotation = useSharedValue(0);
@@ -164,7 +168,7 @@ function WordCard({
               <Text style={s.korText} numberOfLines={expanded ? undefined : 2}>
                 {item.k_short}
               </Text>
-              {expanded && item.s.length > 0 && (
+              {expanded && !hasReviewedMapping && item.s.length > 0 && (
                 <View style={s.synRow}>
                   {item.s.map((syn, i) => (
                     <View key={`${item.num}-${syn}-${i}`} style={s.synTag}>
@@ -178,7 +182,7 @@ function WordCard({
         </Animated.View>
       </Pressable>
 
-      {!meaningHidden && item.s.length > 0 && (
+      {!meaningHidden && (hasReviewedMapping || item.s.length > 0) && (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={`${item.w} 동의어 ${expanded ? "접기" : "보기"}`}
@@ -194,6 +198,14 @@ function WordCard({
           </Text>
         </Pressable>
       )}
+      {!meaningHidden && expanded && hasReviewedMapping && <View>
+        <Text style={s.expandHint}>검수된 문맥별 뜻 · 다른 뜻과 섞지 않아요</Text>
+        {reviewedSenses.length === 0 && <Text style={s.expandHint}>의미 관계 재검수 중</Text>}
+        {reviewedSenses.map(sense => <View key={sense.id}>
+          <Text style={s.korText}>{sense.contextEn}</Text>
+          <ProblemSenseContext sense={sense} answered />
+        </View>)}
+      </View>}
       {!meaningHidden && <LearningDetails itemId={item.id} />}
     </View>
   );

@@ -14,7 +14,7 @@ import {
   type SynonymDetail,
   type VocabItem,
 } from "@/lib/vocab";
-import { getProductionSenseQuestions, hasSenseQuestionMapping, senseQuestionSchema, type SenseQuestion } from "@/lib/sense-questions";
+import { getProductionSenseQuestions, hasSenseQuestionMapping, isCurrentSenseQuestion, senseMatchesItem, type SenseQuestion } from "@/lib/sense-questions";
 
 export type ChoiceLang = "korean" | "english";
 export type QuizAnswerKind = "synonym" | "meaning" | "self";
@@ -231,7 +231,7 @@ function makeQuestion(
     mode === "syn-choice" ||
     mode === "syn-kor-choice" ||
     (mode === "kor-choice" && choiceLang === "english");
-  const reviewed = getProductionSenseQuestions(item.id);
+  const reviewed = getProductionSenseQuestions(item.id).filter(sense => senseMatchesItem(sense, item));
   // A withheld sense must not quietly fall back to the old headword-level question.
   if (hasSenseQuestionMapping(item.id) && reviewed.length === 0) return null;
   if (reviewed.length) {
@@ -392,6 +392,7 @@ export function isChoiceCorrect(
 // flag can make both grading and validation agree on the same wrong answer.
 function matchesAnswerKey(question: QuizQuestion, choice: QuizChoice): boolean {
   if (question.sense) {
+    if (!isCurrentSenseQuestion(question.sense, question.item)) return false;
     // Never regrade a contextual answer against the headword-level synonym list.
     const correct = question.sense.choices.find(c => c.id === question.sense!.correctId);
     return choice.id === `${question.sense.id}:${question.sense.correctId}` &&
@@ -412,9 +413,11 @@ export function isTypedAnswerCorrect(
 }
 
 export function validateQuestion(question: QuizQuestion): boolean {
+  if (!question.sense && question.mode !== "flashcard" && question.mode !== "syn-type" &&
+    hasSenseQuestionMapping(question.item.id)) return false;
   if (question.sense) {
     const sense = question.sense;
-    if (!senseQuestionSchema.safeParse(sense).success || sense.status !== "production" ||
+    if (!isCurrentSenseQuestion(sense, question.item) || sense.status !== "production" ||
       !sense.itemIds.includes(question.item.id) || sense.headword !== question.item.w ||
       !question.choices.every(c => sense.choices.some(source => {
         const value = question.answerKind === "synonym" ? source.en : source.ko;

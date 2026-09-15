@@ -28,7 +28,16 @@
 - 현대 개념 설명·기억용 연상·확인된 의미 변화·역사적 어원 구분. 무료 열람과 복제 허가는 다르다. 사전 정의/예문을 무단 대량 복제하거나 미검증 내용을 정답에 넣지 않는다.
 - 내용 작업 전 .agents/skills/transfer-english-reasoning/SKILL.md와 두 references를 읽는다. 공개 강의 원칙과 앱의 독자 추론/효과 실측을 구분한다.
 
-## 현재 batch — 숙어 관계 교차검수와 검수 상태 보호 / 앱은 2.2 유지
+## 진행 중 09.15 11:56~ — 첫 숙어 sense 관계 런타임 연결 / 공개는 아직 2.2
+
+- 잠금 session5834/PID21628 획득. 기존 user dirty 보존, main/origin98e7c43 및 Pages5a9e167 확인, GitHub 인증 정상.
+- DONE not fully verified: blind alley→cul-de-sac의 비유적 명사 sense 1문항/2행만 production 적격 자료로 연결. 명시 source 행/뜻/concept→targetSense/excludedSense 계약을 본·오답 공통 엔진과 단어장 펼치기에 사용. 교차검수 JSON 자체는 production whitelist로 import하지 않는다.
+- 사전 본문을 다시 대조한 결과 bottleneck에는 impasse 뜻도 있어 오답 후보에서 제외했다. temporary setback/detour/turning point를 문맥 제한과 함께 편집했다. B등급(내부 판단), 사람 검수·학습 효과 미검증.
+- DONE: 복원된 문항이 자기 자신의 production/정답 flag만으로 승인되지 않도록 현행 승인 문항과 대조. 이전 headword 문항/변조된 sense/철회된 문항은 원본을 보존하며 복원을 거절, 자동 재채점 금지. 보조 flashcard/직접입력 유지.
+- VERIFIED: 관련 기존25테스트 + 새 relation5테스트 통과. 전체 verify/lint/build 및 브라우저는 다음 단계. release.config2.3은 후보이며 아직 배포 아님.
+- NEXT: 전체검증→2.3빌드/audit→별도 로컬 브라우저에서 단어장 펼치기/뜻 가림/문제 답→복원→결과→오답 확인→선별 커밋/Pages/공개확인. 실패 시 정확한 단계 기록.
+
+## 이전 batch — 숙어 관계 교차검수와 검수 상태 보호 / 앱 2.2 유지
 
 - 04:08 신호 처리 중 잠금 도구 응답이 약27,296초 지연됨. 11:44 LOCK_ACQUIRED 확인 후에만 실제 수정했고 11:50까지 작업했다. 공백 원인은 미확인, 공백을 개발시간으로 합산하거나 무인 정상 실행으로 보고하지 않음.
 - data/synonym-reviews.json: blind alley→cul-de-sac의 '성과 없는 진행 방향' 1sense/2원본행(JBKROW009289, JBKROW011482)을 cross-checked로 저장. 의미핵·쉬운 풀이·의미 제한·자체 작성 새 문맥2개·증거 구절 포함. 어원 주장을 하지 않으며 도로/해부학 뜻을 비유적 답에 합치지 않는다.
