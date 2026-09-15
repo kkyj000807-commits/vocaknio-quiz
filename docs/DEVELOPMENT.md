@@ -49,6 +49,7 @@ server/, drizzle/, lib/_core/는 별도 인증·API 경로다. GitHub Pages는 �
 - `tests/legacy-synonym-audit.test.ts`: 후보 전부의 표시 뜻을 실제 getSynonymDetails와 대조하여 감사 로직의 드리프트를 검출한다.
 - 모든 결과는 candidate다. 번역 문구가 다르다고 다른 sense/오답이라고 확정하지 않으며, 후보에 없다고 검수 통과도 아니다. .p는 발음이고 POS가 아니다. 품사/독립 사전/sense/문맥을 확인한 뒤에만 production 데이터를 수정한다.
 - 이 검사는 내용이 바뀌지 않은 매시간 자동 실행에서 반복하지 않는다. 관련 데이터/조회 경로가 바뀌었거나 다음 후보를 선정할 때 재사용한다.
+- `data/synonym-reviews.json`은 개발용 교차검수 자료이며 production 입력이 아니다. `scripts/lib/synonym-reviews.ts` 계약으로 검사하고 CLI의 reviewState에 별도 집계한다. 원본 뜻/concept/대상 행/결합 표시가 달라지면 stale로 표시한다. stage별 관계 행 수와 고유 sense 수를 구분한다. 이를 앱의 승인된 정답 목록으로 바로 import하지 않는다.
 
 ## 저장 변경의 계약
 

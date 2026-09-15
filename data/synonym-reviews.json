@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "entries": [
+    {
+      "id": "blind-alley-cul-de-sac-fruitless-course",
+      "status": "cross-checked",
+      "headword": "blind alley",
+      "sourceRows": [
+        { "id": "JBKROW009289", "meaning": "막다른 골목; 가망이 없는 일" },
+        { "id": "JBKROW011482", "meaning": "막다른 골목; 가망이 없는 일" }
+      ],
+      "synonym": "cul-de-sac",
+      "expectedConceptId": "JBKROW009276",
+      "expectedTargetRowIds": ["JBKROW001610", "JBKROW002402", "JBKROW005209", "JBKROW006609", "JBKROW009290", "JBKROW011719"],
+      "expectedRenderedMeaning": "막다른 골목; 진퇴양난 / 막다른 골목, 곤경 / 막다른 골목; 궁지; 맹장",
+      "senseId": "blind-alley:fruitless-course",
+      "targetSenseId": "cul-de-sac:fruitless-course",
+      "partOfSpeech": "noun phrase",
+      "definitionKo": "계속해도 유용한 성과나 진전으로 이어지지 않는 접근이나 방향",
+      "bridgeKo": "길을 따라갔는데 끝이 막혀 더 나아가지 못하는 모습으로, 노력은 이어져도 원하는 성과로 연결되지 않는 접근을 이해한다. 어려워도 해결 가능성이 남은 일과는 다르다.",
+      "bridgeKind": "conceptual-not-etymology",
+      "constraintKo": "성과 없는 접근·방향을 말하는 비유적 명사 문맥에서만 연결한다. cul-de-sac의 해부학적 뜻이나 실제 도로 뜻을 이 문맥의 정답 풀이에 합치지 않는다. 두 표현을 모든 구문에서 기계적으로 교체할 수 있다는 주장은 아니다.",
+      "excludedSenseIds": ["cul-de-sac:anatomical-pouch", "cul-de-sac:dead-end-street"],
+      "examples": [
+        {
+          "en": "The approach proved to be a blind alley: repeating the calculation could never distinguish the two competing explanations.",
+          "ko": "그 접근은 성과로 이어질 수 없는 길이었다. 계산을 반복해도 경쟁하는 두 설명을 구별할 수는 없었기 때문이다.",
+          "evidence": "could never distinguish the two competing explanations",
+          "noteKo": "계산이 오래 걸린다는 뜻이 아니라, 필요한 구별 자체를 해낼 수 없다는 점이 핵심이다."
+        },
+        {
+          "en": "Treating every exception as a new rule led the analysis into a cul-de-sac; the theory could accommodate any result and therefore explain none.",
+          "ko": "예외가 나올 때마다 새 규칙으로 처리하자 분석은 진전이 막힌 길로 들어섰다. 어떤 결과든 받아들이는 이론이 되어, 정작 아무 결과도 설명하지 못했기 때문이다.",
+          "evidence": "could accommodate any result and therefore explain none",
+          "noteKo": "겉으로는 설명을 늘렸지만 설명력이 생기지 않았다는 대조를 읽는다. 도로나 신체 기관을 가리키지 않는다."
+        }
+      ],
+      "sources": [
+        { "publisher": "Oxford University Press", "url": "https://www.oxfordlearnersdictionaries.com/definition/english/blind-alley", "note": "본문 확인: 처음에는 유용해 보이지만 유용한 결과로 이어지지 않는 방식이라는 비유적 뜻. 예문은 복제하지 않음." },
+        { "publisher": "Merriam-Webster", "url": "https://www.merriam-webster.com/dictionary/blind%20alley", "note": "본문 확인: 성과 없는 또는 잘못된 진행 방향이라는 명사 뜻을 독립 대조." },
+        { "publisher": "Merriam-Webster", "url": "https://www.merriam-webster.com/dictionary/cul-de-sac", "note": "본문 확인: sense 3의 성과 없는 방향을 연결하며 sense 1 신체 주머니와 sense 2 막힌 도로는 분리." },
+        { "publisher": "HarperCollins", "url": "https://www.collinsdictionary.com/dictionary/english/cul-de-sac", "note": "본문 확인: 도로·진전이 막힌 상황·해부학 의미를 별도 뜻으로 제시. 다른 사전에 전재된 Collins를 추가 독립 근거로 세지 않음." }
+      ],
+      "checkedAt": "2026-09-15",
+      "reviewer": "AI editorial cross-check",
+      "remaining": "명시 sense 관계를 단어장/문제 생성/채점/복원에 연결하고 문맥별 4개 선지와 반례를 검수해야 함. 기본 의미가 도로만인 다른 blind alley 행에는 이 비유적 검수를 자동 전파하지 않음. 학습 효과 및 사람의 독립 검수 미확인."
+    }
+  ]
+}

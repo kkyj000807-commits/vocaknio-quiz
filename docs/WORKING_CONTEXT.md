@@ -1,6 +1,6 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.15 01:58 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.15 11:50 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
 ## 현재 배포 — 2.2, 전체 로드맵은 부분 완료
 
@@ -28,14 +28,25 @@
 - 현대 개념 설명·기억용 연상·확인된 의미 변화·역사적 어원 구분. 무료 열람과 복제 허가는 다르다. 사전 정의/예문을 무단 대량 복제하거나 미검증 내용을 정답에 넣지 않는다.
 - 내용 작업 전 .agents/skills/transfer-english-reasoning/SKILL.md와 두 references를 읽는다. 공개 강의 원칙과 앱의 독자 추론/효과 실측을 구분한다.
 
-## 현재 batch — legacy 의미 경계 검수 후보 추출, VERIFIED 도구 / 앱은 2.2 유지
+## 현재 batch — 숙어 관계 교차검수와 검수 상태 보호 / 앱은 2.2 유지
+
+- 04:08 신호 처리 중 잠금 도구 응답이 약27,296초 지연됨. 11:44 LOCK_ACQUIRED 확인 후에만 실제 수정했고 11:50까지 작업했다. 공백 원인은 미확인, 공백을 개발시간으로 합산하거나 무인 정상 실행으로 보고하지 않음.
+- data/synonym-reviews.json: blind alley→cul-de-sac의 '성과 없는 진행 방향' 1sense/2원본행(JBKROW009289, JBKROW011482)을 cross-checked로 저장. 의미핵·쉬운 풀이·의미 제한·자체 작성 새 문맥2개·증거 구절 포함. 어원 주장을 하지 않으며 도로/해부학 뜻을 비유적 답에 합치지 않는다.
+- 근거 본문: [Oxford blind alley](https://www.oxfordlearnersdictionaries.com/definition/english/blind-alley), [Merriam-Webster blind alley](https://www.merriam-webster.com/dictionary/blind%20alley), [Merriam-Webster cul-de-sac](https://www.merriam-webster.com/dictionary/cul-de-sac), [Collins cul-de-sac](https://www.collinsdictionary.com/dictionary/english/cul-de-sac). 무료 열람 자료의 정의/예문 원문을 복제하지 않음. AHD도 읽었지만 HarperCollins와 중복 출판사이므로 별도 독립 출판사로 세지 않음.
+- scripts/lib/synonym-reviews.ts가 출처/문맥 근거/중복 관계/포함·제외 sense 충돌을 검사. 조회 시 원본 뜻·concept·대상 행ID·합쳐진 뜻이 달라지면 검수 표시를 candidate(stale)로 되돌려 재검수하도록 함. 생산 승격은 허용하지 않음.
+- 감사 CLI 실제 결과: crossCheckedRelations2 / stale0 / production0. 이는 원본행 관계 건수이고 고유 검수sense는1이다. 나머지 두 blind alley 행은 도로 뜻만 있어 비유적 검수를 자동 전파하지 않음.
+- VERIFIED: 신규2테스트(근거 계약·실데이터2행 연결·뜻/개념 변경 시 stale·production 거절), 전체 verify151통과/인증1skip/tsc/data audit, 변경3파일 lint 오류/경고0(기존 도구 module-format 경고 별도).
+- NOT DONE: 앱 생성/채점/단어장/복원에 이 관계를 아직 연결하지 않음. source/data 검수 단계 완료이지 사용자 선지 수정 완료가 아님. app/lib 런타임 및 release.config 불변이므로 새 build/Pages 배포를 반복하지 않았고 공개2.2 유지.
+- NEXT: 이 검수 자료의 sourceSense/targetSense를 공통 동의어 조회/정답 계약에 연결하는 최소 경계를 구현한다. contextual 문항과 단어장 표시, stale 저장세션 처리까지 테스트한 뒤에만 배포. 나머지 미검수 동의어를 같은 concept이라는 이유로 자동 승인하지 않는다.
+
+## 이전 batch — legacy 의미 경계 검수 후보 추출, VERIFIED 도구
 
 - 09.15 01:52~01:58: scripts/audit-legacy-synonyms.ts + scripts/lib/legacy-synonym-audit.ts 구현. 숙어/표현 우선, 안정적 행ID·연결 대상·결합 표시 뜻을 가진 candidate만 추출한다. 표제어 인자/--all 사용법은 DEVELOPMENT.md. 후보를 정답이나 오류로 자동 확정하지 않으며 원본/런타임/학습 기록은 수정하지 않음.
 - 실제 38,163행: legacy 관계65,171, 별도 contextual 관계48. 여러 뜻 문구 결합 후보23,564관계 / 8,616행 / 1,660표현, 이 중 숙어/표현15행. 이는 오답 수 또는 검수 완료율이 아니다. 같은 뜻의 번역 차이도 포함하고, 한 문자열 안의 다의어는 놓칠 수 있음.
 - 진단 정정: 이번 전체 현행 데이터에서 headword fallback0, 연결누락0. 실제 후보는 모두 concept 내부에서 여러 한국어 뜻이 결합된 경로다. 따라서 fallback 제거만으로 해결된다고 판단하지 않는다. concept=단일sense라는 가정부터 바로잡아야 함.
 - VERIFIED: 신규3테스트(전체 후보의 getSynonymDetails 출력 일치·데이터 불변·누락/다중의미/개념우선 fixture), 전체 verify149통과/인증1skip/tsc/data audit, 변경3파일 lint 오류/경고0(기존 도구 module-format 경고 별도).
 - 앱 소스/학습 데이터/버전은 변경하지 않아 2.2 빌드·Pages 배포를 불필요하게 반복하지 않았다. 이번은 개발용 검수 도구 완료이며, 사용자 화면의 선지가 개선됐다고 보고하지 않는다.
-- NEXT: 숙어 blind alley8972 → cul-de-sac의 '막다른 골목/궁지/맹장' 혼합부터 단일sense 관계 계약을 시험한다. [Collins](https://www.collinsdictionary.com/dictionary/english/cul-de-sac) 본문에서 도로/상황/해부학 뜻이 분리됨을 확인했으나 두 번째 독립 사전 대조는 NOT DONE. Cambridge 직접 페이지403(검색 결과만 확보). 사전 원문을 데이터에 복제하지 않았고 candidate 유지.
+- 당시 후보: blind alley8972 → cul-de-sac의 '막다른 골목/궁지/맹장' 혼합. Cambridge 직접 페이지403으로 멈췄던 독립 사전 대조는 이번에 Oxford/Merriam-Webster 본문으로 보완(위 batch). runtime 적용은 여전히 미완료.
 - capricious의 기존 재현도 유지. 후보에는 fickle의 유사한 한국어 풀이 차이처럼 오류가 아닐 수 있는 사례가 있어 문자열 차이만으로 대량 차단하지 않는다. 독립 사전 대조→명시 sense-target 연결→공통 엔진/단어장/복원 회귀가 다음 기능 batch다.
 
 ## 이전 batch — 채점/복원 계약 P0, VERIFIED / 2.2 배포
@@ -75,7 +86,7 @@
 
 ## 남은 우선순위 — 전체 작업은 부분 완료
 
-1. NEXT / P0: 나머지 어휘의 headword/sense/POS/source 경계. 재실행 가능한 후보 추출기는 완료(위 batch), 의미 검수/런타임 해결은 미완료. blind alley→cul-de-sac의 상황/해부학 혼합을 첫 숙어 fixture로 독립 사전 대조 후 sense 연결 계약에 적용한다. .p는 POS가 아니라 IPA임에 주의. 충분한 정답 근거/서로 겹치지 않는3오답/그럴듯한2오답이 없으면 안전한 비출제를 지원해야 한다.
+1. NEXT / P0: 나머지 어휘의 headword/sense/POS/source 경계. 후보 추출 및 첫 숙어 관계 교차검수는 위 batch 참조. blind alley→cul-de-sac의 비유적 sense를 런타임 관계 계약으로 연결하고 문맥/단어장/복원까지 검증한다. .p는 POS가 아니라 IPA임에 주의. 충분한 정답 근거/서로 겹치지 않는3오답/그럴듯한2오답이 없으면 안전한 비출제를 지원해야 한다.
 2. P0/P2: 본/오답 기록은 여전히 headword번호 중심. 실패한 특정 sense를 다음 오답 문제로 유지하는 것은 NOT DONE. 기존 오답 번호/성적을 임의 변환하지 말고 additive 저장/복원 계약과 회귀 테스트부터 설계한다. 옛 중단 세션은 보존하며 자동 재채점하지 않는다.
 3. P1: 자동 오늘학습 queue, 네 기본 유형(영한sense/영영관계/문맥/contrast) 전체 연결 미완료. 기존 세부 모드 보존. 모바일 실기기 검증과 랜덤 순서 안정성도 남음.
 4. P1/P2: 단어장 검색 실측38163행/8검색×10 median14.97ms,p95 70.21ms. 북마크 state 변경 시 filteredVocab의 shuffle 재실행 코드 확인, 수정 보류. 새 검색엔진 도입 없이 순서 생명주기 분리부터 검증한다.
@@ -97,6 +108,6 @@
 
 - 같은 main/같은 대화/heartbeat voca-nexus 매시간. 기존 예약을 매회 새로 만들지 않는다.09.15 00:50 KST 실제 신호 수신 후 진행 중 2.2 공개 확인을 이어서 마감. 신호 수신≠지속 코딩. 절전/앱 종료/크레딧 소진 뒤 무인 복구는 미검증. 새 비용/API 전환 금지.
 - 재개: Git/status→이 상태→최근 diff→NEXT P0→관련 검사.2.2 재빌드/재배포나 옛1.8 작업 반복 불필요.
-- 2.2 작업 잠금session19773/PID4164 및 로컬 서버port4132는 종료 확인. 이번 감사 잠금session85232/PID11108 획득, 마감 시 Enter 해제. 다음 회차는 새로 획득.
+- 이전 잠금session85232/PID11108은 해제 확인. 이번 잠금session61380/PID14524 획득 후 작업, 마감 시 Enter 해제. 다음 회차는 새로 획득.
 - 사용자 보존: server/auth.ts, analysis/, build/, output/, pnpm-workspace.yaml, qa_claude/, scripts/analyze_exam_corpus.py, scripts/build_exam_analysis_queue.py, scripts/incremental_exam_corpus_update.mjs, scripts/incremental_exam_corpus_update.py, tmp/, vocab_project/를 수정·커밋·삭제하지 않았다. scripts/__pycache__도 커밋하지 않음.
 - 다음 실기기 확인 필요 외에 현재 사용자 인증/설정 행동은 요구하지 않는다.
