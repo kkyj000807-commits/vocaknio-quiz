@@ -2,11 +2,10 @@ import assert from "node:assert/strict";
 import { SENSE_QUESTIONS, getSenseQuestionCoverage, senseMatchesItem } from "../lib/sense-questions";
 import { VOCAB } from "../lib/vocab";
 import reviews from "../data/synonym-reviews.json";
-import { auditLegacySynonyms } from "./lib/legacy-synonym-audit";
 import { attachSynonymReviews, synonymReviewCatalogSchema } from "./lib/synonym-reviews";
 
 const reviewed = synonymReviewCatalogSchema.parse(reviews).entries;
-const bindings = attachSynonymReviews(auditLegacySynonyms(VOCAB), reviewed).bindings;
+const bindings = attachSynonymReviews(VOCAB, reviewed).bindings;
 
 assert.equal(new Set(SENSE_QUESTIONS.map(q => q.id)).size, SENSE_QUESTIONS.length, "duplicate question ID");
 for (const q of SENSE_QUESTIONS) {

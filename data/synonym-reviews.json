@@ -44,6 +44,52 @@
       "checkedAt": "2026-09-15",
       "reviewer": "AI editorial cross-check",
       "remaining": "이 교차검수는 source 근거이며 직접적인 runtime whitelist가 아니다. sense-questions의 blind-alley.fruitless-course.v1이 별도 production 적격 문항(B)으로 2행에 연결됨. 도로 뜻만인 다른 blind alley 행과 다른 동의어들은 이 비유적 검수를 자동 전파하지 않음. 학습 효과 및 사람의 독립 검수 미확인."
+    },
+    {
+      "id": "capricious-mercurial-changing-mood-group-26186",
+      "status": "cross-checked",
+      "headword": "capricious",
+      "sourceRows": [
+        { "id": "JBKROW000003", "meaning": "변덕스러운" },
+        { "id": "JBKROW002257", "meaning": "변덕스러운" },
+        { "id": "JBKROW026187", "meaning": "변덕스러운" },
+        { "id": "JBKROW030584", "meaning": "변덕스러운" }
+      ],
+      "synonym": "mercurial",
+      "expectedConceptId": "JBKROW026186",
+      "expectedTargetRowIds": ["JBKROW026195", "JBKROW032448"],
+      "expectedRenderedMeaning": "변덕스러운; 활발한",
+      "senseId": "capricious:unpredictable-whims",
+      "targetSenseId": "mercurial:unpredictable-mood-change",
+      "partOfSpeech": "adjective",
+      "definitionKo": "그때그때의 기분이나 충동에 따라 태도가 예측하기 어렵게 달라지는",
+      "bridgeKo": "앞선 반응으로 다음 반응을 짐작하려는데, 판단을 이끄는 기분이 바뀌어 반응도 뒤집힌다. 중심은 단순히 화를 잘 내거나 활발하다는 것이 아니라, 반응을 미리 가늠하기 어렵다는 것이다.",
+      "bridgeKind": "conceptual-not-etymology",
+      "constraintKo": "사람의 기분과 태도가 갑자기 달라지는 형용사 문맥에서만 연결한다. capricious는 일관된 이유보다 변덕에 좌우됨을, mercurial은 특히 빠른 기분 변화를 두드러지게 한다. 완전한 동의어는 아니며 법률상 자의적 판단, 날씨 등 다른 capricious 문맥에 자동 전파하지 않는다. mercurial의 활달함·수은·수성 관련 뜻도 이 관계의 정답에 합치지 않는다.",
+      "excludedSenseIds": ["mercurial:lively-and-quick", "mercurial:containing-mercury", "mercurial:planet-or-god-mercury", "mercurial:general-changeability"],
+      "examples": [
+        {
+          "en": "Without receiving any new information, the capricious director praised the proposal, angrily rejected it minutes later, and then welcomed it again as her mood changed.",
+          "ko": "변덕스러운 책임자는 새로운 정보를 받은 것도 아닌데 제안을 칭찬했다가, 몇 분 뒤 화를 내며 거절하고, 기분이 바뀌자 다시 반겼다.",
+          "evidence": "praised the proposal, angrily rejected it minutes later, and then welcomed it again",
+          "noteKo": "칭찬→거절→환영의 반전이 같은 제안과 정보 아래 일어난다. 새로운 근거를 얻어 합리적으로 판단을 수정한 경우와 구별한다."
+        },
+        {
+          "en": "Her mercurial temperament left colleagues guessing: a routine question could draw an enthusiastic answer or sudden irritation, depending on her mood that minute.",
+          "ko": "그녀의 예측하기 어렵게 바뀌는 기질 때문에 동료들은 반응을 가늠하기 어려웠다. 평범한 질문에도 그 순간의 기분에 따라 열정적인 답이 돌아오거나 갑자기 짜증을 냈다.",
+          "evidence": "an enthusiastic answer or sudden irritation, depending on her mood that minute",
+          "noteKo": "활발함 하나만을 말하는 것이 아니라 반응의 방향이 기분에 따라 바뀐다는 뜻이다. 수은의 성질에서 성격을 끌어낸다는 어원 설명은 하지 않는다."
+        }
+      ],
+      "sources": [
+        { "publisher": "Oxford University Press", "url": "https://www.oxfordlearnersdictionaries.com/definition/english/capricious", "note": "본문 확인: 갑자기 바뀌는 태도·행동과 일반적인 빠른 변화를 구별. 사람의 태도 sense만 이번 관계에 사용." },
+        { "publisher": "Merriam-Webster", "url": "https://www.merriam-webster.com/dictionary/capricious", "note": "본문 정의 및 유의어 비교 확인: 변덕·충동에 따른 예측 불가와 mercurial의 빠른 기분 변화의 차이. 법률 sense와 불확실한 어원 이야기는 사용하지 않음." },
+        { "publisher": "Oxford University Press", "url": "https://www.oxfordlearnersdictionaries.com/definition/english/mercurial", "note": "본문 확인: 예측하기 어려운 변화·반응, 활달하고 빠름, 수은 함유를 별도 의미로 제시. 첫 의미의 성격 문맥만 연결." },
+        { "publisher": "Merriam-Webster", "url": "https://www.merriam-webster.com/dictionary/mercurial", "note": "본문 확인: sense 1a 기분의 급격하고 예측하기 어려운 변화. 활기·일반 변화·수성·수은 관련 뜻과 구별. 원문 정의·예문을 복제하지 않음." }
+      ],
+      "checkedAt": "2026-09-16",
+      "reviewer": "AI editorial cross-check; not independent human evaluation",
+      "remaining": "원본 group JBKROW026186의 4행에 대한 제한적 관계 검수다. 다른 concept의 4행과 나머지 동의어는 미검수이며 자동 승인하지 않는다. 문맥별 오답 3개·품사·의미중복·경쟁답 반례 검수, sense-questions 연결, 본/오답/복원/단어장 회귀, 공개 배포는 아직 하지 않았다. irritable/indecisive/calculating은 사전 본문을 확인한 오답 검토 후보일 뿐 채택·출제 승인은 아니다."
     }
   ]
 }

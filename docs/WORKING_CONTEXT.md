@@ -1,6 +1,6 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.16 01:04 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.16 12:20 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
 ## 현재 배포 — 2.3, 전체 로드맵은 부분 완료
 
@@ -27,7 +27,18 @@
 - 현대 개념 설명·기억용 연상·확인된 의미 변화·역사적 어원 구분. 무료 열람과 복제 허가는 다르다. 사전 정의/예문을 무단 대량 복제하거나 미검증 내용을 정답에 넣지 않는다.
 - 내용 작업 전 .agents/skills/transfer-english-reasoning/SKILL.md와 두 references를 읽는다. 공개 강의 원칙과 앱의 독자 추론/효과 실측을 구분한다.
 
-## 현재 batch — 첫 숙어 관계 연결 VERIFIED / 2.3 공개 확인
+## 현재 batch — capricious 검수 경계 복구 VERIFIED / 앱 반영은 NOT DONE
+
+- 09.16 12:08 예약 신호 후 현재 원격 main b6d5765 / Pages ca64fb2 및 기존 변경을 확인하고 잠금 아래 작업. 공개 앱은2.3 그대로이며 이번 개발용 변경을 새 배포로 보고하지 않는다.
+- P0 재현: capricious→mercurial의 한국어 뜻 한 문자열에 '변덕스러운; 활발한'이 함께 들어 있으면 구조 감사 후보에서 빠진다. 후보 목록에 있어야 검수 snapshot을 붙일 수 있는 구현 때문에, 사전 대조를 해도 stale로 잘못 판정됨. 수정 전 새 회귀가 이 이유로 실패한 것을 확인.
+- VERIFIED 최소 수정: createLegacySynonymLookup을 구조 후보 추출과 명시 검수에 공유. attachSynonymReviews는 후보 여부가 아니라 실제 원본 관계를 조회한다. 관계/원본행/대상행 삭제, 뜻·concept 변경 시에는 기존처럼 stale로 막는다. 임의 동의어 관계를 새로 만들어 승인하지 않는다. 후보 전체를 다시 감사해야 했던 검수 경로도 제거.
+- capricious→mercurial의 '기분에 따른 예측 불가한 태도 변화' 1sense/4원본행을 cross-checked로 저장. group JBKROW026186, source JBKROW000003/002257/026187/030584, target JBKROW026195/032448. Oxford/Merriam-Webster 각각 두 표제어 본문 대조, 개념 설명·제한·자체 예문2개. 활달함/수은/수성 의미나 역사적 어원을 섞지 않음. 다른 concept의4행은 자동 확장하지 않음.
+- 전체 교차검수 catalog: 2표현/2관계sense/6원본행, stale0, catalog 직접 production0. 실제 앱 production은 여전히3표현/5sense/5문항/12행이다. 이 숫자는 정답 품질이나 학습 효과의 전수 인증이 아니다.
+- VERIFIED: 전체 verify158통과/인증1skip/전체tsc/학습·sense 감사(12:18), 변경5개TS lint 오류·경고0(기존 module-format 도구 경고 별도), diff 공백 검사 통과. 신규2회귀는 비후보 관계도 검수 가능·원본 변화 차단·catalog 전체 연결·원본 불변 포함. 기존 본/오답/복원/저장 회귀 유지.
+- NOT DONE: capricious 실제 선지/문맥/단어장 변경, 새 Production 빌드·배포·브라우저 검증. 이번에는 런타임·정본·학습기록·release.config 변경이 없어2.3 재빌드/재배포를 반복하지 않음. 별도 외부 BLOCKED 없음.
+- NEXT/P0: capricious-mercurial-changing-mood-group-26186 검수 관계를 바탕으로 기분 반전 문맥1개와 형용사 오답3개를 검수해 sense-questions에 연결. irritable/indecisive(Merriam-Webster), calculating(Oxford)은 본문 확인한 후보일 뿐 미승인; 짜증/결정 주저/의도적 계산과 급격한 기분 반전을 단서로 구분해야 함. 본·오답·복원·단어장 연결/원본4행 한정/선지 섞기·정답1개/구 legacy 중단 세션 보존 테스트를 닫은 뒤2.4 빌드·실제 Chrome·공개 확인. 그 전 다른 기능으로 확장하지 않음.
+
+## 직전 batch — 첫 숙어 관계 연결 VERIFIED / 2.3 공개 확인
 
 - 편입 실전 출제 스킬의 의미→문맥→경쟁 답 반례 검수를 적용. blind alley→cul-de-sac의 비유적 명사1sense/1문항/2원본행만 연결했다. 전체 생산 문항은3표현/5sense/5문항/12행, 전 어휘 개선 완료가 아니다.
 - 명시 source 행/뜻/concept→targetSense/excludedSense 계약을 본·오답 엔진과 단어장 펼치기에 사용. 생성/출력은 같은 production 문항을 공유하며 교차검수 JSON 자체를 승인 정답 목록으로 import하지 않는다. 건물 도로/해부학 sense나 다른 미검수 동의어를 섞지 않는다.
@@ -38,7 +49,7 @@
 - Windows Chrome 로컬: 검색4행→첫행 관계 펼치기→뜻 숨길 때 상세 DOM 제거→영영 문맥 문제 temporary setback 오답→일반 새로고침→같은 문맥/선지/오답1 복원→결과0/1→오답 복습 cul-de-sac 더블클릭→결과1/1, console error0.
 - Chrome viewport390×844에서 해설/마지막 출처 버튼 접근과 1280×800에서 본문 폭/해설 줄바꿈 확인, 이후 override 해제. 실제 터치/Safari/Samsung Internet을 대신한 검증이 아니다.
 - NOT DONE: 다른 blind alley 2행/다른 동의어와 나머지 어휘의 sense 경계, 일반 distractor/POS quality gate, 오답의 특정 sense 보존, 자동 오늘학습. 현재 하나의 연결 batch만 닫았다.
-- NEXT/P0: 기존 재현 capricious 한글/영어 선지의 POS·의미중복부터 검수한다. 감사 후보를 전부 오류로 단정하지 말고 독립 사전과 현행 구조에서 같은 원인을 좁혀 처리. 이미 닫은2.3을 재빌드하지 않는다.
+- 후속: capricious 검수 경계와 관계 근거는 위 현재 batch에서 처리. 실제 선지 연결은 아직 미완료이며2.3 배포 자체를 반복하지 않는다.
 
 ## 이전 batch — 숙어 관계 교차검수와 검수 상태 보호 / 앱 2.2 유지
 

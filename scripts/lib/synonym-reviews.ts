@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { auditLegacySynonyms } from "./legacy-synonym-audit";
+import { createLegacySynonymLookup, type SynonymAuditRow } from "./legacy-synonym-audit";
 
 const text = z.string().trim().min(1);
 export const synonymReviewSchema = z.object({
@@ -36,11 +36,12 @@ export const synonymReviewCatalogSchema = z.object({ schema: z.literal(1), entri
 // Editorial status is valid only for the exact data inspected. This is NOT a
 // runtime whitelist: no question or learner record imports this module.
 export function attachSynonymReviews(
-  report: ReturnType<typeof auditLegacySynonyms>,
+  rows: readonly SynonymAuditRow[],
   reviews: z.infer<typeof synonymReviewSchema>[],
 ) {
+  const lookup = createLegacySynonymLookup(rows);
   const bindings = reviews.flatMap(review => review.sourceRows.map(row => {
-    const candidate = report.candidates.find(c => c.itemId === row.id && c.synonym === review.synonym.toLowerCase());
+    const candidate = lookup(row.id, review.synonym);
     const current = candidate?.headword === review.headword && candidate.meaning === row.meaning &&
       candidate.conceptId === review.expectedConceptId &&
       candidate.targetRows.every(r => r.conceptId === review.expectedConceptId) &&
@@ -48,7 +49,7 @@ export function attachSynonymReviews(
       candidate.renderedMeaning === review.expectedRenderedMeaning;
     return { reviewId: review.id, itemId: row.id, synonym: review.synonym,
       status: current ? review.status : "candidate", stale: !current,
-      reason: current ? "Matches reviewed lookup snapshot; runtime integration still pending" : "Lookup changed or disappeared; recheck before reuse" };
+      reason: current ? "Matches reviewed lookup snapshot; runtime approval is evaluated separately" : "Lookup changed or disappeared; recheck before reuse" };
   }));
   return { bindings, crossCheckedRelations: bindings.filter(b => !b.stale && b.status === "cross-checked").length,
     staleRelations: bindings.filter(b => b.stale).length, productionRelations: 0 };
