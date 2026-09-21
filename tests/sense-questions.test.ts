@@ -6,7 +6,7 @@ import { createEmptyQuestionViewState, parseQuizSession, summarizeQuizSession, t
 
 describe("sense-first production gate", () => {
   it("maps every repeated row without rewriting vocabulary/record IDs", () => {
-    expect(getSenseQuestionCoverage()).toMatchObject({ expressions: 3, senses: 5, questions: 5, mappedRows: 12 });
+    expect(getSenseQuestionCoverage()).toMatchObject({ expressions: 4, senses: 6, questions: 6, mappedRows: 16 });
     for (const template of SENSE_QUESTIONS) {
       const expected = template.relation ? template.relation.sourceRows.map(row => row.id) : VOCAB.filter(v => v.w === template.headword).map(v => v.id);
       expect(template.itemIds.slice().sort()).toEqual(expected.sort());

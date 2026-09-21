@@ -11,6 +11,47 @@ const sessionFor = (q: ReturnType<typeof make>) => ({ schema: 1, requestKey: "re
   states: [{ ...createEmptyQuestionViewState(), answered: true, selectedChoice: q.choices.findIndex(c => c.isCorrect) }],
 });
 
+const capriciousIds = ["JBKROW000003", "JBKROW002257", "JBKROW026187", "JBKROW030584"];
+
+it("keeps the capricious mood sense and adjective distractors in each reviewed row", () => {
+  const original = JSON.stringify(VOCAB);
+  for (const id of capriciousIds) {
+    const row = VOCAB.find(v => v.id === id)!;
+    for (const mode of ["syn-choice", "kor-choice", "syn-kor-choice"] as const) for (let repeat = 0; repeat < 12; repeat++) {
+      const q = buildQuizQuestions({ mode, itemNums: [row.num], count: 1 })[0];
+      expect(q.sense?.senseId).toBe("capricious:unpredictable-whims");
+      expect(q.sense?.relation?.targetSenseId).toBe("mercurial:unpredictable-mood-change");
+      expect(q.sense?.partOfSpeech).toBe("형용사");
+      expect(q.choices.map(c => c.word).sort()).toEqual(["calculating", "indecisive", "irritable", "mercurial"]);
+      expect(q.choices.some(c => /활발|활달|수은|filthy|mucky|도주/.test(c.label))).toBe(false);
+      expect(q.choices.filter(c => isChoiceCorrect(q, c))).toHaveLength(1);
+      expect(q.choices.find(c => isChoiceCorrect(q, c))?.meaning).toBe("기분에 따라 태도가 급변하는");
+      expect(validateQuestion({ ...q, choices: [...q.choices].reverse() })).toBe(true);
+    }
+  }
+  for (const row of VOCAB.filter(v => v.w === "capricious" && !capriciousIds.includes(v.id))) {
+    expect(getProductionSenseQuestions(row.id)).toEqual([]);
+  }
+  expect(JSON.stringify(VOCAB)).toBe(original);
+});
+
+it("restores the same capricious answer, reuses it in review and rejects old mixed-sense choices", () => {
+  for (const id of capriciousIds) {
+    const row = VOCAB.find(v => v.id === id)!;
+    const q = buildQuizQuestions({ mode: "syn-choice", itemNums: [row.num], count: 1 })[0];
+    const saved = sessionFor(q);
+    expect(parseQuizSession(JSON.parse(JSON.stringify(saved)))).toEqual(saved);
+    expect(summarizeQuizSession(saved)).toMatchObject({ correctCount: 1, wrongCount: 0 });
+    expect(buildReviewQuestions([row.num], 1)[0].sense).toEqual(q.sense);
+    const old = { ...q, sense: undefined, acceptedAnswers: row.s };
+    expect(parseQuizSession(sessionFor(old))).toBeNull();
+    expect(old.item).toEqual(row);
+    for (const mode of ["flashcard", "syn-type"] as const) {
+      expect(buildQuizQuestions({ mode, itemNums: [row.num], count: 1 })).toHaveLength(1);
+    }
+  }
+});
+
 it("uses only the reviewed figurative relation for both mapped rows and three modes", () => {
   expect(rows).toHaveLength(2);
   const original = JSON.stringify(VOCAB);

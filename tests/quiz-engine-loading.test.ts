@@ -1,6 +1,7 @@
 import { expect, it, vi } from "vitest";
 import * as vocab from "@/lib/vocab";
 import * as engine from "@/lib/quiz-engine";
+import { hasSenseQuestionMapping } from "@/lib/sense-questions";
 
 vi.mock("@/lib/vocab", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/lib/vocab")>();
@@ -11,7 +12,7 @@ it("creates the distractor pool only on first synonym choice generation, then re
   const details = vi.mocked(vocab.getSynonymDetails);
   expect(details).not.toHaveBeenCalled();
 
-  const item = vocab.VOCAB_WITH_SYNONYMS[0];
+  const item = vocab.VOCAB_WITH_SYNONYMS.find(row => !hasSenseQuestionMapping(row.id))!;
   const options = { itemNums: [item.num], count: 1 };
   const [typed] = engine.buildQuizQuestions({ ...options, mode: "syn-type" });
   expect(engine.isTypedAnswerCorrect(typed, item.s[0])).toBe(true);

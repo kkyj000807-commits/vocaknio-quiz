@@ -3,7 +3,7 @@ import { buildQuizQuestions, isChoiceCorrect, validateQuestion, type QuizQuestio
 import { createEmptyQuestionViewState, parseQuizSession, summarizeQuizSession, type QuizSession } from "@/lib/quiz-session";
 
 function question(mode: "kor-choice" | "syn-choice"): QuizQuestion {
-  const q = buildQuizQuestions({ mode, itemNums: [1], count: 1 })[0];
+  const q = buildQuizQuestions({ mode, itemNums: [4], count: 1 })[0];
   expect(q).toBeDefined();
   expect(q.sense).toBeUndefined();
   return q;

@@ -2,6 +2,52 @@
   "schema": 1,
   "entries": [
     {
+      "id": "capricious.unpredictable-mood.v1",
+      "headword": "capricious",
+      "itemIds": ["JBKROW000003", "JBKROW002257", "JBKROW026187", "JBKROW030584"],
+      "senseId": "capricious:unpredictable-whims",
+      "conceptId": "unpredictable-mood-change",
+      "partOfSpeech": "형용사",
+      "status": "production",
+      "quality": "B",
+      "definitionKo": "기분이나 충동에 따라 태도가 예측하기 어렵게 달라지는",
+      "bridgeKo": "앞선 반응으로 다음 반응을 짐작하려는데, 판단을 이끄는 기분이 바뀌어 반응도 뒤집힌다. 여기서는 결정을 못 내리는 것이 아니라, 매번 단호하게 결정하면서도 그 방향이 오락가락한다. 현재 의미를 설명한 것이며 역사적 어원 이야기는 아니다.",
+      "contextEn": "During negotiations, the capricious envoy answered each offer decisively, yet swung from cheerful agreement to furious refusal and back within minutes; the shifts followed his moods, not any change in the terms.",
+      "contextKo": "협상에서 변덕스러운 사절은 제안마다 단호하게 답했지만, 몇 분 사이 흔쾌한 동의에서 격한 거절로, 다시 동의로 돌아섰다. 조건이 달라져서가 아니라 그의 기분을 따라 반응이 바뀐 것이다.",
+      "evidence": "swung from cheerful agreement to furious refusal and back within minutes",
+      "correctId": "mercurial",
+      "choices": [
+        { "id": "mercurial", "en": "mercurial", "ko": "기분에 따라 태도가 급변하는", "plausible": true, "reasonKo": "같은 조건에서도 몇 분 사이 동의→거절→동의로 바뀌는 기분의 급격한 변화가 근거다. mercurial의 활달함이나 수은 관련 뜻을 합치지 않는다." },
+        { "id": "irritable", "en": "irritable", "ko": "자극에 쉽게 짜증을 내는", "plausible": true, "reasonKo": "furious만 읽으면 끌리지만, 쉽게 짜증을 내는 성향만으로 흔쾌한 동의와 격한 거절 사이의 급격한 왕복을 표현하지는 못한다. 사소한 말에도 곧잘 짜증을 내는 문맥이라면 맞을 수 있다." },
+        { "id": "indecisive", "en": "indecisive", "ko": "결정을 내리지 못하고 망설이는", "plausible": true, "reasonKo": "태도가 바뀌는 것을 결정의 어려움으로 오해하기 쉽다. 그러나 answered each offer decisively는 매번 단호히 답했다는 뜻이다. 선택을 못 하고 답을 미루는 문맥이라면 맞을 수 있다." },
+        { "id": "calculating", "en": "calculating", "ko": "자기 이익을 따져 행동하는", "plausible": false, "reasonKo": "협상이라는 배경만 보면 이익을 위한 계획을 떠올릴 수 있다. 그러나 목표 표현은 계산된 전략이 아니라 기분에 끌리는 변화를 뜻한다. 유리한 결과를 얻으려고 반응을 계획적으로 조절했다면 맞을 수 있다." }
+      ],
+      "sources": [
+        { "publisher": "Oxford University Press", "url": "https://www.oxfordlearnersdictionaries.com/definition/english/capricious", "note": "태도·행동의 갑작스러운 변화 뜻을 대조. 자체 작성 문맥이며 사전 예문 복제 아님." },
+        { "publisher": "Merriam-Webster", "url": "https://www.merriam-webster.com/dictionary/mercurial", "note": "sense 1a의 빠른 기분 변화. 별도 교차검수 catalog에서 양 표제어를 Oxford/Merriam-Webster와 대조." },
+        { "publisher": "Merriam-Webster", "url": "https://www.merriam-webster.com/dictionary/irritable", "note": "형용사: 쉽게 짜증을 내는 사람의 성향. 기분의 양방향 변화와 구별." },
+        { "publisher": "Merriam-Webster", "url": "https://www.merriam-webster.com/dictionary/indecisive", "note": "형용사 sense 1: 결정을 망설이는 성향. 결과가 결정적이지 않다는 다른 뜻은 제외." },
+        { "publisher": "Oxford University Press", "url": "https://www.oxfordlearnersdictionaries.com/definition/english/calculating", "note": "형용사: 다른 사람을 개의치 않고 자기에게 유리하게 계획하는 태도. 단순 산수 능력과 구별." }
+      ],
+      "reviewedAt": "2026.09.16 KST",
+      "reviewer": "AI editorial review; not independent human evaluation",
+      "reviewNote": "사람을 수식하는 형용사 4개. 변덕/짜증/우유부단/계산적 태도를 분리한다. irritable은 분노 단서, indecisive는 번복 단서에 끌리는 오답이나 왕복하는 기분과 단호한 답변을 함께 읽으면 구별된다. calculating은 상대적으로 쉬워 B. 다른 성향이 동시에 존재할 가능성을 부정하는 문제가 아니라 문맥 속 capricious의 가장 가까운 뜻을 고르는 문제다. 같은 한국어 단어만 공유하는 동의어를 자동 합치지 않음. 학습 효과 미검증.",
+      "relation": {
+        "reviewId": "capricious-mercurial-changing-mood-group-26186",
+        "targetWord": "mercurial",
+        "targetSenseId": "mercurial:unpredictable-mood-change",
+        "excludedTargetSenseIds": ["mercurial:lively-and-quick", "mercurial:containing-mercury", "mercurial:planet-or-god-mercury", "mercurial:general-changeability"],
+        "constraintKo": "capricious ↔ mercurial: 기분과 태도가 갑자기 달라지는 사람의 형용사 문맥에서만 연결한다. capricious는 변덕·충동, mercurial은 빠른 기분 변화를 강조한다. 활달함·수은·수성 뜻이나 법률·날씨 문맥으로 무조건 교체하지 않는다.",
+        "sourceConceptId": "JBKROW026186",
+        "sourceRows": [
+          { "id": "JBKROW000003", "meaning": "변덕스러운" },
+          { "id": "JBKROW002257", "meaning": "변덕스러운" },
+          { "id": "JBKROW026187", "meaning": "변덕스러운" },
+          { "id": "JBKROW030584", "meaning": "변덕스러운" }
+        ]
+      }
+    },
+    {
       "id": "blind-alley.fruitless-course.v1",
       "headword": "blind alley",
       "itemIds": ["JBKROW009289", "JBKROW011482"],
