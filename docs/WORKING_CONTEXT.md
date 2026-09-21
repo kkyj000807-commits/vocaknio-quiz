@@ -1,20 +1,19 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.16 12:20 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.22 01:15 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 배포 — 2.3, 전체 로드맵은 부분 완료
+## 현재 배포 — 2.4, 전체 로드맵은 부분 완료
 
 - Production: https://kkyj000807-commits.github.io/vocaknio-quiz/
-- 배포 전2.2 → 배포 후2.3. 앱 표시: 버전 2.3 · 최근 수정 2026.09.15 12:05 KST. 이는 실제 소스 수정/빌드 기준 시각이며, 공개 게시 확인은09.16 01:03 KST다.
-- 앱 소스4cd5ff7699e5b1e211d4009c81fb4d8b0bd2a2d2 / Pages ca64fb26fd34484b4ad710794d316ce965ca4d14. 이후 문서·개발용 검수 메모 커밋과 앱 소스 SHA는 구분한다.
-- Actions34992406981 success(09.16 01:03:19 KST 확인값). release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion2.3 / builtAt2026-09-15T03:05:00.860Z.
-- 번들 entry-0aa46f768ed4ab12fbfc5829cdf3a47a.js / SHA256 1e4647df0fa5ea1b0dd965d928e0ac94a3bb523721ad8d5147b507b29fe1d0dd.
-- 공개 root/settings/wordbook/quiz HTTP200, release.json·번들·학습JSON8개가 로컬 산출물과 일치(09.16 01:03:34). Windows Chrome 공개 설정2.3/12:05, 단어장 blind alley의 문맥별 관계·해설 표시 및 console error0 확인.
-- 사용자 공개 저장소에는 테스트 답변/북마크를 추가하지 않았다. 문제풀이 행동 검증은 별도 localhost:4133에서 수행.
-- Chrome 일반 공개 URL 접속에서 최신2.3 표시(강력 새로고침 안 함). 실제 iPhone Safari/Galaxy Tab Samsung Internet/모바일 Chrome 및 모든 기기 캐시는 미검증.
-- 산출물: C:/Users/USER/Documents/Codex/2026-08-03/realtime-voice-chat/work/vocanexus-production-2.3-20260915
-- Pages worktree: 같은 work 아래 vocanexus-pages-2.3-20260915. 이전 해시 자산/학습JSON1.4~2.2를 삭제·변경하지 않음. 직전 안정 Pages5a9e167(2.2) 보존.
-- 코드/검사/빌드09.15 11:56~12:06, 브라우저/배포09.16 00:58~01:04. 신호 사이 공백은 원인 미확인으로 연속 개발시간에 합산하지 않는다.
+- 배포 전2.3 → 배포 후2.4. 앱 표시: 버전 2.4 · 최근 수정 2026.09.22 01:04 KST. 공개 게시·정합성 확인은 01:15 KST다.
+- 앱 소스88c156272345b5943b9ade09af86b1d32fc85ce5 / Pages3f9cd389d72b043122e620d50a27e8627dd605dd. 이후 문서·운영규칙 커밋과 앱 소스 SHA는 구분한다.
+- Actions35623473165 success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion2.4 / builtAt2026-09-21T16:04:53.036Z.
+- 번들 entry-a4cd97b99fcd0ab7fc8b27921ed7dc85.js / SHA256 7d8850c54a373def0c416a134f03c4ba26518b5b0f7b90038904260fa1ec11a4.
+- 공개 root/settings/wordbook/quiz HTTP200, release.json·번들·학습JSON8개가 로컬 산출물과 일치(01:15). 사용자 공개 저장소에는 테스트 답변/북마크를 추가하지 않았다.
+- 이번2.4는 HTTP/산출물 검증 완료. 실제 Chrome/Safari/Samsung Internet 화면·터치 검증은 수행하지 않았으므로 2.3의 Windows Chrome 검증을 2.4 검증으로 대신하지 않는다. 실제 iPhone Safari/Galaxy Tab Samsung Internet/모바일 Chrome 및 모든 기기 캐시는 미검증.
+- 산출물: C:/Users/USER/Documents/Codex/2026-08-03/realtime-voice-chat/work/vocanexus-production-2.4-20260922
+- Pages worktree: 같은 work 아래 vocanexus-pages-2.4-20260922. `/MIR` 없이 복사하여 이전 해시 자산/학습JSON1.4~2.3을 삭제하지 않음. 직전 안정 Pagesca64fb2(2.3) 보존.
+- capricious 작업은 09.16 13:10 전후 시작 후 중단됐고 09.22 00:57 전후 재개했다. 이 공백을 연속 개발시간이나 정상 무인 실행으로 합산하지 않는다.
 
 ## 최신 제품 계약
 
@@ -26,17 +25,19 @@
 - 콘텐츠: 숙어→핵심어→동의어 밀집군→다의어→기출 오답 연결. candidate/cross-checked/reviewed/production 구분, 독립 사전 교차검수, 의미핵/쉬운 설명/확장/뉘앙스/예문/문맥 문제의 실제 품질 coverage 관리.
 - 현대 개념 설명·기억용 연상·확인된 의미 변화·역사적 어원 구분. 무료 열람과 복제 허가는 다르다. 사전 정의/예문을 무단 대량 복제하거나 미검증 내용을 정답에 넣지 않는다.
 - 내용 작업 전 .agents/skills/transfer-english-reasoning/SKILL.md와 두 references를 읽는다. 공개 강의 원칙과 앱의 독자 추론/효과 실측을 구분한다.
+- 편입 관련 작업은 docs/MASTER_DB_SYNC_RULES.md를 따른다. 이 저장소에서 중앙 `2027 편입 마스터 DB`의 실제 위치·마지막 동기화 시점은 아직 확인되지 않았으므로, 현재 앱 정본을 중앙 DB와 동기화 완료했다고 간주하지 않는다(`sync_required`).
 
-## 현재 batch — capricious 검수 경계 복구 VERIFIED / 앱 반영은 NOT DONE
+## 현재 batch — capricious sense 문항 VERIFIED / 2.4 공개 확인
 
-- 09.16 12:08 예약 신호 후 현재 원격 main b6d5765 / Pages ca64fb2 및 기존 변경을 확인하고 잠금 아래 작업. 공개 앱은2.3 그대로이며 이번 개발용 변경을 새 배포로 보고하지 않는다.
-- P0 재현: capricious→mercurial의 한국어 뜻 한 문자열에 '변덕스러운; 활발한'이 함께 들어 있으면 구조 감사 후보에서 빠진다. 후보 목록에 있어야 검수 snapshot을 붙일 수 있는 구현 때문에, 사전 대조를 해도 stale로 잘못 판정됨. 수정 전 새 회귀가 이 이유로 실패한 것을 확인.
-- VERIFIED 최소 수정: createLegacySynonymLookup을 구조 후보 추출과 명시 검수에 공유. attachSynonymReviews는 후보 여부가 아니라 실제 원본 관계를 조회한다. 관계/원본행/대상행 삭제, 뜻·concept 변경 시에는 기존처럼 stale로 막는다. 임의 동의어 관계를 새로 만들어 승인하지 않는다. 후보 전체를 다시 감사해야 했던 검수 경로도 제거.
-- capricious→mercurial의 '기분에 따른 예측 불가한 태도 변화' 1sense/4원본행을 cross-checked로 저장. group JBKROW026186, source JBKROW000003/002257/026187/030584, target JBKROW026195/032448. Oxford/Merriam-Webster 각각 두 표제어 본문 대조, 개념 설명·제한·자체 예문2개. 활달함/수은/수성 의미나 역사적 어원을 섞지 않음. 다른 concept의4행은 자동 확장하지 않음.
-- 전체 교차검수 catalog: 2표현/2관계sense/6원본행, stale0, catalog 직접 production0. 실제 앱 production은 여전히3표현/5sense/5문항/12행이다. 이 숫자는 정답 품질이나 학습 효과의 전수 인증이 아니다.
-- VERIFIED: 전체 verify158통과/인증1skip/전체tsc/학습·sense 감사(12:18), 변경5개TS lint 오류·경고0(기존 module-format 도구 경고 별도), diff 공백 검사 통과. 신규2회귀는 비후보 관계도 검수 가능·원본 변화 차단·catalog 전체 연결·원본 불변 포함. 기존 본/오답/복원/저장 회귀 유지.
-- NOT DONE: capricious 실제 선지/문맥/단어장 변경, 새 Production 빌드·배포·브라우저 검증. 이번에는 런타임·정본·학습기록·release.config 변경이 없어2.3 재빌드/재배포를 반복하지 않음. 별도 외부 BLOCKED 없음.
-- NEXT/P0: capricious-mercurial-changing-mood-group-26186 검수 관계를 바탕으로 기분 반전 문맥1개와 형용사 오답3개를 검수해 sense-questions에 연결. irritable/indecisive(Merriam-Webster), calculating(Oxford)은 본문 확인한 후보일 뿐 미승인; 짜증/결정 주저/의도적 계산과 급격한 기분 반전을 단서로 구분해야 함. 본·오답·복원·단어장 연결/원본4행 한정/선지 섞기·정답1개/구 legacy 중단 세션 보존 테스트를 닫은 뒤2.4 빌드·실제 Chrome·공개 확인. 그 전 다른 기능으로 확장하지 않음.
+- P0 원인/근거: capricious→mercurial의 승인 범위를 표제어 전체가 아니라 `기분에 따른 예측 불가한 태도 변화` 1sense/4원본행으로 제한했다. Oxford/Merriam-Webster의 capricious/mercurial 본문과 Merriam-Webster irritable/indecisive, Oxford calculating 본문을 대조했다. 사전 정의·예문 원문은 앱에 복제하지 않고 자체 한국어 풀이와 문맥을 작성했다.
+- production 문항 `capricious.unpredictable-mood.v1`: 협상 조건이 그대로인데 사절이 동의→거부→동의로 단호하게 뒤집는 문맥. 정답 mercurial, 오답 irritable/indecisive/calculating은 짜증·결정 주저·의도적 계산과 구별한다. 형용사4개, quality B다. B는 편집 등급이며 독립 인간 검수나 학습 효과 증명이 아니다.
+- 적용행 JBKROW000003/002257/026187/030584만 연결. 활달함/수은/수성 및 다른 capricious concept4행은 제외했다. 전체 production coverage는4표현/6sense/6문항/16행이며 전 어휘 완성률이 아니다.
+- VERIFIED 회귀: 4행×3모드×12회 선지 섞기, 정답1개, 선지 역순, main/review/resume 동일 sense, 구 headword-level 세션 거절, 다른4행 미전파, flashcard/직접입력 보존. 기존 fixture가 새 sense 경계와 충돌한 두 테스트를 다른 legacy 행 기준으로 바로잡았다.
+- VERIFIED: `pnpm verify` 전체 TypeScript/data·sense 감사/160통과·인증1skip, 변경 TS lint 오류·경고0(기존 module-format 경고 별도), diff 공백 검사, Production build audit HTML22/학습JSON8/누락참조0/루트자산0.
+- VERIFIED 배포: main88c1562, Pages3f9cd38, Actions35623473165 success. 공개 release.json/번들 SHA/4개 route/8개 학습JSON을 로컬 산출물과 대조해2.4 일치를 확인했다.
+- NOT VERIFIED: 실제 2.4 Chrome/Safari/Samsung Internet 화면·터치, 사용자 학습효과, 사람이 읽는 최종 편집 품질. 공개 저장기록을 오염시키지 않기 위해 공개 문항 답변은 만들지 않았다.
+- 2027 편입 DB 규칙을 `docs/MASTER_DB_SYNC_RULES.md`와 운영 규칙에 추가했다. 이 저장소에서는 중앙 DB의 실제 위치·마지막 동기화 시점을 확인하지 못했으므로 이번 검수값의 중앙 DB 반영은 `sync_required`다. 앱 export/2.4 공개 동기화는 완료했다.
+- NEXT/P0: 중앙 `2027 편입 마스터 DB` 연결 위치/형식을 실제 확인한 뒤 capricious 검수값을 중복·충돌 검사해 동기화한다. 연결이 없으면 다음 회차에 다른4행 또는 다음 숙어/표현 중 재현 가능한 sense 혼입을 하나 선택해 동일한 좁은 batch로 닫는다.
 
 ## 직전 batch — 첫 숙어 관계 연결 VERIFIED / 2.3 공개 확인
 
