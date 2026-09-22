@@ -1,19 +1,18 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.22 20:31 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.22 20:39 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 배포 — 2.4, 전체 로드맵은 부분 완료
+## 현재 배포 — 2.5, 전체 로드맵은 부분 완료
 
 - Production: https://kkyj000807-commits.github.io/vocaknio-quiz/
-- 배포 전2.3 → 배포 후2.4. 앱 표시: 버전 2.4 · 최근 수정 2026.09.22 01:04 KST. 공개 게시·정합성 확인은 01:15 KST다.
-- 앱 소스88c156272345b5943b9ade09af86b1d32fc85ce5 / Pages3f9cd389d72b043122e620d50a27e8627dd605dd. 이후 문서·운영규칙 커밋과 앱 소스 SHA는 구분한다.
-- Actions35623473165 success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion2.4 / builtAt2026-09-21T16:04:53.036Z.
-- 번들 entry-a4cd97b99fcd0ab7fc8b27921ed7dc85.js / SHA256 7d8850c54a373def0c416a134f03c4ba26518b5b0f7b90038904260fa1ec11a4.
-- 공개 root/settings/wordbook/quiz HTTP200, release.json·번들·학습JSON8개가 로컬 산출물과 일치(01:15). 사용자 공개 저장소에는 테스트 답변/북마크를 추가하지 않았다.
-- 이번2.4는 HTTP/산출물 검증 완료. 실제 Chrome/Safari/Samsung Internet 화면·터치 검증은 수행하지 않았으므로 2.3의 Windows Chrome 검증을 2.4 검증으로 대신하지 않는다. 실제 iPhone Safari/Galaxy Tab Samsung Internet/모바일 Chrome 및 모든 기기 캐시는 미검증.
-- 산출물: C:/Users/USER/Documents/Codex/2026-08-03/realtime-voice-chat/work/vocanexus-production-2.4-20260922
-- Pages worktree: 같은 work 아래 vocanexus-pages-2.4-20260922. `/MIR` 없이 복사하여 이전 해시 자산/학습JSON1.4~2.3을 삭제하지 않음. 직전 안정 Pagesca64fb2(2.3) 보존.
-- capricious 작업은 09.16 13:10 전후 시작 후 중단됐고 09.22 00:57 전후 재개했다. 이 공백을 연속 개발시간이나 정상 무인 실행으로 합산하지 않는다.
+- 배포 전2.4 → 배포 후2.5. 앱 표시: 버전 2.5 · 최근 수정 2026.09.22 20:35 KST. 공개 게시·정합성 확인은 20:39 KST다.
+- 앱 소스4fb35fd88d877a596096ae7db741603e1bc6765a / Pages83ff488906ae4c8762a08f49096ed857048515df. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
+- Actions35722441306 success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion2.5 / builtAt2026-09-22T11:35:07.309Z.
+- 번들 entry-7a3d1694a435646fe7d84d311e6df44e.js / SHA256 0236f556b85fa887123ae8a7123eba9dcb510573c738ab9ff685aeab7afecc36.
+- 공개 root/settings/wordbook/quiz HTTP200, release.json 2.5·신규 번들·jury foreman 정의 포함을 확인했다. 공개 in-app browser에서 jury foreman 영영 정의 → 단어 인출 화면도 확인했으며 답변은 만들지 않았다.
+- 실제 iPhone Safari/Galaxy Tab Samsung Internet/모바일 Chrome 및 모든 기기 캐시는 미검증. in-app browser 결과를 실기기 검증으로 대신하지 않는다.
+- 산출물: C:/Users/USER/Documents/Codex/2026-08-03/realtime-voice-chat/work/vocanexus-production-2.5-20260922
+- Pages worktree: 같은 work 아래 vocanexus-pages-2.5-20260922. 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pages3f9cd38(2.4)을 보존했다.
 
 ## 최신 제품 계약
 
@@ -27,15 +26,15 @@
 - 내용 작업 전 .agents/skills/transfer-english-reasoning/SKILL.md와 두 references를 읽는다. 공개 강의 원칙과 앱의 독자 추론/효과 실측을 구분한다.
 - 편입 관련 작업은 docs/MASTER_DB_SYNC_RULES.md를 따른다. 이 저장소에서 중앙 `2027 편입 마스터 DB`의 실제 위치·마지막 동기화 시점은 아직 확인되지 않았으므로, 현재 앱 정본을 중앙 DB와 동기화 완료했다고 간주하지 않는다(`sync_required`).
 
-## 현재 batch — 영어 능동 인출 첫 production sense VERIFIED / 2.5 배포 후보
+## 현재 batch — 영어 능동 인출 첫 production sense VERIFIED / 2.5 공개 확인
 
 - P0 원인: 영영 정의/예문/관계가 UI에서 비어 보인 주원인은 표시 컴포넌트가 아니라 실제 production 학습 데이터가 139sense/218행에만 있고 `jury foreman` 두 원본행에는 연결이 없었던 것이다. legacy 표제어 동의어 배열은 11,277행에 있지만 sense 검증 자료가 아니므로 영영 정답 근거로 승격하지 않았다.
 - 적용: `jury-foreman:leader-of-jury` 한 sense를 JBKROW019189/JBKROW023301에 연결했다. Oxford·Collins에서 의미를 독립 대조하고 원문을 복제하지 않은 자체 정의/간결 정의/예문, variant `jury foreperson`, near/related 관계와 정의·문맥 prompt를 저장했다. 일반 foreman의 supervisor/overseer는 exact synonym으로 넣지 않았다.
 - 출제/UI: 검수된 두 행에서 기존 동의어 진입이 영영 정의 또는 문맥 → target word 4지선다로 우선 전환된다. 정답 전에는 표제어·한국어를 숨기고, 정답 뒤에는 단어 / EN / KR / Exact·Near·Variant·Related chip / 접힌 예문·전체 정의로 분리한다. 일반 문제와 오답 복습이 같은 sense/채점/중단복원 계약을 사용한다.
-- VERIFIED: 전체 verify의 data/sense/active-recall 감사·TypeScript·22파일163테스트 통과(인증1skip), 변경 lint 오류0(기존 `lib/vocab.ts` Array<T> 경고3), diff 공백 검사, Production 2.4 시험 빌드 audit HTML22/학습JSON8/참조누락0/루트자산0. 로컬 in-app browser에서 `jury foreman` 문맥 문제 → 정답 → EN/KR/관계 분리 → 새로고침 후 같은 답/문항 복원을 확인했다. 이는 실제 iPhone/Galaxy Tab/Safari/Chrome 실기기 검증이 아니다.
-- COVERAGE: 전체38,163행 중 production active-recall 1sense/2행, 영영 정의2행, concise2행, 예문2행, sense-safe synonym/variant2행, phrase3,731행 중2행. 실패 상태0은 등록된 1sense 내부 결과이며 미등록37,?행이 보강됐다는 뜻이 아니다.
+- VERIFIED: 전체 verify의 data/sense/active-recall 감사·TypeScript·22파일163테스트 통과(인증1skip), 변경 lint 오류0(기존 `lib/vocab.ts` Array<T> 경고3), diff 공백 검사, Production 2.5 build audit HTML22/학습JSON8/참조누락0/루트자산0. 로컬 in-app browser에서 `jury foreman` 문맥 문제 → 정답 → EN/KR/관계 분리 → 새로고침 후 같은 답/문항 복원을 확인했고, 공개 in-app browser에서 정의 문제를 확인했다. 이는 실제 iPhone/Galaxy Tab/Safari/Chrome 실기기 검증이 아니다.
+- COVERAGE: 전체38,163행 중 production active-recall 1sense/2행, 영영 정의2행, concise2행, 예문2행, sense-safe synonym/variant2행, phrase3,731행 중2행. 실패 상태0은 등록된 1sense 내부 결과이며 미등록38,161행이 보강됐다는 뜻이 아니다.
 - NOT DONE: 직접입력형, 단계별 Hint 1~4, 인출강도 저장, 전체 DB backfill/retry queue, 전체 sense 분리·definition/synonym/example coverage는 미완료다. 이번 결과는 좁은 첫 vertical slice이며 전체 요구 완료가 아니다.
-- NEXT/P0: 2.5 source/Pages 배포와 공개 release/번들 확인을 끝낸 뒤, phrase 우선으로 `in lieu of` 같은 다음 항목 하나를 source→sense→예문→정의/문맥 문제→UI까지 같은 방식으로 닫는다. 대량 자동 보강 전에 failure queue와 coverage denominator를 별도 설계한다.
+- NEXT/P0: phrase 우선으로 `in lieu of` 같은 다음 항목 하나를 source→sense→예문→정의/문맥 문제→UI까지 같은 방식으로 닫는다. 대량 자동 보강 전에 미등록 항목까지 포함하는 failure queue와 coverage denominator를 별도 설계한다.
 
 ## 현재 batch — capricious sense 문항 VERIFIED / 2.4 공개 확인
 
