@@ -6,6 +6,7 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 const steps = [
   ["학습 데이터 연결·검증", "scripts/build-vocab-learning-v1.4.mjs"],
   ["sense 문항 상태·목록 연결 검증", "--import", "tsx", "scripts/audit-sense-questions.ts"],
+  ["영어 능동 인출 데이터·coverage 검증", "--import", "tsx", "scripts/audit-active-recall.ts"],
   ["전체 타입 검사", "node_modules/typescript/bin/tsc", "--noEmit"],
   ["전체 회귀 테스트", "node_modules/vitest/vitest.mjs", "run"],
 ];

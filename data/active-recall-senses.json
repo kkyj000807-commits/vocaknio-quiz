@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "checkedAtKst": "2026.09.22",
+  "entries": [
+    {
+      "id": "jury-foreman:leader-of-jury",
+      "headword": "jury foreman",
+      "partOfSpeech": "noun phrase",
+      "senseId": "jury-foreman:leader-of-jury",
+      "itemIds": ["JBKROW019189", "JBKROW023301"],
+      "englishDefinition": "A juror selected to guide the jury's deliberations and speak for the jury in court.",
+      "conciseEnglishDefinition": "the juror who leads discussions and speaks for the jury",
+      "exactSynonyms": [],
+      "nearSynonyms": ["presiding juror"],
+      "antonyms": [],
+      "variants": ["jury foreperson"],
+      "relatedWords": ["jury spokesperson"],
+      "exampleSentences": [
+        {
+          "en": "The jury foreman organized the discussion before announcing the verdict.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "배심원 대표",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "the juror who leads discussions and speaks for the jury"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "After hours of deliberation, the _____ checked that every juror had spoken before reporting the verdict to the court."
+        }
+      ],
+      "distractors": [
+        {"word": "jury member", "meaningKo": "배심원", "reasonKo": "배심원단의 구성원이지만 대표 역할까지 뜻하지 않는다.", "plausible": true},
+        {"word": "trial judge", "meaningKo": "재판 판사", "reasonKo": "재판을 진행하지만 배심원단의 토의를 이끄는 배심원은 아니다.", "plausible": true},
+        {"word": "court clerk", "meaningKo": "법원 서기", "reasonKo": "법원 행정 업무를 맡으며 배심원단의 대표가 아니다.", "plausible": false}
+      ],
+      "sources": [
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/foreman",
+          "independenceGroup": "Oxford",
+          "note": "foreman의 배심원단 지도자 sense를 대조함; 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/us/dictionary/english/jury-foreman",
+          "independenceGroup": "Collins",
+          "note": "jury foreman이 배심원단을 대표하는 구성원임을 독립 대조함; 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.09.22",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
+    }
+  ]
+}

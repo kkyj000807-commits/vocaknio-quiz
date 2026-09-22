@@ -178,7 +178,7 @@ export const QUIZ_MODES: Array<{
   desc: string;
   primary?: boolean;
 }> = [
-  { id: "syn-choice", icon: "🔗", title: "동의어", desc: "검증된 동의어 4택", primary: true },
+  { id: "syn-choice", icon: "EN", title: "영영 인출", desc: "정의·문맥에서 단어 찾기", primary: true },
   { id: "kor-choice", icon: "🇰🇷", title: "뜻", desc: "정확한 뜻 4택", primary: true },
   { id: "flashcard", icon: "⚡", title: "빠른 암기", desc: "뜻 확인 후 채점", primary: true },
   { id: "syn-kor-choice", icon: "🔀", title: "동의어+뜻", desc: "뜻까지 함께 구분" },

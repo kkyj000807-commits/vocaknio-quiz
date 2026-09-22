@@ -299,7 +299,7 @@ export default function HomeScreen() {
           <Text style={s.startNote}>
             {selectedMode === "syn-kor-choice"
               ? "영어 동의어와 한글 뜻이 함께 검증된 문항만 출제됩니다"
-              : "검증된 동의어가 없으면 한국어 뜻 문제로 자동 전환됩니다"}
+              : "검증된 영영 정의·문맥을 우선하고, 아직 없는 범위만 안전한 기존 문제로 전환합니다"}
           </Text>
         </View>
       </ScrollView>

@@ -1,4 +1,5 @@
 import { ProblemSenseContext } from "@/components/problem-sense-context";
+import { ActiveRecallAnswer, ActiveRecallPrompt } from "@/components/active-recall-card";
 import {
   useState,
   useCallback,
@@ -202,7 +203,7 @@ export default function WrongQuizScreen() {
       recordOneAnswer(isCorrect, isCorrect ? undefined : q.item.num, {
         sessionId: sessionIdRef.current,
         itemNum: q.item.num,
-        mode: q.answerKind === "synonym" ? "syn-choice" : "kor-choice",
+        mode: q.answerKind === "meaning" ? "kor-choice" : "syn-choice",
         outcome: isCorrect ? "correct" : "wrong",
         responseKey: choice?.value,
         answeredAt: Date.now(),
@@ -229,7 +230,7 @@ export default function WrongQuizScreen() {
     recordOneAnswer(false, q.item.num, {
       sessionId: sessionIdRef.current,
       itemNum: q.item.num,
-      mode: q.answerKind === "synonym" ? "syn-choice" : "kor-choice",
+      mode: q.answerKind === "meaning" ? "kor-choice" : "syn-choice",
       outcome: "skip",
       answeredAt: Date.now(),
     });
@@ -445,7 +446,9 @@ export default function WrongQuizScreen() {
             <View style={s.questionHeader}>
               <Text style={s.questionNum}>
                 문제 {currentIdx + 1} ·{" "}
-                {q.answerKind === "synonym"
+                {q.answerKind === "target"
+                  ? "영어 단서 → 단어 인출"
+                  : q.answerKind === "synonym"
                   ? "동의어 고르기"
                   : "한국어 뜻 고르기"}
               </Text>
@@ -463,16 +466,17 @@ export default function WrongQuizScreen() {
               </Pressable>
             </View>
 
-            <View style={s.wordPronunciationRow}>
+            {!q.recall || answered ? <View style={s.wordPronunciationRow}>
               <Text style={s.wordText}>{q.item.w}</Text>
               <PronunciationButton itemId={q.item.id} text={q.item.w} />
-            </View>
-            {q.item.p ? <Text style={s.ipaText}>{q.item.p}</Text> : null}
+            </View> : null}
+            {(!q.recall || answered) && q.item.p ? <Text style={s.ipaText}>{q.item.p}</Text> : null}
 
+            {q.recall && !answered ? <ActiveRecallPrompt recall={q.recall} promptId={q.recallPromptId} /> : null}
             <ProblemSenseContext sense={q.sense} />
 
             <Text style={s.hintText}>
-              {q.sense ? "이 문맥에서 뜻이 같은 것은?" : q.answerKind === "synonym"
+              {q.recall ? "영어 단서에 맞는 표현은?" : q.sense ? "이 문맥에서 뜻이 같은 것은?" : q.answerKind === "synonym"
                 ? "올바른 동의어는?"
                 : "올바른 한국어 뜻은?"}
             </Text>
@@ -552,8 +556,9 @@ export default function WrongQuizScreen() {
             )}
 
             {/* Explanation Panel */}
+            {answered && q.recall ? <ActiveRecallAnswer recall={q.recall} /> : null}
             {answered && q.sense && <ProblemSenseContext sense={q.sense} answered />}
-            {answered && !q.sense && (
+            {answered && !q.sense && !q.recall && (
               <View style={s.explPanel}>
                 <Text style={s.explHeader}>해설</Text>
                 <View style={s.explWordRow}>

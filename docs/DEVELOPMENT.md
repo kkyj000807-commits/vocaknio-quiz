@@ -43,6 +43,14 @@ server/, drizzle/, lib/_core/는 별도 인증·API 경로다. GitHub Pages는 �
 
 ## 기존 동의어 경계 검수 후보 추출
 
+## 영어 능동 인출 데이터
+
+- `data/active-recall-senses.json`은 `word + sense` 단위의 검수된 영영 정의·간결 정의·관계·예문·문항·출처를 저장한다. 원본 38,163행이나 기존 동의어 배열을 덮어쓰지 않는다.
+- `candidate / cross-checked / reviewed / production`과 enrichment 상태를 분리한다. production은 독립 출처 2곳, A/B 품질, 예문, 정의/문맥 prompt, 유일 정답과 오답 3개를 모두 만족해야 한다.
+- `node --import tsx scripts/audit-active-recall.ts`는 실제 production sense/연결 행/정의/예문/영영 문제 coverage와 실패 상태를 출력한다. legacy 표제어 동의어 행 수를 sense 검증률로 간주하지 않는다.
+- 현재 앱은 검수된 항목에 한해 기존 `syn-choice` 진입을 영영 정의·문맥 → 표제어 문제로 우선 전환한다. 정답 전에는 한국어와 표제어를 숨기고, 정답 뒤에는 EN/KR/관계/예문을 분리해 보여준다. 미검수 항목은 기존 경로를 보존한다.
+- UI 표시 성공만으로 enrichment 완료로 간주하지 않는다. 정적 데이터 → schema → 문제 생성/채점 → 세션 복원 → Production 번들까지 검증한다.
+
 `node --import tsx scripts/audit-legacy-synonyms.ts`는 현재 데이터로 검수 후보와 전체 건수를 계산한다. 숙어/표현 우선 12개만 표시한다. `"capricious"` 같은 표제어 인자로 좁히거나 `--all`로 전체 후보를 출력할 수 있다. 저장/데이터 변경/자동 출제 제외는 하지 않는다.
 
 - `scripts/lib/legacy-synonym-audit.ts`: concept 우선 조회/표제어 fallback/여러 한국어 뜻 결합을 추적하고 원본 행 ID와 표시 뜻을 남긴다. published/withheld sense 문항에 매핑된 행은 기존 객관식 경로를 타지 않으므로 별도 집계한다.

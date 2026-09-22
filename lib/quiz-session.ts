@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { getVocabItem, type VocabItem } from "@/lib/vocab";
 import { senseQuestionSchema } from "@/lib/sense-questions";
+import { activeRecallSenseSchema } from "@/lib/active-recall";
 import {
   isChoiceCorrect,
   isTypedAnswerCorrect,
@@ -75,7 +76,7 @@ const questionSchema = z
       "flashcard",
       "syn-type",
     ]),
-    answerKind: z.enum(["synonym", "meaning", "self"]),
+    answerKind: z.enum(["synonym", "meaning", "target", "self"]),
     choices: z
       .array(
         z.object({
@@ -91,6 +92,8 @@ const questionSchema = z
     correct: z.string(),
     acceptedAnswers: z.array(z.string()),
     sense: senseQuestionSchema.optional(),
+    recall: activeRecallSenseSchema.optional(),
+    recallPromptId: z.string().optional(),
   })
   .refine((q) => {
     // Legacy and sense questions must share the generation/grading contract.

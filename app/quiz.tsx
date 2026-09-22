@@ -1,4 +1,5 @@
 import { ProblemSenseContext } from "@/components/problem-sense-context";
+import { ActiveRecallAnswer, ActiveRecallPrompt } from "@/components/active-recall-card";
 import {
   useState,
   useCallback,
@@ -796,6 +797,10 @@ export default function QuizScreen() {
   const isChoiceMode = q.choices.length > 0;
 
   const getModeLabel = () => {
+    if (q.recall) {
+      const prompt = q.recall.prompts.find(candidate => candidate.id === q.recallPromptId);
+      return prompt?.kind === "context-recall" ? "문맥 → 단어 인출" : "영영 정의 → 단어 인출";
+    }
     if (questionMode === "syn-choice") return "동의어 고르기";
     if (questionMode === "kor-choice") {
       return q.answerKind === "synonym"
@@ -808,6 +813,7 @@ export default function QuizScreen() {
   };
 
   const getHintText = () => {
+    if (q.recall) return "영어 단서에 맞는 표현은?";
     if (q.sense) return q.answerKind === "meaning" ? "이 문맥에서 표현의 뜻은?" : "이 문맥에서 뜻이 같은 표현은?";
     if (q.answerKind === "meaning") return "올바른 한국어 뜻은?";
     if (questionMode === "syn-kor-choice") return "올바른 동의어(한글뜻)는?";
@@ -930,15 +936,16 @@ export default function QuizScreen() {
                 </Pressable>
               </View>
 
-              <View style={s.wordPronunciationRow}>
+              {!q.recall || answered ? <View style={s.wordPronunciationRow}>
                 <View style={{ flex: 1 }}>
                   <Text style={s.wordText}>{q.item.w}</Text>
                   {q.item.p ? <Text style={s.ipaText}>{q.item.p}</Text> : null}
                 </View>
                 <PronunciationButton itemId={q.item.id} text={q.item.w} />
-              </View>
+              </View> : null}
 
               {/* 4지선다 모드 */}
+              {q.recall && !answered ? <ActiveRecallPrompt recall={q.recall} promptId={q.recallPromptId} /> : null}
               <ProblemSenseContext sense={q.sense} />
               {isChoiceMode && (
                 <>
@@ -1153,8 +1160,9 @@ export default function QuizScreen() {
               )}
 
               {/* 해설 패널 */}
+              {answered && q.recall ? <ActiveRecallAnswer recall={q.recall} /> : null}
               {answered && q.sense && <ProblemSenseContext sense={q.sense} answered />}
-              {answered && !q.sense && questionMode !== "flashcard" && (
+              {answered && !q.sense && !q.recall && questionMode !== "flashcard" && (
                 <View style={s.explPanel}>
                   <Text style={s.explHeader}>해설</Text>
                   <View style={s.explWordRow}>

@@ -15,9 +15,10 @@ import {
   type VocabItem,
 } from "@/lib/vocab";
 import { getProductionSenseQuestions, hasSenseQuestionMapping, isCurrentSenseQuestion, senseMatchesItem, type SenseQuestion } from "@/lib/sense-questions";
+import { getActiveRecallSenses, isCurrentActiveRecallSense, activeRecallMatchesItem, type ActiveRecallSense } from "@/lib/active-recall";
 
 export type ChoiceLang = "korean" | "english";
-export type QuizAnswerKind = "synonym" | "meaning" | "self";
+export type QuizAnswerKind = "synonym" | "meaning" | "target" | "self";
 
 export interface QuizChoice {
   id: string;
@@ -38,6 +39,9 @@ export interface QuizQuestion {
   acceptedAnswers: string[];
   /** Present only for independently cross-checked, contextualized questions. */
   sense?: SenseQuestion;
+  /** English definition/context → target-word recall, bound to one reviewed sense. */
+  recall?: ActiveRecallSense;
+  recallPromptId?: string;
 }
 
 export interface BuildQuizOptions {
@@ -227,6 +231,37 @@ function makeQuestion(
     };
   }
 
+  if (mode === "syn-choice") {
+    const recallEntries = getActiveRecallSenses(item.id).filter(entry => activeRecallMatchesItem(entry, item));
+    if (recallEntries.length > 0) {
+      const recall = recallEntries[Math.floor(Math.random() * recallEntries.length)];
+      const prompt = recall.prompts[Math.floor(Math.random() * recall.prompts.length)];
+      const choices = shuffle([
+        { id: `${recall.id}:target`, value: item.w, label: item.w, word: item.w, meaning: recall.koreanMeaning, isCorrect: true },
+        ...recall.distractors.map((distractor, index) => ({
+          id: `${recall.id}:distractor:${index}`,
+          value: distractor.word,
+          label: distractor.word,
+          word: distractor.word,
+          meaning: distractor.meaningKo,
+          isCorrect: false,
+        })),
+      ]);
+      const question: QuizQuestion = {
+        id: `${item.id}-${mode}-${recall.id}-${prompt.id}`,
+        item,
+        mode,
+        answerKind: "target",
+        choices,
+        correct: item.w,
+        acceptedAnswers: [item.w],
+        recall,
+        recallPromptId: prompt.id,
+      };
+      return validateQuestion(question) ? question : null;
+    }
+  }
+
   const asksForSynonym =
     mode === "syn-choice" ||
     mode === "syn-kor-choice" ||
@@ -321,7 +356,7 @@ export function getQuizCandidateItems(options: BuildQuizOptions): VocabItem[] {
       options.mode === "syn-kor-choice" ||
       options.mode === "syn-type")
   ) {
-    pool = pool.filter((item) => item.s.length > 0 ||
+    pool = pool.filter((item) => item.s.length > 0 || getActiveRecallSenses(item.id).length > 0 ||
       (options.mode !== "syn-type" && getProductionSenseQuestions(item.id).length > 0));
   }
   if (
@@ -329,7 +364,7 @@ export function getQuizCandidateItems(options: BuildQuizOptions): VocabItem[] {
     options.mode === "kor-choice" &&
     choiceLang === "english"
   ) {
-    pool = pool.filter((item) => item.s.length > 0 || getProductionSenseQuestions(item.id).length > 0);
+    pool = pool.filter((item) => item.s.length > 0 || getActiveRecallSenses(item.id).length > 0 || getProductionSenseQuestions(item.id).length > 0);
   }
   return pool;
 }
@@ -371,7 +406,7 @@ export function buildReviewQuestions(
       .filter((item): item is VocabItem => Boolean(item)),
   );
   for (const item of items) {
-    const mode: QuizMode = item.s.length > 0 ? "syn-choice" : "kor-choice";
+    const mode: QuizMode = getActiveRecallSenses(item.id).length > 0 || item.s.length > 0 ? "syn-choice" : "kor-choice";
     const question = makeQuestion(item, mode, "korean");
     if (question) questions.push(question);
     if (questions.length >= count) break;
@@ -391,6 +426,10 @@ export function isChoiceCorrect(
 // Check the stored key independently of its display flag. Otherwise a corrupt
 // flag can make both grading and validation agree on the same wrong answer.
 function matchesAnswerKey(question: QuizQuestion, choice: QuizChoice): boolean {
+  if (question.recall) {
+    if (!isCurrentActiveRecallSense(question.recall, question.item)) return false;
+    return question.answerKind === "target" && choice.id === `${question.recall.id}:target` && choice.value === question.item.w;
+  }
   if (question.sense) {
     if (!isCurrentSenseQuestion(question.sense, question.item)) return false;
     // Never regrade a contextual answer against the headword-level synonym list.
@@ -413,8 +452,15 @@ export function isTypedAnswerCorrect(
 }
 
 export function validateQuestion(question: QuizQuestion): boolean {
+  if (question.recall) {
+    const recall = question.recall;
+    const prompt = recall.prompts.find(candidate => candidate.id === question.recallPromptId);
+    if (!prompt || question.answerKind !== "target" || !isCurrentActiveRecallSense(recall, question.item) ||
+      question.choices.length !== 4 || question.choices.filter(choice => choice.isCorrect).length !== 1 ||
+      !question.choices.every(choice => choice.isCorrect === matchesAnswerKey(question, choice))) return false;
+  }
   if (!question.sense && question.mode !== "flashcard" && question.mode !== "syn-type" &&
-    hasSenseQuestionMapping(question.item.id)) return false;
+    !question.recall && hasSenseQuestionMapping(question.item.id)) return false;
   if (question.sense) {
     const sense = question.sense;
     if (!isCurrentSenseQuestion(sense, question.item) || sense.status !== "production" ||
