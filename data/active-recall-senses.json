@@ -229,6 +229,234 @@
       "quality": "B",
       "enrichmentStatus": "complete",
       "failureReason": null
+    },
+    {
+      "id": "work-out:solve-problem",
+      "headword": "work out",
+      "partOfSpeech": "phrasal verb",
+      "senseId": "work-out:solve-problem",
+      "itemIds": ["JBKROW000044", "JBKROW004038", "JBKROW006121", "JBKROW008146"],
+      "englishDefinition": "To find an answer or solution to a problem by thinking about it carefully.",
+      "conciseEnglishDefinition": "to find the solution to a problem",
+      "exactSynonyms": [],
+      "nearSynonyms": ["solve", "figure out"],
+      "antonyms": [],
+      "variants": [],
+      "relatedWords": ["resolve"],
+      "exampleSentences": [
+        {
+          "en": "The researchers worked out why the two samples produced different results.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "문제의 해답을 찾아내다",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "to find the solution to a problem by thinking"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "After comparing the conflicting reports, the committee finally _____ what had caused the error."
+        }
+      ],
+      "distractors": [
+        {"word": "work on", "meaningKo": "계속 다루다", "reasonKo": "해결을 위해 다루는 과정일 수 있지만 해답을 찾아냈다는 결과까지 뜻하지 않는다.", "plausible": true},
+        {"word": "rule out", "meaningKo": "가능성을 배제하다", "reasonKo": "후보 하나를 제외하는 것이며 문제 전체의 해결책을 찾아내는 뜻은 아니다.", "plausible": true},
+        {"word": "carry out", "meaningKo": "실행하다", "reasonKo": "계획을 수행하는 뜻이지 문제를 생각해 풀어내는 뜻이 아니다.", "plausible": false}
+      ],
+      "sources": [
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
+          "independenceGroup": "Oxford",
+          "note": "문제의 답이나 해결책을 찾는 타동사 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/work-out",
+          "independenceGroup": "Collins",
+          "note": "문제를 숙고해 해결하는 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.09.23",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
+    },
+    {
+      "id": "work-out:calculate-value",
+      "headword": "work out",
+      "partOfSpeech": "phrasal verb",
+      "senseId": "work-out:calculate-value",
+      "itemIds": ["JBKROW000044", "JBKROW004038", "JBKROW006121", "JBKROW008146"],
+      "englishDefinition": "To calculate an amount, answer, or value by using the available figures.",
+      "conciseEnglishDefinition": "to calculate an amount or answer",
+      "exactSynonyms": [],
+      "nearSynonyms": ["calculate", "compute"],
+      "antonyms": ["estimate blindly"],
+      "variants": [],
+      "relatedWords": ["derive"],
+      "exampleSentences": [
+        {
+          "en": "Students worked out the average from the five recorded measurements.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "수치·답을 계산해 내다",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "to calculate an amount or answer from given figures"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "Using the table, _____ the percentage of applicants who passed both stages."
+        }
+      ],
+      "distractors": [
+        {"word": "round off", "meaningKo": "반올림하다", "reasonKo": "계산 결과의 자릿수를 조정할 뿐, 주어진 수치로 답 전체를 계산하는 뜻은 아니다.", "plausible": true},
+        {"word": "add up", "meaningKo": "합산하다", "reasonKo": "수를 더하는 특정 연산에 초점이 있어 모든 종류의 계산을 포괄하지 않는다.", "plausible": true},
+        {"word": "write down", "meaningKo": "적어 두다", "reasonKo": "값을 기록하는 행위이지 값을 산출하는 계산이 아니다.", "plausible": false}
+      ],
+      "sources": [
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
+          "independenceGroup": "Oxford",
+          "note": "계산을 통해 답을 구하는 타동사 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/work-out",
+          "independenceGroup": "Collins",
+          "note": "수치나 답을 계산하는 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.09.23",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
+    },
+    {
+      "id": "work-out:end-successfully",
+      "headword": "work out",
+      "partOfSpeech": "phrasal verb",
+      "senseId": "work-out:end-successfully",
+      "itemIds": ["JBKROW000044", "JBKROW004038", "JBKROW006121", "JBKROW008146"],
+      "englishDefinition": "For a situation, arrangement, or relationship to develop or end in a satisfactory way.",
+      "conciseEnglishDefinition": "for a situation to end satisfactorily",
+      "exactSynonyms": [],
+      "nearSynonyms": ["turn out well", "succeed"],
+      "antonyms": ["fall apart", "go wrong"],
+      "variants": [],
+      "relatedWords": ["resolve itself"],
+      "exampleSentences": [
+        {
+          "en": "The first schedule caused delays, but the revised arrangement worked out well.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "상황·일이 만족스럽게 풀리다",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "for a situation to end in a satisfactory way"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "The new timetable looked risky at first, but it eventually _____."
+        }
+      ],
+      "distractors": [
+        {"word": "wear out", "meaningKo": "닳다·지치게 하다", "reasonKo": "사용이나 피로로 소모되는 뜻이며 상황이 만족스럽게 풀리는 뜻이 아니다.", "plausible": true},
+        {"word": "play out", "meaningKo": "전개되다·끝까지 진행되다", "reasonKo": "과정의 전개를 가리킬 수 있지만 만족스러운 결과를 보장하지 않는다.", "plausible": true},
+        {"word": "break down", "meaningKo": "고장 나다·결렬되다", "reasonKo": "기능이나 관계가 실패하는 뜻으로 목표 sense와 반대 방향이다.", "plausible": false}
+      ],
+      "sources": [
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
+          "independenceGroup": "Oxford",
+          "note": "상황이 만족스럽게 전개되거나 끝나는 자동사 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/work-out",
+          "independenceGroup": "Collins",
+          "note": "일이 잘 풀리는 결과 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.09.23",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
+    },
+    {
+      "id": "work-out:exercise-body",
+      "headword": "work out",
+      "partOfSpeech": "phrasal verb",
+      "senseId": "work-out:exercise-body",
+      "itemIds": ["JBKROW000044", "JBKROW004038", "JBKROW006121", "JBKROW008146"],
+      "englishDefinition": "To exercise the body, especially through a planned session of physical training.",
+      "conciseEnglishDefinition": "to exercise the body through physical training",
+      "exactSynonyms": [],
+      "nearSynonyms": ["exercise", "train"],
+      "antonyms": [],
+      "variants": [],
+      "relatedWords": ["workout"],
+      "exampleSentences": [
+        {
+          "en": "She works out three times a week to improve her strength and endurance.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "운동하다·몸을 단련하다",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "to exercise the body through physical training"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "To rebuild her stamina, she began to _____ at the gym every morning."
+        }
+      ],
+      "distractors": [
+        {"word": "warm up", "meaningKo": "준비운동하다", "reasonKo": "본운동 전에 몸을 준비하는 단계이며 운동 세션 전체를 뜻하지 않는다.", "plausible": true},
+        {"word": "stretch out", "meaningKo": "몸을 쭉 펴다", "reasonKo": "특정한 신체 동작이며 계획적으로 운동한다는 뜻 전체와는 다르다.", "plausible": true},
+        {"word": "wear out", "meaningKo": "지치게 하다", "reasonKo": "피로하게 만드는 결과를 가리키며 몸을 단련하는 행동 자체가 아니다.", "plausible": false}
+      ],
+      "sources": [
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
+          "independenceGroup": "Oxford",
+          "note": "신체 운동을 하는 자동사 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/work-out",
+          "independenceGroup": "Collins",
+          "note": "운동·훈련 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.09.23",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
     }
   ]
 }

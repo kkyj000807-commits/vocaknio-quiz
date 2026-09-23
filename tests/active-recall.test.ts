@@ -7,6 +7,7 @@ import { VOCAB } from "@/lib/vocab";
 const juryRows = VOCAB.filter(item => item.w === "jury foreman");
 const cartHorseRows = VOCAB.filter(item => item.w === "put the cart before the horse");
 const takeForGrantedRows = VOCAB.filter(item => item.w === "take for granted");
+const workOutRows = VOCAB.filter(item => item.w === "work out");
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -24,7 +25,7 @@ describe("영어→영어 active recall", () => {
     expect(sense?.exactSynonyms).not.toContain("supervisor");
     expect(sense?.exactSynonyms).not.toContain("overseer");
     expect(getActiveRecallSenses(juryRows[0].id)).toHaveLength(1);
-    expect(getActiveRecallCoverage()).toEqual({ senses: 4, rows: 4, definitions: 4, examples: 4, synonymRelations: 4 });
+    expect(getActiveRecallCoverage()).toEqual({ senses: 8, rows: 8, definitions: 8, examples: 8, synonymRelations: 8 });
   });
 
   it("definition → target 문제를 만들고 정답을 하나로 유지한다", () => {
@@ -105,5 +106,34 @@ describe("영어→영어 active recall", () => {
     expect(appreciation.recallPromptId).toBe("context");
     expect(appreciation.choices.filter(choice => isChoiceCorrect(appreciation, choice))).toHaveLength(1);
     expect(validateQuestion(appreciation)).toBe(true);
+  });
+
+  it("work out의 해결·계산·성공적 결과·운동을 네 sense로 분리한다", () => {
+    expect(workOutRows.map(item => item.id)).toEqual([
+      "JBKROW000044",
+      "JBKROW004038",
+      "JBKROW006121",
+      "JBKROW008146",
+    ]);
+    const senses = getActiveRecallSenses(workOutRows[0].id);
+    expect(senses.map(sense => sense.senseId)).toEqual([
+      "work-out:solve-problem",
+      "work-out:calculate-value",
+      "work-out:end-successfully",
+      "work-out:exercise-body",
+    ]);
+    expect(new Set(senses.map(sense => sense.conciseEnglishDefinition)).size).toBe(4);
+    expect(senses.every(sense => sense.itemIds.length === 4)).toBe(true);
+    expect(senses.every(sense => sense.exampleSentences.length === 1)).toBe(true);
+    expect(senses.every(sense => sense.sources.length === 2)).toBe(true);
+  });
+
+  it("work out 영영 문제도 정답 하나와 sense 계약을 유지한다", () => {
+    const random = vi.spyOn(Math, "random").mockReturnValue(0);
+    const [question] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [workOutRows[0].num], preserveItemOrder: true });
+    expect(question.recall?.senseId).toBe("work-out:solve-problem");
+    expect(question.answerKind).toBe("target");
+    expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
+    expect(validateQuestion(question)).toBe(true);
   });
 });
