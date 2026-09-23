@@ -1,6 +1,6 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.22 20:39 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.23 18:26 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
 ## 현재 배포 — 2.5, 전체 로드맵은 부분 완료
 
@@ -26,7 +26,16 @@
 - 내용 작업 전 .agents/skills/transfer-english-reasoning/SKILL.md와 두 references를 읽는다. 공개 강의 원칙과 앱의 독자 추론/효과 실측을 구분한다.
 - 편입 관련 작업은 docs/MASTER_DB_SYNC_RULES.md를 따른다. 이 저장소에서 중앙 `2027 편입 마스터 DB`의 실제 위치·마지막 동기화 시점은 아직 확인되지 않았으므로, 현재 앱 정본을 중앙 DB와 동기화 완료했다고 간주하지 않는다(`sync_required`).
 
-## 현재 batch — 영어 능동 인출 첫 production sense VERIFIED / 2.5 공개 확인
+## 현재 batch — 숙어 active recall 두 번째 vertical slice VERIFIED / 2.6 배포 후보
+
+- 기존 검수 자산 재사용: `put the cart before the horse`는 idiom-corrections와 expression-composition에 Oxford·Collins 독립 대조, 자체 정의·예문, 수레/말 결합 이미지가 이미 있었다. 새 사전 원문을 복제하지 않고 이 검수된 sense만 active-recall production에 연결했다.
+- 적용: JBKROW022984 한 행에 `later step before the earlier dependent step` sense, concise 정의, 자체 예문, 정의/문맥 prompt를 추가했다. near paraphrase와 관련 표현은 exact synonym으로 승격하지 않았고, `jump the gun`은 너무 이른 행동, `get ahead of oneself`는 앞선 결과 가정이라는 차이를 오답 이유에 고정했다.
+- 의미 경계: 핵심은 단순 성급함이나 기회 상실이 아니라 의존하는 두 단계의 선후 역전이다. `before`는 두 대상의 순서 비교이며 수레/말 이미지는 현대 의미 이해용이지 최초 역사 어원 주장으로 표시하지 않는다.
+- VERIFIED: active-recall 감사 2sense/3행/정의3/concise3/예문3/sense-safe 관계3/영영문제 가능3, targeted 19테스트, 전체 TypeScript·data/sense 감사·22파일165테스트 통과(인증1skip), 변경 lint 오류0, diff 공백 검사. 전체 38,163행 보강 완료가 아니다.
+- NOT DONE: 2.6 Production build/Pages/공개 화면 확인, 직접입력·힌트단계·인출강도, 전체 backfill/retry/coverage denominator는 미완료다.
+- NEXT: 2.6을 build/audit/Pages 배포하고 공개 정의·문맥 화면과 release manifest를 확인한다. 그 뒤 `take for granted`처럼 sense가 둘인 숙어는 의미를 분리한 다음에만 추가한다.
+
+## 직전 batch — 영어 능동 인출 첫 production sense VERIFIED / 2.5 공개 확인
 
 - P0 원인: 영영 정의/예문/관계가 UI에서 비어 보인 주원인은 표시 컴포넌트가 아니라 실제 production 학습 데이터가 139sense/218행에만 있고 `jury foreman` 두 원본행에는 연결이 없었던 것이다. legacy 표제어 동의어 배열은 11,277행에 있지만 sense 검증 자료가 아니므로 영영 정답 근거로 승격하지 않았다.
 - 적용: `jury-foreman:leader-of-jury` 한 sense를 JBKROW019189/JBKROW023301에 연결했다. Oxford·Collins에서 의미를 독립 대조하고 원문을 복제하지 않은 자체 정의/간결 정의/예문, variant `jury foreperson`, near/related 관계와 정의·문맥 prompt를 저장했다. 일반 foreman의 supervisor/overseer는 exact synonym으로 넣지 않았다.

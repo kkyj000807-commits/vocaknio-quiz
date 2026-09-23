@@ -58,6 +58,63 @@
       "quality": "B",
       "enrichmentStatus": "complete",
       "failureReason": null
+    },
+    {
+      "id": "put-the-cart-before-the-horse:reverse-dependent-order",
+      "headword": "put the cart before the horse",
+      "partOfSpeech": "idiom",
+      "senseId": "put-the-cart-before-the-horse:reverse-dependent-order",
+      "itemIds": ["JBKROW022984"],
+      "englishDefinition": "To do a later step before the earlier step on which it logically depends, reversing the proper order.",
+      "conciseEnglishDefinition": "to do dependent steps in the wrong order",
+      "exactSynonyms": [],
+      "nearSynonyms": ["reverse the proper order", "get things backward"],
+      "antonyms": [],
+      "variants": [],
+      "relatedWords": ["jump the gun"],
+      "exampleSentences": [
+        {
+          "en": "Buying equipment before deciding what to build puts the cart before the horse.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "일의 선후를 뒤바꾸다",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "to do a later step before the earlier step on which it depends"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "Writing penalties before deciding what conduct the rule should cover would _____."
+        }
+      ],
+      "distractors": [
+        {"word": "jump the gun", "meaningKo": "너무 일찍 시작하다", "reasonKo": "시기가 너무 이르다는 뜻이지만 의존하는 두 단계의 순서가 뒤집혔다는 뜻까지는 아니다.", "plausible": true},
+        {"word": "get ahead of oneself", "meaningKo": "앞일을 성급히 단정하다", "reasonKo": "앞선 결과를 미리 가정한다는 점은 가깝지만 절차의 선후가 뒤집힌 상황을 직접 가리키지는 않는다.", "plausible": true},
+        {"word": "miss the boat", "meaningKo": "기회를 놓치다", "reasonKo": "적절한 기회를 놓친 것이며 해야 할 단계의 순서를 거꾸로 한 것은 아니다.", "plausible": false}
+      ],
+      "sources": [
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/definition/english/cart_1",
+          "independenceGroup": "Oxford",
+          "note": "해야 할 일의 순서가 잘못됐다는 기존 독립 검수 결과를 재사용함; 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/put-the-cart-before-the-horse",
+          "independenceGroup": "Collins",
+          "note": "부적절한 순서와 비논리적 처리라는 기존 독립 검수 결과를 재사용함; 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.09.05",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
     }
   ]
 }

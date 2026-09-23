@@ -5,6 +5,7 @@ import { buildQuizQuestions, buildReviewQuestions, isChoiceCorrect, validateQues
 import { VOCAB } from "@/lib/vocab";
 
 const juryRows = VOCAB.filter(item => item.w === "jury foreman");
+const cartHorseRows = VOCAB.filter(item => item.w === "put the cart before the horse");
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -22,7 +23,7 @@ describe("영어→영어 active recall", () => {
     expect(sense?.exactSynonyms).not.toContain("supervisor");
     expect(sense?.exactSynonyms).not.toContain("overseer");
     expect(getActiveRecallSenses(juryRows[0].id)).toHaveLength(1);
-    expect(getActiveRecallCoverage()).toEqual({ senses: 1, rows: 2, definitions: 1, examples: 1, synonymRelations: 1 });
+    expect(getActiveRecallCoverage()).toEqual({ senses: 2, rows: 3, definitions: 2, examples: 2, synonymRelations: 2 });
   });
 
   it("definition → target 문제를 만들고 정답을 하나로 유지한다", () => {
@@ -43,5 +44,34 @@ describe("영어→영어 active recall", () => {
     const [review] = buildReviewQuestions([juryRows[0].num], 1);
     expect(review.recall?.senseId).toBe("jury-foreman:leader-of-jury");
     expect(review.answerKind).toBe("target");
+  });
+
+  it("put the cart before the horse를 순서 오류 sense와 결합 이미지에만 연결한다", () => {
+    expect(cartHorseRows).toHaveLength(1);
+    const sense = getActiveRecallSenses(cartHorseRows[0].id)[0];
+    expect(sense).toMatchObject({
+      conciseEnglishDefinition: "to do dependent steps in the wrong order",
+      koreanMeaning: "일의 선후를 뒤바꾸다",
+      exactSynonyms: [],
+      relatedWords: ["jump the gun"],
+      sourceCheckedAt: "2026.09.05",
+    });
+    expect(sense.exampleSentences).toHaveLength(1);
+    expect(sense.distractors.find(choice => choice.word === "jump the gun")?.reasonKo).toContain("순서");
+  });
+
+  it("숙어의 definition/context 문제 모두 정답 하나와 현재 sense 계약을 유지한다", () => {
+    const random = vi.spyOn(Math, "random").mockReturnValue(0);
+    const [definition] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [cartHorseRows[0].num], preserveItemOrder: true });
+    expect(definition.recallPromptId).toBe("definition");
+    expect(definition.choices.filter(choice => isChoiceCorrect(definition, choice))).toHaveLength(1);
+    expect(validateQuestion(definition)).toBe(true);
+
+    random.mockRestore();
+    const contextRandom = vi.spyOn(Math, "random").mockReturnValue(0);
+    contextRandom.mockReturnValueOnce(0).mockReturnValueOnce(0.9);
+    const [context] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [cartHorseRows[0].num], preserveItemOrder: true });
+    expect(context.recallPromptId).toBe("context");
+    expect(context.choices.filter(choice => isChoiceCorrect(context, choice))).toHaveLength(1);
   });
 });
