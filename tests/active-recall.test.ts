@@ -6,6 +6,7 @@ import { VOCAB } from "@/lib/vocab";
 
 const juryRows = VOCAB.filter(item => item.w === "jury foreman");
 const cartHorseRows = VOCAB.filter(item => item.w === "put the cart before the horse");
+const takeForGrantedRows = VOCAB.filter(item => item.w === "take for granted");
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -23,7 +24,7 @@ describe("영어→영어 active recall", () => {
     expect(sense?.exactSynonyms).not.toContain("supervisor");
     expect(sense?.exactSynonyms).not.toContain("overseer");
     expect(getActiveRecallSenses(juryRows[0].id)).toHaveLength(1);
-    expect(getActiveRecallCoverage()).toEqual({ senses: 2, rows: 3, definitions: 2, examples: 2, synonymRelations: 2 });
+    expect(getActiveRecallCoverage()).toEqual({ senses: 4, rows: 4, definitions: 4, examples: 4, synonymRelations: 4 });
   });
 
   it("definition → target 문제를 만들고 정답을 하나로 유지한다", () => {
@@ -73,5 +74,36 @@ describe("영어→영어 active recall", () => {
     const [context] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [cartHorseRows[0].num], preserveItemOrder: true });
     expect(context.recallPromptId).toBe("context");
     expect(context.choices.filter(choice => isChoiceCorrect(context, choice))).toHaveLength(1);
+  });
+
+  it("take for granted의 사실 전제와 가치 간과를 서로 다른 sense로 유지한다", () => {
+    expect(takeForGrantedRows).toHaveLength(1);
+    const senses = getActiveRecallSenses(takeForGrantedRows[0].id);
+    expect(senses.map(sense => sense.senseId)).toEqual([
+      "take-for-granted:assume-without-checking",
+      "take-for-granted:fail-to-appreciate",
+    ]);
+    expect(senses[0].koreanMeaning).toBe("확인 없이 사실로 전제하다");
+    expect(senses[1].koreanMeaning).toBe("익숙해서 소중함·고마움을 모르다");
+    expect(senses[0].nearSynonyms).not.toContain("fail to appreciate");
+    expect(senses[1].nearSynonyms).not.toContain("assume without question");
+    expect(senses.every(sense => sense.exactSynonyms.length === 0)).toBe(true);
+  });
+
+  it("take for granted 두 sense가 각각 독립된 단일정답 영영 문제를 만든다", () => {
+    const firstRandom = vi.spyOn(Math, "random").mockReturnValue(0);
+    const [assumption] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [takeForGrantedRows[0].num], preserveItemOrder: true });
+    expect(assumption.recall?.senseId).toBe("take-for-granted:assume-without-checking");
+    expect(assumption.choices.filter(choice => isChoiceCorrect(assumption, choice))).toHaveLength(1);
+    expect(validateQuestion(assumption)).toBe(true);
+    firstRandom.mockRestore();
+
+    const secondRandom = vi.spyOn(Math, "random").mockReturnValue(0);
+    secondRandom.mockReturnValueOnce(0.9).mockReturnValueOnce(0.9);
+    const [appreciation] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [takeForGrantedRows[0].num], preserveItemOrder: true });
+    expect(appreciation.recall?.senseId).toBe("take-for-granted:fail-to-appreciate");
+    expect(appreciation.recallPromptId).toBe("context");
+    expect(appreciation.choices.filter(choice => isChoiceCorrect(appreciation, choice))).toHaveLength(1);
+    expect(validateQuestion(appreciation)).toBe(true);
   });
 });

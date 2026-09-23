@@ -21,6 +21,8 @@ import {
   isTypedAnswerCorrect,
   validateQuestion,
 } from "@/lib/quiz-engine";
+import { getActiveRecallSenses } from "@/lib/active-recall";
+import { getProductionSenseQuestions } from "@/lib/sense-questions";
 
 const EXPECTED_GROUP_COUNTS = {
   V101: 4028,
@@ -223,10 +225,13 @@ describe("shared quiz engine", () => {
           count: 12,
         });
         const rangeItems = VOCAB.slice(range.start, range.end + 1);
-        const availableCount =
-          mode === "kor-choice"
-            ? rangeItems.length
-            : rangeItems.filter((item) => item.s.length > 0).length;
+        const availableCount = mode === "kor-choice"
+          ? rangeItems.length
+          : rangeItems.filter((item) =>
+              item.s.length > 0 ||
+              getProductionSenseQuestions(item.id).length > 0 ||
+              (mode === "syn-choice" && getActiveRecallSenses(item.id).length > 0),
+            ).length;
         expect(questions).toHaveLength(Math.min(12, availableCount));
 
         for (const question of questions) {

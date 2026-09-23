@@ -115,6 +115,120 @@
       "quality": "B",
       "enrichmentStatus": "complete",
       "failureReason": null
+    },
+    {
+      "id": "take-for-granted:assume-without-checking",
+      "headword": "take for granted",
+      "partOfSpeech": "idiom",
+      "senseId": "take-for-granted:assume-without-checking",
+      "itemIds": ["APPROW02128"],
+      "englishDefinition": "To accept that something is true, certain, or available without checking or questioning it.",
+      "conciseEnglishDefinition": "to accept something as certain without checking",
+      "exactSynonyms": [],
+      "nearSynonyms": ["assume without question", "accept as given"],
+      "antonyms": ["verify", "question"],
+      "variants": [],
+      "relatedWords": ["presume"],
+      "exampleSentences": [
+        {
+          "en": "The committee took for granted that the earlier measurements were accurate.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "확인 없이 사실로 전제하다",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "to accept something as certain without checking it"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "Without examining the sampling method, readers may _____ that every respondent understood the question."
+        }
+      ],
+      "distractors": [
+        {"word": "take into account", "meaningKo": "고려에 넣다", "reasonKo": "정보를 검토에 포함한다는 뜻으로, 확인 없이 사실로 전제하는 것과 반대 방향이다.", "plausible": true},
+        {"word": "call into question", "meaningKo": "의문을 제기하다", "reasonKo": "참인지 문제 삼는 뜻이며, 참이라고 당연히 전제하는 뜻이 아니다.", "plausible": true},
+        {"word": "leave to chance", "meaningKo": "운에 맡기다", "reasonKo": "결과를 우연에 맡기는 태도이지 어떤 판단을 사실로 받아들이는 뜻은 아니다.", "plausible": false}
+      ],
+      "sources": [
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/take-for-granted",
+          "independenceGroup": "Collins",
+          "note": "확인 없이 참이라고 전제하는 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Merriam-Webster",
+          "url": "https://www.merriam-webster.com/dictionary/take%20for%20granted",
+          "independenceGroup": "Merriam-Webster",
+          "note": "당연시하는 판단 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.09.05",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
+    },
+    {
+      "id": "take-for-granted:fail-to-appreciate",
+      "headword": "take for granted",
+      "partOfSpeech": "idiom",
+      "senseId": "take-for-granted:fail-to-appreciate",
+      "itemIds": ["APPROW02128"],
+      "englishDefinition": "To fail to appreciate the value of someone or something because their presence or help seems certain and familiar.",
+      "conciseEnglishDefinition": "to overlook the value of familiar, reliable support",
+      "exactSynonyms": [],
+      "nearSynonyms": ["fail to appreciate", "undervalue familiar support"],
+      "antonyms": ["appreciate", "value"],
+      "variants": [],
+      "relatedWords": ["overlook"],
+      "exampleSentences": [
+        {
+          "en": "People often take reliable public services for granted until those services stop.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "익숙해서 소중함·고마움을 모르다",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "to overlook the value of someone or something because it seems reliably present"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "Students may _____ a patient mentor's guidance until they must solve the same problems alone."
+        }
+      ],
+      "distractors": [
+        {"word": "look down on", "meaningKo": "깔보다", "reasonKo": "상대를 열등하다고 판단하는 적극적 경멸이며, 익숙한 도움의 가치를 놓치는 뜻과는 다르다.", "plausible": true},
+        {"word": "make up for", "meaningKo": "보상하다", "reasonKo": "부족이나 손해를 보충한다는 뜻으로, 이미 받는 도움의 가치를 알아보지 못한다는 뜻이 아니다.", "plausible": true},
+        {"word": "show gratitude for", "meaningKo": "고마움을 표현하다", "reasonKo": "가치와 도움을 알아보고 감사를 드러내므로 목표 sense와 반대다.", "plausible": false}
+      ],
+      "sources": [
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/take-for-granted",
+          "independenceGroup": "Collins",
+          "note": "사람·도움의 가치를 알아보지 못하는 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Merriam-Webster",
+          "url": "https://www.merriam-webster.com/dictionary/take%20for%20granted",
+          "independenceGroup": "Merriam-Webster",
+          "note": "익숙한 존재를 과소평가하는 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.09.05",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
     }
   ]
 }

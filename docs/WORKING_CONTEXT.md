@@ -1,6 +1,6 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.23 18:32 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.23 18:47 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
 ## 현재 배포 — 2.6, 전체 로드맵은 부분 완료
 
@@ -26,7 +26,16 @@
 - 내용 작업 전 .agents/skills/transfer-english-reasoning/SKILL.md와 두 references를 읽는다. 공개 강의 원칙과 앱의 독자 추론/효과 실측을 구분한다.
 - 편입 관련 작업은 docs/MASTER_DB_SYNC_RULES.md를 따른다. 이 저장소에서 중앙 `2027 편입 마스터 DB`의 실제 위치·마지막 동기화 시점은 아직 확인되지 않았으므로, 현재 앱 정본을 중앙 DB와 동기화 완료했다고 간주하지 않는다(`sync_required`).
 
-## 현재 batch — 숙어 active recall 두 번째 vertical slice VERIFIED / 2.6 공개 확인
+## 현재 batch — `take for granted` 두 sense 분리 VERIFIED / 2.7 배포 후보
+
+- 기존 Oxford·Collins가 아니라 기존 검수 자산의 Collins·Merriam-Webster 독립 대조를 재사용했다. 하나의 APPENDIX 행을 `확인 없이 사실로 전제`와 `익숙해서 가치를 간과`의 두 production sense로 분리했으며, 사전 원문은 복제하지 않았다.
+- 각 sense에 자체 concise/full 정의·예문·정의/문맥 prompt·서로 겹치지 않는 오답 3개를 연결했다. assume/fail to appreciate는 near 관계로만 두고 exact synonym으로 과장하지 않았다. UI에서는 한국어가 정답 전 단서로 노출되지 않고 선택 뒤 해당 sense의 EN/KR/Near/Related가 분리된다.
+- 구성 해설 14번째 항목으로 `take A`와 `for granted`를 연결했다. 공통 고리는 A를 이미 주어진 것으로 놓아 다시 확인하지 않는 태도이며, 사실 판단과 가치 판단을 한 문제에 섞지 않는다. 이는 현대 의미 이해용 설명이지 grant의 역사적 어원 주장이 아니다.
+- VERIFIED: active-recall 4sense/4행/정의4/예문4/sense-safe 관계4/영영문제 가능4/failure0. targeted30테스트, 전체 TypeScript·data/sense 감사·22파일167테스트 통과(인증1skip), 변경 lint 오류0, diff 공백 검사. Production 2.7 build audit HTML22/학습JSON8/참조누락0/루트자산0. 로컬 in-app browser에서 가치 간과 sense의 문맥 문제→정답→분리된 EN/KR/관계를 확인했고, 생성된 APPENDIX 학습 JSON에 구성 해설이 실제 포함됨을 확인했다.
+- NOT DONE: 2.7 Pages 배포·공개 화면, 직접입력·단계별 힌트·인출강도, 전체 backfill/retry/coverage denominator, 실제 Safari/Chrome/Samsung Internet 실기기 확인은 미완료다.
+- NEXT: source 커밋 뒤 재현 가능한 Production build로 sourceCommit을 고정하고 Pages에 배포한 다음 공개 release/문항을 확인한다.
+
+## 직전 batch — 숙어 active recall 두 번째 vertical slice VERIFIED / 2.6 공개 확인
 
 - 기존 검수 자산 재사용: `put the cart before the horse`는 idiom-corrections와 expression-composition에 Oxford·Collins 독립 대조, 자체 정의·예문, 수레/말 결합 이미지가 이미 있었다. 새 사전 원문을 복제하지 않고 이 검수된 sense만 active-recall production에 연결했다.
 - 적용: JBKROW022984 한 행에 `later step before the earlier dependent step` sense, concise 정의, 자체 예문, 정의/문맥 prompt를 추가했다. near paraphrase와 관련 표현은 exact synonym으로 승격하지 않았고, `jump the gun`은 너무 이른 행동, `get ahead of oneself`는 앞선 결과 가정이라는 차이를 오답 이유에 고정했다.
