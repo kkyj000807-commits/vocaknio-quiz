@@ -1,18 +1,18 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.23 18:47 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.23 18:55 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 배포 — 2.6, 전체 로드맵은 부분 완료
+## 현재 배포 — 2.7, 전체 로드맵은 부분 완료
 
 - Production: https://kkyj000807-commits.github.io/vocaknio-quiz/
-- 배포 전2.5 → 배포 후2.6. 앱 표시: 버전 2.6 · 최근 수정 2026.09.23 18:25 KST. 공개 게시·정합성 확인은 18:32 KST다.
-- 앱 소스2d10fa78e7f9b5425c9db4d04593023a66bd630b / Pages21dd73e0900c287649b40ed9569729a91fcb99d8. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
-- Actions35843121522 success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion2.6 / builtAt2026-09-23T09:25:31.831Z.
-- 번들 entry-3f4386049294a5f0e1e9178b807f5b88.js / SHA256 C87552E9AB9B480CE237B165AB0887CC22E0F72A765C2FFAD5D3D92601027ADB.
-- 공개 root/index.html과 quiz.html HTTP200, release.json 2.6·신규 번들·`put the cart before the horse` sense ID/문구를 확인했다. 확장자 없는 하위 route는 Pages가 404 shell로 앱을 제공하므로 단순 HTTP status를 성공 근거로 쓰지 않는다. 공개 in-app browser에서 해당 숙어의 영어 문맥 → 단어 인출 화면과 4개 선택지를 확인했으며 답변은 만들지 않았다.
+- 배포 전2.6 → 배포 후2.7. 앱 표시: 버전 2.7 · 최근 수정 2026.09.23 18:50 KST. 공개 게시·정합성 확인은 18:55 KST다.
+- 앱 소스faab693c660eba01ff9e477f1d3f16da39bfbe2b / Pagesdd1849d73601a16aaa3f737bd37767ef84438a91. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
+- Actions35845527952 success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion2.7 / builtAt2026-09-23T09:50:42.354Z.
+- 번들 entry-bd9e2e86b58e39e371a2b3c5758be00d.js / SHA256 63F32A41CFDEA50553F128CF59B2F9EA1E0091ED46DB983AFDD1ED3EA7216543.
+- 공개 root와 quiz.html HTTP200, release.json2.7, 신규 번들의 두 `take for granted` sense, 2.7 APPENDIX 학습 JSON의 구성 해설을 확인했다. 공개 in-app browser에서 `확인 없이 사실로 전제` sense의 영어 문맥과 단일정답 선택지, 설정 화면의 `버전 2.7 · 최근 수정 2026.09.23 18:50 KST`를 확인했다. 답변은 만들지 않았다.
 - 실제 iPhone Safari/Galaxy Tab Samsung Internet/모바일 Chrome 및 모든 기기 캐시는 미검증. in-app browser 결과를 실기기 검증으로 대신하지 않는다.
-- 산출물: C:/Users/USER/Documents/Codex/2026-08-03/realtime-voice-chat/work/vocanexus-production-2.6-20260923
-- Pages worktree: 같은 work 아래 vocanexus-pages-2.6-20260923. 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pages83ff488(2.5)을 보존했다.
+- 산출물: C:/Users/USER/Documents/Codex/2026-08-03/realtime-voice-chat/work/vocanexus-production-2.7-20260923-r2
+- Pages worktree: 같은 work 아래 vocanexus-pages-2.7-20260923. 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pages21dd73e(2.6)을 보존했다.
 
 ## 최신 제품 계약
 
@@ -26,14 +26,14 @@
 - 내용 작업 전 .agents/skills/transfer-english-reasoning/SKILL.md와 두 references를 읽는다. 공개 강의 원칙과 앱의 독자 추론/효과 실측을 구분한다.
 - 편입 관련 작업은 docs/MASTER_DB_SYNC_RULES.md를 따른다. 이 저장소에서 중앙 `2027 편입 마스터 DB`의 실제 위치·마지막 동기화 시점은 아직 확인되지 않았으므로, 현재 앱 정본을 중앙 DB와 동기화 완료했다고 간주하지 않는다(`sync_required`).
 
-## 현재 batch — `take for granted` 두 sense 분리 VERIFIED / 2.7 배포 후보
+## 현재 batch — `take for granted` 두 sense 분리 VERIFIED / 2.7 공개 확인
 
 - 기존 Oxford·Collins가 아니라 기존 검수 자산의 Collins·Merriam-Webster 독립 대조를 재사용했다. 하나의 APPENDIX 행을 `확인 없이 사실로 전제`와 `익숙해서 가치를 간과`의 두 production sense로 분리했으며, 사전 원문은 복제하지 않았다.
 - 각 sense에 자체 concise/full 정의·예문·정의/문맥 prompt·서로 겹치지 않는 오답 3개를 연결했다. assume/fail to appreciate는 near 관계로만 두고 exact synonym으로 과장하지 않았다. UI에서는 한국어가 정답 전 단서로 노출되지 않고 선택 뒤 해당 sense의 EN/KR/Near/Related가 분리된다.
 - 구성 해설 14번째 항목으로 `take A`와 `for granted`를 연결했다. 공통 고리는 A를 이미 주어진 것으로 놓아 다시 확인하지 않는 태도이며, 사실 판단과 가치 판단을 한 문제에 섞지 않는다. 이는 현대 의미 이해용 설명이지 grant의 역사적 어원 주장이 아니다.
 - VERIFIED: active-recall 4sense/4행/정의4/예문4/sense-safe 관계4/영영문제 가능4/failure0. targeted30테스트, 전체 TypeScript·data/sense 감사·22파일167테스트 통과(인증1skip), 변경 lint 오류0, diff 공백 검사. Production 2.7 build audit HTML22/학습JSON8/참조누락0/루트자산0. 로컬 in-app browser에서 가치 간과 sense의 문맥 문제→정답→분리된 EN/KR/관계를 확인했고, 생성된 APPENDIX 학습 JSON에 구성 해설이 실제 포함됨을 확인했다.
-- NOT DONE: 2.7 Pages 배포·공개 화면, 직접입력·단계별 힌트·인출강도, 전체 backfill/retry/coverage denominator, 실제 Safari/Chrome/Samsung Internet 실기기 확인은 미완료다.
-- NEXT: source 커밋 뒤 재현 가능한 Production build로 sourceCommit을 고정하고 Pages에 배포한 다음 공개 release/문항을 확인한다.
+- NOT DONE: 직접입력·단계별 힌트·인출강도, 전체 backfill/retry/coverage denominator, 실제 Safari/Chrome/Samsung Internet 실기기 확인은 미완료다.
+- NEXT: `work out`의 해결·계산·일이 풀림·운동 senses를 현재 정본 행과 기존 독립 검수 근거부터 대조한다. 뜻이 분리되지 않거나 출처가 부족하면 production으로 승격하지 않는다.
 
 ## 직전 batch — 숙어 active recall 두 번째 vertical slice VERIFIED / 2.6 공개 확인
 
