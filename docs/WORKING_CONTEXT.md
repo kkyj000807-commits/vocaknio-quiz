@@ -1,18 +1,18 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.23 18:26 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.23 18:32 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 배포 — 2.5, 전체 로드맵은 부분 완료
+## 현재 배포 — 2.6, 전체 로드맵은 부분 완료
 
 - Production: https://kkyj000807-commits.github.io/vocaknio-quiz/
-- 배포 전2.4 → 배포 후2.5. 앱 표시: 버전 2.5 · 최근 수정 2026.09.22 20:35 KST. 공개 게시·정합성 확인은 20:39 KST다.
-- 앱 소스4fb35fd88d877a596096ae7db741603e1bc6765a / Pages83ff488906ae4c8762a08f49096ed857048515df. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
-- Actions35722441306 success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion2.5 / builtAt2026-09-22T11:35:07.309Z.
-- 번들 entry-7a3d1694a435646fe7d84d311e6df44e.js / SHA256 0236f556b85fa887123ae8a7123eba9dcb510573c738ab9ff685aeab7afecc36.
-- 공개 root/settings/wordbook/quiz HTTP200, release.json 2.5·신규 번들·jury foreman 정의 포함을 확인했다. 공개 in-app browser에서 jury foreman 영영 정의 → 단어 인출 화면도 확인했으며 답변은 만들지 않았다.
+- 배포 전2.5 → 배포 후2.6. 앱 표시: 버전 2.6 · 최근 수정 2026.09.23 18:25 KST. 공개 게시·정합성 확인은 18:32 KST다.
+- 앱 소스2d10fa78e7f9b5425c9db4d04593023a66bd630b / Pages21dd73e0900c287649b40ed9569729a91fcb99d8. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
+- Actions35843121522 success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion2.6 / builtAt2026-09-23T09:25:31.831Z.
+- 번들 entry-3f4386049294a5f0e1e9178b807f5b88.js / SHA256 C87552E9AB9B480CE237B165AB0887CC22E0F72A765C2FFAD5D3D92601027ADB.
+- 공개 root/index.html과 quiz.html HTTP200, release.json 2.6·신규 번들·`put the cart before the horse` sense ID/문구를 확인했다. 확장자 없는 하위 route는 Pages가 404 shell로 앱을 제공하므로 단순 HTTP status를 성공 근거로 쓰지 않는다. 공개 in-app browser에서 해당 숙어의 영어 문맥 → 단어 인출 화면과 4개 선택지를 확인했으며 답변은 만들지 않았다.
 - 실제 iPhone Safari/Galaxy Tab Samsung Internet/모바일 Chrome 및 모든 기기 캐시는 미검증. in-app browser 결과를 실기기 검증으로 대신하지 않는다.
-- 산출물: C:/Users/USER/Documents/Codex/2026-08-03/realtime-voice-chat/work/vocanexus-production-2.5-20260922
-- Pages worktree: 같은 work 아래 vocanexus-pages-2.5-20260922. 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pages3f9cd38(2.4)을 보존했다.
+- 산출물: C:/Users/USER/Documents/Codex/2026-08-03/realtime-voice-chat/work/vocanexus-production-2.6-20260923
+- Pages worktree: 같은 work 아래 vocanexus-pages-2.6-20260923. 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pages83ff488(2.5)을 보존했다.
 
 ## 최신 제품 계약
 
@@ -26,14 +26,14 @@
 - 내용 작업 전 .agents/skills/transfer-english-reasoning/SKILL.md와 두 references를 읽는다. 공개 강의 원칙과 앱의 독자 추론/효과 실측을 구분한다.
 - 편입 관련 작업은 docs/MASTER_DB_SYNC_RULES.md를 따른다. 이 저장소에서 중앙 `2027 편입 마스터 DB`의 실제 위치·마지막 동기화 시점은 아직 확인되지 않았으므로, 현재 앱 정본을 중앙 DB와 동기화 완료했다고 간주하지 않는다(`sync_required`).
 
-## 현재 batch — 숙어 active recall 두 번째 vertical slice VERIFIED / 2.6 배포 후보
+## 현재 batch — 숙어 active recall 두 번째 vertical slice VERIFIED / 2.6 공개 확인
 
 - 기존 검수 자산 재사용: `put the cart before the horse`는 idiom-corrections와 expression-composition에 Oxford·Collins 독립 대조, 자체 정의·예문, 수레/말 결합 이미지가 이미 있었다. 새 사전 원문을 복제하지 않고 이 검수된 sense만 active-recall production에 연결했다.
 - 적용: JBKROW022984 한 행에 `later step before the earlier dependent step` sense, concise 정의, 자체 예문, 정의/문맥 prompt를 추가했다. near paraphrase와 관련 표현은 exact synonym으로 승격하지 않았고, `jump the gun`은 너무 이른 행동, `get ahead of oneself`는 앞선 결과 가정이라는 차이를 오답 이유에 고정했다.
 - 의미 경계: 핵심은 단순 성급함이나 기회 상실이 아니라 의존하는 두 단계의 선후 역전이다. `before`는 두 대상의 순서 비교이며 수레/말 이미지는 현대 의미 이해용이지 최초 역사 어원 주장으로 표시하지 않는다.
-- VERIFIED: active-recall 감사 2sense/3행/정의3/concise3/예문3/sense-safe 관계3/영영문제 가능3, targeted 19테스트, 전체 TypeScript·data/sense 감사·22파일165테스트 통과(인증1skip), 변경 lint 오류0, diff 공백 검사. 전체 38,163행 보강 완료가 아니다.
-- NOT DONE: 2.6 Production build/Pages/공개 화면 확인, 직접입력·힌트단계·인출강도, 전체 backfill/retry/coverage denominator는 미완료다.
-- NEXT: 2.6을 build/audit/Pages 배포하고 공개 정의·문맥 화면과 release manifest를 확인한다. 그 뒤 `take for granted`처럼 sense가 둘인 숙어는 의미를 분리한 다음에만 추가한다.
+- VERIFIED: active-recall 감사 2sense/3행/정의3/concise3/예문3/sense-safe 관계3/영영문제 가능3, targeted 19테스트, 전체 TypeScript·data/sense 감사·22파일165테스트 통과(인증1skip), 변경 lint 오류0, diff 공백 검사. Production build audit HTML22/학습JSON8/참조누락0/루트자산0. 로컬 화면에서 정의·문맥 문제와 정답 후 분리된 EN/KR/Near/Related UI, 공개 in-app browser에서 영어 문맥 문제를 확인했다. 전체 38,163행 보강 완료가 아니다.
+- NOT DONE: 직접입력·힌트단계·인출강도, 전체 backfill/retry/coverage denominator는 미완료다. 실제 Safari/Chrome/Samsung Internet 실기기 확인도 하지 않았다.
+- NEXT: `take for granted`처럼 sense가 둘인 숙어는 의미를 분리하고 독립 사전 대조한 다음에만 다음 production slice로 추가한다.
 
 ## 직전 batch — 영어 능동 인출 첫 production sense VERIFIED / 2.5 공개 확인
 
