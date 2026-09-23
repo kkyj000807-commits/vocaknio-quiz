@@ -8,6 +8,7 @@ const juryRows = VOCAB.filter(item => item.w === "jury foreman");
 const cartHorseRows = VOCAB.filter(item => item.w === "put the cart before the horse");
 const takeForGrantedRows = VOCAB.filter(item => item.w === "take for granted");
 const workOutRows = VOCAB.filter(item => item.w === "work out");
+const abideByRows = VOCAB.filter(item => item.w === "abide by");
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -25,7 +26,7 @@ describe("영어→영어 active recall", () => {
     expect(sense?.exactSynonyms).not.toContain("supervisor");
     expect(sense?.exactSynonyms).not.toContain("overseer");
     expect(getActiveRecallSenses(juryRows[0].id)).toHaveLength(1);
-    expect(getActiveRecallCoverage()).toEqual({ senses: 8, rows: 8, definitions: 8, examples: 8, synonymRelations: 8 });
+    expect(getActiveRecallCoverage()).toEqual({ senses: 9, rows: 10, definitions: 9, examples: 9, synonymRelations: 9 });
   });
 
   it("definition → target 문제를 만들고 정답을 하나로 유지한다", () => {
@@ -133,6 +134,28 @@ describe("영어→영어 active recall", () => {
     const [question] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [workOutRows[0].num], preserveItemOrder: true });
     expect(question.recall?.senseId).toBe("work-out:solve-problem");
     expect(question.answerKind).toBe("target");
+    expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
+    expect(validateQuestion(question)).toBe(true);
+  });
+
+  it("abide by를 동의 여부와 분리된 규칙 준수 sense로 두 행에 연결한다", () => {
+    expect(abideByRows.map(item => item.id)).toEqual(["JBKROW000004", "JBKROW002049"]);
+    const sense = getActiveRecallSenses(abideByRows[0].id)[0];
+    expect(sense).toMatchObject({
+      senseId: "abide-by:follow-governing-rule",
+      conciseEnglishDefinition: "to follow and honor a governing rule or decision",
+      koreanMeaning: "규칙·결정·약속을 따르고 지키다",
+      exactSynonyms: [],
+      nearSynonyms: ["comply with", "adhere to"],
+    });
+    expect(sense.distractors.find(choice => choice.word === "agree with")?.reasonKo).toContain("반대해도");
+    expect(getActiveRecallSenses(abideByRows[1].id)[0].senseId).toBe(sense.senseId);
+  });
+
+  it("abide by 영영 문제도 정답 하나와 현재 sense 계약을 유지한다", () => {
+    const random = vi.spyOn(Math, "random").mockReturnValue(0);
+    const [question] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [abideByRows[0].num], preserveItemOrder: true });
+    expect(question.recall?.senseId).toBe("abide-by:follow-governing-rule");
     expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
     expect(validateQuestion(question)).toBe(true);
   });

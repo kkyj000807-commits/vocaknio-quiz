@@ -457,6 +457,63 @@
       "quality": "B",
       "enrichmentStatus": "complete",
       "failureReason": null
+    },
+    {
+      "id": "abide-by:follow-governing-rule",
+      "headword": "abide by",
+      "partOfSpeech": "phrasal verb",
+      "senseId": "abide-by:follow-governing-rule",
+      "itemIds": ["JBKROW000004", "JBKROW002049"],
+      "englishDefinition": "To follow a rule or decision, or honor an agreement that governs what you should do.",
+      "conciseEnglishDefinition": "to follow and honor a governing rule or decision",
+      "exactSynonyms": [],
+      "nearSynonyms": ["comply with", "adhere to"],
+      "antonyms": ["violate", "disregard"],
+      "variants": [],
+      "relatedWords": ["observe"],
+      "exampleSentences": [
+        {
+          "en": "Even members who opposed the decision agreed to abide by it until the review was complete.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "규칙·결정·약속을 따르고 지키다",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "to follow and honor a rule, decision, or agreement"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "Although several members disliked the ruling, they agreed to _____ it until the appeal was heard."
+        }
+      ],
+      "distractors": [
+        {"word": "agree with", "meaningKo": "의견이 일치하다", "reasonKo": "판단에 동의하는 뜻이다. abide by는 개인적으로 반대해도 규칙·결정을 따라 행동할 수 있다.", "plausible": true},
+        {"word": "put up with", "meaningKo": "불쾌한 것을 참다", "reasonKo": "싫은 대상이나 상황을 견디는 뜻이며, 규칙을 기준으로 삼아 준수한다는 뜻이 아니다.", "plausible": true},
+        {"word": "appeal against", "meaningKo": "결정에 불복해 항소하다", "reasonKo": "결정을 바꾸도록 공식적으로 다투는 행동이지, 그 결정대로 행동한다는 뜻이 아니다.", "plausible": false}
+      ],
+      "sources": [
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/abide-by",
+          "independenceGroup": "Collins",
+          "note": "규칙·결정·약속대로 행동하는 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Cambridge Dictionary",
+          "url": "https://dictionary.cambridge.org/us/dictionary/english/abide-by",
+          "independenceGroup": "Cambridge",
+          "note": "결정·규칙을 받아들이고 준수하는 격식 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.09.05",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
     }
   ]
 }
