@@ -12,7 +12,7 @@
 - 공개 root와 quiz.html HTTP200, release.json2.8, 신규 번들과 2.8 V101/V201 학습 JSON을 확인했다. 공개 in-app browser에서 `work out`의 계산 sense가 영영 정의→단어 인출, 한국어 비노출, 단일정답3오답으로 표시되고 설정 화면에 `버전 2.8 · 최근 수정 2026.09.24 00:10 KST`가 표시됨을 확인했다. 답변은 만들지 않았다.
 - 실제 iPhone Safari/Galaxy Tab Samsung Internet/모바일 Chrome 및 모든 기기 캐시는 미검증. in-app browser 결과를 실기기 검증으로 대신하지 않는다.
 - 산출물: C:/Users/USER/AppData/Local/Temp/voca-nexus-2.8-dc67a568b7fe4eb8b90d6f721caa4199
-- Pages worktree: C:/Users/USER/AppData/Local/Temp/voca-pages-2.8-49371be683214d149d9739eec521b7aa. 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pagesdd1849d(2.7)을 보존했다.
+- Pages 임시 worktree는 배포 후 제거했다. 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pagesdd1849d(2.7)을 보존했다.
 
 ## 최신 제품 계약
 
