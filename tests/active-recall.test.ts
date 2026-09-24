@@ -9,6 +9,7 @@ const cartHorseRows = VOCAB.filter(item => item.w === "put the cart before the h
 const takeForGrantedRows = VOCAB.filter(item => item.w === "take for granted");
 const workOutRows = VOCAB.filter(item => item.w === "work out");
 const abideByRows = VOCAB.filter(item => item.w === "abide by");
+const teemWithRows = VOCAB.filter(item => item.w === "teem with");
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -26,7 +27,7 @@ describe("영어→영어 active recall", () => {
     expect(sense?.exactSynonyms).not.toContain("supervisor");
     expect(sense?.exactSynonyms).not.toContain("overseer");
     expect(getActiveRecallSenses(juryRows[0].id)).toHaveLength(1);
-    expect(getActiveRecallCoverage()).toEqual({ senses: 9, rows: 10, definitions: 9, examples: 9, synonymRelations: 9 });
+    expect(getActiveRecallCoverage()).toEqual({ senses: 10, rows: 12, definitions: 10, examples: 10, synonymRelations: 10 });
   });
 
   it("definition → target 문제를 만들고 정답을 하나로 유지한다", () => {
@@ -156,6 +157,29 @@ describe("영어→영어 active recall", () => {
     const random = vi.spyOn(Math, "random").mockReturnValue(0);
     const [question] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [abideByRows[0].num], preserveItemOrder: true });
     expect(question.recall?.senseId).toBe("abide-by:follow-governing-rule");
+    expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
+    expect(validateQuestion(question)).toBe(true);
+  });
+
+  it("teem with를 많은 대상의 활발한 밀집 sense로 두 행에 연결한다", () => {
+    expect(teemWithRows.map(item => item.id)).toEqual(["JBKROW000005", "JBKROW003863"]);
+    const sense = getActiveRecallSenses(teemWithRows[0].id)[0];
+    expect(sense).toMatchObject({
+      senseId: "teem-with:contain-many-active-things",
+      conciseEnglishDefinition: "to contain very many active people, animals, or things",
+      koreanMeaning: "사람·생물 등으로 가득하다; 북적거리다",
+      nearSynonyms: ["be full of", "abound with"],
+      variants: ["be teeming with"],
+    });
+    expect(sense.distractors.find(choice => choice.word === "team up with")?.reasonKo).toContain("철자");
+    expect(getActiveRecallSenses(teemWithRows[1].id)[0].senseId).toBe(sense.senseId);
+  });
+
+  it("teem with 영영 문제도 정답 하나와 현재 sense 계약을 유지한다", () => {
+    const random = vi.spyOn(Math, "random").mockReturnValue(0);
+    const [question] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [teemWithRows[0].num], preserveItemOrder: true });
+    expect(question.recall?.senseId).toBe("teem-with:contain-many-active-things");
+    expect(question.choices.map(choice => choice.value)).toContain("team up with");
     expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
     expect(validateQuestion(question)).toBe(true);
   });

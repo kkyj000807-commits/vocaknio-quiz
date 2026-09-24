@@ -514,6 +514,63 @@
       "quality": "B",
       "enrichmentStatus": "complete",
       "failureReason": null
+    },
+    {
+      "id": "teem-with:contain-many-active-things",
+      "headword": "teem with",
+      "partOfSpeech": "phrasal verb",
+      "senseId": "teem-with:contain-many-active-things",
+      "itemIds": ["JBKROW000005", "JBKROW003863"],
+      "englishDefinition": "For a place or area to contain very many people, animals, or things, often with a sense of active abundance.",
+      "conciseEnglishDefinition": "to contain very many active people, animals, or things",
+      "exactSynonyms": [],
+      "nearSynonyms": ["be full of", "abound with"],
+      "antonyms": ["be devoid of", "lack"],
+      "variants": ["be teeming with"],
+      "relatedWords": ["swarm with"],
+      "exampleSentences": [
+        {
+          "en": "By midsummer, the wetland teemed with insects and nesting birds.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "사람·생물 등으로 가득하다; 북적거리다",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "for a place to contain very many active people, animals, or things"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "After the spring rains, the restored marsh began to _____ frogs, insects, and water birds."
+        }
+      ],
+      "distractors": [
+        {"word": "team up with", "meaningKo": "함께 팀을 이루다", "reasonKo": "철자가 비슷하지만 사람·단체가 협력한다는 뜻이다. 장소가 많은 생명체를 품는다는 뜻이 아니다.", "plausible": true},
+        {"word": "trickle into", "meaningKo": "조금씩 들어오다", "reasonKo": "소수의 대상이 천천히 유입되는 움직임에 초점이 있어, 이미 수많은 대상이 가득한 상태와 다르다.", "plausible": true},
+        {"word": "clear out", "meaningKo": "비우다·떠나다", "reasonKo": "사람이나 물건을 없애 공간을 비우는 뜻으로, 많은 대상이 가득한 상태와 반대 방향이다.", "plausible": false}
+      ],
+      "sources": [
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/teem-with",
+          "independenceGroup": "Oxford",
+          "note": "많은 사람·동물이 움직이는 밀집 상태의 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/teem",
+          "independenceGroup": "Collins",
+          "note": "가득함·풍부함과 be teeming with 구조를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.09.05",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
     }
   ]
 }
