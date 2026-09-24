@@ -173,6 +173,6 @@
 
 - 같은 main/같은 대화/heartbeat voca-nexus 매시간. 기존 예약을 매회 새로 만들지 않는다.09.15 00:50 KST 실제 신호 수신 후 진행 중 2.2 공개 확인을 이어서 마감. 신호 수신≠지속 코딩. 절전/앱 종료/크레딧 소진 뒤 무인 복구는 미검증. 새 비용/API 전환 금지.
 - 재개: Git/status→이 상태→최근 diff→NEXT P0→관련 검사.2.3 재빌드/재배포나 옛1.8 작업 반복 불필요.
-- 이번 잠금 세션14135/PID3012는 마감 시 Enter로 해제한다. 다음 회차는 새로 잠금 획득한다.
+- 이번 잠금 세션14135/PID3012는 프로세스 종료로 OS 잠금이 해제됐고, 마감 재확인 세션70494/PID26036에서 다시 획득한 뒤 `LOCK_RELEASED`를 확인했다. 다음 회차는 새로 잠금 획득한다.
 - 사용자 보존: server/auth.ts, analysis/, build/, output/, pnpm-workspace.yaml, qa_claude/, scripts/analyze_exam_corpus.py, scripts/build_exam_analysis_queue.py, scripts/incremental_exam_corpus_update.mjs, scripts/incremental_exam_corpus_update.py, tmp/, vocab_project/를 수정·커밋·삭제하지 않았다. scripts/__pycache__도 커밋하지 않음.
 - 다음 실기기 확인 필요 외에 현재 사용자 인증/설정 행동은 요구하지 않는다.
