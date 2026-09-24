@@ -1,18 +1,18 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.24 00:15 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.24 13:15 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 배포 — 2.8, 전체 로드맵은 부분 완료
+## 현재 배포 — 2.9, 전체 로드맵은 부분 완료
 
 - Production: https://kkyj000807-commits.github.io/vocaknio-quiz/
-- 배포 전2.7 → 배포 후2.8. 앱 표시: 버전 2.8 · 최근 수정 2026.09.24 00:10 KST. 공개 게시·정합성 확인은 00:15 KST다.
-- 앱 소스044bbe5b1301d34db59fd0876cf5719242dee59e / Pagesdf89fc93ce850854391266fbff410f32d6323929. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
-- Actions35879768449 success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion2.8 / builtAt2026-09-23T15:10:02.097Z.
-- 번들 entry-49cba5a89d9ff56e9a5d131c6dc85e57.js / SHA256 AB3CEE9E11E07B8DD11E42593E13E0172C9101CF095632E3F64D3B100C7AD027.
-- 공개 root와 quiz.html HTTP200, release.json2.8, 신규 번들과 2.8 V101/V201 학습 JSON을 확인했다. 공개 in-app browser에서 `work out`의 계산 sense가 영영 정의→단어 인출, 한국어 비노출, 단일정답3오답으로 표시되고 설정 화면에 `버전 2.8 · 최근 수정 2026.09.24 00:10 KST`가 표시됨을 확인했다. 답변은 만들지 않았다.
+- 배포 전2.8 → 배포 후2.9. 앱 표시: 버전 2.9 · 최근 수정 2026.09.24 01:07 KST. 공개 게시·정합성 확인은 13:15 KST다.
+- 앱 소스831101d9389bd9d2c787eb9080bf7a494690841d / Pages7f19a4ac68954d6ade942de23398afb1643d8e24. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
+- Actions35954654819 success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion2.9 / builtAt2026-09-23T16:07:21.370Z.
+- 번들 entry-4dbdc85d3c714e0e765b2b6bb0bd29d5.js / SHA256 BB3A7679D8989EF3AE6525C61CDA389F1F84A6FC70947463B37E2DA0D1BBD2E9.
+- 공개 root와 quiz.html HTTP200, release.json2.9, 신규 번들과 2.9 학습 JSON8개를 확인했다. 공개 in-app browser에서 `abide by`가 문맥→단어 인출, 한국어 비노출, 단일정답3오답으로 표시되고 설정 화면에 `버전 2.9 · 최근 수정 2026.09.24 01:07 KST`가 표시됨을 확인했다. 답변은 만들지 않았다.
 - 실제 iPhone Safari/Galaxy Tab Samsung Internet/모바일 Chrome 및 모든 기기 캐시는 미검증. in-app browser 결과를 실기기 검증으로 대신하지 않는다.
-- 산출물: C:/Users/USER/AppData/Local/Temp/voca-nexus-2.8-dc67a568b7fe4eb8b90d6f721caa4199
-- Pages 임시 worktree는 배포 후 제거했다. 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pagesdd1849d(2.7)을 보존했다.
+- 산출물: C:/Users/USER/AppData/Local/Temp/voca-2.9-20260924-010721
+- Pages 임시 worktree는 배포 후 제거했다. 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pagesdf89fc9(2.8)을 보존했다.
 
 ## 최신 제품 계약
 
@@ -26,14 +26,22 @@
 - 내용 작업 전 .agents/skills/transfer-english-reasoning/SKILL.md와 두 references를 읽는다. 공개 강의 원칙과 앱의 독자 추론/효과 실측을 구분한다.
 - 편입 관련 작업은 docs/MASTER_DB_SYNC_RULES.md를 따른다. 이 저장소에서 중앙 `2027 편입 마스터 DB`의 실제 위치·마지막 동기화 시점은 아직 확인되지 않았으므로, 현재 앱 정본을 중앙 DB와 동기화 완료했다고 간주하지 않는다(`sync_required`).
 
-## 현재 batch — `work out` 네 sense 분리 VERIFIED / 2.8 공개 확인
+## 현재 batch — `abide by` 한 sense·두 정본행 VERIFIED / 2.9 공개 확인
+
+- 기존 `idiom-corrections`의 Collins·Cambridge 독립 대조와 기존 구성 해설을 재사용했다. `JBKROW000004`와 `JBKROW002049`를 `규칙·결정·약속을 따르고 지킴` 한 production sense로 묶었고, `can't abide`의 `견디지 못하다` sense는 섞지 않았다.
+- 자체 concise/full 정의·예문·정의/문맥 prompt를 추가했다. near synonym은 `comply with`, `adhere to`, 오답은 `agree with`(의견 일치), `put up with`(참다), `appeal against`(이의 제기)로 역할을 분리했다. 한국어는 정답 전 단서로 노출하지 않는다.
+- VERIFIED: active-recall 9sense/10행/정의10/concise10/예문10/sense-safe 관계10/영영문제 가능10/failure0. targeted20테스트, 전체 TypeScript·data/sense 감사·22파일171테스트 통과(인증1skip), diff 공백 검사. Production2.9 build audit HTML22/학습JSON8/참조누락0/루트자산0. 공개 release·bundle SHA와 공개 in-app browser 문항/설정 버전을 확인했다.
+- NOT DONE: 직접입력·단계별 힌트·인출강도, 전체 backfill/retry/coverage denominator, 실제 Safari/Chrome/Samsung Internet 실기기 확인은 미완료다.
+- NEXT: 기존 독립 검수 근거·명확한 sense 경계·겹치지 않는 오답3개가 있는 숙어 하나를 골라 같은 source→예문→정의/문맥 문제→UI vertical slice로 닫는다. 근거가 부족하면 production으로 승격하지 않는다.
+
+## 직전 batch — `work out` 네 sense 분리 VERIFIED / 2.8 공개 확인
 
 - 기존 검수 자산의 Oxford·Collins 독립 대조를 재사용했다. 정본 `work out` 4행을 `문제 해결`, `수치 계산`, `상황이 만족스럽게 풀림`, `운동`의 네 production sense로 분리했으며 사전 원문은 복제하지 않았다.
 - 각 sense에 자체 concise/full 정의·예문·정의/문맥 prompt·서로 겹치지 않는 오답3개를 연결했다. solve/calculate/succeed/exercise를 한 문제의 동의어로 섞지 않고 문장 구조·목적어·주어에 따라 고정했다. 한국어는 정답 전 단서로 노출하지 않는다.
 - 구성 해설 15번째 항목으로 `work`와 부사적 소사 `out`을 연결했다. 답·결과가 드러나는 이미지는 현대 의미 이해용이며, out 하나가 모든 sense를 만든다는 역사적 어원/일반 공식으로 주장하지 않는다.
 - VERIFIED: active-recall 8sense/8행/정의8/예문8/sense-safe 관계8/영영문제 가능8/failure0. targeted18테스트, 전체 TypeScript·data/sense 감사·22파일169테스트 통과(인증1skip), diff 공백 검사. Production2.8 build audit HTML22/학습JSON8/참조누락0/루트자산0. 공개 in-app browser에서 계산 sense의 영영 정의→`work out` 단일정답 문항과 한국어 비노출, 설정 버전을 확인했다.
 - NOT DONE: 직접입력·단계별 힌트·인출강도, 전체 backfill/retry/coverage denominator, 실제 Safari/Chrome/Samsung Internet 실기기 확인은 미완료다.
-- NEXT: 숙어·표현 후보 중 정본 반복행과 기존 독립 검수 근거가 모두 있는 항목 하나를 audit으로 고르고, 한 sense를 source→예문→정의/문맥 문제→UI까지 닫는다. 근거·분리된 sense·명확한 오답3개가 없으면 production으로 승격하지 않는다.
+- NEXT였던 숙어 후보 선별은 위 `abide by` batch로 닫았다.
 
 ## 직전 batch — `take for granted` 두 sense 분리 VERIFIED / 2.7 공개 확인
 
@@ -147,7 +155,7 @@
 2. P0/P2: 본/오답 기록은 여전히 headword번호 중심. 실패한 특정 sense를 다음 오답 문제로 유지하는 것은 NOT DONE. 기존 오답 번호/성적을 임의 변환하지 말고 additive 저장/복원 계약과 회귀 테스트부터 설계한다. 옛 중단 세션은 보존하며 자동 재채점하지 않는다.
 3. P1: 자동 오늘학습 queue, 네 기본 유형(영한sense/영영관계/문맥/contrast) 전체 연결 미완료. 기존 세부 모드 보존. 모바일 실기기 검증과 랜덤 순서 안정성도 남음.
 4. P1/P2: 단어장 검색 실측38163행/8검색×10 median14.97ms,p95 70.21ms. 북마크 state 변경 시 filteredVocab의 shuffle 재실행 코드 확인, 수정 보류. 새 검색엔진 도입 없이 순서 생명주기 분리부터 검증한다.
-5. 콘텐츠: 반복 가능한 후보 생성→검수→생산 파이프라인 전체는 NOT DONE. 현재 production active-recall은 `jury foreman`, `put the cart before the horse`, `take for granted`2sense, `work out`4sense의 좁은 8sense/8행뿐이다. 다음 숙어도 기존 독립 검수 근거와 sense 경계부터 확인한다. 의미핵 전수 완료로 보고하지 않는다.
+5. 콘텐츠: 반복 가능한 후보 생성→검수→생산 파이프라인 전체는 NOT DONE. 현재 production active-recall은 `jury foreman`, `put the cart before the horse`, `take for granted`2sense, `work out`4sense, `abide by`의 좁은 9sense/10행뿐이다. 다음 숙어도 기존 독립 검수 근거와 sense 경계부터 확인한다. 의미핵 전수 완료로 보고하지 않는다.
 6. 오답 전용 중단 복원, 여러 탭 동시 기록 보호, 깨진 기록 사용자 백업/복구, 오답 원인 추론/sense mastery/학교별 기출 환류 미완료. 학습 큐를 우회한 AsyncStorage 쓰기 금지.
 7. 플래시카드 숨긴 뜻이 DOM 접근성 트리에 남는 후보 관찰, 실제 마운트/aria 확인 필요. 시각적으로 답이 보인다고 단정하지 않는다.
 8. P3: CI 자동 verify/build, 공통 swipe의 실익 있는 최소 추출, 오래된 PR1/2/3·claude/*의 main 미반영 가치 비교. 삭제/branch protection 변경 금지.
@@ -155,7 +163,7 @@
 ## 데이터 및 이전 안정 기능 보존
 
 - 정본38163행. 숙어·표현3731행/소문자 표제어1877개(연어·고유명사 포함).
-- 깊이 학습139sense/218행, 문맥 연습6표현/13문항/17행, 구성요소 해설15표현, 새 본문풀6문항/16행, active-recall8sense/8행은 서로 다른 지표다.
+- 깊이 학습139sense/218행, 문맥 연습6표현/13문항/17행, 구성요소 해설15표현, 새 본문풀6문항/16행, active-recall9sense/10행은 서로 다른 지표다.
 - 기존 all but 의미핵1표현/2행과 문맥연습3문항 유지. 미국식 허가 녹음17개, 나머지en-US합성음.
 - 1.9 본 문풀 마지막 세션 문제/보기/응답/이전위치/입력초안/힌트/플래시 상태 복원 유지. 완료/다른 요청/정본 변경 때 재사용하지 않음.
 - 1.8의 공통 learningStorageQueue/persistLearningEntries와 실패 재시도/깨진 원본 보존 유지. 병렬 북마크 유실·오답 부활·오래된 값 덮기를 회귀 검사했다. 여러 탭 원자성까지 보장하지 않는다.
@@ -165,6 +173,6 @@
 
 - 같은 main/같은 대화/heartbeat voca-nexus 매시간. 기존 예약을 매회 새로 만들지 않는다.09.15 00:50 KST 실제 신호 수신 후 진행 중 2.2 공개 확인을 이어서 마감. 신호 수신≠지속 코딩. 절전/앱 종료/크레딧 소진 뒤 무인 복구는 미검증. 새 비용/API 전환 금지.
 - 재개: Git/status→이 상태→최근 diff→NEXT P0→관련 검사.2.3 재빌드/재배포나 옛1.8 작업 반복 불필요.
-- 이번 잠금 세션43586/PID13844는 마감 시 Enter로 해제한다. 다음 회차는 새로 잠금 획득한다.
+- 이번 잠금 세션14135/PID3012는 마감 시 Enter로 해제한다. 다음 회차는 새로 잠금 획득한다.
 - 사용자 보존: server/auth.ts, analysis/, build/, output/, pnpm-workspace.yaml, qa_claude/, scripts/analyze_exam_corpus.py, scripts/build_exam_analysis_queue.py, scripts/incremental_exam_corpus_update.mjs, scripts/incremental_exam_corpus_update.py, tmp/, vocab_project/를 수정·커밋·삭제하지 않았다. scripts/__pycache__도 커밋하지 않음.
 - 다음 실기기 확인 필요 외에 현재 사용자 인증/설정 행동은 요구하지 않는다.
