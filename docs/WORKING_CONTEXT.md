@@ -1,18 +1,18 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.24 13:15 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.24 23:47 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 배포 — 2.9, 전체 로드맵은 부분 완료
+## 현재 배포 — 3.0, 전체 로드맵은 부분 완료
 
 - Production: https://kkyj000807-commits.github.io/vocaknio-quiz/
-- 배포 전2.8 → 배포 후2.9. 앱 표시: 버전 2.9 · 최근 수정 2026.09.24 01:07 KST. 공개 게시·정합성 확인은 13:15 KST다.
-- 앱 소스831101d9389bd9d2c787eb9080bf7a494690841d / Pages7f19a4ac68954d6ade942de23398afb1643d8e24. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
-- Actions35954654819 success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion2.9 / builtAt2026-09-23T16:07:21.370Z.
-- 번들 entry-4dbdc85d3c714e0e765b2b6bb0bd29d5.js / SHA256 BB3A7679D8989EF3AE6525C61CDA389F1F84A6FC70947463B37E2DA0D1BBD2E9.
-- 공개 root와 quiz.html HTTP200, release.json2.9, 신규 번들과 2.9 학습 JSON8개를 확인했다. 공개 in-app browser에서 `abide by`가 문맥→단어 인출, 한국어 비노출, 단일정답3오답으로 표시되고 설정 화면에 `버전 2.9 · 최근 수정 2026.09.24 01:07 KST`가 표시됨을 확인했다. 답변은 만들지 않았다.
+- 배포 전2.9 → 배포 후3.0. 앱 표시: 버전 3.0 · 최근 수정 2026.09.24 23:42 KST. 공개 게시·정합성 확인은 23:47 KST다.
+- 앱 소스c14a470c00e5e2f1e2ff5e36ad475586435cbb55 / Pages63ed9d8229d1b8d68aaac7f8b7d0713d90bb399d. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
+- Actions36014936551 success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion3.0 / builtAt2026-09-24T14:42:40.412Z.
+- 번들 entry-2537c184134741d453bf9fe84dc2e233.js / SHA256 09D7FBB40EE9E0BA103B8CE6D15B9A6777D5678AC1559B63D0CBC28A1252534B.
+- 공개 root와 quiz.html HTTP200, release.json3.0, 신규 번들과 3.0 학습 JSON8개를 확인했다. 공개 in-app browser에서 `teem with`가 문맥→단어 인출, 한국어 비노출, 단일정답3오답으로 표시되고 설정 화면에 `버전 3.0 · 최근 수정 2026.09.24 23:42 KST`가 표시됨을 확인했다. 답변은 만들지 않았다.
 - 실제 iPhone Safari/Galaxy Tab Samsung Internet/모바일 Chrome 및 모든 기기 캐시는 미검증. in-app browser 결과를 실기기 검증으로 대신하지 않는다.
-- 산출물: C:/Users/USER/AppData/Local/Temp/voca-2.9-20260924-010721
-- Pages 임시 worktree는 배포 후 제거했다. 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pagesdf89fc9(2.8)을 보존했다.
+- 산출물: C:/Users/USER/AppData/Local/Temp/voca-3.0-20260924-234240
+- Pages 임시 worktree는 배포 후 제거했다. 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pages7f19a4a(2.9)를 보존했다.
 
 ## 최신 제품 계약
 
@@ -26,7 +26,15 @@
 - 내용 작업 전 .agents/skills/transfer-english-reasoning/SKILL.md와 두 references를 읽는다. 공개 강의 원칙과 앱의 독자 추론/효과 실측을 구분한다.
 - 편입 관련 작업은 docs/MASTER_DB_SYNC_RULES.md를 따른다. 이 저장소에서 중앙 `2027 편입 마스터 DB`의 실제 위치·마지막 동기화 시점은 아직 확인되지 않았으므로, 현재 앱 정본을 중앙 DB와 동기화 완료했다고 간주하지 않는다(`sync_required`).
 
-## 현재 batch — `abide by` 한 sense·두 정본행 VERIFIED / 2.9 공개 확인
+## 현재 batch — `teem with` 한 sense·두 정본행 VERIFIED / 3.0 공개 확인
+
+- 기존 `idiom-corrections`의 Oxford·Collins 독립 대조와 기존 구성 해설을 재사용했다. `JBKROW000005`와 `JBKROW003863`을 `많은 사람·생물·활동적인 것들이 가득함` 한 production sense로 묶었고, 단순히 물건으로 차 있는 `be full of`보다 생동감 있는 군집 뉘앙스를 정의와 문맥에 반영했다.
+- 자체 concise/full 정의·예문·정의/문맥 prompt를 추가했다. near synonym은 `be full of`, `abound with`, 오답은 `team up with`(협력하다), `trickle into`(조금씩 흘러들다), `clear out`(비우다)로 역할을 분리했다. 한국어는 정답 전 단서로 노출하지 않는다.
+- VERIFIED: active-recall 10sense/12행/정의12/concise12/예문12/sense-safe 관계12/영영문제 가능12/failure0. targeted22테스트, 전체 TypeScript·data/sense 감사·22파일173테스트 통과(인증1skip), diff 공백 검사. Production3.0 build audit HTML22/학습JSON8/참조누락0/루트자산0. 공개 release·bundle SHA와 공개 in-app browser 문항/설정 버전을 확인했다.
+- NOT DONE: 직접입력·단계별 힌트·인출강도, 전체 backfill/retry/coverage denominator, 실제 Safari/Chrome/Samsung Internet 실기기 확인은 미완료다.
+- NEXT: `wrap up`처럼 여러 sense가 가능한 다음 숙어는 먼저 `일을 마무리하다`/`몸을 따뜻하게 감싸다`/`물건을 싸다`의 경계를 독립 사전으로 분리한 뒤, 한 sense만 source→예문→정의/문맥 문제→UI vertical slice로 닫는다. 근거가 부족하면 production으로 승격하지 않는다.
+
+## 직전 batch — `abide by` 한 sense·두 정본행 VERIFIED / 2.9 공개 확인
 
 - 기존 `idiom-corrections`의 Collins·Cambridge 독립 대조와 기존 구성 해설을 재사용했다. `JBKROW000004`와 `JBKROW002049`를 `규칙·결정·약속을 따르고 지킴` 한 production sense로 묶었고, `can't abide`의 `견디지 못하다` sense는 섞지 않았다.
 - 자체 concise/full 정의·예문·정의/문맥 prompt를 추가했다. near synonym은 `comply with`, `adhere to`, 오답은 `agree with`(의견 일치), `put up with`(참다), `appeal against`(이의 제기)로 역할을 분리했다. 한국어는 정답 전 단서로 노출하지 않는다.
@@ -155,7 +163,7 @@
 2. P0/P2: 본/오답 기록은 여전히 headword번호 중심. 실패한 특정 sense를 다음 오답 문제로 유지하는 것은 NOT DONE. 기존 오답 번호/성적을 임의 변환하지 말고 additive 저장/복원 계약과 회귀 테스트부터 설계한다. 옛 중단 세션은 보존하며 자동 재채점하지 않는다.
 3. P1: 자동 오늘학습 queue, 네 기본 유형(영한sense/영영관계/문맥/contrast) 전체 연결 미완료. 기존 세부 모드 보존. 모바일 실기기 검증과 랜덤 순서 안정성도 남음.
 4. P1/P2: 단어장 검색 실측38163행/8검색×10 median14.97ms,p95 70.21ms. 북마크 state 변경 시 filteredVocab의 shuffle 재실행 코드 확인, 수정 보류. 새 검색엔진 도입 없이 순서 생명주기 분리부터 검증한다.
-5. 콘텐츠: 반복 가능한 후보 생성→검수→생산 파이프라인 전체는 NOT DONE. 현재 production active-recall은 `jury foreman`, `put the cart before the horse`, `take for granted`2sense, `work out`4sense, `abide by`의 좁은 9sense/10행뿐이다. 다음 숙어도 기존 독립 검수 근거와 sense 경계부터 확인한다. 의미핵 전수 완료로 보고하지 않는다.
+5. 콘텐츠: 반복 가능한 후보 생성→검수→생산 파이프라인 전체는 NOT DONE. 현재 production active-recall은 `jury foreman`, `put the cart before the horse`, `take for granted`2sense, `work out`4sense, `abide by`, `teem with`의 좁은 10sense/12행뿐이다. 다음 숙어도 기존 독립 검수 근거와 sense 경계부터 확인한다. 의미핵 전수 완료로 보고하지 않는다.
 6. 오답 전용 중단 복원, 여러 탭 동시 기록 보호, 깨진 기록 사용자 백업/복구, 오답 원인 추론/sense mastery/학교별 기출 환류 미완료. 학습 큐를 우회한 AsyncStorage 쓰기 금지.
 7. 플래시카드 숨긴 뜻이 DOM 접근성 트리에 남는 후보 관찰, 실제 마운트/aria 확인 필요. 시각적으로 답이 보인다고 단정하지 않는다.
 8. P3: CI 자동 verify/build, 공통 swipe의 실익 있는 최소 추출, 오래된 PR1/2/3·claude/*의 main 미반영 가치 비교. 삭제/branch protection 변경 금지.
@@ -173,6 +181,6 @@
 
 - 같은 main/같은 대화/heartbeat voca-nexus 매시간. 기존 예약을 매회 새로 만들지 않는다.09.15 00:50 KST 실제 신호 수신 후 진행 중 2.2 공개 확인을 이어서 마감. 신호 수신≠지속 코딩. 절전/앱 종료/크레딧 소진 뒤 무인 복구는 미검증. 새 비용/API 전환 금지.
 - 재개: Git/status→이 상태→최근 diff→NEXT P0→관련 검사.2.3 재빌드/재배포나 옛1.8 작업 반복 불필요.
-- 이번 잠금 세션14135/PID3012는 프로세스 종료로 OS 잠금이 해제됐고, 마감 재확인 세션70494/PID26036에서 다시 획득한 뒤 `LOCK_RELEASED`를 확인했다. 다음 회차는 새로 잠금 획득한다.
+- 이번 잠금 세션16196/PID29572에서 `LOCK_ACQUIRED` 후 수정했고, 문서 커밋 뒤 Enter로 해제할 예정이다. 다음 회차는 새로 잠금 획득한다.
 - 사용자 보존: server/auth.ts, analysis/, build/, output/, pnpm-workspace.yaml, qa_claude/, scripts/analyze_exam_corpus.py, scripts/build_exam_analysis_queue.py, scripts/incremental_exam_corpus_update.mjs, scripts/incremental_exam_corpus_update.py, tmp/, vocab_project/를 수정·커밋·삭제하지 않았다. scripts/__pycache__도 커밋하지 않음.
 - 다음 실기기 확인 필요 외에 현재 사용자 인증/설정 행동은 요구하지 않는다.
