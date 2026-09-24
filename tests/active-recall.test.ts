@@ -10,6 +10,7 @@ const takeForGrantedRows = VOCAB.filter(item => item.w === "take for granted");
 const workOutRows = VOCAB.filter(item => item.w === "work out");
 const abideByRows = VOCAB.filter(item => item.w === "abide by");
 const teemWithRows = VOCAB.filter(item => item.w === "teem with");
+const wrapUpRows = VOCAB.filter(item => item.w === "wrap up");
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -27,7 +28,7 @@ describe("영어→영어 active recall", () => {
     expect(sense?.exactSynonyms).not.toContain("supervisor");
     expect(sense?.exactSynonyms).not.toContain("overseer");
     expect(getActiveRecallSenses(juryRows[0].id)).toHaveLength(1);
-    expect(getActiveRecallCoverage()).toEqual({ senses: 10, rows: 12, definitions: 10, examples: 10, synonymRelations: 10 });
+    expect(getActiveRecallCoverage()).toEqual({ senses: 11, rows: 14, definitions: 11, examples: 11, synonymRelations: 11 });
   });
 
   it("definition → target 문제를 만들고 정답을 하나로 유지한다", () => {
@@ -180,6 +181,31 @@ describe("영어→영어 active recall", () => {
     const [question] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [teemWithRows[0].num], preserveItemOrder: true });
     expect(question.recall?.senseId).toBe("teem-with:contain-many-active-things");
     expect(question.choices.map(choice => choice.value)).toContain("team up with");
+    expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
+    expect(validateQuestion(question)).toBe(true);
+  });
+
+  it("wrap up의 업무 마무리 sense만 두 행에 연결한다", () => {
+    expect(wrapUpRows.map(item => item.id)).toEqual(["JBKROW000016", "JBKROW004042"]);
+    const sense = getActiveRecallSenses(wrapUpRows[0].id)[0];
+    expect(sense).toMatchObject({
+      senseId: "wrap-up:finish-activity",
+      conciseEnglishDefinition: "to finish an activity by completing its final details",
+      koreanMeaning: "일·회의의 남은 부분을 정리해 마무리하다",
+      nearSynonyms: ["bring to a close", "finish up"],
+      variants: ["wrap it up"],
+    });
+    expect(sense.englishDefinition).not.toContain("warm");
+    expect(sense.englishDefinition).not.toContain("paper");
+    expect(sense.distractors.find(choice => choice.word === "sum up")?.reasonKo).toContain("간추리는");
+    expect(getActiveRecallSenses(wrapUpRows[1].id)[0].senseId).toBe(sense.senseId);
+  });
+
+  it("wrap up 영영 문제도 정답 하나와 현재 sense 계약을 유지한다", () => {
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const [question] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [wrapUpRows[0].num], preserveItemOrder: true });
+    expect(question.recall?.senseId).toBe("wrap-up:finish-activity");
+    expect(question.choices.map(choice => choice.value)).toContain("sum up");
     expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
     expect(validateQuestion(question)).toBe(true);
   });

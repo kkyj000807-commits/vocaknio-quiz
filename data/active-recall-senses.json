@@ -571,6 +571,63 @@
       "quality": "B",
       "enrichmentStatus": "complete",
       "failureReason": null
+    },
+    {
+      "id": "wrap-up:finish-activity",
+      "headword": "wrap up",
+      "partOfSpeech": "phrasal verb",
+      "senseId": "wrap-up:finish-activity",
+      "itemIds": ["JBKROW000016", "JBKROW004042"],
+      "englishDefinition": "To finish an activity, discussion, or piece of work by dealing with its remaining details.",
+      "conciseEnglishDefinition": "to finish an activity by completing its final details",
+      "exactSynonyms": [],
+      "nearSynonyms": ["bring to a close", "finish up"],
+      "antonyms": ["leave unfinished", "drag out"],
+      "variants": ["wrap it up"],
+      "relatedWords": ["conclude"],
+      "exampleSentences": [
+        {
+          "en": "The chair wrapped up the meeting after the committee agreed on the final amendment.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "일·회의의 남은 부분을 정리해 마무리하다",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "to finish an activity by completing its remaining details"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "After resolving the final budget question, the chair asked the committee to _____ the meeting and record the agreed next steps."
+        }
+      ],
+      "distractors": [
+        {"word": "sum up", "meaningKo": "요점을 요약하다", "reasonKo": "핵심 내용을 간추리는 뜻이다. 회의를 끝내기 전에 할 수 있지만, 남은 절차를 처리해 활동 자체를 마무리한다는 뜻과는 다르다.", "plausible": true},
+        {"word": "put off", "meaningKo": "뒤로 미루다", "reasonKo": "지금 끝맺는 대신 나중으로 연기하는 뜻이므로 목표 sense와 반대 방향이다.", "plausible": true},
+        {"word": "set up", "meaningKo": "준비하다·마련하다", "reasonKo": "회의나 활동이 시작되도록 준비하는 뜻이며, 이미 진행한 일을 끝맺는 뜻이 아니다.", "plausible": false}
+      ],
+      "sources": [
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/wrap-up",
+          "independenceGroup": "Oxford",
+          "note": "회의·합의·활동을 마무리하는 비격식 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/wrap-up",
+          "independenceGroup": "Collins",
+          "note": "일·활동의 만족스러운 완료 sense와 따뜻하게 감싸는 별도 sense를 기존 독립 검수에서 대조함; 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.09.05",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
     }
   ]
 }
