@@ -1,5 +1,6 @@
 import { ProblemSenseContext } from "@/components/problem-sense-context";
 import { ActiveRecallAnswer, ActiveRecallPrompt } from "@/components/active-recall-card";
+import { MnemonicCue } from "@/components/mnemonic-cue";
 import {
   useState,
   useCallback,
@@ -45,16 +46,28 @@ import {
   type QuizQuestion,
 } from "@/lib/quiz-engine";
 import {
-  addMastered,
   loadBookmarks,
   loadMastered,
+  loadSenseLearningState,
+  markLearningTargetMastered,
   loadQuizSession,
   saveQuizSession,
   prepareAdaptiveQuizSession,
   recordOneAnswer,
+  recordSenseLearningEvent,
   toggleBookmark,
   type AdaptiveAnswerContext,
 } from "@/lib/store";
+import {
+  getItemLearningTargets,
+  getQuestionLearningTargetKey,
+} from "@/lib/canonical-learning";
+import {
+  getLearningTargetState,
+  learningPriority,
+  masteredTargetKeys,
+} from "@/lib/learning-state";
+import { getMnemonicVisual } from "@/lib/mnemonic-visual";
 import { useColors } from "@/hooks/use-colors";
 import {
   createEmptyQuestionViewState,
@@ -101,6 +114,7 @@ export default function QuizScreen() {
   );
   const sessionIdRef = useRef("");
   const sessionCompletedRef = useRef(false);
+  const questionStartedAtRef = useRef(Date.now());
   const [restartToken, setRestartToken] = useState(0);
   const [sessionNotice, setSessionNotice] = useState("");
   const params = useLocalSearchParams<{
@@ -151,6 +165,7 @@ export default function QuizScreen() {
   );
   const [bookmarks, setBookmarks] = useState<number[]>([]);
   const [hintLevel, setHintLevel] = useState(0);
+  const [imageRevealed, setImageRevealed] = useState(false);
   const [masteredOnCard, setMasteredOnCard] = useState(false);
   const requestKey = useMemo(() => JSON.stringify({ mode, rangeStart, rangeEnd, count, rangeId, choiceLang, itemNums }),
     [mode, rangeStart, rangeEnd, count, rangeId, choiceLang, itemNums]);
@@ -209,8 +224,12 @@ export default function QuizScreen() {
         setQuestionsReady(true);
         return;
       }
-      const loadedMastered = mode === "flashcard" ? await loadMastered() : [];
+      const [loadedMastered, learningState] = await Promise.all([
+        loadMastered(),
+        loadSenseLearningState(),
+      ]);
       if (cancelled) return;
+      const masteredKeys = [...masteredTargetKeys(learningState)];
 
       const baseOptions = {
         mode,
@@ -220,6 +239,7 @@ export default function QuizScreen() {
         rangeId,
         choiceLang,
         masteredNums: loadedMastered,
+        masteredTargetKeys: masteredKeys,
         itemNums: itemNums.length > 0 ? itemNums : undefined,
         allowMeaningFallback: true,
       } as const;
@@ -232,11 +252,19 @@ export default function QuizScreen() {
         sessionId,
         rangeId: rangeId || "custom",
         mode,
-        candidates: candidates.map((item) => ({
-          num: item.num,
-          conceptId: item.conceptId,
-          word: item.w,
-        })),
+        candidates: candidates.map((item) => {
+          const targets = getItemLearningTargets(item);
+          const rankedTargets = targets
+            .map(target => ({ target, score: learningPriority(getLearningTargetState(learningState, target.key)) }))
+            .sort((left, right) => right.score - left.score);
+          return {
+            num: item.num,
+            conceptId: item.conceptId,
+            word: item.w,
+            learningKey: rankedTargets[0]?.target.key,
+            learningPriority: rankedTargets[0]?.score ?? 0,
+          };
+        }),
         count,
       });
       if (cancelled) return;
@@ -272,7 +300,10 @@ export default function QuizScreen() {
     prepareQuestions().catch(async () => {
       if (cancelled) return;
       setSessionNotice("이어 풀기 기록을 준비하지 못했습니다. 이번 진행은 복원되지 않을 수 있어요.");
-      const loadedMastered = mode === "flashcard" ? await loadMastered() : [];
+      const [loadedMastered, learningState] = await Promise.all([
+        loadMastered(),
+        loadSenseLearningState(),
+      ]);
       if (cancelled) return;
       setQuestions(
         buildQuizQuestions({
@@ -283,6 +314,7 @@ export default function QuizScreen() {
           rangeId,
           choiceLang,
           masteredNums: loadedMastered,
+          masteredTargetKeys: [...masteredTargetKeys(learningState)],
           itemNums: itemNums.length > 0 ? itemNums : undefined,
           allowMeaningFallback: true,
         }),
@@ -383,6 +415,27 @@ export default function QuizScreen() {
 
   const q = questions[currentIdx];
   const isBookmarked = q ? bookmarks.includes(q.item.num) : false;
+  const mnemonicVisual = getMnemonicVisual(q?.recall?.senseId ?? q?.sense?.senseId);
+
+  const handleImageHint = useCallback(() => {
+    if (!q || !mnemonicVisual || imageRevealed) return;
+    haptic("light");
+    setImageRevealed(true);
+    void recordSenseLearningEvent({
+      targetKey: getQuestionLearningTargetKey(q),
+      type: "image_used",
+      questionType: mode,
+    });
+  }, [haptic, imageRevealed, mnemonicVisual, mode, q]);
+
+  const recordImageHelped = useCallback(() => {
+    if (!q || !imageRevealed) return;
+    void recordSenseLearningEvent({
+      targetKey: getQuestionLearningTargetKey(q),
+      type: "image_helped",
+      questionType: mode,
+    });
+  }, [imageRevealed, mode, q]);
 
   const makeAdaptiveAnswerContext = useCallback(
     (
@@ -397,10 +450,19 @@ export default function QuizScreen() {
         outcome,
         responseKey,
         answeredAt: Date.now(),
+        responseMs: Math.max(0, Date.now() - questionStartedAtRef.current),
+        learningTargetKey: getQuestionLearningTargetKey(q),
+        learningEvent: outcome === "skip" ? "unknown" : undefined,
+        hintUsed: hintLevel > 0 || imageRevealed,
       };
     },
-    [mode, q],
+    [hintLevel, imageRevealed, mode, q],
   );
+
+  useEffect(() => {
+    questionStartedAtRef.current = Date.now();
+    setImageRevealed(false);
+  }, [currentIdx, q?.id]);
 
   const handleBookmark = useCallback(async () => {
     if (!q) return;
@@ -448,6 +510,7 @@ export default function QuizScreen() {
         ),
         makeSessionSnapshot(),
       );
+      if (isCorrect) recordImageHelped();
     },
     [
       answered,
@@ -458,6 +521,7 @@ export default function QuizScreen() {
       captureQuestionViewState,
       makeAdaptiveAnswerContext,
       makeSessionSnapshot,
+      recordImageHelped,
     ],
   );
 
@@ -529,6 +593,7 @@ export default function QuizScreen() {
         makeAdaptiveAnswerContext(grade, grade),
         makeSessionSnapshot(),
       );
+      if (grade === "correct") recordImageHelped();
     },
     [
       answered,
@@ -538,6 +603,7 @@ export default function QuizScreen() {
       captureQuestionViewState,
       makeAdaptiveAnswerContext,
       makeSessionSnapshot,
+      recordImageHelped,
     ],
   );
 
@@ -553,7 +619,7 @@ export default function QuizScreen() {
     isMovingRef.current = true;
     haptic("success");
     try {
-      await addMastered(q.item.num);
+      await markLearningTargetMastered(getQuestionLearningTargetKey(q), q.item.num);
     } catch {
       isMovingRef.current = false;
       return;
@@ -570,7 +636,15 @@ export default function QuizScreen() {
       mastered: true,
     });
     // '마스터'는 알고 있는 단어로 한 번만 채점한다.
-    recordOneAnswer(true, undefined, makeAdaptiveAnswerContext("mastered"), makeSessionSnapshot());
+    const masteredContext = makeAdaptiveAnswerContext("mastered");
+    recordOneAnswer(
+      true,
+      undefined,
+      masteredContext
+        ? { ...masteredContext, learningTargetKey: undefined }
+        : undefined,
+      makeSessionSnapshot(),
+    );
     // 마스터 처리 후 자동으로 다음 문제로 이동
     if (currentIdx + 1 >= questions.length) {
       await finishSession();
@@ -640,6 +714,7 @@ export default function QuizScreen() {
       makeAdaptiveAnswerContext(isCorrect ? "correct" : "wrong", typedAnswer),
       makeSessionSnapshot(),
     );
+    if (isCorrect) recordImageHelped();
   }, [
     answered,
     currentIdx,
@@ -649,6 +724,7 @@ export default function QuizScreen() {
     captureQuestionViewState,
     makeAdaptiveAnswerContext,
     makeSessionSnapshot,
+    recordImageHelped,
   ]);
 
   const handleNext = useCallback(async () => {
@@ -947,6 +1023,22 @@ export default function QuizScreen() {
               {/* 4지선다 모드 */}
               {q.recall && !answered ? <ActiveRecallPrompt recall={q.recall} promptId={q.recallPromptId} /> : null}
               <ProblemSenseContext sense={q.sense} />
+              {mnemonicVisual && !answered ? (
+                <View style={s.mnemonicHintArea}>
+                  {!imageRevealed ? (
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel="의미 선화 힌트 보기"
+                      style={s.mnemonicHintBtn}
+                      onPress={handleImageHint}
+                    >
+                      <Text style={s.mnemonicHintBtnText}>선화 힌트 보기</Text>
+                    </Pressable>
+                  ) : (
+                    <MnemonicCue visual={mnemonicVisual} />
+                  )}
+                </View>
+              ) : null}
               {isChoiceMode && (
                 <>
                   <Text style={s.hintText}>{getHintText()}</Text>
@@ -1255,6 +1347,22 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       backgroundColor: colors.primary,
     },
     emptyButtonText: { color: "#FFFFFF", fontWeight: "700" },
+    mnemonicHintArea: { marginTop: 10 },
+    mnemonicHintBtn: {
+      minHeight: 44,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      paddingHorizontal: 14,
+    },
+    mnemonicHintBtnText: {
+      color: colors.primary,
+      fontSize: 13,
+      fontWeight: "700",
+    },
     statsRow: {
       flexDirection: "row",
       gap: 8,

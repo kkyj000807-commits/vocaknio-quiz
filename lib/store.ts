@@ -14,6 +14,16 @@ import {
   VOCAB_LIST_STORAGE_KEYS,
 } from "@/lib/vocab-storage-migration";
 import type { QuizMode } from "@/lib/vocab";
+import { getVocabItem } from "@/lib/vocab";
+import { getItemLearningTargets } from "@/lib/canonical-learning";
+import {
+  applyLearningEvent,
+  createEmptySenseLearningState,
+  isReadableSenseLearningState,
+  parseSenseLearningState,
+  type LearningEventInput,
+  type SenseLearningState,
+} from "@/lib/learning-state";
 import { QUIZ_SESSION_KEY, parseQuizSession, type QuizSession } from "@/lib/quiz-session";
 import { THEME_KEY, LEGACY_THEME_KEY, isThemeMode, resolveThemePreference, type ThemeMode } from "@/lib/theme-preference";
 
@@ -33,6 +43,7 @@ const MASTERED_KEY = VOCAB_LIST_STORAGE_KEYS.mastered;
 const STUDY_TIME_KEY = "vocaknio_study_time";
 const NUMBER_LIST_KEYS: readonly string[] = [BOOKMARKS_KEY, WRONG_WORDS_KEY, MASTERED_KEY];
 export const ADAPTIVE_QUIZ_HISTORY_KEY = "vocaknio_adaptive_quiz_history_v1";
+export const SENSE_LEARNING_STATE_KEY = "vocaknio_sense_learning_state_v1";
 
 let learningStorageQueue: Promise<void> = Promise.resolve();
 const pendingLearningWrites = new Map<string, string>();
@@ -54,6 +65,8 @@ function validateLearningValue(key: string, raw: string): void {
       Array.isArray(value) && value.every((n) => Number.isInteger(n) && n > 0);
   } else if (key === ADAPTIVE_QUIZ_HISTORY_KEY) {
     valid = isReadableAdaptiveHistory(value);
+  } else if (key === SENSE_LEARNING_STATE_KEY) {
+    valid = isReadableSenseLearningState(value);
   } else if (key === QUIZ_SESSION_KEY) {
     valid = parseQuizSession(value) !== null;
   } else if (isObject(value)) {
@@ -395,7 +408,76 @@ export interface PrepareAdaptiveQuizSessionInput {
   count: number;
 }
 
-export type AdaptiveAnswerContext = AdaptiveAnswerInput;
+export type AdaptiveAnswerContext = AdaptiveAnswerInput & {
+  learningTargetKey?: string;
+  learningEvent?: LearningEventInput["type"];
+  hintUsed?: boolean;
+  responseMs?: number;
+};
+
+async function readSenseLearningStateUnsafe(): Promise<SenseLearningState> {
+  const raw = await readLearningItem(SENSE_LEARNING_STATE_KEY);
+  const parsed = raw ? parseSenseLearningState(JSON.parse(raw)) : createEmptySenseLearningState();
+  if (!parsed) throw new Error("Unreadable sense learning state");
+  if (parsed.legacyMasteredMigrated) return parsed;
+
+  let migrated = parsed;
+  const legacyNums = await readNumberListUnsafe(MASTERED_KEY);
+  for (const num of legacyNums) {
+    const item = getVocabItem(num);
+    if (!item) continue;
+    const targets = getItemLearningTargets(item);
+    // An old word-level flag cannot safely certify several distinct senses.
+    if (targets.length !== 1) continue;
+    migrated = applyLearningEvent(migrated, {
+      targetKey: targets[0].key,
+      type: "mastered",
+      occurredAt: 0,
+      questionType: "legacy-mastered-migration",
+    });
+  }
+  migrated = {
+    ...migrated,
+    revision: migrated.revision + 1,
+    legacyMasteredMigrated: true,
+  };
+  await persistLearningEntries([[SENSE_LEARNING_STATE_KEY, JSON.stringify(migrated)]]);
+  return migrated;
+}
+
+export function loadSenseLearningState(): Promise<SenseLearningState> {
+  return enqueueLearningStorageTask(readSenseLearningStateUnsafe);
+}
+
+export function recordSenseLearningEvent(input: LearningEventInput): Promise<SenseLearningState> {
+  return enqueueLearningStorageTask(async () => {
+    const current = await readSenseLearningStateUnsafe();
+    const next = applyLearningEvent(current, input);
+    await persistLearningEntries([[SENSE_LEARNING_STATE_KEY, JSON.stringify(next)]]);
+    return next;
+  });
+}
+
+export function markLearningTargetMastered(targetKey: string, num?: number): Promise<SenseLearningState> {
+  return enqueueLearningStorageTask(async () => {
+    const current = await readSenseLearningStateUnsafe();
+    const next = applyLearningEvent(current, { targetKey, type: "mastered" });
+    const entries: [string, string][] = [[SENSE_LEARNING_STATE_KEY, JSON.stringify(next)]];
+    // New canonical mastery is sense-level. Only legacy-equivalence targets
+    // mirror the old word-number list; doing that for a canonical sense would
+    // hide every other sense of the same source row in legacy flashcards.
+    if (targetKey.startsWith("legacy:v1:") && Number.isInteger(num) && (num ?? 0) > 0) {
+      const legacy = await readNumberListUnsafe(MASTERED_KEY);
+      entries.push([MASTERED_KEY, JSON.stringify([...new Set([...legacy, num!])])]);
+    }
+    await persistLearningEntries(entries);
+    return next;
+  });
+}
+
+export function startLearningTargetAgain(targetKey: string): Promise<SenseLearningState> {
+  return recordSenseLearningEvent({ targetKey, type: "relearning" });
+}
 
 async function readAdaptiveHistoryUnsafe() {
   try {
@@ -491,6 +573,32 @@ export async function recordOneAnswer(
       const history = context ? await readAdaptiveHistoryUnsafe() : null;
       const nextHistory =
         history && context ? recordAdaptiveAnswer(history, context) : null;
+      const currentLearning = context?.learningTargetKey
+        ? await readSenseLearningStateUnsafe()
+        : null;
+      let nextLearning = currentLearning;
+      if (currentLearning && context?.learningTargetKey) {
+        const eventType = context.learningEvent ??
+          (context.outcome === "correct" ? "correct"
+            : context.outcome === "mastered" ? "mastered"
+            : context.outcome === "skip" ? "unknown" : "wrong");
+        nextLearning = applyLearningEvent(currentLearning, {
+          targetKey: context.learningTargetKey,
+          type: eventType,
+          occurredAt: context.answeredAt,
+          responseMs: context.responseMs,
+          questionType: context.mode,
+          usedHint: context.hintUsed,
+        });
+        if (context.hintUsed) {
+          nextLearning = applyLearningEvent(nextLearning, {
+            targetKey: context.learningTargetKey,
+            type: "hint",
+            occurredAt: context.answeredAt,
+            questionType: context.mode,
+          });
+        }
+      }
       // A duplicate response must not increment global stats while adaptive stats reject it.
       if (history && nextHistory && nextHistory.revision === history.revision)
         return;
@@ -533,6 +641,12 @@ export async function recordOneAnswer(
         entries.push([
           ADAPTIVE_QUIZ_HISTORY_KEY,
           serializeAdaptiveHistory(nextHistory),
+        ]);
+      }
+      if (nextLearning && nextLearning !== currentLearning) {
+        entries.push([
+          SENSE_LEARNING_STATE_KEY,
+          JSON.stringify(nextLearning),
         ]);
       }
 

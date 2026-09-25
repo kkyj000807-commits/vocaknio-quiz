@@ -17,9 +17,11 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { VOCAB, type VocabItem } from "@/lib/vocab";
 import {
   loadWrongWords,
+  markLearningTargetMastered,
   removeWrongWord,
   clearWrongWords,
 } from "@/lib/store";
+import { getItemLearningTargets } from "@/lib/canonical-learning";
 import { useColors } from "@/hooks/use-colors";
 
 export default function WrongScreen() {
@@ -51,14 +53,19 @@ export default function WrongScreen() {
   };
 
   const handleMaster = useCallback(
-    async (num: number) => {
+    async (item: VocabItem) => {
       haptic();
-      const updated = await removeWrongWord(num);
+      const targets = getItemLearningTargets(item);
+      // The visible legacy card represents one exact displayed meaning. A
+      // reviewed multi-sense card must be mastered inside its specific problem.
+      if (targets.length !== 1) return;
+      await markLearningTargetMastered(targets[0].key, item.num);
+      const updated = await removeWrongWord(item.num);
       setWrongNums(updated);
       // 마스터 처리된 카드 공개 상태 제거
       setRevealed((prev) => {
         const next = { ...prev };
-        delete next[num];
+        delete next[item.num];
         return next;
       });
     },
@@ -132,7 +139,7 @@ export default function WrongScreen() {
           </View>
           <Pressable
             style={s.masterBtn}
-            onPress={() => handleMaster(item.num)}
+            onPress={() => handleMaster(item)}
           >
             <Text style={s.masterBtnText}>✓ 마스터</Text>
           </Pressable>

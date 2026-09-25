@@ -16,6 +16,12 @@ import {
 } from "@/lib/vocab";
 import { getProductionSenseQuestions, hasSenseQuestionMapping, isCurrentSenseQuestion, senseMatchesItem, type SenseQuestion } from "@/lib/sense-questions";
 import { getActiveRecallSenses, isCurrentActiveRecallSense, activeRecallMatchesItem, type ActiveRecallSense } from "@/lib/active-recall";
+import {
+  canonicalSenseKey,
+  getItemLearningTargets,
+  getLearningTargetKey,
+  itemIsFullyMastered,
+} from "@/lib/canonical-learning";
 
 export type ChoiceLang = "korean" | "english";
 export type QuizAnswerKind = "synonym" | "meaning" | "target" | "self";
@@ -52,6 +58,7 @@ export interface BuildQuizOptions {
   count: number;
   choiceLang?: ChoiceLang;
   masteredNums?: number[];
+  masteredTargetKeys?: string[];
   itemNums?: number[];
   /**
    * 동의어 데이터가 없는 항목을 검증된 한국어 뜻 4지선다로 전환합니다.
@@ -205,6 +212,7 @@ function makeQuestion(
   item: VocabItem,
   mode: QuizMode,
   choiceLang: ChoiceLang,
+  masteredTargetKeys: ReadonlySet<string> = new Set(),
 ): QuizQuestion | null {
   if (mode === "flashcard") {
     return {
@@ -232,7 +240,9 @@ function makeQuestion(
   }
 
   if (mode === "syn-choice") {
-    const recallEntries = getActiveRecallSenses(item.id).filter(entry => activeRecallMatchesItem(entry, item));
+    const recallEntries = getActiveRecallSenses(item.id).filter(entry =>
+      activeRecallMatchesItem(entry, item) &&
+      !masteredTargetKeys.has(canonicalSenseKey(entry.senseId)));
     if (recallEntries.length > 0) {
       const recall = recallEntries[Math.floor(Math.random() * recallEntries.length)];
       const prompt = recall.prompts[Math.floor(Math.random() * recall.prompts.length)];
@@ -266,7 +276,9 @@ function makeQuestion(
     mode === "syn-choice" ||
     mode === "syn-kor-choice" ||
     (mode === "kor-choice" && choiceLang === "english");
-  const reviewed = getProductionSenseQuestions(item.id).filter(sense => senseMatchesItem(sense, item));
+  const reviewed = getProductionSenseQuestions(item.id).filter(sense =>
+    senseMatchesItem(sense, item) &&
+    !masteredTargetKeys.has(canonicalSenseKey(sense.senseId)));
   // A withheld sense must not quietly fall back to the old headword-level question.
   if (hasSenseQuestionMapping(item.id) && reviewed.length === 0) return null;
   if (reviewed.length) {
@@ -287,6 +299,7 @@ function makeQuestion(
     };
     return validateQuestion(question) ? question : null;
   }
+  if (masteredTargetKeys.has(getLearningTargetKey(item))) return null;
   const choices = asksForSynonym
     ? buildSynonymChoices(item, mode === "syn-kor-choice")
     : buildMeaningChoices(item);
@@ -343,10 +356,15 @@ export function getQuizCandidateItems(options: BuildQuizOptions): VocabItem[] {
       !["syn-choice", "syn-kor-choice", "syn-type", "kor-choice", "flashcard"].includes(options.mode)) return [];
   const choiceLang = options.choiceLang ?? "korean";
   const mastered = new Set(options.masteredNums ?? []);
+  const masteredTargets = new Set(options.masteredTargetKeys ?? []);
   let pool = resolvePool(options).filter((item) => item.k.length > 0);
-  if (options.mode === "flashcard" && mastered.size > 0) {
-    pool = pool.filter((item) => !mastered.has(item.num));
-  }
+  if (masteredTargets.size > 0)
+    pool = pool.filter((item) => !itemIsFullyMastered(item, masteredTargets));
+  // Keep the legacy flashcard-only list until its one-time sense migration has
+  // run. New state uses masteredTargetKeys in every mode.
+  if (options.mode === "flashcard" && mastered.size > 0)
+    pool = pool.filter((item) =>
+      !mastered.has(item.num) || getItemLearningTargets(item).length > 1);
   const meaningFallback =
     options.allowMeaningFallback &&
     canFallBackToMeaning(options.mode, choiceLang);
@@ -374,10 +392,11 @@ function makeQuestionWithFallback(
   options: BuildQuizOptions,
   choiceLang: ChoiceLang,
 ): QuizQuestion | null {
-  const primary = makeQuestion(item, options.mode, choiceLang);
+  const masteredTargets = new Set(options.masteredTargetKeys ?? []);
+  const primary = makeQuestion(item, options.mode, choiceLang, masteredTargets);
   if (primary || !options.allowMeaningFallback) return primary;
   if (!canFallBackToMeaning(options.mode, choiceLang)) return null;
-  return makeQuestion(item, "kor-choice", "korean");
+  return makeQuestion(item, "kor-choice", "korean", masteredTargets);
 }
 
 export function buildQuizQuestions(options: BuildQuizOptions): QuizQuestion[] {

@@ -235,6 +235,36 @@ describe("adaptive quiz history", () => {
 });
 
 describe("adaptive quiz selection", () => {
+  it("selects RELEARNING and WEAK canonical targets before unseen coverage", () => {
+    const selected = selectAdaptiveItemNums({
+      candidates: [
+        { num: 1, word: "weak", learningKey: "sense:weak", learningPriority: 96 },
+        { num: 2, word: "relearning", learningKey: "sense:relearning", learningPriority: 128 },
+        ...candidates(18).map(candidate => ({ ...candidate, num: candidate.num + 2, word: `new-${candidate.num}` })),
+      ],
+      count: 4,
+      mode: MODE,
+      history: createEmptyAdaptiveHistory(),
+      random: constantRandom(),
+    });
+    expect(selected).toEqual(expect.arrayContaining([1, 2]));
+  });
+
+  it("treats duplicate occurrences with one learning key as one prompt", () => {
+    const selected = selectAdaptiveItemNums({
+      candidates: [
+        { num: 1, word: "jury foreman", learningKey: "sense:jury-foreman" },
+        { num: 2, word: "jury foreman", learningKey: "sense:jury-foreman" },
+        { num: 3, word: "other", learningKey: "sense:other" },
+      ],
+      count: 2,
+      mode: MODE,
+      history: createEmptyAdaptiveHistory(),
+      random: constantRandom(),
+    });
+    expect(selected.filter(num => num === 1 || num === 2)).toHaveLength(1);
+    expect(selected).toContain(3);
+  });
   it("does not repeat a correct prompt under a different source number", () => {
     let history = recordAdaptiveSession(createEmptyAdaptiveHistory(), { sessionId: "duplicate-word", rangeId: "idioms", mode: MODE, itemNums: [1] });
     history = recordAdaptiveAnswer(history, { sessionId: "duplicate-word", itemNum: 1, mode: MODE, outcome: "correct", answeredAt: 1000 });

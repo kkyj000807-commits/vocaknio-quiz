@@ -92,6 +92,61 @@ describe("학습 기록의 공통 저장 경로", () => {
     expect(await store.loadMastered()).toEqual(nums);
   });
 
+  it("기존 마스터 번호를 한 번만 sense 상태로 이관하고 원본도 보존한다", async () => {
+    storage.values.set("vocaknio_mastered", "[18434]");
+    const first = await store.loadSenseLearningState();
+    const target = Object.values(first.targets).find(value => value.key.includes("jury-foreman"));
+    expect(target?.status).toBe("MASTERED");
+    const second = await store.loadSenseLearningState();
+    expect(second.revision).toBe(first.revision);
+    expect(storage.values.get("vocaknio_mastered")).toBe("[18434]");
+  });
+
+  it("실제 sense의 오답·힌트·응답시간을 저장하고 마스터 실패는 재학습으로 되돌린다", async () => {
+    const key = "sense:jury-foreman%3Aleader-of-jury";
+    await store.markLearningTargetMastered(key, 18434);
+    await store.recordOneAnswer(false, 18434, {
+      sessionId: "sense-event-session",
+      itemNum: 18434,
+      mode: "syn-choice",
+      outcome: "wrong",
+      responseKey: "trial judge",
+      answeredAt: 1000,
+      responseMs: 4200,
+      learningTargetKey: key,
+      hintUsed: true,
+    });
+    const saved = (await store.loadSenseLearningState()).targets[key];
+    expect(saved).toMatchObject({
+      status: "RELEARNING",
+      wrong: 1,
+      hints: 1,
+      lastResponseMs: 4200,
+      lastQuestionType: "syn-choice",
+    });
+    expect(await store.loadMastered()).toEqual([]);
+  });
+
+  it("선화 힌트 사용과 도움 결과를 canonical sense에 누적한다", async () => {
+    const key = "sense:jury-foreman%3Aleader-of-jury";
+    await store.recordSenseLearningEvent({
+      targetKey: key,
+      type: "image_used",
+      questionType: "syn-choice",
+    });
+    await store.recordSenseLearningEvent({
+      targetKey: key,
+      type: "image_helped",
+      questionType: "syn-choice",
+    });
+
+    expect((await store.loadSenseLearningState()).targets[key]).toMatchObject({
+      imageUses: 1,
+      imageHelped: 1,
+      lastEvent: "image_helped",
+    });
+  });
+
   it("저장 실패 중 지운 오답이 다음 재시도에 되살아나지 않는다", async () => {
     storage.failWrite = true;
     await store.recordOneAnswer(false, 42);

@@ -31,9 +31,14 @@ import { getRangeItems, WORDBOOK_RANGES, VOCAB, type VocabItem } from "@/lib/voc
 import {
   loadBookmarks,
   loadQuizSettings,
+  loadSenseLearningState,
+  markLearningTargetMastered,
+  startLearningTargetAgain,
   toggleBookmark,
   type ChoiceLang,
 } from "@/lib/store";
+import { getItemLearningTargets } from "@/lib/canonical-learning";
+import type { LearningStatus, SenseLearningState } from "@/lib/learning-state";
 import { useColors } from "@/hooks/use-colors";
 import * as Haptics from "expo-haptics";
 import { useAudioPlayer, setAudioModeAsync } from "expo-audio";
@@ -63,6 +68,8 @@ function WordCard({
   maskMode,
   onPlayHide,
   onPlayReveal,
+  learningStatus,
+  onLearningStatusPress,
 }: {
   item: VocabItem;
   bookmarks: Set<number>;
@@ -71,6 +78,8 @@ function WordCard({
   maskMode: boolean;
   onPlayHide: () => void;
   onPlayReveal: () => void;
+  learningStatus: LearningStatus;
+  onLearningStatusPress: (item: VocabItem) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [meaningHidden, setMeaningHidden] = useState(maskMode);
@@ -146,6 +155,16 @@ function WordCard({
           <Text style={{ fontSize: 18 }}>{isBookmarked ? "🔖" : "🏷️"}</Text>
         </TouchableOpacity>
       </View>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={learningStatus === "MASTERED" ? `${item.w} 다시 학습` : `${item.w} 마스터`}
+        onPress={() => onLearningStatusPress(item)}
+        style={({ pressed }) => [s.learningStateButton, pressed && { opacity: 0.65 }]}
+      >
+        <Text style={[s.learningStateText, { color: learningStatus === "MASTERED" ? colors.warning : colors.muted }]}>
+          {learningStatus === "MASTERED" ? "↻ 다시 학습" : learningStatus === "RELEARNING" ? "재학습 중" : "✓ 마스터"}
+        </Text>
+      </Pressable>
 
       <Pressable
         accessibilityRole="button"
@@ -265,6 +284,15 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       justifyContent: "center",
       flexShrink: 0,
     },
+    learningStateButton: {
+      alignSelf: "flex-end",
+      minHeight: 36,
+      justifyContent: "center",
+      paddingHorizontal: 8,
+      marginTop: -4,
+      marginBottom: 4,
+    },
+    learningStateText: { fontSize: 12, fontWeight: "700" },
     korText: {
       fontSize: 13,
       color: colors.muted,
@@ -342,6 +370,7 @@ export default function WordbookScreen() {
   const [isShuffled, setIsShuffled] = useState(false);
   const [maskMode, setMaskMode] = useState(false);
   const [choiceLang, setChoiceLang] = useState<ChoiceLang>("korean");
+  const [learningState, setLearningState] = useState<SenseLearningState | null>(null);
 
   // ─── 사운드 (개별/전체 가리기 피드백) ─────────────────────────────────────
   const hidePlayer = useAudioPlayer(require("@/assets/sounds/hide.wav"));
@@ -374,7 +403,18 @@ export default function WordbookScreen() {
   useEffect(() => {
     loadBookmarks().then((arr) => setBookmarks(new Set(arr)));
     loadQuizSettings().then((settings) => setChoiceLang(settings.choiceLang));
+    loadSenseLearningState().then(setLearningState);
   }, []);
+
+  const handleLearningStatusPress = useCallback(async (item: VocabItem) => {
+    const targets = getItemLearningTargets(item);
+    if (targets.length !== 1) return;
+    const current = learningState?.targets[targets[0].key]?.status ?? "NEW";
+    const next = current === "MASTERED"
+      ? await startLearningTargetAgain(targets[0].key)
+      : await markLearningTargetMastered(targets[0].key, item.num);
+    setLearningState(next);
+  }, [learningState]);
 
   const handleToggleBookmark = useCallback(async (num: number) => {
     if (Platform.OS !== "web") {
@@ -456,9 +496,11 @@ export default function WordbookScreen() {
         maskMode={maskMode}
         onPlayHide={playHide}
         onPlayReveal={playReveal}
+        learningStatus={learningState?.targets[getItemLearningTargets(item)[0]?.key]?.status ?? "NEW"}
+        onLearningStatusPress={handleLearningStatusPress}
       />
     ),
-    [bookmarks, handleToggleBookmark, colors, maskMode, playHide, playReveal],
+    [bookmarks, handleLearningStatusPress, handleToggleBookmark, colors, learningState, maskMode, playHide, playReveal],
   );
 
   const keyExtractor = useCallback((item: VocabItem) => String(item.num), []);

@@ -1,6 +1,6 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.25 00:50 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.25 13:19 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
 ## 현재 배포 — 3.1, 전체 로드맵은 부분 완료
 
@@ -26,7 +26,18 @@
 - 내용 작업 전 .agents/skills/transfer-english-reasoning/SKILL.md와 두 references를 읽는다. 공개 강의 원칙과 앱의 독자 추론/효과 실측을 구분한다.
 - 편입 관련 작업은 docs/MASTER_DB_SYNC_RULES.md를 따른다. 이 저장소에서 중앙 `2027 편입 마스터 DB`의 실제 위치·마지막 동기화 시점은 아직 확인되지 않았으므로, 현재 앱 정본을 중앙 DB와 동기화 완료했다고 간주하지 않는다(`sync_required`).
 
-## 현재 batch — `wrap up` 업무 마무리 sense·두 정본행 VERIFIED / 3.1 공개 확인
+## 현재 batch — canonical sense 학습상태·우선출제·선화 힌트 파일럿 VERIFIED / 미배포
+
+- canonical target을 `senseId` 우선으로 만들고, 아직 검수 sense가 없는 legacy 행은 `표현+표시 뜻`이 완전히 같은 occurrence만 같은 target으로 묶었다. 같은 표현의 다른 뜻은 합치지 않는다. 실제 `jury foreman` 중복 두 행은 한 target, `take for granted` 두 sense는 별도 target으로 검증했다.
+- 상태 `NEW/ACTIVE/WEAK/MASTERED/RELEARNING`과 이벤트 `correct/wrong/unknown/confused/hint/mastered/relearning/image_used/image_helped`를 기존 `learningStorageQueue`에 연결했다. 기존 `vocaknio_mastered`는 원본을 보존하면서 안전한 단일-sense 행만 한 번 이관한다.
+- MASTERED target은 일반 출제 대상에서 빠지지만 전체 어휘·관계 자료에서 삭제하지 않아 다른 문제의 참고/오답 자료로 남는다. 이후 실패하면 해당 sense만 RELEARNING으로 돌아오며 WEAK/RELEARNING은 적응형 출제의 긴급 lane으로 우선된다.
+- 단어장·오답 목록의 마스터/다시 학습 조작, 일반/오답 문제의 canonical 이벤트·힌트·응답시간 기록을 연결했다. 여러 sense가 한 카드에 있는 경우 전체를 한 번에 마스터하지 않는다.
+- 선화 파일럿은 production sense 2개(`jury foreman`, `put the cart before the horse`)에만 연결했다. 정답 전 자동 노출하지 않고 사용자가 `선화 힌트 보기`를 눌러야 보이며 사용/도움 이벤트가 sense에 기록된다.
+- VERIFIED: `pnpm --ignore-workspace verify`의 데이터/sense/active-recall 감사·TypeScript·24파일188테스트 통과(인증1skip), 변경 파일 ESLint 오류·경고0, diff 공백 검사, Production 3.1 로컬 build audit HTML22/학습JSON8/참조누락0/루트자산0. 새 SVG 두 개와 `선화 힌트 보기`가 번들/산출물에 포함됐다. 로컬 production 산출물을 in-app browser에서 열어 실제 `jury foreman` 문맥 문항→힌트 버튼→선화 노출→정답 후 EN/KR/관계 분리까지 확인했다. 이는 실제 iPhone/Galaxy Tab/Safari/Chrome 검증이 아니며 공개 배포도 미수행이다.
+- NOT DONE/P0: 전체38,163행의 canonical sense 이관, 공통 마스터 DB·기출 프로젝트 동기화, 학습대상 sense 영영정의100%는 완료되지 않았다. 현재 production active-recall coverage는 11sense/14행(정의14·concise14·예문14·영영문제14)뿐이다. 미검수 legacy synonym을 영영 정답 근거로 자동 승격하지 않는다.
+- NEXT: 검증된 definition denominator와 실패 상태를 먼저 전수 집계한 뒤, 누락 데이터를 source→sense match→DB/write→정적 export→UI까지 한 vertical slice로 보강한다. 100%가 되기 전에는 전체 영영정의 완료라고 보고하지 않는다.
+
+## 직전 batch — `wrap up` 업무 마무리 sense·두 정본행 VERIFIED / 3.1 공개 확인
 
 - 기존 `idiom-corrections`의 Oxford·Collins 독립 대조와 `expression-composition`의 결합 해설을 재사용했다. `JBKROW000016`과 `JBKROW004042`를 `일·회의의 남은 부분을 정리해 마무리함` 한 production sense로 묶었다.
 - 따뜻하게 감싸기·물건 포장하기 sense는 섞지 않았다. 자체 concise/full 정의·예문·정의/문맥 prompt를 추가하고 near synonym은 `bring to a close`, `finish up`으로 제한했다. `sum up`은 요약, `put off`는 연기, `set up`은 준비라는 반례를 오답 이유에 고정했다. 한국어는 정답 전 단서로 노출하지 않는다.

@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "entries": [
+    {
+      "imageId": "mnemonic-jury-foreman-leader-v1",
+      "senseId": "jury-foreman:leader-of-jury",
+      "visualConcept": "여러 배심원 앞에서 한 사람이 토의를 이끌고 대표해 말한다",
+      "imageType": "line-svg",
+      "assetPath": "jury-foreman-leader.svg",
+      "generationVersion": "1",
+      "reviewStatus": "production"
+    },
+    {
+      "imageId": "mnemonic-cart-before-horse-order-v1",
+      "senseId": "put-the-cart-before-the-horse:reverse-dependent-order",
+      "visualConcept": "말보다 수레가 앞에 놓여 필요한 순서가 뒤집혔다",
+      "imageType": "line-svg",
+      "assetPath": "put-cart-before-horse.svg",
+      "generationVersion": "1",
+      "reviewStatus": "production"
+    }
+  ]
+}

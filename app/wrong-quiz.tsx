@@ -37,6 +37,7 @@ import {
   type QuizQuestion,
 } from "@/lib/quiz-engine";
 import { loadBookmarks, recordOneAnswer, toggleBookmark } from "@/lib/store";
+import { getQuestionLearningTargetKey } from "@/lib/canonical-learning";
 import { useColors } from "@/hooks/use-colors";
 
 function NativeSwipeBoundary({
@@ -207,6 +208,7 @@ export default function WrongQuizScreen() {
         outcome: isCorrect ? "correct" : "wrong",
         responseKey: choice?.value,
         answeredAt: Date.now(),
+        learningTargetKey: getQuestionLearningTargetKey(q),
       });
     },
     [answered, currentIdx, q, haptic, animateCard],
@@ -233,6 +235,8 @@ export default function WrongQuizScreen() {
       mode: q.answerKind === "meaning" ? "kor-choice" : "syn-choice",
       outcome: "skip",
       answeredAt: Date.now(),
+      learningTargetKey: getQuestionLearningTargetKey(q),
+      learningEvent: "unknown",
     });
   }, [answered, currentIdx, q, haptic, animateCard]);
 

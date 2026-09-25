@@ -11,6 +11,10 @@ export interface AdaptiveCandidate {
   num: number;
   conceptId?: string;
   word?: string;
+  /** Canonical sense key, or a conservative legacy-equivalence key. */
+  learningKey?: string;
+  /** User-state priority. WEAK/RELEARNING values are selected before coverage. */
+  learningPriority?: number;
 }
 
 export interface AdaptiveConfusion {
@@ -802,6 +806,7 @@ function weaknessScore(
   const conceptConfusion =
     confusionScores.concept.get(cleanString(candidate.conceptId)) ?? 0;
   return (
+    Math.max(0, candidate.learningPriority ?? 0) +
     legacy +
     recentFailure +
     Math.min(stats.wrongStreak, 4) * 1.25 +
@@ -861,10 +866,16 @@ export function selectAdaptiveItemNums(
     if (num === null || candidateMap.has(num)) continue;
     const conceptId = cleanString(raw.conceptId);
     const word = cleanString(raw.word);
+    const learningKey = cleanString(raw.learningKey);
+    const learningPriority = typeof raw.learningPriority === "number" && Number.isFinite(raw.learningPriority)
+      ? raw.learningPriority
+      : 0;
     candidateMap.set(num, {
       num,
       ...(conceptId ? { conceptId } : {}),
       ...(word ? { word } : {}),
+      ...(learningKey ? { learningKey } : {}),
+      ...(learningPriority ? { learningPriority } : {}),
     });
   }
   const allCandidates = [...candidateMap.values()].sort(
@@ -876,7 +887,7 @@ export function selectAdaptiveItemNums(
   const history = sanitizeAdaptiveHistory(options.history);
   // Different source rows for the same prompt share exposure and answer history.
   const promptKey = (candidate: AdaptiveCandidate) =>
-    normalizePromptWord(candidate.word) || `num:${candidate.num}`;
+    cleanString(candidate.learningKey) || normalizePromptWord(candidate.word) || `num:${candidate.num}`;
   const promptStats = new Map<string, AdaptiveItemStats>();
   for (const candidate of allCandidates) {
     const key = promptKey(candidate);
@@ -939,6 +950,16 @@ export function selectAdaptiveItemNums(
     };
   });
 
+  const urgentRanked = ranked
+    .filter((candidate) => (candidate.learningPriority ?? 0) >= 90 && !protection.has(promptKey(candidate)))
+    .sort(
+      (left, right) =>
+        (right.learningPriority ?? 0) - (left.learningPriority ?? 0) ||
+        right.weakness - left.weakness ||
+        left.stats.lastSeenSequence - right.stats.lastSeenSequence ||
+        left.tie - right.tie ||
+        left.num - right.num,
+    );
   const reviewLimit = Math.floor(count * 0.25);
   const reviewRanked = ranked
     .filter((candidate) => candidate.weakness > 0 && !protection.has(promptKey(candidate)))
@@ -963,9 +984,17 @@ export function selectAdaptiveItemNums(
   const selectedNums = new Set<number>();
   const usedConcepts = new Set<string>();
   const usedWords = new Set<string>();
+  const urgent = selectWithConceptDiversity(
+    urgentRanked,
+    count,
+    selectedNums,
+    usedConcepts,
+    usedWords,
+    false,
+  );
   const review = selectWithConceptDiversity(
-    reviewRanked,
-    reviewLimit,
+    reviewRanked.filter(candidate => !selectedNums.has(candidate.num)),
+    Math.min(reviewLimit, count - urgent.length),
     selectedNums,
     usedConcepts,
     usedWords,
@@ -978,16 +1007,16 @@ export function selectAdaptiveItemNums(
     for (const seen of [false, true]) {
       coverage.push(...selectWithConceptDiversity(
         pool.filter((candidate) => (candidate.stats.exposures > 0) === seen),
-        count - review.length - coverage.length, selectedNums, usedConcepts, usedWords, false,
+        count - urgent.length - review.length - coverage.length, selectedNums, usedConcepts, usedWords, false,
       ));
     }
   }
-  if (review.length + coverage.length < count) {
+  if (urgent.length + review.length + coverage.length < count) {
     coverage.push(...selectWithConceptDiversity(
-      coverageRanked, count - review.length - coverage.length, selectedNums, usedConcepts, usedWords,
+      coverageRanked, count - urgent.length - review.length - coverage.length, selectedNums, usedConcepts, usedWords,
     ));
   }
-  const selected = [...review, ...coverage];
+  const selected = [...urgent, ...review, ...coverage];
 
   // 학습 흐름에서 약점 문제가 한곳에 몰리지 않도록 주입된 RNG로 최종 순서만 섞는다.
   for (let index = selected.length - 1; index > 0; index -= 1) {
