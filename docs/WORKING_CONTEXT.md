@@ -1,6 +1,6 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.25 13:19 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.26 00:42 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
 ## 현재 배포 — 3.1, 전체 로드맵은 부분 완료
 
@@ -26,7 +26,18 @@
 - 내용 작업 전 .agents/skills/transfer-english-reasoning/SKILL.md와 두 references를 읽는다. 공개 강의 원칙과 앱의 독자 추론/효과 실측을 구분한다.
 - 편입 관련 작업은 docs/MASTER_DB_SYNC_RULES.md를 따른다. 이 저장소에서 중앙 `2027 편입 마스터 DB`의 실제 위치·마지막 동기화 시점은 아직 확인되지 않았으므로, 현재 앱 정본을 중앙 DB와 동기화 완료했다고 간주하지 않는다(`sync_required`).
 
-## 현재 batch — canonical sense 학습상태·우선출제·선화 힌트 파일럿 VERIFIED / 미배포
+## 현재 batch — canonical sense 공란 backfill PARTIAL VERIFIED / 미배포
+
+- 새 기능·UI 작업은 중단하고 기존 검수 데이터의 공란과 전달 경로만 조사했다. 원본 정본은 38,163행/고유 표제어13,347개지만, canonical sense가 연결된 원본행은230개뿐이며37,933행은 첫 손실 지점이 `sense 매핑`이다. 이 행들을 문자열 추정으로 합치지 않았다.
+- 현재 서로 다른 검수 레이어를 합친 고유 canonical sense는103개다. 기존 배포 학습 레이어 기준 공란은 영영정의15/한국어15/문맥15/예문15/예문해설15/동의어103/구별메모15/출처15였다. 실제 backfill 후 영영정의·한국어·문맥·예문·예문해설·구별메모·출처는 모두0, 동의어는86개가 남았다.
+- 상태는 COMPLETE17 / VERIFIED_NO_DATA0 / FAILED0 / NEEDS_REVIEW86 / PENDING0이다. 동의어 수집 실패나 미검수를 `실제 데이터 없음`으로 가장하지 않았다. 남은86개는 모두 검증된 sense 동의어가 원천 레이어에 없어 NEEDS_REVIEW다.
+- `all but`의 `almost`/`all-except` 두 sense ID를 학습·문맥 문항과 일치시켰고, `blind alley`, `capricious`, `sanction` 두 sense의 검수 정의를 backfill했다. active-recall11sense의 문맥설명·예문번역·판별단서를 실제 데이터에 추가했다. `all but` active-recall 후보2개는 reviewed로 두어 기존 본 문풀의 sense-question 출제를 가로채지 않게 했다.
+- 산출물: `assets/canonical-sense-content.json`, 동일한 `public/data/canonical-sense-content.json`, 상태·전후수치·20표본을 담은 `assets/canonical-sense-content-report.json`. 각 record에 attempt/retryable/missingFields/failureReasons/inputLayers/alternateValues를 보존한다. verify가 build 직후 backfill을 실제 재실행한다.
+- VERIFIED: 전체 TypeScript·데이터 감사·25파일193테스트 통과(인증1skip), 신규 canonical 테스트4개, 변경 lint 오류0(기존 경고5), Production3.1 로컬 build audit HTML22/학습JSON8/참조누락0/루트자산0. 로컬 production in-app browser에서 `abide by` 1sense와 `all but` 2sense의 영영정의/한국어/문맥/예문/판별단서가 실제로 펼쳐지는 것을 확인했다.
+- NOT DONE: 전체38,163행 canonical sense 이관과 필수 필드 보강은 완료가 아니다. 동의어86sense 및 미매핑37,933행이 남아 있으므로 전체 작업 완료/coverage100%라고 하지 않는다. 공개 Pages 배포와 실제 Safari/Chrome/Samsung Internet 검증도 하지 않았다.
+- NEXT/P0: NEEDS_REVIEW86개를 ID 목록 순서대로 독립 사전 근거와 sense 경계로 검수해 동의어를 채우거나, 실제로 없음이 명시적으로 확인된 경우에만 VERIFIED_NO_DATA로 전환한다. 동시에 미매핑37,933행은 숙어·오답·고빈도 순으로 안전한 canonical mapping batch를 만든다. 새 UI/영영 문제 섹션은 이 공란 작업보다 앞서지 않는다.
+
+## 직전 batch — canonical sense 학습상태·우선출제·선화 힌트 파일럿 VERIFIED / 미배포
 
 - Source main `784a63c`는 origin/main에 push됐다. 공개 Pages는 계속 3.1이며 이번 batch는 아직 배포하지 않았다.
 - canonical target을 `senseId` 우선으로 만들고, 아직 검수 sense가 없는 legacy 행은 `표현+표시 뜻`이 완전히 같은 occurrence만 같은 target으로 묶었다. 같은 표현의 다른 뜻은 합치지 않는다. 실제 `jury foreman` 중복 두 행은 한 target, `take for granted` 두 sense는 별도 target으로 검증했다.

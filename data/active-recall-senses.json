@@ -18,10 +18,13 @@
       "exampleSentences": [
         {
           "en": "The jury foreman organized the discussion before announcing the verdict.",
+          "ko": "배심원 대표는 평결을 발표하기 전에 토의를 정리했다.",
+          "cueKo": "토의를 정리하고 평결을 발표하는 두 행동이 일반 배심원이 아니라 대표 역할임을 보여 준다.",
           "type": "editorial"
         }
       ],
       "koreanMeaning": "배심원 대표",
+      "contextExplanationKo": "배심원단 내부의 구성원 중 토의를 이끌고 법정에서 평결을 대표해 전달하는 역할을 가리킨다. 판사나 모든 배심원을 통칭하지 않는다.",
       "prompts": [
         {
           "id": "definition",
@@ -75,10 +78,13 @@
       "exampleSentences": [
         {
           "en": "Buying equipment before deciding what to build puts the cart before the horse.",
+          "ko": "무엇을 만들지 정하기 전에 장비부터 사는 것은 일의 선후를 뒤바꾸는 것이다.",
+          "cueKo": "장비 선택은 만들 대상의 결정에 의존하므로, 의존 단계가 먼저 나온 순서 오류가 핵심이다.",
           "type": "editorial"
         }
       ],
       "koreanMeaning": "일의 선후를 뒤바꾸다",
+      "contextExplanationKo": "뒤 단계가 앞 단계의 결과에 의존하는데도 뒤 단계를 먼저 실행한 상황에 쓴다. 단순히 일을 빨리 시작했다는 뜻과는 다르다.",
       "prompts": [
         {
           "id": "definition",
@@ -132,10 +138,13 @@
       "exampleSentences": [
         {
           "en": "The committee took for granted that the earlier measurements were accurate.",
+          "ko": "위원회는 앞선 측정값이 정확하다고 확인 없이 전제했다.",
+          "cueKo": "정확성을 재검증하지 않고 논의의 전제로 삼았다는 점이 이 sense를 결정한다.",
           "type": "editorial"
         }
       ],
       "koreanMeaning": "확인 없이 사실로 전제하다",
+      "contextExplanationKo": "증거를 다시 확인하거나 의문을 제기하지 않은 채 어떤 사실·조건이 이미 확실하다고 전제할 때 쓴다.",
       "prompts": [
         {
           "id": "definition",
@@ -189,10 +198,13 @@
       "exampleSentences": [
         {
           "en": "People often take reliable public services for granted until those services stop.",
+          "ko": "사람들은 안정적인 공공 서비스가 중단되기 전까지 그 가치를 당연하게 여기곤 한다.",
+          "cueKo": "서비스가 멈춘 뒤에야 가치를 깨닫는 대조가 ‘사실 전제’가 아니라 ‘가치 간과’ sense를 보여 준다.",
           "type": "editorial"
         }
       ],
       "koreanMeaning": "익숙해서 소중함·고마움을 모르다",
+      "contextExplanationKo": "늘 존재하거나 도움을 주는 대상에 익숙해져 그 가치와 고마움을 제대로 인식하지 못할 때 쓴다.",
       "prompts": [
         {
           "id": "definition",
@@ -246,10 +258,13 @@
       "exampleSentences": [
         {
           "en": "The researchers worked out why the two samples produced different results.",
+          "ko": "연구자들은 두 표본이 서로 다른 결과를 낸 이유를 밝혀냈다.",
+          "cueKo": "why 이하의 원인을 찾아냈으므로 계산이나 운동이 아니라 문제 해결 sense다.",
           "type": "editorial"
         }
       ],
       "koreanMeaning": "문제의 해답을 찾아내다",
+      "contextExplanationKo": "생각·분석을 거쳐 문제의 원인이나 해결책을 밝혀냈을 때 쓴다. 단지 문제를 계속 다루는 과정만을 뜻하지 않는다.",
       "prompts": [
         {
           "id": "definition",
@@ -303,10 +318,13 @@
       "exampleSentences": [
         {
           "en": "Students worked out the average from the five recorded measurements.",
+          "ko": "학생들은 기록된 다섯 측정값으로 평균을 계산했다.",
+          "cueKo": "측정값 다섯 개에서 average라는 수치를 산출하므로 계산 sense다.",
           "type": "editorial"
         }
       ],
       "koreanMeaning": "수치·답을 계산해 내다",
+      "contextExplanationKo": "주어진 수치나 자료를 연산해 특정 값이나 답을 산출할 때 쓴다.",
       "prompts": [
         {
           "id": "definition",
@@ -360,10 +378,13 @@
       "exampleSentences": [
         {
           "en": "The first schedule caused delays, but the revised arrangement worked out well.",
+          "ko": "첫 일정은 지연을 일으켰지만 수정된 계획은 결과적으로 잘 풀렸다.",
+          "cueKo": "worked out 뒤의 well과 앞의 실패 대비가 상황의 만족스러운 결과를 가리킨다.",
           "type": "editorial"
         }
       ],
       "koreanMeaning": "상황·일이 만족스럽게 풀리다",
+      "contextExplanationKo": "계획·관계·상황이 진행된 끝에 만족스러운 결과에 이르렀을 때 자동사적으로 쓴다.",
       "prompts": [
         {
           "id": "definition",
@@ -417,10 +438,13 @@
       "exampleSentences": [
         {
           "en": "She works out three times a week to improve her strength and endurance.",
+          "ko": "그녀는 근력과 지구력을 높이려고 일주일에 세 번 운동한다.",
+          "cueKo": "횟수와 strength, endurance라는 신체 목표가 운동 sense를 확정한다.",
           "type": "editorial"
         }
       ],
       "koreanMeaning": "운동하다·몸을 단련하다",
+      "contextExplanationKo": "체력·근력·지구력을 높이기 위한 계획적인 신체 운동을 할 때 쓴다.",
       "prompts": [
         {
           "id": "definition",
@@ -474,10 +498,13 @@
       "exampleSentences": [
         {
           "en": "Even members who opposed the decision agreed to abide by it until the review was complete.",
+          "ko": "그 결정에 반대한 구성원들도 검토가 끝날 때까지는 그것을 따르기로 했다.",
+          "cueKo": "opposed와 abide by의 대조가 ‘동의하다’가 아니라 ‘반대해도 준수하다’라는 뜻을 보여 준다.",
           "type": "editorial"
         }
       ],
       "koreanMeaning": "규칙·결정·약속을 따르고 지키다",
+      "contextExplanationKo": "개인적 동의 여부와 별개로 자신을 구속하는 규칙·결정·약속을 행동 기준으로 삼아 준수할 때 쓴다.",
       "prompts": [
         {
           "id": "definition",
@@ -531,10 +558,13 @@
       "exampleSentences": [
         {
           "en": "By midsummer, the wetland teemed with insects and nesting birds.",
+          "ko": "한여름이 되자 습지는 곤충과 둥지를 트는 새들로 가득했다.",
+          "cueKo": "장소인 wetland 뒤에 다수의 생물이 with로 이어져 활발한 밀집 상태를 만든다.",
           "type": "editorial"
         }
       ],
       "koreanMeaning": "사람·생물 등으로 가득하다; 북적거리다",
+      "contextExplanationKo": "장소 안에 많은 사람·동물·사물이 활발하게 존재해 풍부하고 북적이는 모습을 나타낸다.",
       "prompts": [
         {
           "id": "definition",
@@ -588,10 +618,13 @@
       "exampleSentences": [
         {
           "en": "The chair wrapped up the meeting after the committee agreed on the final amendment.",
+          "ko": "위원회가 최종 수정안에 합의한 뒤 의장은 회의를 마무리했다.",
+          "cueKo": "최종 합의 뒤 meeting 자체를 끝냈으므로 ‘요약하다’가 아니라 활동 마무리 sense다.",
           "type": "editorial"
         }
       ],
       "koreanMeaning": "일·회의의 남은 부분을 정리해 마무리하다",
+      "contextExplanationKo": "활동·회의·작업의 남은 세부를 처리해 전체를 끝낼 때 쓴다. 내용을 요약하는 것만을 뜻하지 않는다.",
       "prompts": [
         {
           "id": "definition",
@@ -626,6 +659,126 @@
       "sourceCheckedAt": "2026.09.05",
       "status": "production",
       "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
+    },
+    {
+      "id": "all-but:almost",
+      "headword": "all but",
+      "partOfSpeech": "adverbial phrase",
+      "senseId": "all-but:almost",
+      "itemIds": ["JBKROW000287", "JBKROW002103"],
+      "englishDefinition": "Almost reaching or becoming the stated condition, while still falling slightly short of it.",
+      "conciseEnglishDefinition": "almost reaching a stated condition",
+      "exactSynonyms": [],
+      "nearSynonyms": ["almost", "nearly"],
+      "antonyms": ["completely", "not at all"],
+      "variants": [],
+      "relatedWords": ["anything but"],
+      "exampleSentences": [
+        {
+          "en": "By noon, the fog had all but disappeared.",
+          "ko": "정오가 되자 안개는 거의 다 걷혀 있었다.",
+          "cueKo": "disappeared가 상태 변화를 나타내며, all but가 완전한 소멸 바로 전의 정도를 표시한다.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "거의; 사실상 ~에 가까운",
+      "contextExplanationKo": "뒤에 상태·변화를 나타내는 말이 오면 완전한 상태에 조금 못 미친 정도를 나타낸다.",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "almost reaching a stated condition, while still falling slightly short of it"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "The restoration was _____ complete; only the entrance still needed repair."
+        }
+      ],
+      "distractors": [
+        {"word": "anything but", "meaningKo": "결코 ~이 아닌", "reasonKo": "강한 부정이다. all but complete는 거의 완료된 것이지만 anything but complete는 전혀 완료되지 않은 것이다.", "plausible": true},
+        {"word": "far from", "meaningKo": "~와는 거리가 먼", "reasonKo": "목표 상태에 가깝다는 뜻과 반대로, 그 상태에서 크게 떨어져 있음을 나타낸다.", "plausible": true},
+        {"word": "all of", "meaningKo": "~의 전부", "reasonKo": "집합 전체를 가리키며, 상태에 거의 도달했지만 차이가 남았다는 정도를 나타내지 않는다.", "plausible": false}
+      ],
+      "sources": [
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/all-but",
+          "independenceGroup": "Collins",
+          "note": "almost의 정도 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/american_english/all_4",
+          "independenceGroup": "Oxford",
+          "note": "거의 상태에 이르는 sense와 all except의 별도 sense를 대조함; 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.09.10",
+      "status": "reviewed",
+      "quality": "A",
+      "enrichmentStatus": "complete",
+      "failureReason": null
+    },
+    {
+      "id": "all-but:all-except",
+      "headword": "all but",
+      "partOfSpeech": "determiner phrase",
+      "senseId": "all-but:all-except",
+      "itemIds": ["JBKROW000287", "JBKROW002103"],
+      "englishDefinition": "Every member of a stated group except the named person, thing, or number.",
+      "conciseEnglishDefinition": "every member of a group except the named exception",
+      "exactSynonyms": ["all except"],
+      "nearSynonyms": ["everyone except", "everything except"],
+      "antonyms": ["none of", "only"],
+      "variants": [],
+      "relatedWords": ["almost all"],
+      "exampleSentences": [
+        {
+          "en": "All but two of the twelve committee members approved the proposal.",
+          "ko": "위원 열두 명 중 두 명을 제외한 모두가 제안을 승인했다.",
+          "cueKo": "two가 예외이고 twelve가 전체이므로 승인자는 열 명이다.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "~만 제외하고 모두",
+      "contextExplanationKo": "뒤에 예외 대상이나 수가 나오면 전체 집합에서 그 예외만 빼고 남은 모두를 가리킨다.",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "every member of a stated group except the named exception"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "_____ three of the twenty files were recovered, so seventeen are available again."
+        }
+      ],
+      "distractors": [
+        {"word": "only", "meaningKo": "오직", "reasonKo": "예외 수 자체만 남긴다는 뜻이다. all but three는 세 개만이 아니라 세 개를 제외한 나머지다.", "plausible": true},
+        {"word": "almost", "meaningKo": "거의", "reasonKo": "정도에는 가까울 수 있지만, 명시된 전체와 예외 수를 정확히 계산하는 구조를 보존하지 못한다.", "plausible": true},
+        {"word": "none but", "meaningKo": "~ 외에는 아무도 없는", "reasonKo": "지정 대상을 제외하는 것이 아니라 지정 대상만 남기는 반대 범위다.", "plausible": false}
+      ],
+      "sources": [
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/all-but",
+          "independenceGroup": "Collins",
+          "note": "all except의 집합 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/american_english/all_4",
+          "independenceGroup": "Oxford",
+          "note": "예외를 뺀 모두의 sense와 almost의 별도 sense를 대조함; 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.09.10",
+      "status": "reviewed",
+      "quality": "A",
       "enrichmentStatus": "complete",
       "failureReason": null
     }

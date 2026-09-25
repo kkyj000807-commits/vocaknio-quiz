@@ -1,0 +1,435 @@
+{
+  "schema": 1,
+  "generatedAtKst": "2026-09-26T00:44:58+09:00",
+  "vocabulary": {
+    "sourceRows": 38163,
+    "uniqueHeadwords": 13347,
+    "rowsWithCanonicalSense": 230,
+    "rowsWithoutCanonicalSense": 37933
+  },
+  "rawVocabulary": {
+    "recordCount": 38163,
+    "blanks": {
+      "englishDefinition": 38163,
+      "koreanMeaning": 0,
+      "contextExplanation": 38163,
+      "exampleSentence": 38163,
+      "exampleExplanation": 38163,
+      "synonyms": 26886,
+      "distinctionNote": 38163,
+      "sourceIds": 38163
+    },
+    "note": "원본 38,163행 스키마는 w/k/s 중심이며, canonical sense 필드는 별도 검수 레이어에서만 제공된다."
+  },
+  "before": {
+    "canonicalSenseCount": 103,
+    "blanks": {
+      "englishDefinition": 15,
+      "koreanMeaning": 15,
+      "contextExplanation": 15,
+      "exampleSentence": 15,
+      "exampleExplanation": 15,
+      "synonyms": 103,
+      "distinctionNote": 15,
+      "sourceIds": 15
+    }
+  },
+  "after": {
+    "canonicalSenseCount": 103,
+    "blanks": {
+      "englishDefinition": 0,
+      "koreanMeaning": 0,
+      "contextExplanation": 0,
+      "exampleSentence": 0,
+      "exampleExplanation": 0,
+      "synonyms": 86,
+      "distinctionNote": 0,
+      "sourceIds": 0
+    }
+  },
+  "statusCounts": {
+    "COMPLETE": 17,
+    "VERIFIED_NO_DATA": 0,
+    "FAILED": 0,
+    "NEEDS_REVIEW": 86,
+    "PENDING": 0
+  },
+  "frontend": {
+    "learningDetailSenseCount": 141,
+    "learningDetailRowCount": 218,
+    "note": "기존 단어장·문풀·오답 화면의 LearningDetails selector가 이 배포 JSON을 읽는다."
+  },
+  "pipeline": [
+    {
+      "stage": "원자료 수집",
+      "evidence": "검수 learning source, active recall, sense question, synonym review catalog"
+    },
+    {
+      "stage": "sense 매핑",
+      "evidence": "senseId + itemIds"
+    },
+    {
+      "stage": "enrichment",
+      "evidence": "독립 출처 검수 필드만 병합; 누락은 생성하지 않음"
+    },
+    {
+      "stage": "DB 저장",
+      "evidence": "assets/canonical-sense-content.json"
+    },
+    {
+      "stage": "배포 데이터 생성",
+      "evidence": "public/data/canonical-sense-content.json + vocab-learning group JSON"
+    },
+    {
+      "stage": "API·selector",
+      "evidence": "lib/vocab-learning.ts"
+    },
+    {
+      "stage": "프런트 표시",
+      "evidence": "components/learning-details.tsx"
+    }
+  ],
+  "firstLoss": {
+    "unmappedVocabularyRows": {
+      "stage": "sense 매핑",
+      "count": 37933,
+      "reason": "원본 어휘 행에 canonical senseId가 아직 없다."
+    },
+    "mappedSenseMissingFields": {
+      "stage": "원자료 수집·enrichment",
+      "fields": {
+        "englishDefinition": 0,
+        "koreanMeaning": 0,
+        "contextExplanation": 0,
+        "exampleSentence": 0,
+        "exampleExplanation": 0,
+        "synonyms": 86,
+        "distinctionNote": 0,
+        "sourceIds": 0
+      },
+      "reason": "통합 저장·배포 과정에서 삭제된 값이 아니라, 검수 원천 레이어에 아직 존재하지 않는 값이다."
+    }
+  },
+  "sampleAudit": [
+    {
+      "senseId": "abide-by:follow-governing-rule",
+      "word": "abide by",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "all-but:all-except",
+      "word": "all but",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "all-but:almost",
+      "word": "all but",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "blind-alley:fruitless-course",
+      "word": "blind alley",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "capricious:unpredictable-whims",
+      "word": "capricious",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "jury-foreman:leader-of-jury",
+      "word": "jury foreman",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "put-the-cart-before-the-horse:reverse-dependent-order",
+      "word": "put the cart before the horse",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "sanction:authorize:v",
+      "word": "sanction",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "sanction:penalize:v",
+      "word": "sanction",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "take-for-granted:assume-without-checking",
+      "word": "take for granted",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "take-for-granted:fail-to-appreciate",
+      "word": "take for granted",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "teem-with:contain-many-active-things",
+      "word": "teem with",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "work-out:calculate-value",
+      "word": "work out",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "work-out:end-successfully",
+      "word": "work out",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "work-out:exercise-body",
+      "word": "work out",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "work-out:solve-problem",
+      "word": "work out",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "wrap-up:finish-activity",
+      "word": "wrap up",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "abide-by:primary",
+      "word": "abide by",
+      "status": "NEEDS_REVIEW",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": false,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "account-for:primary",
+      "word": "account for",
+      "status": "NEEDS_REVIEW",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": false,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "at-stake:primary",
+      "word": "at stake",
+      "status": "NEEDS_REVIEW",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": false,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    }
+  ]
+}

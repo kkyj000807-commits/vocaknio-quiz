@@ -34,6 +34,10 @@ export function ActiveRecallAnswer({ recall }: { recall: ActiveRecallSense }) {
       <Text style={[styles.definition, { color: colors.foreground }]}>{recall.conciseEnglishDefinition}</Text>
       <Text style={[styles.label, { color: colors.primary }]}>KR</Text>
       <Text style={[styles.korean, { color: colors.foreground }]}>{recall.koreanMeaning}</Text>
+      {recall.contextExplanationKo ? <>
+        <Text style={[styles.label, { color: colors.primary }]}>문맥 설명</Text>
+        <Text style={[styles.detailText, { color: colors.foreground }]}>{recall.contextExplanationKo}</Text>
+      </> : null}
       {chips.length > 0 ? (
         <View style={styles.chips}>
           {chips.map(chip => (
@@ -58,7 +62,11 @@ export function ActiveRecallAnswer({ recall }: { recall: ActiveRecallSense }) {
           <Text style={[styles.detailText, { color: colors.foreground }]}>{recall.englishDefinition}</Text>
           <Text style={[styles.label, { color: colors.primary }]}>Example</Text>
           {recall.exampleSentences.map((example, index) => (
-            <Text key={`${example.en}-${index}`} style={[styles.detailText, { color: colors.foreground }]}>{example.en}</Text>
+            <View key={`${example.en}-${index}`} style={styles.example}>
+              <Text style={[styles.detailText, { color: colors.foreground }]}>{example.en}</Text>
+              {example.ko ? <Text style={[styles.detailText, { color: colors.foreground }]}>{example.ko}</Text> : null}
+              {example.cueKo ? <Text style={[styles.note, { color: colors.muted }]}>문맥 단서: {example.cueKo}</Text> : null}
+            </View>
           ))}
           <Text style={[styles.note, { color: colors.muted }]}>사전 2곳 의미 대조 · 정의와 예문은 학습용 자체 편집</Text>
         </View>
@@ -84,5 +92,6 @@ const styles = StyleSheet.create({
   more: { minHeight: 44, justifyContent: "center", alignSelf: "flex-start" },
   moreText: { fontSize: 12, fontWeight: "700" },
   details: { gap: 6, paddingTop: 4 },
+  example: { gap: 4 },
   detailText: { fontSize: 13, lineHeight: 21 },
 });

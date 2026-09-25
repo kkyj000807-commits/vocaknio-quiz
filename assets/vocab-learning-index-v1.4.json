@@ -1,7 +1,7 @@
 {
   "version": "3.1",
   "coverage": {
-    "senses": 139,
+    "senses": 141,
     "rows": 218,
     "checkedAtKst": "2026.09.05"
   },
@@ -153,7 +153,8 @@
     "JBKROW000287": {
       "group": "V101",
       "entryIds": [
-        "learn:correction:JBKROW000287"
+        "learn:correction:JBKROW000287:almost",
+        "learn:correction:JBKROW000287:all-except"
       ]
     },
     "JBKROW000327": {
@@ -225,7 +226,8 @@
     "JBKROW002103": {
       "group": "V101",
       "entryIds": [
-        "learn:correction:JBKROW002103"
+        "learn:correction:JBKROW002103:almost",
+        "learn:correction:JBKROW002103:all-except"
       ]
     },
     "JBKROW002148": {

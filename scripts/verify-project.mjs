@@ -5,6 +5,7 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 // Build data before tests: tests must inspect what the next export will ship.
 const steps = [
   ["학습 데이터 연결·검증", "scripts/build-vocab-learning-v1.4.mjs"],
+  ["canonical sense 공란 backfill·감사", "scripts/backfill-canonical-sense-content.mjs"],
   ["sense 문항 상태·목록 연결 검증", "--import", "tsx", "scripts/audit-sense-questions.ts"],
   ["영어 능동 인출 데이터·coverage 검증", "--import", "tsx", "scripts/audit-active-recall.ts"],
   ["전체 타입 검사", "node_modules/typescript/bin/tsc", "--noEmit"],

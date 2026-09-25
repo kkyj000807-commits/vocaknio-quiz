@@ -136,8 +136,9 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
       </View>}
 
       <View style={s.section}>
-        <Text style={s.label}>{entry.definitionKind === "editorial" ? "영영 풀이 · 사전 대조" : "영영 정의"}</Text>
+        <Text style={s.label}>1. {entry.definitionKind === "editorial" ? "영영 정의 · 사전 대조 후 편집" : "영영 정의"}</Text>
         <Text style={s.english}>{entry.definitionEn}</Text>
+        <Text style={s.label}>2. 한국어 핵심 뜻</Text>
         <Text style={s.text}>{entry.definitionKo}</Text>
       </View>
 
@@ -149,10 +150,10 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
       </View>}
 
       <View style={s.section}>
-        <Text style={s.label}>쓰임과 뉘앙스</Text>
+        <Text style={s.label}>3. 문맥 설명</Text>
         {nuance?.register && <Text style={s.text}>격식·문체: {nuance.register}</Text>}
         {nuance?.connotation && <Text style={s.text}>어감: {nuance.connotation}</Text>}
-        <Text style={s.text}>{entry.usageKo}</Text>
+        <Text style={s.text}>{entry.contextExplanationKo}</Text>
         {nuance?.intensity && (
           <View style={s.intensityBox}>
             <Text style={s.label}>이 뜻에서의 상대적 강도 · 약 → 강</Text>
@@ -164,7 +165,7 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
 
       {entry.contrasts.length > 0 && (
         <View style={s.section}>
-          <Text style={s.label}>비슷하지만 다른 단어</Text>
+          <Text style={s.label}>4. 유사어·혼동어 구별</Text>
           {entry.contrasts.map((contrast: LearningEntry["contrasts"][number], contrastIndex: number) => (
             <Text key={`${contrast.word}-${contrastIndex}`} style={s.text}>
               <Text style={s.contrastWord}>{contrast.word}</Text> — {contrast.noteKo}
@@ -172,11 +173,6 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
           ))}
         </View>
       )}
-
-      <View style={s.section}>
-        <Text style={s.label}>문제에서 주의할 점</Text>
-        <Text style={s.text}>{entry.examTrapKo}</Text>
-      </View>
 
       {entry.reasoning && <>
         {!core && <View style={s.section}>
@@ -193,9 +189,11 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
       </>}
 
       <View style={s.exampleBox}>
-        <Text style={s.label}>예문 · {entry.example.kind === "editorial" ? "학습용 창작" : "출처 원문"}</Text>
+        <Text style={s.label}>5. 예문 · {entry.example.kind === "editorial" ? "학습용 창작" : "출처 원문"}</Text>
         <Text style={s.english}>{entry.example.en}</Text>
         <Text style={s.text}>{entry.example.ko}</Text>
+        <Text style={s.label}>문맥 판별 기준</Text>
+        <Text style={s.note}>{entry.example.cueKo ?? entry.examTrapKo}</Text>
       </View>
 
       {entry.audio && (

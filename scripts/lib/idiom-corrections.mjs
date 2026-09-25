@@ -20,6 +20,19 @@ export function loadIdiomCorrections(root) {
       if (!entry[field]?.trim() || isMissingMeaning(entry[field])) throw new Error(`Invalid correction ${entry.key}: ${field}`);
     }
     if (!entry.example?.en || !entry.example?.ko) throw new Error(`Missing example: ${entry.key}`);
+    if (entry.senses !== undefined) {
+      if (!Array.isArray(entry.senses) || entry.senses.length < 2) throw new Error(`Multiple senses required: ${entry.key}`);
+      const senseIds = new Set();
+      for (const sense of entry.senses) {
+        for (const field of ["id", "partOfSpeech", "definitionEn", "definitionKo", "memoryKo", "usageKo", "examTrapKo"]) {
+          if (!sense[field]?.trim()) throw new Error(`Incomplete sense ${entry.key}:${sense.id ?? "unknown"}: ${field}`);
+        }
+        if (senseIds.has(sense.id)) throw new Error(`Duplicate sense: ${entry.key}:${sense.id}`);
+        senseIds.add(sense.id);
+        if (!Array.isArray(sense.contrasts)) throw new Error(`Missing contrasts: ${entry.key}:${sense.id}`);
+        if (!sense.example?.en || !sense.example?.ko || !sense.example?.cueKo) throw new Error(`Missing contextualized example: ${entry.key}:${sense.id}`);
+      }
+    }
     if (new Set(entry.sources.map((source) => source.independenceGroup)).size < 2) throw new Error(`Two independent sources required: ${entry.key}`);
     for (const source of entry.sources) {
       if (!source.name || !source.noteKo || !/^https:\/\//.test(source.url)) throw new Error(`Incomplete evidence: ${entry.key}`);
@@ -48,19 +61,40 @@ export function applyIdiomCorrections(items, data) {
 
 export function correctionLearningEntries(vocab, data) {
   const byId = new Map(vocab.map((item) => [item.id, item]));
-  return data.entries.flatMap((entry) => entry.targets.map((target) => {
+  return data.entries.flatMap((entry) => entry.targets.flatMap((target) => {
     const item = byId.get(target.id);
     if (!item || item.k !== entry.meaningKo) throw new Error(`Meaning correction not built: ${target.id}`);
-    return {
-      id: `learn:correction:${target.id}`, headword: item.w, group: item.group,
-      partOfSpeech: entry.partOfSpeech ?? "idiom", itemIds: [item.id], localGlosses: [item.k],
-      definitionKind: "editorial", definitionEn: entry.definitionEn, definitionKo: entry.definitionKo,
-      memoryKo: entry.memoryKo, usageKo: entry.usageKo, examTrapKo: entry.examTrapKo,
-      contrasts: entry.contrasts ?? [], example: { ...entry.example, kind: "editorial" },
+    const senses = entry.senses ?? [{
+      id: null,
+      partOfSpeech: entry.partOfSpeech ?? "idiom",
+      definitionEn: entry.definitionEn,
+      definitionKo: entry.definitionKo,
+      memoryKo: entry.memoryKo,
+      usageKo: entry.usageKo,
+      examTrapKo: entry.examTrapKo,
+      contrasts: entry.contrasts ?? [],
+      example: entry.example,
+    }];
+    return senses.map((sense) => ({
+      id: `learn:correction:${target.id}${sense.id ? `:${sense.id}` : ""}`,
+      senseId: `${entry.key}:${sense.id ?? "primary"}`,
+      headword: item.w,
+      group: item.group,
+      partOfSpeech: sense.partOfSpeech,
+      itemIds: [item.id],
+      localGlosses: [item.k],
+      definitionKind: "editorial",
+      definitionEn: sense.definitionEn,
+      definitionKo: sense.definitionKo,
+      memoryKo: sense.memoryKo,
+      usageKo: sense.usageKo,
+      examTrapKo: sense.examTrapKo,
+      contrasts: sense.contrasts,
+      example: { ...sense.example, kind: "editorial" },
       ...(entry.composition ? { composition: entry.composition } : {}),
       sources: entry.sources.map((source) => ({ ...source, edition: `확인 ${data.checkedAtKst}`, license: "대조 출처 · 원문 미수록", role: "reference" })),
       verification: { status: "cross-agreed", checkedAtKst: data.checkedAtKst,
         reviewer: "Codex · 독립 출처 의미 대조 및 한영 학습 해설 검수", evidence: entry.sources },
-    };
+    }));
   }));
 }

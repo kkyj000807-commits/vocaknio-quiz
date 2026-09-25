@@ -16,8 +16,14 @@ export const activeRecallSenseSchema = z.object({
   antonyms: z.array(nonempty),
   variants: z.array(nonempty),
   relatedWords: z.array(nonempty),
-  exampleSentences: z.array(z.object({ en: nonempty, type: z.enum(["source", "editorial"]) })).min(1),
+  exampleSentences: z.array(z.object({
+    en: nonempty,
+    ko: nonempty.optional(),
+    cueKo: nonempty.optional(),
+    type: z.enum(["source", "editorial"]),
+  })).min(1),
   koreanMeaning: nonempty,
+  contextExplanationKo: nonempty.optional(),
   prompts: z.array(z.object({ id: nonempty, kind: z.enum(["definition-recall", "context-recall"]), text: nonempty })).min(2),
   distractors: z.array(z.object({ word: nonempty, meaningKo: nonempty, reasonKo: nonempty, plausible: z.boolean() })).length(3),
   sources: z.array(z.object({ publisher: nonempty, url: z.url(), independenceGroup: nonempty, note: nonempty })).min(2),
@@ -60,6 +66,8 @@ export function getActiveRecallCoverage() {
     rows: new Set(production.flatMap(entry => entry.itemIds)).size,
     definitions: production.filter(entry => entry.englishDefinition && entry.conciseEnglishDefinition).length,
     examples: production.filter(entry => entry.exampleSentences.length > 0).length,
+    contextualizedExamples: production.filter(entry => entry.exampleSentences.some(example => example.ko && example.cueKo)).length,
+    contextExplanations: production.filter(entry => entry.contextExplanationKo).length,
     synonymRelations: production.filter(entry => entry.exactSynonyms.length + entry.nearSynonyms.length + entry.variants.length > 0).length,
   };
 }

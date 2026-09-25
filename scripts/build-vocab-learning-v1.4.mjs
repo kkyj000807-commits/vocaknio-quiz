@@ -34,6 +34,7 @@ if (!Array.isArray(entries) || entries.length === 0) fail("검수 완료 항목�
 
 const vocabById = new Map(vocab.map((item) => [item.id, item]));
 const seenIds = new Set();
+const senseContracts = new Map();
 const itemPointers = {};
 const byGroup = Object.fromEntries(groups.map((group) => [group, []]));
 
@@ -63,6 +64,18 @@ for (const entry of entries) {
   for (const source of entry.sources) {
     if (!source.url || !source.edition || !source.license) fail(`${entry.id}: 불완전한 출처 정보`);
   }
+
+  const senseId = entry.senseId ?? entry.id;
+  const contract = JSON.stringify({
+    partOfSpeech: entry.partOfSpeech,
+    definitionEn: entry.definitionEn,
+    definitionKo: entry.definitionKo,
+    usageKo: entry.usageKo,
+    example: entry.example,
+  });
+  const previousContract = senseContracts.get(senseId);
+  if (previousContract && previousContract !== contract) fail(`${senseId}: 같은 sense ID에 서로 다른 설명이 연결됨`);
+  senseContracts.set(senseId, contract);
 
   if (entry.audio) {
     if (entry.audio.region !== "US" || entry.audio.source !== "Wikimedia Commons") fail(`${entry.id}: 미국식 Commons 녹음이 아님`);
@@ -100,6 +113,9 @@ fs.mkdirSync(outputRoot, { recursive: true });
 for (const group of groups) {
   const normalizedEntries = byGroup[group].map((entry) => ({
     ...entry,
+    senseId: entry.senseId ?? entry.id,
+    definitionStatus: "production",
+    contextExplanationKo: entry.usageKo,
     sources: entry.sources.map((source) =>
       String(source.name).toLowerCase().includes("open english wordnet")
         ? {

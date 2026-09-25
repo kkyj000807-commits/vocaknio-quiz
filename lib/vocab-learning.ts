@@ -20,17 +20,20 @@ export interface LearningAudio {
 
 export interface LearningEntry {
   id: string;
+  senseId: string;
   itemIds: string[];
   headword: string;
   partOfSpeech: string;
   definitionEn: string;
   definitionKind?: "editorial";
+  definitionStatus: "production";
   definitionKo: string;
   memoryKo: string;
   usageKo: string;
+  contextExplanationKo: string;
   examTrapKo: string;
   contrasts: Array<{ word: string; noteKo: string }>;
-  example: { en: string; ko: string; kind: "source" | "editorial" };
+  example: { en: string; ko: string; cueKo?: string; kind: "source" | "editorial" };
   nuance?: {
     register?: string;
     connotation?: string;
@@ -86,10 +89,13 @@ function isLearningEntry(value: unknown): value is LearningEntry {
   if (!value || typeof value !== "object") return false;
   const entry = value as Partial<LearningEntry>;
   return Boolean(
-    entry.id &&
+      entry.id &&
+      entry.senseId &&
       entry.headword &&
       entry.definitionEn &&
+      entry.definitionStatus === "production" &&
       entry.definitionKo &&
+      entry.contextExplanationKo &&
       entry.example?.en &&
       entry.example?.ko &&
       entry.verification?.status === "cross-agreed" &&

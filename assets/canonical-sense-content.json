@@ -1,0 +1,4583 @@
+{
+  "schema": 1,
+  "release": "3.1",
+  "entries": [
+    {
+      "word": "abide by",
+      "variants": [],
+      "senseId": "abide-by:follow-governing-rule",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To follow a rule or decision, or honor an agreement that governs what you should do.",
+      "koreanMeaning": "규칙·결정·약속을 따르고 지키다",
+      "contextExplanation": "개인적 동의 여부와 별개로 자신을 구속하는 규칙·결정·약속을 행동 기준으로 삼아 준수할 때 쓴다.",
+      "exampleSentence": "Even members who opposed the decision agreed to abide by it until the review was complete.",
+      "exampleTranslation": "그 결정에 반대한 구성원들도 검토가 끝날 때까지는 그것을 따르기로 했다.",
+      "exampleExplanation": "opposed와 abide by의 대조가 ‘동의하다’가 아니라 ‘반대해도 준수하다’라는 뜻을 보여 준다.",
+      "synonyms": [
+        "comply with",
+        "adhere to"
+      ],
+      "distinctionNote": "agree with: 판단에 동의하는 뜻이다. abide by는 개인적으로 반대해도 규칙·결정을 따라 행동할 수 있다. | put up with: 싫은 대상이나 상황을 견디는 뜻이며, 규칙을 기준으로 삼아 준수한다는 뜻이 아니다. | appeal against: 결정을 바꾸도록 공식적으로 다투는 행동이지, 그 결정대로 행동한다는 뜻이 아니다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/abide-by",
+        "https://dictionary.cambridge.org/us/dictionary/english/abide-by"
+      ],
+      "itemIds": [
+        "JBKROW000004",
+        "JBKROW002049"
+      ],
+      "inputLayers": [
+        "active-recall"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "all but",
+      "variants": [],
+      "senseId": "all-but:all-except",
+      "partOfSpeech": "determiner phrase",
+      "englishDefinition": "Every member of a stated group except the named person, thing, or number.",
+      "koreanMeaning": "지정한 사람·사물·수만 빼고 그 집합의 나머지 모두.",
+      "contextExplanation": "all but + 예외 대상/수 + of + 전체 집합 구조에서는 almost가 아니라 '그 예외를 제외한 모두'로 계산한다.",
+      "exampleSentence": "All but two of the twelve committee members approved the proposal.",
+      "exampleTranslation": "위원 열두 명 중 두 명을 제외한 모두가 제안을 승인했다.",
+      "exampleExplanation": "two가 제외할 수이고 twelve committee members가 전체이므로 승인자는 12−2인 열 명이다.",
+      "synonyms": [
+        "all except",
+        "everyone except",
+        "everything except",
+        "the ten proposals other than those two"
+      ],
+      "distinctionNote": "but 뒤의 수를 결과값으로 고르면 안 된다. 전체 수에서 예외 수를 빼야 한다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/all-but",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/american_english/all_4",
+        "https://dictionary.cambridge.org/us/dictionary/english/all-but"
+      ],
+      "itemIds": [
+        "JBKROW000287",
+        "JBKROW002103"
+      ],
+      "inputLayers": [
+        "vocab-learning",
+        "active-recall",
+        "sense-question"
+      ],
+      "conflicts": [],
+      "alternateValues": [
+        {
+          "field": "koreanMeaning",
+          "value": "~만 제외하고 모두",
+          "layer": "active-recall"
+        },
+        {
+          "field": "contextExplanation",
+          "value": "뒤에 예외 대상이나 수가 나오면 전체 집합에서 그 예외만 빼고 남은 모두를 가리킨다.",
+          "layer": "active-recall"
+        },
+        {
+          "field": "exampleExplanation",
+          "value": "two가 예외이고 twelve가 전체이므로 승인자는 열 명이다.",
+          "layer": "active-recall"
+        },
+        {
+          "field": "distinctionNote",
+          "value": "only: 예외 수 자체만 남긴다는 뜻이다. all but three는 세 개만이 아니라 세 개를 제외한 나머지다. | almost: 정도에는 가까울 수 있지만, 명시된 전체와 예외 수를 정확히 계산하는 구조를 보존하지 못한다. | none but: 지정 대상을 제외하는 것이 아니라 지정 대상만 남기는 반대 범위다.",
+          "layer": "active-recall"
+        },
+        {
+          "field": "koreanMeaning",
+          "value": "지정된 대상만 제외하고 모두",
+          "layer": "sense-question"
+        },
+        {
+          "field": "contextExplanation",
+          "value": "but 뒤의 대상을 전체 집합에서 빼고 나머지를 남긴다. ‘그 대상만’으로 읽으면 포함 범위가 뒤집힌다.",
+          "layer": "sense-question"
+        },
+        {
+          "field": "exampleSentence",
+          "value": "All but two of the twelve proposals survived the first review.",
+          "layer": "sense-question"
+        },
+        {
+          "field": "exampleTranslation",
+          "value": "열두 제안 중 두 개를 제외한 모두가 1차 심사를 통과했다.",
+          "layer": "sense-question"
+        },
+        {
+          "field": "exampleExplanation",
+          "value": "문맥 핵심 단서: two of the twelve proposals",
+          "layer": "sense-question"
+        },
+        {
+          "field": "distinctionNote",
+          "value": "동일 명사구 범주의 집합 대조: 10/2/12/0개로 서로 배타적. '거의 모두'처럼 정답과 겹칠 수 있는 보기는 제외했다.",
+          "layer": "sense-question"
+        }
+      ],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "all but",
+      "variants": [],
+      "senseId": "all-but:almost",
+      "partOfSpeech": "adverbial phrase",
+      "englishDefinition": "Almost reaching or becoming the stated condition, while still falling slightly short of it.",
+      "koreanMeaning": "말한 상태에 아주 가까이 갔지만 완전히 그 상태가 되지는 않은.",
+      "contextExplanation": "all but 뒤에 complete, impossible, disappeared처럼 상태나 변화가 오면 그 상태에 거의 도달했다는 정도를 나타낸다.",
+      "exampleSentence": "By noon, the fog had all but disappeared.",
+      "exampleTranslation": "정오가 되자 안개는 거의 다 걷혀 있었다.",
+      "exampleExplanation": "disappeared가 상태 변화를 나타내며, all but가 그 변화가 완전히 끝나기 직전임을 표시한다.",
+      "synonyms": [
+        "almost",
+        "nearly"
+      ],
+      "distinctionNote": "완전히 그렇다는 뜻이 아니다. 문장에 remain, only, final처럼 남은 차이를 보여 주는 단서가 있는지 확인한다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/all-but",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/american_english/all_4",
+        "https://dictionary.cambridge.org/us/dictionary/english/all-but"
+      ],
+      "itemIds": [
+        "JBKROW000287",
+        "JBKROW002103"
+      ],
+      "inputLayers": [
+        "vocab-learning",
+        "active-recall",
+        "sense-question"
+      ],
+      "conflicts": [],
+      "alternateValues": [
+        {
+          "field": "koreanMeaning",
+          "value": "거의; 사실상 ~에 가까운",
+          "layer": "active-recall"
+        },
+        {
+          "field": "contextExplanation",
+          "value": "뒤에 상태·변화를 나타내는 말이 오면 완전한 상태에 조금 못 미친 정도를 나타낸다.",
+          "layer": "active-recall"
+        },
+        {
+          "field": "exampleExplanation",
+          "value": "disappeared가 상태 변화를 나타내며, all but가 완전한 소멸 바로 전의 정도를 표시한다.",
+          "layer": "active-recall"
+        },
+        {
+          "field": "distinctionNote",
+          "value": "anything but: 강한 부정이다. all but complete는 거의 완료된 것이지만 anything but complete는 전혀 완료되지 않은 것이다. | far from: 목표 상태에 가깝다는 뜻과 반대로, 그 상태에서 크게 떨어져 있음을 나타낸다. | all of: 집합 전체를 가리키며, 상태에 거의 도달했지만 차이가 남았다는 정도를 나타내지 않는다.",
+          "layer": "active-recall"
+        },
+        {
+          "field": "koreanMeaning",
+          "value": "거의 ~한",
+          "layer": "sense-question"
+        },
+        {
+          "field": "contextExplanation",
+          "value": "끝에 아주 조금만 남겨 둔 상태다. ‘완전히’라고 확정하면 마지막 남은 부분을 지워 버린다.",
+          "layer": "sense-question"
+        },
+        {
+          "field": "exampleSentence",
+          "value": "The restoration was all but complete; the team still had to replace one damaged tile.",
+          "layer": "sense-question"
+        },
+        {
+          "field": "exampleTranslation",
+          "value": "복원은 거의 끝났지만, 팀은 손상된 타일 하나를 아직 교체해야 했다.",
+          "layer": "sense-question"
+        },
+        {
+          "field": "exampleExplanation",
+          "value": "문맥 핵심 단서: still had to replace one damaged tile",
+          "layer": "sense-question"
+        },
+        {
+          "field": "distinctionNote",
+          "value": "네 부사구를 complete 앞에 대입. 거의/완전히/겨우 조금/전혀의 정도가 다르며 마지막 미완료 단서가 하나만 지지한다.",
+          "layer": "sense-question"
+        }
+      ],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "blind alley",
+      "variants": [],
+      "senseId": "blind-alley:fruitless-course",
+      "partOfSpeech": "명사구",
+      "englishDefinition": "A course of action that leads to no useful result or further progress.",
+      "koreanMeaning": "성과나 진전으로 이어지지 않는 접근·방향",
+      "contextExplanation": "길을 따라갔는데 끝이 막혀 더 나아가지 못하는 모습이다. 이 문맥에서는 도로가 아니라, 계속 시도해도 필요한 답에 도달하지 못하는 접근을 뜻한다. 어려워도 더 노력하면 해결되는 길과는 다르다. 현대 의미를 잇는 학습용 이미지이며 역사적 어원 설명은 아니다.",
+      "exampleSentence": "The historian called the search for a single author a blind alley: the manuscript was the work of several writers, so no amount of searching could identify one author.",
+      "exampleTranslation": "역사학자는 단 한 명의 저자를 찾는 일이 성과 없는 접근이라고 했다. 원고는 여러 사람이 썼으므로, 아무리 찾아도 한 명의 저자를 특정할 수 없었기 때문이다.",
+      "exampleExplanation": "문맥 핵심 단서: no amount of searching could identify one author",
+      "synonyms": [
+        "cul-de-sac"
+      ],
+      "distinctionNote": "blind alley ↔ cul-de-sac: 성과 없는 접근·방향이라는 비유적 명사 문맥에서 연결한다. 도로·신체 기관의 뜻을 합치지 않으며, 다른 구문에서 무조건 교체하지 않는다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/definition/english/blind-alley",
+        "https://www.merriam-webster.com/dictionary/cul-de-sac",
+        "https://www.collinsdictionary.com/dictionary/english/cul-de-sac",
+        "https://www.merriam-webster.com/dictionary/blind%20alley"
+      ],
+      "itemIds": [
+        "JBKROW009289",
+        "JBKROW011482"
+      ],
+      "inputLayers": [
+        "sense-question",
+        "synonym-review"
+      ],
+      "conflicts": [],
+      "alternateValues": [
+        {
+          "field": "koreanMeaning",
+          "value": "계속해도 유용한 성과나 진전으로 이어지지 않는 접근이나 방향",
+          "layer": "synonym-review"
+        },
+        {
+          "field": "contextExplanation",
+          "value": "길을 따라갔는데 끝이 막혀 더 나아가지 못하는 모습으로, 노력은 이어져도 원하는 성과로 연결되지 않는 접근을 이해한다. 어려워도 해결 가능성이 남은 일과는 다르다.",
+          "layer": "synonym-review"
+        },
+        {
+          "field": "exampleSentence",
+          "value": "The approach proved to be a blind alley: repeating the calculation could never distinguish the two competing explanations.",
+          "layer": "synonym-review"
+        },
+        {
+          "field": "exampleTranslation",
+          "value": "그 접근은 성과로 이어질 수 없는 길이었다. 계산을 반복해도 경쟁하는 두 설명을 구별할 수는 없었기 때문이다.",
+          "layer": "synonym-review"
+        },
+        {
+          "field": "exampleExplanation",
+          "value": "계산이 오래 걸린다는 뜻이 아니라, 필요한 구별 자체를 해낼 수 없다는 점이 핵심이다.",
+          "layer": "synonym-review"
+        },
+        {
+          "field": "distinctionNote",
+          "value": "성과 없는 접근·방향을 말하는 비유적 명사 문맥에서만 연결한다. cul-de-sac의 해부학적 뜻이나 실제 도로 뜻을 이 문맥의 정답 풀이에 합치지 않는다. 두 표현을 모든 구문에서 기계적으로 교체할 수 있다는 주장은 아니다.",
+          "layer": "synonym-review"
+        }
+      ],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "capricious",
+      "variants": [],
+      "senseId": "capricious:unpredictable-whims",
+      "partOfSpeech": "형용사",
+      "englishDefinition": "Changing suddenly and unpredictably according to a person's mood or whim.",
+      "koreanMeaning": "기분이나 충동에 따라 태도가 예측하기 어렵게 달라지는",
+      "contextExplanation": "앞선 반응으로 다음 반응을 짐작하려는데, 판단을 이끄는 기분이 바뀌어 반응도 뒤집힌다. 여기서는 결정을 못 내리는 것이 아니라, 매번 단호하게 결정하면서도 그 방향이 오락가락한다. 현재 의미를 설명한 것이며 역사적 어원 이야기는 아니다.",
+      "exampleSentence": "During negotiations, the capricious envoy answered each offer decisively, yet swung from cheerful agreement to furious refusal and back within minutes; the shifts followed his moods, not any change in the terms.",
+      "exampleTranslation": "협상에서 변덕스러운 사절은 제안마다 단호하게 답했지만, 몇 분 사이 흔쾌한 동의에서 격한 거절로, 다시 동의로 돌아섰다. 조건이 달라져서가 아니라 그의 기분을 따라 반응이 바뀐 것이다.",
+      "exampleExplanation": "문맥 핵심 단서: swung from cheerful agreement to furious refusal and back within minutes",
+      "synonyms": [
+        "mercurial"
+      ],
+      "distinctionNote": "capricious ↔ mercurial: 기분과 태도가 갑자기 달라지는 사람의 형용사 문맥에서만 연결한다. capricious는 변덕·충동, mercurial은 빠른 기분 변화를 강조한다. 활달함·수은·수성 뜻이나 법률·날씨 문맥으로 무조건 교체하지 않는다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/definition/english/capricious",
+        "https://www.merriam-webster.com/dictionary/mercurial",
+        "https://www.merriam-webster.com/dictionary/irritable",
+        "https://www.merriam-webster.com/dictionary/indecisive",
+        "https://www.oxfordlearnersdictionaries.com/definition/english/calculating",
+        "https://www.merriam-webster.com/dictionary/capricious",
+        "https://www.oxfordlearnersdictionaries.com/definition/english/mercurial"
+      ],
+      "itemIds": [
+        "JBKROW000003",
+        "JBKROW002257",
+        "JBKROW026187",
+        "JBKROW030584"
+      ],
+      "inputLayers": [
+        "sense-question",
+        "synonym-review"
+      ],
+      "conflicts": [],
+      "alternateValues": [
+        {
+          "field": "koreanMeaning",
+          "value": "그때그때의 기분이나 충동에 따라 태도가 예측하기 어렵게 달라지는",
+          "layer": "synonym-review"
+        },
+        {
+          "field": "contextExplanation",
+          "value": "앞선 반응으로 다음 반응을 짐작하려는데, 판단을 이끄는 기분이 바뀌어 반응도 뒤집힌다. 중심은 단순히 화를 잘 내거나 활발하다는 것이 아니라, 반응을 미리 가늠하기 어렵다는 것이다.",
+          "layer": "synonym-review"
+        },
+        {
+          "field": "exampleSentence",
+          "value": "Without receiving any new information, the capricious director praised the proposal, angrily rejected it minutes later, and then welcomed it again as her mood changed.",
+          "layer": "synonym-review"
+        },
+        {
+          "field": "exampleTranslation",
+          "value": "변덕스러운 책임자는 새로운 정보를 받은 것도 아닌데 제안을 칭찬했다가, 몇 분 뒤 화를 내며 거절하고, 기분이 바뀌자 다시 반겼다.",
+          "layer": "synonym-review"
+        },
+        {
+          "field": "exampleExplanation",
+          "value": "칭찬→거절→환영의 반전이 같은 제안과 정보 아래 일어난다. 새로운 근거를 얻어 합리적으로 판단을 수정한 경우와 구별한다.",
+          "layer": "synonym-review"
+        },
+        {
+          "field": "distinctionNote",
+          "value": "사람의 기분과 태도가 갑자기 달라지는 형용사 문맥에서만 연결한다. capricious는 일관된 이유보다 변덕에 좌우됨을, mercurial은 특히 빠른 기분 변화를 두드러지게 한다. 완전한 동의어는 아니며 법률상 자의적 판단, 날씨 등 다른 capricious 문맥에 자동 전파하지 않는다. mercurial의 활달함·수은·수성 관련 뜻도 이 관계의 정답에 합치지 않는다.",
+          "layer": "synonym-review"
+        }
+      ],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "jury foreman",
+      "variants": [],
+      "senseId": "jury-foreman:leader-of-jury",
+      "partOfSpeech": "noun phrase",
+      "englishDefinition": "A juror selected to guide the jury's deliberations and speak for the jury in court.",
+      "koreanMeaning": "배심원 대표",
+      "contextExplanation": "배심원단 내부의 구성원 중 토의를 이끌고 법정에서 평결을 대표해 전달하는 역할을 가리킨다. 판사나 모든 배심원을 통칭하지 않는다.",
+      "exampleSentence": "The jury foreman organized the discussion before announcing the verdict.",
+      "exampleTranslation": "배심원 대표는 평결을 발표하기 전에 토의를 정리했다.",
+      "exampleExplanation": "토의를 정리하고 평결을 발표하는 두 행동이 일반 배심원이 아니라 대표 역할임을 보여 준다.",
+      "synonyms": [
+        "presiding juror"
+      ],
+      "distinctionNote": "jury member: 배심원단의 구성원이지만 대표 역할까지 뜻하지 않는다. | trial judge: 재판을 진행하지만 배심원단의 토의를 이끄는 배심원은 아니다. | court clerk: 법원 행정 업무를 맡으며 배심원단의 대표가 아니다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/foreman",
+        "https://www.collinsdictionary.com/us/dictionary/english/jury-foreman"
+      ],
+      "itemIds": [
+        "JBKROW019189",
+        "JBKROW023301"
+      ],
+      "inputLayers": [
+        "active-recall"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "put the cart before the horse",
+      "variants": [],
+      "senseId": "put-the-cart-before-the-horse:reverse-dependent-order",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To do a later step before the earlier step on which it logically depends, reversing the proper order.",
+      "koreanMeaning": "일의 선후를 뒤바꾸다",
+      "contextExplanation": "뒤 단계가 앞 단계의 결과에 의존하는데도 뒤 단계를 먼저 실행한 상황에 쓴다. 단순히 일을 빨리 시작했다는 뜻과는 다르다.",
+      "exampleSentence": "Buying equipment before deciding what to build puts the cart before the horse.",
+      "exampleTranslation": "무엇을 만들지 정하기 전에 장비부터 사는 것은 일의 선후를 뒤바꾸는 것이다.",
+      "exampleExplanation": "장비 선택은 만들 대상의 결정에 의존하므로, 의존 단계가 먼저 나온 순서 오류가 핵심이다.",
+      "synonyms": [
+        "reverse the proper order",
+        "get things backward"
+      ],
+      "distinctionNote": "jump the gun: 시기가 너무 이르다는 뜻이지만 의존하는 두 단계의 순서가 뒤집혔다는 뜻까지는 아니다. | get ahead of oneself: 앞선 결과를 미리 가정한다는 점은 가깝지만 절차의 선후가 뒤집힌 상황을 직접 가리키지는 않는다. | miss the boat: 적절한 기회를 놓친 것이며 해야 할 단계의 순서를 거꾸로 한 것은 아니다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/definition/english/cart_1",
+        "https://www.collinsdictionary.com/dictionary/english/put-the-cart-before-the-horse"
+      ],
+      "itemIds": [
+        "JBKROW022984"
+      ],
+      "inputLayers": [
+        "active-recall"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "sanction",
+      "variants": [],
+      "senseId": "sanction:authorize:v",
+      "partOfSpeech": "타동사",
+      "englishDefinition": "To give official permission or approval for an action.",
+      "koreanMeaning": "공식적으로 허가하다",
+      "contextExplanation": "권한을 가진 쪽이 행동에 진행 허가를 준다. 같은 철자라도 위반자에게 불이익을 주는 sanction과 방향이 반대다.",
+      "exampleSentence": "Only the ethics board can sanction the trial; without its consent, recruitment cannot begin.",
+      "exampleTranslation": "그 실험을 허가할 수 있는 곳은 윤리위원회뿐이며, 위원회의 동의 없이는 모집을 시작할 수 없다.",
+      "exampleExplanation": "문맥 핵심 단서: without its consent, recruitment cannot begin",
+      "synonyms": [
+        "authorize"
+      ],
+      "distinctionNote": "모두 trial을 목적어로 취할 수 있는 타동사. 허가/금지/연기/관찰은 서로 다른 행정적 결정으로 두 개 이상이 그럴듯하지만 consent 단서가 허가만 지지한다.",
+      "sourceIds": [
+        "https://dictionary.cambridge.org/us/dictionary/english/sanction",
+        "https://www.collinsdictionary.com/dictionary/english/sanction"
+      ],
+      "itemIds": [
+        "JBKROW000507",
+        "JBKROW003677",
+        "JBKROW005679",
+        "JBKROW007787",
+        "JBKROW008450",
+        "JBKROW013028",
+        "JBKROW027196",
+        "JBKROW033437"
+      ],
+      "inputLayers": [
+        "sense-question"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "sanction",
+      "variants": [],
+      "senseId": "sanction:penalize:v",
+      "partOfSpeech": "타동사",
+      "englishDefinition": "To impose an official penalty or restriction for a violation.",
+      "koreanMeaning": "위반에 대해 제재를 가하다",
+      "contextExplanation": "이번에는 위반자에게 공식 불이익을 주는 쪽이다. ‘허가하다’라는 다른 뜻을 그대로 가져오면 제재의 방향이 뒤집힌다.",
+      "exampleSentence": "The regulator will sanction the bank for concealing losses by imposing a substantial fine.",
+      "exampleTranslation": "감독 기관은 손실을 은폐한 은행에 상당한 벌금을 부과해 제재할 것이다.",
+      "exampleExplanation": "문맥 핵심 단서: by imposing a substantial fine",
+      "synonyms": [
+        "penalize"
+      ],
+      "distinctionNote": "모두 bank를 목적어로 취할 수 있는 타동사. 처벌/면책/환급/칭찬을 구별하고 벌금 단서로 단일 정답 확인. 과거 synonym 배열의 approve는 이 sense에서 채점에 사용하지 않는다.",
+      "sourceIds": [
+        "https://dictionary.cambridge.org/us/dictionary/english/sanction",
+        "https://www.collinsdictionary.com/dictionary/english/sanction"
+      ],
+      "itemIds": [
+        "JBKROW000507",
+        "JBKROW003677",
+        "JBKROW005679",
+        "JBKROW007787",
+        "JBKROW008450",
+        "JBKROW013028",
+        "JBKROW027196",
+        "JBKROW033437"
+      ],
+      "inputLayers": [
+        "sense-question"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "take for granted",
+      "variants": [],
+      "senseId": "take-for-granted:assume-without-checking",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To accept that something is true, certain, or available without checking or questioning it.",
+      "koreanMeaning": "확인 없이 사실로 전제하다",
+      "contextExplanation": "증거를 다시 확인하거나 의문을 제기하지 않은 채 어떤 사실·조건이 이미 확실하다고 전제할 때 쓴다.",
+      "exampleSentence": "The committee took for granted that the earlier measurements were accurate.",
+      "exampleTranslation": "위원회는 앞선 측정값이 정확하다고 확인 없이 전제했다.",
+      "exampleExplanation": "정확성을 재검증하지 않고 논의의 전제로 삼았다는 점이 이 sense를 결정한다.",
+      "synonyms": [
+        "assume without question",
+        "accept as given"
+      ],
+      "distinctionNote": "take into account: 정보를 검토에 포함한다는 뜻으로, 확인 없이 사실로 전제하는 것과 반대 방향이다. | call into question: 참인지 문제 삼는 뜻이며, 참이라고 당연히 전제하는 뜻이 아니다. | leave to chance: 결과를 우연에 맡기는 태도이지 어떤 판단을 사실로 받아들이는 뜻은 아니다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/take-for-granted",
+        "https://www.merriam-webster.com/dictionary/take%20for%20granted"
+      ],
+      "itemIds": [
+        "APPROW02128"
+      ],
+      "inputLayers": [
+        "active-recall"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "take for granted",
+      "variants": [],
+      "senseId": "take-for-granted:fail-to-appreciate",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To fail to appreciate the value of someone or something because their presence or help seems certain and familiar.",
+      "koreanMeaning": "익숙해서 소중함·고마움을 모르다",
+      "contextExplanation": "늘 존재하거나 도움을 주는 대상에 익숙해져 그 가치와 고마움을 제대로 인식하지 못할 때 쓴다.",
+      "exampleSentence": "People often take reliable public services for granted until those services stop.",
+      "exampleTranslation": "사람들은 안정적인 공공 서비스가 중단되기 전까지 그 가치를 당연하게 여기곤 한다.",
+      "exampleExplanation": "서비스가 멈춘 뒤에야 가치를 깨닫는 대조가 ‘사실 전제’가 아니라 ‘가치 간과’ sense를 보여 준다.",
+      "synonyms": [
+        "fail to appreciate",
+        "undervalue familiar support"
+      ],
+      "distinctionNote": "look down on: 상대를 열등하다고 판단하는 적극적 경멸이며, 익숙한 도움의 가치를 놓치는 뜻과는 다르다. | make up for: 부족이나 손해를 보충한다는 뜻으로, 이미 받는 도움의 가치를 알아보지 못한다는 뜻이 아니다. | show gratitude for: 가치와 도움을 알아보고 감사를 드러내므로 목표 sense와 반대다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/take-for-granted",
+        "https://www.merriam-webster.com/dictionary/take%20for%20granted"
+      ],
+      "itemIds": [
+        "APPROW02128"
+      ],
+      "inputLayers": [
+        "active-recall"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "teem with",
+      "variants": [],
+      "senseId": "teem-with:contain-many-active-things",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "For a place or area to contain very many people, animals, or things, often with a sense of active abundance.",
+      "koreanMeaning": "사람·생물 등으로 가득하다; 북적거리다",
+      "contextExplanation": "장소 안에 많은 사람·동물·사물이 활발하게 존재해 풍부하고 북적이는 모습을 나타낸다.",
+      "exampleSentence": "By midsummer, the wetland teemed with insects and nesting birds.",
+      "exampleTranslation": "한여름이 되자 습지는 곤충과 둥지를 트는 새들로 가득했다.",
+      "exampleExplanation": "장소인 wetland 뒤에 다수의 생물이 with로 이어져 활발한 밀집 상태를 만든다.",
+      "synonyms": [
+        "be full of",
+        "abound with"
+      ],
+      "distinctionNote": "team up with: 철자가 비슷하지만 사람·단체가 협력한다는 뜻이다. 장소가 많은 생명체를 품는다는 뜻이 아니다. | trickle into: 소수의 대상이 천천히 유입되는 움직임에 초점이 있어, 이미 수많은 대상이 가득한 상태와 다르다. | clear out: 사람이나 물건을 없애 공간을 비우는 뜻으로, 많은 대상이 가득한 상태와 반대 방향이다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/teem-with",
+        "https://www.collinsdictionary.com/dictionary/english/teem"
+      ],
+      "itemIds": [
+        "JBKROW000005",
+        "JBKROW003863"
+      ],
+      "inputLayers": [
+        "active-recall"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "work out",
+      "variants": [],
+      "senseId": "work-out:calculate-value",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To calculate an amount, answer, or value by using the available figures.",
+      "koreanMeaning": "수치·답을 계산해 내다",
+      "contextExplanation": "주어진 수치나 자료를 연산해 특정 값이나 답을 산출할 때 쓴다.",
+      "exampleSentence": "Students worked out the average from the five recorded measurements.",
+      "exampleTranslation": "학생들은 기록된 다섯 측정값으로 평균을 계산했다.",
+      "exampleExplanation": "측정값 다섯 개에서 average라는 수치를 산출하므로 계산 sense다.",
+      "synonyms": [
+        "calculate",
+        "compute"
+      ],
+      "distinctionNote": "round off: 계산 결과의 자릿수를 조정할 뿐, 주어진 수치로 답 전체를 계산하는 뜻은 아니다. | add up: 수를 더하는 특정 연산에 초점이 있어 모든 종류의 계산을 포괄하지 않는다. | write down: 값을 기록하는 행위이지 값을 산출하는 계산이 아니다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
+        "https://www.collinsdictionary.com/dictionary/english/work-out"
+      ],
+      "itemIds": [
+        "JBKROW000044",
+        "JBKROW004038",
+        "JBKROW006121",
+        "JBKROW008146"
+      ],
+      "inputLayers": [
+        "active-recall"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "work out",
+      "variants": [],
+      "senseId": "work-out:end-successfully",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "For a situation, arrangement, or relationship to develop or end in a satisfactory way.",
+      "koreanMeaning": "상황·일이 만족스럽게 풀리다",
+      "contextExplanation": "계획·관계·상황이 진행된 끝에 만족스러운 결과에 이르렀을 때 자동사적으로 쓴다.",
+      "exampleSentence": "The first schedule caused delays, but the revised arrangement worked out well.",
+      "exampleTranslation": "첫 일정은 지연을 일으켰지만 수정된 계획은 결과적으로 잘 풀렸다.",
+      "exampleExplanation": "worked out 뒤의 well과 앞의 실패 대비가 상황의 만족스러운 결과를 가리킨다.",
+      "synonyms": [
+        "turn out well",
+        "succeed"
+      ],
+      "distinctionNote": "wear out: 사용이나 피로로 소모되는 뜻이며 상황이 만족스럽게 풀리는 뜻이 아니다. | play out: 과정의 전개를 가리킬 수 있지만 만족스러운 결과를 보장하지 않는다. | break down: 기능이나 관계가 실패하는 뜻으로 목표 sense와 반대 방향이다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
+        "https://www.collinsdictionary.com/dictionary/english/work-out"
+      ],
+      "itemIds": [
+        "JBKROW000044",
+        "JBKROW004038",
+        "JBKROW006121",
+        "JBKROW008146"
+      ],
+      "inputLayers": [
+        "active-recall"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "work out",
+      "variants": [],
+      "senseId": "work-out:exercise-body",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To exercise the body, especially through a planned session of physical training.",
+      "koreanMeaning": "운동하다·몸을 단련하다",
+      "contextExplanation": "체력·근력·지구력을 높이기 위한 계획적인 신체 운동을 할 때 쓴다.",
+      "exampleSentence": "She works out three times a week to improve her strength and endurance.",
+      "exampleTranslation": "그녀는 근력과 지구력을 높이려고 일주일에 세 번 운동한다.",
+      "exampleExplanation": "횟수와 strength, endurance라는 신체 목표가 운동 sense를 확정한다.",
+      "synonyms": [
+        "exercise",
+        "train"
+      ],
+      "distinctionNote": "warm up: 본운동 전에 몸을 준비하는 단계이며 운동 세션 전체를 뜻하지 않는다. | stretch out: 특정한 신체 동작이며 계획적으로 운동한다는 뜻 전체와는 다르다. | wear out: 피로하게 만드는 결과를 가리키며 몸을 단련하는 행동 자체가 아니다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
+        "https://www.collinsdictionary.com/dictionary/english/work-out"
+      ],
+      "itemIds": [
+        "JBKROW000044",
+        "JBKROW004038",
+        "JBKROW006121",
+        "JBKROW008146"
+      ],
+      "inputLayers": [
+        "active-recall"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "work out",
+      "variants": [],
+      "senseId": "work-out:solve-problem",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To find an answer or solution to a problem by thinking about it carefully.",
+      "koreanMeaning": "문제의 해답을 찾아내다",
+      "contextExplanation": "생각·분석을 거쳐 문제의 원인이나 해결책을 밝혀냈을 때 쓴다. 단지 문제를 계속 다루는 과정만을 뜻하지 않는다.",
+      "exampleSentence": "The researchers worked out why the two samples produced different results.",
+      "exampleTranslation": "연구자들은 두 표본이 서로 다른 결과를 낸 이유를 밝혀냈다.",
+      "exampleExplanation": "why 이하의 원인을 찾아냈으므로 계산이나 운동이 아니라 문제 해결 sense다.",
+      "synonyms": [
+        "solve",
+        "figure out"
+      ],
+      "distinctionNote": "work on: 해결을 위해 다루는 과정일 수 있지만 해답을 찾아냈다는 결과까지 뜻하지 않는다. | rule out: 후보 하나를 제외하는 것이며 문제 전체의 해결책을 찾아내는 뜻은 아니다. | carry out: 계획을 수행하는 뜻이지 문제를 생각해 풀어내는 뜻이 아니다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
+        "https://www.collinsdictionary.com/dictionary/english/work-out"
+      ],
+      "itemIds": [
+        "JBKROW000044",
+        "JBKROW004038",
+        "JBKROW006121",
+        "JBKROW008146"
+      ],
+      "inputLayers": [
+        "active-recall"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "wrap up",
+      "variants": [],
+      "senseId": "wrap-up:finish-activity",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To finish an activity, discussion, or piece of work by dealing with its remaining details.",
+      "koreanMeaning": "일·회의의 남은 부분을 정리해 마무리하다",
+      "contextExplanation": "활동·회의·작업의 남은 세부를 처리해 전체를 끝낼 때 쓴다. 내용을 요약하는 것만을 뜻하지 않는다.",
+      "exampleSentence": "The chair wrapped up the meeting after the committee agreed on the final amendment.",
+      "exampleTranslation": "위원회가 최종 수정안에 합의한 뒤 의장은 회의를 마무리했다.",
+      "exampleExplanation": "최종 합의 뒤 meeting 자체를 끝냈으므로 ‘요약하다’가 아니라 활동 마무리 sense다.",
+      "synonyms": [
+        "bring to a close",
+        "finish up"
+      ],
+      "distinctionNote": "sum up: 핵심 내용을 간추리는 뜻이다. 회의를 끝내기 전에 할 수 있지만, 남은 절차를 처리해 활동 자체를 마무리한다는 뜻과는 다르다. | put off: 지금 끝맺는 대신 나중으로 연기하는 뜻이므로 목표 sense와 반대 방향이다. | set up: 회의나 활동이 시작되도록 준비하는 뜻이며, 이미 진행한 일을 끝맺는 뜻이 아니다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/wrap-up",
+        "https://www.collinsdictionary.com/dictionary/english/wrap-up"
+      ],
+      "itemIds": [
+        "JBKROW000016",
+        "JBKROW004042"
+      ],
+      "inputLayers": [
+        "active-recall"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "abide by",
+      "variants": [],
+      "senseId": "abide-by:primary",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To follow a rule or decision, or honour an agreement that governs what you should do.",
+      "koreanMeaning": "규칙을 알기만 하는 것이 아니라 그 기준대로 행동하고, 받아들인 결정이나 약속을 지키다.",
+      "contextExplanation": "abide by + rules/law/decision/agreement. 다소 격식 있는 표현이다. 실제로 사용할 때는 by까지 묶는다.",
+      "exampleSentence": "Even when we disagree with the result, we must abide by the agreed procedure.",
+      "exampleTranslation": "결과에 동의하지 않더라도 우리가 합의한 절차는 지켜야 한다.",
+      "exampleExplanation": "can't abide + 대상은 ~을 참을 수 없다라는 별도 구조다. abide by를 참다로 바꾸지 않는다.",
+      "synonyms": [],
+      "distinctionNote": "can't abide + 대상은 ~을 참을 수 없다라는 별도 구조다. abide by를 참다로 바꾸지 않는다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/abide-by",
+        "https://dictionary.cambridge.org/us/dictionary/english/abide-by"
+      ],
+      "itemIds": [
+        "JBKROW000004",
+        "JBKROW002049"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "account for",
+      "variants": [],
+      "senseId": "account-for:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To explain why something happened, to be the reason for it, or to form a stated part of a total.",
+      "koreanMeaning": "일이 일어난 이유를 해명하거나 그 원인이 되다. 숫자·비율과 함께 쓰이면 전체에서 해당 몫을 차지하다는 뜻이다.",
+      "contextExplanation": "account for a delay는 지연을 설명하거나 원인이 되다, account for half the cost는 비용의 절반을 차지하다다.",
+      "exampleSentence": "Materials account for half the cost of this model.",
+      "exampleTranslation": "이 모델에서는 재료비가 전체 비용의 절반을 차지한다.",
+      "exampleExplanation": "사람이 주어면 설명, 사건·조건이 주어면 원인인 경우가 많다. 비율이 뒤따르면 해명하다가 아니라 차지하다다.",
+      "synonyms": [],
+      "distinctionNote": "사람이 주어면 설명, 사건·조건이 주어면 원인인 경우가 많다. 비율이 뒤따르면 해명하다가 아니라 차지하다다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/account-for",
+        "https://www.oxfordlearnersdictionaries.com/definition/american_english/account-for"
+      ],
+      "itemIds": [
+        "JBKROW004694",
+        "JBKROW006173",
+        "JBKROW014989",
+        "JBKROW015623"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "at stake",
+      "variants": [
+        "be at stake"
+      ],
+      "senseId": "at-stake:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "Dependent on the outcome of a situation, with something important potentially being gained or lost.",
+      "koreanMeaning": "중요한 가치나 이익의 향방이 어떤 일의 결과에 걸려 있어, 잘못되면 잃을 수 있는 상태다.",
+      "contextExplanation": "lives/reputations/jobs are at stake처럼 무엇이 걸려 있는지를 주어로 드러낸다. what is at stake는 무엇이 걸린 문제인가다.",
+      "exampleSentence": "We need to check every detail because the team's credibility is at stake.",
+      "exampleTranslation": "팀의 신뢰가 걸린 일이므로 세부 사항을 하나하나 확인해야 한다.",
+      "exampleExplanation": "그 대상 자체가 위험한 물건이라는 dangerous와 다르다. 잃거나 얻을 중요한 것이 결과에 걸려 있다는 뜻이다.",
+      "synonyms": [],
+      "distinctionNote": "그 대상 자체가 위험한 물건이라는 dangerous와 다르다. 잃거나 얻을 중요한 것이 결과에 걸려 있다는 뜻이다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/us/dictionary/english/at-stake",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/stake_1"
+      ],
+      "itemIds": [
+        "JBKROW000327",
+        "JBKROW002148",
+        "JBKROW020096",
+        "JBKROW022680"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "give someone the benefit of the doubt",
+      "variants": [],
+      "senseId": "benefit-doubt:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To judge someone favourably while uncertainty remains and there is insufficient evidence against them.",
+      "koreanMeaning": "의심은 남아 있지만 잘못이라고 단정할 증거가 부족하므로 상대의 말이나 행동을 좋게 받아들이다.",
+      "contextExplanation": "거짓말이나 잘못이 확실하지 않을 때 성급히 비난하지 않고 믿어 주는 태도다.",
+      "exampleSentence": "Her explanation sounded unusual, but I gave her the benefit of the doubt.",
+      "exampleTranslation": "그녀의 설명이 좀 이상하게 들렸지만, 확실한 반증이 없어 일단 믿어 주었다.",
+      "exampleExplanation": "결백이 입증됐다는 뜻도, 의심 자체가 사라졌다는 뜻도 아니다.",
+      "synonyms": [],
+      "distinctionNote": "결백이 입증됐다는 뜻도, 의심 자체가 사라졌다는 뜻도 아니다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/us/dictionary/english/benefit-of-the-doubt",
+        "https://www.oxfordlearnersdictionaries.com/definition/english/benefit_1"
+      ],
+      "itemIds": [
+        "JBKROW022820"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "by no means",
+      "variants": [],
+      "senseId": "by-no-means:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "Used to firmly deny that a description or claim is true.",
+      "koreanMeaning": "단순히 조금 덜하다는 말이 아니라, 그렇다는 판단 자체를 강하게 부정한다.",
+      "contextExplanation": "It is by no means certain은 결코 확실하지 않다는 뜻이다. 문두에 두면 By no means is it certain처럼 도치한다.",
+      "exampleSentence": "A longer answer is by no means a better answer.",
+      "exampleTranslation": "답이 더 길다고 해서 결코 더 좋은 답인 것은 아니다.",
+      "exampleExplanation": "not always(항상 그런 것은 아니다) 같은 부분 부정으로 약화하지 않는다. 부정어가 이미 있으므로 문맥 없이 not을 또 넣지 않는다.",
+      "synonyms": [],
+      "distinctionNote": "not always(항상 그런 것은 아니다) 같은 부분 부정으로 약화하지 않는다. 부정어가 이미 있으므로 문맥 없이 not을 또 넣지 않는다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/us/dictionary/english/by-no-means",
+        "https://www.oxfordlearnersdictionaries.com/definition/american_english/means"
+      ],
+      "itemIds": [
+        "JBKROW014279",
+        "JBKROW015859"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "capitalize (on)",
+      "variants": [],
+      "senseId": "capitalize-on:primary",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To use an existing opportunity or situation to gain an advantage for yourself.",
+      "koreanMeaning": "눈앞의 기회나 이미 유리한 조건을 그냥 두지 않고 자신의 성과나 이익으로 이어 가다.",
+      "contextExplanation": "이 뜻으로는 capitalize on/upon + opportunity/success/advantage처럼 쓴다. 표제어 괄호와 달리 문장에서는 on을 포함해 익힌다.",
+      "exampleSentence": "The small publisher capitalized on renewed interest in local history.",
+      "exampleTranslation": "그 작은 출판사는 지역사에 대한 관심이 다시 높아진 기회를 활용했다.",
+      "exampleExplanation": "capitalize a word는 대문자로 쓰다라는 다른 뜻이다. 기회를 활용한다는 표현을 언제나 비윤리적인 착취로 번역하지 않는다.",
+      "synonyms": [],
+      "distinctionNote": "capitalize a word는 대문자로 쓰다라는 다른 뜻이다. 기회를 활용한다는 표현을 언제나 비윤리적인 착취로 번역하지 않는다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/capitalize-on",
+        "https://www.collinsdictionary.com/dictionary/english/capitalize"
+      ],
+      "itemIds": [
+        "JBKROW000036",
+        "JBKROW002255"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "carry out",
+      "variants": [],
+      "senseId": "carry-out:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To put a plan or instruction into action, or to perform a task or investigation.",
+      "koreanMeaning": "머릿속 계획이나 문서의 지시를 실제 행동으로 옮기거나 맡은 작업을 수행하다.",
+      "contextExplanation": "carry out a plan/order/experiment/survey처럼 실행할 일이나 작업을 목적어로 둔다. 대명사는 carry it out 순서다.",
+      "exampleSentence": "The team carried out a survey before changing the service.",
+      "exampleTranslation": "팀은 서비스를 바꾸기 전에 설문 조사를 실시했다.",
+      "exampleExplanation": "수행했다는 뜻이지 결과가 성공적이었다는 뜻까지 보장하지 않는다. carry on은 계속하다라는 별도 표현이다.",
+      "synonyms": [],
+      "distinctionNote": "수행했다는 뜻이지 결과가 성공적이었다는 뜻까지 보장하지 않는다. carry on은 계속하다라는 별도 표현이다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/carry-out_1",
+        "https://www.collinsdictionary.com/us/dictionary/english/carry-out"
+      ],
+      "itemIds": [
+        "JBKROW015000",
+        "JBKROW015881"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "put the cart before the horse",
+      "variants": [],
+      "senseId": "cart-horse:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To begin a later step before dealing with the earlier work on which it depends.",
+      "koreanMeaning": "먼저 갖춰야 할 조건이나 준비를 건너뛰고, 그다음에 해야 할 일부터 시작하다.",
+      "contextExplanation": "절차·계획·논리에서 무엇을 먼저 해야 하는지 뒤바뀌었다고 지적할 때 쓴다.",
+      "exampleSentence": "Buying equipment before deciding what to build puts the cart before the horse.",
+      "exampleTranslation": "무엇을 만들지 정하기도 전에 장비부터 사는 건 일의 순서를 거꾸로 하는 것이다.",
+      "exampleExplanation": "성급함 자체보다 잘못된 순서가 핵심이다. 단순히 원인과 결과가 반대라는 뜻으로만 좁히지 않는다.",
+      "synonyms": [],
+      "distinctionNote": "성급함 자체보다 잘못된 순서가 핵심이다. 단순히 원인과 결과가 반대라는 뜻으로만 좁히지 않는다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/definition/english/cart_1",
+        "https://www.collinsdictionary.com/dictionary/english/put-the-cart-before-the-horse"
+      ],
+      "itemIds": [
+        "JBKROW022984"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "a case in point",
+      "variants": [],
+      "senseId": "case-in-point:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "A particular example that directly illustrates the issue currently being discussed.",
+      "koreanMeaning": "아무 예시가 아니라, 지금 말하는 주장이나 문제를 구체적으로 보여 주는 사례다.",
+      "contextExplanation": "A is a case in point처럼 앞의 주장에 맞는 사례를 연결한다. 법률 사건에만 쓰는 표현이 아니다.",
+      "exampleSentence": "Small design choices can exclude users; an unreadable button is a case in point.",
+      "exampleTranslation": "사소한 디자인 선택도 사용자를 배제할 수 있다. 글자가 읽히지 않는 버튼이 바로 그런 사례다.",
+      "exampleExplanation": "관련성 있는 예시이지, 그 하나만으로 일반 법칙이 입증됐다는 뜻은 아니다.",
+      "synonyms": [],
+      "distinctionNote": "관련성 있는 예시이지, 그 하나만으로 일반 법칙이 입증됐다는 뜻은 아니다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/a-case-in-point",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/case_1"
+      ],
+      "itemIds": [
+        "JBKROW000819",
+        "JBKROW002043",
+        "JBKROW018177",
+        "JBKROW022643"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "clamp down on",
+      "variants": [],
+      "senseId": "clamp-down-on:primary",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To use strict official measures to stop or control an activity considered unacceptable.",
+      "koreanMeaning": "문제가 되는 행동을 못 하게 하거나 통제하려고 당국 등이 강한 조치를 취하다.",
+      "contextExplanation": "clamp down on + crime/bullying/rule-breaking. 보도문에서 자주 보이는 단속·규제 표현이다.",
+      "exampleSentence": "The regulator clamped down on misleading advertisements.",
+      "exampleTranslation": "감독 기관은 소비자를 오도하는 광고를 강하게 단속했다.",
+      "exampleExplanation": "권한을 사용한 강한 통제이므로 단순히 자세히 살펴본다는 monitor보다 강하다. 단속 대상이 도덕적으로 나쁘다는 화자의 동의까지 자동으로 뜻하지 않는다.",
+      "synonyms": [],
+      "distinctionNote": "권한을 사용한 강한 통제이므로 단순히 자세히 살펴본다는 monitor보다 강하다. 단속 대상이 도덕적으로 나쁘다는 화자의 동의까지 자동으로 뜻하지 않는다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/clamp-down",
+        "https://www.collinsdictionary.com/dictionary/english/clamp-down"
+      ],
+      "itemIds": [
+        "JBKROW000039",
+        "JBKROW002277"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "come to terms with",
+      "variants": [],
+      "senseId": "come-to-terms:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To gradually accept and deal with an unwelcome reality, or, with another party, to reach an agreement.",
+      "koreanMeaning": "바꾸기 힘든 현실을 외면하지 않고 받아들이게 되다. 상대방과 조건을 조정하는 문맥에서는 합의에 이르다는 뜻이다.",
+      "contextExplanation": "come to terms with a loss는 상실을 받아들이다다. come to terms with another party는 합의하다로 읽힐 수 있다.",
+      "exampleSentence": "She is slowly coming to terms with the fact that the plan must change.",
+      "exampleTranslation": "그녀는 계획을 바꿔야 한다는 현실을 서서히 받아들이고 있다.",
+      "exampleExplanation": "받아들였다고 해서 기쁘거나 찬성한다는 뜻은 아니다. 현실 수용과 협상 타결을 목적어·문맥으로 구분한다.",
+      "synonyms": [],
+      "distinctionNote": "받아들였다고 해서 기쁘거나 찬성한다는 뜻은 아니다. 현실 수용과 협상 타결을 목적어·문맥으로 구분한다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/come-to-terms-with",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/terms"
+      ],
+      "itemIds": [
+        "JBKROW018274",
+        "JBKROW021038"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "the (British) Commonwealth (of Nations)",
+      "variants": [],
+      "senseId": "commonwealth:primary",
+      "partOfSpeech": "proper noun",
+      "englishDefinition": "An association in which independent countries, many with historical ties to Britain, cooperate voluntarily.",
+      "koreanMeaning": "영국과 역사적 연관이 있는 나라들을 중심으로 독립·평등한 국가들이 자발적으로 협력하는 모임이다.",
+      "contextExplanation": "현대 영연방은 독립 국가들의 연합이며, 모든 회원국이 과거 영국 식민지였던 것은 아니다.",
+      "exampleSentence": "The report discussed cooperation among Commonwealth countries.",
+      "exampleTranslation": "그 보고서는 영연방 국가들 사이의 협력을 다뤘다.",
+      "exampleExplanation": "British Empire(대영제국)나 영국 본국과 동일시하지 않는다.",
+      "synonyms": [],
+      "distinctionNote": "British Empire(대영제국)나 영국 본국과 동일시하지 않는다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/us/dictionary/english/commonwealth",
+        "https://thecommonwealth.org/about-us"
+      ],
+      "itemIds": [
+        "JBKROW023444"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "crack down on",
+      "variants": [],
+      "senseId": "crack-down-on:primary",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To enforce rules more severely in order to stop violations or deal with those responsible.",
+      "koreanMeaning": "규칙 위반을 막거나 위반자를 더 엄격하게 처리하기 위해 단속을 강화하다.",
+      "contextExplanation": "crack down on + illegal activity/offenders. 명사 crackdown은 붙여 쓰고, 동사 crack down은 띄어 쓴다.",
+      "exampleSentence": "The school cracked down on cheating after repeated complaints.",
+      "exampleTranslation": "학교는 불만이 반복해서 제기되자 부정행위 단속을 강화했다.",
+      "exampleExplanation": "제재·집행을 강화하는 표현이지 문제를 이해한다는 figure out이 아니다. 항상 물리적 폭력이 따른다는 뜻도 아니다.",
+      "synonyms": [],
+      "distinctionNote": "제재·집행을 강화하는 표현이지 문제를 이해한다는 figure out이 아니다. 항상 물리적 폭력이 따른다는 뜻도 아니다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/crack-down",
+        "https://www.collinsdictionary.com/dictionary/english/crack-down"
+      ],
+      "itemIds": [
+        "JBKROW000048",
+        "JBKROW002377"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "cut the ground from under someone",
+      "variants": [],
+      "senseId": "cut-ground:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To undermine the basis on which another person's argument, position, or plans depend.",
+      "koreanMeaning": "상대가 의지하던 근거를 없애 주장이나 계획을 더 이상 밀고 나가지 못하게 하다.",
+      "contextExplanation": "예상하지 못한 반박이나 조치로 상대의 입장을 크게 약화시킬 때 쓴다.",
+      "exampleSentence": "The new evidence cut the ground from under his argument.",
+      "exampleTranslation": "새 증거가 나오면서 그의 주장은 버틸 근거를 잃었다.",
+      "exampleExplanation": "ground는 여기서 논거·기반이다. 실제 땅을 파거나 단순히 기분을 상하게 한다는 뜻이 아니다.",
+      "synonyms": [],
+      "distinctionNote": "ground는 여기서 논거·기반이다. 실제 땅을 파거나 단순히 기분을 상하게 한다는 뜻이 아니다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/cut-the-ground-from-under-someone",
+        "https://www.oxfordlearnersdictionaries.com/definition/english/ground_1"
+      ],
+      "itemIds": [
+        "JBKROW022770"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "Dayton Peace Accords",
+      "variants": [],
+      "senseId": "dayton:primary",
+      "partOfSpeech": "proper noun",
+      "englishDefinition": "The 1995 peace settlement that ended the Bosnian War and set a framework for Bosnia and Herzegovina.",
+      "koreanMeaning": "보스니아 전쟁을 끝내고 보스니아 헤르체고비나의 국가 운영 틀을 정한 1995년 평화협정이다.",
+      "contextExplanation": "1995년 11월 미국 데이턴에서 가서명하고 12월 파리에서 정식 서명한 협정을 가리킨다.",
+      "exampleSentence": "The class examined the political framework established by the Dayton Peace Accords.",
+      "exampleTranslation": "수업에서는 데이턴 평화협정이 마련한 정치 체제를 살펴보았다.",
+      "exampleExplanation": "협정의 이름이 데이턴이라고 정식 서명 장소까지 데이턴으로 외우지 않는다.",
+      "synonyms": [],
+      "distinctionNote": "협정의 이름이 데이턴이라고 정식 서명 장소까지 데이턴으로 외우지 않는다.",
+      "sourceIds": [
+        "https://bih.osce.org/bih/58725",
+        "https://www.nato.int/en/what-we-do/operations-and-missions/peace-support-operations-in-bosnia-and-herzegovina-1995-2004"
+      ],
+      "itemIds": [
+        "JBKROW023223"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "delve into",
+      "variants": [],
+      "senseId": "delve-into:primary",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To investigate a subject closely in an effort to uncover more information about it.",
+      "koreanMeaning": "겉에 드러난 설명에서 멈추지 않고, 더 많은 정보나 숨은 사정을 알아내려고 깊이 파고들다.",
+      "contextExplanation": "delve into the past/history/details처럼 탐구 대상을 into 뒤에 놓는다. 가방 등 실제 용기가 목적어라면 안을 뒤지다는 뜻도 가능하다.",
+      "exampleSentence": "Instead of repeating the summary, she delved into the original records.",
+      "exampleTranslation": "그녀는 요약을 되풀이하는 대신 원본 기록을 깊이 파고들었다.",
+      "exampleExplanation": "delve into와 dive into는 다르다. dive into에는 망설임 없이 어떤 일에 뛰어든다는 뜻이 있다.",
+      "synonyms": [],
+      "distinctionNote": "delve into와 dive into는 다르다. dive into에는 망설임 없이 어떤 일에 뛰어든다는 뜻이 있다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/definition/english/delve-into",
+        "https://www.collinsdictionary.com/dictionary/english/delve"
+      ],
+      "itemIds": [
+        "JBKROW000055",
+        "JBKROW002456"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "the Dow Jones industrial average",
+      "variants": [],
+      "senseId": "dow-jones:primary",
+      "partOfSpeech": "proper noun",
+      "englishDefinition": "A US stock-market index based on the prices of thirty major companies, weighted by each share's price.",
+      "koreanMeaning": "미국의 대표 우량기업 30개 주가로 산출하며, 주당 가격이 높은 종목의 영향이 더 큰 지수다.",
+      "contextExplanation": "Dow, DJIA로도 부르며 경제 기사에서 주식시장 움직임을 나타낼 때 쓰인다.",
+      "exampleSentence": "The article compared the Dow Jones Industrial Average with a broader market index.",
+      "exampleTranslation": "그 기사는 다우존스 산업평균지수를 더 많은 종목을 포괄하는 시장 지수와 비교했다.",
+      "exampleExplanation": "미국의 모든 주식을 포함하거나 시가총액으로 가중하는 지수로 오해하지 않는다.",
+      "synonyms": [],
+      "distinctionNote": "미국의 모든 주식을 포함하거나 시가총액으로 가중하는 지수로 오해하지 않는다.",
+      "sourceIds": [
+        "https://www.spglobal.com/spdji/en/indices/equity/dow-jones-industrial-average/",
+        "https://www.merriam-webster.com/dictionary/the%20Dow-Jones%20Industrial%20Average"
+      ],
+      "itemIds": [
+        "JBKROW023456"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "executive privilege",
+      "variants": [],
+      "senseId": "executive-privilege:primary",
+      "partOfSpeech": "noun",
+      "englishDefinition": "A claim by executive officials that certain confidential government communications should be protected from compulsory disclosure.",
+      "koreanMeaning": "대통령 등 행정부 관계자가 일정한 내부 기밀을 의회나 법원에 공개하지 않을 수 있다고 주장하는 특권이다.",
+      "contextExplanation": "미국의 권력 분립과 행정부 기록 공개를 둘러싼 논의에서 쓰인다. 절대적인 비공개 권한은 아니다.",
+      "exampleSentence": "The dispute concerned whether executive privilege protected the communications.",
+      "exampleTranslation": "쟁점은 해당 의사소통 내용이 행정특권에 따라 비공개 보호를 받는지였다.",
+      "exampleExplanation": "executive를 회사 임원으로, privilege를 일상적 특혜로만 해석하지 않는다.",
+      "synonyms": [],
+      "distinctionNote": "executive를 회사 임원으로, privilege를 일상적 특혜로만 해석하지 않는다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/executive-privilege",
+        "https://www.law.cornell.edu/wex/executive_privilege"
+      ],
+      "itemIds": [
+        "JBKROW023245"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "the First Amendment",
+      "variants": [],
+      "senseId": "first-amendment:primary",
+      "partOfSpeech": "proper noun",
+      "englishDefinition": "The US constitutional amendment protecting religion, speech, the press, peaceful assembly, and petitioning the government.",
+      "koreanMeaning": "미국 헌법의 첫 번째 수정 조항으로 종교의 자유, 말과 언론의 자유, 평화적 집회와 정부에 청원할 권리를 보호한다.",
+      "contextExplanation": "미국의 표현의 자유나 종교·언론의 자유를 논하는 글에 자주 등장한다.",
+      "exampleSentence": "The course explored the freedoms protected by the First Amendment.",
+      "exampleTranslation": "그 강좌는 미국 수정헌법 제1조가 보호하는 자유들을 살펴보았다.",
+      "exampleExplanation": "일반 문서의 첫 수정본이 아니라 미국 헌법의 특정 조항이다. 모든 상황의 발언을 무제한 허용한다는 뜻은 아니다.",
+      "synonyms": [],
+      "distinctionNote": "일반 문서의 첫 수정본이 아니라 미국 헌법의 특정 조항이다. 모든 상황의 발언을 무제한 허용한다는 뜻은 아니다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/first-amendment",
+        "https://www.archives.gov/founding-docs/bill-of-rights/what-does-it-say"
+      ],
+      "itemIds": [
+        "JBKROW023462"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "get over",
+      "variants": [],
+      "senseId": "get-over:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To recover from an illness or upsetting experience, or to successfully deal with a difficulty.",
+      "koreanMeaning": "병이나 충격의 영향에서 벗어나 회복하거나, 앞을 막던 어려움을 넘어서다.",
+      "contextExplanation": "get over the flu는 독감에서 회복하다, get over the disappointment는 실망을 딛고 일어서다다.",
+      "exampleSentence": "It took him several weeks to get over the disappointment.",
+      "exampleTranslation": "그가 그 실망을 딛고 일어서기까지는 몇 주가 걸렸다.",
+      "exampleExplanation": "get something over with는 하기 싫은 일을 빨리 끝내 버리다다. get over something과 구조·초점이 다르다.",
+      "synonyms": [],
+      "distinctionNote": "get something over with는 하기 싫은 일을 빨리 끝내 버리다다. get over something과 구조·초점이 다르다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/get-over",
+        "https://www.collinsdictionary.com/us/dictionary/english/get-over"
+      ],
+      "itemIds": [
+        "APPROW01008"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "throw good money after bad",
+      "variants": [],
+      "senseId": "good-money-bad:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To waste further funds trying to rescue something that has already cost money and is unlikely to succeed.",
+      "koreanMeaning": "이미 돈을 잃은 일을 살려 보겠다고 추가 자금을 넣지만, 결국 손해만 더 보는 상황을 말한다.",
+      "contextExplanation": "가망이 적은 사업·투자·수리에 계속 돈을 쓰는 판단을 비판한다.",
+      "exampleSentence": "Repairing the obsolete machine again would be throwing good money after bad.",
+      "exampleTranslation": "그 낡은 기계를 또 고치는 건 이미 날린 돈을 만회하려다 돈만 더 버리는 일이 될 것이다.",
+      "exampleExplanation": "모든 추가 투자를 뜻하지 않는다. 회복 가능성이 낮은데도 손실 만회를 위해 낭비한다는 평가가 들어 있다.",
+      "synonyms": [],
+      "distinctionNote": "모든 추가 투자를 뜻하지 않는다. 회복 가능성이 낮은데도 손실 만회를 위해 낭비한다는 평가가 들어 있다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/us/dictionary/english/throw-good-money-after-bad",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/money",
+        "https://idioms.thefreedictionary.com/throw%2Bgood%2Bmoney%2Bafter%2Bbad"
+      ],
+      "itemIds": [
+        "JBKROW023091"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "the Great Leap Forward",
+      "variants": [],
+      "senseId": "great-leap:primary",
+      "partOfSpeech": "proper noun",
+      "englishDefinition": "China's campaign launched in 1958 to accelerate industrial and agricultural development through mass mobilisation and communes.",
+      "koreanMeaning": "1958년 중국에서 대중 동원과 인민공사 등을 통해 공업·농업 생산을 급격히 늘리려 한 운동이다.",
+      "contextExplanation": "중국 현대사와 마오쩌둥 시대의 경제·사회 정책을 다루는 글에서 쓰이는 고유 명칭이다.",
+      "exampleSentence": "The lecture examined the economic aims of the Great Leap Forward.",
+      "exampleTranslation": "그 강의는 대약진 운동이 내세운 경제적 목표를 살펴보았다.",
+      "exampleExplanation": "일반적인 큰 발전이라는 긍정 표현으로만 해석하지 않는다. 문화대혁명과도 구별한다.",
+      "synonyms": [],
+      "distinctionNote": "일반적인 큰 발전이라는 긍정 표현으로만 해석하지 않는다. 문화대혁명과도 구별한다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/the-great-leap-forward",
+        "https://history.state.gov/historicaldocuments/frus1958-60v19/d258"
+      ],
+      "itemIds": [
+        "JBKROW023465"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "the Helms-Burton Act",
+      "variants": [],
+      "senseId": "helms-burton:primary",
+      "partOfSpeech": "proper noun",
+      "englishDefinition": "A 1996 US law strengthening sanctions on Cuba and extending some consequences to foreign dealings involving confiscated property.",
+      "koreanMeaning": "미국의 쿠바 제재를 강화하고, 쿠바가 몰수한 재산과 관련한 외국인의 거래 등에도 일정한 불이익을 미치게 한 법이다.",
+      "contextExplanation": "정식 명칭은 Cuban Liberty and Democratic Solidarity (LIBERTAD) Act of 1996이다. 제재의 역외 적용 논의에서 등장한다.",
+      "exampleSentence": "The article examined the international disputes surrounding the Helms-Burton Act.",
+      "exampleTranslation": "그 기사는 헬름스-버턴법을 둘러싼 국제적 분쟁을 살펴보았다.",
+      "exampleExplanation": "쿠바가 만든 법이나 쿠바에 대한 원조 법이 아니다. 이름만으로 사람이나 조약으로 해석하지 않는다.",
+      "synonyms": [],
+      "distinctionNote": "쿠바가 만든 법이나 쿠바에 대한 원조 법이 아니다. 이름만으로 사람이나 조약으로 해석하지 않는다.",
+      "sourceIds": [
+        "https://www.congress.gov/crs_external_products/RL/PDF/95-248/95-248.3.pdf",
+        "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=COM%3A2021%3A0535%3AFIN"
+      ],
+      "itemIds": [
+        "JBKROW023466"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "in the face of A",
+      "variants": [],
+      "senseId": "in-face-of:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "When confronted with a difficulty or fact, or despite the obstacle it presents.",
+      "koreanMeaning": "곤란이나 사실을 맞닥뜨린 상황을 말한다. 그 상황을 버텨 낸 문맥에서는 ~에도 불구하고가 된다.",
+      "contextExplanation": "continue in the face of opposition은 반대에도 계속하다다. 증거 앞에서 부인을 포기했다면 증거에 직면해서로 읽는 편이 자연스럽다.",
+      "exampleSentence": "In the face of new evidence, he could no longer deny the mistake.",
+      "exampleTranslation": "새 증거에 직면하자 그는 더 이상 그 실수를 부인할 수 없었다.",
+      "exampleExplanation": "무조건 ~에도 불구하고라고 외우면, 증거 때문에 태도를 바꾼 문장을 거꾸로 읽을 수 있다. 반응 동사와 원인·양보 관계를 함께 본다.",
+      "synonyms": [],
+      "distinctionNote": "무조건 ~에도 불구하고라고 외우면, 증거 때문에 태도를 바꾼 문장을 거꾸로 읽을 수 있다. 반응 동사와 원인·양보 관계를 함께 본다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/definition/american_english/face_1",
+        "https://www.collinsdictionary.com/dictionary/english/in-the-face-of"
+      ],
+      "itemIds": [
+        "JBKROW000555",
+        "JBKROW002985",
+        "JBKROW004705",
+        "JBKROW007195",
+        "JBKROW015519",
+        "JBKROW016571"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "in spite of A",
+      "variants": [],
+      "senseId": "in-spite:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "Despite a circumstance that could have prevented an action or made an outcome less likely.",
+      "koreanMeaning": "어떤 방해 조건이 있는데도 예상과 달리 행동이나 결과가 나타났음을 말한다.",
+      "contextExplanation": "in spite of + 명사·대명사·동명사. 완전한 절은 in spite of the fact that + 절로 연결한다.",
+      "exampleSentence": "In spite of feeling nervous, he explained his answer clearly.",
+      "exampleTranslation": "그는 긴장했는데도 자신의 답을 또렷하게 설명했다.",
+      "exampleExplanation": "because of의 원인과 반대되는 양보다. despite of는 표준적인 연결이 아니며, despite에는 of를 붙이지 않는다.",
+      "synonyms": [],
+      "distinctionNote": "because of의 원인과 반대되는 양보다. despite of는 표준적인 연결이 아니며, despite에는 of를 붙이지 않는다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/in-spite-of",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/spite_1"
+      ],
+      "itemIds": [
+        "JBKROW004704",
+        "JBKROW007192"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "jury nullification",
+      "variants": [],
+      "senseId": "jury-nullification:primary",
+      "partOfSpeech": "noun",
+      "englishDefinition": "A jury's decision to acquit despite believing that the defendant committed the offence, because it rejects applying the law in that case.",
+      "koreanMeaning": "배심이 법 위반 사실은 인정하면서도 법이나 그 적용이 부당하다고 여겨 무죄 평결을 내리는 것이다.",
+      "contextExplanation": "미국 배심제와 양심·법 적용의 관계를 다루는 논의에서 쓰인다.",
+      "exampleSentence": "The seminar distinguished jury nullification from an acquittal based on insufficient evidence.",
+      "exampleTranslation": "세미나는 배심의 법 적용 거부와 증거 부족에 따른 무죄 평결을 구별했다.",
+      "exampleExplanation": "증거 부족으로 인한 통상적 무죄 평결, 배심 해산, 법 자체의 폐지와 구별한다.",
+      "synonyms": [],
+      "distinctionNote": "증거 부족으로 인한 통상적 무죄 평결, 배심 해산, 법 자체의 폐지와 구별한다.",
+      "sourceIds": [
+        "https://www.law.cornell.edu/wex/jury_nullification",
+        "https://www.merriam-webster.com/dictionary/jury%20nullification"
+      ],
+      "itemIds": [
+        "JBKROW023302"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "take the law into one's own hands",
+      "variants": [],
+      "senseId": "law-hands:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To punish a perceived wrongdoer yourself instead of leaving the matter to the legal authorities.",
+      "koreanMeaning": "경찰이나 법원이 처리하도록 두지 않고, 잘못했다고 여기는 상대를 스스로 벌하다.",
+      "contextExplanation": "사적 보복이나 자경단 행동을 비판할 때 주로 쓰며, 그 행동 자체가 불법일 수 있다.",
+      "exampleSentence": "Residents were warned not to take the law into their own hands.",
+      "exampleTranslation": "주민들은 법적 절차를 무시하고 직접 보복하지 말라는 경고를 받았다.",
+      "exampleExplanation": "단순히 책임지고 문제를 해결한다는 take matters into one's own hands와 다르다.",
+      "synonyms": [],
+      "distinctionNote": "단순히 책임지고 문제를 해결한다는 take matters into one's own hands와 다르다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/us/dictionary/english/take-the-law-into-your-own-hands",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/hand_1"
+      ],
+      "itemIds": [
+        "JBKROW023078"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "auspicious",
+      "variants": [],
+      "senseId": "learn:00177411-a",
+      "partOfSpeech": "adjective",
+      "englishDefinition": "auguring favorable circumstances and good luck",
+      "koreanMeaning": "유리한 상황과 행운을 예고하는",
+      "contextExplanation": "시작, 날, 신호 등이 미래의 성공이나 행운을 암시하는 문맥에 씁니다.",
+      "exampleSentence": "The clear morning was an auspicious start to the journey.",
+      "exampleTranslation": "맑은 아침은 여행의 길한 출발을 알렸다.",
+      "exampleExplanation": "이미 운이 좋았다는 fortunate와 달리 앞으로의 좋은 결과를 예고한다는 뜻이 핵심입니다.",
+      "synonyms": [],
+      "distinctionNote": "이미 운이 좋았다는 fortunate와 달리 앞으로의 좋은 결과를 예고한다는 뜻이 핵심입니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/a/au/auspicious.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW004315",
+        "JBKROW006336",
+        "JBKROW013593",
+        "JBKROW015766",
+        "JBKROW017550"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "cacophonous",
+      "variants": [],
+      "senseId": "learn:00299633-a",
+      "partOfSpeech": "adjective",
+      "englishDefinition": "having an unpleasant sound",
+      "koreanMeaning": "불쾌한 소리를 내는",
+      "contextExplanation": "여러 소리가 뒤섞여 거칠고 듣기 불편한 상태를 묘사할 때 씁니다.",
+      "exampleSentence": "A cacophonous mix of horns filled the street.",
+      "exampleTranslation": "불협화음을 이루는 경적 소리가 거리를 가득 채웠다.",
+      "exampleExplanation": "단순히 loud한 것이 아니라 소리의 결합이 거칠고 불쾌하다는 뜻입니다.",
+      "synonyms": [],
+      "distinctionNote": "단순히 loud한 것이 아니라 소리의 결합이 거칠고 불쾌하다는 뜻입니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/c/ca/cacophonous.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW004759",
+        "JBKROW006436",
+        "JBKROW008231",
+        "JBKROW010203",
+        "JBKROW011540",
+        "JBKROW024543",
+        "JBKROW028758",
+        "JBKROW030559"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "juxtaposed",
+      "variants": [],
+      "senseId": "learn:00451803-s",
+      "partOfSpeech": "adjective",
+      "englishDefinition": "placed side by side often for comparison",
+      "koreanMeaning": "흔히 비교하기 위해 나란히 놓인",
+      "contextExplanation": "글, 사진, 생각 등을 나란히 배치해 공통점이나 대비를 드러내는 문맥에 씁니다.",
+      "exampleSentence": "The article juxtaposed wealth and poverty.",
+      "exampleTranslation": "그 기사는 부와 빈곤을 나란히 놓아 대비했다.",
+      "exampleExplanation": "단순히 가까이 있다는 adjacent와 달리 비교나 대조를 위한 배치라는 의미가 중요합니다.",
+      "synonyms": [],
+      "distinctionNote": "단순히 가까이 있다는 adjacent와 달리 비교나 대조를 위한 배치라는 의미가 중요합니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/j/ju/juxtaposed.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW004122",
+        "JBKROW007301"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "demystify",
+      "variants": [],
+      "senseId": "learn:00519932-v",
+      "partOfSpeech": "verb",
+      "englishDefinition": "make less mysterious or remove the mystery from",
+      "koreanMeaning": "어떤 것의 신비성을 없애거나 덜 신비롭게 만들다.",
+      "contextExplanation": "복잡하거나 막연하게 느껴지는 주제의 원리를 설명해 이해하기 쉽게 만들 때 쓴다.",
+      "exampleSentence": "let's demystify the event by explaining what it is all about",
+      "exampleTranslation": "그 행사가 무엇에 관한 것인지 설명해서 막연함을 걷어 내자.",
+      "exampleExplanation": "단순히 내용을 줄이는 simplify와 달리, 오해나 신비감을 걷어 내는 데 초점이 있다.",
+      "synonyms": [],
+      "distinctionNote": "단순히 내용을 줄이는 simplify와 달리, 오해나 신비감을 걷어 내는 데 초점이 있다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/d/de/demystify.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW023566",
+        "JBKROW030991"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "serene",
+      "variants": [],
+      "senseId": "learn:00531862-s",
+      "partOfSpeech": "adjective",
+      "englishDefinition": "not agitated; without losing self-possession",
+      "koreanMeaning": "동요하지 않고 침착한",
+      "contextExplanation": "사람의 표정·태도나 장소의 분위기가 평온하고 흔들림 없음을 나타낼 때 씁니다.",
+      "exampleSentence": "She remained serene during the crisis.",
+      "exampleTranslation": "그녀는 위기 속에서도 침착함을 유지했다.",
+      "exampleExplanation": "기쁘다는 뜻이 아니라 걱정이나 동요 없이 차분하다는 뜻입니다.",
+      "synonyms": [],
+      "distinctionNote": "기쁘다는 뜻이 아니라 걱정이나 동요 없이 차분하다는 뜻입니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/s/se/serene.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW004114",
+        "JBKROW007823"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "abashed",
+      "variants": [],
+      "senseId": "learn:00533833-s",
+      "partOfSpeech": "adjective",
+      "englishDefinition": "feeling or caused to feel ill at ease or self-conscious or ashamed",
+      "koreanMeaning": "마음이 불편하거나 자의식이 생겨 당황하거나 부끄러워진.",
+      "contextExplanation": "자신의 행동이나 타인의 시선을 의식해 당황하고 수줍어하는 상태를 나타낸다.",
+      "exampleSentence": "felt abashed at the extravagant praise",
+      "exampleTranslation": "지나친 칭찬에 몸 둘 바를 몰랐다.",
+      "exampleExplanation": "도덕적 잘못에 대한 깊은 죄책감만을 뜻하지 않고, 어색한 칭찬 때문에도 abashed할 수 있다.",
+      "synonyms": [],
+      "distinctionNote": "도덕적 잘못에 대한 깊은 죄책감만을 뜻하지 않고, 어색한 칭찬 때문에도 abashed할 수 있다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/a/ab/abashed.jsonl"
+      ],
+      "itemIds": [
+        "APPROW00001"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "inculcate",
+      "variants": [],
+      "senseId": "learn:00607995-v",
+      "partOfSpeech": "verb",
+      "englishDefinition": "teach and impress by frequent repetitions or admonitions",
+      "koreanMeaning": "반복적인 가르침이나 훈계를 통해 가르치고 마음에 깊이 새기다.",
+      "contextExplanation": "가치, 태도, 원칙 등을 반복 교육하여 습관이나 신념으로 자리 잡게 할 때 쓴다.",
+      "exampleSentence": "inculcate values into the young generation",
+      "exampleTranslation": "젊은 세대에게 가치관을 반복해서 심어 주다.",
+      "exampleExplanation": "정보를 한 번 알려 주는 inform보다 반복과 내면화가 강하게 드러난다.",
+      "synonyms": [],
+      "distinctionNote": "정보를 한 번 알려 주는 inform보다 반복과 내면화가 강하게 드러난다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/i/in/inculcate.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW023570"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "capricious",
+      "variants": [],
+      "senseId": "learn:00722886-s",
+      "partOfSpeech": "adjective",
+      "englishDefinition": "determined by chance or impulse or whim rather than by necessity or reason",
+      "koreanMeaning": "필요나 이성보다 우연, 충동 또는 변덕에 따라 좌우되는",
+      "contextExplanation": "사람의 결정, 정책, 날씨처럼 변화가 자의적이고 예측하기 어려운 대상을 설명할 때 씁니다.",
+      "exampleSentence": "The capricious policy changed without warning.",
+      "exampleTranslation": "그 변덕스러운 정책은 예고 없이 바뀌었다.",
+      "exampleExplanation": "단순히 '자주 바뀌는' 정도가 아니라 합리적 이유 없이 충동적으로 바뀐다는 점이 핵심입니다.",
+      "synonyms": [],
+      "distinctionNote": "단순히 '자주 바뀌는' 정도가 아니라 합리적 이유 없이 충동적으로 바뀐다는 점이 핵심입니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/c/ca/capricious.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW000003",
+        "JBKROW002257",
+        "JBKROW026187",
+        "JBKROW030584"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "cajole",
+      "variants": [],
+      "senseId": "learn:00770823-v",
+      "partOfSpeech": "verb",
+      "englishDefinition": "influence or urge by gentle urging, caressing, or flattering",
+      "koreanMeaning": "다정한 재촉이나 애정 표현, 아첨으로 설득하다",
+      "contextExplanation": "마지못해 하는 사람을 칭찬이나 약속으로 달래어 어떤 행동을 하게 만드는 문맥에 씁니다.",
+      "exampleSentence": "She cajoled him into joining the project.",
+      "exampleTranslation": "그녀는 그를 달래고 구슬려 프로젝트에 참여시켰다.",
+      "exampleExplanation": "명령하거나 논리만으로 설득하는 것이 아니라 아첨과 달래기를 수단으로 삼는다는 점이 중요합니다.",
+      "synonyms": [],
+      "distinctionNote": "명령하거나 논리만으로 설득하는 것이 아니라 아첨과 달래기를 수단으로 삼는다는 점이 중요합니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/c/ca/cajole.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW005429",
+        "JBKROW006438",
+        "JBKROW008253",
+        "JBKROW008630",
+        "JBKROW011541",
+        "JBKROW028123"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "boast",
+      "variants": [],
+      "senseId": "learn:00884747-v",
+      "partOfSpeech": "verb",
+      "englishDefinition": "show off",
+      "koreanMeaning": "자신을 과시하며 자랑하다",
+      "contextExplanation": "이 뜻에서는 사람이 자신의 능력이나 성과를 자랑스럽게 떠벌리는 행동을 가리킵니다.",
+      "exampleSentence": "He boasted about his perfect score.",
+      "exampleTranslation": "그는 자신의 만점을 자랑했다.",
+      "exampleExplanation": "사물이나 조직이 어떤 장점을 '갖추고 있다'는 boast의 다른 뜻과 구분해야 합니다.",
+      "synonyms": [],
+      "distinctionNote": "사물이나 조직이 어떤 장점을 '갖추고 있다'는 boast의 다른 뜻과 구분해야 합니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/b/bo/boast.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW000031",
+        "JBKROW002206",
+        "JBKROW029645"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "abstruse",
+      "variants": [],
+      "senseId": "learn:00902519-s",
+      "partOfSpeech": "adjective",
+      "englishDefinition": "difficult to penetrate; incomprehensible to one of ordinary understanding or knowledge",
+      "koreanMeaning": "보통 수준의 이해나 지식으로는 파악하기 어려운, 난해한.",
+      "contextExplanation": "이론, 논의, 강의처럼 내용이 지나치게 전문적이거나 복잡해 이해하기 어려울 때 쓴다.",
+      "exampleSentence": "the professor's lectures were so abstruse that students tended to avoid them",
+      "exampleTranslation": "그 교수의 강의는 너무 난해해서 학생들이 피하는 경향이 있었다.",
+      "exampleExplanation": "ambiguous는 뜻이 여러 갈래라 모호한 것이고, abstruse는 내용 자체가 어려운 것이다.",
+      "synonyms": [],
+      "distinctionNote": "ambiguous는 뜻이 여러 갈래라 모호한 것이고, abstruse는 내용 자체가 어려운 것이다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/a/ab/abstruse.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW008748",
+        "JBKROW011270",
+        "JBKROW013804",
+        "JBKROW015612",
+        "JBKROW017601",
+        "JBKROW020635",
+        "JBKROW028269",
+        "JBKROW030079"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "exculpate",
+      "variants": [],
+      "senseId": "learn:00905999-v",
+      "partOfSpeech": "verb",
+      "englishDefinition": "pronounce not guilty of criminal charges",
+      "koreanMeaning": "형사 혐의에 대해 무죄라고 밝히다",
+      "contextExplanation": "증거나 논증이 누군가를 죄책이나 비난에서 벗어나게 하는 법률·논증 문맥에 씁니다.",
+      "exampleSentence": "New evidence may exculpate the accused.",
+      "exampleTranslation": "새로운 증거가 피고인의 무죄를 밝혀 줄 수도 있다.",
+      "exampleExplanation": "유죄를 인정한 뒤 용서하는 pardon이 아니라 애초에 죄가 없음을 밝혀 책임에서 벗어나게 하는 뜻입니다.",
+      "synonyms": [],
+      "distinctionNote": "유죄를 인정한 뒤 용서하는 pardon이 아니라 애초에 죄가 없음을 밝혀 책임에서 벗어나게 하는 뜻입니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/e/ex/exculpate.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW004103",
+        "JBKROW006881"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "callow",
+      "variants": [],
+      "senseId": "learn:00940267-s",
+      "partOfSpeech": "adjective",
+      "englishDefinition": "young and inexperienced",
+      "koreanMeaning": "어리고 경험이 부족한",
+      "contextExplanation": "주로 젊은 사람의 판단이나 태도가 미숙하고 세상 경험이 부족함을 나타낼 때 씁니다.",
+      "exampleSentence": "The callow reporter jumped to a conclusion.",
+      "exampleTranslation": "그 미숙한 기자는 성급히 결론을 내렸다.",
+      "exampleExplanation": "나이가 어리다는 사실만이 아니라 그로 인한 미숙함과 경험 부족을 함께 뜻합니다.",
+      "synonyms": [],
+      "distinctionNote": "나이가 어리다는 사실만이 아니라 그로 인한 미숙함과 경험 부족을 함께 뜻합니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/c/ca/callow.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW000032",
+        "JBKROW002250",
+        "JBKROW014091"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "vie",
+      "variants": [],
+      "senseId": "learn:01074673-v",
+      "partOfSpeech": "verb",
+      "englishDefinition": "compete for something; engage in a contest; measure oneself against others",
+      "koreanMeaning": "무언가를 얻기 위해 경쟁하거나 겨루다",
+      "contextExplanation": "보통 vie for 형태로 상, 지위, 관심처럼 한정된 목표를 두고 치열하게 경쟁하는 문맥에 씁니다.",
+      "exampleSentence": "Several candidates vied for the scholarship.",
+      "exampleTranslation": "여러 지원자가 그 장학금을 두고 경쟁했다.",
+      "exampleExplanation": "말다툼하다가 아니라 우위를 차지하거나 무언가를 얻기 위해 경쟁한다는 뜻입니다.",
+      "synonyms": [],
+      "distinctionNote": "말다툼하다가 아니라 우위를 차지하거나 무언가를 얻기 위해 경쟁한다는 뜻입니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/v/vi/vie.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW000024",
+        "JBKROW003994"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "absenteeism",
+      "variants": [],
+      "senseId": "learn:01237093-n",
+      "partOfSpeech": "noun",
+      "englishDefinition": "habitual absence from work",
+      "koreanMeaning": "직장 등에 상습적으로 결근하는 현상 또는 관행.",
+      "contextExplanation": "조직에서 정당한 이유 없이 자주 자리를 비우는 문제를 말할 때 쓴다.",
+      "exampleSentence": "Chronic absenteeism disrupted the team's schedule.",
+      "exampleTranslation": "상습적인 결근이 팀의 일정을 흐트러뜨렸다.",
+      "exampleExplanation": "단발적인 absence가 아니라 반복성과 습관성을 나타내는 명사다.",
+      "synonyms": [],
+      "distinctionNote": "단발적인 absence가 아니라 반복성과 습관성을 나타내는 명사다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/a/ab/absenteeism.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW017600",
+        "JBKROW020634"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "mind-boggling",
+      "variants": [],
+      "senseId": "learn:01288942-s",
+      "partOfSpeech": "adjective",
+      "englishDefinition": "intellectually or emotionally overwhelming",
+      "koreanMeaning": "지적으로나 감정적으로 압도적인",
+      "contextExplanation": "수치, 규모, 복잡성처럼 이해하거나 받아들이기 벅찰 정도로 놀라운 것을 강조할 때 씁니다.",
+      "exampleSentence": "The scale of the universe is mind-boggling.",
+      "exampleTranslation": "우주의 규모는 정신이 아득할 만큼 압도적이다.",
+      "exampleExplanation": "단순히 confusing한 것이 아니라 이해 범위를 넘어설 만큼 압도적이라는 뜻입니다.",
+      "synonyms": [],
+      "distinctionNote": "단순히 confusing한 것이 아니라 이해 범위를 넘어설 만큼 압도적이라는 뜻입니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/m/mi/mind-boggling.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW000011",
+        "JBKROW003241"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "banal",
+      "variants": [],
+      "senseId": "learn:01693210-s",
+      "partOfSpeech": "adjective",
+      "englishDefinition": "repeated too often; overfamiliar through overuse",
+      "koreanMeaning": "너무 자주 반복되어 지나치게 익숙한",
+      "contextExplanation": "생각, 표현, 이야기 등이 진부하고 독창성 없이 뻔함을 평가할 때 씁니다.",
+      "exampleSentence": "The speech was full of banal slogans.",
+      "exampleTranslation": "그 연설은 진부한 구호로 가득했다.",
+      "exampleExplanation": "틀리거나 중요하지 않다는 뜻이 아니라 지나친 반복 때문에 신선함이 없다는 뜻입니다.",
+      "synonyms": [],
+      "distinctionNote": "틀리거나 중요하지 않다는 뜻이 아니라 지나친 반복 때문에 신선함이 없다는 뜻입니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/b/ba/banal.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW001435",
+        "JBKROW002168",
+        "JBKROW004146",
+        "JBKROW006359"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "infatuate",
+      "variants": [],
+      "senseId": "learn:01764521-v",
+      "partOfSpeech": "verb",
+      "englishDefinition": "arouse unreasoning love or passion in and cause to behave in an irrational way",
+      "koreanMeaning": "비이성적인 사랑이나 열정을 불러일으켜 이성을 잃게 하다",
+      "contextExplanation": "사람이 누군가에게 맹목적이고 오래가지 않을 수 있는 강한 매혹을 느끼게 되는 문맥에 씁니다.",
+      "exampleSentence": "The celebrity's image infatuated many young fans.",
+      "exampleTranslation": "그 유명인의 이미지는 많은 젊은 팬을 맹목적으로 매혹했다.",
+      "exampleExplanation": "깊고 안정적인 love가 아니라 판단을 흐릴 만큼 비이성적인 열중이라는 점이 핵심입니다.",
+      "synonyms": [],
+      "distinctionNote": "깊고 안정적인 love가 아니라 판단을 흐릴 만큼 비이성적인 열중이라는 점이 핵심입니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/i/in/infatuate.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW001538",
+        "JBKROW003008",
+        "JBKROW008187",
+        "JBKROW012385",
+        "JBKROW025612",
+        "JBKROW032062"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "abash",
+      "variants": [],
+      "senseId": "learn:01796126-v",
+      "partOfSpeech": "verb",
+      "englishDefinition": "cause to be embarrassed; cause to feel self-conscious",
+      "koreanMeaning": "당황하게 하거나 자의식을 느끼게 하다.",
+      "contextExplanation": "실수나 열등감 등을 의식하게 만들어 순간적으로 부끄럽고 당황하게 할 때 쓴다.",
+      "exampleSentence": "The unexpected question did not abash her.",
+      "exampleTranslation": "그 뜻밖의 질문도 그녀를 당황하게 하지 못했다.",
+      "exampleExplanation": "강한 공개적 모욕을 뜻하는 humiliate보다, 당황하여 평정심을 잃는 느낌에 가깝다.",
+      "synonyms": [],
+      "distinctionNote": "강한 공개적 모욕을 뜻하는 humiliate보다, 당황하여 평정심을 잃는 느낌에 가깝다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/a/ab/abash.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW034467"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "abase",
+      "variants": [],
+      "senseId": "learn:01803805-v",
+      "partOfSpeech": "verb",
+      "englishDefinition": "cause to feel shame; hurt the pride of",
+      "koreanMeaning": "수치심을 느끼게 하거나 자존심을 상하게 하다.",
+      "contextExplanation": "사람을 모욕하거나 비하해 위신과 자존심을 떨어뜨리는 상황에서 쓴다.",
+      "exampleSentence": "The tyrant tried to abase his critics in public.",
+      "exampleTranslation": "그 폭군은 공개적으로 비판자들을 비하하려 했다.",
+      "exampleExplanation": "debase는 가치나 품질을 떨어뜨리는 데 널리 쓰이고, abase는 사람을 낮추고 모욕하는 뜻이 중심이다.",
+      "synonyms": [],
+      "distinctionNote": "debase는 가치나 품질을 떨어뜨리는 데 널리 쓰이고, abase는 사람을 낮추고 모욕하는 뜻이 중심이다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/a/ab/abase.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW034466"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "captivate",
+      "variants": [],
+      "senseId": "learn:01810472-v",
+      "partOfSpeech": "verb",
+      "englishDefinition": "attract; cause to be enamored",
+      "koreanMeaning": "마음을 끌어 매혹시키다",
+      "contextExplanation": "이야기, 공연, 사람 등이 관심이나 마음을 강하게 사로잡는 문맥에 씁니다.",
+      "exampleSentence": "The opening scene captivated the audience.",
+      "exampleTranslation": "첫 장면은 관객의 마음을 사로잡았다.",
+      "exampleExplanation": "물리적으로 붙잡는 capture가 아니라 관심과 감정을 매혹해 사로잡는 뜻입니다.",
+      "synonyms": [],
+      "distinctionNote": "물리적으로 붙잡는 capture가 아니라 관심과 감정을 매혹해 사로잡는 뜻입니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/c/ca/captivate.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW008184",
+        "JBKROW011553"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "intricate",
+      "variants": [],
+      "senseId": "learn:02186120-s",
+      "partOfSpeech": "adjective",
+      "englishDefinition": "having many complexly arranged elements; elaborate",
+      "koreanMeaning": "복잡하게 배열된 요소가 많이 있는, 정교한",
+      "contextExplanation": "무늬, 기계, 계획, 논증처럼 세부 요소가 정교하고 복잡하게 연결된 대상을 설명할 때 씁니다.",
+      "exampleSentence": "The machine contains an intricate network of gears.",
+      "exampleTranslation": "그 기계에는 톱니바퀴가 정교하게 얽힌 구조가 들어 있다.",
+      "exampleExplanation": "단지 어렵다는 뜻이 아니라 많은 세부 요소가 서로 복잡하게 얽혀 있다는 구조적 의미가 중심입니다.",
+      "synonyms": [],
+      "distinctionNote": "단지 어렵다는 뜻이 아니라 많은 세부 요소가 서로 복잡하게 얽혀 있다는 구조적 의미가 중심입니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/i/in/intricate.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW004867",
+        "JBKROW007274",
+        "JBKROW013637",
+        "JBKROW014053",
+        "JBKROW016641"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "accouter",
+      "variants": [],
+      "senseId": "learn:02347012-v",
+      "partOfSpeech": "verb",
+      "englishDefinition": "provide with military equipment",
+      "koreanMeaning": "군사 장비를 지급하거나 갖추게 하다.",
+      "contextExplanation": "특히 군인이나 부대에 복장과 장비를 갖추어 줄 때 쓰는 동사다.",
+      "exampleSentence": "The recruits were accoutered for field training.",
+      "exampleTranslation": "신병들은 야외 훈련에 필요한 군사 장비를 갖추었다.",
+      "exampleExplanation": "일반적인 equip보다 군복·무기 등 군사 장비의 맥락이 뚜렷하다.",
+      "synonyms": [],
+      "distinctionNote": "일반적인 equip보다 군복·무기 등 군사 장비의 맥락이 뚜렷하다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/a/ac/accouter.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW034480"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "abdicate",
+      "variants": [],
+      "senseId": "learn:02384340-v",
+      "partOfSpeech": "verb",
+      "englishDefinition": "give up, such as power, as of monarchs and emperors, or duties and obligations",
+      "koreanMeaning": "군주가 권력을 내려놓듯, 권한·직위·의무나 책임을 포기하다.",
+      "contextExplanation": "왕위나 높은 직위를 공식적으로 내려놓거나, 비유적으로 책임을 저버릴 때 쓴다.",
+      "exampleSentence": "The King abdicated when he married a divorcee",
+      "exampleTranslation": "그 왕은 이혼 경력이 있는 사람과 결혼하면서 왕위에서 물러났다.",
+      "exampleExplanation": "일반 직장을 그만두는 resign보다 군주권·고위 권력 또는 중대한 책임의 포기가 두드러진다.",
+      "synonyms": [],
+      "distinctionNote": "일반 직장을 그만두는 resign보다 군주권·고위 권력 또는 중대한 책임의 포기가 두드러진다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/a/ab/abdicate.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW034468"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "slovenly",
+      "variants": [],
+      "senseId": "learn:02434522-s",
+      "partOfSpeech": "adjective",
+      "englishDefinition": "negligent of neatness especially in dress and person; habitually dirty and unkempt",
+      "koreanMeaning": "특히 옷차림과 몸가짐의 단정함에 무관심하여 습관적으로 지저분한",
+      "contextExplanation": "사람의 외모, 옷차림, 습관이나 일 처리 방식이 단정하지 않고 부주의함을 나타낼 때 씁니다.",
+      "exampleSentence": "His slovenly appearance hurt the interview.",
+      "exampleTranslation": "그의 단정하지 못한 모습은 면접에 악영향을 주었다.",
+      "exampleExplanation": "한 번 더러워진 상태보다 습관적인 단정하지 못함과 부주의에 초점이 있습니다.",
+      "synonyms": [],
+      "distinctionNote": "한 번 더러워진 상태보다 습관적인 단정하지 못함과 부주의에 초점이 있습니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/s/sl/slovenly.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW004104",
+        "JBKROW007847"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "abrogate",
+      "variants": [],
+      "senseId": "learn:02484173-v",
+      "partOfSpeech": "verb",
+      "englishDefinition": "revoke formally",
+      "koreanMeaning": "공식적으로 폐지하거나 철회하다.",
+      "contextExplanation": "법률, 조약, 권리처럼 공식적인 효력을 가진 것을 권위 있는 결정으로 없앨 때 쓴다.",
+      "exampleSentence": "The legislature voted to abrogate the outdated law.",
+      "exampleTranslation": "입법부는 그 낡은 법률을 폐지하기로 의결했다.",
+      "exampleExplanation": "내용 일부를 고치는 amend가 아니라, 효력 자체를 없애는 뜻에 가깝다.",
+      "synonyms": [],
+      "distinctionNote": "내용 일부를 고치는 amend가 아니라, 효력 자체를 없애는 뜻에 가깝다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/a/ab/abrogate.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW004299",
+        "JBKROW006158",
+        "JBKROW014826",
+        "JBKROW017599",
+        "JBKROW020633"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "abet",
+      "variants": [],
+      "senseId": "learn:02554908-v",
+      "partOfSpeech": "verb",
+      "englishDefinition": "assist or encourage, usually in some wrongdoing",
+      "koreanMeaning": "보통 어떤 잘못을 저지르도록 돕거나 부추기다.",
+      "contextExplanation": "사람이 범죄나 부정행위를 돕거나 조장하는 맥락에서 주로 쓴다.",
+      "exampleSentence": "They abetted the fraud by hiding the records.",
+      "exampleTranslation": "그들은 기록을 숨겨 그 사기 행위를 도왔다.",
+      "exampleExplanation": "단순히 돕는 aid와 달리, 부정적인 행위를 돕는다는 뜻이 자주 포함된다.",
+      "synonyms": [],
+      "distinctionNote": "단순히 돕는 aid와 달리, 부정적인 행위를 돕는다는 뜻이 자주 포함된다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/a/ab/abet.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW005373",
+        "JBKROW006148",
+        "JBKROW017594",
+        "JBKROW020629"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "perpetuate",
+      "variants": [],
+      "senseId": "learn:02654355-v",
+      "partOfSpeech": "verb",
+      "englishDefinition": "cause to continue or prevail",
+      "koreanMeaning": "계속 이어지거나 널리 남도록 만들다",
+      "contextExplanation": "관습, 오해, 불평등처럼 어떤 상태가 반복을 통해 계속되게 만드는 문맥에 자주 씁니다.",
+      "exampleSentence": "Repeating the rumor will perpetuate the harm.",
+      "exampleTranslation": "그 소문을 반복하면 피해가 계속될 것이다.",
+      "exampleExplanation": "즉시 영원하게 만든다는 뜻보다 기존 상태를 계속 이어지게 한다는 뜻으로 읽어야 합니다.",
+      "synonyms": [],
+      "distinctionNote": "즉시 영원하게 만든다는 뜻보다 기존 상태를 계속 이어지게 한다는 뜻으로 읽어야 합니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/p/pe/perpetuate.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW013564",
+        "JBKROW016925"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "suffice",
+      "variants": [],
+      "senseId": "learn:02675578-v",
+      "partOfSpeech": "verb",
+      "englishDefinition": "be sufficient; be adequate, either in quality or quantity",
+      "koreanMeaning": "질이나 양에서 충분하거나 적절하다.",
+      "contextExplanation": "필요한 기준을 충족할 만큼 충분하다는 뜻으로, 주어가 필요한 역할을 해낼 때 쓴다.",
+      "exampleSentence": "A ‘B’ grade doesn't suffice to get me into medical school",
+      "exampleTranslation": "B 학점으로는 의과대학에 들어가기에 충분하지 않다.",
+      "exampleExplanation": "감정적 만족을 주는 satisfy보다, 필요량이나 기준을 충족한다는 뜻에 초점을 둔다.",
+      "synonyms": [],
+      "distinctionNote": "감정적 만족을 주는 satisfy보다, 필요량이나 기준을 충족한다는 뜻에 초점을 둔다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/s/su/suffice.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW023562",
+        "JBKROW033856"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "accountability",
+      "variants": [],
+      "senseId": "learn:04677185-n",
+      "partOfSpeech": "noun",
+      "englishDefinition": "responsibility to someone or for some activity",
+      "koreanMeaning": "누군가 또는 어떤 활동에 대해 설명하고 책임져야 하는 상태.",
+      "contextExplanation": "결정이나 행동의 결과를 공개적으로 설명하고 평가와 결과를 받아들여야 하는 책임을 말한다.",
+      "exampleSentence": "Public officials must accept accountability for their decisions.",
+      "exampleTranslation": "공직자들은 자신의 결정에 대한 설명 책임을 받아들여야 한다.",
+      "exampleExplanation": "responsibility가 맡은 의무 자체라면, accountability는 그 수행 결과에 답하고 책임지는 측면이 두드러진다.",
+      "synonyms": [],
+      "distinctionNote": "responsibility가 맡은 의무 자체라면, accountability는 그 수행 결과에 답하고 책임지는 측면이 두드러진다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/a/ac/accountability.jsonl"
+      ],
+      "itemIds": [
+        "APPROW00020"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "disparity",
+      "variants": [],
+      "senseId": "learn:04759785-n",
+      "partOfSpeech": "noun",
+      "englishDefinition": "inequality or difference in some respect",
+      "koreanMeaning": "어떤 측면에서의 불평등이나 차이",
+      "contextExplanation": "소득, 기회, 수치, 대우처럼 비교 가능한 대상 사이의 불균형이나 격차를 나타낼 때 씁니다.",
+      "exampleSentence": "The report revealed a large disparity in income.",
+      "exampleTranslation": "그 보고서는 소득의 큰 격차를 드러냈다.",
+      "exampleExplanation": "사실들이 서로 맞지 않는 discrepancy보다 두 집단이나 수준 사이의 불평등한 격차에 초점이 있습니다.",
+      "synonyms": [],
+      "distinctionNote": "사실들이 서로 맞지 않는 discrepancy보다 두 집단이나 수준 사이의 불평등한 격차에 초점이 있습니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/d/di/disparity.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW013639",
+        "JBKROW016149"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "astrology",
+      "variants": [],
+      "senseId": "learn:05786128-n",
+      "partOfSpeech": "noun",
+      "englishDefinition": "a pseudoscience claiming divination by the positions of the planets and sun and moon",
+      "koreanMeaning": "행성·태양·달의 위치로 인간사나 미래를 점칠 수 있다고 주장하는 유사과학.",
+      "contextExplanation": "천체의 위치를 사람의 성격이나 사건과 연결해 해석하는 점성 체계를 가리킨다.",
+      "exampleSentence": "She reads about astrology but studies astronomy at university.",
+      "exampleTranslation": "그녀는 점성술에 관한 글을 읽지만 대학에서는 천문학을 공부한다.",
+      "exampleExplanation": "천체를 과학적으로 연구하는 astronomy와 철자가 비슷하므로 구분한다.",
+      "synonyms": [],
+      "distinctionNote": "천체를 과학적으로 연구하는 astronomy와 철자가 비슷하므로 구분한다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/a/as/astrology.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW023586",
+        "JBKROW030307"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "sophism",
+      "variants": [],
+      "senseId": "learn:05903745-n",
+      "partOfSpeech": "noun",
+      "englishDefinition": "a deliberately invalid argument displaying ingenuity in reasoning in the hope of deceiving someone",
+      "koreanMeaning": "남을 속이려는 목적으로 교묘하게 꾸민, 의도적으로 타당하지 않은 논증.",
+      "contextExplanation": "그럴듯한 형식을 갖췄지만 실제로는 오류가 있으며 상대를 현혹하려는 논증을 가리킨다.",
+      "exampleSentence": "The claim was a sophism designed to distract the audience.",
+      "exampleTranslation": "그 주장은 청중의 주의를 돌리려고 꾸민 궤변이었다.",
+      "exampleExplanation": "단순한 실수보다 의도적인 기만성이 강조되는 뜻으로 출제될 수 있다.",
+      "synonyms": [],
+      "distinctionNote": "단순한 실수보다 의도적인 기만성이 강조되는 뜻으로 출제될 수 있다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/s/so/sophism.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW023593",
+        "JBKROW033697"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "revulsion",
+      "variants": [],
+      "senseId": "learn:07519226-n",
+      "partOfSpeech": "noun",
+      "englishDefinition": "intense aversion",
+      "koreanMeaning": "강렬한 혐오감",
+      "contextExplanation": "잔혹함, 부도덕함, 불쾌한 광경 등에 대한 매우 강한 혐오와 거부 반응을 나타낼 때 씁니다.",
+      "exampleSentence": "He felt revulsion at the cruelty.",
+      "exampleTranslation": "그는 그 잔혹함에 강한 혐오감을 느꼈다.",
+      "exampleExplanation": "단순한 dislike보다 훨씬 강하며, 문맥에 따라 갑작스럽고 본능적인 혐오 반응을 나타냅니다.",
+      "synonyms": [],
+      "distinctionNote": "단순한 dislike보다 훨씬 강하며, 문맥에 따라 갑작스럽고 본능적인 혐오 반응을 나타냅니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/r/re/revulsion.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW008207",
+        "JBKROW013000",
+        "JBKROW024016",
+        "JBKROW026521",
+        "JBKROW027365",
+        "JBKROW029685",
+        "JBKROW033355"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "acclivity",
+      "variants": [],
+      "senseId": "learn:09229873-n",
+      "partOfSpeech": "noun",
+      "englishDefinition": "an upward slope or grade (as in a road)",
+      "koreanMeaning": "도로 등에서 위로 올라가는 경사 또는 오르막.",
+      "contextExplanation": "지형이나 도로가 위쪽으로 기울어진 경사를 가리키는 명사다.",
+      "exampleSentence": "The steep acclivity slowed the hikers.",
+      "exampleTranslation": "가파른 오르막 경사가 등산객들의 속도를 늦췄다.",
+      "exampleExplanation": "반대 방향의 내리막을 뜻하는 declivity와 방향을 바꾸어 출제하기 쉽다.",
+      "synonyms": [],
+      "distinctionNote": "반대 방향의 내리막을 뜻하는 declivity와 방향을 바꾸어 출제하기 쉽다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/a/ac/acclivity.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW001773",
+        "JBKROW002069",
+        "JBKROW004090",
+        "JBKROW034478"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "abettor",
+      "variants": [],
+      "senseId": "learn:09775380-n",
+      "partOfSpeech": "noun",
+      "englishDefinition": "one who helps or encourages or incites another",
+      "koreanMeaning": "다른 사람을 돕거나 격려하거나 부추기는 사람.",
+      "contextExplanation": "특히 범죄나 잘못을 돕거나 선동한 사람을 법률적·비판적 맥락에서 가리킬 수 있다.",
+      "exampleSentence": "The court treated him as an abettor of the crime.",
+      "exampleTranslation": "법원은 그를 그 범죄의 교사·방조자로 보았다.",
+      "exampleExplanation": "직접 범행하지 않았더라도 실행을 돕거나 부추긴 사람일 수 있다.",
+      "synonyms": [],
+      "distinctionNote": "직접 범행하지 않았더라도 실행을 돕거나 부추긴 사람일 수 있다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/a/ab/abettor.jsonl"
+      ],
+      "itemIds": [
+        "APPROW00004"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "scapegoat",
+      "variants": [],
+      "senseId": "learn:10574739-n",
+      "partOfSpeech": "noun",
+      "englishDefinition": "someone who is punished for the errors of others",
+      "koreanMeaning": "다른 사람들의 잘못 때문에 대신 벌을 받는 사람",
+      "contextExplanation": "조직이나 사회가 실패의 진짜 원인 대신 특정 개인이나 집단에 책임을 전가하는 문맥에 씁니다.",
+      "exampleSentence": "The manager made the intern a scapegoat for the failure.",
+      "exampleTranslation": "관리자는 그 실패의 책임을 인턴에게 희생양처럼 떠넘겼다.",
+      "exampleExplanation": "실제 잘못을 저지른 culprit가 아니라 부당하게 책임을 떠안은 대상입니다.",
+      "synonyms": [],
+      "distinctionNote": "실제 잘못을 저지른 culprit가 아니라 부당하게 책임을 떠안은 대상입니다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/s/sc/scapegoat.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW001793",
+        "JBKROW003687",
+        "JBKROW013575",
+        "JBKROW017196",
+        "JBKROW018140",
+        "JBKROW018724",
+        "JBKROW022130"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "abeyance",
+      "variants": [],
+      "senseId": "learn:14034107-n",
+      "partOfSpeech": "noun",
+      "englishDefinition": "temporary cessation or suspension",
+      "koreanMeaning": "일시적인 중단 또는 보류 상태.",
+      "contextExplanation": "계획, 권리, 결정 등이 당분간 효력을 내지 않거나 실행되지 않는 상태를 나타낸다.",
+      "exampleSentence": "The expansion plan remains in abeyance.",
+      "exampleTranslation": "그 확장 계획은 여전히 보류 상태다.",
+      "exampleExplanation": "영구 폐지가 아니라 다시 시행될 수 있는 일시적 보류라는 점을 확인한다.",
+      "synonyms": [],
+      "distinctionNote": "영구 폐지가 아니라 다시 시행될 수 있는 일시적 보류라는 점을 확인한다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/a/ab/abeyance.jsonl"
+      ],
+      "itemIds": [
+        "JBKROW017595",
+        "JBKROW020630"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "abscess",
+      "variants": [],
+      "senseId": "learn:14335599-n",
+      "partOfSpeech": "noun",
+      "englishDefinition": "symptom consisting of a localized collection of pus surrounded by inflamed tissue",
+      "koreanMeaning": "염증이 생긴 조직에 둘러싸여 국소적으로 고름이 고인 증상.",
+      "contextExplanation": "감염 등으로 조직이 손상되어 고름이 고인 농양을 가리키는 의학 명사다.",
+      "exampleSentence": "The dentist drained the abscess near the tooth.",
+      "exampleTranslation": "치과의사는 치아 근처의 농양에서 고름을 빼냈다.",
+      "exampleExplanation": "단순한 물집이 아니라 염증 조직과 고름이 함께 있는 병변이다.",
+      "synonyms": [],
+      "distinctionNote": "단순한 물집이 아니라 염증 조직과 고름이 함께 있는 병변이다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/a/ab/abscess.jsonl"
+      ],
+      "itemIds": [
+        "APPROW00010"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "abruptly",
+      "variants": [],
+      "senseId": "learn:81484980-r",
+      "partOfSpeech": "adverb",
+      "englishDefinition": "quickly and without warning",
+      "koreanMeaning": "빠르게, 그리고 사전 경고 없이 갑자기.",
+      "contextExplanation": "행동, 말, 변화가 갑작스럽게 일어나거나 매끄럽지 않게 끝날 때 쓰는 부사다.",
+      "exampleSentence": "The meeting ended abruptly after the alarm rang.",
+      "exampleTranslation": "경보가 울린 뒤 회의가 갑자기 끝났다.",
+      "exampleExplanation": "속도만 빠른 rapidly와 달리 예고 없음과 갑작스러운 단절이 핵심이다.",
+      "synonyms": [],
+      "distinctionNote": "속도만 빠른 rapidly와 달리 예고 없음과 갑작스러운 단절이 핵심이다.",
+      "sourceIds": [
+        "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "https://kaikki.org/dictionary/English/meaning/a/ab/abruptly.jsonl"
+      ],
+      "itemIds": [
+        "APPROW00009"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "look after",
+      "variants": [],
+      "senseId": "look-after:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To care for someone or take responsibility for the proper condition or management of something.",
+      "koreanMeaning": "사람에게 필요한 것을 챙기거나, 물건·일이 잘 유지되도록 책임지고 관리하다.",
+      "contextExplanation": "look after a child는 아이를 돌보다, look after the accounts는 회계를 맡아 관리하다다.",
+      "exampleSentence": "Could you look after these plants while I am away?",
+      "exampleTranslation": "내가 없는 동안 이 식물들을 돌봐 줄 수 있을까?",
+      "exampleExplanation": "look for는 찾다, look at은 쳐다보다다. after는 단순한 시간상의 이후로 풀지 않는다.",
+      "synonyms": [],
+      "distinctionNote": "look for는 찾다, look at은 쳐다보다다. after는 단순한 시간상의 이후로 풀지 않는다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/look-after",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/american_english/look-after"
+      ],
+      "itemIds": [
+        "JBKROW013820",
+        "JBKROW016715"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "make for",
+      "variants": [],
+      "senseId": "make-for:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To help produce a particular result, or, when followed by a destination, to move towards it.",
+      "koreanMeaning": "어떤 결과가 생기기 쉽게 만들거나 그 결과에 기여하다. 장소가 뒤따르면 그곳을 향해 가다는 뜻도 된다.",
+      "contextExplanation": "make for better communication은 더 나은 소통에 도움이 되다, make for the exit는 출구로 향하다다.",
+      "exampleSentence": "Clear instructions make for smoother teamwork.",
+      "exampleTranslation": "명확한 지침은 팀이 더 매끄럽게 협력하는 데 도움이 된다.",
+      "exampleExplanation": "항상 강한 직접 원인인 cause로 바꾸지 않는다. 조건을 조성하거나 기여한다는 약한 인과일 수 있다.",
+      "synonyms": [],
+      "distinctionNote": "항상 강한 직접 원인인 cause로 바꾸지 않는다. 조건을 조성하거나 기여한다는 약한 인과일 수 있다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/make-for",
+        "https://www.oxfordlearnersdictionaries.com/definition/english/make-for"
+      ],
+      "itemIds": [
+        "JBKROW001578",
+        "JBKROW003181",
+        "JBKROW019179",
+        "JBKROW022907"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "new normal",
+      "variants": [],
+      "senseId": "new-normal:primary",
+      "partOfSpeech": "noun phrase",
+      "englishDefinition": "A changed condition that people come to regard as ordinary, although it was previously unusual.",
+      "koreanMeaning": "예전에는 특별하거나 이례적이던 일이 이제는 당연하게 예상되는 일상이 된 상태다.",
+      "contextExplanation": "사회·경제·업무 환경의 지속적인 변화 뒤에 정착한 상태를 설명할 때 쓴다.",
+      "exampleSentence": "For the team, remote meetings became the new normal.",
+      "exampleTranslation": "그 팀에서는 원격 회의가 이제 특별할 것 없는 일상이 되었다.",
+      "exampleExplanation": "normal은 좋거나 바람직하다는 뜻이 아니다. 나쁜 상황이 일상화된 경우에도 쓴다.",
+      "synonyms": [],
+      "distinctionNote": "normal은 좋거나 바람직하다는 뜻이 아니다. 나쁜 상황이 일상화된 경우에도 쓴다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/the-new-normal",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/new"
+      ],
+      "itemIds": [
+        "JBKROW023335"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "on behalf of -",
+      "variants": [],
+      "senseId": "on-behalf:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "Acting as someone's representative, doing something in their place, or acting for their benefit.",
+      "koreanMeaning": "다른 사람·집단의 대표 자격으로 행동하거나, 그 대신 또는 그 이익을 위해 무언가를 하다.",
+      "contextExplanation": "on behalf of the team은 팀을 대표하여, act on someone's behalf는 그 사람을 대신해 행동하다다.",
+      "exampleSentence": "On behalf of the class, I thanked the guest speaker.",
+      "exampleTranslation": "나는 반을 대표해 초청 연사에게 감사를 전했다.",
+      "exampleExplanation": "원인인 because of나 교환인 in exchange for로 읽지 않는다. 대표·대신·이익 중 문맥에 맞는 뜻을 고른다.",
+      "synonyms": [],
+      "distinctionNote": "원인인 because of나 교환인 in exchange for로 읽지 않는다. 대표·대신·이익 중 문맥에 맞는 뜻을 고른다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/on-someones-behalf-on-behalf-of-someone",
+        "https://www.oxfordlearnersdictionaries.com/definition/english/behalf"
+      ],
+      "itemIds": [
+        "JBKROW014517",
+        "JBKROW016852"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "price one's goods out of the market",
+      "variants": [
+        "price oneself out of the market"
+      ],
+      "senseId": "price-market:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To ask so much for goods or services that buyers choose other sellers instead.",
+      "koreanMeaning": "물건값이나 서비스 보수를 지나치게 높게 요구해 사람들이 사거나 고용하려 하지 않게 되다.",
+      "contextExplanation": "상품 가격뿐 아니라 개인의 출연료·보수·서비스 요금이 너무 높은 상황에도 쓴다.",
+      "exampleSentence": "The consultant priced herself out of the market by doubling her fee.",
+      "exampleTranslation": "그 컨설턴트는 보수를 두 배로 올렸다가 고객이 외면할 만큼 비싸져 경쟁력을 잃었다.",
+      "exampleExplanation": "가격을 인하해 경쟁자를 몰아내는 것이 아니다. oneself나 one's goods에서는 자신의 높은 가격이 원인이다.",
+      "synonyms": [],
+      "distinctionNote": "가격을 인하해 경쟁자를 몰아내는 것이 아니다. oneself나 one's goods에서는 자신의 높은 가격이 원인이다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/to-price-yourself-out-of-the-market",
+        "https://www.oxfordlearnersdictionaries.com/definition/english/price_2"
+      ],
+      "itemIds": [
+        "JBKROW023367",
+        "JBKROW023368"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "pull the rug from under a person",
+      "variants": [
+        "pull the rug from under a person's feet"
+      ],
+      "senseId": "pull-rug:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To abruptly withdraw support that a person or project has been relying on.",
+      "koreanMeaning": "상대나 사업이 믿고 의지하던 도움을 갑자기 거둬들여 곤경에 빠뜨리다.",
+      "contextExplanation": "자금·협력·정치적 지지 등을 예고 없이 끊는 상황에서 자주 쓴다.",
+      "exampleSentence": "The sponsor pulled the rug from under the team by cancelling its funding.",
+      "exampleTranslation": "후원사가 자금 지원을 취소해 팀이 믿고 있던 기반을 갑자기 무너뜨렸다.",
+      "exampleExplanation": "단순한 반박보다 지원 철회의 갑작스러움에 초점이 있다. sweep under the rug(문제를 감추다)와 구별한다.",
+      "synonyms": [],
+      "distinctionNote": "단순한 반박보다 지원 철회의 갑작스러움에 초점이 있다. sweep under the rug(문제를 감추다)와 구별한다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/us/dictionary/english/pull-the-rug-from-under-someone-pull-the-rug-from-under-someones-feet",
+        "https://www.oxfordlearnersdictionaries.com/definition/american_english/rug"
+      ],
+      "itemIds": [
+        "JBKROW022968",
+        "JBKROW022969"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "put A at ease",
+      "variants": [],
+      "senseId": "put-at-ease:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To help someone feel relaxed and confident rather than nervous or embarrassed.",
+      "koreanMeaning": "어색하거나 긴장한 사람이 불안감을 내려놓고 편하게 말하고 행동할 수 있도록 해 주다.",
+      "contextExplanation": "put someone at ease 또는 at their ease. A에는 편안해지는 사람이 들어간다. be at ease는 그 결과 상태다.",
+      "exampleSentence": "The interviewer's friendly greeting put the applicant at ease.",
+      "exampleTranslation": "면접관의 다정한 인사에 지원자의 긴장이 풀렸다.",
+      "exampleExplanation": "with ease는 쉽게라는 방식 표현이다. at ease는 긴장이 없는 상태이므로 전치사를 바꾸지 않는다.",
+      "synonyms": [],
+      "distinctionNote": "with ease는 쉽게라는 방식 표현이다. at ease는 긴장이 없는 상태이므로 전치사를 바꾸지 않는다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/definition/american_english/ease_1",
+        "https://www.collinsdictionary.com/dictionary/english/at-ease"
+      ],
+      "itemIds": [
+        "JBKROW000069",
+        "JBKROW003555"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "put up with",
+      "variants": [],
+      "senseId": "put-up-with:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To tolerate a person or situation that is irritating, unpleasant, or otherwise difficult to accept.",
+      "koreanMeaning": "마음에 들거나 찬성해서 받아들이는 것이 아니라, 거슬리는 것을 견뎌 내다.",
+      "contextExplanation": "put up with + 사람·상황·동명사. I won't put up with it은 더는 참지 않겠다는 선을 긋는다.",
+      "exampleSentence": "She put up with the noise until the repairs were finished.",
+      "exampleTranslation": "그녀는 수리가 끝날 때까지 소음을 참고 견뎠다.",
+      "exampleExplanation": "put someone up은 숙박을 제공하다, put up a notice는 게시하다다. with까지 묶어 읽어야 참다라는 뜻이 된다.",
+      "synonyms": [],
+      "distinctionNote": "put someone up은 숙박을 제공하다, put up a notice는 게시하다다. with까지 묶어 읽어야 참다라는 뜻이 된다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/definition/english/put-up-with",
+        "https://www.collinsdictionary.com/dictionary/english/put-up-with"
+      ],
+      "itemIds": [
+        "JBKROW013824",
+        "JBKROW017048"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "release - from house arrest",
+      "variants": [],
+      "senseId": "release-house-arrest:primary",
+      "partOfSpeech": "verb phrase",
+      "englishDefinition": "To end the official restriction that requires someone to remain confined at home.",
+      "koreanMeaning": "당국이 집 밖으로 나가지 못하게 하던 가택 연금 상태에서 누군가를 풀어 주다.",
+      "contextExplanation": "빈칸에는 석방되는 사람이 들어간다. be released from house arrest는 가택 연금이 해제되다라는 수동 표현이다.",
+      "exampleSentence": "The authorities released him from house arrest on Monday.",
+      "exampleTranslation": "당국은 월요일에 그의 가택 연금을 해제했다.",
+      "exampleExplanation": "release on/to house arrest는 구금에서 가택 연금으로 전환되는 맥락일 수 있다. from은 가택 연금 자체의 해제다.",
+      "synonyms": [],
+      "distinctionNote": "release on/to house arrest는 구금에서 가택 연금으로 전환되는 맥락일 수 있다. from은 가택 연금 자체의 해제다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/definition/english/house-arrest",
+        "https://www.merriam-webster.com/dictionary/house%20arrest"
+      ],
+      "itemIds": [
+        "JBKROW022992"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "run into",
+      "variants": [],
+      "senseId": "run-into:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To encounter someone by chance, collide with something, or unexpectedly experience a difficulty.",
+      "koreanMeaning": "일부러 계획한 만남이 아니라 우연히 마주치다. 물체와 충돌하거나, 진행하다가 뜻밖의 문제에 맞닥뜨릴 때도 쓴다.",
+      "contextExplanation": "run into an old friend는 우연한 만남, run into a wall은 충돌, run into trouble은 문제 발생이다. 비용·수치가 뒤따르면 큰 규모에 이르다라는 별도 뜻도 있다.",
+      "exampleSentence": "We ran into a former teacher at the station.",
+      "exampleTranslation": "우리는 역에서 예전 선생님을 우연히 만났다.",
+      "exampleExplanation": "달려 들어가다로만 번역하지 않는다. 목적어가 사람·물체·곤란·금액 중 무엇인지 먼저 본다.",
+      "synonyms": [],
+      "distinctionNote": "달려 들어가다로만 번역하지 않는다. 목적어가 사람·물체·곤란·금액 중 무엇인지 먼저 본다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/run-into",
+        "https://www.collinsdictionary.com/us/dictionary/english/run-into"
+      ],
+      "itemIds": [
+        "APPROW01880"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "by the same token",
+      "variants": [],
+      "senseId": "same-token:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "Used when the reasoning behind one statement also supports the statement that follows.",
+      "koreanMeaning": "앞 문장을 성립시킨 이유나 원리가 뒤 문장에도 똑같이 적용된다고 연결한다.",
+      "contextExplanation": "앞과 뒤가 서로 반대 방향의 결과여도 같은 원리로 설명되면 쓸 수 있다. 사실을 나열하는 also보다 논리의 공통점이 중요하다.",
+      "exampleSentence": "If clear labels help beginners, by the same token, vague labels can confuse them.",
+      "exampleTranslation": "명확한 이름표가 초보자에게 도움이 된다면, 같은 논리로 모호한 이름표는 초보자를 헷갈리게 할 수 있다.",
+      "exampleExplanation": "token을 표나 동전으로 직역하지 않는다. 같은 이유가 무엇인지 말할 수 있어야 문장 연결을 제대로 읽은 것이다.",
+      "synonyms": [],
+      "distinctionNote": "token을 표나 동전으로 직역하지 않는다. 같은 이유가 무엇인지 말할 수 있어야 문장 연결을 제대로 읽은 것이다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/token_1",
+        "https://www.collinsdictionary.com/us/dictionary/english/by-the-same-token"
+      ],
+      "itemIds": [
+        "JBKROW000132",
+        "JBKROW002242",
+        "JBKROW020396",
+        "JBKROW022737"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "There is more than one way to skin a cat",
+      "variants": [],
+      "senseId": "skin-cat:primary",
+      "partOfSpeech": "saying",
+      "englishDefinition": "A goal can be reached by several different methods, so another approach may work.",
+      "koreanMeaning": "한 방법이 막혀도 같은 목적에 도달할 다른 길이 있다는 말이다.",
+      "contextExplanation": "다른 해결책을 찾아보자고 격려하거나 한 가지 방법만 고집하지 말라고 할 때 쓴다.",
+      "exampleSentence": "If that route is closed, try another; there is more than one way to skin a cat.",
+      "exampleTranslation": "그 길이 막혔다면 다른 길을 찾아보자. 목적을 이루는 방법이 하나뿐인 건 아니니까.",
+      "exampleExplanation": "동물에 관한 문자 그대로의 지시가 아니라 해결 방법의 다양성을 나타내는 속담이다.",
+      "synonyms": [],
+      "distinctionNote": "동물에 관한 문자 그대로의 지시가 아니라 해결 방법의 다양성을 나타내는 속담이다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/us/dictionary/english/theres-more-than-one-way-to-skin-a-cat",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/skin_2"
+      ],
+      "itemIds": [
+        "JBKROW023090"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "take for granted",
+      "variants": [],
+      "senseId": "take-for-granted:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To assume something is true or available without checking, or to overlook the value of someone or something because it seems reliably present.",
+      "koreanMeaning": "사실인지 확인하지 않고 당연하다고 믿는 뜻과, 늘 곁에 있어서 고마움을 잊는 뜻이 있다.",
+      "contextExplanation": "take it for granted that + 절은 사실로 단정하는 구조다. take a person's help for granted는 도움을 늘 당연하게 여기는 태도다.",
+      "exampleSentence": "I had taken her help for granted until I had to do the work alone.",
+      "exampleTranslation": "혼자 그 일을 해 보게 되기 전까지는 그녀의 도움을 당연하게만 여겼다.",
+      "exampleExplanation": "두 뜻은 관련되지만 같지 않다. 사실 판단인지 가치 평가인지 구분한다. grant를 실제 허가로 번역하지 않는다.",
+      "synonyms": [],
+      "distinctionNote": "두 뜻은 관련되지만 같지 않다. 사실 판단인지 가치 평가인지 구분한다. grant를 실제 허가로 번역하지 않는다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/take-for-granted",
+        "https://www.merriam-webster.com/dictionary/take%20for%20granted"
+      ],
+      "itemIds": [
+        "APPROW02128"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "teem with",
+      "variants": [],
+      "senseId": "teem-with:primary",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To contain very many people, animals, or other things, often giving an impression of active abundance.",
+      "koreanMeaning": "단순히 빈 공간이 없다는 말보다, 수많은 사람이나 생물이 모여 움직이는 풍성한 모습을 그린다.",
+      "contextExplanation": "장소 + teem with + 가득한 대상. 특히 be teeming with 형태가 흔하다. with 뒤의 대상을 빼면 무엇이 많은지 알 수 없다.",
+      "exampleSentence": "The shallow pools were teeming with tiny fish.",
+      "exampleTranslation": "얕은 웅덩이마다 작은 물고기들이 가득 헤엄치고 있었다.",
+      "exampleExplanation": "team with나 team up with(함께 팀을 이루다)와 철자를 구분한다. 사람·동물만 가능하다고 지나치게 제한하지 않는다.",
+      "synonyms": [],
+      "distinctionNote": "team with나 team up with(함께 팀을 이루다)와 철자를 구분한다. 사람·동물만 가능하다고 지나치게 제한하지 않는다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/teem-with",
+        "https://www.collinsdictionary.com/dictionary/english/teem"
+      ],
+      "itemIds": [
+        "JBKROW000005",
+        "JBKROW003863"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "to boot",
+      "variants": [],
+      "senseId": "to-boot:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "Used to add one more fact or quality to what has already been mentioned.",
+      "koreanMeaning": "이미 말한 내용에 한 가지가 더 있다고 덧붙이며 강조한다.",
+      "contextExplanation": "and + 추가 정보 + to boot처럼 뒤쪽에서 덧붙이는 일이 많다. 긍정적인 장점뿐 아니라 나쁜 점을 더할 때도 쓴다.",
+      "exampleSentence": "The room was quiet, close to campus, and inexpensive to boot.",
+      "exampleTranslation": "그 방은 조용하고 학교와 가까웠으며, 게다가 가격도 저렴했다.",
+      "exampleExplanation": "신발이나 컴퓨터 부팅이라는 boot의 현대적 뜻으로 풀이하지 않는다. 인과나 반대가 아니라 추가다.",
+      "synonyms": [],
+      "distinctionNote": "신발이나 컴퓨터 부팅이라는 boot의 현대적 뜻으로 풀이하지 않는다. 인과나 반대가 아니라 추가다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/us/dictionary/english/to-boot",
+        "https://www.merriam-webster.com/dictionary/to%20boot"
+      ],
+      "itemIds": [
+        "JBKROW000075",
+        "JBKROW003886",
+        "JBKROW004990",
+        "JBKROW008006",
+        "JBKROW017980",
+        "JBKROW023103"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "on the verge of -",
+      "variants": [
+        "on the verge of -ing"
+      ],
+      "senseId": "verge-of:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "Very close to a particular event or change, whether the outcome is welcome or unwelcome.",
+      "koreanMeaning": "어떤 변화가 거의 일어나려는 바로 직전 상태다. 나쁜 위기뿐 아니라 발견·성공처럼 좋은 변화에도 쓴다.",
+      "contextExplanation": "on the verge of + 명사·동명사. on the verge of a breakthrough는 돌파구를 찾기 직전, of collapsing은 무너지기 직전이다.",
+      "exampleSentence": "After months of work, the team was on the verge of solving the problem.",
+      "exampleTranslation": "몇 달간 노력한 끝에 팀은 문제를 풀기 직전에 와 있었다.",
+      "exampleExplanation": "반드시 위기라고 번역하지 않는다. 곧 일어날 듯하다는 뜻이며, 실제로 그 일이 일어났다는 확정도 아니다.",
+      "synonyms": [],
+      "distinctionNote": "반드시 위기라고 번역하지 않는다. 곧 일어날 듯하다는 뜻이며, 실제로 그 일이 일어났다는 확정도 아니다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/on-the-verge-of",
+        "https://www.oxfordlearnersdictionaries.com/definition/english/verge_1"
+      ],
+      "itemIds": [
+        "JBKROW013940",
+        "JBKROW016855",
+        "JBKROW018069",
+        "JBKROW022932"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "in the wake of -",
+      "variants": [
+        "in the wake of"
+      ],
+      "senseId": "wake-of:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "Following an event, often as a consequence of it; alternatively, following closely behind someone or something.",
+      "koreanMeaning": "단순히 시간이 뒤라는 뜻을 넘어, 앞선 사건이 남긴 영향 속에서 뒤따르는 상황을 가리키는 경우가 많다.",
+      "contextExplanation": "in the wake of the scandal처럼 사건의 여파를 말한다. 이동 맥락에서는 뒤를 따라간다는 뜻도 가능하다.",
+      "exampleSentence": "The school revised its safety rules in the wake of the accident.",
+      "exampleTranslation": "사고의 여파로 학교는 안전 규정을 고쳤다.",
+      "exampleExplanation": "모든 문장에서 인과관계가 확정되는 것은 아니다. after보다 여파가 두드러지는지 문맥을 살핀다. wake up의 기상과 혼동하지 않는다.",
+      "synonyms": [],
+      "distinctionNote": "모든 문장에서 인과관계가 확정되는 것은 아니다. after보다 여파가 두드러지는지 문맥을 살핀다. wake up의 기상과 혼동하지 않는다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/in-the-wake-of",
+        "https://www.merriam-webster.com/dictionary/in%20the%20wake%20of"
+      ],
+      "itemIds": [
+        "JBKROW013919",
+        "JBKROW016572",
+        "JBKROW020504",
+        "JBKROW022872"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "work out",
+      "variants": [],
+      "senseId": "work-out:primary",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To solve or calculate something; for a situation to develop satisfactorily; or to exercise the body.",
+      "koreanMeaning": "목적어가 있으면 해법을 찾거나 계산하다, 상황이 주어면 잘 풀리다, 사람이 몸을 움직이는 문맥이면 운동하다다.",
+      "contextExplanation": "work out the answer는 답을 구하다, things work out은 일이 잘 풀리다, work out at the gym은 운동하다다. work it out처럼 대명사는 가운데 둔다.",
+      "exampleSentence": "We worked out a simpler plan, and everything worked out well.",
+      "exampleTranslation": "우리는 더 간단한 계획을 짜냈고, 모든 일이 잘 풀렸다.",
+      "exampleExplanation": "out 때문에 밖에서 일하다라고 단정하지 않는다. workout은 한 단어로 쓰는 운동이라는 명사이고, work out은 동사구다.",
+      "synonyms": [],
+      "distinctionNote": "out 때문에 밖에서 일하다라고 단정하지 않는다. workout은 한 단어로 쓰는 운동이라는 명사이고, work out은 동사구다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
+        "https://www.collinsdictionary.com/dictionary/english/work-out"
+      ],
+      "itemIds": [
+        "JBKROW000044",
+        "JBKROW004038",
+        "JBKROW006121",
+        "JBKROW008146"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    },
+    {
+      "word": "wrap up",
+      "variants": [],
+      "senseId": "wrap-up:primary",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To bring an activity, discussion, or arrangement to a satisfactory close.",
+      "koreanMeaning": "진행하던 일을 정리하고 필요한 마무리를 해서 끝내다.",
+      "contextExplanation": "wrap up a meeting/project. 대명사는 wrap it up 순서다. 이 뜻은 비교적 비격식적이다.",
+      "exampleSentence": "Let's wrap up the meeting by agreeing on one next step.",
+      "exampleTranslation": "다음에 할 일 한 가지를 합의하고 회의를 마무리하자.",
+      "exampleExplanation": "옷을 따뜻하게 껴입다는 wrap up warm도 있다. 이 항목은 회의·업무를 끝내는 뜻이며, 문장 속 목적어를 확인한다.",
+      "synonyms": [],
+      "distinctionNote": "옷을 따뜻하게 껴입다는 wrap up warm도 있다. 이 항목은 회의·업무를 끝내는 뜻이며, 문장 속 목적어를 확인한다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/wrap-up",
+        "https://www.collinsdictionary.com/dictionary/english/wrap-up"
+      ],
+      "itemIds": [
+        "JBKROW000016",
+        "JBKROW004042"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "NEEDS_REVIEW",
+      "backfill": {
+        "attempts": 1,
+        "retryable": true,
+        "failureReasons": [
+          {
+            "category": "검증 대기",
+            "fields": [
+              "synonyms"
+            ]
+          }
+        ]
+      },
+      "missingFields": [
+        "synonyms"
+      ]
+    }
+  ]
+}

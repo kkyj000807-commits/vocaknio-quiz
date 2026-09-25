@@ -8,7 +8,10 @@ import { hasLearningEntry, LEARNING_COVERAGE } from "@/lib/vocab-learning";
 
 describe("깊이 학습 인덱스", () => {
   it("기존 검수 해설과 모든 숙어 보완을 학습 인덱스에 연결한다", () => {
-    expect(LEARNING_COVERAGE.senses).toBe(40 + corrections.entries.reduce((sum, entry) => sum + entry.targets.length, 0));
+    expect(LEARNING_COVERAGE.senses).toBe(40 + corrections.entries.reduce(
+      (sum, entry) => sum + entry.targets.length * ((entry as { senses?: unknown[] }).senses?.length ?? 1),
+      0,
+    ));
     expect(LEARNING_COVERAGE.rows).toBe(Object.keys(learningIndex.items).length);
     expect(LEARNING_COVERAGE.rows).toBeGreaterThanOrEqual(40);
   });
@@ -46,5 +49,11 @@ describe("깊이 학습 인덱스", () => {
     expect(byKey.get("work-out")?.targets).toHaveLength(4);
     expect(byKey.get("work-out")?.meaningKo).toContain("운동하다");
     expect(byKey.get("work-out")?.meaningKo).toContain("계산하다");
+  });
+
+  it("all but의 거의/예외 sense를 같은 항목 안에서 분리한다", () => {
+    const entryIds = learningIndex.items.JBKROW000287.entryIds;
+    expect(entryIds).toContain("learn:correction:JBKROW000287:almost");
+    expect(entryIds).toContain("learn:correction:JBKROW000287:all-except");
   });
 });

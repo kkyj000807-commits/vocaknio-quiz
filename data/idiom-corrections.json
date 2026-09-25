@@ -644,6 +644,48 @@
         "en": "By noon, the fog had all but disappeared.",
         "ko": "정오가 되자 안개는 거의 다 걷혀 있었다."
       },
+      "senses": [
+        {
+          "id": "almost",
+          "partOfSpeech": "adverbial phrase",
+          "definitionEn": "Almost reaching or becoming the stated condition, while still falling slightly short of it.",
+          "definitionKo": "말한 상태에 아주 가까이 갔지만 완전히 그 상태가 되지는 않은.",
+          "memoryKo": "완전한 상태 바로 앞까지 갔지만 마지막 한 조각이 남아 있다.",
+          "usageKo": "all but 뒤에 complete, impossible, disappeared처럼 상태나 변화가 오면 그 상태에 거의 도달했다는 정도를 나타낸다.",
+          "examTrapKo": "완전히 그렇다는 뜻이 아니다. 문장에 remain, only, final처럼 남은 차이를 보여 주는 단서가 있는지 확인한다.",
+          "contrasts": [
+            {
+              "word": "anything but",
+              "noteKo": "결코 ~이 아닌이라는 강한 부정이다. all but impossible은 거의 불가능하지만 anything but impossible은 결코 불가능하지 않다는 뜻이다."
+            }
+          ],
+          "example": {
+            "en": "By noon, the fog had all but disappeared.",
+            "ko": "정오가 되자 안개는 거의 다 걷혀 있었다.",
+            "cueKo": "disappeared가 상태 변화를 나타내며, all but가 그 변화가 완전히 끝나기 직전임을 표시한다."
+          }
+        },
+        {
+          "id": "all-except",
+          "partOfSpeech": "determiner phrase",
+          "definitionEn": "Every member of a stated group except the named person, thing, or number.",
+          "definitionKo": "지정한 사람·사물·수만 빼고 그 집합의 나머지 모두.",
+          "memoryKo": "전체 집합을 먼저 잡고 but 뒤에 나온 예외만 뺀다.",
+          "usageKo": "all but + 예외 대상/수 + of + 전체 집합 구조에서는 almost가 아니라 '그 예외를 제외한 모두'로 계산한다.",
+          "examTrapKo": "but 뒤의 수를 결과값으로 고르면 안 된다. 전체 수에서 예외 수를 빼야 한다.",
+          "contrasts": [
+            {
+              "word": "almost all",
+              "noteKo": "대부분이라는 비슷한 범위를 나타내지만, all but two처럼 예외 수가 명시되면 정확한 남은 수를 계산할 수 있다."
+            }
+          ],
+          "example": {
+            "en": "All but two of the twelve committee members approved the proposal.",
+            "ko": "위원 열두 명 중 두 명을 제외한 모두가 제안을 승인했다.",
+            "cueKo": "two가 제외할 수이고 twelve committee members가 전체이므로 승인자는 12−2인 열 명이다."
+          }
+        }
+      ],
       "sources": [
         {
           "name": "Collins English Dictionary",

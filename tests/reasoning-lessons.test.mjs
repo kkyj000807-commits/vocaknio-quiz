@@ -20,9 +20,12 @@ describe("문맥 출제 계약", () => {
       const correction = corrections.entries.find((e) => e.key === composition.key);
       expect(correction?.targets.length).toBeGreaterThan(0);
       for (const target of correction.targets) {
-        const published = entries.find((e) => e.id === `learn:correction:${target.id}`);
-        expect(published?.composition).toEqual({ ...composition, checkedAtKst: compositions.checkedAtKst, policy: compositions.policy });
-        expect(index.items[target.id]?.entryIds).toContain(published.id);
+        const published = entries.filter((e) => e.id === `learn:correction:${target.id}` || e.id.startsWith(`learn:correction:${target.id}:`));
+        expect(published.length).toBeGreaterThan(0);
+        for (const entry of published) {
+          expect(entry.composition).toEqual({ ...composition, checkedAtKst: compositions.checkedAtKst, policy: compositions.policy });
+          expect(index.items[target.id]?.entryIds).toContain(entry.id);
+        }
       }
     }
   });
@@ -31,7 +34,7 @@ describe("문맥 출제 계약", () => {
     expect(bank.lessons).toHaveLength(6);
     expect(bank.lessons.flatMap((l) => l.questions)).toHaveLength(13);
     const mapped = entries.filter((e) => e.reasoning);
-    expect(mapped).toHaveLength(17);
+    expect(mapped).toHaveLength(19);
     for (const lesson of bank.lessons) {
       for (const entryId of lesson.entryIds) expect(mapped.find((e) => e.id === entryId)?.reasoning.questions).toEqual(lesson.questions);
     }

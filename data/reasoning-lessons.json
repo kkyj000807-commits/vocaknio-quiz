@@ -132,8 +132,10 @@
         "checkedAtKst": "2026.09.10 15:22 KST"
       },
       "entryIds": [
-        "learn:correction:JBKROW000287",
-        "learn:correction:JBKROW002103"
+        "learn:correction:JBKROW000287:almost",
+        "learn:correction:JBKROW000287:all-except",
+        "learn:correction:JBKROW002103:almost",
+        "learn:correction:JBKROW002103:all-except"
       ],
       "literalKo": "but를 '제외'로 읽으면 일부를 뺀 전부라는 모양이다.",
       "bridgeKo": "상태에 붙으면 거의 그 상태에 도달함, 특정 집합 뒤에서는 명시된 예외를 뺀 전부. 뒤의 구문을 먼저 본다.",

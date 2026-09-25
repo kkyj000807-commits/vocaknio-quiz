@@ -28,7 +28,15 @@ describe("영어→영어 active recall", () => {
     expect(sense?.exactSynonyms).not.toContain("supervisor");
     expect(sense?.exactSynonyms).not.toContain("overseer");
     expect(getActiveRecallSenses(juryRows[0].id)).toHaveLength(1);
-    expect(getActiveRecallCoverage()).toEqual({ senses: 11, rows: 14, definitions: 11, examples: 11, synonymRelations: 11 });
+    expect(getActiveRecallCoverage()).toEqual({
+      senses: 11,
+      rows: 14,
+      definitions: 11,
+      examples: 11,
+      contextualizedExamples: 11,
+      contextExplanations: 11,
+      synonymRelations: 11,
+    });
   });
 
   it("definition → target 문제를 만들고 정답을 하나로 유지한다", () => {
