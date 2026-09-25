@@ -28,6 +28,7 @@
 
 ## 현재 batch — canonical sense 공란 backfill PARTIAL VERIFIED / 미배포
 
+- Source main `c4432ee`는 origin/main에 push됐다. 공개 Pages는 계속 3.1이며 이 미완료 backfill batch는 배포하지 않았다.
 - 새 기능·UI 작업은 중단하고 기존 검수 데이터의 공란과 전달 경로만 조사했다. 원본 정본은 38,163행/고유 표제어13,347개지만, canonical sense가 연결된 원본행은230개뿐이며37,933행은 첫 손실 지점이 `sense 매핑`이다. 이 행들을 문자열 추정으로 합치지 않았다.
 - 현재 서로 다른 검수 레이어를 합친 고유 canonical sense는103개다. 기존 배포 학습 레이어 기준 공란은 영영정의15/한국어15/문맥15/예문15/예문해설15/동의어103/구별메모15/출처15였다. 실제 backfill 후 영영정의·한국어·문맥·예문·예문해설·구별메모·출처는 모두0, 동의어는86개가 남았다.
 - 상태는 COMPLETE17 / VERIFIED_NO_DATA0 / FAILED0 / NEEDS_REVIEW86 / PENDING0이다. 동의어 수집 실패나 미검수를 `실제 데이터 없음`으로 가장하지 않았다. 남은86개는 모두 검증된 sense 동의어가 원천 레이어에 없어 NEEDS_REVIEW다.
