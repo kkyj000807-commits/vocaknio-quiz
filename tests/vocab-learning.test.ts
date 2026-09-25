@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import fs from "node:fs";
+import path from "node:path";
 
 import learningIndex from "@/assets/vocab-learning-index-v1.4.json";
 import corrections from "@/data/idiom-corrections.json";
@@ -14,6 +16,22 @@ describe("깊이 학습 인덱스", () => {
     ));
     expect(LEARNING_COVERAGE.rows).toBe(Object.keys(learningIndex.items).length);
     expect(LEARNING_COVERAGE.rows).toBeGreaterThanOrEqual(40);
+  });
+
+  it("verified idiom synonyms survive the source-to-public pipeline", async () => {
+    const readEntries = (itemId: string) => {
+      const pointer = learningIndex.items[itemId as keyof typeof learningIndex.items];
+      const payload = JSON.parse(fs.readFileSync(
+        path.join(process.cwd(), "public", "data", "vocab-learning", release.version, `${pointer.group.toLowerCase()}.json`),
+        "utf8",
+      )) as { entries: { itemIds: string[]; exactSynonyms?: string[] }[] };
+      return payload.entries.filter((entry) => entry.itemIds.includes(itemId));
+    };
+    const byNoMeans = readEntries("JBKROW014279");
+    const inSpite = readEntries("JBKROW004704");
+
+    expect(byNoMeans[0]?.exactSynonyms).toEqual(["in no way", "not at all"]);
+    expect(inSpite[0]?.exactSynonyms).toEqual(["despite"]);
   });
 
   it("쪽수로 남아 있던 숙어에 실제 해설이 연결된다", () => {

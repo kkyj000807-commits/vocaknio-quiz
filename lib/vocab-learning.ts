@@ -28,6 +28,8 @@ export interface LearningEntry {
   definitionKind?: "editorial";
   definitionStatus: "production";
   definitionKo: string;
+  exactSynonyms?: string[];
+  nearSynonyms?: string[];
   memoryKo: string;
   usageKo: string;
   contextExplanationKo: string;

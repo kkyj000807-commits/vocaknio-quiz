@@ -20,6 +20,14 @@ export function loadIdiomCorrections(root) {
       if (!entry[field]?.trim() || isMissingMeaning(entry[field])) throw new Error(`Invalid correction ${entry.key}: ${field}`);
     }
     if (!entry.example?.en || !entry.example?.ko) throw new Error(`Missing example: ${entry.key}`);
+    for (const field of ["exactSynonyms", "nearSynonyms"]) {
+      if (entry[field] !== undefined && (
+        !Array.isArray(entry[field]) ||
+        entry[field].length === 0 ||
+        entry[field].some((value) => !value?.trim()) ||
+        new Set(entry[field].map((value) => value.trim().toLowerCase())).size !== entry[field].length
+      )) throw new Error(`Invalid ${field}: ${entry.key}`);
+    }
     if (entry.senses !== undefined) {
       if (!Array.isArray(entry.senses) || entry.senses.length < 2) throw new Error(`Multiple senses required: ${entry.key}`);
       const senseIds = new Set();
@@ -89,6 +97,8 @@ export function correctionLearningEntries(vocab, data) {
       memoryKo: sense.memoryKo,
       usageKo: sense.usageKo,
       examTrapKo: sense.examTrapKo,
+      exactSynonyms: sense.exactSynonyms ?? entry.exactSynonyms ?? [],
+      nearSynonyms: sense.nearSynonyms ?? entry.nearSynonyms ?? [],
       contrasts: sense.contrasts,
       example: { ...sense.example, kind: "editorial" },
       ...(entry.composition ? { composition: entry.composition } : {}),

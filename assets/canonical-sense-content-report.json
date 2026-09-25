@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAtKst": "2026-09-26T00:44:58+09:00",
+  "generatedAtKst": "2026-09-26T00:53:53+09:00",
   "vocabulary": {
     "sourceRows": 38163,
     "uniqueHeadwords": 13347,
@@ -29,7 +29,7 @@
       "contextExplanation": 15,
       "exampleSentence": 15,
       "exampleExplanation": 15,
-      "synonyms": 103,
+      "synonyms": 101,
       "distinctionNote": 15,
       "sourceIds": 15
     }
@@ -42,16 +42,16 @@
       "contextExplanation": 0,
       "exampleSentence": 0,
       "exampleExplanation": 0,
-      "synonyms": 86,
+      "synonyms": 84,
       "distinctionNote": 0,
       "sourceIds": 0
     }
   },
   "statusCounts": {
-    "COMPLETE": 17,
+    "COMPLETE": 19,
     "VERIFIED_NO_DATA": 0,
     "FAILED": 0,
-    "NEEDS_REVIEW": 86,
+    "NEEDS_REVIEW": 84,
     "PENDING": 0
   },
   "frontend": {
@@ -103,7 +103,7 @@
         "contextExplanation": 0,
         "exampleSentence": 0,
         "exampleExplanation": 0,
-        "synonyms": 86,
+        "synonyms": 84,
         "distinctionNote": 0,
         "sourceIds": 0
       },
@@ -176,8 +176,40 @@
       "sameSenseContract": true
     },
     {
+      "senseId": "by-no-means:primary",
+      "word": "by no means",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
       "senseId": "capricious:unpredictable-whims",
       "word": "capricious",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "in-spite:primary",
+      "word": "in spite of A",
       "status": "COMPLETE",
       "checkedFields": {
         "englishDefinition": true,
@@ -386,38 +418,6 @@
     {
       "senseId": "abide-by:primary",
       "word": "abide by",
-      "status": "NEEDS_REVIEW",
-      "checkedFields": {
-        "englishDefinition": true,
-        "koreanMeaning": true,
-        "contextExplanation": true,
-        "exampleSentence": true,
-        "exampleExplanation": true,
-        "synonyms": false,
-        "distinctionNote": true,
-        "sourceIds": true
-      },
-      "sameSenseContract": true
-    },
-    {
-      "senseId": "account-for:primary",
-      "word": "account for",
-      "status": "NEEDS_REVIEW",
-      "checkedFields": {
-        "englishDefinition": true,
-        "koreanMeaning": true,
-        "contextExplanation": true,
-        "exampleSentence": true,
-        "exampleExplanation": true,
-        "synonyms": false,
-        "distinctionNote": true,
-        "sourceIds": true
-      },
-      "sameSenseContract": true
-    },
-    {
-      "senseId": "at-stake:primary",
-      "word": "at stake",
       "status": "NEEDS_REVIEW",
       "checkedFields": {
         "englishDefinition": true,

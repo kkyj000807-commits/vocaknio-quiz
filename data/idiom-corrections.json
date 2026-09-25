@@ -1138,6 +1138,10 @@
       "meaningKo": "결코 ~이 아니다; 전혀 ~하지 않다",
       "definitionEn": "Used to firmly deny that a description or claim is true.",
       "definitionKo": "단순히 조금 덜하다는 말이 아니라, 그렇다는 판단 자체를 강하게 부정한다.",
+      "exactSynonyms": [
+        "in no way",
+        "not at all"
+      ],
       "memoryKo": "no를 중심에 두고 어떤 식으로 보아도 그렇지 않다는 강한 부정을 기억한다.",
       "usageKo": "It is by no means certain은 결코 확실하지 않다는 뜻이다. 문두에 두면 By no means is it certain처럼 도치한다.",
       "examTrapKo": "not always(항상 그런 것은 아니다) 같은 부분 부정으로 약화하지 않는다. 부정어가 이미 있으므로 문맥 없이 not을 또 넣지 않는다.",
@@ -1383,6 +1387,9 @@
       "meaningKo": "A에도 불구하고",
       "definitionEn": "Despite a circumstance that could have prevented an action or made an outcome less likely.",
       "definitionKo": "어떤 방해 조건이 있는데도 예상과 달리 행동이나 결과가 나타났음을 말한다.",
+      "exactSynonyms": [
+        "despite"
+      ],
       "memoryKo": "비가 오면 멈출 것 같지만 그래도 진행되는 장면처럼, 방해 조건을 뚫고 나온 결과다.",
       "usageKo": "in spite of + 명사·대명사·동명사. 완전한 절은 in spite of the fact that + 절로 연결한다.",
       "examTrapKo": "because of의 원인과 반대되는 양보다. despite of는 표준적인 연결이 아니며, despite에는 of를 붙이지 않는다.",

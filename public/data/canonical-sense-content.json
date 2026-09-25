@@ -294,6 +294,43 @@
       "missingFields": []
     },
     {
+      "word": "by no means",
+      "variants": [],
+      "senseId": "by-no-means:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "Used to firmly deny that a description or claim is true.",
+      "koreanMeaning": "단순히 조금 덜하다는 말이 아니라, 그렇다는 판단 자체를 강하게 부정한다.",
+      "contextExplanation": "It is by no means certain은 결코 확실하지 않다는 뜻이다. 문두에 두면 By no means is it certain처럼 도치한다.",
+      "exampleSentence": "A longer answer is by no means a better answer.",
+      "exampleTranslation": "답이 더 길다고 해서 결코 더 좋은 답인 것은 아니다.",
+      "exampleExplanation": "not always(항상 그런 것은 아니다) 같은 부분 부정으로 약화하지 않는다. 부정어가 이미 있으므로 문맥 없이 not을 또 넣지 않는다.",
+      "synonyms": [
+        "in no way",
+        "not at all"
+      ],
+      "distinctionNote": "not always(항상 그런 것은 아니다) 같은 부분 부정으로 약화하지 않는다. 부정어가 이미 있으므로 문맥 없이 not을 또 넣지 않는다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/us/dictionary/english/by-no-means",
+        "https://www.oxfordlearnersdictionaries.com/definition/american_english/means"
+      ],
+      "itemIds": [
+        "JBKROW014279",
+        "JBKROW015859"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
       "word": "capricious",
       "variants": [],
       "senseId": "capricious:unpredictable-whims",
@@ -360,6 +397,42 @@
           "layer": "synonym-review"
         }
       ],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "in spite of A",
+      "variants": [],
+      "senseId": "in-spite:primary",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "Despite a circumstance that could have prevented an action or made an outcome less likely.",
+      "koreanMeaning": "어떤 방해 조건이 있는데도 예상과 달리 행동이나 결과가 나타났음을 말한다.",
+      "contextExplanation": "in spite of + 명사·대명사·동명사. 완전한 절은 in spite of the fact that + 절로 연결한다.",
+      "exampleSentence": "In spite of feeling nervous, he explained his answer clearly.",
+      "exampleTranslation": "그는 긴장했는데도 자신의 답을 또렷하게 설명했다.",
+      "exampleExplanation": "because of의 원인과 반대되는 양보다. despite of는 표준적인 연결이 아니며, despite에는 of를 붙이지 않는다.",
+      "synonyms": [
+        "despite"
+      ],
+      "distinctionNote": "because of의 원인과 반대되는 양보다. despite of는 표준적인 연결이 아니며, despite에는 of를 붙이지 않는다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/in-spite-of",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/spite_1"
+      ],
+      "itemIds": [
+        "JBKROW004704",
+        "JBKROW007192"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
       "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
@@ -980,49 +1053,6 @@
       ],
       "itemIds": [
         "JBKROW022820"
-      ],
-      "inputLayers": [
-        "vocab-learning"
-      ],
-      "conflicts": [],
-      "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
-      "backfill": {
-        "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
-      },
-      "missingFields": [
-        "synonyms"
-      ]
-    },
-    {
-      "word": "by no means",
-      "variants": [],
-      "senseId": "by-no-means:primary",
-      "partOfSpeech": "idiom",
-      "englishDefinition": "Used to firmly deny that a description or claim is true.",
-      "koreanMeaning": "단순히 조금 덜하다는 말이 아니라, 그렇다는 판단 자체를 강하게 부정한다.",
-      "contextExplanation": "It is by no means certain은 결코 확실하지 않다는 뜻이다. 문두에 두면 By no means is it certain처럼 도치한다.",
-      "exampleSentence": "A longer answer is by no means a better answer.",
-      "exampleTranslation": "답이 더 길다고 해서 결코 더 좋은 답인 것은 아니다.",
-      "exampleExplanation": "not always(항상 그런 것은 아니다) 같은 부분 부정으로 약화하지 않는다. 부정어가 이미 있으므로 문맥 없이 not을 또 넣지 않는다.",
-      "synonyms": [],
-      "distinctionNote": "not always(항상 그런 것은 아니다) 같은 부분 부정으로 약화하지 않는다. 부정어가 이미 있으므로 문맥 없이 not을 또 넣지 않는다.",
-      "sourceIds": [
-        "https://www.collinsdictionary.com/us/dictionary/english/by-no-means",
-        "https://www.oxfordlearnersdictionaries.com/definition/american_english/means"
-      ],
-      "itemIds": [
-        "JBKROW014279",
-        "JBKROW015859"
       ],
       "inputLayers": [
         "vocab-learning"
@@ -1836,49 +1866,6 @@
         "JBKROW007195",
         "JBKROW015519",
         "JBKROW016571"
-      ],
-      "inputLayers": [
-        "vocab-learning"
-      ],
-      "conflicts": [],
-      "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
-      "backfill": {
-        "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
-      },
-      "missingFields": [
-        "synonyms"
-      ]
-    },
-    {
-      "word": "in spite of A",
-      "variants": [],
-      "senseId": "in-spite:primary",
-      "partOfSpeech": "idiom",
-      "englishDefinition": "Despite a circumstance that could have prevented an action or made an outcome less likely.",
-      "koreanMeaning": "어떤 방해 조건이 있는데도 예상과 달리 행동이나 결과가 나타났음을 말한다.",
-      "contextExplanation": "in spite of + 명사·대명사·동명사. 완전한 절은 in spite of the fact that + 절로 연결한다.",
-      "exampleSentence": "In spite of feeling nervous, he explained his answer clearly.",
-      "exampleTranslation": "그는 긴장했는데도 자신의 답을 또렷하게 설명했다.",
-      "exampleExplanation": "because of의 원인과 반대되는 양보다. despite of는 표준적인 연결이 아니며, despite에는 of를 붙이지 않는다.",
-      "synonyms": [],
-      "distinctionNote": "because of의 원인과 반대되는 양보다. despite of는 표준적인 연결이 아니며, despite에는 of를 붙이지 않는다.",
-      "sourceIds": [
-        "https://www.collinsdictionary.com/dictionary/english/in-spite-of",
-        "https://www.oxfordlearnersdictionaries.com/us/definition/english/spite_1"
-      ],
-      "itemIds": [
-        "JBKROW004704",
-        "JBKROW007192"
       ],
       "inputLayers": [
         "vocab-learning"

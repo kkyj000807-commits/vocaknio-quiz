@@ -108,6 +108,7 @@ function mergeLearning(record, entry) {
   setScalar(record, "exampleTranslation", entry.example?.ko, "vocab-learning");
   setScalar(record, "exampleExplanation", entry.example?.cueKo ?? entry.examTrapKo, "vocab-learning");
   setScalar(record, "distinctionNote", entry.examTrapKo, "vocab-learning");
+  mergeList(record, "synonyms", [...(entry.exactSynonyms ?? []), ...(entry.nearSynonyms ?? [])]);
   mergeList(record, "sourceIds", entry.sources?.map((source) => source.url));
   mergeList(record, "itemIds", entry.itemIds);
 }

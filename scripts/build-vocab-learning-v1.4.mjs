@@ -47,6 +47,11 @@ for (const entry of entries) {
   seenIds.add(entry.id);
   if (!groups.includes(entry.group)) fail(`${entry.id}: 잘못된 그룹 ${entry.group}`);
   if (!Array.isArray(entry.itemIds) || entry.itemIds.length === 0) fail(`${entry.id}: 연결 항목 없음`);
+  for (const field of ["exactSynonyms", "nearSynonyms"]) {
+    if (entry[field] !== undefined && (!Array.isArray(entry[field]) || entry[field].some((value) => typeof value !== "string" || !value.trim()))) {
+      fail(`${entry.id}: ${field} 형식 오류`);
+    }
+  }
   if (!Array.isArray(entry.contrasts)) fail(`${entry.id}: contrasts 배열 누락`);
   if (!entry.example?.en || !entry.example?.ko || !["source", "editorial"].includes(entry.example.kind)) fail(`${entry.id}: 예문 누락`);
   if (entry.verification?.status !== "cross-agreed" || !entry.verification.checkedAtKst || !entry.verification.reviewer) fail(`${entry.id}: 교차 검수 미완료`);
