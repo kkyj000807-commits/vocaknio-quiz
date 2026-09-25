@@ -28,6 +28,7 @@
 
 ## 현재 batch — canonical sense 학습상태·우선출제·선화 힌트 파일럿 VERIFIED / 미배포
 
+- Source main `784a63c`는 origin/main에 push됐다. 공개 Pages는 계속 3.1이며 이번 batch는 아직 배포하지 않았다.
 - canonical target을 `senseId` 우선으로 만들고, 아직 검수 sense가 없는 legacy 행은 `표현+표시 뜻`이 완전히 같은 occurrence만 같은 target으로 묶었다. 같은 표현의 다른 뜻은 합치지 않는다. 실제 `jury foreman` 중복 두 행은 한 target, `take for granted` 두 sense는 별도 target으로 검증했다.
 - 상태 `NEW/ACTIVE/WEAK/MASTERED/RELEARNING`과 이벤트 `correct/wrong/unknown/confused/hint/mastered/relearning/image_used/image_helped`를 기존 `learningStorageQueue`에 연결했다. 기존 `vocaknio_mastered`는 원본을 보존하면서 안전한 단일-sense 행만 한 번 이관한다.
 - MASTERED target은 일반 출제 대상에서 빠지지만 전체 어휘·관계 자료에서 삭제하지 않아 다른 문제의 참고/오답 자료로 남는다. 이후 실패하면 해당 sense만 RELEARNING으로 돌아오며 WEAK/RELEARNING은 적응형 출제의 긴급 lane으로 우선된다.
