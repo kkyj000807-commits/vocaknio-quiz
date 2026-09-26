@@ -161,6 +161,13 @@
       "memoryKo": "유리한 상황을 잡아 실제 성과로 바꾸는 단계다. 기회가 있는 것과 활용하는 것은 다르다.",
       "usageKo": "이 뜻으로는 capitalize on/upon + opportunity/success/advantage처럼 쓴다. 표제어 괄호와 달리 문장에서는 on을 포함해 익힌다.",
       "examTrapKo": "capitalize a word는 대문자로 쓰다라는 다른 뜻이다. 기회를 활용한다는 표현을 언제나 비윤리적인 착취로 번역하지 않는다.",
+      "exactSynonyms": [
+        "take advantage of"
+      ],
+      "nearSynonyms": [
+        "benefit from",
+        "profit from"
+      ],
       "contrasts": [
         {
           "word": "miss an opportunity",
@@ -180,9 +187,9 @@
         },
         {
           "name": "Collins English Dictionary",
-          "url": "https://www.collinsdictionary.com/dictionary/english/capitalize",
+          "url": "https://www.collinsdictionary.com/us/dictionary/english/capitalize-on-something",
           "independenceGroup": "Collins",
-          "noteKo": "기회를 이익으로 활용함과 대문자·자본 관련 별도 의미 대조."
+          "noteKo": "take advantage of를 같은 sense의 대응 표현으로 확인하고 benefit/profit 계열의 가까운 표현을 대조."
         }
       ]
     },
@@ -355,6 +362,11 @@
       "memoryKo": "표면 아래의 자료와 사정을 캐내는 탐사처럼, 질문을 한 단계 더 깊게 던진다.",
       "usageKo": "delve into the past/history/details처럼 탐구 대상을 into 뒤에 놓는다. 가방 등 실제 용기가 목적어라면 안을 뒤지다는 뜻도 가능하다.",
       "examTrapKo": "delve into와 dive into는 다르다. dive into에는 망설임 없이 어떤 일에 뛰어든다는 뜻이 있다.",
+      "nearSynonyms": [
+        "investigate",
+        "look into",
+        "explore"
+      ],
       "contrasts": [
         {
           "word": "skim",
@@ -377,6 +389,12 @@
           "url": "https://www.collinsdictionary.com/dictionary/english/delve",
           "independenceGroup": "Collins",
           "noteKo": "정보를 깊이 조사하는 뜻 및 용기 안을 뒤지는 별도 뜻 대조."
+        },
+        {
+          "name": "Merriam-Webster Thesaurus",
+          "url": "https://www.merriam-webster.com/thesaurus/inquire%20%28into%29",
+          "independenceGroup": "Merriam-Webster",
+          "noteKo": "investigate·look into·explore와 delve into가 같은 조사 의미권에 놓이는 관계 확인."
         }
       ]
     },
@@ -1041,6 +1059,11 @@
       "memoryKo": "계획을 종이 위에만 두지 않고 실제 행동으로 꺼내 온다고 기억한다.",
       "usageKo": "carry out a plan/order/experiment/survey처럼 실행할 일이나 작업을 목적어로 둔다. 대명사는 carry it out 순서다.",
       "examTrapKo": "수행했다는 뜻이지 결과가 성공적이었다는 뜻까지 보장하지 않는다. carry on은 계속하다라는 별도 표현이다.",
+      "nearSynonyms": [
+        "perform",
+        "execute",
+        "implement"
+      ],
       "contrasts": [
         {
           "word": "draw up",
@@ -1063,6 +1086,12 @@
           "url": "https://www.collinsdictionary.com/us/dictionary/english/carry-out",
           "independenceGroup": "Collins",
           "noteKo": "실행·수행 의미를 독립 대조."
+        },
+        {
+          "name": "Merriam-Webster Thesaurus",
+          "url": "https://www.merriam-webster.com/thesaurus/carry%20out",
+          "independenceGroup": "Merriam-Webster",
+          "noteKo": "perform·execute·implement가 목적어 제약을 가진 같은 실행 의미권임을 확인."
         }
       ]
     },

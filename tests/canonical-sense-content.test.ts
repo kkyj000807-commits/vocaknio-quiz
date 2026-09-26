@@ -35,7 +35,7 @@ describe("canonical sense 공란 backfill", () => {
     expect(content.entries.filter((entry) => entry.definitionStatus === "NEEDS_REVIEW").every(
       (entry) => (entry.missingFields as string[]).includes("synonyms"),
     )).toBe(true);
-    expect(pending.categories.verificationPending).toHaveLength(51);
+    expect(pending.categories.verificationPending).toHaveLength(48);
     expect(pending.categories.senseMappingFailure).toHaveLength(37_933);
     expect(pending.categories.actualDataAbsence).toHaveLength(0);
   });
@@ -67,6 +67,21 @@ describe("canonical sense 공란 backfill", () => {
     expect(content.entries.filter((entry) => entry.word === "take for granted")).toHaveLength(2);
   });
 
+  it("교차 검증한 숙어 동의 표현이 canonical sense에 보존된다", () => {
+    const expected = new Map([
+      ["capitalize-on:primary", ["take advantage of", "benefit from", "profit from"]],
+      ["carry-out:primary", ["perform", "execute", "implement"]],
+      ["delve-into:primary", ["investigate", "look into", "explore"]],
+    ]);
+
+    for (const [senseId, synonyms] of expected) {
+      const entry = content.entries.find((candidate) => candidate.senseId === senseId);
+      expect(entry?.definitionStatus).toBe("COMPLETE");
+      expect(entry?.synonyms).toEqual(synonyms);
+      expect(entry?.missingFields).toEqual([]);
+    }
+  });
+
   it("앱 자산과 배포 데이터가 동일하다", () => {
     const deployed = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/data/canonical-sense-content.json"), "utf8"));
     expect(deployed).toEqual(content);
@@ -87,6 +102,6 @@ describe("canonical sense 공란 backfill", () => {
       expect(entry.definitionProvenance?.attribution).toBe("Princeton WordNet; Open English WordNet Team");
       expect(entry.definitionProvenance?.contentSha256).toMatch(/^[0-9a-f]{64}$/);
     }
-    expect(content.entries.filter((entry) => entry.definitionStatus === "COMPLETE")).toHaveLength(46);
+    expect(content.entries.filter((entry) => entry.definitionStatus === "COMPLETE")).toHaveLength(49);
   });
 });

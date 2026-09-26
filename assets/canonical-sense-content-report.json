@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAtKst": "2026-09-26T13:14:59+09:00",
+  "generatedAtKst": "2026-09-26T14:15:51+09:00",
   "vocabulary": {
     "sourceRows": 38163,
     "uniqueHeadwords": 13347,
@@ -29,7 +29,7 @@
       "contextExplanation": 15,
       "exampleSentence": 15,
       "exampleExplanation": 15,
-      "synonyms": 74,
+      "synonyms": 71,
       "distinctionNote": 15,
       "sourceIds": 15
     }
@@ -42,7 +42,7 @@
       "contextExplanation": 0,
       "exampleSentence": 0,
       "exampleExplanation": 0,
-      "synonyms": 51,
+      "synonyms": 48,
       "distinctionNote": 0,
       "sourceIds": 0
     }
@@ -126,10 +126,10 @@
     }
   ],
   "statusCounts": {
-    "COMPLETE": 46,
+    "COMPLETE": 49,
     "VERIFIED_NO_DATA": 0,
     "FAILED": 0,
-    "NEEDS_REVIEW": 51,
+    "NEEDS_REVIEW": 48,
     "PENDING": 0
   },
   "frontend": {
@@ -181,7 +181,7 @@
         "contextExplanation": 0,
         "exampleSentence": 0,
         "exampleExplanation": 0,
-        "synonyms": 51,
+        "synonyms": 48,
         "distinctionNote": 0,
         "sourceIds": 0
       },
@@ -270,8 +270,56 @@
       "sameSenseContract": true
     },
     {
+      "senseId": "capitalize-on:primary",
+      "word": "capitalize (on)",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
       "senseId": "capricious:unpredictable-whims",
       "word": "capricious",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "carry-out:primary",
+      "word": "carry out",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "delve-into:primary",
+      "word": "delve into",
       "status": "COMPLETE",
       "checkedFields": {
         "englishDefinition": true,
@@ -448,54 +496,6 @@
     {
       "senseId": "learn:00905999-v",
       "word": "exculpate",
-      "status": "COMPLETE",
-      "checkedFields": {
-        "englishDefinition": true,
-        "koreanMeaning": true,
-        "contextExplanation": true,
-        "exampleSentence": true,
-        "exampleExplanation": true,
-        "synonyms": true,
-        "distinctionNote": true,
-        "sourceIds": true
-      },
-      "sameSenseContract": true
-    },
-    {
-      "senseId": "learn:00940267-s",
-      "word": "callow",
-      "status": "COMPLETE",
-      "checkedFields": {
-        "englishDefinition": true,
-        "koreanMeaning": true,
-        "contextExplanation": true,
-        "exampleSentence": true,
-        "exampleExplanation": true,
-        "synonyms": true,
-        "distinctionNote": true,
-        "sourceIds": true
-      },
-      "sameSenseContract": true
-    },
-    {
-      "senseId": "learn:01074673-v",
-      "word": "vie",
-      "status": "COMPLETE",
-      "checkedFields": {
-        "englishDefinition": true,
-        "koreanMeaning": true,
-        "contextExplanation": true,
-        "exampleSentence": true,
-        "exampleExplanation": true,
-        "synonyms": true,
-        "distinctionNote": true,
-        "sourceIds": true
-      },
-      "sameSenseContract": true
-    },
-    {
-      "senseId": "learn:01693210-s",
-      "word": "banal",
       "status": "COMPLETE",
       "checkedFields": {
         "englishDefinition": true,

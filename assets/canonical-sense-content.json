@@ -543,7 +543,7 @@
         "source": "VOCA NEXUS editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/capitalize-on",
-          "https://www.collinsdictionary.com/dictionary/english/capitalize"
+          "https://www.collinsdictionary.com/us/dictionary/english/capitalize-on-something"
         ]
       },
       "koreanMeaning": "눈앞의 기회나 이미 유리한 조건을 그냥 두지 않고 자신의 성과나 이익으로 이어 가다.",
@@ -551,11 +551,15 @@
       "exampleSentence": "The small publisher capitalized on renewed interest in local history.",
       "exampleTranslation": "그 작은 출판사는 지역사에 대한 관심이 다시 높아진 기회를 활용했다.",
       "exampleExplanation": "capitalize a word는 대문자로 쓰다라는 다른 뜻이다. 기회를 활용한다는 표현을 언제나 비윤리적인 착취로 번역하지 않는다.",
-      "synonyms": [],
+      "synonyms": [
+        "take advantage of",
+        "benefit from",
+        "profit from"
+      ],
       "distinctionNote": "capitalize a word는 대문자로 쓰다라는 다른 뜻이다. 기회를 활용한다는 표현을 언제나 비윤리적인 착취로 번역하지 않는다.",
       "sourceIds": [
         "https://www.oxfordlearnersdictionaries.com/us/definition/english/capitalize-on",
-        "https://www.collinsdictionary.com/dictionary/english/capitalize"
+        "https://www.collinsdictionary.com/us/dictionary/english/capitalize-on-something"
       ],
       "itemIds": [
         "JBKROW000036",
@@ -566,22 +570,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "capricious",
@@ -680,7 +675,8 @@
         "source": "VOCA NEXUS editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/carry-out_1",
-          "https://www.collinsdictionary.com/us/dictionary/english/carry-out"
+          "https://www.collinsdictionary.com/us/dictionary/english/carry-out",
+          "https://www.merriam-webster.com/thesaurus/carry%20out"
         ]
       },
       "koreanMeaning": "머릿속 계획이나 문서의 지시를 실제 행동으로 옮기거나 맡은 작업을 수행하다.",
@@ -688,11 +684,16 @@
       "exampleSentence": "The team carried out a survey before changing the service.",
       "exampleTranslation": "팀은 서비스를 바꾸기 전에 설문 조사를 실시했다.",
       "exampleExplanation": "수행했다는 뜻이지 결과가 성공적이었다는 뜻까지 보장하지 않는다. carry on은 계속하다라는 별도 표현이다.",
-      "synonyms": [],
+      "synonyms": [
+        "perform",
+        "execute",
+        "implement"
+      ],
       "distinctionNote": "수행했다는 뜻이지 결과가 성공적이었다는 뜻까지 보장하지 않는다. carry on은 계속하다라는 별도 표현이다.",
       "sourceIds": [
         "https://www.oxfordlearnersdictionaries.com/us/definition/english/carry-out_1",
-        "https://www.collinsdictionary.com/us/dictionary/english/carry-out"
+        "https://www.collinsdictionary.com/us/dictionary/english/carry-out",
+        "https://www.merriam-webster.com/thesaurus/carry%20out"
       ],
       "itemIds": [
         "JBKROW015000",
@@ -703,22 +704,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "a case in point",
@@ -1087,7 +1079,8 @@
         "source": "VOCA NEXUS editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/definition/english/delve-into",
-          "https://www.collinsdictionary.com/dictionary/english/delve"
+          "https://www.collinsdictionary.com/dictionary/english/delve",
+          "https://www.merriam-webster.com/thesaurus/inquire%20%28into%29"
         ]
       },
       "koreanMeaning": "겉에 드러난 설명에서 멈추지 않고, 더 많은 정보나 숨은 사정을 알아내려고 깊이 파고들다.",
@@ -1095,11 +1088,16 @@
       "exampleSentence": "Instead of repeating the summary, she delved into the original records.",
       "exampleTranslation": "그녀는 요약을 되풀이하는 대신 원본 기록을 깊이 파고들었다.",
       "exampleExplanation": "delve into와 dive into는 다르다. dive into에는 망설임 없이 어떤 일에 뛰어든다는 뜻이 있다.",
-      "synonyms": [],
+      "synonyms": [
+        "investigate",
+        "look into",
+        "explore"
+      ],
       "distinctionNote": "delve into와 dive into는 다르다. dive into에는 망설임 없이 어떤 일에 뛰어든다는 뜻이 있다.",
       "sourceIds": [
         "https://www.oxfordlearnersdictionaries.com/definition/english/delve-into",
-        "https://www.collinsdictionary.com/dictionary/english/delve"
+        "https://www.collinsdictionary.com/dictionary/english/delve",
+        "https://www.merriam-webster.com/thesaurus/inquire%20%28into%29"
       ],
       "itemIds": [
         "JBKROW000055",
@@ -1110,22 +1108,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "the Dow Jones industrial average",
