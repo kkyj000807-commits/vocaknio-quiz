@@ -3784,7 +3784,7 @@
       "variants": [],
       "senseId": "on-behalf:primary",
       "partOfSpeech": "idiom",
-      "englishDefinition": "Acting as someone's representative, doing something in their place, or acting for their benefit.",
+      "englishDefinition": "Acting or speaking as someone's representative or in their place.",
       "definitionProvenance": {
         "kind": "editorial",
         "source": "VOCA NEXUS editorial",
@@ -3793,13 +3793,15 @@
           "https://www.oxfordlearnersdictionaries.com/definition/english/behalf"
         ]
       },
-      "koreanMeaning": "다른 사람·집단의 대표 자격으로 행동하거나, 그 대신 또는 그 이익을 위해 무언가를 하다.",
+      "koreanMeaning": "다른 사람이나 집단의 대표 자격으로, 또는 그 사람을 대신하여 행동하거나 말하다.",
       "contextExplanation": "on behalf of the team은 팀을 대표하여, act on someone's behalf는 그 사람을 대신해 행동하다다.",
       "exampleSentence": "On behalf of the class, I thanked the guest speaker.",
       "exampleTranslation": "나는 반을 대표해 초청 연사에게 감사를 전했다.",
-      "exampleExplanation": "원인인 because of나 교환인 in exchange for로 읽지 않는다. 대표·대신·이익 중 문맥에 맞는 뜻을 고른다.",
-      "synonyms": [],
-      "distinctionNote": "원인인 because of나 교환인 in exchange for로 읽지 않는다. 대표·대신·이익 중 문맥에 맞는 뜻을 고른다.",
+      "exampleExplanation": "이 sense는 대표·대신의 자격을 묻는다. 도움이나 이익을 위한 on behalf of는 별도 sense이며, 원인인 because of나 교환인 in exchange for로 읽지 않는다.",
+      "synonyms": [
+        "as a representative of"
+      ],
+      "distinctionNote": "이 sense는 대표·대신의 자격을 묻는다. 도움이나 이익을 위한 on behalf of는 별도 sense이며, 원인인 because of나 교환인 in exchange for로 읽지 않는다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/dictionary/english/on-someones-behalf-on-behalf-of-someone",
         "https://www.oxfordlearnersdictionaries.com/definition/english/behalf"
@@ -3813,22 +3815,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "price one's goods out of the market",
@@ -4112,7 +4105,7 @@
       "variants": [],
       "senseId": "run-into:primary",
       "partOfSpeech": "idiom",
-      "englishDefinition": "To encounter someone by chance, collide with something, or unexpectedly experience a difficulty.",
+      "englishDefinition": "To meet someone unexpectedly rather than by prior arrangement.",
       "definitionProvenance": {
         "kind": "editorial",
         "source": "VOCA NEXUS editorial",
@@ -4121,13 +4114,16 @@
           "https://www.collinsdictionary.com/us/dictionary/english/run-into"
         ]
       },
-      "koreanMeaning": "일부러 계획한 만남이 아니라 우연히 마주치다. 물체와 충돌하거나, 진행하다가 뜻밖의 문제에 맞닥뜨릴 때도 쓴다.",
-      "contextExplanation": "run into an old friend는 우연한 만남, run into a wall은 충돌, run into trouble은 문제 발생이다. 비용·수치가 뒤따르면 큰 규모에 이르다라는 별도 뜻도 있다.",
+      "koreanMeaning": "약속해서 만난 것이 아니라 가던 중 사람을 뜻밖에 마주치다.",
+      "contextExplanation": "run into an old friend처럼 목적어가 사람이면 우연한 만남을 나타낸다.",
       "exampleSentence": "We ran into a former teacher at the station.",
       "exampleTranslation": "우리는 역에서 예전 선생님을 우연히 만났다.",
-      "exampleExplanation": "달려 들어가다로만 번역하지 않는다. 목적어가 사람·물체·곤란·금액 중 무엇인지 먼저 본다.",
-      "synonyms": [],
-      "distinctionNote": "달려 들어가다로만 번역하지 않는다. 목적어가 사람·물체·곤란·금액 중 무엇인지 먼저 본다.",
+      "exampleExplanation": "이 sense는 사람과의 우연한 만남이다. run into a wall의 충돌, run into trouble의 문제 발생, 수치가 큰 규모에 이른다는 뜻은 별도 sense로 섞지 않는다.",
+      "synonyms": [
+        "bump into",
+        "run across"
+      ],
+      "distinctionNote": "이 sense는 사람과의 우연한 만남이다. run into a wall의 충돌, run into trouble의 문제 발생, 수치가 큰 규모에 이른다는 뜻은 별도 sense로 섞지 않는다.",
       "sourceIds": [
         "https://www.oxfordlearnersdictionaries.com/us/definition/english/run-into",
         "https://www.collinsdictionary.com/us/dictionary/english/run-into"
@@ -4140,22 +4136,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "by the same token",

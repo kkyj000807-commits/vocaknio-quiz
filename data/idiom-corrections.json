@@ -963,12 +963,13 @@
           "before": "~를 우연히 만나다"
         }
       ],
-      "meaningKo": "~을 우연히 만나다; ~에 부딪히다; 예상 못 한 문제를 겪다",
-      "definitionEn": "To encounter someone by chance, collide with something, or unexpectedly experience a difficulty.",
-      "definitionKo": "일부러 계획한 만남이 아니라 우연히 마주치다. 물체와 충돌하거나, 진행하다가 뜻밖의 문제에 맞닥뜨릴 때도 쓴다.",
-      "memoryKo": "가던 길에 사람이든 벽이든 문제가 갑자기 나타나 마주치는 장면이다.",
-      "usageKo": "run into an old friend는 우연한 만남, run into a wall은 충돌, run into trouble은 문제 발생이다. 비용·수치가 뒤따르면 큰 규모에 이르다라는 별도 뜻도 있다.",
-      "examTrapKo": "달려 들어가다로만 번역하지 않는다. 목적어가 사람·물체·곤란·금액 중 무엇인지 먼저 본다.",
+      "meaningKo": "사람을 우연히 만나다",
+      "exactSynonyms": ["bump into", "run across"],
+      "definitionEn": "To meet someone unexpectedly rather than by prior arrangement.",
+      "definitionKo": "약속해서 만난 것이 아니라 가던 중 사람을 뜻밖에 마주치다.",
+      "memoryKo": "가던 길에 약속하지 않은 사람이 갑자기 눈앞에 나타나 마주치는 장면이다.",
+      "usageKo": "run into an old friend처럼 목적어가 사람이면 우연한 만남을 나타낸다.",
+      "examTrapKo": "이 sense는 사람과의 우연한 만남이다. run into a wall의 충돌, run into trouble의 문제 발생, 수치가 큰 규모에 이른다는 뜻은 별도 sense로 섞지 않는다.",
       "contrasts": [
         {
           "word": "arrange to meet",
@@ -984,13 +985,13 @@
           "name": "Oxford Advanced Learner's Dictionary",
           "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/run-into",
           "independenceGroup": "Oxford",
-          "noteKo": "우연한 만남·충돌·곤란·금액 용법 확인."
+          "noteKo": "사람을 우연히 만나는 sense와 충돌·곤란·금액의 다른 sense를 분리 확인."
         },
         {
           "name": "Collins English Dictionary",
           "url": "https://www.collinsdictionary.com/us/dictionary/english/run-into",
           "independenceGroup": "Collins",
-          "noteKo": "encounter 및 collide 계열의 다른 뜻을 대조."
+          "noteKo": "사람을 뜻밖에 만나는 sense와 충돌·곤란의 다른 sense를 대조."
         }
       ]
     },
@@ -1248,16 +1249,17 @@
           "before": "-을 대신하여"
         }
       ],
-      "meaningKo": "~을 대표하여; ~을 대신하여; ~을 위하여",
-      "definitionEn": "Acting as someone's representative, doing something in their place, or acting for their benefit.",
-      "definitionKo": "다른 사람·집단의 대표 자격으로 행동하거나, 그 대신 또는 그 이익을 위해 무언가를 하다.",
+      "meaningKo": "~을 대표하여; ~을 대신하여",
+      "exactSynonyms": ["as a representative of"],
+      "definitionEn": "Acting or speaking as someone's representative or in their place.",
+      "definitionKo": "다른 사람이나 집단의 대표 자격으로, 또는 그 사람을 대신하여 행동하거나 말하다.",
       "memoryKo": "내 개인 입장이 아니라 뒤에 있는 사람들을 대표해 앞에 서는 모습이다.",
       "usageKo": "on behalf of the team은 팀을 대표하여, act on someone's behalf는 그 사람을 대신해 행동하다다.",
-      "examTrapKo": "원인인 because of나 교환인 in exchange for로 읽지 않는다. 대표·대신·이익 중 문맥에 맞는 뜻을 고른다.",
+      "examTrapKo": "이 sense는 대표·대신의 자격을 묻는다. 도움이나 이익을 위한 on behalf of는 별도 sense이며, 원인인 because of나 교환인 in exchange for로 읽지 않는다.",
       "contrasts": [
         {
           "word": "in place of",
-          "noteKo": "자리나 역할의 대체를 강조한다. on behalf of는 대표 자격 또는 이익을 위한 행동까지 나타낸다."
+          "noteKo": "자리나 역할의 대체 자체를 강조한다. 이 sense의 on behalf of는 대표 자격으로 대신 행동하거나 말한다."
         }
       ],
       "example": {
@@ -1269,13 +1271,13 @@
           "name": "Collins English Dictionary",
           "url": "https://www.collinsdictionary.com/dictionary/english/on-someones-behalf-on-behalf-of-someone",
           "independenceGroup": "Collins",
-          "noteKo": "대표·대신·도움의 용법 확인."
+          "noteKo": "대표·대신 sense와 도움·이익 sense를 분리 확인."
         },
         {
           "name": "Oxford Advanced Learner's Dictionary",
           "url": "https://www.oxfordlearnersdictionaries.com/definition/english/behalf",
           "independenceGroup": "Oxford",
-          "noteKo": "대표하여, 대신하여, 이익을 위해 행동하는 용법 대조."
+          "noteKo": "대표·대신의 sense와 이익을 위한 별도 sense를 대조."
         }
       ]
     },

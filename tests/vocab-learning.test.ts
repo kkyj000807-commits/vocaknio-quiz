@@ -50,6 +50,8 @@ describe("깊이 학습 인덱스", () => {
     const newNormal = readEntries("JBKROW023335");
     const executivePrivilege = readEntries("JBKROW023245");
     const juryNullification = readEntries("JBKROW023302");
+    const runInto = readEntries("APPROW01880");
+    const onBehalf = readEntries("JBKROW014517");
 
     expect(byNoMeans[0]?.exactSynonyms).toEqual(["in no way", "not at all"]);
     expect(inSpite[0]?.exactSynonyms).toEqual(["despite"]);
@@ -93,6 +95,10 @@ describe("깊이 학습 인덱스", () => {
     expect(executivePrivilege[0]?.nearSynonyms).toEqual([]);
     expect(juryNullification[0]?.exactSynonyms).toEqual(["a jury's deliberate refusal to apply the law"]);
     expect(juryNullification[0]?.nearSynonyms).toEqual([]);
+    expect(runInto[0]?.exactSynonyms).toEqual(["bump into", "run across"]);
+    expect(runInto[0]?.nearSynonyms).toEqual([]);
+    expect(onBehalf[0]?.exactSynonyms).toEqual(["as a representative of"]);
+    expect(onBehalf[0]?.nearSynonyms).toEqual([]);
   });
 
   it("Open English WordNet의 같은 synset 동의어만 공개 데이터에 전달한다", () => {

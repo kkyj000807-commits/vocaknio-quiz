@@ -35,7 +35,7 @@ describe("canonical sense 공란 backfill", () => {
     expect(content.entries.filter((entry) => entry.definitionStatus === "NEEDS_REVIEW").every(
       (entry) => (entry.missingFields as string[]).includes("synonyms"),
     )).toBe(true);
-    expect(pending.categories.verificationPending).toHaveLength(28);
+    expect(pending.categories.verificationPending).toHaveLength(26);
     expect(pending.categories.senseMappingFailure).toHaveLength(37_933);
     expect(pending.categories.actualDataAbsence).toHaveLength(0);
   });
@@ -92,6 +92,8 @@ describe("canonical sense 공란 backfill", () => {
       ["new-normal:primary", ["an unusual condition that has become standard"]],
       ["executive-privilege:primary", ["authority to withhold confidential executive communications"]],
       ["jury-nullification:primary", ["a jury's deliberate refusal to apply the law"]],
+      ["run-into:primary", ["bump into", "run across"]],
+      ["on-behalf:primary", ["as a representative of"]],
     ]);
 
     for (const [senseId, synonyms] of expected) {
@@ -122,6 +124,10 @@ describe("canonical sense 공란 backfill", () => {
       expect(entry.definitionProvenance?.attribution).toBe("Princeton WordNet; Open English WordNet Team");
       expect(entry.definitionProvenance?.contentSha256).toMatch(/^[0-9a-f]{64}$/);
     }
-    expect(content.entries.filter((entry) => entry.definitionStatus === "COMPLETE")).toHaveLength(69);
+    expect(content.entries.find((entry) => entry.senseId === "run-into:primary")?.englishDefinition)
+      .toBe("To meet someone unexpectedly rather than by prior arrangement.");
+    expect(content.entries.find((entry) => entry.senseId === "on-behalf:primary")?.englishDefinition)
+      .toBe("Acting or speaking as someone's representative or in their place.");
+    expect(content.entries.filter((entry) => entry.definitionStatus === "COMPLETE")).toHaveLength(71);
   });
 });
