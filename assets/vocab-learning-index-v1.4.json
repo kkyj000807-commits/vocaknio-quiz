@@ -1,7 +1,7 @@
 {
   "version": "3.1",
   "coverage": {
-    "senses": 144,
+    "senses": 152,
     "rows": 218,
     "checkedAtKst": "2026.09.05"
   },
@@ -408,7 +408,9 @@
     "JBKROW004694": {
       "group": "V201",
       "entryIds": [
-        "learn:correction:JBKROW004694"
+        "learn:correction:JBKROW004694:be-explanation-or-cause",
+        "learn:correction:JBKROW004694:give-explanation",
+        "learn:correction:JBKROW004694:form-part-of-total"
       ]
     },
     "JBKROW004704": {
@@ -474,7 +476,9 @@
     "JBKROW006173": {
       "group": "V201",
       "entryIds": [
-        "learn:correction:JBKROW006173"
+        "learn:correction:JBKROW006173:be-explanation-or-cause",
+        "learn:correction:JBKROW006173:give-explanation",
+        "learn:correction:JBKROW006173:form-part-of-total"
       ]
     },
     "JBKROW006336": {
@@ -732,7 +736,9 @@
     "JBKROW014989": {
       "group": "V401",
       "entryIds": [
-        "learn:correction:JBKROW014989"
+        "learn:correction:JBKROW014989:be-explanation-or-cause",
+        "learn:correction:JBKROW014989:give-explanation",
+        "learn:correction:JBKROW014989:form-part-of-total"
       ]
     },
     "JBKROW015000": {
@@ -756,7 +762,9 @@
     "JBKROW015623": {
       "group": "V401",
       "entryIds": [
-        "learn:correction:JBKROW015623"
+        "learn:correction:JBKROW015623:be-explanation-or-cause",
+        "learn:correction:JBKROW015623:give-explanation",
+        "learn:correction:JBKROW015623:form-part-of-total"
       ]
     },
     "JBKROW015766": {

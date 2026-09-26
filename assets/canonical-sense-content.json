@@ -51,9 +51,9 @@
     {
       "word": "account for",
       "variants": [],
-      "senseId": "account-for:primary",
-      "partOfSpeech": "idiom",
-      "englishDefinition": "To explain why something happened, to be the reason for it, or to form a stated part of a total.",
+      "senseId": "account-for:be-explanation-or-cause",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To be the explanation or cause of a fact, event, or difference.",
       "definitionProvenance": {
         "kind": "editorial",
         "source": "VOCA NEXUS editorial",
@@ -62,13 +62,16 @@
           "https://www.oxfordlearnersdictionaries.com/definition/american_english/account-for"
         ]
       },
-      "koreanMeaning": "일이 일어난 이유를 해명하거나 그 원인이 되다. 숫자·비율과 함께 쓰이면 전체에서 해당 몫을 차지하다는 뜻이다.",
-      "contextExplanation": "account for a delay는 지연을 설명하거나 원인이 되다, account for half the cost는 비용의 절반을 차지하다다.",
-      "exampleSentence": "Materials account for half the cost of this model.",
-      "exampleTranslation": "이 모델에서는 재료비가 전체 비용의 절반을 차지한다.",
-      "exampleExplanation": "사람이 주어면 설명, 사건·조건이 주어면 원인인 경우가 많다. 비율이 뒤따르면 해명하다가 아니라 차지하다다.",
-      "synonyms": [],
-      "distinctionNote": "사람이 주어면 설명, 사건·조건이 주어면 원인인 경우가 많다. 비율이 뒤따르면 해명하다가 아니라 차지하다다.",
+      "koreanMeaning": "어떤 사실·사건·차이가 생긴 이유나 원인이 되다.",
+      "contextExplanation": "Poor weather accounted for the delay처럼 원인 역할을 하는 조건이 주어로 온다.",
+      "exampleSentence": "A change in demand accounts for most of the decline.",
+      "exampleTranslation": "수요 변화가 감소분 대부분의 원인이다.",
+      "exampleExplanation": "a change in demand가 원인이고 the decline이 설명되어야 할 결과다.",
+      "synonyms": [
+        "explain",
+        "be responsible for"
+      ],
+      "distinctionNote": "사람이 이유를 말해 주는 give an explanation sense와 구분한다. 이 sense에서는 주어 자체가 결과를 설명하는 원인이다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/dictionary/english/account-for",
         "https://www.oxfordlearnersdictionaries.com/definition/american_english/account-for"
@@ -84,22 +87,106 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "account for",
+      "variants": [],
+      "senseId": "account-for:form-part-of-total",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To form a stated amount or proportion of a larger total.",
+      "definitionProvenance": {
+        "kind": "editorial",
+        "source": "VOCA NEXUS editorial",
+        "referenceUrls": [
+          "https://www.collinsdictionary.com/dictionary/english/account-for",
+          "https://www.oxfordlearnersdictionaries.com/definition/american_english/account-for"
         ]
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "koreanMeaning": "더 큰 전체에서 명시된 수량이나 비율만큼을 차지하다.",
+      "contextExplanation": "account for half/35 percent/the majority처럼 수치·비율·몫 표현과 결합한다.",
+      "exampleSentence": "Materials account for half the cost of this model.",
+      "exampleTranslation": "이 모델에서는 재료비가 전체 비용의 절반을 차지한다.",
+      "exampleExplanation": "half the cost가 전체 비용 중 재료비의 비중을 직접 표시한다.",
+      "synonyms": [
+        "constitute",
+        "make up"
+      ],
+      "distinctionNote": "왜 그런지를 설명하는 sense가 아니다. 퍼센트·분수·majority가 보이면 전체 중 몫을 묻는지 먼저 확인한다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/account-for",
+        "https://www.oxfordlearnersdictionaries.com/definition/american_english/account-for"
+      ],
+      "itemIds": [
+        "JBKROW004694",
+        "JBKROW006173",
+        "JBKROW014989",
+        "JBKROW015623"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "account for",
+      "variants": [],
+      "senseId": "account-for:give-explanation",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To give a satisfactory explanation for an event, fact, or action.",
+      "definitionProvenance": {
+        "kind": "editorial",
+        "source": "VOCA NEXUS editorial",
+        "referenceUrls": [
+          "https://www.collinsdictionary.com/dictionary/english/account-for",
+          "https://www.oxfordlearnersdictionaries.com/definition/american_english/account-for"
+        ]
+      },
+      "koreanMeaning": "사건·사실·행동이 왜 일어났는지 납득할 만하게 설명하다.",
+      "contextExplanation": "How do you account for the error?처럼 사람이 설명할 책임을 지거나 이유를 제시할 때 쓰인다.",
+      "exampleSentence": "The report fails to account for the sudden increase in costs.",
+      "exampleTranslation": "그 보고서는 비용이 갑자기 증가한 이유를 설명하지 못한다.",
+      "exampleExplanation": "fails to와 sudden increase가 보고서에 필요한 이유 설명이 빠졌음을 보여 준다.",
+      "synonyms": [
+        "explain"
+      ],
+      "distinctionNote": "전체에서 일정 몫을 차지하는 constitute sense와 구분한다. 숫자·비율이 핵심이면 설명하다로 읽지 않는다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/account-for",
+        "https://www.oxfordlearnersdictionaries.com/definition/american_english/account-for"
+      ],
+      "itemIds": [
+        "JBKROW004694",
+        "JBKROW006173",
+        "JBKROW014989",
+        "JBKROW015623"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
     },
     {
       "word": "all but",
@@ -1491,7 +1578,7 @@
       "variants": [],
       "senseId": "in-face-of:primary",
       "partOfSpeech": "idiom",
-      "englishDefinition": "When confronted with a difficulty or fact, or despite the obstacle it presents.",
+      "englishDefinition": "Despite a difficulty, danger, or opposition that could prevent an action or result.",
       "definitionProvenance": {
         "kind": "editorial",
         "source": "VOCA NEXUS editorial",
@@ -1500,13 +1587,16 @@
           "https://www.collinsdictionary.com/dictionary/english/in-the-face-of"
         ]
       },
-      "koreanMeaning": "곤란이나 사실을 맞닥뜨린 상황을 말한다. 그 상황을 버텨 낸 문맥에서는 ~에도 불구하고가 된다.",
-      "contextExplanation": "continue in the face of opposition은 반대에도 계속하다다. 증거 앞에서 부인을 포기했다면 증거에 직면해서로 읽는 편이 자연스럽다.",
-      "exampleSentence": "In the face of new evidence, he could no longer deny the mistake.",
-      "exampleTranslation": "새 증거에 직면하자 그는 더 이상 그 실수를 부인할 수 없었다.",
-      "exampleExplanation": "무조건 ~에도 불구하고라고 외우면, 증거 때문에 태도를 바꾼 문장을 거꾸로 읽을 수 있다. 반응 동사와 원인·양보 관계를 함께 본다.",
-      "synonyms": [],
-      "distinctionNote": "무조건 ~에도 불구하고라고 외우면, 증거 때문에 태도를 바꾼 문장을 거꾸로 읽을 수 있다. 반응 동사와 원인·양보 관계를 함께 본다.",
+      "koreanMeaning": "행동이나 결과를 막을 만한 곤란·위험·반대가 있는데도 그것을 버티거나 계속하다.",
+      "contextExplanation": "continue or remain calm in the face of opposition처럼 뒤 행동이 장애 때문에 중단되지 않을 때 쓰인다.",
+      "exampleSentence": "The volunteers continued their work in the face of fierce opposition.",
+      "exampleTranslation": "자원봉사자들은 거센 반대에도 불구하고 일을 계속했다.",
+      "exampleExplanation": "continued와 fierce opposition이 방해에도 행동이 유지되는 양보 관계를 고정한다.",
+      "synonyms": [
+        "despite",
+        "in spite of"
+      ],
+      "distinctionNote": "새 증거 때문에 태도가 바뀌는 as a result of sense와 섞지 않는다. 여기서는 장애와 뒤 행동 사이의 양보 관계가 핵심이다.",
       "sourceIds": [
         "https://www.oxfordlearnersdictionaries.com/definition/american_english/face_1",
         "https://www.collinsdictionary.com/dictionary/english/in-the-face-of"
@@ -1524,22 +1614,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "in spite of A",
@@ -3761,7 +3842,7 @@
       "variants": [],
       "senseId": "make-for:primary",
       "partOfSpeech": "idiom",
-      "englishDefinition": "To help produce a particular result, or, when followed by a destination, to move towards it.",
+      "englishDefinition": "To cause or help produce a particular result or condition.",
       "definitionProvenance": {
         "kind": "editorial",
         "source": "VOCA NEXUS editorial",
@@ -3770,12 +3851,15 @@
           "https://www.oxfordlearnersdictionaries.com/definition/english/make-for"
         ]
       },
-      "koreanMeaning": "어떤 결과가 생기기 쉽게 만들거나 그 결과에 기여하다. 장소가 뒤따르면 그곳을 향해 가다는 뜻도 된다.",
-      "contextExplanation": "make for better communication은 더 나은 소통에 도움이 되다, make for the exit는 출구로 향하다다.",
+      "koreanMeaning": "특정한 결과나 상태가 생기게 하거나 그것이 생기는 데 기여하다.",
+      "contextExplanation": "make for better communication/a pleasant atmosphere처럼 목적지보다 결과·상태가 뒤따를 때 쓰인다.",
       "exampleSentence": "Clear instructions make for smoother teamwork.",
       "exampleTranslation": "명확한 지침은 팀이 더 매끄럽게 협력하는 데 도움이 된다.",
-      "exampleExplanation": "항상 강한 직접 원인인 cause로 바꾸지 않는다. 조건을 조성하거나 기여한다는 약한 인과일 수 있다.",
-      "synonyms": [],
+      "exampleExplanation": "clear instructions가 smoother teamwork라는 결과를 낳는 조건으로 제시된다.",
+      "synonyms": [
+        "lead to",
+        "contribute to"
+      ],
       "distinctionNote": "항상 강한 직접 원인인 cause로 바꾸지 않는다. 조건을 조성하거나 기여한다는 약한 인과일 수 있다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/dictionary/english/make-for",
@@ -3792,22 +3876,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "new normal",
@@ -4650,7 +4725,7 @@
       ],
       "senseId": "wake-of:primary",
       "partOfSpeech": "idiom",
-      "englishDefinition": "Following an event, often as a consequence of it; alternatively, following closely behind someone or something.",
+      "englishDefinition": "After an event, especially while its effects or consequences are still being felt.",
       "definitionProvenance": {
         "kind": "editorial",
         "source": "VOCA NEXUS editorial",
@@ -4659,13 +4734,17 @@
           "https://www.merriam-webster.com/dictionary/in%20the%20wake%20of"
         ]
       },
-      "koreanMeaning": "단순히 시간이 뒤라는 뜻을 넘어, 앞선 사건이 남긴 영향 속에서 뒤따르는 상황을 가리키는 경우가 많다.",
-      "contextExplanation": "in the wake of the scandal처럼 사건의 여파를 말한다. 이동 맥락에서는 뒤를 따라간다는 뜻도 가능하다.",
+      "koreanMeaning": "특히 앞선 사건의 영향이나 결과가 이어지는 가운데 그 사건 뒤에 일어나다.",
+      "contextExplanation": "in the wake of an accident/scandal/crisis처럼 앞선 사건과 뒤의 대응·변화를 연결한다.",
       "exampleSentence": "The school revised its safety rules in the wake of the accident.",
       "exampleTranslation": "사고의 여파로 학교는 안전 규정을 고쳤다.",
-      "exampleExplanation": "모든 문장에서 인과관계가 확정되는 것은 아니다. after보다 여파가 두드러지는지 문맥을 살핀다. wake up의 기상과 혼동하지 않는다.",
-      "synonyms": [],
-      "distinctionNote": "모든 문장에서 인과관계가 확정되는 것은 아니다. after보다 여파가 두드러지는지 문맥을 살핀다. wake up의 기상과 혼동하지 않는다.",
+      "exampleExplanation": "revised its safety rules가 사고 뒤에 나온 대응이어서 사건의 여파라는 sense를 보여 준다.",
+      "synonyms": [
+        "in the aftermath of",
+        "following",
+        "as a result of"
+      ],
+      "distinctionNote": "단순한 시간 순서만 말하는 after보다 여파가 두드러지지만, 문맥이 보장하지 않으면 강한 직접 원인으로 단정하지 않는다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/dictionary/english/in-the-wake-of",
         "https://www.merriam-webster.com/dictionary/in%20the%20wake%20of"
@@ -4681,22 +4760,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "work out",

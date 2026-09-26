@@ -54,6 +54,10 @@ describe("깊이 학습 인덱스", () => {
     const onBehalf = readEntries("JBKROW014517");
     const getOver = readEntries("APPROW01008");
     const comeToTerms = readEntries("JBKROW018274");
+    const inFaceOf = readEntries("JBKROW000555");
+    const wakeOf = readEntries("JBKROW013919");
+    const makeFor = readEntries("JBKROW001578");
+    const accountFor = readEntries("JBKROW004694");
 
     expect(byNoMeans[0]?.exactSynonyms).toEqual(["in no way", "not at all"]);
     expect(inSpite[0]?.exactSynonyms).toEqual(["despite"]);
@@ -109,6 +113,17 @@ describe("깊이 학습 인덱스", () => {
       .toEqual(["come to accept"]);
     expect(comeToTerms.find((entry) => entry.senseId === "come-to-terms:reach-agreement-with-party")?.exactSynonyms)
       .toEqual(["reach an agreement"]);
+    expect(inFaceOf[0]?.exactSynonyms).toEqual(["despite", "in spite of"]);
+    expect(wakeOf[0]?.exactSynonyms).toEqual(["in the aftermath of"]);
+    expect(wakeOf[0]?.nearSynonyms).toEqual(["following", "as a result of"]);
+    expect(makeFor[0]?.exactSynonyms).toEqual(["lead to"]);
+    expect(makeFor[0]?.nearSynonyms).toEqual(["contribute to"]);
+    expect(accountFor.find((entry) => entry.senseId === "account-for:be-explanation-or-cause")?.exactSynonyms)
+      .toEqual(["explain"]);
+    expect(accountFor.find((entry) => entry.senseId === "account-for:give-explanation")?.exactSynonyms)
+      .toEqual(["explain"]);
+    expect(accountFor.find((entry) => entry.senseId === "account-for:form-part-of-total")?.exactSynonyms)
+      .toEqual(["constitute", "make up"]);
   });
 
   it("Open English WordNet의 같은 synset 동의어만 공개 데이터에 전달한다", () => {
@@ -157,7 +172,7 @@ describe("깊이 학습 인덱스", () => {
   it("비슷한 숙어를 임의로 다른 정답으로 나누지 않고 다의어의 문맥을 보존한다", () => {
     const byKey = new Map(corrections.entries.map((entry) => [entry.key, entry]));
     expect(byKey.get("clamp-down-on")?.meaningKo).toBe(byKey.get("crack-down-on")?.meaningKo);
-    expect(byKey.get("in-face-of")?.meaningKo).toBe("A에 직면하여; A에도 불구하고");
+    expect(byKey.get("in-face-of")?.meaningKo).toBe("A라는 곤란·반대에도 불구하고");
     expect(byKey.get("work-out")?.targets).toHaveLength(4);
     expect(byKey.get("work-out")?.meaningKo).toContain("운동하다");
     expect(byKey.get("work-out")?.meaningKo).toContain("계산하다");
