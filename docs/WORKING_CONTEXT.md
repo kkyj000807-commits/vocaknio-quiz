@@ -1,6 +1,6 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.26 20:20 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.26 21:22 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
 ## 현재 배포 — 3.1, 전체 로드맵은 부분 완료
 
@@ -26,9 +26,9 @@
 - 내용 작업 전 .agents/skills/transfer-english-reasoning/SKILL.md와 두 references를 읽는다. 공개 강의 원칙과 앱의 독자 추론/효과 실측을 구분한다.
 - 편입 관련 작업은 docs/MASTER_DB_SYNC_RULES.md를 따른다. 이 저장소에서 중앙 `2027 편입 마스터 DB`의 실제 위치·마지막 동기화 시점은 아직 확인되지 않았으므로, 현재 앱 정본을 중앙 DB와 동기화 완료했다고 간주하지 않는다(`sync_required`).
 
-## 현재 batch — 검수 숙어 동의 표현 19sense backfill PARTIAL VERIFIED / 미배포
+## 현재 batch — 검수 숙어 동의 표현 21sense backfill PARTIAL VERIFIED / 미배포
 
-- Source main `7f66fad`까지 `capitalize on`, `carry out`, `delve into`, `look after`, `put up with`, `at stake`, `to boot`, `by the same token`, `a case in point`, `clamp down on`, `crack down on`, `cut the ground from under someone`, `put A at ease`, `on the verge of`, `pull the rug from under someone`, `release - from house arrest`, `There is more than one way to skin a cat`, `take the law into one's own hands`, `throw good money after bad`의 공란을 독립 사전·thesaurus 본문으로 다시 검수했다. 공개 Pages는 계속 3.1이며 이 미완료 backfill batch는 배포하지 않았다.
+- Source main `d9f9d2c`까지 `capitalize on`, `carry out`, `delve into`, `look after`, `put up with`, `at stake`, `to boot`, `by the same token`, `a case in point`, `clamp down on`, `crack down on`, `cut the ground from under someone`, `put A at ease`, `on the verge of`, `pull the rug from under someone`, `release - from house arrest`, `There is more than one way to skin a cat`, `take the law into one's own hands`, `throw good money after bad`, `give someone the benefit of the doubt`, `new normal`의 공란을 독립 사전·thesaurus 본문으로 다시 검수했다. 공개 Pages는 계속 3.1이며 이 미완료 backfill batch는 배포하지 않았다.
 - `capitalize on`은 실제 대체 가능한 `take advantage of`를 exact로, 문맥·이익 함의가 더 좁은 `benefit from`/`profit from`을 near로 보존했다. `carry out`의 `perform`/`execute`/`implement`와 `delve into`의 `investigate`/`look into`/`explore`도 대상·결합 범위가 완전히 같지 않아 near로 제한했다. headword의 다른 sense나 한국어 뜻 유사성으로 관계를 확장하지 않았다.
 - `look after`는 `take care of`만 exact로 두고 `care for`/`tend`는 돌봄 대상·구문 범위가 다른 near로, `put up with`는 `tolerate`만 exact로 두고 `endure`/`bear`는 지속·고통 초점이 다른 near로 저장했다. `at stake`와 `at risk`도 결과에 걸린 가치라는 초점 차이를 보존해 near로만 저장했다.
 - `to boot`는 추가의 연결 기능이 같은 `in addition`/`as well`/`besides`, `by the same token`은 같은 근거를 재적용하는 `for the same reason`, `a case in point`는 논점을 직접 보여 주는 `a relevant example`/`a pertinent example`만 exact로 연결했다. 일반적인 관련어·반대 연결어·headword의 다른 뜻은 넣지 않았다.
@@ -36,16 +36,17 @@
 - `put A at ease`는 불안 완화가 겹치지만 자신감·편안함 전체를 항상 대체하지 않는 `reassure`, `pull the rug from under someone`은 갑작스러움이 약한 설명형 `withdraw support from`을 near로 제한했다. `on the verge of`는 동일한 직전 상태를 나타내는 `on the brink of`/`on the point of`를 exact로 연결했다.
 - `release - from house arrest`는 같은 사건 구조를 보존하는 `free from house arrest`, `There is more than one way to skin a cat`은 Oxford·Collins가 공통 확인한 의미를 압축한 `there are several ways to achieve something`을 exact 설명형 paraphrase로 연결했다. 일반 `release`·`skin`의 다른 sense는 가져오지 않았다.
 - `take the law into one's own hands`는 경찰·법적 절차 대신 직접 처벌한다는 Oxford·Collins 공통 제약을 보존한 `punish someone without legal authorities`, `throw good money after bad`는 이미 실패 중인 대상에 돈을 더 낭비한다는 `waste more money on something already failing`을 exact 설명형 paraphrase로 연결했다. 단순 문제 해결과 모든 추가 투자는 포함하지 않았다.
+- `give someone the benefit of the doubt`는 불확실성이 남는데도 반증이 없어 상대의 설명을 받아들인다는 `accept someone's account despite uncertainty`, `new normal`은 이례적이던 상태가 새 기준이 됐다는 `an unusual condition that has become standard`를 exact 설명형 paraphrase로 연결했다. 결백 입증이나 바람직함이라는 의미는 덧붙이지 않았다.
 - Oxford/Collins의 기존 정의 근거에 Collins `capitalize on` 및 Merriam-Webster Thesaurus `carry out`, `inquire into` 관계 근거를 추가했다. 무료 사전 문구를 앱 정의로 복제하지 않고 기존 자체 편집 정의와 source URL을 유지했다.
 - Open English WordNet 2025 공식 archive의 같은 synset 구성원을 40개 허가 원문 sense manifest에 함께 고정했다. build는 표제어가 공식 synset 구성원인지 확인하고, 해당 synset의 다른 표제어만 exact synonym으로 가져온다. 다른 sense·headword fallback·한국어 뜻 유사성으로 관계를 확장하지 않는다.
 - 40sense 중27sense에 동일 synset의 대체 표제어가 존재해 실제 learning JSON→canonical 산출물까지 연결됐다. 예: `capricious`→`impulsive/whimsical`, `vie`→`compete/contend`, `serene`→`calm/unagitated/tranquil`. 나머지13sense는 OEWN 해당 synset에 대체 표제어가 없지만, 다른 독립 출처 검토 전에는 `VERIFIED_NO_DATA`로 확정하지 않았다.
 - 추가 원인: `abide by`, `put the cart before the horse`, `take for granted`, `teem with`, `work out`, `wrap up`은 같은 원본 occurrence에 상세 검수 sense가 이미 있는데, 과거 학습용 `:primary` aggregate 6개도 별도 canonical sense로 집계됐다. 특히 `work out`과 `take for granted`의 aggregate는 서로 다른 여러 뜻을 다시 합쳐 sense-first 계약을 위반하고 빈 동의어 6건을 허위로 늘렸다.
 - backfill이 동일 표제어·동일 item 집합의 검수 sense를 발견하면 vocab-learning 전용 aggregate primary를 canonical 산출물에서 제외하고 `supersededAggregates`에 원본 ID·대체 sense·이유를 보존한다. 원천 learning JSON과 사용자 기록은 삭제·변환하지 않았다.
-- 정제 후 canonical denominator는97sense다. 필드 공란은 영영정의0/한국어0/문맥0/예문0/예문해설0/구별메모0/출처0, 동의어51→32이다. 상태는 COMPLETE46→65 / NEEDS_REVIEW51→32 / VERIFIED_NO_DATA0 / FAILED0 / PENDING0이다. 원본38,163행/고유표제어13,347개, canonical 연결230행/미매핑37,933행은 변하지 않았다.
+- 정제 후 canonical denominator는97sense다. 필드 공란은 영영정의0/한국어0/문맥0/예문0/예문해설0/구별메모0/출처0, 동의어51→30이다. 상태는 COMPLETE46→67 / NEEDS_REVIEW51→30 / VERIFIED_NO_DATA0 / FAILED0 / PENDING0이다. 원본38,163행/고유표제어13,347개, canonical 연결230행/미매핑37,933행은 변하지 않았다.
 - `data/vocab-learning/oewn-2025-definition-manifest.json`이 공식 archive SHA-256, sense별 정의 hash, 동일 synset 구성원을 보존한다. `scripts/build-vocab-learning-v1.4.mjs`와 회귀 테스트가 public learning JSON의 exact synonym 목록이 manifest와 정확히 일치하는지 검사한다.
-- VERIFIED: learning/canonical backfill을 실제 재실행해 asset→public JSON까지 동일하게 갱신했다. targeted 2파일15테스트, 전체 TypeScript·데이터 감사·25파일198테스트 통과(인증1skip), 변경 lint 오류0(기존 module-format 경고만 존재). 열아홉 sense의 COMPLETE 상태·exact/near 분리·공란 없음과 공개 데이터 일치를 회귀 검사했다.
-- NOT DONE: 전체38,163행 canonical sense 이관과 필수 필드 보강은 완료가 아니다. 동의어32sense와 미매핑37,933행이 남아 있어 전체 완료/coverage100%라고 하지 않는다. 공개 Pages 배포와 실제 Safari/Chrome/Samsung Internet 검증도 하지 않았다.
-- NEXT/P0: NEEDS_REVIEW32개를 숙어 우선으로 다른 허가·검증 출처와 sense 경계에 따라 검수하고, 실제 부재가 확인된 경우에만 VERIFIED_NO_DATA로 전환한다. 미매핑37,933행은 숙어·오답·고빈도 순으로 안전한 canonical mapping batch를 만든다. 새 UI/영영 문제 섹션은 공란 작업보다 앞서지 않는다.
+- VERIFIED: learning/canonical backfill을 실제 재실행해 asset→public JSON까지 동일하게 갱신했다. targeted 2파일15테스트, 전체 TypeScript·데이터 감사·25파일198테스트 통과(인증1skip), 변경 lint 오류0(기존 module-format 경고만 존재). 스물한 sense의 COMPLETE 상태·exact/near 분리·공란 없음과 공개 데이터 일치를 회귀 검사했다.
+- NOT DONE: 전체38,163행 canonical sense 이관과 필수 필드 보강은 완료가 아니다. 동의어30sense와 미매핑37,933행이 남아 있어 전체 완료/coverage100%라고 하지 않는다. 공개 Pages 배포와 실제 Safari/Chrome/Samsung Internet 검증도 하지 않았다.
+- NEXT/P0: NEEDS_REVIEW30개를 숙어 우선으로 다른 허가·검증 출처와 sense 경계에 따라 검수하고, 실제 부재가 확인된 경우에만 VERIFIED_NO_DATA로 전환한다. 미매핑37,933행은 숙어·오답·고빈도 순으로 안전한 canonical mapping batch를 만든다. 새 UI/영영 문제 섹션은 공란 작업보다 앞서지 않는다.
 
 ## 직전 batch — canonical sense 학습상태·우선출제·선화 힌트 파일럿 VERIFIED / 미배포
 
