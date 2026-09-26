@@ -771,7 +771,9 @@
       "exampleSentence": "The regulator clamped down on misleading advertisements.",
       "exampleTranslation": "감독 기관은 소비자를 오도하는 광고를 강하게 단속했다.",
       "exampleExplanation": "권한을 사용한 강한 통제이므로 단순히 자세히 살펴본다는 monitor보다 강하다. 단속 대상이 도덕적으로 나쁘다는 화자의 동의까지 자동으로 뜻하지 않는다.",
-      "synonyms": [],
+      "synonyms": [
+        "crack down on"
+      ],
       "distinctionNote": "권한을 사용한 강한 통제이므로 단순히 자세히 살펴본다는 monitor보다 강하다. 단속 대상이 도덕적으로 나쁘다는 화자의 동의까지 자동으로 뜻하지 않는다.",
       "sourceIds": [
         "https://www.oxfordlearnersdictionaries.com/us/definition/english/clamp-down",
@@ -786,22 +788,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "come to terms with",
@@ -923,7 +916,9 @@
       "exampleSentence": "The school cracked down on cheating after repeated complaints.",
       "exampleTranslation": "학교는 불만이 반복해서 제기되자 부정행위 단속을 강화했다.",
       "exampleExplanation": "제재·집행을 강화하는 표현이지 문제를 이해한다는 figure out이 아니다. 항상 물리적 폭력이 따른다는 뜻도 아니다.",
-      "synonyms": [],
+      "synonyms": [
+        "clamp down on"
+      ],
       "distinctionNote": "제재·집행을 강화하는 표현이지 문제를 이해한다는 figure out이 아니다. 항상 물리적 폭력이 따른다는 뜻도 아니다.",
       "sourceIds": [
         "https://www.oxfordlearnersdictionaries.com/us/definition/english/crack-down",
@@ -938,22 +933,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "cut the ground from under someone",
@@ -974,7 +960,9 @@
       "exampleSentence": "The new evidence cut the ground from under his argument.",
       "exampleTranslation": "새 증거가 나오면서 그의 주장은 버틸 근거를 잃었다.",
       "exampleExplanation": "ground는 여기서 논거·기반이다. 실제 땅을 파거나 단순히 기분을 상하게 한다는 뜻이 아니다.",
-      "synonyms": [],
+      "synonyms": [
+        "undermine"
+      ],
       "distinctionNote": "ground는 여기서 논거·기반이다. 실제 땅을 파거나 단순히 기분을 상하게 한다는 뜻이 아니다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/dictionary/english/cut-the-ground-from-under-someone",
@@ -988,22 +976,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "Dayton Peace Accords",

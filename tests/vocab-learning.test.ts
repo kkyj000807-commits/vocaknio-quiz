@@ -36,6 +36,9 @@ describe("깊이 학습 인덱스", () => {
     const toBoot = readEntries("JBKROW000075");
     const sameToken = readEntries("JBKROW000132");
     const caseInPoint = readEntries("JBKROW000819");
+    const clampDownOn = readEntries("JBKROW000039");
+    const crackDownOn = readEntries("JBKROW000048");
+    const cutGround = readEntries("JBKROW022770");
 
     expect(byNoMeans[0]?.exactSynonyms).toEqual(["in no way", "not at all"]);
     expect(inSpite[0]?.exactSynonyms).toEqual(["despite"]);
@@ -51,6 +54,12 @@ describe("깊이 학습 인덱스", () => {
     expect(sameToken[0]?.nearSynonyms).toEqual([]);
     expect(caseInPoint[0]?.exactSynonyms).toEqual(["a relevant example", "a pertinent example"]);
     expect(caseInPoint[0]?.nearSynonyms).toEqual([]);
+    expect(clampDownOn[0]?.exactSynonyms).toEqual(["crack down on"]);
+    expect(clampDownOn[0]?.nearSynonyms).toEqual([]);
+    expect(crackDownOn[0]?.exactSynonyms).toEqual(["clamp down on"]);
+    expect(crackDownOn[0]?.nearSynonyms).toEqual([]);
+    expect(cutGround[0]?.exactSynonyms).toEqual([]);
+    expect(cutGround[0]?.nearSynonyms).toEqual(["undermine"]);
   });
 
   it("Open English WordNet의 같은 synset 동의어만 공개 데이터에 전달한다", () => {

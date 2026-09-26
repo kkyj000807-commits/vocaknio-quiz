@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAtKst": "2026-09-26T16:14:48+09:00",
+  "generatedAtKst": "2026-09-26T17:16:13+09:00",
   "vocabulary": {
     "sourceRows": 38163,
     "uniqueHeadwords": 13347,
@@ -29,7 +29,7 @@
       "contextExplanation": 15,
       "exampleSentence": 15,
       "exampleExplanation": 15,
-      "synonyms": 65,
+      "synonyms": 62,
       "distinctionNote": 15,
       "sourceIds": 15
     }
@@ -42,7 +42,7 @@
       "contextExplanation": 0,
       "exampleSentence": 0,
       "exampleExplanation": 0,
-      "synonyms": 42,
+      "synonyms": 39,
       "distinctionNote": 0,
       "sourceIds": 0
     }
@@ -126,10 +126,10 @@
     }
   ],
   "statusCounts": {
-    "COMPLETE": 55,
+    "COMPLETE": 58,
     "VERIFIED_NO_DATA": 0,
     "FAILED": 0,
-    "NEEDS_REVIEW": 42,
+    "NEEDS_REVIEW": 39,
     "PENDING": 0
   },
   "frontend": {
@@ -181,7 +181,7 @@
         "contextExplanation": 0,
         "exampleSentence": 0,
         "exampleExplanation": 0,
-        "synonyms": 42,
+        "synonyms": 39,
         "distinctionNote": 0,
         "sourceIds": 0
       },
@@ -350,6 +350,54 @@
       "sameSenseContract": true
     },
     {
+      "senseId": "clamp-down-on:primary",
+      "word": "clamp down on",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "crack-down-on:primary",
+      "word": "crack down on",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "cut-ground:primary",
+      "word": "cut the ground from under someone",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
       "senseId": "delve-into:primary",
       "word": "delve into",
       "status": "COMPLETE",
@@ -448,54 +496,6 @@
     {
       "senseId": "learn:00607995-v",
       "word": "inculcate",
-      "status": "COMPLETE",
-      "checkedFields": {
-        "englishDefinition": true,
-        "koreanMeaning": true,
-        "contextExplanation": true,
-        "exampleSentence": true,
-        "exampleExplanation": true,
-        "synonyms": true,
-        "distinctionNote": true,
-        "sourceIds": true
-      },
-      "sameSenseContract": true
-    },
-    {
-      "senseId": "learn:00722886-s",
-      "word": "capricious",
-      "status": "COMPLETE",
-      "checkedFields": {
-        "englishDefinition": true,
-        "koreanMeaning": true,
-        "contextExplanation": true,
-        "exampleSentence": true,
-        "exampleExplanation": true,
-        "synonyms": true,
-        "distinctionNote": true,
-        "sourceIds": true
-      },
-      "sameSenseContract": true
-    },
-    {
-      "senseId": "learn:00770823-v",
-      "word": "cajole",
-      "status": "COMPLETE",
-      "checkedFields": {
-        "englishDefinition": true,
-        "koreanMeaning": true,
-        "contextExplanation": true,
-        "exampleSentence": true,
-        "exampleExplanation": true,
-        "synonyms": true,
-        "distinctionNote": true,
-        "sourceIds": true
-      },
-      "sameSenseContract": true
-    },
-    {
-      "senseId": "learn:00884747-v",
-      "word": "boast",
       "status": "COMPLETE",
       "checkedFields": {
         "englishDefinition": true,

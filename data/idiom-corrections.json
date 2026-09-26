@@ -209,6 +209,9 @@
         }
       ],
       "meaningKo": "강하게 단속하다; 엄격한 조치로 억제하다",
+      "exactSynonyms": [
+        "crack down on"
+      ],
       "definitionEn": "To use strict official measures to stop or control an activity considered unacceptable.",
       "definitionKo": "문제가 되는 행동을 못 하게 하거나 통제하려고 당국 등이 강한 조치를 취하다.",
       "memoryKo": "clamp로 움직이는 부분을 꽉 고정하듯, 느슨하던 통제를 강하게 조이는 장면이다.",
@@ -311,6 +314,9 @@
         }
       ],
       "meaningKo": "강하게 단속하다; 엄격한 조치로 억제하다",
+      "exactSynonyms": [
+        "clamp down on"
+      ],
       "definitionEn": "To enforce rules more severely in order to stop violations or deal with those responsible.",
       "definitionKo": "규칙 위반을 막거나 위반자를 더 엄격하게 처리하기 위해 단속을 강화하다.",
       "memoryKo": "이전에는 넘어가던 위반도 더는 봐주지 않겠다고 집행을 강화하는 장면이다.",
@@ -1535,6 +1541,7 @@
       "key": "cut-ground",
       "targets": [{"id":"JBKROW022770","headword":"cut the ground from under someone","before":"p.13"}],
       "meaningKo": "상대의 주장·계획을 지탱하는 근거를 무너뜨리다",
+      "nearSynonyms": ["undermine"],
       "definitionEn": "To undermine the basis on which another person's argument, position, or plans depend.",
       "definitionKo": "상대가 의지하던 근거를 없애 주장이나 계획을 더 이상 밀고 나가지 못하게 하다.",
       "memoryKo": "발밑의 땅이 사라지면 서 있을 수 없듯, 주장을 받치던 근거를 무너뜨리는 장면이다.",
