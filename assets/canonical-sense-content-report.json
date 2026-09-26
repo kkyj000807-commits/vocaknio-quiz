@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAtKst": "2026-09-26T12:14:03+09:00",
+  "generatedAtKst": "2026-09-26T13:14:59+09:00",
   "vocabulary": {
     "sourceRows": 38163,
     "uniqueHeadwords": 13347,
@@ -35,23 +35,101 @@
     }
   },
   "after": {
-    "canonicalSenseCount": 103,
+    "canonicalSenseCount": 97,
     "blanks": {
       "englishDefinition": 0,
       "koreanMeaning": 0,
       "contextExplanation": 0,
       "exampleSentence": 0,
       "exampleExplanation": 0,
-      "synonyms": 57,
+      "synonyms": 51,
       "distinctionNote": 0,
       "sourceIds": 0
     }
   },
+  "supersededAggregates": [
+    {
+      "senseId": "take-for-granted:primary",
+      "word": "take for granted",
+      "itemIds": [
+        "APPROW02128"
+      ],
+      "replacedBy": [
+        "take-for-granted:assume-without-checking",
+        "take-for-granted:fail-to-appreciate"
+      ],
+      "reason": "여러 검수 sense로 분리된 occurrence를 aggregate primary sense로 다시 합치지 않는다."
+    },
+    {
+      "senseId": "abide-by:primary",
+      "word": "abide by",
+      "itemIds": [
+        "JBKROW000004",
+        "JBKROW002049"
+      ],
+      "replacedBy": [
+        "abide-by:follow-governing-rule"
+      ],
+      "reason": "동일 occurrence를 더 구체적인 검수 sense가 대체한다."
+    },
+    {
+      "senseId": "teem-with:primary",
+      "word": "teem with",
+      "itemIds": [
+        "JBKROW000005",
+        "JBKROW003863"
+      ],
+      "replacedBy": [
+        "teem-with:contain-many-active-things"
+      ],
+      "reason": "동일 occurrence를 더 구체적인 검수 sense가 대체한다."
+    },
+    {
+      "senseId": "wrap-up:primary",
+      "word": "wrap up",
+      "itemIds": [
+        "JBKROW000016",
+        "JBKROW004042"
+      ],
+      "replacedBy": [
+        "wrap-up:finish-activity"
+      ],
+      "reason": "동일 occurrence를 더 구체적인 검수 sense가 대체한다."
+    },
+    {
+      "senseId": "work-out:primary",
+      "word": "work out",
+      "itemIds": [
+        "JBKROW000044",
+        "JBKROW004038",
+        "JBKROW006121",
+        "JBKROW008146"
+      ],
+      "replacedBy": [
+        "work-out:calculate-value",
+        "work-out:end-successfully",
+        "work-out:exercise-body",
+        "work-out:solve-problem"
+      ],
+      "reason": "여러 검수 sense로 분리된 occurrence를 aggregate primary sense로 다시 합치지 않는다."
+    },
+    {
+      "senseId": "cart-horse:primary",
+      "word": "put the cart before the horse",
+      "itemIds": [
+        "JBKROW022984"
+      ],
+      "replacedBy": [
+        "put-the-cart-before-the-horse:reverse-dependent-order"
+      ],
+      "reason": "동일 occurrence를 더 구체적인 검수 sense가 대체한다."
+    }
+  ],
   "statusCounts": {
     "COMPLETE": 46,
     "VERIFIED_NO_DATA": 0,
     "FAILED": 0,
-    "NEEDS_REVIEW": 57,
+    "NEEDS_REVIEW": 51,
     "PENDING": 0
   },
   "frontend": {
@@ -103,7 +181,7 @@
         "contextExplanation": 0,
         "exampleSentence": 0,
         "exampleExplanation": 0,
-        "synonyms": 57,
+        "synonyms": 51,
         "distinctionNote": 0,
         "sourceIds": 0
       },

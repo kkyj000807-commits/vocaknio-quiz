@@ -35,7 +35,7 @@ describe("canonical sense 공란 backfill", () => {
     expect(content.entries.filter((entry) => entry.definitionStatus === "NEEDS_REVIEW").every(
       (entry) => (entry.missingFields as string[]).includes("synonyms"),
     )).toBe(true);
-    expect(pending.categories.verificationPending).toHaveLength(57);
+    expect(pending.categories.verificationPending).toHaveLength(51);
     expect(pending.categories.senseMappingFailure).toHaveLength(37_933);
     expect(pending.categories.actualDataAbsence).toHaveLength(0);
   });
@@ -45,6 +45,26 @@ describe("canonical sense 공란 backfill", () => {
     expect(content.entries.find((entry) => entry.senseId === "all-but:all-except")?.definitionStatus).toBe("COMPLETE");
     expect(report.sampleAudit).toHaveLength(20);
     expect(report.sampleAudit.every((sample) => sample.sameSenseContract)).toBe(true);
+  });
+
+  it("검수 sense로 대체된 aggregate primary를 canonical sense로 중복 집계하지 않는다", () => {
+    const superseded = [
+      "abide-by:primary",
+      "cart-horse:primary",
+      "take-for-granted:primary",
+      "teem-with:primary",
+      "work-out:primary",
+      "wrap-up:primary",
+    ];
+    expect(report.after.canonicalSenseCount).toBe(97);
+    expect(report.supersededAggregates).toHaveLength(superseded.length);
+    expect(report.supersededAggregates.map((entry) => entry.senseId).sort()).toEqual([...superseded].sort());
+    for (const senseId of superseded) {
+      expect(content.entries.some((entry) => entry.senseId === senseId)).toBe(false);
+    }
+    expect(content.entries.some((entry) => entry.senseId === "abide-by:follow-governing-rule")).toBe(true);
+    expect(content.entries.filter((entry) => entry.word === "work out")).toHaveLength(4);
+    expect(content.entries.filter((entry) => entry.word === "take for granted")).toHaveLength(2);
   });
 
   it("앱 자산과 배포 데이터가 동일하다", () => {

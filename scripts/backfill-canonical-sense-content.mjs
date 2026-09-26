@@ -215,6 +215,40 @@ function snapshot(records) {
   };
 }
 
+function itemSetKey(record) {
+  return unique(record.itemIds).sort().join("\u001f");
+}
+
+function findSupersededAggregates(records) {
+  const groups = new Map();
+  for (const record of records) {
+    const key = `${normalize(record.word).toLowerCase()}|${itemSetKey(record)}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(record);
+  }
+
+  return [...groups.values()].flatMap((group) => group
+    .filter((record) => record.senseId.endsWith(":primary") && record.inputLayers.includes("vocab-learning"))
+    .map((record) => ({
+      record,
+      replacements: group.filter((candidate) =>
+        candidate !== record
+        && !candidate.senseId.endsWith(":primary")
+        && candidate.inputLayers.some((layer) => ["active-recall", "sense-question", "synonym-review"].includes(layer)),
+      ),
+    }))
+    .filter(({ record, replacements }) => record.itemIds.length > 0 && replacements.length > 0)
+    .map(({ record, replacements }) => ({
+      senseId: record.senseId,
+      word: record.word,
+      itemIds: unique(record.itemIds).sort(),
+      replacedBy: replacements.map((candidate) => candidate.senseId).sort(),
+      reason: replacements.length === 1
+        ? "동일 occurrence를 더 구체적인 검수 sense가 대체한다."
+        : "여러 검수 sense로 분리된 occurrence를 aggregate primary sense로 다시 합치지 않는다.",
+    })));
+}
+
 function classify(record) {
   record.inputLayers = unique(record.inputLayers);
   record.itemIds = unique(record.itemIds);
@@ -247,7 +281,13 @@ const before = snapshot([...universe.values()]);
 for (const entry of activeRecall) mergeActiveRecall(universe.get(entry.senseId), entry);
 for (const entry of senseQuestions) mergeSenseQuestion(universe.get(entry.senseId), entry);
 for (const entry of synonymReviews) mergeSynonymReview(universe.get(entry.senseId), entry);
-const records = [...universe.values()].map(classify).sort((left, right) => left.senseId.localeCompare(right.senseId));
+const mergedRecords = [...universe.values()];
+const supersededAggregates = findSupersededAggregates(mergedRecords);
+const supersededSenseIds = new Set(supersededAggregates.map((entry) => entry.senseId));
+const records = mergedRecords
+  .filter((record) => !supersededSenseIds.has(record.senseId))
+  .map(classify)
+  .sort((left, right) => left.senseId.localeCompare(right.senseId));
 const after = snapshot(records);
 const mappedItemIds = new Set(records.flatMap((record) => record.itemIds));
 const statusCounts = Object.fromEntries(
@@ -301,6 +341,7 @@ const report = {
   },
   before,
   after,
+  supersededAggregates,
   statusCounts,
   frontend: {
     learningDetailSenseCount: learningEntries.length,
