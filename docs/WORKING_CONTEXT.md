@@ -1,6 +1,6 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.26 12:15 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.26 13:15 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
 ## 현재 배포 — 3.1, 전체 로드맵은 부분 완료
 
@@ -26,17 +26,18 @@
 - 내용 작업 전 .agents/skills/transfer-english-reasoning/SKILL.md와 두 references를 읽는다. 공개 강의 원칙과 앱의 독자 추론/효과 실측을 구분한다.
 - 편입 관련 작업은 docs/MASTER_DB_SYNC_RULES.md를 따른다. 이 저장소에서 중앙 `2027 편입 마스터 DB`의 실제 위치·마지막 동기화 시점은 아직 확인되지 않았으므로, 현재 앱 정본을 중앙 DB와 동기화 완료했다고 간주하지 않는다(`sync_required`).
 
-## 현재 batch — OEWN 동일 sense 동의어 backfill PARTIAL VERIFIED / 미배포
+## 현재 batch — 중복 aggregate sense 제거 PARTIAL VERIFIED / 미배포
 
-- Source 구현 `bfaf36d`는 로컬 main에서 검증 완료했다. 공개 Pages는 계속 3.1이며 이 미완료 backfill batch는 배포하지 않았다.
+- Source 구현 `f9cb830`에서 직전 OEWN 동의어 구현 `bfaf36d` 위의 canonical 공란 집계 중복 원인을 수정했다. 공개 Pages는 계속 3.1이며 이 미완료 backfill batch는 배포하지 않았다.
 - Open English WordNet 2025 공식 archive의 같은 synset 구성원을 40개 허가 원문 sense manifest에 함께 고정했다. build는 표제어가 공식 synset 구성원인지 확인하고, 해당 synset의 다른 표제어만 exact synonym으로 가져온다. 다른 sense·headword fallback·한국어 뜻 유사성으로 관계를 확장하지 않는다.
 - 40sense 중27sense에 동일 synset의 대체 표제어가 존재해 실제 learning JSON→canonical 산출물까지 연결됐다. 예: `capricious`→`impulsive/whimsical`, `vie`→`compete/contend`, `serene`→`calm/unagitated/tranquil`. 나머지13sense는 OEWN 해당 synset에 대체 표제어가 없지만, 다른 독립 출처 검토 전에는 `VERIFIED_NO_DATA`로 확정하지 않았다.
-- canonical 103sense의 필드 공란은 영영정의0/한국어0/문맥0/예문0/예문해설0/구별메모0/출처0을 유지했고, 동의어는84→57로 줄었다. 상태는 COMPLETE19→46 / NEEDS_REVIEW84→57 / VERIFIED_NO_DATA0 / FAILED0 / PENDING0이다.
+- 추가 원인: `abide by`, `put the cart before the horse`, `take for granted`, `teem with`, `work out`, `wrap up`은 같은 원본 occurrence에 상세 검수 sense가 이미 있는데, 과거 학습용 `:primary` aggregate 6개도 별도 canonical sense로 집계됐다. 특히 `work out`과 `take for granted`의 aggregate는 서로 다른 여러 뜻을 다시 합쳐 sense-first 계약을 위반하고 빈 동의어 6건을 허위로 늘렸다.
+- backfill이 동일 표제어·동일 item 집합의 검수 sense를 발견하면 vocab-learning 전용 aggregate primary를 canonical 산출물에서 제외하고 `supersededAggregates`에 원본 ID·대체 sense·이유를 보존한다. 원천 learning JSON과 사용자 기록은 삭제·변환하지 않았다.
+- 정제 후 canonical denominator는103→97sense다. 필드 공란은 영영정의0/한국어0/문맥0/예문0/예문해설0/구별메모0/출처0, 동의어57→51이다. 상태는 COMPLETE46 / NEEDS_REVIEW51 / VERIFIED_NO_DATA0 / FAILED0 / PENDING0이다. 원본38,163행/고유표제어13,347개, canonical 연결230행/미매핑37,933행은 변하지 않았다.
 - `data/vocab-learning/oewn-2025-definition-manifest.json`이 공식 archive SHA-256, sense별 정의 hash, 동일 synset 구성원을 보존한다. `scripts/build-vocab-learning-v1.4.mjs`와 회귀 테스트가 public learning JSON의 exact synonym 목록이 manifest와 정확히 일치하는지 검사한다.
-- backfill 보고서의 20표본 정렬이 원본 `records` 배열까지 바꾸던 잠재 오류를 제거했다. canonical payload는 이제 안정적인 senseId 순서를 유지해 상태 변화만으로 전체 파일 순서가 흔들리지 않는다.
-- VERIFIED: build/backfill 실제 재실행, targeted 2파일13테스트, 전체 TypeScript·데이터 감사·25파일196테스트 통과(인증1skip), 변경 lint 오류0(기존 module-format 경고만 존재). 원본38,163행/고유표제어13,347개, canonical 연결230행/미매핑37,933행 수치는 변하지 않았다.
-- NOT DONE: 전체38,163행 canonical sense 이관과 필수 필드 보강은 완료가 아니다. 동의어57sense와 미매핑37,933행이 남아 있어 전체 완료/coverage100%라고 하지 않는다. 공개 Pages 배포와 실제 Safari/Chrome/Samsung Internet 검증도 하지 않았다.
-- NEXT/P0: NEEDS_REVIEW57개를 ID 순서대로 다른 허가·검증 출처와 sense 경계로 검수하고, 실제 부재가 확인된 경우에만 VERIFIED_NO_DATA로 전환한다. 미매핑37,933행은 숙어·오답·고빈도 순으로 안전한 canonical mapping batch를 만든다. 새 UI/영영 문제 섹션은 공란 작업보다 앞서지 않는다.
+- VERIFIED: backfill 실제 재실행, targeted 2파일14테스트, 전체 TypeScript·데이터 감사·25파일197테스트 통과(인증1skip), 변경 lint 오류0(기존 module-format 경고만 존재). 단일-sense 대체4건과 다의어 분리2건을 회귀 검사했다.
+- NOT DONE: 전체38,163행 canonical sense 이관과 필수 필드 보강은 완료가 아니다. 동의어51sense와 미매핑37,933행이 남아 있어 전체 완료/coverage100%라고 하지 않는다. 공개 Pages 배포와 실제 Safari/Chrome/Samsung Internet 검증도 하지 않았다.
+- NEXT/P0: NEEDS_REVIEW51개를 ID 순서대로 다른 허가·검증 출처와 sense 경계로 검수하고, 실제 부재가 확인된 경우에만 VERIFIED_NO_DATA로 전환한다. 미매핑37,933행은 숙어·오답·고빈도 순으로 안전한 canonical mapping batch를 만든다. 새 UI/영영 문제 섹션은 공란 작업보다 앞서지 않는다.
 
 ## 직전 batch — canonical sense 학습상태·우선출제·선화 힌트 파일럿 VERIFIED / 미배포
 
