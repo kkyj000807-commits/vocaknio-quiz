@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAtKst": "2026-09-26T21:20:23+09:00",
+  "generatedAtKst": "2026-09-26T22:19:41+09:00",
   "vocabulary": {
     "sourceRows": 38163,
     "uniqueHeadwords": 13347,
@@ -29,7 +29,7 @@
       "contextExplanation": 15,
       "exampleSentence": 15,
       "exampleExplanation": 15,
-      "synonyms": 53,
+      "synonyms": 51,
       "distinctionNote": 15,
       "sourceIds": 15
     }
@@ -42,7 +42,7 @@
       "contextExplanation": 0,
       "exampleSentence": 0,
       "exampleExplanation": 0,
-      "synonyms": 30,
+      "synonyms": 28,
       "distinctionNote": 0,
       "sourceIds": 0
     }
@@ -126,10 +126,10 @@
     }
   ],
   "statusCounts": {
-    "COMPLETE": 67,
+    "COMPLETE": 69,
     "VERIFIED_NO_DATA": 0,
     "FAILED": 0,
-    "NEEDS_REVIEW": 30,
+    "NEEDS_REVIEW": 28,
     "PENDING": 0
   },
   "frontend": {
@@ -181,7 +181,7 @@
         "contextExplanation": 0,
         "exampleSentence": 0,
         "exampleExplanation": 0,
-        "synonyms": 30,
+        "synonyms": 28,
         "distinctionNote": 0,
         "sourceIds": 0
       },
@@ -430,6 +430,22 @@
       "sameSenseContract": true
     },
     {
+      "senseId": "executive-privilege:primary",
+      "word": "executive privilege",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
       "senseId": "good-money-bad:primary",
       "word": "throw good money after bad",
       "status": "COMPLETE",
@@ -478,24 +494,8 @@
       "sameSenseContract": true
     },
     {
-      "senseId": "law-hands:primary",
-      "word": "take the law into one's own hands",
-      "status": "COMPLETE",
-      "checkedFields": {
-        "englishDefinition": true,
-        "koreanMeaning": true,
-        "contextExplanation": true,
-        "exampleSentence": true,
-        "exampleExplanation": true,
-        "synonyms": true,
-        "distinctionNote": true,
-        "sourceIds": true
-      },
-      "sameSenseContract": true
-    },
-    {
-      "senseId": "learn:00299633-a",
-      "word": "cacophonous",
+      "senseId": "jury-nullification:primary",
+      "word": "jury nullification",
       "status": "COMPLETE",
       "checkedFields": {
         "englishDefinition": true,

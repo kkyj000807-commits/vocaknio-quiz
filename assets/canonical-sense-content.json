@@ -1144,7 +1144,9 @@
       "exampleSentence": "The dispute concerned whether executive privilege protected the communications.",
       "exampleTranslation": "쟁점은 해당 의사소통 내용이 행정특권에 따라 비공개 보호를 받는지였다.",
       "exampleExplanation": "executive를 회사 임원으로, privilege를 일상적 특혜로만 해석하지 않는다.",
-      "synonyms": [],
+      "synonyms": [
+        "authority to withhold confidential executive communications"
+      ],
       "distinctionNote": "executive를 회사 임원으로, privilege를 일상적 특혜로만 해석하지 않는다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/dictionary/english/executive-privilege",
@@ -1158,22 +1160,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "the First Amendment",
@@ -1583,7 +1576,9 @@
       "exampleSentence": "The seminar distinguished jury nullification from an acquittal based on insufficient evidence.",
       "exampleTranslation": "세미나는 배심의 법 적용 거부와 증거 부족에 따른 무죄 평결을 구별했다.",
       "exampleExplanation": "증거 부족으로 인한 통상적 무죄 평결, 배심 해산, 법 자체의 폐지와 구별한다.",
-      "synonyms": [],
+      "synonyms": [
+        "a jury's deliberate refusal to apply the law"
+      ],
       "distinctionNote": "증거 부족으로 인한 통상적 무죄 평결, 배심 해산, 법 자체의 폐지와 구별한다.",
       "sourceIds": [
         "https://www.law.cornell.edu/wex/jury_nullification",
@@ -1597,22 +1592,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "take the law into one's own hands",

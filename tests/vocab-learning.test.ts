@@ -48,6 +48,8 @@ describe("깊이 학습 인덱스", () => {
     const goodMoneyBad = readEntries("JBKROW023091");
     const benefitDoubt = readEntries("JBKROW022820");
     const newNormal = readEntries("JBKROW023335");
+    const executivePrivilege = readEntries("JBKROW023245");
+    const juryNullification = readEntries("JBKROW023302");
 
     expect(byNoMeans[0]?.exactSynonyms).toEqual(["in no way", "not at all"]);
     expect(inSpite[0]?.exactSynonyms).toEqual(["despite"]);
@@ -87,6 +89,10 @@ describe("깊이 학습 인덱스", () => {
     expect(benefitDoubt[0]?.nearSynonyms).toEqual([]);
     expect(newNormal[0]?.exactSynonyms).toEqual(["an unusual condition that has become standard"]);
     expect(newNormal[0]?.nearSynonyms).toEqual([]);
+    expect(executivePrivilege[0]?.exactSynonyms).toEqual(["authority to withhold confidential executive communications"]);
+    expect(executivePrivilege[0]?.nearSynonyms).toEqual([]);
+    expect(juryNullification[0]?.exactSynonyms).toEqual(["a jury's deliberate refusal to apply the law"]);
+    expect(juryNullification[0]?.nearSynonyms).toEqual([]);
   });
 
   it("Open English WordNet의 같은 synset 동의어만 공개 데이터에 전달한다", () => {
