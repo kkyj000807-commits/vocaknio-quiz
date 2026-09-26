@@ -1302,7 +1302,9 @@
       "exampleSentence": "Repairing the obsolete machine again would be throwing good money after bad.",
       "exampleTranslation": "그 낡은 기계를 또 고치는 건 이미 날린 돈을 만회하려다 돈만 더 버리는 일이 될 것이다.",
       "exampleExplanation": "모든 추가 투자를 뜻하지 않는다. 회복 가능성이 낮은데도 손실 만회를 위해 낭비한다는 평가가 들어 있다.",
-      "synonyms": [],
+      "synonyms": [
+        "waste more money on something already failing"
+      ],
       "distinctionNote": "모든 추가 투자를 뜻하지 않는다. 회복 가능성이 낮은데도 손실 만회를 위해 낭비한다는 평가가 들어 있다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/us/dictionary/english/throw-good-money-after-bad",
@@ -1317,22 +1319,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "the Great Leap Forward",
@@ -1647,7 +1640,9 @@
       "exampleSentence": "Residents were warned not to take the law into their own hands.",
       "exampleTranslation": "주민들은 법적 절차를 무시하고 직접 보복하지 말라는 경고를 받았다.",
       "exampleExplanation": "단순히 책임지고 문제를 해결한다는 take matters into one's own hands와 다르다.",
-      "synonyms": [],
+      "synonyms": [
+        "punish someone without legal authorities"
+      ],
       "distinctionNote": "단순히 책임지고 문제를 해결한다는 take matters into one's own hands와 다르다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/us/dictionary/english/take-the-law-into-your-own-hands",
@@ -1661,22 +1656,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "auspicious",
