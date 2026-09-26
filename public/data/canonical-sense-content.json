@@ -3946,7 +3946,9 @@
       "exampleSentence": "The sponsor pulled the rug from under the team by cancelling its funding.",
       "exampleTranslation": "후원사가 자금 지원을 취소해 팀이 믿고 있던 기반을 갑자기 무너뜨렸다.",
       "exampleExplanation": "단순한 반박보다 지원 철회의 갑작스러움에 초점이 있다. sweep under the rug(문제를 감추다)와 구별한다.",
-      "synonyms": [],
+      "synonyms": [
+        "withdraw support from"
+      ],
       "distinctionNote": "단순한 반박보다 지원 철회의 갑작스러움에 초점이 있다. sweep under the rug(문제를 감추다)와 구별한다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/us/dictionary/english/pull-the-rug-from-under-someone-pull-the-rug-from-under-someones-feet",
@@ -3961,22 +3963,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "put A at ease",
@@ -3997,7 +3990,9 @@
       "exampleSentence": "The interviewer's friendly greeting put the applicant at ease.",
       "exampleTranslation": "면접관의 다정한 인사에 지원자의 긴장이 풀렸다.",
       "exampleExplanation": "with ease는 쉽게라는 방식 표현이다. at ease는 긴장이 없는 상태이므로 전치사를 바꾸지 않는다.",
-      "synonyms": [],
+      "synonyms": [
+        "reassure"
+      ],
       "distinctionNote": "with ease는 쉽게라는 방식 표현이다. at ease는 긴장이 없는 상태이므로 전치사를 바꾸지 않는다.",
       "sourceIds": [
         "https://www.oxfordlearnersdictionaries.com/definition/american_english/ease_1",
@@ -4012,22 +4007,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "put the cart before the horse",
@@ -4625,7 +4611,10 @@
       "exampleSentence": "After months of work, the team was on the verge of solving the problem.",
       "exampleTranslation": "몇 달간 노력한 끝에 팀은 문제를 풀기 직전에 와 있었다.",
       "exampleExplanation": "반드시 위기라고 번역하지 않는다. 곧 일어날 듯하다는 뜻이며, 실제로 그 일이 일어났다는 확정도 아니다.",
-      "synonyms": [],
+      "synonyms": [
+        "on the brink of",
+        "on the point of"
+      ],
       "distinctionNote": "반드시 위기라고 번역하지 않는다. 곧 일어날 듯하다는 뜻이며, 실제로 그 일이 일어났다는 확정도 아니다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/dictionary/english/on-the-verge-of",
@@ -4642,22 +4631,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "in the wake of -",

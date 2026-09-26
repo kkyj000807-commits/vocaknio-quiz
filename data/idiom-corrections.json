@@ -420,6 +420,9 @@
         }
       ],
       "meaningKo": "A의 긴장을 풀어 주다; A를 편안하게 해 주다",
+      "nearSynonyms": [
+        "reassure"
+      ],
       "definitionEn": "To help someone feel relaxed and confident rather than nervous or embarrassed.",
       "definitionKo": "어색하거나 긴장한 사람이 불안감을 내려놓고 편하게 말하고 행동할 수 있도록 해 주다.",
       "memoryKo": "낯선 자리에 온 사람에게 따뜻한 질문을 건네 굳은 어깨가 풀리는 모습이다.",
@@ -1401,6 +1404,10 @@
         }
       ],
       "meaningKo": "막 ~하려는; ~하기 직전의",
+      "exactSynonyms": [
+        "on the brink of",
+        "on the point of"
+      ],
       "definitionEn": "Very close to a particular event or change, whether the outcome is welcome or unwelcome.",
       "definitionKo": "어떤 변화가 거의 일어나려는 바로 직전 상태다. 나쁜 위기뿐 아니라 발견·성공처럼 좋은 변화에도 쓴다.",
       "memoryKo": "verge는 가장자리다. 아직 넘어가지는 않았지만 바로 경계선 위에 서 있다.",
@@ -1572,6 +1579,7 @@
       "key":"pull-rug",
       "targets":[{"id":"JBKROW022968","headword":"pull the rug from under a person","before":"p.23"},{"id":"JBKROW022969","headword":"pull the rug from under a person's feet","before":"p.23"}],
       "meaningKo":"갑자기 지원을 끊어 상대가 곤란해지게 하다",
+      "nearSynonyms":["withdraw support from"],
       "definitionEn":"To abruptly withdraw support that a person or project has been relying on.",
       "definitionKo":"상대나 사업이 믿고 의지하던 도움을 갑자기 거둬들여 곤경에 빠뜨리다.",
       "memoryKo":"서 있는 사람의 발밑 양탄자를 갑자기 잡아당기면 중심을 잃는다. 그 양탄자가 지원이다.",

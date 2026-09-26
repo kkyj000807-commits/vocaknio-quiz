@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAtKst": "2026-09-26T17:16:13+09:00",
+  "generatedAtKst": "2026-09-26T18:16:21+09:00",
   "vocabulary": {
     "sourceRows": 38163,
     "uniqueHeadwords": 13347,
@@ -29,7 +29,7 @@
       "contextExplanation": 15,
       "exampleSentence": 15,
       "exampleExplanation": 15,
-      "synonyms": 62,
+      "synonyms": 59,
       "distinctionNote": 15,
       "sourceIds": 15
     }
@@ -42,7 +42,7 @@
       "contextExplanation": 0,
       "exampleSentence": 0,
       "exampleExplanation": 0,
-      "synonyms": 39,
+      "synonyms": 36,
       "distinctionNote": 0,
       "sourceIds": 0
     }
@@ -126,10 +126,10 @@
     }
   ],
   "statusCounts": {
-    "COMPLETE": 58,
+    "COMPLETE": 61,
     "VERIFIED_NO_DATA": 0,
     "FAILED": 0,
-    "NEEDS_REVIEW": 39,
+    "NEEDS_REVIEW": 36,
     "PENDING": 0
   },
   "frontend": {
@@ -181,7 +181,7 @@
         "contextExplanation": 0,
         "exampleSentence": 0,
         "exampleExplanation": 0,
-        "synonyms": 39,
+        "synonyms": 36,
         "distinctionNote": 0,
         "sourceIds": 0
       },

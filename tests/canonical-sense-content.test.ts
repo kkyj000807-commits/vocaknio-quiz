@@ -35,7 +35,7 @@ describe("canonical sense 공란 backfill", () => {
     expect(content.entries.filter((entry) => entry.definitionStatus === "NEEDS_REVIEW").every(
       (entry) => (entry.missingFields as string[]).includes("synonyms"),
     )).toBe(true);
-    expect(pending.categories.verificationPending).toHaveLength(39);
+    expect(pending.categories.verificationPending).toHaveLength(36);
     expect(pending.categories.senseMappingFailure).toHaveLength(37_933);
     expect(pending.categories.actualDataAbsence).toHaveLength(0);
   });
@@ -81,6 +81,9 @@ describe("canonical sense 공란 backfill", () => {
       ["clamp-down-on:primary", ["crack down on"]],
       ["crack-down-on:primary", ["clamp down on"]],
       ["cut-ground:primary", ["undermine"]],
+      ["put-at-ease:primary", ["reassure"]],
+      ["verge-of:primary", ["on the brink of", "on the point of"]],
+      ["pull-rug:primary", ["withdraw support from"]],
     ]);
 
     for (const [senseId, synonyms] of expected) {
@@ -111,6 +114,6 @@ describe("canonical sense 공란 backfill", () => {
       expect(entry.definitionProvenance?.attribution).toBe("Princeton WordNet; Open English WordNet Team");
       expect(entry.definitionProvenance?.contentSha256).toMatch(/^[0-9a-f]{64}$/);
     }
-    expect(content.entries.filter((entry) => entry.definitionStatus === "COMPLETE")).toHaveLength(58);
+    expect(content.entries.filter((entry) => entry.definitionStatus === "COMPLETE")).toHaveLength(61);
   });
 });
