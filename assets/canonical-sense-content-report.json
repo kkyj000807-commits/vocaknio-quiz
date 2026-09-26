@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAtKst": "2026-09-26T15:14:04+09:00",
+  "generatedAtKst": "2026-09-26T16:14:48+09:00",
   "vocabulary": {
     "sourceRows": 38163,
     "uniqueHeadwords": 13347,
@@ -29,7 +29,7 @@
       "contextExplanation": 15,
       "exampleSentence": 15,
       "exampleExplanation": 15,
-      "synonyms": 68,
+      "synonyms": 65,
       "distinctionNote": 15,
       "sourceIds": 15
     }
@@ -42,7 +42,7 @@
       "contextExplanation": 0,
       "exampleSentence": 0,
       "exampleExplanation": 0,
-      "synonyms": 45,
+      "synonyms": 42,
       "distinctionNote": 0,
       "sourceIds": 0
     }
@@ -126,10 +126,10 @@
     }
   ],
   "statusCounts": {
-    "COMPLETE": 52,
+    "COMPLETE": 55,
     "VERIFIED_NO_DATA": 0,
     "FAILED": 0,
-    "NEEDS_REVIEW": 45,
+    "NEEDS_REVIEW": 42,
     "PENDING": 0
   },
   "frontend": {
@@ -181,7 +181,7 @@
         "contextExplanation": 0,
         "exampleSentence": 0,
         "exampleExplanation": 0,
-        "synonyms": 45,
+        "synonyms": 42,
         "distinctionNote": 0,
         "sourceIds": 0
       },
@@ -320,6 +320,22 @@
     {
       "senseId": "carry-out:primary",
       "word": "carry out",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "case-in-point:primary",
+      "word": "a case in point",
       "status": "COMPLETE",
       "checkedFields": {
         "englishDefinition": true,
@@ -480,22 +496,6 @@
     {
       "senseId": "learn:00884747-v",
       "word": "boast",
-      "status": "COMPLETE",
-      "checkedFields": {
-        "englishDefinition": true,
-        "koreanMeaning": true,
-        "contextExplanation": true,
-        "exampleSentence": true,
-        "exampleExplanation": true,
-        "synonyms": true,
-        "distinctionNote": true,
-        "sourceIds": true
-      },
-      "sameSenseContract": true
-    },
-    {
-      "senseId": "learn:00902519-s",
-      "word": "abstruse",
       "status": "COMPLETE",
       "checkedFields": {
         "englishDefinition": true,

@@ -33,6 +33,9 @@ describe("깊이 학습 인덱스", () => {
     const lookAfter = readEntries("JBKROW013820");
     const putUpWith = readEntries("JBKROW013824");
     const atStake = readEntries("JBKROW000327");
+    const toBoot = readEntries("JBKROW000075");
+    const sameToken = readEntries("JBKROW000132");
+    const caseInPoint = readEntries("JBKROW000819");
 
     expect(byNoMeans[0]?.exactSynonyms).toEqual(["in no way", "not at all"]);
     expect(inSpite[0]?.exactSynonyms).toEqual(["despite"]);
@@ -42,6 +45,12 @@ describe("깊이 학습 인덱스", () => {
     expect(putUpWith[0]?.nearSynonyms).toEqual(["endure", "bear"]);
     expect(atStake[0]?.exactSynonyms).toEqual([]);
     expect(atStake[0]?.nearSynonyms).toEqual(["at risk"]);
+    expect(toBoot[0]?.exactSynonyms).toEqual(["in addition", "as well", "besides"]);
+    expect(toBoot[0]?.nearSynonyms).toEqual([]);
+    expect(sameToken[0]?.exactSynonyms).toEqual(["for the same reason"]);
+    expect(sameToken[0]?.nearSynonyms).toEqual([]);
+    expect(caseInPoint[0]?.exactSynonyms).toEqual(["a relevant example", "a pertinent example"]);
+    expect(caseInPoint[0]?.nearSynonyms).toEqual([]);
   });
 
   it("Open English WordNet의 같은 synset 동의어만 공개 데이터에 전달한다", () => {

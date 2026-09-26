@@ -480,6 +480,11 @@
         }
       ],
       "meaningKo": "게다가; 덤으로",
+      "exactSynonyms": [
+        "in addition",
+        "as well",
+        "besides"
+      ],
       "definitionEn": "Used to add one more fact or quality to what has already been mentioned.",
       "definitionKo": "이미 말한 내용에 한 가지가 더 있다고 덧붙이며 강조한다.",
       "memoryKo": "조건을 하나씩 말하다가 마지막 장점이나 단점 하나를 덤으로 얹는 장면이다.",
@@ -536,6 +541,9 @@
         }
       ],
       "meaningKo": "같은 이유로; 같은 논리를 적용하면",
+      "exactSynonyms": [
+        "for the same reason"
+      ],
       "definitionEn": "Used when the reasoning behind one statement also supports the statement that follows.",
       "definitionKo": "앞 문장을 성립시킨 이유나 원리가 뒤 문장에도 똑같이 적용된다고 연결한다.",
       "memoryKo": "첫 사례에 쓴 판단 기준을 두 번째 사례에도 그대로 대어 본다.",
@@ -744,6 +752,10 @@
         }
       ],
       "meaningKo": "지금 논점을 잘 보여 주는 사례",
+      "exactSynonyms": [
+        "a relevant example",
+        "a pertinent example"
+      ],
       "definitionEn": "A particular example that directly illustrates the issue currently being discussed.",
       "definitionKo": "아무 예시가 아니라, 지금 말하는 주장이나 문제를 구체적으로 보여 주는 사례다.",
       "memoryKo": "point는 논점이다. 그 논점에 꼭 들어맞는 실제 한 사례를 집어 든다.",
