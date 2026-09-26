@@ -4125,7 +4125,9 @@
       "exampleSentence": "The authorities released him from house arrest on Monday.",
       "exampleTranslation": "당국은 월요일에 그의 가택 연금을 해제했다.",
       "exampleExplanation": "release on/to house arrest는 구금에서 가택 연금으로 전환되는 맥락일 수 있다. from은 가택 연금 자체의 해제다.",
-      "synonyms": [],
+      "synonyms": [
+        "free from house arrest"
+      ],
       "distinctionNote": "release on/to house arrest는 구금에서 가택 연금으로 전환되는 맥락일 수 있다. from은 가택 연금 자체의 해제다.",
       "sourceIds": [
         "https://www.oxfordlearnersdictionaries.com/definition/english/house-arrest",
@@ -4139,22 +4141,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "run into",
@@ -4373,7 +4366,9 @@
       "exampleSentence": "If that route is closed, try another; there is more than one way to skin a cat.",
       "exampleTranslation": "그 길이 막혔다면 다른 길을 찾아보자. 목적을 이루는 방법이 하나뿐인 건 아니니까.",
       "exampleExplanation": "동물에 관한 문자 그대로의 지시가 아니라 해결 방법의 다양성을 나타내는 속담이다.",
-      "synonyms": [],
+      "synonyms": [
+        "there are several ways to achieve something"
+      ],
       "distinctionNote": "동물에 관한 문자 그대로의 지시가 아니라 해결 방법의 다양성을 나타내는 속담이다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/us/dictionary/english/theres-more-than-one-way-to-skin-a-cat",
@@ -4387,22 +4382,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "take for granted",

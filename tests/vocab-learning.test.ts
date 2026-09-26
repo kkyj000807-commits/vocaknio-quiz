@@ -42,6 +42,8 @@ describe("깊이 학습 인덱스", () => {
     const putAtEase = readEntries("JBKROW000069");
     const vergeOf = readEntries("JBKROW013940");
     const pullRug = readEntries("JBKROW022968");
+    const releaseHouseArrest = readEntries("JBKROW022992");
+    const skinCat = readEntries("JBKROW023090");
 
     expect(byNoMeans[0]?.exactSynonyms).toEqual(["in no way", "not at all"]);
     expect(inSpite[0]?.exactSynonyms).toEqual(["despite"]);
@@ -69,6 +71,10 @@ describe("깊이 학습 인덱스", () => {
     expect(vergeOf[0]?.nearSynonyms).toEqual([]);
     expect(pullRug[0]?.exactSynonyms).toEqual([]);
     expect(pullRug[0]?.nearSynonyms).toEqual(["withdraw support from"]);
+    expect(releaseHouseArrest[0]?.exactSynonyms).toEqual(["free from house arrest"]);
+    expect(releaseHouseArrest[0]?.nearSynonyms).toEqual([]);
+    expect(skinCat[0]?.exactSynonyms).toEqual(["there are several ways to achieve something"]);
+    expect(skinCat[0]?.nearSynonyms).toEqual([]);
   });
 
   it("Open English WordNet의 같은 synset 동의어만 공개 데이터에 전달한다", () => {
