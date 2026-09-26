@@ -46,6 +46,8 @@ describe("깊이 학습 인덱스", () => {
     const skinCat = readEntries("JBKROW023090");
     const lawHands = readEntries("JBKROW023078");
     const goodMoneyBad = readEntries("JBKROW023091");
+    const benefitDoubt = readEntries("JBKROW022820");
+    const newNormal = readEntries("JBKROW023335");
 
     expect(byNoMeans[0]?.exactSynonyms).toEqual(["in no way", "not at all"]);
     expect(inSpite[0]?.exactSynonyms).toEqual(["despite"]);
@@ -81,6 +83,10 @@ describe("깊이 학습 인덱스", () => {
     expect(lawHands[0]?.nearSynonyms).toEqual([]);
     expect(goodMoneyBad[0]?.exactSynonyms).toEqual(["waste more money on something already failing"]);
     expect(goodMoneyBad[0]?.nearSynonyms).toEqual([]);
+    expect(benefitDoubt[0]?.exactSynonyms).toEqual(["accept someone's account despite uncertainty"]);
+    expect(benefitDoubt[0]?.nearSynonyms).toEqual([]);
+    expect(newNormal[0]?.exactSynonyms).toEqual(["an unusual condition that has become standard"]);
+    expect(newNormal[0]?.nearSynonyms).toEqual([]);
   });
 
   it("Open English WordNet의 같은 synset 동의어만 공개 데이터에 전달한다", () => {

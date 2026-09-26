@@ -368,7 +368,9 @@
       "exampleSentence": "Her explanation sounded unusual, but I gave her the benefit of the doubt.",
       "exampleTranslation": "그녀의 설명이 좀 이상하게 들렸지만, 확실한 반증이 없어 일단 믿어 주었다.",
       "exampleExplanation": "결백이 입증됐다는 뜻도, 의심 자체가 사라졌다는 뜻도 아니다.",
-      "synonyms": [],
+      "synonyms": [
+        "accept someone's account despite uncertainty"
+      ],
       "distinctionNote": "결백이 입증됐다는 뜻도, 의심 자체가 사라졌다는 뜻도 아니다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/us/dictionary/english/benefit-of-the-doubt",
@@ -382,22 +384,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "blind alley",
@@ -3776,7 +3769,9 @@
       "exampleSentence": "For the team, remote meetings became the new normal.",
       "exampleTranslation": "그 팀에서는 원격 회의가 이제 특별할 것 없는 일상이 되었다.",
       "exampleExplanation": "normal은 좋거나 바람직하다는 뜻이 아니다. 나쁜 상황이 일상화된 경우에도 쓴다.",
-      "synonyms": [],
+      "synonyms": [
+        "an unusual condition that has become standard"
+      ],
       "distinctionNote": "normal은 좋거나 바람직하다는 뜻이 아니다. 나쁜 상황이 일상화된 경우에도 쓴다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/dictionary/english/the-new-normal",
@@ -3790,22 +3785,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "on behalf of -",
