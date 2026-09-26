@@ -322,7 +322,9 @@
       "exampleSentence": "We need to check every detail because the team's credibility is at stake.",
       "exampleTranslation": "팀의 신뢰가 걸린 일이므로 세부 사항을 하나하나 확인해야 한다.",
       "exampleExplanation": "그 대상 자체가 위험한 물건이라는 dangerous와 다르다. 잃거나 얻을 중요한 것이 결과에 걸려 있다는 뜻이다.",
-      "synonyms": [],
+      "synonyms": [
+        "at risk"
+      ],
       "distinctionNote": "그 대상 자체가 위험한 물건이라는 dangerous와 다르다. 잃거나 얻을 중요한 것이 결과에 걸려 있다는 뜻이다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/us/dictionary/english/at-stake",
@@ -339,22 +341,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "give someone the benefit of the doubt",
@@ -3725,7 +3718,11 @@
       "exampleSentence": "Could you look after these plants while I am away?",
       "exampleTranslation": "내가 없는 동안 이 식물들을 돌봐 줄 수 있을까?",
       "exampleExplanation": "look for는 찾다, look at은 쳐다보다다. after는 단순한 시간상의 이후로 풀지 않는다.",
-      "synonyms": [],
+      "synonyms": [
+        "take care of",
+        "care for",
+        "tend"
+      ],
       "distinctionNote": "look for는 찾다, look at은 쳐다보다다. after는 단순한 시간상의 이후로 풀지 않는다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/dictionary/english/look-after",
@@ -3740,22 +3737,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "make for",
@@ -4132,7 +4120,11 @@
       "exampleSentence": "She put up with the noise until the repairs were finished.",
       "exampleTranslation": "그녀는 수리가 끝날 때까지 소음을 참고 견뎠다.",
       "exampleExplanation": "put someone up은 숙박을 제공하다, put up a notice는 게시하다다. with까지 묶어 읽어야 참다라는 뜻이 된다.",
-      "synonyms": [],
+      "synonyms": [
+        "tolerate",
+        "endure",
+        "bear"
+      ],
       "distinctionNote": "put someone up은 숙박을 제공하다, put up a notice는 게시하다다. with까지 묶어 읽어야 참다라는 뜻이 된다.",
       "sourceIds": [
         "https://www.oxfordlearnersdictionaries.com/definition/english/put-up-with",
@@ -4147,22 +4139,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "release - from house arrest",

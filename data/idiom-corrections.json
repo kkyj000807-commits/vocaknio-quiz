@@ -794,6 +794,13 @@
       "memoryKo": "싫어도 당장 없애지 못하는 소음이나 행동을 참고 지내는 장면을 떠올린다.",
       "usageKo": "put up with + 사람·상황·동명사. I won't put up with it은 더는 참지 않겠다는 선을 긋는다.",
       "examTrapKo": "put someone up은 숙박을 제공하다, put up a notice는 게시하다다. with까지 묶어 읽어야 참다라는 뜻이 된다.",
+      "exactSynonyms": [
+        "tolerate"
+      ],
+      "nearSynonyms": [
+        "endure",
+        "bear"
+      ],
       "contrasts": [
         {
           "word": "approve of",
@@ -815,7 +822,7 @@
           "name": "Collins English Dictionary",
           "url": "https://www.collinsdictionary.com/dictionary/english/put-up-with",
           "independenceGroup": "Collins",
-          "noteKo": "tolerate 의미를 독립 대조."
+          "noteKo": "tolerate의 직접 대응과 endure·bear의 견딤 의미권을 독립 대조."
         }
       ]
     },
@@ -894,6 +901,13 @@
       "memoryKo": "잠깐 보는 것이 아니라, 상태를 계속 챙겨 주는 시선이다.",
       "usageKo": "look after a child는 아이를 돌보다, look after the accounts는 회계를 맡아 관리하다다.",
       "examTrapKo": "look for는 찾다, look at은 쳐다보다다. after는 단순한 시간상의 이후로 풀지 않는다.",
+      "exactSynonyms": [
+        "take care of"
+      ],
+      "nearSynonyms": [
+        "care for",
+        "tend"
+      ],
       "contrasts": [
         {
           "word": "look into",
@@ -909,7 +923,7 @@
           "name": "Collins English Dictionary",
           "url": "https://www.collinsdictionary.com/dictionary/english/look-after",
           "independenceGroup": "Collins",
-          "noteKo": "보살피고 관리하는 의미 확인."
+          "noteKo": "take care of의 직접 대응과 care for·tend의 돌봄 의미권 확인."
         },
         {
           "name": "Oxford Advanced Learner's Dictionary",
@@ -1477,6 +1491,9 @@
       "memoryKo": "내 평판이나 신뢰가 판돈처럼 걸려 있어 이번 결과에 따라 잃을 수도 있는 장면이다.",
       "usageKo": "lives/reputations/jobs are at stake처럼 무엇이 걸려 있는지를 주어로 드러낸다. what is at stake는 무엇이 걸린 문제인가다.",
       "examTrapKo": "그 대상 자체가 위험한 물건이라는 dangerous와 다르다. 잃거나 얻을 중요한 것이 결과에 걸려 있다는 뜻이다.",
+      "nearSynonyms": [
+        "at risk"
+      ],
       "contrasts": [
         {
           "word": "at risk",
@@ -1492,7 +1509,7 @@
           "name": "Collins English Dictionary",
           "url": "https://www.collinsdictionary.com/us/dictionary/english/at-stake",
           "independenceGroup": "Collins",
-          "noteKo": "상황에 따라 잃거나 얻을 수 있는 상태 확인."
+          "noteKo": "상황에 따라 잃을 수 있는 상태와 at risk의 가까운 의미 관계 확인."
         },
         {
           "name": "Oxford Advanced Learner's Dictionary",
