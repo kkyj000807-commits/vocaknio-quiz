@@ -13,241 +13,452 @@
       "synsetId": "00177411-a",
       "headword": "auspicious",
       "definition": "auguring favorable circumstances and good luck",
-      "sha256": "5b134d34275e4a549ee2752ea23698f80859f4002e0a590c482cfa6733e1db90"
+      "sha256": "5b134d34275e4a549ee2752ea23698f80859f4002e0a590c482cfa6733e1db90",
+      "members": [
+        "auspicious"
+      ]
     },
     "learn:00299633-a": {
       "synsetId": "00299633-a",
       "headword": "cacophonous",
       "definition": "having an unpleasant sound",
-      "sha256": "e9df302efdce526f59c7fb04d7518d24b7f465841f6d2b921a2a87b0eb836eb2"
+      "sha256": "e9df302efdce526f59c7fb04d7518d24b7f465841f6d2b921a2a87b0eb836eb2",
+      "members": [
+        "cacophonous",
+        "cacophonic"
+      ]
     },
     "learn:00451803-s": {
       "synsetId": "00451803-s",
       "headword": "juxtaposed",
       "definition": "placed side by side often for comparison",
-      "sha256": "d573426ae868e0ccaa57d440e288f0a2ee24708cd4389593155361a74927a9f3"
+      "sha256": "d573426ae868e0ccaa57d440e288f0a2ee24708cd4389593155361a74927a9f3",
+      "members": [
+        "juxtaposed"
+      ]
     },
     "learn:00519932-v": {
       "synsetId": "00519932-v",
       "headword": "demystify",
       "definition": "make less mysterious or remove the mystery from",
-      "sha256": "504eca195b3116bcd3ae887c52c09930be6e45668dd61d18d6445890eda31e46"
+      "sha256": "504eca195b3116bcd3ae887c52c09930be6e45668dd61d18d6445890eda31e46",
+      "members": [
+        "demystify"
+      ]
     },
     "learn:00531862-s": {
       "synsetId": "00531862-s",
       "headword": "serene",
       "definition": "not agitated; without losing self-possession",
-      "sha256": "9bc8828225093808ccead5e8fbb0949724b211b5eb0a336a083a885bb2a3c502"
+      "sha256": "9bc8828225093808ccead5e8fbb0949724b211b5eb0a336a083a885bb2a3c502",
+      "members": [
+        "calm",
+        "unagitated",
+        "serene",
+        "tranquil"
+      ]
     },
     "learn:00533833-s": {
       "synsetId": "00533833-s",
       "headword": "abashed",
       "definition": "feeling or caused to feel ill at ease or self-conscious or ashamed",
-      "sha256": "8f37711f538e20c55ee225e4a40360a2a24f47272f5fde9635ed0f33960539a4"
+      "sha256": "8f37711f538e20c55ee225e4a40360a2a24f47272f5fde9635ed0f33960539a4",
+      "members": [
+        "abashed",
+        "chagrined",
+        "embarrassed"
+      ]
     },
     "learn:00607995-v": {
       "synsetId": "00607995-v",
       "headword": "inculcate",
       "definition": "teach and impress by frequent repetitions or admonitions",
-      "sha256": "82ed678bc1055b24ac13047f8771be4193ecacdd954c3ce277f3c93bd81f0be0"
+      "sha256": "82ed678bc1055b24ac13047f8771be4193ecacdd954c3ce277f3c93bd81f0be0",
+      "members": [
+        "inculcate",
+        "instill",
+        "infuse"
+      ]
     },
     "learn:00722886-s": {
       "synsetId": "00722886-s",
       "headword": "capricious",
       "definition": "determined by chance or impulse or whim rather than by necessity or reason",
-      "sha256": "c0bd67d7d79da821dfc2ae4332e83c60588b064115d2dff81d7686477f1da3c5"
+      "sha256": "c0bd67d7d79da821dfc2ae4332e83c60588b064115d2dff81d7686477f1da3c5",
+      "members": [
+        "capricious",
+        "impulsive",
+        "whimsical"
+      ]
     },
     "learn:00770823-v": {
       "synsetId": "00770823-v",
       "headword": "cajole",
       "definition": "influence or urge by gentle urging, caressing, or flattering",
-      "sha256": "820d04b8c23faf2a3ae58cc5b89a9ff5aa296969b70e78948b5d95923a686c3b"
+      "sha256": "820d04b8c23faf2a3ae58cc5b89a9ff5aa296969b70e78948b5d95923a686c3b",
+      "members": [
+        "wheedle",
+        "cajole",
+        "palaver",
+        "blarney",
+        "coax",
+        "sweet-talk",
+        "inveigle"
+      ]
     },
     "learn:00884747-v": {
       "synsetId": "00884747-v",
       "headword": "boast",
       "definition": "show off",
-      "sha256": "a2aeafe15226a34b56b441d71ec7e5278953348b7137ec3cd8b7542dc3ca9b2c"
+      "sha256": "a2aeafe15226a34b56b441d71ec7e5278953348b7137ec3cd8b7542dc3ca9b2c",
+      "members": [
+        "boast",
+        "tout",
+        "swash",
+        "shoot a line",
+        "brag",
+        "gas",
+        "blow",
+        "bluster",
+        "vaunt",
+        "gasconade"
+      ]
     },
     "learn:00902519-s": {
       "synsetId": "00902519-s",
       "headword": "abstruse",
       "definition": "difficult to penetrate; incomprehensible to one of ordinary understanding or knowledge",
-      "sha256": "89d5be00904e492ed20b3fd38723863cac1e789a73f6d9b07c92fc8c1faf4d8f"
+      "sha256": "89d5be00904e492ed20b3fd38723863cac1e789a73f6d9b07c92fc8c1faf4d8f",
+      "members": [
+        "abstruse",
+        "deep",
+        "recondite"
+      ]
     },
     "learn:00905999-v": {
       "synsetId": "00905999-v",
       "headword": "exculpate",
       "definition": "pronounce not guilty of criminal charges",
-      "sha256": "0d3b6f7e5e6ec22c5aa9c3f540108f8ef25bfef28d0c5e8ee39df81ebee06888"
+      "sha256": "0d3b6f7e5e6ec22c5aa9c3f540108f8ef25bfef28d0c5e8ee39df81ebee06888",
+      "members": [
+        "acquit",
+        "assoil",
+        "clear",
+        "discharge",
+        "exonerate",
+        "exculpate"
+      ]
     },
     "learn:00940267-s": {
       "synsetId": "00940267-s",
       "headword": "callow",
       "definition": "young and inexperienced",
-      "sha256": "47958141b0185b1f1c3d01eb56e404fa15d80514e3662c0d76914abfb42842fb"
+      "sha256": "47958141b0185b1f1c3d01eb56e404fa15d80514e3662c0d76914abfb42842fb",
+      "members": [
+        "fledgling",
+        "unfledged",
+        "callow"
+      ]
     },
     "learn:01074673-v": {
       "synsetId": "01074673-v",
       "headword": "vie",
       "definition": "compete for something; engage in a contest; measure oneself against others",
-      "sha256": "153322adbbe25fe4f28f2ccf914d79e6990e2918f69aa0a78a741ba4e63d8cc5"
+      "sha256": "153322adbbe25fe4f28f2ccf914d79e6990e2918f69aa0a78a741ba4e63d8cc5",
+      "members": [
+        "compete",
+        "vie",
+        "contend"
+      ]
     },
     "learn:01237093-n": {
       "synsetId": "01237093-n",
       "headword": "absenteeism",
       "definition": "habitual absence from work",
-      "sha256": "3a560f11d849efc7576d6cde0935e982a3974c3eb62f2fdeaf032fe6bb99c51b"
+      "sha256": "3a560f11d849efc7576d6cde0935e982a3974c3eb62f2fdeaf032fe6bb99c51b",
+      "members": [
+        "absenteeism"
+      ]
     },
     "learn:01288942-s": {
       "synsetId": "01288942-s",
       "headword": "mind-boggling",
       "definition": "intellectually or emotionally overwhelming",
-      "sha256": "a997bd9f0f807db4ee855f48e0114d4a6c83d1b354e60652c591141d405b202a"
+      "sha256": "a997bd9f0f807db4ee855f48e0114d4a6c83d1b354e60652c591141d405b202a",
+      "members": [
+        "mind-boggling"
+      ]
     },
     "learn:01693210-s": {
       "synsetId": "01693210-s",
       "headword": "banal",
       "definition": "repeated too often; overfamiliar through overuse",
-      "sha256": "1bc8f4debfef9130d1ead11db828741a84c1874934d13c76c2bb3e34d28d498d"
+      "sha256": "1bc8f4debfef9130d1ead11db828741a84c1874934d13c76c2bb3e34d28d498d",
+      "members": [
+        "banal",
+        "commonplace",
+        "hackneyed",
+        "old-hat",
+        "shopworn",
+        "stock",
+        "threadbare",
+        "timeworn",
+        "tired",
+        "trite",
+        "well-worn"
+      ]
     },
     "learn:01764521-v": {
       "synsetId": "01764521-v",
       "headword": "infatuate",
       "definition": "arouse unreasoning love or passion in and cause to behave in an irrational way",
-      "sha256": "ebddf6b2b2f57a65882698b576391a180f626f388005c8e0f0c82ae3bf9d6a95"
+      "sha256": "ebddf6b2b2f57a65882698b576391a180f626f388005c8e0f0c82ae3bf9d6a95",
+      "members": [
+        "infatuate"
+      ]
     },
     "learn:01796126-v": {
       "synsetId": "01796126-v",
       "headword": "abash",
       "definition": "cause to be embarrassed; cause to feel self-conscious",
-      "sha256": "7ff5a0478a093f3b3e664f69d9264d30d8c9946bdf4e291e9abe60800f16f9a0"
+      "sha256": "7ff5a0478a093f3b3e664f69d9264d30d8c9946bdf4e291e9abe60800f16f9a0",
+      "members": [
+        "embarrass",
+        "abash"
+      ]
     },
     "learn:01803805-v": {
       "synsetId": "01803805-v",
       "headword": "abase",
       "definition": "cause to feel shame; hurt the pride of",
-      "sha256": "2d1dd1e82ad74c63ecf4ace3c3d3381d0d2a8bcf8e563410905d5b893b38d362"
+      "sha256": "2d1dd1e82ad74c63ecf4ace3c3d3381d0d2a8bcf8e563410905d5b893b38d362",
+      "members": [
+        "humiliate",
+        "mortify",
+        "chagrin",
+        "humble",
+        "abase"
+      ]
     },
     "learn:01810472-v": {
       "synsetId": "01810472-v",
       "headword": "captivate",
       "definition": "attract; cause to be enamored",
-      "sha256": "c217341adacff9d11ee8f8ac1be030717fb6233a403312e9d25f88b94d4c56d6"
+      "sha256": "c217341adacff9d11ee8f8ac1be030717fb6233a403312e9d25f88b94d4c56d6",
+      "members": [
+        "capture",
+        "enamour",
+        "trance",
+        "catch",
+        "becharm",
+        "enamor",
+        "captivate",
+        "beguile",
+        "charm",
+        "fascinate",
+        "bewitch",
+        "entrance",
+        "enchant"
+      ]
     },
     "learn:02186120-s": {
       "synsetId": "02186120-s",
       "headword": "intricate",
       "definition": "having many complexly arranged elements; elaborate",
-      "sha256": "560353a488de97b5e77550a8274c0380d8e1ad8e76a0fed2b0626fa0b8e273da"
+      "sha256": "560353a488de97b5e77550a8274c0380d8e1ad8e76a0fed2b0626fa0b8e273da",
+      "members": [
+        "intricate"
+      ]
     },
     "learn:02347012-v": {
       "synsetId": "02347012-v",
       "headword": "accouter",
       "definition": "provide with military equipment",
-      "sha256": "1b267c38da015c38771263eb95b89226fc0345c45eadca025f06865efa79666e"
+      "sha256": "1b267c38da015c38771263eb95b89226fc0345c45eadca025f06865efa79666e",
+      "members": [
+        "accouter",
+        "accoutre"
+      ]
     },
     "learn:02384340-v": {
       "synsetId": "02384340-v",
       "headword": "abdicate",
       "definition": "give up, such as power, as of monarchs and emperors, or duties and obligations",
-      "sha256": "f60c70230a99534e7b183f9582234f60b03b77d8cba4524efad312bb4e572930"
+      "sha256": "f60c70230a99534e7b183f9582234f60b03b77d8cba4524efad312bb4e572930",
+      "members": [
+        "abdicate",
+        "renounce"
+      ]
     },
     "learn:02434522-s": {
       "synsetId": "02434522-s",
       "headword": "slovenly",
       "definition": "negligent of neatness especially in dress and person; habitually dirty and unkempt",
-      "sha256": "897da3d5217d7dfaf4b60fb7eb82fefcbf8e143b50068a1a4b0c2781d613a6ab"
+      "sha256": "897da3d5217d7dfaf4b60fb7eb82fefcbf8e143b50068a1a4b0c2781d613a6ab",
+      "members": [
+        "frowsy",
+        "frowzy",
+        "slovenly"
+      ]
     },
     "learn:02484173-v": {
       "synsetId": "02484173-v",
       "headword": "abrogate",
       "definition": "revoke formally",
-      "sha256": "ac28128e3cf92e965289cbc00cc7143a042712c65887d426076318112151a12c"
+      "sha256": "ac28128e3cf92e965289cbc00cc7143a042712c65887d426076318112151a12c",
+      "members": [
+        "abrogate"
+      ]
     },
     "learn:02554908-v": {
       "synsetId": "02554908-v",
       "headword": "abet",
       "definition": "assist or encourage, usually in some wrongdoing",
-      "sha256": "b0774dc3ac0c31ec32baa2c5196a305c35f643ed33bc5824f0ce7e81a81d4f64"
+      "sha256": "b0774dc3ac0c31ec32baa2c5196a305c35f643ed33bc5824f0ce7e81a81d4f64",
+      "members": [
+        "abet"
+      ]
     },
     "learn:02654355-v": {
       "synsetId": "02654355-v",
       "headword": "perpetuate",
       "definition": "cause to continue or prevail",
-      "sha256": "bb44f01998232a56e84c015ab8cf4b92899a443468ab966043a5d4db2a334180"
+      "sha256": "bb44f01998232a56e84c015ab8cf4b92899a443468ab966043a5d4db2a334180",
+      "members": [
+        "perpetuate"
+      ]
     },
     "learn:02675578-v": {
       "synsetId": "02675578-v",
       "headword": "suffice",
       "definition": "be sufficient; be adequate, either in quality or quantity",
-      "sha256": "e6ba2e478a454b53a9c7434c63388efb1da49e4fb143755d94eb65a227fcd5a2"
+      "sha256": "e6ba2e478a454b53a9c7434c63388efb1da49e4fb143755d94eb65a227fcd5a2",
+      "members": [
+        "suffice",
+        "do",
+        "answer",
+        "serve"
+      ]
     },
     "learn:04677185-n": {
       "synsetId": "04677185-n",
       "headword": "accountability",
       "definition": "responsibility to someone or for some activity",
-      "sha256": "b7fdb725ec7f356747f4cc7d5e1ba428b19c725d1e293231a5f1aee7b29314e8"
+      "sha256": "b7fdb725ec7f356747f4cc7d5e1ba428b19c725d1e293231a5f1aee7b29314e8",
+      "members": [
+        "accountability",
+        "answerability",
+        "answerableness"
+      ]
     },
     "learn:04759785-n": {
       "synsetId": "04759785-n",
       "headword": "disparity",
       "definition": "inequality or difference in some respect",
-      "sha256": "d8b6efd3f5f79217ba974d1d1329dfdd05ea0c8a4214d83b698ed04b212be5a6"
+      "sha256": "d8b6efd3f5f79217ba974d1d1329dfdd05ea0c8a4214d83b698ed04b212be5a6",
+      "members": [
+        "disparity"
+      ]
     },
     "learn:05786128-n": {
       "synsetId": "05786128-n",
       "headword": "astrology",
       "definition": "a pseudoscience claiming divination by the positions of the planets and sun and moon",
-      "sha256": "b72c095318d379ac87cf424cac223bccf7b4e6b0e0702488c084163932b7105a"
+      "sha256": "b72c095318d379ac87cf424cac223bccf7b4e6b0e0702488c084163932b7105a",
+      "members": [
+        "astrology",
+        "star divination"
+      ]
     },
     "learn:05903745-n": {
       "synsetId": "05903745-n",
       "headword": "sophism",
       "definition": "a deliberately invalid argument displaying ingenuity in reasoning in the hope of deceiving someone",
-      "sha256": "0a68435e51ed293277d06090d8b34269b7240079c7bebfc0f6c3f536b68bb7d3"
+      "sha256": "0a68435e51ed293277d06090d8b34269b7240079c7bebfc0f6c3f536b68bb7d3",
+      "members": [
+        "sophism",
+        "sophistry",
+        "sophistication"
+      ]
     },
     "learn:07519226-n": {
       "synsetId": "07519226-n",
       "headword": "revulsion",
       "definition": "intense aversion",
-      "sha256": "541c0e1c1dd689e4b2c0a7efef5bd6b26ebb3d0c6fc8ff34573e7450975caa32"
+      "sha256": "541c0e1c1dd689e4b2c0a7efef5bd6b26ebb3d0c6fc8ff34573e7450975caa32",
+      "members": [
+        "repugnance",
+        "repulsion",
+        "revulsion",
+        "horror"
+      ]
     },
     "learn:09229873-n": {
       "synsetId": "09229873-n",
       "headword": "acclivity",
       "definition": "an upward slope or grade (as in a road)",
-      "sha256": "f9af32fedf8cc606eec40a9e9006e3f613b9d8a5afb51b54402488a51e35d37b"
+      "sha256": "f9af32fedf8cc606eec40a9e9006e3f613b9d8a5afb51b54402488a51e35d37b",
+      "members": [
+        "ascent",
+        "acclivity",
+        "rise",
+        "raise",
+        "climb",
+        "upgrade"
+      ]
     },
     "learn:09775380-n": {
       "synsetId": "09775380-n",
       "headword": "abettor",
       "definition": "one who helps or encourages or incites another",
-      "sha256": "4ee3324b16533502c0c3c7baae8b03b82d38a55e25d2c2269343a363946541a7"
+      "sha256": "4ee3324b16533502c0c3c7baae8b03b82d38a55e25d2c2269343a363946541a7",
+      "members": [
+        "abettor",
+        "abetter"
+      ]
     },
     "learn:10574739-n": {
       "synsetId": "10574739-n",
       "headword": "scapegoat",
       "definition": "someone who is punished for the errors of others",
-      "sha256": "f0e3014cf3339d7fb3a83abb0b8748175d242bda98a757c144c155697cba385a"
+      "sha256": "f0e3014cf3339d7fb3a83abb0b8748175d242bda98a757c144c155697cba385a",
+      "members": [
+        "scapegoat"
+      ]
     },
     "learn:14034107-n": {
       "synsetId": "14034107-n",
       "headword": "abeyance",
       "definition": "temporary cessation or suspension",
-      "sha256": "c29b73624622e033c748a9ceb85561f9166311a5a7fd78fbb0b0bd9420b1c20d"
+      "sha256": "c29b73624622e033c748a9ceb85561f9166311a5a7fd78fbb0b0bd9420b1c20d",
+      "members": [
+        "abeyance",
+        "suspension"
+      ]
     },
     "learn:14335599-n": {
       "synsetId": "14335599-n",
       "headword": "abscess",
       "definition": "symptom consisting of a localized collection of pus surrounded by inflamed tissue",
-      "sha256": "bf232cde1fffe224ebc51658549424dcf00fd48ebe0394ca512940819972bfa9"
+      "sha256": "bf232cde1fffe224ebc51658549424dcf00fd48ebe0394ca512940819972bfa9",
+      "members": [
+        "abscess"
+      ]
     },
     "learn:81484980-r": {
       "synsetId": "81484980-r",
       "headword": "abruptly",
       "definition": "quickly and without warning",
-      "sha256": "560f2d9abfa731068de6f5153780a4d0c416f4706fc08ef69fcc0344c99ea2b4"
+      "sha256": "560f2d9abfa731068de6f5153780a4d0c416f4706fc08ef69fcc0344c99ea2b4",
+      "members": [
+        "suddenly",
+        "all of a sudden",
+        "on the spur of the moment",
+        "of a sudden",
+        "abruptly",
+        "dead",
+        "short"
+      ]
     }
   }
 }

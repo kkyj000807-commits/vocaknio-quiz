@@ -35,7 +35,7 @@ describe("canonical sense 공란 backfill", () => {
     expect(content.entries.filter((entry) => entry.definitionStatus === "NEEDS_REVIEW").every(
       (entry) => (entry.missingFields as string[]).includes("synonyms"),
     )).toBe(true);
-    expect(pending.categories.verificationPending).toHaveLength(84);
+    expect(pending.categories.verificationPending).toHaveLength(57);
     expect(pending.categories.senseMappingFailure).toHaveLength(37_933);
     expect(pending.categories.actualDataAbsence).toHaveLength(0);
   });
@@ -67,5 +67,6 @@ describe("canonical sense 공란 backfill", () => {
       expect(entry.definitionProvenance?.attribution).toBe("Princeton WordNet; Open English WordNet Team");
       expect(entry.definitionProvenance?.contentSha256).toMatch(/^[0-9a-f]{64}$/);
     }
+    expect(content.entries.filter((entry) => entry.definitionStatus === "COMPLETE")).toHaveLength(46);
   });
 });

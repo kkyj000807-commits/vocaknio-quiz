@@ -257,7 +257,7 @@ const statusCounts = Object.fromEntries(
   ]),
 );
 
-const sampleAudit = records
+const sampleAudit = [...records]
   .sort((left, right) => Number(right.definitionStatus === "COMPLETE") - Number(left.definitionStatus === "COMPLETE") || left.senseId.localeCompare(right.senseId))
   .slice(0, 20)
   .map((record) => ({

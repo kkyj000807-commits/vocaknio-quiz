@@ -21,6 +21,7 @@ const oewnDefinitionManifest = JSON.parse(
 const fail = (message) => {
   throw new Error(`깊이 학습 데이터 오류: ${message}`);
 };
+const normalizeLexeme = (value) => String(value ?? "").trim().toLowerCase().replace(/[_\s]+/g, " ");
 
 for (const sourcePath of sourcePaths) {
   if (!fs.existsSync(sourcePath)) fail(`원본 없음: ${sourcePath}`);
@@ -72,6 +73,9 @@ for (const entry of entries) {
     if (!manifestDefinition || manifestDefinition.definition !== entry.definitionEn) {
       fail(`${entry.id}: Open English WordNet 2025 원문 정의와 불일치`);
     }
+    if (!Array.isArray(manifestDefinition.members) || !manifestDefinition.members.some(
+      (member) => normalizeLexeme(member) === normalizeLexeme(entry.headword),
+    )) fail(`${entry.id}: Open English WordNet synset에 표제어가 없음`);
   }
   for (const source of entry.sources) {
     if (!source.url || !source.edition || !source.license) fail(`${entry.id}: 불완전한 출처 정보`);
@@ -128,6 +132,12 @@ for (const group of groups) {
     definitionKind: entry.definitionKind ?? "verbatim-licensed",
     ...(entry.definitionKind === "editorial" ? {} : {
       definitionSourceSha256: oewnDefinitionManifest.definitions[entry.senseId ?? entry.id].sha256,
+      exactSynonyms: [...new Set([
+        ...(entry.exactSynonyms ?? []),
+        ...oewnDefinitionManifest.definitions[entry.senseId ?? entry.id].members.filter(
+          (member) => normalizeLexeme(member) !== normalizeLexeme(entry.headword),
+        ),
+      ])],
     }),
     senseId: entry.senseId ?? entry.id,
     definitionStatus: "production",

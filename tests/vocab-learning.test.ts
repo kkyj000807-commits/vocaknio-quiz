@@ -5,6 +5,7 @@ import path from "node:path";
 import learningIndex from "@/assets/vocab-learning-index-v1.4.json";
 import corrections from "@/data/idiom-corrections.json";
 import release from "@/release.config.json";
+import oewnManifest from "@/data/vocab-learning/oewn-2025-definition-manifest.json";
 import { VOCAB } from "@/lib/vocab";
 import { hasLearningEntry, LEARNING_COVERAGE } from "@/lib/vocab-learning";
 
@@ -32,6 +33,23 @@ describe("깊이 학습 인덱스", () => {
 
     expect(byNoMeans[0]?.exactSynonyms).toEqual(["in no way", "not at all"]);
     expect(inSpite[0]?.exactSynonyms).toEqual(["despite"]);
+  });
+
+  it("Open English WordNet의 같은 synset 동의어만 공개 데이터에 전달한다", () => {
+    const publicEntries = ["v101", "v201", "v301", "v401", "v501", "v502", "v601", "appendix"]
+      .flatMap((group) => (JSON.parse(fs.readFileSync(
+        path.join(process.cwd(), "public", "data", "vocab-learning", release.version, `${group}.json`),
+        "utf8",
+      )) as { entries: { senseId: string; headword: string; definitionKind?: string; exactSynonyms?: string[] }[] }).entries);
+    const licensed = publicEntries.filter((entry) => entry.definitionKind === "verbatim-licensed");
+
+    expect(licensed).toHaveLength(40);
+    for (const entry of licensed) {
+      const source = oewnManifest.definitions[entry.senseId as keyof typeof oewnManifest.definitions];
+      const expected = source.members.filter((member) => member.toLowerCase() !== entry.headword.toLowerCase());
+      expect(entry.exactSynonyms).toEqual(expected);
+    }
+    expect(licensed.filter((entry) => entry.exactSynonyms?.length)).toHaveLength(27);
   });
 
   it("쪽수로 남아 있던 숙어에 실제 해설이 연결된다", () => {
