@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAtKst": "2026-09-26T23:23:52+09:00",
+  "generatedAtKst": "2026-09-27T00:22:43+09:00",
   "vocabulary": {
     "sourceRows": 38163,
     "uniqueHeadwords": 13347,
@@ -22,27 +22,27 @@
     "note": "원본 38,163행 스키마는 w/k/s 중심이며, canonical sense 필드는 별도 검수 레이어에서만 제공된다."
   },
   "before": {
-    "canonicalSenseCount": 103,
+    "canonicalSenseCount": 105,
     "blanks": {
       "englishDefinition": 15,
       "koreanMeaning": 15,
       "contextExplanation": 15,
       "exampleSentence": 15,
       "exampleExplanation": 15,
-      "synonyms": 49,
+      "synonyms": 47,
       "distinctionNote": 15,
       "sourceIds": 15
     }
   },
   "after": {
-    "canonicalSenseCount": 97,
+    "canonicalSenseCount": 99,
     "blanks": {
       "englishDefinition": 0,
       "koreanMeaning": 0,
       "contextExplanation": 0,
       "exampleSentence": 0,
       "exampleExplanation": 0,
-      "synonyms": 26,
+      "synonyms": 24,
       "distinctionNote": 0,
       "sourceIds": 0
     }
@@ -126,14 +126,14 @@
     }
   ],
   "statusCounts": {
-    "COMPLETE": 71,
+    "COMPLETE": 75,
     "VERIFIED_NO_DATA": 0,
     "FAILED": 0,
-    "NEEDS_REVIEW": 26,
+    "NEEDS_REVIEW": 24,
     "PENDING": 0
   },
   "frontend": {
-    "learningDetailSenseCount": 141,
+    "learningDetailSenseCount": 144,
     "learningDetailRowCount": 218,
     "note": "기존 단어장·문풀·오답 화면의 LearningDetails selector가 이 배포 JSON을 읽는다."
   },
@@ -181,7 +181,7 @@
         "contextExplanation": 0,
         "exampleSentence": 0,
         "exampleExplanation": 0,
-        "synonyms": 26,
+        "synonyms": 24,
         "distinctionNote": 0,
         "sourceIds": 0
       },
@@ -382,6 +382,38 @@
       "sameSenseContract": true
     },
     {
+      "senseId": "come-to-terms:accept-unpleasant-reality",
+      "word": "come to terms with",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
+      "senseId": "come-to-terms:reach-agreement-with-party",
+      "word": "come to terms with",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
       "senseId": "crack-down-on:primary",
       "word": "crack down on",
       "status": "COMPLETE",
@@ -446,8 +478,8 @@
       "sameSenseContract": true
     },
     {
-      "senseId": "good-money-bad:primary",
-      "word": "throw good money after bad",
+      "senseId": "get-over:overcome-difficulty",
+      "word": "get over",
       "status": "COMPLETE",
       "checkedFields": {
         "englishDefinition": true,
@@ -462,40 +494,8 @@
       "sameSenseContract": true
     },
     {
-      "senseId": "in-spite:primary",
-      "word": "in spite of A",
-      "status": "COMPLETE",
-      "checkedFields": {
-        "englishDefinition": true,
-        "koreanMeaning": true,
-        "contextExplanation": true,
-        "exampleSentence": true,
-        "exampleExplanation": true,
-        "synonyms": true,
-        "distinctionNote": true,
-        "sourceIds": true
-      },
-      "sameSenseContract": true
-    },
-    {
-      "senseId": "jury-foreman:leader-of-jury",
-      "word": "jury foreman",
-      "status": "COMPLETE",
-      "checkedFields": {
-        "englishDefinition": true,
-        "koreanMeaning": true,
-        "contextExplanation": true,
-        "exampleSentence": true,
-        "exampleExplanation": true,
-        "synonyms": true,
-        "distinctionNote": true,
-        "sourceIds": true
-      },
-      "sameSenseContract": true
-    },
-    {
-      "senseId": "jury-nullification:primary",
-      "word": "jury nullification",
+      "senseId": "get-over:recover-from-illness-or-upset",
+      "word": "get over",
       "status": "COMPLETE",
       "checkedFields": {
         "englishDefinition": true,

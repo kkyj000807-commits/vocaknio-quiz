@@ -792,9 +792,9 @@
     {
       "word": "come to terms with",
       "variants": [],
-      "senseId": "come-to-terms:primary",
+      "senseId": "come-to-terms:accept-unpleasant-reality",
       "partOfSpeech": "idiom",
-      "englishDefinition": "To gradually accept and deal with an unwelcome reality, or, with another party, to reach an agreement.",
+      "englishDefinition": "To learn to accept and deal with a difficult or unpleasant fact or situation.",
       "definitionProvenance": {
         "kind": "editorial",
         "source": "VOCA NEXUS editorial",
@@ -803,13 +803,15 @@
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/terms"
         ]
       },
-      "koreanMeaning": "바꾸기 힘든 현실을 외면하지 않고 받아들이게 되다. 상대방과 조건을 조정하는 문맥에서는 합의에 이르다는 뜻이다.",
-      "contextExplanation": "come to terms with a loss는 상실을 받아들이다다. come to terms with another party는 합의하다로 읽힐 수 있다.",
+      "koreanMeaning": "바꾸기 힘든 불쾌한 사실이나 상황을 인정하고 그 현실에 대처하게 되다.",
+      "contextExplanation": "come to terms with a loss/fact/change처럼 받아들여야 할 현실이 목적어로 온다.",
       "exampleSentence": "She is slowly coming to terms with the fact that the plan must change.",
       "exampleTranslation": "그녀는 계획을 바꿔야 한다는 현실을 서서히 받아들이고 있다.",
-      "exampleExplanation": "받아들였다고 해서 기쁘거나 찬성한다는 뜻은 아니다. 현실 수용과 협상 타결을 목적어·문맥으로 구분한다.",
-      "synonyms": [],
-      "distinctionNote": "받아들였다고 해서 기쁘거나 찬성한다는 뜻은 아니다. 현실 수용과 협상 타결을 목적어·문맥으로 구분한다.",
+      "exampleExplanation": "slowly와 the fact that가 불편한 현실을 점차 받아들이는 sense를 보여 준다.",
+      "synonyms": [
+        "come to accept"
+      ],
+      "distinctionNote": "찬성하거나 기뻐한다는 뜻이 아니다. 사람과 협상해 조건을 합의하는 sense와도 구분한다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/dictionary/english/come-to-terms-with",
         "https://www.oxfordlearnersdictionaries.com/us/definition/english/terms"
@@ -823,22 +825,57 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "come to terms with",
+      "variants": [],
+      "senseId": "come-to-terms:reach-agreement-with-party",
+      "partOfSpeech": "idiom",
+      "englishDefinition": "To reach an agreement or workable arrangement with another person or group.",
+      "definitionProvenance": {
+        "kind": "editorial",
+        "source": "VOCA NEXUS editorial",
+        "referenceUrls": [
+          "https://www.collinsdictionary.com/dictionary/english/come-to-terms-with",
+          "https://www.oxfordlearnersdictionaries.com/us/definition/english/terms"
         ]
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "koreanMeaning": "상대방과 협상하여 합의나 함께 지킬 수 있는 조건에 이르다.",
+      "contextExplanation": "come to terms with a creditor/the other side처럼 협상 상대가 뒤따르면 합의 sense다.",
+      "exampleSentence": "After weeks of negotiation, the company came to terms with its creditors.",
+      "exampleTranslation": "몇 주간의 협상 끝에 그 회사는 채권자들과 합의에 이르렀다.",
+      "exampleExplanation": "negotiation과 creditors가 감정적 수용이 아니라 당사자 간 합의의 sense를 고정한다.",
+      "synonyms": [
+        "reach an agreement"
+      ],
+      "distinctionNote": "상실·변화 같은 현실을 받아들이는 sense와 구분한다. 한쪽이 단순히 체념했다는 뜻도 아니다.",
+      "sourceIds": [
+        "https://www.collinsdictionary.com/dictionary/english/come-to-terms-with",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/terms"
+      ],
+      "itemIds": [
+        "JBKROW018274",
+        "JBKROW021038"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
     },
     {
       "word": "the (British) Commonwealth (of Nations)",
@@ -1221,9 +1258,9 @@
     {
       "word": "get over",
       "variants": [],
-      "senseId": "get-over:primary",
-      "partOfSpeech": "idiom",
-      "englishDefinition": "To recover from an illness or upsetting experience, or to successfully deal with a difficulty.",
+      "senseId": "get-over:overcome-difficulty",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To successfully deal with or overcome a problem, difficulty, or obstacle.",
       "definitionProvenance": {
         "kind": "editorial",
         "source": "VOCA NEXUS editorial",
@@ -1232,13 +1269,15 @@
           "https://www.collinsdictionary.com/us/dictionary/english/get-over"
         ]
       },
-      "koreanMeaning": "병이나 충격의 영향에서 벗어나 회복하거나, 앞을 막던 어려움을 넘어서다.",
-      "contextExplanation": "get over the flu는 독감에서 회복하다, get over the disappointment는 실망을 딛고 일어서다다.",
-      "exampleSentence": "It took him several weeks to get over the disappointment.",
-      "exampleTranslation": "그가 그 실망을 딛고 일어서기까지는 몇 주가 걸렸다.",
-      "exampleExplanation": "get something over with는 하기 싫은 일을 빨리 끝내 버리다다. get over something과 구조·초점이 다르다.",
-      "synonyms": [],
-      "distinctionNote": "get something over with는 하기 싫은 일을 빨리 끝내 버리다다. get over something과 구조·초점이 다르다.",
+      "koreanMeaning": "진행을 가로막는 문제·곤란·장애를 처리해 넘어가다.",
+      "contextExplanation": "get over a problem/difficulty/obstacle처럼 해결해야 할 방해물이 목적어로 온다.",
+      "exampleSentence": "The team found a practical way to get over the technical obstacle.",
+      "exampleTranslation": "그 팀은 기술적 장애를 극복할 실용적인 방법을 찾아냈다.",
+      "exampleExplanation": "found a practical way와 obstacle이 회복이 아니라 문제 해결의 sense를 고정한다.",
+      "synonyms": [
+        "overcome"
+      ],
+      "distinctionNote": "질병·충격에서 정상 상태로 돌아오는 recover sense와 구분한다. 단순히 어려움을 참는 뜻도 아니다.",
       "sourceIds": [
         "https://www.oxfordlearnersdictionaries.com/us/definition/english/get-over",
         "https://www.collinsdictionary.com/us/dictionary/english/get-over"
@@ -1251,22 +1290,56 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "get over",
+      "variants": [],
+      "senseId": "get-over:recover-from-illness-or-upset",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To return to a normal state of health or feeling after an illness, shock, or upsetting experience.",
+      "definitionProvenance": {
+        "kind": "editorial",
+        "source": "VOCA NEXUS editorial",
+        "referenceUrls": [
+          "https://www.oxfordlearnersdictionaries.com/us/definition/english/get-over",
+          "https://www.collinsdictionary.com/us/dictionary/english/get-over"
         ]
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "koreanMeaning": "병·충격·속상한 경험의 영향에서 벗어나 원래의 건강이나 감정 상태를 되찾다.",
+      "contextExplanation": "get over the flu/shock/disappointment처럼 질병이나 감정적 충격이 목적어로 온다.",
+      "exampleSentence": "It took him several weeks to get over the disappointment.",
+      "exampleTranslation": "그가 그 실망을 딛고 일어서기까지는 몇 주가 걸렸다.",
+      "exampleExplanation": "several weeks와 disappointment가 감정적 충격 뒤의 회복 과정을 보여 준다.",
+      "synonyms": [
+        "recover from"
+      ],
+      "distinctionNote": "문제를 해결한다는 overcome sense와 구분한다. 회복에는 시간이 걸릴 수 있으며 잊어버렸다는 뜻까지 보장하지 않는다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/get-over",
+        "https://www.collinsdictionary.com/us/dictionary/english/get-over"
+      ],
+      "itemIds": [
+        "APPROW01008"
+      ],
+      "inputLayers": [
+        "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
     },
     {
       "word": "throw good money after bad",

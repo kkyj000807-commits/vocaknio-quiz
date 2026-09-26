@@ -25,7 +25,7 @@ describe("깊이 학습 인덱스", () => {
       const payload = JSON.parse(fs.readFileSync(
         path.join(process.cwd(), "public", "data", "vocab-learning", release.version, `${pointer.group.toLowerCase()}.json`),
         "utf8",
-      )) as { entries: { itemIds: string[]; exactSynonyms?: string[]; nearSynonyms?: string[] }[] };
+      )) as { entries: { senseId: string; itemIds: string[]; exactSynonyms?: string[]; nearSynonyms?: string[] }[] };
       return payload.entries.filter((entry) => entry.itemIds.includes(itemId));
     };
     const byNoMeans = readEntries("JBKROW014279");
@@ -52,6 +52,8 @@ describe("깊이 학습 인덱스", () => {
     const juryNullification = readEntries("JBKROW023302");
     const runInto = readEntries("APPROW01880");
     const onBehalf = readEntries("JBKROW014517");
+    const getOver = readEntries("APPROW01008");
+    const comeToTerms = readEntries("JBKROW018274");
 
     expect(byNoMeans[0]?.exactSynonyms).toEqual(["in no way", "not at all"]);
     expect(inSpite[0]?.exactSynonyms).toEqual(["despite"]);
@@ -99,6 +101,14 @@ describe("깊이 학습 인덱스", () => {
     expect(runInto[0]?.nearSynonyms).toEqual([]);
     expect(onBehalf[0]?.exactSynonyms).toEqual(["as a representative of"]);
     expect(onBehalf[0]?.nearSynonyms).toEqual([]);
+    expect(getOver.find((entry) => entry.senseId === "get-over:recover-from-illness-or-upset")?.exactSynonyms)
+      .toEqual(["recover from"]);
+    expect(getOver.find((entry) => entry.senseId === "get-over:overcome-difficulty")?.exactSynonyms)
+      .toEqual(["overcome"]);
+    expect(comeToTerms.find((entry) => entry.senseId === "come-to-terms:accept-unpleasant-reality")?.exactSynonyms)
+      .toEqual(["come to accept"]);
+    expect(comeToTerms.find((entry) => entry.senseId === "come-to-terms:reach-agreement-with-party")?.exactSynonyms)
+      .toEqual(["reach an agreement"]);
   });
 
   it("Open English WordNet의 같은 synset 동의어만 공개 데이터에 전달한다", () => {

@@ -1,7 +1,7 @@
 {
   "version": "3.1",
   "coverage": {
-    "senses": 141,
+    "senses": 144,
     "rows": 218,
     "checkedAtKst": "2026.09.05"
   },
@@ -39,7 +39,8 @@
     "APPROW01008": {
       "group": "APPENDIX",
       "entryIds": [
-        "learn:correction:APPROW01008"
+        "learn:correction:APPROW01008:recover-from-illness-or-upset",
+        "learn:correction:APPROW01008:overcome-difficulty"
       ]
     },
     "APPROW01880": {
@@ -899,7 +900,8 @@
     "JBKROW018274": {
       "group": "V501",
       "entryIds": [
-        "learn:correction:JBKROW018274"
+        "learn:correction:JBKROW018274:accept-unpleasant-reality",
+        "learn:correction:JBKROW018274:reach-agreement-with-party"
       ]
     },
     "JBKROW018724": {
@@ -965,7 +967,8 @@
     "JBKROW021038": {
       "group": "V501",
       "entryIds": [
-        "learn:correction:JBKROW021038"
+        "learn:correction:JBKROW021038:accept-unpleasant-reality",
+        "learn:correction:JBKROW021038:reach-agreement-with-party"
       ]
     },
     "JBKROW022130": {

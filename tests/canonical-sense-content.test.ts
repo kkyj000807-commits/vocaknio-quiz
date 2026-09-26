@@ -35,7 +35,7 @@ describe("canonical sense 공란 backfill", () => {
     expect(content.entries.filter((entry) => entry.definitionStatus === "NEEDS_REVIEW").every(
       (entry) => (entry.missingFields as string[]).includes("synonyms"),
     )).toBe(true);
-    expect(pending.categories.verificationPending).toHaveLength(26);
+    expect(pending.categories.verificationPending).toHaveLength(24);
     expect(pending.categories.senseMappingFailure).toHaveLength(37_933);
     expect(pending.categories.actualDataAbsence).toHaveLength(0);
   });
@@ -56,7 +56,7 @@ describe("canonical sense 공란 backfill", () => {
       "work-out:primary",
       "wrap-up:primary",
     ];
-    expect(report.after.canonicalSenseCount).toBe(97);
+    expect(report.after.canonicalSenseCount).toBe(99);
     expect(report.supersededAggregates).toHaveLength(superseded.length);
     expect(report.supersededAggregates.map((entry) => entry.senseId).sort()).toEqual([...superseded].sort());
     for (const senseId of superseded) {
@@ -65,6 +65,10 @@ describe("canonical sense 공란 backfill", () => {
     expect(content.entries.some((entry) => entry.senseId === "abide-by:follow-governing-rule")).toBe(true);
     expect(content.entries.filter((entry) => entry.word === "work out")).toHaveLength(4);
     expect(content.entries.filter((entry) => entry.word === "take for granted")).toHaveLength(2);
+    expect(content.entries.some((entry) => entry.senseId === "get-over:primary")).toBe(false);
+    expect(content.entries.some((entry) => entry.senseId === "come-to-terms:primary")).toBe(false);
+    expect(content.entries.filter((entry) => entry.word === "get over")).toHaveLength(2);
+    expect(content.entries.filter((entry) => entry.word === "come to terms with")).toHaveLength(2);
   });
 
   it("교차 검증한 숙어 동의 표현이 canonical sense에 보존된다", () => {
@@ -94,6 +98,10 @@ describe("canonical sense 공란 backfill", () => {
       ["jury-nullification:primary", ["a jury's deliberate refusal to apply the law"]],
       ["run-into:primary", ["bump into", "run across"]],
       ["on-behalf:primary", ["as a representative of"]],
+      ["get-over:recover-from-illness-or-upset", ["recover from"]],
+      ["get-over:overcome-difficulty", ["overcome"]],
+      ["come-to-terms:accept-unpleasant-reality", ["come to accept"]],
+      ["come-to-terms:reach-agreement-with-party", ["reach an agreement"]],
     ]);
 
     for (const [senseId, synonyms] of expected) {
@@ -128,6 +136,6 @@ describe("canonical sense 공란 backfill", () => {
       .toBe("To meet someone unexpectedly rather than by prior arrangement.");
     expect(content.entries.find((entry) => entry.senseId === "on-behalf:primary")?.englishDefinition)
       .toBe("Acting or speaking as someone's representative or in their place.");
-    expect(content.entries.filter((entry) => entry.definitionStatus === "COMPLETE")).toHaveLength(71);
+    expect(content.entries.filter((entry) => entry.definitionStatus === "COMPLETE")).toHaveLength(75);
   });
 });

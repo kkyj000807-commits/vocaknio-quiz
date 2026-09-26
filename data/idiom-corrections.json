@@ -1060,6 +1060,50 @@
         "en": "It took him several weeks to get over the disappointment.",
         "ko": "그가 그 실망을 딛고 일어서기까지는 몇 주가 걸렸다."
       },
+      "senses": [
+        {
+          "id": "recover-from-illness-or-upset",
+          "partOfSpeech": "phrasal verb",
+          "definitionEn": "To return to a normal state of health or feeling after an illness, shock, or upsetting experience.",
+          "definitionKo": "병·충격·속상한 경험의 영향에서 벗어나 원래의 건강이나 감정 상태를 되찾다.",
+          "memoryKo": "몸이나 마음을 붙잡던 영향권을 지나 다시 평소 상태로 돌아온다.",
+          "usageKo": "get over the flu/shock/disappointment처럼 질병이나 감정적 충격이 목적어로 온다.",
+          "examTrapKo": "문제를 해결한다는 overcome sense와 구분한다. 회복에는 시간이 걸릴 수 있으며 잊어버렸다는 뜻까지 보장하지 않는다.",
+          "exactSynonyms": ["recover from"],
+          "contrasts": [
+            {
+              "word": "put up with",
+              "noteKo": "불편한 상태를 계속 견디는 뜻이다. get over는 그 상태의 영향에서 벗어나 회복하는 데 초점이 있다."
+            }
+          ],
+          "example": {
+            "en": "It took him several weeks to get over the disappointment.",
+            "ko": "그가 그 실망을 딛고 일어서기까지는 몇 주가 걸렸다.",
+            "cueKo": "several weeks와 disappointment가 감정적 충격 뒤의 회복 과정을 보여 준다."
+          }
+        },
+        {
+          "id": "overcome-difficulty",
+          "partOfSpeech": "phrasal verb",
+          "definitionEn": "To successfully deal with or overcome a problem, difficulty, or obstacle.",
+          "definitionKo": "진행을 가로막는 문제·곤란·장애를 처리해 넘어가다.",
+          "memoryKo": "앞길을 막은 장애물을 넘어 다음 단계로 진행한다.",
+          "usageKo": "get over a problem/difficulty/obstacle처럼 해결해야 할 방해물이 목적어로 온다.",
+          "examTrapKo": "질병·충격에서 정상 상태로 돌아오는 recover sense와 구분한다. 단순히 어려움을 참는 뜻도 아니다.",
+          "exactSynonyms": ["overcome"],
+          "contrasts": [
+            {
+              "word": "put up with",
+              "noteKo": "문제를 없애거나 넘기보다 견디는 뜻이다. get over a difficulty는 그 장애를 처리해 진행하는 데 초점이 있다."
+            }
+          ],
+          "example": {
+            "en": "The team found a practical way to get over the technical obstacle.",
+            "ko": "그 팀은 기술적 장애를 극복할 실용적인 방법을 찾아냈다.",
+            "cueKo": "found a practical way와 obstacle이 회복이 아니라 문제 해결의 sense를 고정한다."
+          }
+        }
+      ],
       "sources": [
         {
           "name": "Oxford Advanced Learner's Dictionary",
@@ -1366,6 +1410,50 @@
         "en": "She is slowly coming to terms with the fact that the plan must change.",
         "ko": "그녀는 계획을 바꿔야 한다는 현실을 서서히 받아들이고 있다."
       },
+      "senses": [
+        {
+          "id": "accept-unpleasant-reality",
+          "partOfSpeech": "idiom",
+          "definitionEn": "To learn to accept and deal with a difficult or unpleasant fact or situation.",
+          "definitionKo": "바꾸기 힘든 불쾌한 사실이나 상황을 인정하고 그 현실에 대처하게 되다.",
+          "memoryKo": "현실을 좋아하게 되는 것이 아니라, 더는 부정하지 않고 그 안에서 살아갈 방법을 찾는다.",
+          "usageKo": "come to terms with a loss/fact/change처럼 받아들여야 할 현실이 목적어로 온다.",
+          "examTrapKo": "찬성하거나 기뻐한다는 뜻이 아니다. 사람과 협상해 조건을 합의하는 sense와도 구분한다.",
+          "exactSynonyms": ["come to accept"],
+          "contrasts": [
+            {
+              "word": "resign oneself to",
+              "noteKo": "체념과 수동적 감수의 느낌이 더 강하다. come to terms with는 인정한 뒤 대처해 가는 과정까지 포함한다."
+            }
+          ],
+          "example": {
+            "en": "She is slowly coming to terms with the fact that the plan must change.",
+            "ko": "그녀는 계획을 바꿔야 한다는 현실을 서서히 받아들이고 있다.",
+            "cueKo": "slowly와 the fact that가 불편한 현실을 점차 받아들이는 sense를 보여 준다."
+          }
+        },
+        {
+          "id": "reach-agreement-with-party",
+          "partOfSpeech": "idiom",
+          "definitionEn": "To reach an agreement or workable arrangement with another person or group.",
+          "definitionKo": "상대방과 협상하여 합의나 함께 지킬 수 있는 조건에 이르다.",
+          "memoryKo": "서로 달랐던 조건을 조정해 함께 받아들일 수 있는 선에서 만난다.",
+          "usageKo": "come to terms with a creditor/the other side처럼 협상 상대가 뒤따르면 합의 sense다.",
+          "examTrapKo": "상실·변화 같은 현실을 받아들이는 sense와 구분한다. 한쪽이 단순히 체념했다는 뜻도 아니다.",
+          "exactSynonyms": ["reach an agreement"],
+          "contrasts": [
+            {
+              "word": "give in to",
+              "noteKo": "상대의 요구에 굴복하는 뜻이다. come to terms는 양측이 합의 가능한 조건에 이르는 데 초점이 있다."
+            }
+          ],
+          "example": {
+            "en": "After weeks of negotiation, the company came to terms with its creditors.",
+            "ko": "몇 주간의 협상 끝에 그 회사는 채권자들과 합의에 이르렀다.",
+            "cueKo": "negotiation과 creditors가 감정적 수용이 아니라 당사자 간 합의의 sense를 고정한다."
+          }
+        }
+      ],
       "sources": [
         {
           "name": "Collins English Dictionary",
