@@ -14,6 +14,9 @@ const learningVersion = JSON.parse(fs.readFileSync(path.join(root, "release.conf
 const outputRoot = path.join(root, "public", "data", "vocab-learning", learningVersion);
 const groups = ["V101", "V201", "V301", "V401", "V501", "V502", "V601", "APPENDIX"];
 const audioLicensePattern = /^(CC0(?: \d\.\d)?|Public Domain|CC BY(?:-SA)?(?: \d\.\d)?)$/i;
+const oewnDefinitionManifest = JSON.parse(
+  fs.readFileSync(path.join(sourceDirectory, "oewn-2025-definition-manifest.json"), "utf8"),
+);
 
 const fail = (message) => {
   throw new Error(`깊이 학습 데이터 오류: ${message}`);
@@ -65,6 +68,10 @@ for (const entry of entries) {
     if (!names.some((name) => name.includes("open english wordnet"))) fail(`${entry.id}: Open English WordNet 출처 없음`);
     if (!names.some((name) => name.includes("wiktionary"))) fail(`${entry.id}: Wiktionary 대조 근거 없음`);
     if (names.some((name) => /oxford|cambridge|merriam|webster/.test(name))) fail(`${entry.id}: 재배포 허가가 확인되지 않은 사전 원문 포함`);
+    const manifestDefinition = oewnDefinitionManifest.definitions[entry.senseId ?? entry.id];
+    if (!manifestDefinition || manifestDefinition.definition !== entry.definitionEn) {
+      fail(`${entry.id}: Open English WordNet 2025 원문 정의와 불일치`);
+    }
   }
   for (const source of entry.sources) {
     if (!source.url || !source.edition || !source.license) fail(`${entry.id}: 불완전한 출처 정보`);
@@ -118,6 +125,10 @@ fs.mkdirSync(outputRoot, { recursive: true });
 for (const group of groups) {
   const normalizedEntries = byGroup[group].map((entry) => ({
     ...entry,
+    definitionKind: entry.definitionKind ?? "verbatim-licensed",
+    ...(entry.definitionKind === "editorial" ? {} : {
+      definitionSourceSha256: oewnDefinitionManifest.definitions[entry.senseId ?? entry.id].sha256,
+    }),
     senseId: entry.senseId ?? entry.id,
     definitionStatus: "production",
     contextExplanationKo: entry.usageKo,

@@ -51,4 +51,21 @@ describe("canonical sense 공란 backfill", () => {
     const deployed = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/data/canonical-sense-content.json"), "utf8"));
     expect(deployed).toEqual(content);
   });
+
+  it("영영 정의는 원문 허가 출처와 자체 편집 풀이를 구별한다", () => {
+    for (const entry of content.entries) {
+      expect(entry.definitionProvenance).toBeTruthy();
+      expect(["verbatim-licensed", "editorial"]).toContain(entry.definitionProvenance?.kind);
+    }
+
+    const licensed = content.entries.filter((entry) => entry.definitionProvenance?.kind === "verbatim-licensed");
+    expect(licensed.length).toBeGreaterThan(0);
+    for (const entry of licensed) {
+      expect(entry.definitionProvenance?.source).toBe("Open English WordNet");
+      expect(entry.definitionProvenance?.license).toBe("CC BY 4.0");
+      expect(entry.definitionProvenance?.edition).toBe("2025");
+      expect(entry.definitionProvenance?.attribution).toBe("Princeton WordNet; Open English WordNet Team");
+      expect(entry.definitionProvenance?.contentSha256).toMatch(/^[0-9a-f]{64}$/);
+    }
+  });
 });

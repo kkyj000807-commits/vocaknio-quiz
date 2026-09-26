@@ -38,6 +38,7 @@ function emptyRecord({ senseId, word = "", partOfSpeech = "", itemIds = [] }) {
     senseId,
     partOfSpeech,
     englishDefinition: null,
+    definitionProvenance: null,
     koreanMeaning: null,
     contextExplanation: null,
     exampleSentence: null,
@@ -95,13 +96,54 @@ function setScalar(record, field, value, layer) {
   }
 }
 
+function setDefinition(record, value, layer, provenance) {
+  const current = normalize(record.englishDefinition);
+  const next = normalize(value);
+  setScalar(record, "englishDefinition", value, layer);
+  if (next && (!current || current === next) && !record.definitionProvenance) {
+    record.definitionProvenance = provenance;
+  }
+}
+
+function learningDefinitionProvenance(entry) {
+  if (entry.definitionKind === "verbatim-licensed") {
+    const source = entry.sources?.find((candidate) =>
+      normalize(candidate.name).toLowerCase().includes("open english wordnet"),
+    );
+    if (!source) throw new Error(`${entry.id}: 허가된 영영 정의 출처가 없습니다.`);
+    return {
+      kind: "verbatim-licensed",
+      source: source.name,
+      url: source.url,
+      license: source.license,
+      edition: source.edition,
+      attribution: source.attribution,
+      contentSha256: entry.definitionSourceSha256,
+    };
+  }
+  return {
+    kind: "editorial",
+    source: "VOCA NEXUS editorial",
+    referenceUrls: unique(entry.sources?.map((source) => source.url) ?? []),
+  };
+}
+
+function editorialDefinitionProvenance(entry, layer) {
+  return {
+    kind: "editorial",
+    source: "VOCA NEXUS editorial",
+    layer,
+    referenceUrls: unique(entry.sources?.map((source) => source.url) ?? []),
+  };
+}
+
 function mergeList(record, field, values) {
   record[field] = unique([...record[field], ...(values ?? [])]);
 }
 
 function mergeLearning(record, entry) {
   record.inputLayers.push("vocab-learning");
-  setScalar(record, "englishDefinition", entry.definitionEn, "vocab-learning");
+  setDefinition(record, entry.definitionEn, "vocab-learning", learningDefinitionProvenance(entry));
   setScalar(record, "koreanMeaning", entry.definitionKo, "vocab-learning");
   setScalar(record, "contextExplanation", entry.contextExplanationKo ?? entry.usageKo, "vocab-learning");
   setScalar(record, "exampleSentence", entry.example?.en, "vocab-learning");
@@ -115,7 +157,7 @@ function mergeLearning(record, entry) {
 
 function mergeActiveRecall(record, entry) {
   record.inputLayers.push("active-recall");
-  setScalar(record, "englishDefinition", entry.englishDefinition, "active-recall");
+  setDefinition(record, entry.englishDefinition, "active-recall", editorialDefinitionProvenance(entry, "active-recall"));
   setScalar(record, "koreanMeaning", entry.koreanMeaning, "active-recall");
   setScalar(record, "contextExplanation", entry.contextExplanationKo, "active-recall");
   const example = entry.exampleSentences?.[0];
@@ -135,7 +177,7 @@ function mergeActiveRecall(record, entry) {
 
 function mergeSenseQuestion(record, entry) {
   record.inputLayers.push("sense-question");
-  setScalar(record, "englishDefinition", entry.definitionEn, "sense-question");
+  setDefinition(record, entry.definitionEn, "sense-question", editorialDefinitionProvenance(entry, "sense-question"));
   setScalar(record, "koreanMeaning", entry.definitionKo, "sense-question");
   setScalar(record, "contextExplanation", entry.bridgeKo, "sense-question");
   setScalar(record, "exampleSentence", entry.contextEn, "sense-question");
@@ -150,7 +192,7 @@ function mergeSenseQuestion(record, entry) {
 
 function mergeSynonymReview(record, entry) {
   record.inputLayers.push("synonym-review");
-  setScalar(record, "englishDefinition", entry.definitionEn, "synonym-review");
+  setDefinition(record, entry.definitionEn, "synonym-review", editorialDefinitionProvenance(entry, "synonym-review"));
   setScalar(record, "koreanMeaning", entry.definitionKo, "synonym-review");
   setScalar(record, "contextExplanation", entry.bridgeKo, "synonym-review");
   const example = entry.examples?.[0];
@@ -178,6 +220,9 @@ function classify(record) {
   record.itemIds = unique(record.itemIds);
   record.sourceIds = unique(record.sourceIds);
   record.synonyms = unique(record.synonyms).filter((synonym) => synonym.toLowerCase() !== normalize(record.word).toLowerCase());
+  if (record.englishDefinition && !record.definitionProvenance) {
+    throw new Error(`${record.senseId}: 영영 정의 provenance가 없습니다.`);
+  }
   record.backfill.attempts += 1;
   const missingFields = requiredFields.filter((field) => !valuePresent(record, field));
   const reasons = [];
