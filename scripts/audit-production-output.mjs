@@ -45,6 +45,10 @@ const learningDirectory = path.join(outputRoot, "data", "vocab-learning", releas
 const learningFiles = fs.existsSync(learningDirectory)
   ? fs.readdirSync(learningDirectory).filter((name) => name.endsWith(".json"))
   : [];
+const definitionDirectory = path.join(outputRoot, "data", "vocab-definitions", "oewn-2025");
+const definitionFiles = fs.existsSync(definitionDirectory)
+  ? fs.readdirSync(definitionDirectory).filter((name) => name.endsWith(".json"))
+  : [];
 const indexHtml = fs.readFileSync(path.join(outputRoot, "index.html"), "utf8");
 const bundleUrl = indexHtml.match(/src="\/vocaknio-quiz\/([^\"]*entry-[a-f0-9]+\.js)"/)?.[1];
 const bundle = bundleUrl ? path.join(outputRoot, ...bundleUrl.split("/")) : undefined;
@@ -56,7 +60,9 @@ const result = {
     rootExpoReferences === 0 &&
     rootAssetReferences === 0 &&
     learningFiles.length === 8 &&
+    definitionFiles.length === 8 &&
     bundleText.includes("vocab-learning") &&
+    bundleText.includes("vocab-definitions") &&
     bundleText.includes("Wikimedia Commons") &&
     bundleText.includes("speechSynthesis")
       ? "pass"
@@ -68,7 +74,9 @@ const result = {
   rootExpoReferences,
   rootAssetReferences,
   learningFiles: learningFiles.length,
+  definitionFiles: definitionFiles.length,
   learningUiInBundle: bundleText.includes("vocab-learning"),
+  definitionUiInBundle: bundleText.includes("vocab-definitions"),
   americanPronunciationInBundle:
     bundleText.includes("Wikimedia Commons") && bundleText.includes("speechSynthesis"),
   bundle: bundle ? path.basename(bundle) : null,

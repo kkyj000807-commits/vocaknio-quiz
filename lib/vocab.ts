@@ -119,6 +119,7 @@ export const VOCAB: VocabItem[] = (vocabRaw as RawVocabItem[]).map((item) => ({
 }));
 
 export const VOCAB_BY_NUM = new Map(VOCAB.map((item) => [item.num, item]));
+export const VOCAB_BY_ID = new Map(VOCAB.map((item) => [item.id, item]));
 export const VOCAB_WITH_SYNONYMS = VOCAB.filter((item) => item.s.length > 0);
 export const VOCAB_IDIOMS = VOCAB.filter(
   (item) => item.type === "idiom" || item.type === "phrase",

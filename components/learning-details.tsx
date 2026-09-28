@@ -4,16 +4,19 @@ import { ActivityIndicator, Linking, Pressable, StyleSheet, Text, View } from "r
 import { useColors } from "@/hooks/use-colors";
 import { ReasoningPractice } from "@/components/reasoning-practice";
 import {
-  hasLearningEntry,
   loadLearningEntries,
   type LearningEntry,
 } from "@/lib/vocab-learning";
+import {
+  loadVocabDefinition,
+  VOCAB_DEFINITION_SOURCE,
+  type VocabDefinitionEntry,
+} from "@/lib/vocab-definitions";
 
 type LearningDetailsProps = { itemId: string };
 
 /** Mount only after an answer is revealed/graded by the parent screen. */
 export function LearningDetails({ itemId }: LearningDetailsProps) {
-  if (!hasLearningEntry(itemId)) return null;
   // Keyed state prevents an expanded previous sense from flashing on a new card.
   return <LearningDetailsPanel key={itemId} itemId={itemId} />;
 }
@@ -23,18 +26,23 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
   const s = styles(colors);
   const [expanded, setExpanded] = useState(false);
   const [entries, setEntries] = useState<LearningEntry[] | null>(null);
+  const [dictionary, setDictionary] = useState<VocabDefinitionEntry | null | undefined>(undefined);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    if (!expanded || entries !== null) return;
+    if (!expanded || entries !== null || dictionary !== undefined) return;
     let cancelled = false;
     setLoading(true);
     setError(false);
-    loadLearningEntries(itemId)
-      .then((loaded: LearningEntry[]) => {
-        if (!cancelled) { setLoading(false); setEntries(loaded); }
+    Promise.all([loadLearningEntries(itemId), loadVocabDefinition(itemId)])
+      .then(([loadedEntries, loadedDictionary]) => {
+        if (!cancelled) {
+          setLoading(false);
+          setEntries(loadedEntries);
+          setDictionary(loadedDictionary);
+        }
       })
       .catch(() => {
         if (!cancelled) { setLoading(false); setError(true); }
@@ -42,20 +50,18 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
     return () => {
       cancelled = true;
     };
-  }, [attempt, entries, expanded, itemId]);
-
-  if (entries?.length === 0) return null;
+  }, [attempt, dictionary, entries, expanded, itemId]);
 
   return (
     <View style={s.panel}>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`뜻·뉘앙스·예문 ${expanded ? "접기" : "펼치기"}`}
+        accessibilityLabel={`영영 정의·뜻·예문 ${expanded ? "접기" : "펼치기"}`}
         accessibilityState={{ expanded }}
         onPress={() => setExpanded((value) => !value)}
         style={({ pressed }) => [s.toggle, pressed && s.pressed]}
       >
-        <Text style={s.toggleText}>뜻·뉘앙스·예문</Text>
+        <Text style={s.toggleText}>영영 정의·뜻·예문</Text>
         <Text style={s.toggleIcon}>{expanded ? "−" : "+"}</Text>
       </Pressable>
       {expanded && (
@@ -81,8 +87,73 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
           {entries?.map((entry, index) => (
             <SenseDetails key={entry.id} entry={entry} index={index} count={entries.length} />
           ))}
+          {entries?.length === 0 && dictionary && (
+            <DictionaryDefinition entry={dictionary} />
+          )}
         </View>
       )}
+    </View>
+  );
+}
+
+function DictionaryDefinition({ entry }: { entry: VocabDefinitionEntry }) {
+  const colors = useColors();
+  const s = styles(colors);
+  const [allSensesOpen, setAllSensesOpen] = useState(false);
+  const representative = entry.senses.find(
+    (sense) => sense.senseId === entry.representativeSenseId,
+  ) ?? entry.senses[0];
+
+  if (entry.status === "source_not_found") {
+    return (
+      <View style={s.section}>
+        <Text style={s.senseTitle}>{entry.headword}</Text>
+        <Text style={s.note}>
+          Open English WordNet 2025에서 정확히 일치하는 표제어 정의를 찾지 못했습니다.
+          다른 사전의 sense 대조 전에는 임의 정의를 넣지 않습니다.
+        </Text>
+      </View>
+    );
+  }
+
+  const reviewNeeded = entry.status === "dictionary_primary_unreviewed";
+  const visibleSenses = allSensesOpen ? entry.senses : representative ? [representative] : [];
+
+  return (
+    <View style={s.sense}>
+      <Text style={s.senseTitle}>{entry.headword}</Text>
+      <View style={s.section}>
+        <Text style={s.label}>
+          {reviewNeeded ? "대표 영영 정의 후보 · sense 검수 전" : "영영 정의"}
+        </Text>
+        {visibleSenses.map((sense, index) => (
+          <View key={`${sense.senseId}-${index}`} style={s.definitionCandidate}>
+            <Text style={s.note}>{sense.partOfSpeech}</Text>
+            <Text style={s.english}>{sense.definition}</Text>
+          </View>
+        ))}
+      </View>
+      {entry.senses.length > 1 && (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`사전 sense 후보 ${entry.senses.length}개 ${allSensesOpen ? "접기" : "모두 보기"}`}
+          accessibilityState={{ expanded: allSensesOpen }}
+          onPress={() => setAllSensesOpen((value) => !value)}
+          style={({ pressed }) => [s.sourceToggle, pressed && s.pressed]}
+        >
+          <Text style={s.linkText}>
+            사전 sense 후보 {entry.senses.length}개 {allSensesOpen ? "접기 −" : "모두 보기 +"}
+          </Text>
+        </Pressable>
+      )}
+      {reviewNeeded && (
+        <Text style={s.note}>
+          현재 한국어 뜻과의 sense 연결 검수 전 자료입니다. 문제 정답 근거와 숙달 판정에는 사용하지 않습니다.
+        </Text>
+      )}
+      <Text style={s.note}>
+        출처: {VOCAB_DEFINITION_SOURCE.name} {VOCAB_DEFINITION_SOURCE.edition} · {VOCAB_DEFINITION_SOURCE.license}
+      </Text>
     </View>
   );
 }
@@ -257,6 +328,7 @@ const styles = (c: ReturnType<typeof useColors>) => StyleSheet.create({
   nextSense: { marginTop: 20, paddingTop: 20, borderTopWidth: 1, borderTopColor: c.border },
   senseTitle: { fontSize: 14, lineHeight: 20, fontWeight: "700", color: c.foreground },
   section: { gap: 6 },
+  definitionCandidate: { gap: 3, paddingVertical: 3 },
   label: { fontSize: 11, lineHeight: 17, fontWeight: "700", color: c.primary },
   text: { fontSize: 13, lineHeight: 21, color: c.foreground, flexShrink: 1 },
   english: { fontSize: 14, lineHeight: 22, color: c.foreground, flexShrink: 1 },

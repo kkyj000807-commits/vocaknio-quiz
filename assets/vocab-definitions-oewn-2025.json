@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "version": "oewn-2025",
+  "source": {
+    "name": "Open English WordNet",
+    "edition": "2025",
+    "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+    "license": "CC BY 4.0",
+    "attribution": "Princeton WordNet; Open English WordNet Team",
+    "archiveSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
+  },
+  "coverage": {
+    "totalRows": 38163,
+    "totalUniqueHeadwords": 13347,
+    "matchedRows": 34489,
+    "matchedRowPercent": 90.37,
+    "singleSenseRows": 11706,
+    "ambiguousRows": 22783,
+    "sourceNotFoundRows": 3674,
+    "matchedUniqueHeadwords": 11471,
+    "singleSenseUniqueHeadwords": 4285,
+    "ambiguousUniqueHeadwords": 7186,
+    "sourceNotFoundUniqueHeadwords": 1876
+  },
+  "groupRows": {
+    "V101": 4028,
+    "V201": 4016,
+    "V301": 4854,
+    "V401": 3965,
+    "V501": 5888,
+    "V502": 10127,
+    "V601": 2935,
+    "APPENDIX": 2350
+  },
+  "quizEligibility": {
+    "single_sense": true,
+    "dictionary_primary_unreviewed": false,
+    "source_not_found": false
+  }
+}

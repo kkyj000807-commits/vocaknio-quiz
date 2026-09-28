@@ -18,6 +18,7 @@
 | 해설과 문맥 연습 | components/learning-details.tsx, reasoning-practice.tsx | lib/vocab-learning.ts, lib/reasoning-practice.ts |
 | 기본 어휘 정본 | assets/vocab-v1.4.json | lib/vocab.ts → 출제 엔진 |
 | 검수 해설 원본 | data/vocab-learning/, idiom-corrections.json, expression-composition.json, reasoning-lessons.json | scripts/build-vocab-learning-v1.4.mjs → 인덱스와 public/data/vocab-learning/<버전>/ |
+| 전 어휘 OEWN 정의 층 | assets/vocab-definitions-oewn-2025.json, public/data/vocab-definitions/oewn-2025/ | scripts/build-vocab-definitions-oewn.py → lib/vocab-definitions.ts → LearningDetails |
 | Light/Paper/Dark·앱 테마 | lib/theme-provider.tsx, lib/theme-preference.ts, lib/web-theme.ts, theme.config.js | app/+html.tsx 초기 paint/모든 화면/저장 큐. v2 light→v3 paper, 신규light |
 | 웹 공간·반응형 | lib/layout.ts, components/screen-container.tsx | 탭52px, 끝padding48, 웹max-width880, native inset 보존 |
 | 버전·배포 시각 | release.config.json, lib/release-info.ts | app.config.ts, 설정 화면, Production 빌더 |
@@ -38,6 +39,12 @@ server/, drizzle/, lib/_core/는 별도 인증·API 경로다. GitHub Pages는 �
    - release.json은 version/sourceCommit/sourceDirty/dataVersion/learningDataVersion/builtAt을 기록한다. sourceDirty=true는 커밋만으로 실제 빌드를 재현할 수 없다는 표시다. 공개 HTML/번들 해시와 함께 대조한다.
    - 기존 출력은 덮지 않는다. 이전 빌드와 최신 코드를 혼합하지 않는다.
    - `scripts/audit-production-output.mjs <폴더>`는 복사된 Pages 산출물 재감사에도 쓴다.
+
+OEWN 정의 원자료를 갱신할 때는 공식 `english-wordnet-2025-json.zip`을 내려받은 뒤
+`python scripts/build-vocab-definitions-oewn.py --archive <archive>`를 실행한다. importer는 승인된
+SHA-256을 확인하며, 정확 표제어가 하나의 sense인 경우만 즉시 사용 가능 상태로 둔다. 다의어는
+모든 사전 sense를 보존하되 `dictionary_primary_unreviewed`, 미일치는 `source_not_found`로 남긴다.
+`node scripts/audit-vocab-definitions.mjs`는 38,163행 전부의 포인터·상태·정의·출처를 검사한다.
 
 브라우저 확인은 코드 검사와 별도다. 답→채점→이전/다음→결과→오답, 북마크, 재접속 복원, 좁은 화면 스크롤을 직접 확인한다. 실제 모바일 Safari를 데스크톱 Chrome으로 대체했다고 보고하지 않는다.
 

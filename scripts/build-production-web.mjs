@@ -25,6 +25,11 @@ const learningBuild = spawnSync(process.execPath, ["scripts/build-vocab-learning
 });
 if (learningBuild.error) console.error(learningBuild.error.message);
 if (learningBuild.status !== 0) process.exit(learningBuild.status ?? 1);
+const definitionAudit = spawnSync(process.execPath, ["scripts/audit-vocab-definitions.mjs"], {
+  cwd: process.cwd(), stdio: "inherit", shell: false,
+});
+if (definitionAudit.error) console.error(definitionAudit.error.message);
+if (definitionAudit.status !== 0) process.exit(definitionAudit.status ?? 1);
 
 const parts = new Intl.DateTimeFormat("en-CA", {
   timeZone: "Asia/Seoul",
