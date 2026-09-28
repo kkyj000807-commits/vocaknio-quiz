@@ -1,8 +1,8 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.29 00:15 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.29 00:22 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 batch — 영영 정의 → 표제어와 동의어 문제 분리 VERIFIED / 3.5 배포 후보
+## 현재 batch — 영영 정의 → 표제어와 동의어 문제 분리 VERIFIED / 3.5 공개 확인
 
 - 기본 학습 모드를 `definition-choice`로 분리했다. 홈 첫 카드·기본 선택은 `영영 정의`이며 영영 정의만 보고 정확한 영어 표제어를 고른다. 한국어·표제어는 제출 전 숨기고 제출 후 EN/KR을 계층적으로 표시한다.
 - 기존 `syn-choice`는 `영어 동의어`로 명칭과 역할을 고정했다. 검수된 active-recall 정의가 더 이상 동의어 문제에 임의로 섞이지 않는다. 문제형별 adaptive 기록도 실제 `q.mode`를 저장한다.
@@ -10,7 +10,8 @@
 - 선지는 OEWN의 sense-level antonym을 확인할 수 있으면 반의어를 먼저 넣고, 나머지는 다른 의미영역(동일 품사 우선, 불가능한 adverb 등은 다른 품사)에서 골라 near-synonym 복수정답·오개념을 피한다. 정답 뒤에는 `반대축`/`비교선지`와 한국어 뜻을 표시한다. 반의어 연결을 사용할 수 있는 안전 정의 표제어는177개다.
 - sense 학습키, MASTERED 제외, 오답복습, 중단 세션 schema를 새 정의 모드와 연결했다. `jury foreman` 등 검수 숙어는 context prompt를 섞지 않고 definition prompt만 사용한다.
 - VERIFIED: definition/active-recall/session/learning 회귀40개, 전체 verify 27파일208테스트 통과/인증1skip, TypeScript와 기존 데이터 감사 PASS. 전체 엔진 감사에서 definition-choice11,373 / synonym-choice11,279 / 한국어 뜻38,163행을 유일정답 계약으로 확인했다.
-- NOT DONE: 3.5 Production build·Pages 공개 확인·실제 모바일 Safari/Samsung Internet 검증. OEWN 다의어와 미일치 행은 근거 기반 sense 매핑 전까지 정의 문제에 넣지 않는다.
+- VERIFIED 배포: Production build 감사 HTML22/학습JSON8/정의JSON8/참조누락0. 앱 소스 `7a9f484913082d63cfcafec13d2cd2ffcd1449`, Pages `8cb6d7f08aa19d8c4e61afd6397369229a5eda54`, Pages Actions `36442651640` 성공. 공개 release.json 3.5와 sourceCommit, 신규 번들/학습 JSON HTTP200 및 번들 SHA 일치를 확인했다. 공개 in-app browser에서 홈 첫 카드 `영영 정의`/별도 `영어 동의어`, 실제 `definition-choice` 진입, `fait accompli` 영영 정의와 한국어 비노출, 정답 후 EN/KR·비교선지 표시를 확인했다.
+- NOT DONE: 실제 모바일 Safari/Samsung Internet 실기기 검증. OEWN 다의어와 미일치 행은 근거 기반 sense 매핑 전까지 정의 문제에 넣지 않는다. in-app browser의 격리 저장소에서는 기존 학습 기록 로드가 차단되어 공개 UI·생성 흐름만 확인했고 실제 사용자 저장기록을 변경하지 않았다.
 
 ## 현재 batch — 검수된 괄호·슬래시 표기 정의 backfill VERIFIED / 3.4 공개 확인
 
@@ -31,17 +32,17 @@
 - NOT DONE: `영영정의 100%`는 아니다. 22,783개 다의어 행과 alias 152행은 한국어 sense 연결 전까지 문제 정답 근거로 쓰지 않는다. OEWN 미일치 3,522행도 다른 허가 사전 backfill이 남았다.
 - NEXT/P0: `source_not_found` 중 숙어·오답·고빈도부터 다른 허가 사전으로 보강하고 다의어는 한국어 occurrence와 sense를 분리 매핑한다.
 
-## 현재 배포 — 3.4, 전체 로드맵은 부분 완료
+## 현재 배포 — 3.5, 전체 로드맵은 부분 완료
 
 - Production: https://kkyj000807-commits.github.io/vocaknio-quiz/
-- 배포 전3.3 → 배포 후3.4. 앱 표시: 버전 3.4 · 최근 수정 2026.09.28 22:02 KST. 공개 게시·정합성 확인은 22:07 KST다.
-- 앱 소스266b243dd7d0cbdae3a10ea5d8247024b853ea04 / Pages01853dd932ebcef439f330fded70cd61a4d6f5b0. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
-- GitHub Pages build `built`. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion3.4 / builtAt2026-09-28T13:02:04.528Z.
-- 번들 entry-a48dbde49397b94ad0d6d613fbdee49d.js / SHA256 BD5FA6361AF66D8028C4FE7845C30F0E7317049BF71F5397BF221BA227E8C5FC.
-- 공개 wordbook HTML·신규 번들·3.4 학습 JSON·8개 OEWN 정의 JSON이 HTTP200이며 release.json3.4와 sourceCommit을 확인했다. 공개 정의 JSON에서 `in the (very) nick of time`은 `in the nick of time`에 연결된 검수 전 alias 후보이고, 의미가 달라질 수 있는 `turn (to)`는 source_not_found로 유지됨을 확인했다. 공개 문제를 풀어 사용자 저장기록을 만들지는 않았다.
+- 배포 전3.4 → 배포 후3.5. 앱 표시: 버전 3.5 · 최근 수정 2026.09.29 00:14 KST. 공개 게시·정합성 확인은 00:22 KST다.
+- 앱 소스 `7a9f484913082d63cfcafec13d2cd2ffcd1449` / Pages `8cb6d7f08aa19d8c4e61afd6397369229a5eda54`. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
+- GitHub Pages Actions `36442651640` success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 및 사용자 파일 때문에 표시. dataVersion v1.4 / learningDataVersion3.5 / builtAt2026-09-28T15:14:55.685Z.
+- 번들 entry-328972310b9e11b1817a696248f425db.js / SHA256 664BA5FA9EDE3807CCCD1648FB77E1DB91A78977C518F62072A00289C3B8BB13.
+- 공개 quiz HTML·신규 번들·3.5 학습 JSON이 HTTP200이며 release.json3.5와 sourceCommit을 확인했다. 공개 번들과 로컬 검증 산출물의 SHA256이 동일하다. in-app browser에서 홈의 분리된 두 문제형과 실제 영영 정의→표제어 문제·정답 후 정보 계층을 확인했다.
 - 실제 iPhone Safari/Galaxy Tab Samsung Internet/모바일 Chrome 및 모든 기기 캐시는 미검증. in-app browser 결과를 실기기 검증으로 대신하지 않는다.
-- 산출물: C:/Users/USER/AppData/Local/Temp/voca-3.4-20260928-2210
-- 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pagesd896aa7(3.3)을 보존했다. 배포용 managed worktree 정리는 별도 lifecycle 작업으로 남아 있으며 공개 앱에는 영향이 없다.
+- 산출물: C:/Users/USER/AppData/Local/Temp/voca-3.5-20260929-0018
+- 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pages01853dd(3.4)을 보존했다. 배포용 managed worktree 정리는 별도 lifecycle 작업으로 남아 있으며 공개 앱에는 영향이 없다.
 
 ## 최신 제품 계약
 
