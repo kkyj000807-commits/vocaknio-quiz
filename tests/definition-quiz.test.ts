@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
 import {
+  buildDefinitionMeaningBridgeKo,
+  getDefinitionAnswerRelations,
   getDefinitionQuizCoverage,
   getDefinitionQuizDistractors,
   getDefinitionQuizEntry,
@@ -75,6 +77,26 @@ describe("영영 정의 → 정확한 표제어", () => {
       (candidate) => candidate.partOfSpeech !== target.partOfSpeech ||
         candidate.lexicographerFile !== target.lexicographerFile,
     )).toBe(true);
+  });
+
+  it("정답 해설은 같은 sense의 동의어와 명시된 반의어만 분리해 제공한다", () => {
+    const abase = getDefinitionQuizEntry(VOCAB.find((item) => item.w === "abase")!.id)!;
+    expect(getDefinitionAnswerRelations(abase)).toEqual({
+      synonyms: ["humiliate", "mortify", "chagrin", "humble"],
+      antonyms: [],
+    });
+
+    const adroit = getDefinitionQuizEntry(VOCAB.find((item) => item.w === "adroit")!.id)!;
+    expect(getDefinitionAnswerRelations(adroit)).toEqual({
+      synonyms: [],
+      antonyms: ["maladroit"],
+    });
+  });
+
+  it("사전 원문과 분리된 초월번역 핵심 이미지를 만든다", () => {
+    expect(buildDefinitionMeaningBridgeKo("낮추다 · 창피를 주다")).toBe(
+      "영영 정의가 가리키는 중심 장면은 ‘낮추다 · 창피를 주다’이다. 이 장면에서 영어 표제어를 다시 꺼내는 방식으로 기억한다.",
+    );
   });
 
   it("다의어·별칭·정답 노출 정의는 일반 정의 출제 대상에서 제외한다", () => {

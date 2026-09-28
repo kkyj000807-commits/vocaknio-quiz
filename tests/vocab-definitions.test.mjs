@@ -56,6 +56,35 @@ describe("OEWN definition aliases", () => {
     ))).toBe(true);
   });
 
+  it.each([
+    ["boiler-plate(d)", "boilerplate", "standard formulations uniformly found in certain types of legal documents or news stories"],
+    ["double(-)bind", "double bind", "(psychology) an unresolvable dilemma; situation in which a person receives contradictory messages from a person who is very powerful"],
+    ["life span", "lifespan", "the period during which something is functional (as between birth and death)"],
+    ["the killing fields", "killing field", "(usually plural) an area where many people have died (usually by massacre or genocide during war or violent civil disturbance)"],
+    ["the senate", "senate", "the upper house of the United States Congress"],
+    ["the sword of damocles", "sword of damocles", "a constant and imminent peril"],
+  ])("maps the reviewed source notation for %s", (sourceHeadword, dictionaryHeadword, definition) => {
+    const records = recordsForHeadword(sourceHeadword);
+    expect(records.length).toBeGreaterThan(0);
+    expect(records.every((record) => record.status === "dictionary_alias_unreviewed")).toBe(true);
+    expect(records.every((record) => record.matches.some(
+      (match) => match.headword === dictionaryHeadword
+        && match.matchType === "reviewed_editorial_variant",
+    ))).toBe(true);
+    expect(records.every((record) => record.senses.some(
+      (sense) => sense.definition === definition,
+    ))).toBe(true);
+  });
+
+  it("rejects a spelling-near dictionary entry when its part of speech or sense differs", () => {
+    for (const headword of ["high-profile", "count (on)"]) {
+      const records = recordsForHeadword(headword);
+      expect(records.length).toBeGreaterThan(0);
+      expect(records.every((record) => record.status === "source_not_found")).toBe(true);
+      expect(records.every((record) => record.senses.length === 0)).toBe(true);
+    }
+  });
+
   it("keeps every vocabulary row covered after alias enrichment", () => {
     const totalRows = files.reduce((sum, file) => sum + Object.keys(file.items).length, 0);
     expect(totalRows).toBe(meta.coverage.totalRows);

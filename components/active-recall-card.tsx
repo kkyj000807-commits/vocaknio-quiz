@@ -3,7 +3,28 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useColors } from "@/hooks/use-colors";
 import type { ActiveRecallSense } from "@/lib/active-recall";
-import type { DefinitionQuizEntry } from "@/lib/definition-quiz";
+import {
+  buildDefinitionMeaningBridgeKo,
+  getDefinitionAnswerRelations,
+  type DefinitionQuizEntry,
+} from "@/lib/definition-quiz";
+
+type RelationChip = { value: string; kind: "Exact" | "Near" | "Variant" | "Related" | "Opposite" };
+
+function RelationChips({ chips }: { chips: RelationChip[] }) {
+  const colors = useColors();
+  if (chips.length === 0) return null;
+  return (
+    <View style={styles.chips}>
+      {chips.map((chip) => (
+        <View key={`${chip.kind}:${chip.value}`} style={[styles.chip, { borderColor: colors.border, backgroundColor: colors.surface }]}>
+          <Text style={[styles.chipKind, { color: colors.muted }]}>{chip.kind}</Text>
+          <Text style={[styles.chipText, { color: colors.foreground }]}>{chip.value}</Text>
+        </View>
+      ))}
+    </View>
+  );
+}
 
 export function DefinitionRecallPrompt({ definition }: { definition: string }) {
   const colors = useColors();
@@ -24,13 +45,31 @@ export function DefinitionRecallAnswer({
   koreanMeaning: string;
 }) {
   const colors = useColors();
+  const relations = getDefinitionAnswerRelations(recall);
+  const relationChips: RelationChip[] = [
+    ...relations.synonyms.map((value): RelationChip => ({ value, kind: "Exact" })),
+    ...relations.antonyms.map((value): RelationChip => ({ value, kind: "Opposite" })),
+  ].slice(0, 8);
   return (
     <View style={[styles.answer, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <Text style={[styles.answerWord, { color: colors.foreground }]}>{recall.headword}</Text>
-      <Text style={[styles.label, { color: colors.primary }]}>EN</Text>
+      <Text style={[styles.label, { color: colors.primary }]}>EN · 영영사전 원문</Text>
       <Text style={[styles.definition, { color: colors.foreground }]}>{recall.definition}</Text>
       <Text style={[styles.label, { color: colors.primary }]}>KR</Text>
       <Text style={[styles.korean, { color: colors.foreground }]}>{koreanMeaning}</Text>
+      <Text style={[styles.label, { color: colors.primary }]}>초월번역 · 핵심 이미지</Text>
+      <Text style={[styles.detailText, { color: colors.foreground }]}>
+        {buildDefinitionMeaningBridgeKo(koreanMeaning)}
+      </Text>
+      {relationChips.length > 0 ? (
+        <>
+          <Text style={[styles.label, { color: colors.primary }]}>같은 의미축 · 반대 의미축</Text>
+          <RelationChips chips={relationChips} />
+        </>
+      ) : null}
+      {relations.synonyms.length === 0 && relations.antonyms.length === 0 ? (
+        <Text style={[styles.note, { color: colors.muted }]}>이 sense에 OEWN이 명시한 동의어·반의어 관계는 없습니다. 임의 관계는 추가하지 않습니다.</Text>
+      ) : null}
       <Text style={[styles.note, { color: colors.muted }]}>Open English WordNet 2025 · exact single-sense 항목</Text>
     </View>
   );
@@ -53,12 +92,13 @@ export function ActiveRecallPrompt({ recall, promptId }: { recall: ActiveRecallS
 export function ActiveRecallAnswer({ recall }: { recall: ActiveRecallSense }) {
   const colors = useColors();
   const [expanded, setExpanded] = useState(false);
-  const chips = [
-    ...recall.exactSynonyms.map(value => ({ value, kind: "Exact" })),
-    ...recall.nearSynonyms.map(value => ({ value, kind: "Near" })),
-    ...recall.variants.map(value => ({ value, kind: "Variant" })),
-    ...recall.relatedWords.map(value => ({ value, kind: "Related" })),
-  ].slice(0, 5);
+  const chips: RelationChip[] = [
+    ...recall.exactSynonyms.map((value): RelationChip => ({ value, kind: "Exact" })),
+    ...recall.nearSynonyms.map((value): RelationChip => ({ value, kind: "Near" })),
+    ...recall.variants.map((value): RelationChip => ({ value, kind: "Variant" })),
+    ...recall.relatedWords.map((value): RelationChip => ({ value, kind: "Related" })),
+    ...recall.antonyms.map((value): RelationChip => ({ value, kind: "Opposite" })),
+  ].slice(0, 8);
   return (
     <View style={[styles.answer, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <Text style={[styles.answerWord, { color: colors.foreground }]}>{recall.headword}</Text>
@@ -67,19 +107,13 @@ export function ActiveRecallAnswer({ recall }: { recall: ActiveRecallSense }) {
       <Text style={[styles.label, { color: colors.primary }]}>KR</Text>
       <Text style={[styles.korean, { color: colors.foreground }]}>{recall.koreanMeaning}</Text>
       {recall.contextExplanationKo ? <>
-        <Text style={[styles.label, { color: colors.primary }]}>문맥 설명</Text>
+        <Text style={[styles.label, { color: colors.primary }]}>초월번역 · 핵심 이미지</Text>
         <Text style={[styles.detailText, { color: colors.foreground }]}>{recall.contextExplanationKo}</Text>
       </> : null}
-      {chips.length > 0 ? (
-        <View style={styles.chips}>
-          {chips.map(chip => (
-            <View key={`${chip.kind}:${chip.value}`} style={[styles.chip, { borderColor: colors.border, backgroundColor: colors.surface }]}>
-              <Text style={[styles.chipKind, { color: colors.muted }]}>{chip.kind}</Text>
-              <Text style={[styles.chipText, { color: colors.foreground }]}>{chip.value}</Text>
-            </View>
-          ))}
-        </View>
-      ) : null}
+      {chips.length > 0 ? <>
+        <Text style={[styles.label, { color: colors.primary }]}>동의어 · 반의어</Text>
+        <RelationChips chips={chips} />
+      </> : null}
       <Pressable
         accessibilityRole="button"
         accessibilityState={{ expanded }}
@@ -90,7 +124,7 @@ export function ActiveRecallAnswer({ recall }: { recall: ActiveRecallSense }) {
       </Pressable>
       {expanded ? (
         <View style={styles.details}>
-          <Text style={[styles.label, { color: colors.primary }]}>Full EN</Text>
+          <Text style={[styles.label, { color: colors.primary }]}>Full EN · 원문 유지</Text>
           <Text style={[styles.detailText, { color: colors.foreground }]}>{recall.englishDefinition}</Text>
           <Text style={[styles.label, { color: colors.primary }]}>Example</Text>
           {recall.exampleSentences.map((example, index) => (

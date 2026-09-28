@@ -1,6 +1,16 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.29 00:22 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.29 03:24 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+
+## 현재 batch — 영영정의 정답 해설 관계축·핵심 이미지 VERIFIED / 3.6 배포 후보
+
+- 최우선 학습 흐름인 `영영 정의 → 정확한 단어`의 정답 후 해설을 먼저 보강했다. 영영사전 원문은 그대로 유지하고, 한국어 핵심 뜻과 분리된 `초월번역 · 핵심 이미지`, 같은 sense의 동의어, OEWN이 명시한 반의어를 한 화면에서 구별한다.
+- OEWN의 같은 synset 구성원만 `Exact`, antonym pointer가 실제 있는 관계만 `Opposite`로 표시한다. 표제어 자신과 중복은 제거하고, 관계가 없는 sense에는 임의 동의어·반의어를 생성하지 않는다는 상태를 명시한다. 4,114개 정의 표제어 중 같은-sense 동의어가 있는 표제어는 2,879개, 반의어가 있는 표제어는 177개, 둘 중 하나 이상은 2,983개다.
+- 독립 검수형 영영문제도 기존 Exact/Near/Variant/Related에 `Opposite`를 추가하고, 문맥 설명을 `초월번역 · 핵심 이미지`로 제시한다. 상세의 전체 영영 정의와 영문 예문은 `원문 유지` 자료로 분리한다. 일반 문풀과 오답 문풀은 같은 공통 답안 컴포넌트를 사용한다.
+- VERIFIED: 관계 필터·초월번역 분리 회귀를 포함한 관련 2파일22테스트, TypeScript, 전체 단일 worker 27파일217테스트 통과/인증1skip, 변경 파일 ESLint 오류0.
+- 같은 batch에서 검수된 사전 표기 alias 6개(`boiler-plate(d)`, `double(-)bind`, `life span`, `the Killing Fields`, `the Senate`, `the sword of Damocles`)를 실제 OEWN 정의 자산에 backfill했다. 정의 연결은 34,705→34,726행(90.94→90.99%), alias는216→237행, 미일치는3,458→3,437행으로 개선됐다. `high-profile`은 명사 sense만 매치되어 원본 형용사와 불일치하고 `count (on)`도 원본 뜻과 OEWN 후보가 달라 계속 차단했다.
+- NOT DONE: 모든 38,163행의 예문·초월번역·동의어·반의어가 완성된 것은 아니다. 현재 즉시 표시되는 관계는 OEWN exact 단일-sense 정의 11,360행과 독립 검수 production sense 범위이며, 다의어22,783행과 미일치3,437행은 sense 검수 없이 자동 승격하지 않는다. 예문 원문+초월번역 전수 backfill은 다음 데이터 batch에서 출처·sense를 보존해 진행한다.
+- NEXT/P0: 정의 정답 해설의 실제 production 화면을 확인하고 3.6을 배포한다. 이후 허가된 원문 예문이 있는 sense부터 원문·한국어 개념 번역·문맥 단서·동의어/반의어를 하나의 검증 단위로 backfill한다.
 
 ## 현재 batch — 영영 정의 → 표제어와 동의어 문제 분리 VERIFIED / 3.5 공개 확인
 

@@ -20,6 +20,11 @@ export type DefinitionQuizCandidate = DefinitionQuizEntry & {
   relation: "antonym" | "unrelated";
 };
 
+export type DefinitionAnswerRelations = {
+  synonyms: string[];
+  antonyms: string[];
+};
+
 type DefinitionQuizCatalog = {
   schema: 1;
   version: string;
@@ -56,6 +61,38 @@ for (const entry of allEntries) {
 
 function normalized(value: string): string {
   return value.trim().toLowerCase().replace(/_/g, " ").replace(/\s+/g, " ");
+}
+
+function uniqueRelationWords(values: readonly string[], headword: string): string[] {
+  const target = normalized(headword);
+  const seen = new Set<string>();
+  return values.filter((value) => {
+    const key = normalized(value);
+    if (!key || key === target || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+/**
+ * OEWN의 같은 synset 구성원만 동의어로, 명시된 antonym pointer만 반의어로 노출한다.
+ * 빈 관계를 임의 생성하지 않는다.
+ */
+export function getDefinitionAnswerRelations(
+  entry: DefinitionQuizEntry,
+): DefinitionAnswerRelations {
+  return {
+    synonyms: uniqueRelationWords(entry.synsetMembers, entry.headword),
+    antonyms: uniqueRelationWords(entry.antonyms, entry.headword),
+  };
+}
+
+/**
+ * 사전 원문을 바꾸지 않고, 현재 sense의 한국어 핵심 뜻을 한 장면으로 압축한다.
+ * 역사적 어원이나 사전 번역으로 오인되지 않도록 UI에서 개념 설명으로 표시한다.
+ */
+export function buildDefinitionMeaningBridgeKo(koreanMeaning: string): string {
+  return `영영 정의가 가리키는 중심 장면은 ‘${koreanMeaning.trim()}’이다. 이 장면에서 영어 표제어를 다시 꺼내는 방식으로 기억한다.`;
 }
 
 function isSafeDistractor(target: DefinitionQuizEntry, candidate: DefinitionQuizEntry): boolean {
