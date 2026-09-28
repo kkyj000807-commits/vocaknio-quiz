@@ -1,14 +1,15 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.29 06:35 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.29 06:41 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 batch — OEWN 예문 원문 → 영영정의 정답 해설 연결 VERIFIED / 미배포
+## 현재 batch — OEWN 예문 원문 → 영영정의 정답 해설 연결 VERIFIED / 3.7 공개 확인
 
 - 영영정의 문제용 exact single-sense 자산에 OEWN 2025의 같은 synset `example` 원문을 보존했다. 정의·동의어·반의어와 다른 sense의 예문을 섞지 않으며, 원문에 없는 한국어 번역을 자동 생성하지 않는다.
 - 4,114개 안전 정의 표제어 중 원문 예문이 있는 표제어는 2,023개, 실제 출제 행은 6,405/11,360행이다. 정답 후 해설에서 최대 2개 원문 예문과 현재 한국어 핵심 뜻을 이용한 `문맥 이미지`를 동의어·반의어 아래에 표시한다.
 - VERIFIED: 생성기 재실행, OEWN archive hash 강제, 정의 데이터 감사 PASS, schema/예문 원문 회귀 2파일19테스트, TypeScript PASS. 원문 예문이 없는 sense는 빈 상태를 숨기거나 창작 문장으로 채우지 않는다.
 - NOT DONE: 4,955개 안전 정의 출제 행과 다의어·미일치 행에는 검증된 예문 원문이 없다. 한국어 예문 초월번역 전수분은 아직 없으며, 번역을 원문이나 사전 공식 번역처럼 표시하지 않는다.
-- NEXT/P0: 3.7 production build에서 실제 `abase` 등 원문 예문 표시와 모바일 줄바꿈을 확인한 뒤 배포한다. 이후 허가 원문 예문이 없는 숙어·오답 sense부터 편집 예문+초월번역을 독립 검수한다.
+- VERIFIED 배포: 앱 소스 `3db6521df6263c28d5d162c32a7e2480addeb7b2`, Pages `e0b9d26ae24d8402f319528fb1cf49311824f267`, Pages Actions `36487504123` 성공. 공개 release.json3.7·sourceCommit, 학습 JSON HTTP200, 신규 번들 SHA 일치를 확인했다. 공개 in-app browser에서 `abase` 정의 문제를 직접 풀고 원문 예문, Exact 4개, 핵심 이미지가 정답 뒤에 함께 표시되는 것을 확인했다.
+- NEXT/P0: 허가 원문 예문이 없는 숙어·오답 sense부터 편집 예문+초월번역을 독립 검수한다.
 
 ## 현재 batch — 영영정의 정답 해설 관계축·핵심 이미지 VERIFIED / 3.6 공개 확인
 
@@ -51,17 +52,17 @@
 - NOT DONE: `영영정의 100%`는 아니다. 22,783개 다의어 행과 alias 152행은 한국어 sense 연결 전까지 문제 정답 근거로 쓰지 않는다. OEWN 미일치 3,522행도 다른 허가 사전 backfill이 남았다.
 - NEXT/P0: `source_not_found` 중 숙어·오답·고빈도부터 다른 허가 사전으로 보강하고 다의어는 한국어 occurrence와 sense를 분리 매핑한다.
 
-## 현재 배포 — 3.6, 전체 로드맵은 부분 완료
+## 현재 배포 — 3.7, 전체 로드맵은 부분 완료
 
 - Production: https://kkyj000807-commits.github.io/vocaknio-quiz/
-- 배포 전3.5 → 배포 후3.6. 앱 표시: 버전 3.6 · 최근 수정 2026.09.29 03:25 KST. 공개 게시·정합성 확인은 03:30 KST다.
-- 앱 소스 `729fd1e0d40f65736da3bd20599260a3c678714f` / Pages `c75cf7b38818bb20a0102e8a0f013919a018b66f`. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
-- GitHub Pages Actions `36465231063` success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 및 사용자 파일 때문에 표시. dataVersion v1.4 / learningDataVersion3.6 / builtAt2026-09-28T18:25:05.578Z.
-- 번들 entry-46877ba3beeb154c607ef77fb29b5dd5.js / SHA256 3E5CEE9052F4A207F50B3301ABE7E30EA82F9B3C7FCD3FB74AD7ED8C197BFDDD.
-- 공개 quiz HTML·신규 번들·3.6 학습 JSON이 HTTP200이며 release.json3.6과 sourceCommit을 확인했다. 공개 번들과 로컬 검증 산출물의 SHA256이 동일하다. in-app browser에서 홈 첫 모드 `영영 정의`, 실제 영영 정의→표제어 문제, 정답 후 원문·초월번역·동의 관계를 확인했다.
+- 배포 전3.6 → 배포 후3.7. 앱 표시: 버전 3.7 · 최근 수정 2026.09.29 06:37 KST. 공개 게시·정합성 확인은 06:41 KST다.
+- 앱 소스 `3db6521df6263c28d5d162c32a7e2480addeb7b2` / Pages `e0b9d26ae24d8402f319528fb1cf49311824f267`. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
+- GitHub Pages Actions `36487504123` success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 및 사용자 파일 때문에 표시. dataVersion v1.4 / learningDataVersion3.7 / builtAt2026-09-28T21:37:31.862Z.
+- 번들 entry-6a4dcc7b289b1bb78c7a568a954807f3.js / SHA256 7622EC69AD5303CC4FBE8B552A9F6C0260FCBE5776FB0EA0EB94B81A580C637C.
+- 공개 quiz HTML·신규 번들·3.7 학습 JSON이 HTTP200이며 release.json3.7과 sourceCommit을 확인했다. 공개 번들과 로컬 검증 산출물의 SHA256이 동일하다. in-app browser에서 `abase` 정의→표제어 문제와 정답 후 원문 정의·한국어 핵심 이미지·same-sense 동의어·OEWN 예문 원문 표시를 확인했다.
 - 실제 iPhone Safari/Galaxy Tab Samsung Internet/모바일 Chrome 및 모든 기기 캐시는 미검증. in-app browser 결과를 실기기 검증으로 대신하지 않는다.
-- 산출물: C:/Users/USER/AppData/Local/Temp/voca-3.6-20260929-0326
-- 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pages8cb6d7f(3.5)을 보존했다. 배포용 managed worktree의 기존 stash도 삭제하지 않았다.
+- 산출물: C:/Users/USER/AppData/Local/Temp/voca-3.7-20260929-0640
+- 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pagesc75cf7b(3.6)을 보존했다. 배포용 managed worktree의 기존 stash도 삭제하지 않았다.
 
 ## 최신 제품 계약
 
