@@ -3066,7 +3066,12 @@
       "exampleSentence": "The legislature voted to abrogate the outdated law.",
       "exampleTranslation": "입법부는 그 낡은 법률을 폐지하기로 의결했다.",
       "exampleExplanation": "내용 일부를 고치는 amend가 아니라, 효력 자체를 없애는 뜻에 가깝다.",
-      "synonyms": [],
+      "synonyms": [
+        "revoke",
+        "repeal",
+        "annul",
+        "rescind"
+      ],
       "distinctionNote": "내용 일부를 고치는 amend가 아니라, 효력 자체를 없애는 뜻에 가깝다.",
       "sourceIds": [
         "https://en-word.net/downloads/english-wordnet-2025-json.zip",
@@ -3084,22 +3089,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "abet",

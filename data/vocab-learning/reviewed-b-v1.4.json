@@ -151,6 +151,12 @@
     "memoryKo": "권한 있는 주체가 규칙의 효력을 끊는 장면을 떠올린다.",
     "usageKo": "법률, 조약, 권리처럼 공식적인 효력을 가진 것을 권위 있는 결정으로 없앨 때 쓴다.",
     "examTrapKo": "내용 일부를 고치는 amend가 아니라, 효력 자체를 없애는 뜻에 가깝다.",
+    "nearSynonyms": [
+      "revoke",
+      "repeal",
+      "annul",
+      "rescind"
+    ],
     "contrasts": [
       {
         "word": "amend",
@@ -195,6 +201,25 @@
           "url": "https://kaikki.org/dictionary/English/meaning/a/ab/abrogate.jsonl",
           "result": "agree",
           "contentSha256": "549d0b65a502b5d6ad03f99816fad8acecffc075b1c997ec80bbbbfd29e6650f"
+        }
+      ]
+    },
+    "synonymVerification": {
+      "status": "cross-agreed",
+      "checkedAtKst": "2026.09.28",
+      "senseBoundaryKo": "권한 있는 주체가 법률·조약·합의 등의 효력을 공식적으로 끝내는 뜻에 한정한다. 책임을 회피한다는 별도 용법과 생물학 문맥은 포함하지 않는다.",
+      "evidence": [
+        {
+          "source": "Cambridge Dictionary",
+          "independenceGroup": "Cambridge",
+          "url": "https://dictionary.cambridge.org/dictionary/english/abrogate",
+          "result": "법률·합의·관습을 공식적으로 끝내는 타동사 sense를 확인"
+        },
+        {
+          "source": "Collins English Dictionary",
+          "independenceGroup": "Collins",
+          "url": "https://www.collinsdictionary.com/dictionary/english/abrogate",
+          "result": "공식 취소·철회 sense와 revoke/repeal/annul/rescind 관계를 확인"
         }
       ]
     }
