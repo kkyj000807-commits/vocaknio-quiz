@@ -1,6 +1,17 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.29 06:41 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.29 07:44 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+
+## 현재 batch — `rule of thumb` 영영 인출·해설 vertical slice VERIFIED / 3.8 공개 확인
+
+- 숙어 우선 보강 원칙에 따라 정본 `APPROW01877`을 `rule-of-thumb:practical-approximate-guide` 한 production sense로 연결했다. Cambridge와 Merriam-Webster의 현재 사전 본문을 독립 대조해 `경험에 근거한 실용적이지만 근사적인 판단 기준`으로 경계를 고정했으며, 엄격한 규칙·과학 법칙 sense를 섞지 않았다.
+- 영영 정의 → 정확한 표제어 문항을 실제 출제한다. 선지는 반대축 `hard-and-fast rule`, 대비되는 `scientific law`, 무관한 `red herring`으로 구성해 near-synonym 복수정답을 피하고, 정답 후 각 선지의 차이를 한국어로 표시한다.
+- 정답 해설은 concise EN, 핵심 KR, `초월번역 · 핵심 이미지`, Near `practical guideline`/`rough guide`, Variant `rules of thumb`, Related `heuristic`을 분리 표시한다. 펼치기에는 학습용 자체 편집 Full EN, 영문 예문, 한국어 초월번역, 문맥 단서와 출처/편집 구분을 표시한다. 손가락으로 대략 재는 장면은 현대 의미를 기억하기 위한 개념 이미지이며 역사적 어원으로 주장하지 않는다.
+- 실제 backfill 재실행 결과 canonical 102sense, COMPLETE84, NEEDS_REVIEW18, mapped231행, unmapped37,932행이다. 연결된 102sense의 영영정의·한국어·문맥·예문·예문해설·구별메모·출처 공란은 0이며 동의어 자료 미완료 18sense만 NEEDS_REVIEW로 유지했다.
+- VERIFIED: 전체 `pnpm verify`의 데이터·정의 감사, TypeScript, 27파일219테스트 통과/인증1skip, 변경 lint 오류0(기존 module-format 경고만 존재), production build/audit HTML22·학습JSON8·정의JSON8·참조누락0. 공개 in-app browser에서 실제 영영정의 문항과 한국어 선행 비노출, 정답 후 EN/KR·초월번역·관계 chip, 펼친 Full EN·영문/한국어 예문·문맥 단서까지 확인했다. 격리 브라우저는 기존 학습기록을 읽지 못해 응답 저장을 차단했으며 사용자 기록을 덮어쓰지 않았다.
+- VERIFIED 배포: 앱 소스 `a0eadc0711ba11444843eb7b798a4b62e80dd8fd`, Pages `06d02e742af4047c877127ef7e564e7a0d42f0a0`, Pages Actions `36493885920` success. 공개 release.json 3.8·sourceCommit, 3.8 학습 JSON HTTP200, 공개/로컬 bundle SHA256 `316DF3BE7CADABB1042D15BB38E1ADF1ECC5DE80156FE8475EEFAC2CA4442BE0` 일치를 확인했다.
+- NOT DONE: 전체 38,163행 보강 완료가 아니다. 미매핑37,932행과 동의어 NEEDS_REVIEW18sense가 남아 있다. 실제 iPhone Safari, iPad Safari, Galaxy Tab Samsung Internet/Chrome 실기기는 확인하지 않았다.
+- NEXT/P0: 다음 미매핑 숙어 또는 source-not-found 고빈도 항목을 같은 source→sense→정의/예문→영영 인출→정답 해설 단위로 한 항목씩 닫는다.
 
 ## 현재 batch — OEWN 예문 원문 → 영영정의 정답 해설 연결 VERIFIED / 3.7 공개 확인
 
@@ -52,17 +63,17 @@
 - NOT DONE: `영영정의 100%`는 아니다. 22,783개 다의어 행과 alias 152행은 한국어 sense 연결 전까지 문제 정답 근거로 쓰지 않는다. OEWN 미일치 3,522행도 다른 허가 사전 backfill이 남았다.
 - NEXT/P0: `source_not_found` 중 숙어·오답·고빈도부터 다른 허가 사전으로 보강하고 다의어는 한국어 occurrence와 sense를 분리 매핑한다.
 
-## 현재 배포 — 3.7, 전체 로드맵은 부분 완료
+## 현재 배포 — 3.8, 전체 로드맵은 부분 완료
 
 - Production: https://kkyj000807-commits.github.io/vocaknio-quiz/
-- 배포 전3.6 → 배포 후3.7. 앱 표시: 버전 3.7 · 최근 수정 2026.09.29 06:37 KST. 공개 게시·정합성 확인은 06:41 KST다.
-- 앱 소스 `3db6521df6263c28d5d162c32a7e2480addeb7b2` / Pages `e0b9d26ae24d8402f319528fb1cf49311824f267`. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
-- GitHub Pages Actions `36487504123` success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 및 사용자 파일 때문에 표시. dataVersion v1.4 / learningDataVersion3.7 / builtAt2026-09-28T21:37:31.862Z.
-- 번들 entry-6a4dcc7b289b1bb78c7a568a954807f3.js / SHA256 7622EC69AD5303CC4FBE8B552A9F6C0260FCBE5776FB0EA0EB94B81A580C637C.
-- 공개 quiz HTML·신규 번들·3.7 학습 JSON이 HTTP200이며 release.json3.7과 sourceCommit을 확인했다. 공개 번들과 로컬 검증 산출물의 SHA256이 동일하다. in-app browser에서 `abase` 정의→표제어 문제와 정답 후 원문 정의·한국어 핵심 이미지·same-sense 동의어·OEWN 예문 원문 표시를 확인했다.
+- 배포 전3.7 → 배포 후3.8. 앱 표시: 버전 3.8 · 최근 수정 2026.09.29 07:39 KST. 공개 게시·정합성 확인은 07:44 KST다.
+- 앱 소스 `a0eadc0711ba11444843eb7b798a4b62e80dd8fd` / Pages `06d02e742af4047c877127ef7e564e7a0d42f0a0`. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
+- GitHub Pages Actions `36493885920` success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 및 사용자 파일 때문에 표시. dataVersion v1.4 / learningDataVersion3.8 / builtAt2026-09-28T22:39:20.109Z.
+- 번들 entry-335fb78bf212284b166131c1eb4f2d50.js / SHA256 316DF3BE7CADABB1042D15BB38E1ADF1ECC5DE80156FE8475EEFAC2CA4442BE0.
+- 공개 quiz HTML·신규 번들·3.8 학습 JSON이 HTTP200이며 release.json3.8과 sourceCommit을 확인했다. 공개 번들과 로컬 검증 산출물의 SHA256이 동일하다. in-app browser에서 실제 `rule of thumb` 정의→표제어 문제와 정답 후 EN/KR·핵심 이미지·same-sense 관계, 펼친 원문 유지 정의·편집 예문·초월번역·문맥 단서 표시를 확인했다.
 - 실제 iPhone Safari/Galaxy Tab Samsung Internet/모바일 Chrome 및 모든 기기 캐시는 미검증. in-app browser 결과를 실기기 검증으로 대신하지 않는다.
-- 산출물: C:/Users/USER/AppData/Local/Temp/voca-3.7-20260929-0640
-- 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pagesc75cf7b(3.6)을 보존했다. 배포용 managed worktree의 기존 stash도 삭제하지 않았다.
+- 산출물: C:/Users/USER/AppData/Local/Temp/voca-3.8-20260929-0740
+- 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pagese0b9d26(3.7)을 보존했다. 배포용 managed worktree의 기존 stash와 이번 배포 중 분리한 임시 stash도 삭제하지 않았다.
 
 ## 최신 제품 계약
 
