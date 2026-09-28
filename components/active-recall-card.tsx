@@ -3,28 +3,14 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useColors } from "@/hooks/use-colors";
 import type { ActiveRecallSense } from "@/lib/active-recall";
+import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
 import {
   buildDefinitionMeaningBridgeKo,
   getDefinitionAnswerRelations,
   type DefinitionQuizEntry,
 } from "@/lib/definition-quiz";
 
-type RelationChip = { value: string; kind: "Exact" | "Near" | "Variant" | "Related" | "Opposite" };
-
-function RelationChips({ chips }: { chips: RelationChip[] }) {
-  const colors = useColors();
-  if (chips.length === 0) return null;
-  return (
-    <View style={styles.chips}>
-      {chips.map((chip) => (
-        <View key={`${chip.kind}:${chip.value}`} style={[styles.chip, { borderColor: colors.border, backgroundColor: colors.surface }]}>
-          <Text style={[styles.chipKind, { color: colors.muted }]}>{chip.kind}</Text>
-          <Text style={[styles.chipText, { color: colors.foreground }]}>{chip.value}</Text>
-        </View>
-      ))}
-    </View>
-  );
-}
+type MeaningChoice = { word: string; meaning: string };
 
 export function DefinitionRecallPrompt({ definition }: { definition: string }) {
   const colors = useColors();
@@ -40,36 +26,28 @@ export function DefinitionRecallPrompt({ definition }: { definition: string }) {
 export function DefinitionRecallAnswer({
   recall,
   koreanMeaning,
+  choices,
 }: {
   recall: DefinitionQuizEntry;
   koreanMeaning: string;
+  choices?: MeaningChoice[];
 }) {
   const colors = useColors();
   const relations = getDefinitionAnswerRelations(recall);
-  const relationChips: RelationChip[] = [
-    ...relations.synonyms.map((value): RelationChip => ({ value, kind: "Exact" })),
-    ...relations.antonyms.map((value): RelationChip => ({ value, kind: "Opposite" })),
-  ].slice(0, 8);
+  const bridgeKo = buildDefinitionMeaningBridgeKo(koreanMeaning);
   return (
     <View style={[styles.answer, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <Text style={[styles.answerWord, { color: colors.foreground }]}>{recall.headword}</Text>
       <Text style={[styles.label, { color: colors.primary }]}>EN · 영영사전 원문</Text>
       <Text style={[styles.definition, { color: colors.foreground }]}>{recall.definition}</Text>
-      <Text style={[styles.label, { color: colors.primary }]}>KR</Text>
-      <Text style={[styles.korean, { color: colors.foreground }]}>{koreanMeaning}</Text>
-      <Text style={[styles.label, { color: colors.primary }]}>초월번역 · 핵심 이미지</Text>
-      <Text style={[styles.detailText, { color: colors.foreground }]}>
-        {buildDefinitionMeaningBridgeKo(koreanMeaning)}
-      </Text>
-      {relationChips.length > 0 ? (
-        <>
-          <Text style={[styles.label, { color: colors.primary }]}>같은 의미축 · 반대 의미축</Text>
-          <RelationChips chips={relationChips} />
-        </>
-      ) : null}
-      {relations.synonyms.length === 0 && relations.antonyms.length === 0 ? (
-        <Text style={[styles.note, { color: colors.muted }]}>이 sense에 OEWN이 명시한 동의어·반의어 관계는 없습니다. 임의 관계는 추가하지 않습니다.</Text>
-      ) : null}
+      <SemanticRelationCluster
+        headword={recall.headword}
+        coreMeaningKo={koreanMeaning}
+        bridgeKo={bridgeKo}
+        exactSynonyms={relations.synonyms.slice(0, 8)}
+        antonyms={relations.antonyms.slice(0, 8)}
+        choiceMeanings={choices}
+      />
       {recall.examples.length > 0 ? (
         <>
           <Text style={[styles.label, { color: colors.primary }]}>예문 · 영영사전 원문</Text>
@@ -100,31 +78,25 @@ export function ActiveRecallPrompt({ recall, promptId }: { recall: ActiveRecallS
   );
 }
 
-export function ActiveRecallAnswer({ recall }: { recall: ActiveRecallSense }) {
+export function ActiveRecallAnswer({ recall, choices }: { recall: ActiveRecallSense; choices?: MeaningChoice[] }) {
   const colors = useColors();
   const [expanded, setExpanded] = useState(false);
-  const chips: RelationChip[] = [
-    ...recall.exactSynonyms.map((value): RelationChip => ({ value, kind: "Exact" })),
-    ...recall.nearSynonyms.map((value): RelationChip => ({ value, kind: "Near" })),
-    ...recall.variants.map((value): RelationChip => ({ value, kind: "Variant" })),
-    ...recall.relatedWords.map((value): RelationChip => ({ value, kind: "Related" })),
-    ...recall.antonyms.map((value): RelationChip => ({ value, kind: "Opposite" })),
-  ].slice(0, 8);
   return (
     <View style={[styles.answer, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <Text style={[styles.answerWord, { color: colors.foreground }]}>{recall.headword}</Text>
       <Text style={[styles.label, { color: colors.primary }]}>EN</Text>
       <Text style={[styles.definition, { color: colors.foreground }]}>{recall.conciseEnglishDefinition}</Text>
-      <Text style={[styles.label, { color: colors.primary }]}>KR</Text>
-      <Text style={[styles.korean, { color: colors.foreground }]}>{recall.koreanMeaning}</Text>
-      {recall.contextExplanationKo ? <>
-        <Text style={[styles.label, { color: colors.primary }]}>초월번역 · 핵심 이미지</Text>
-        <Text style={[styles.detailText, { color: colors.foreground }]}>{recall.contextExplanationKo}</Text>
-      </> : null}
-      {chips.length > 0 ? <>
-        <Text style={[styles.label, { color: colors.primary }]}>동의어 · 반의어</Text>
-        <RelationChips chips={chips} />
-      </> : null}
+      <SemanticRelationCluster
+        headword={recall.headword}
+        coreMeaningKo={recall.koreanMeaning}
+        bridgeKo={recall.contextExplanationKo}
+        exactSynonyms={recall.exactSynonyms.slice(0, 5)}
+        nearSynonyms={recall.nearSynonyms.slice(0, 5)}
+        antonyms={recall.antonyms.slice(0, 5)}
+        variants={recall.variants.slice(0, 3)}
+        relatedWords={recall.relatedWords.slice(0, 3)}
+        choiceMeanings={choices}
+      />
       <Pressable
         accessibilityRole="button"
         accessibilityState={{ expanded }}
@@ -161,11 +133,6 @@ const styles = StyleSheet.create({
   answerWord: { fontSize: 24, lineHeight: 31, fontWeight: "800" },
   label: { marginTop: 3, fontSize: 10, lineHeight: 16, fontWeight: "800", letterSpacing: 1.2 },
   definition: { fontSize: 15, lineHeight: 23 },
-  korean: { fontSize: 14, lineHeight: 21, fontWeight: "700" },
-  chips: { flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 4 },
-  chip: { flexDirection: "row", alignItems: "center", gap: 5, borderWidth: 1, borderRadius: 14, paddingHorizontal: 9, paddingVertical: 5 },
-  chipKind: { fontSize: 9, fontWeight: "800" },
-  chipText: { fontSize: 11, fontWeight: "600" },
   more: { minHeight: 44, justifyContent: "center", alignSelf: "flex-start" },
   moreText: { fontSize: 12, fontWeight: "700" },
   details: { gap: 6, paddingTop: 4 },
