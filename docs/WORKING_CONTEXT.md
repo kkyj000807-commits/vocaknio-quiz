@@ -1,28 +1,28 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.28 14:24 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.28 14:30 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 batch — OEWN 2025 전 어휘 정의 층 VERIFIED / 3.2 배포 준비
+## 현재 batch — OEWN 2025 전 어휘 정의 층 VERIFIED / 3.2 공개 확인
 
 - Open English WordNet 2025 공식 JSON archive(SHA-256 `7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51`, CC BY 4.0)를 38,163개 정본 행 전체에 exact-headword 방식으로 적용했다. 원본 정본·한국어 뜻·학습 기록은 변경하지 않았다.
 - 38,163행 모두가 명시 상태와 item→headword 포인터를 가진다. 실제 사전 정의 연결은 34,489행(90.37%), 이 중 단일-sense로 바로 표시 가능한 행은 11,706개다. 다의어 22,783행은 OEWN의 모든 후보 sense를 보존하지만 한국어 occurrence와 연결하기 전까지 `dictionary_primary_unreviewed`, 미일치 3,674행은 `source_not_found`로 둔다.
 - 기존 검수 해설 152sense/218행은 계속 우선 표시한다. 그 밖의 행은 단어장·문풀·오답의 기존 펼치기에서 OEWN 정의를 읽는다. 다의어는 대표 후보와 전체 후보를 구분하고 `문제 정답 근거로 사용하지 않음`을 표시한다. 미일치에는 가짜 정의나 placeholder를 넣지 않는다.
 - 새 데이터는 `assets/vocab-definitions-oewn-2025.json`과 8개 그룹별 public JSON에 저장된다. 생성기는 공식 archive hash를 강제하고, 감사는 전 행 중복·누락·상태·정의·라이선스를 검사한다. Production 빌드와 산출물 감사도 8개 정의 JSON 및 앱 번들 연결이 없으면 실패한다.
-- VERIFIED: 정의 감사 PASS(38,163/38,163 포인터), TypeScript PASS, 변경 파일 ESLint 오류0, 전체 verify 25파일198테스트 통과/인증1skip. 아직 Production 3.2 빌드·Pages 배포·실제 브라우저 표시는 이 문서 갱신 시점에 진행 중이다.
+- VERIFIED: 정의 감사 PASS(38,163/38,163 포인터), TypeScript PASS, 변경 파일 ESLint 오류0, 전체 verify 25파일198테스트 통과/인증1skip. Production 3.2 감사 HTML22/학습JSON8/정의JSON8/참조누락0을 통과했고 in-app browser에서 로컬·공개 단어장의 정의 펼치기를 확인했다. 실제 Safari·Samsung Internet·모바일 Chrome 실기기 검증은 아니다.
 - NOT DONE: `영영정의 100%`는 아니다. 22,783개 다의어 행의 한국어 sense 연결 검수와 3,674개 OEWN 미일치 숙어·표현의 다른 허가 사전 backfill이 남았다. 이 둘은 영영 문제에 자동 승격하지 않는다.
-- NEXT/P0: 3.2 Production build/audit와 공개 URL 확인을 닫은 뒤, `source_not_found` 중 숙어·오답·고빈도부터 다른 허가 사전으로 보강하고 다의어는 한국어 occurrence와 sense를 분리 매핑한다.
+- NEXT/P0: `source_not_found` 중 숙어·오답·고빈도부터 다른 허가 사전으로 보강하고 다의어는 한국어 occurrence와 sense를 분리 매핑한다.
 
-## 현재 배포 — 3.1, 전체 로드맵은 부분 완료
+## 현재 배포 — 3.2, 전체 로드맵은 부분 완료
 
 - Production: https://kkyj000807-commits.github.io/vocaknio-quiz/
-- 배포 전3.0 → 배포 후3.1. 앱 표시: 버전 3.1 · 최근 수정 2026.09.25 00:46 KST. 공개 게시·정합성 확인은 00:50 KST다.
-- 앱 소스27bcba3db4634a54378573bd23980ef4df39b0a3 / Pages5f8a6b86a5a5876f418c57c050fa6a59b4fa33fe. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
-- GitHub Pages build `built`. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion3.1 / builtAt2026-09-24T15:46:57.186Z.
-- 번들 entry-e142647e05a45b9d6a23cc3da84bf2cd.js / SHA256 E812FF4B4CF90FD6736887903700D58375F3749266F51C2B541156A7B782BC05.
-- 공개 root·quiz·신규 번들·3.1 학습 JSON이 HTTP200이며 release.json3.1, sourceCommit, 번들 참조를 확인했다. 공개 번들에 `wrap-up:finish-activity`와 간결 정의가 포함된 것도 확인했다. 공개 문제를 풀어 사용자 저장기록을 만들지는 않았다.
+- 배포 전3.1 → 배포 후3.2. 앱 표시: 버전 3.2 · 최근 수정 2026.09.28 14:23 KST. 공개 게시·정합성 확인은 14:30 KST다.
+- 앱 소스3de96f1584d772c78b72a08f9b9b13173156bc91 / Pagesd22c7dd0a5020b6c1c63dfecaca71476ae1ca241. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
+- GitHub Pages build `built`. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion3.2 / builtAt2026-09-28T05:23:41.878Z.
+- 번들 entry-4cb7cd3c3cb7bede56559caad363ccf7.js / SHA256 EA03D613B557C40ECBCD0B4EAC64945FB8CAE11565C079AEA50FF2C4EE029B8A.
+- 공개 root·wordbook·신규 번들·3.2 학습 JSON·8개 OEWN 정의 JSON이 HTTP200이며 release.json3.2, sourceCommit, 번들 참조를 확인했다. 공개 단어장에서 `영영 정의·뜻·예문` 펼치기와 단일/다의어/미일치 상태 표시를 확인했다. 공개 문제를 풀어 사용자 저장기록을 만들지는 않았다.
 - 실제 iPhone Safari/Galaxy Tab Samsung Internet/모바일 Chrome 및 모든 기기 캐시는 미검증. in-app browser 결과를 실기기 검증으로 대신하지 않는다.
-- 산출물: C:/Users/USER/AppData/Local/Temp/voca-3.1-20260925-004656
-- Pages 임시 worktree는 배포·감사 후 제거했다. 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pages63ed9d8(3.0)을 보존했다.
+- 산출물: C:/Users/USER/AppData/Local/Temp/voca-3.2-20260928-1427
+- 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pages5f8a6b8(3.1)을 보존했다. 배포용 managed worktree 정리는 별도 lifecycle 작업으로 남아 있으며 공개 앱에는 영향이 없다.
 
 ## 최신 제품 계약
 
