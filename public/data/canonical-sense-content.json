@@ -3992,7 +3992,9 @@
       "exampleSentence": "The consultant priced herself out of the market by doubling her fee.",
       "exampleTranslation": "그 컨설턴트는 보수를 두 배로 올렸다가 고객이 외면할 만큼 비싸져 경쟁력을 잃었다.",
       "exampleExplanation": "가격을 인하해 경쟁자를 몰아내는 것이 아니다. oneself나 one's goods에서는 자신의 높은 가격이 원인이다.",
-      "synonyms": [],
+      "synonyms": [
+        "become uncompetitive by overpricing"
+      ],
       "distinctionNote": "가격을 인하해 경쟁자를 몰아내는 것이 아니다. oneself나 one's goods에서는 자신의 높은 가격이 원인이다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/dictionary/english/to-price-yourself-out-of-the-market",
@@ -4007,22 +4009,13 @@
       ],
       "conflicts": [],
       "alternateValues": [],
-      "definitionStatus": "NEEDS_REVIEW",
+      "definitionStatus": "COMPLETE",
       "backfill": {
         "attempts": 1,
-        "retryable": true,
-        "failureReasons": [
-          {
-            "category": "검증 대기",
-            "fields": [
-              "synonyms"
-            ]
-          }
-        ]
+        "retryable": false,
+        "failureReasons": []
       },
-      "missingFields": [
-        "synonyms"
-      ]
+      "missingFields": []
     },
     {
       "word": "pull the rug from under a person",

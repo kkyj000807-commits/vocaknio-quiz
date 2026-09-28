@@ -35,7 +35,7 @@ describe("canonical sense 공란 backfill", () => {
     expect(content.entries.filter((entry) => entry.definitionStatus === "NEEDS_REVIEW").every(
       (entry) => (entry.missingFields as string[]).includes("synonyms"),
     )).toBe(true);
-    expect(pending.categories.verificationPending).toHaveLength(20);
+    expect(pending.categories.verificationPending).toHaveLength(19);
     expect(pending.categories.senseMappingFailure).toHaveLength(37_933);
     expect(pending.categories.actualDataAbsence).toHaveLength(0);
   });
@@ -110,6 +110,7 @@ describe("canonical sense 공란 backfill", () => {
       ["account-for:be-explanation-or-cause", ["explain", "be responsible for"]],
       ["account-for:give-explanation", ["explain"]],
       ["account-for:form-part-of-total", ["constitute", "make up"]],
+      ["price-market:primary", ["become uncompetitive by overpricing"]],
     ]);
 
     for (const [senseId, synonyms] of expected) {
@@ -144,6 +145,6 @@ describe("canonical sense 공란 backfill", () => {
       .toBe("To meet someone unexpectedly rather than by prior arrangement.");
     expect(content.entries.find((entry) => entry.senseId === "on-behalf:primary")?.englishDefinition)
       .toBe("Acting or speaking as someone's representative or in their place.");
-    expect(content.entries.filter((entry) => entry.definitionStatus === "COMPLETE")).toHaveLength(81);
+    expect(content.entries.filter((entry) => entry.definitionStatus === "COMPLETE")).toHaveLength(82);
   });
 });

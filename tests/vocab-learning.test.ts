@@ -58,6 +58,7 @@ describe("깊이 학습 인덱스", () => {
     const wakeOf = readEntries("JBKROW013919");
     const makeFor = readEntries("JBKROW001578");
     const accountFor = readEntries("JBKROW004694");
+    const priceOut = readEntries("JBKROW023367");
 
     expect(byNoMeans[0]?.exactSynonyms).toEqual(["in no way", "not at all"]);
     expect(inSpite[0]?.exactSynonyms).toEqual(["despite"]);
@@ -124,6 +125,7 @@ describe("깊이 학습 인덱스", () => {
       .toEqual(["explain"]);
     expect(accountFor.find((entry) => entry.senseId === "account-for:form-part-of-total")?.exactSynonyms)
       .toEqual(["constitute", "make up"]);
+    expect(priceOut[0]?.exactSynonyms).toEqual(["become uncompetitive by overpricing"]);
   });
 
   it("Open English WordNet의 같은 synset 동의어만 공개 데이터에 전달한다", () => {

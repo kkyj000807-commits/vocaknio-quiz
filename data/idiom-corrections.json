@@ -1909,6 +1909,7 @@
       "memoryKo":"내가 붙인 높은 가격표가 나를 시장 밖으로 밀어낸다.",
       "usageKo":"상품 가격뿐 아니라 개인의 출연료·보수·서비스 요금이 너무 높은 상황에도 쓴다.",
       "examTrapKo":"가격을 인하해 경쟁자를 몰아내는 것이 아니다. oneself나 one's goods에서는 자신의 높은 가격이 원인이다.",
+      "exactSynonyms":["become uncompetitive by overpricing"],
       "example":{"en":"The consultant priced herself out of the market by doubling her fee.","ko":"그 컨설턴트는 보수를 두 배로 올렸다가 고객이 외면할 만큼 비싸져 경쟁력을 잃었다."},
       "sources":[
         {"name":"Collins COBUILD","url":"https://www.collinsdictionary.com/dictionary/english/to-price-yourself-out-of-the-market","independenceGroup":"Collins","noteKo":"자신의 상품·서비스 가격이 너무 높아 구매자가 없어진다는 의미 확인."},
