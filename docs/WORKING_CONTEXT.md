@@ -2,7 +2,7 @@
 
 기준: 2026.09.29 03:24 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 batch — 영영정의 정답 해설 관계축·핵심 이미지 VERIFIED / 3.6 배포 후보
+## 현재 batch — 영영정의 정답 해설 관계축·핵심 이미지 VERIFIED / 3.6 공개 확인
 
 - 최우선 학습 흐름인 `영영 정의 → 정확한 단어`의 정답 후 해설을 먼저 보강했다. 영영사전 원문은 그대로 유지하고, 한국어 핵심 뜻과 분리된 `초월번역 · 핵심 이미지`, 같은 sense의 동의어, OEWN이 명시한 반의어를 한 화면에서 구별한다.
 - OEWN의 같은 synset 구성원만 `Exact`, antonym pointer가 실제 있는 관계만 `Opposite`로 표시한다. 표제어 자신과 중복은 제거하고, 관계가 없는 sense에는 임의 동의어·반의어를 생성하지 않는다는 상태를 명시한다. 4,114개 정의 표제어 중 같은-sense 동의어가 있는 표제어는 2,879개, 반의어가 있는 표제어는 177개, 둘 중 하나 이상은 2,983개다.
@@ -10,7 +10,8 @@
 - VERIFIED: 관계 필터·초월번역 분리 회귀를 포함한 관련 2파일22테스트, TypeScript, 전체 단일 worker 27파일217테스트 통과/인증1skip, 변경 파일 ESLint 오류0.
 - 같은 batch에서 검수된 사전 표기 alias 6개(`boiler-plate(d)`, `double(-)bind`, `life span`, `the Killing Fields`, `the Senate`, `the sword of Damocles`)를 실제 OEWN 정의 자산에 backfill했다. 정의 연결은 34,705→34,726행(90.94→90.99%), alias는216→237행, 미일치는3,458→3,437행으로 개선됐다. `high-profile`은 명사 sense만 매치되어 원본 형용사와 불일치하고 `count (on)`도 원본 뜻과 OEWN 후보가 달라 계속 차단했다.
 - NOT DONE: 모든 38,163행의 예문·초월번역·동의어·반의어가 완성된 것은 아니다. 현재 즉시 표시되는 관계는 OEWN exact 단일-sense 정의 11,360행과 독립 검수 production sense 범위이며, 다의어22,783행과 미일치3,437행은 sense 검수 없이 자동 승격하지 않는다. 예문 원문+초월번역 전수 backfill은 다음 데이터 batch에서 출처·sense를 보존해 진행한다.
-- NEXT/P0: 정의 정답 해설의 실제 production 화면을 확인하고 3.6을 배포한다. 이후 허가된 원문 예문이 있는 sense부터 원문·한국어 개념 번역·문맥 단서·동의어/반의어를 하나의 검증 단위로 backfill한다.
+- VERIFIED 배포: 앱 소스 `729fd1e0d40f65736da3bd20599260a3c678714f`, Pages `c75cf7b38818bb20a0102e8a0f013919a018b66f`, Pages Actions `36465231063` 성공. 공개 release.json 3.6·sourceCommit, 3.6 학습 JSON HTTP200, 신규 번들 SHA 일치를 확인했다. 공개 in-app browser에서 실제 `fait accompli` 정의 문제를 풀고 정답 후 `영영사전 원문`·KR·`초월번역 · 핵심 이미지`·same-sense Exact `accomplished fact`가 표시되는 것을 확인했다.
+- NEXT/P0: 허가된 원문 예문이 있는 sense부터 원문·한국어 개념 번역·문맥 단서·동의어/반의어를 하나의 검증 단위로 backfill한다.
 
 ## 현재 batch — 영영 정의 → 표제어와 동의어 문제 분리 VERIFIED / 3.5 공개 확인
 
@@ -42,17 +43,17 @@
 - NOT DONE: `영영정의 100%`는 아니다. 22,783개 다의어 행과 alias 152행은 한국어 sense 연결 전까지 문제 정답 근거로 쓰지 않는다. OEWN 미일치 3,522행도 다른 허가 사전 backfill이 남았다.
 - NEXT/P0: `source_not_found` 중 숙어·오답·고빈도부터 다른 허가 사전으로 보강하고 다의어는 한국어 occurrence와 sense를 분리 매핑한다.
 
-## 현재 배포 — 3.5, 전체 로드맵은 부분 완료
+## 현재 배포 — 3.6, 전체 로드맵은 부분 완료
 
 - Production: https://kkyj000807-commits.github.io/vocaknio-quiz/
-- 배포 전3.4 → 배포 후3.5. 앱 표시: 버전 3.5 · 최근 수정 2026.09.29 00:14 KST. 공개 게시·정합성 확인은 00:22 KST다.
-- 앱 소스 `7a9f484913082d63cfcafec13d2cd2ffcd1449` / Pages `8cb6d7f08aa19d8c4e61afd6397369229a5eda54`. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
-- GitHub Pages Actions `36442651640` success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 및 사용자 파일 때문에 표시. dataVersion v1.4 / learningDataVersion3.5 / builtAt2026-09-28T15:14:55.685Z.
-- 번들 entry-328972310b9e11b1817a696248f425db.js / SHA256 664BA5FA9EDE3807CCCD1648FB77E1DB91A78977C518F62072A00289C3B8BB13.
-- 공개 quiz HTML·신규 번들·3.5 학습 JSON이 HTTP200이며 release.json3.5와 sourceCommit을 확인했다. 공개 번들과 로컬 검증 산출물의 SHA256이 동일하다. in-app browser에서 홈의 분리된 두 문제형과 실제 영영 정의→표제어 문제·정답 후 정보 계층을 확인했다.
+- 배포 전3.5 → 배포 후3.6. 앱 표시: 버전 3.6 · 최근 수정 2026.09.29 03:25 KST. 공개 게시·정합성 확인은 03:30 KST다.
+- 앱 소스 `729fd1e0d40f65736da3bd20599260a3c678714f` / Pages `c75cf7b38818bb20a0102e8a0f013919a018b66f`. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
+- GitHub Pages Actions `36465231063` success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 및 사용자 파일 때문에 표시. dataVersion v1.4 / learningDataVersion3.6 / builtAt2026-09-28T18:25:05.578Z.
+- 번들 entry-46877ba3beeb154c607ef77fb29b5dd5.js / SHA256 3E5CEE9052F4A207F50B3301ABE7E30EA82F9B3C7FCD3FB74AD7ED8C197BFDDD.
+- 공개 quiz HTML·신규 번들·3.6 학습 JSON이 HTTP200이며 release.json3.6과 sourceCommit을 확인했다. 공개 번들과 로컬 검증 산출물의 SHA256이 동일하다. in-app browser에서 홈 첫 모드 `영영 정의`, 실제 영영 정의→표제어 문제, 정답 후 원문·초월번역·동의 관계를 확인했다.
 - 실제 iPhone Safari/Galaxy Tab Samsung Internet/모바일 Chrome 및 모든 기기 캐시는 미검증. in-app browser 결과를 실기기 검증으로 대신하지 않는다.
-- 산출물: C:/Users/USER/AppData/Local/Temp/voca-3.5-20260929-0018
-- 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pages01853dd(3.4)을 보존했다. 배포용 managed worktree 정리는 별도 lifecycle 작업으로 남아 있으며 공개 앱에는 영향이 없다.
+- 산출물: C:/Users/USER/AppData/Local/Temp/voca-3.6-20260929-0326
+- 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pages8cb6d7f(3.5)을 보존했다. 배포용 managed worktree의 기존 stash도 삭제하지 않았다.
 
 ## 최신 제품 계약
 
