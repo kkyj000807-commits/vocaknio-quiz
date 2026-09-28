@@ -1,7 +1,67 @@
 {
   "schema": 1,
-  "checkedAtKst": "2026.09.22",
+  "checkedAtKst": "2026.09.29",
   "entries": [
+    {
+      "id": "rule-of-thumb:practical-approximate-guide",
+      "headword": "rule of thumb",
+      "partOfSpeech": "noun phrase",
+      "senseId": "rule-of-thumb:practical-approximate-guide",
+      "itemIds": ["APPROW01877"],
+      "englishDefinition": "A practical but approximate guide for judging or doing something, based on experience rather than an exact calculation.",
+      "conciseEnglishDefinition": "a practical but approximate guide based on experience",
+      "exactSynonyms": [],
+      "nearSynonyms": ["practical guideline", "rough guide"],
+      "antonyms": [],
+      "variants": ["rules of thumb"],
+      "relatedWords": ["heuristic"],
+      "exampleSentences": [
+        {
+          "en": "As a rule of thumb, reserve one hour of editing for every ten pages of draft.",
+          "ko": "대략적인 경험칙으로, 초안 열 쪽마다 편집 시간 한 시간을 잡아 둬라.",
+          "cueKo": "열 쪽당 한 시간은 모든 경우에 정확히 맞는 공식이 아니라 계획을 빠르게 세우는 실용적 근삿값이다.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "경험에 근거한 실용적 어림 기준",
+      "contextExplanationKo": "손가락으로 대략 재듯, 경험에서 얻은 기준으로 빠르게 판단하는 장면이다. 엄밀한 법칙이나 언제나 맞는 공식이 아니라 충분히 쓸 만한 근사 기준이다. 이는 현대 의미를 기억하기 위한 개념 이미지이며 역사적 어원 설명이 아니다.",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "a practical but approximate guide based on experience rather than exact calculation"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "As a _____, the editor allows about one hour for every ten pages, though difficult chapters may take longer."
+        }
+      ],
+      "distractors": [
+        {"word": "hard-and-fast rule", "meaningKo": "반드시 지켜야 하는 엄격한 규칙", "reasonKo": "예외를 허용하지 않는 엄격한 기준이라서, 대략 맞는 경험적 지침인 목표 표현과 반대되는 정확성 축이다.", "plausible": true},
+        {"word": "scientific law", "meaningKo": "과학 법칙", "reasonKo": "검증된 현상의 일반 관계를 말하며, 경험상 빠르게 쓰는 근사 기준과는 근거와 정확성의 성격이 다르다.", "plausible": true},
+        {"word": "red herring", "meaningKo": "주의를 딴 데로 돌리는 단서", "reasonKo": "판단을 돕는 기준이 아니라 핵심에서 벗어나게 하는 무관한 정보다.", "plausible": false}
+      ],
+      "sources": [
+        {
+          "publisher": "Cambridge English Dictionary",
+          "url": "https://dictionary.cambridge.org/us/dictionary/english/rule-of-thumb",
+          "independenceGroup": "Cambridge",
+          "note": "실용적이고 근사적인 판단·측정 방법 sense를 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Merriam-Webster",
+          "url": "https://www.merriam-webster.com/dictionary/rule%20of%20thumb",
+          "independenceGroup": "Merriam-Webster",
+          "note": "경험·상식에 기반하며 대략 맞지만 과학적으로 정확한 원칙은 아니라는 sense를 대조함; 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.09.29",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
+    },
     {
       "id": "jury-foreman:leader-of-jury",
       "headword": "jury foreman",

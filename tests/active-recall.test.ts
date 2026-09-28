@@ -11,6 +11,7 @@ const workOutRows = VOCAB.filter(item => item.w === "work out");
 const abideByRows = VOCAB.filter(item => item.w === "abide by");
 const teemWithRows = VOCAB.filter(item => item.w === "teem with");
 const wrapUpRows = VOCAB.filter(item => item.w === "wrap up");
+const ruleOfThumbRows = VOCAB.filter(item => item.w === "rule of thumb");
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -29,13 +30,13 @@ describe("영어→영어 active recall", () => {
     expect(sense?.exactSynonyms).not.toContain("overseer");
     expect(getActiveRecallSenses(juryRows[0].id)).toHaveLength(1);
     expect(getActiveRecallCoverage()).toEqual({
-      senses: 11,
-      rows: 14,
-      definitions: 11,
-      examples: 11,
-      contextualizedExamples: 11,
-      contextExplanations: 11,
-      synonymRelations: 11,
+      senses: 12,
+      rows: 15,
+      definitions: 12,
+      examples: 12,
+      contextualizedExamples: 12,
+      contextExplanations: 12,
+      synonymRelations: 12,
     });
   });
 
@@ -78,6 +79,28 @@ describe("영어→영어 active recall", () => {
     expect(definition.recallPromptId).toBe("definition");
     expect(definition.choices.filter(choice => isChoiceCorrect(definition, choice))).toHaveLength(1);
     expect(validateQuestion(definition)).toBe(true);
+  });
+
+  it("rule of thumb을 경험 기반 근사 기준 sense와 원문·초월번역 해설에 연결한다", () => {
+    expect(ruleOfThumbRows.map(item => item.id)).toEqual(["APPROW01877"]);
+    const [sense] = getActiveRecallSenses(ruleOfThumbRows[0].id);
+    expect(sense).toMatchObject({
+      senseId: "rule-of-thumb:practical-approximate-guide",
+      conciseEnglishDefinition: "a practical but approximate guide based on experience",
+      koreanMeaning: "경험에 근거한 실용적 어림 기준",
+      nearSynonyms: ["practical guideline", "rough guide"],
+      antonyms: [],
+    });
+    expect(sense.contextExplanationKo).toContain("개념 이미지");
+    expect(sense.exampleSentences[0]).toMatchObject({ type: "editorial" });
+    expect(sense.distractors.find(choice => choice.word === "hard-and-fast rule")?.reasonKo).toContain("반대");
+
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [ruleOfThumbRows[0].num], preserveItemOrder: true });
+    expect(question.recall?.senseId).toBe(sense.senseId);
+    expect(question.choices.map(choice => choice.value)).toContain("hard-and-fast rule");
+    expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
+    expect(validateQuestion(question)).toBe(true);
   });
 
   it("take for granted의 사실 전제와 가치 간과를 서로 다른 sense로 유지한다", () => {

@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAtKst": "2026-09-29T01:12:11+09:00",
+  "generatedAtKst": "2026-09-29T07:38:09+09:00",
   "vocabulary": {
     "sourceRows": 38163,
     "uniqueHeadwords": 13347,
-    "rowsWithCanonicalSense": 230,
-    "rowsWithoutCanonicalSense": 37933
+    "rowsWithCanonicalSense": 231,
+    "rowsWithoutCanonicalSense": 37932
   },
   "rawVocabulary": {
     "recordCount": 38163,
@@ -22,20 +22,20 @@
     "note": "원본 38,163행 스키마는 w/k/s 중심이며, canonical sense 필드는 별도 검수 레이어에서만 제공된다."
   },
   "before": {
-    "canonicalSenseCount": 107,
+    "canonicalSenseCount": 108,
     "blanks": {
-      "englishDefinition": 15,
-      "koreanMeaning": 15,
-      "contextExplanation": 15,
-      "exampleSentence": 15,
-      "exampleExplanation": 15,
-      "synonyms": 41,
-      "distinctionNote": 15,
-      "sourceIds": 15
+      "englishDefinition": 16,
+      "koreanMeaning": 16,
+      "contextExplanation": 16,
+      "exampleSentence": 16,
+      "exampleExplanation": 16,
+      "synonyms": 42,
+      "distinctionNote": 16,
+      "sourceIds": 16
     }
   },
   "after": {
-    "canonicalSenseCount": 101,
+    "canonicalSenseCount": 102,
     "blanks": {
       "englishDefinition": 0,
       "koreanMeaning": 0,
@@ -126,7 +126,7 @@
     }
   ],
   "statusCounts": {
-    "COMPLETE": 83,
+    "COMPLETE": 84,
     "VERIFIED_NO_DATA": 0,
     "FAILED": 0,
     "NEEDS_REVIEW": 18,
@@ -170,7 +170,7 @@
   "firstLoss": {
     "unmappedVocabularyRows": {
       "stage": "sense 매핑",
-      "count": 37933,
+      "count": 37932,
       "reason": "원본 어휘 행에 canonical senseId가 아직 없다."
     },
     "mappedSenseMissingFields": {
