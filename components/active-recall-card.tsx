@@ -70,6 +70,17 @@ export function DefinitionRecallAnswer({
       {relations.synonyms.length === 0 && relations.antonyms.length === 0 ? (
         <Text style={[styles.note, { color: colors.muted }]}>이 sense에 OEWN이 명시한 동의어·반의어 관계는 없습니다. 임의 관계는 추가하지 않습니다.</Text>
       ) : null}
+      {recall.examples.length > 0 ? (
+        <>
+          <Text style={[styles.label, { color: colors.primary }]}>예문 · 영영사전 원문</Text>
+          {recall.examples.slice(0, 2).map((example, index) => (
+            <View key={`${example}:${index}`} style={styles.example}>
+              <Text style={[styles.detailText, { color: colors.foreground }]}>{example}</Text>
+              <Text style={[styles.note, { color: colors.muted }]}>문맥 이미지: ‘{koreanMeaning}’의 장면이 어떻게 드러나는지 확인합니다.</Text>
+            </View>
+          ))}
+        </>
+      ) : null}
       <Text style={[styles.note, { color: colors.muted }]}>Open English WordNet 2025 · exact single-sense 항목</Text>
     </View>
   );

@@ -20,6 +20,8 @@ describe("영영 정의 → 정확한 표제어", () => {
       eligibleHeadwords: 4114,
       eligibleRows: 11360,
       excludedDefinitionLeakageHeadwords: 171,
+      exampleHeadwords: 2023,
+      exampleRows: 6405,
     });
   });
 
@@ -96,6 +98,13 @@ describe("영영 정의 → 정확한 표제어", () => {
   it("사전 원문과 분리된 초월번역 핵심 이미지를 만든다", () => {
     expect(buildDefinitionMeaningBridgeKo("낮추다 · 창피를 주다")).toBe(
       "영영 정의가 가리키는 중심 장면은 ‘낮추다 · 창피를 주다’이다. 이 장면에서 영어 표제어를 다시 꺼내는 방식으로 기억한다.",
+    );
+  });
+
+  it("OEWN이 제공한 현재 sense의 예문 원문을 정답 해설 데이터로 보존한다", () => {
+    const abase = getDefinitionQuizEntry(VOCAB.find((item) => item.w === "abase")!.id)!;
+    expect(abase.examples).toContain(
+      "He humiliated his colleague by criticising him in front of the boss",
     );
   });
 

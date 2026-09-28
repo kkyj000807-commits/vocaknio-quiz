@@ -357,6 +357,18 @@ def main() -> int:
                             if antonym_id in sense_headword_by_id
                             and sense_headword_by_id[antonym_id] != key
                         }),
+                        "examples": [
+                            example
+                            for example in dict.fromkeys(
+                                " ".join(str(value).split())
+                                for value in (
+                                    synset.get("example", [])
+                                    if isinstance(synset.get("example", []), list)
+                                    else [synset.get("example", "")]
+                                )
+                            )
+                            if example
+                        ],
                     }
                 )
         raw_definitions_by_key[key] = resolved
@@ -535,6 +547,7 @@ def main() -> int:
             "lexicographerFile": sense["lexicographerFile"],
             "synsetMembers": sense["synsetMembers"],
             "antonyms": sense["antonyms"],
+            "examples": sense["examples"],
         }
 
     quiz_items = {
@@ -550,6 +563,10 @@ def main() -> int:
             "eligibleHeadwords": len(quiz_entries),
             "eligibleRows": len(quiz_items),
             "excludedDefinitionLeakageHeadwords": excluded_definition_leakage,
+            "exampleHeadwords": sum(bool(entry["examples"]) for entry in quiz_entries.values()),
+            "exampleRows": sum(
+                1 for item_key in quiz_items.values() if quiz_entries[item_key]["examples"]
+            ),
         },
         "items": dict(sorted(quiz_items.items())),
         "entries": quiz_entries,
@@ -564,6 +581,8 @@ def main() -> int:
         "definitionQuizRows": len(quiz_items),
         "definitionQuizHeadwords": len(quiz_entries),
         "definitionQuizLeakageExcludedHeadwords": excluded_definition_leakage,
+        "definitionQuizExampleHeadwords": quiz_payload["coverage"]["exampleHeadwords"],
+        "definitionQuizExampleRows": quiz_payload["coverage"]["exampleRows"],
     }, ensure_ascii=False, indent=2))
     return 0
 

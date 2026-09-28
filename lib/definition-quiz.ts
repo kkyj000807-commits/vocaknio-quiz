@@ -12,6 +12,7 @@ export const definitionQuizEntrySchema = z.object({
   lexicographerFile: nonempty,
   synsetMembers: z.array(nonempty).min(1),
   antonyms: z.array(nonempty),
+  examples: z.array(nonempty),
 });
 
 export type DefinitionQuizEntry = z.infer<typeof definitionQuizEntrySchema>;
@@ -32,6 +33,8 @@ type DefinitionQuizCatalog = {
     eligibleHeadwords: number;
     eligibleRows: number;
     excludedDefinitionLeakageHeadwords: number;
+    exampleHeadwords: number;
+    exampleRows: number;
   };
   items: Record<string, string>;
   entries: Record<string, DefinitionQuizEntry>;
