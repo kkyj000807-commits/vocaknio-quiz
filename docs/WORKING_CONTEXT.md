@@ -1,15 +1,15 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.28 22:05 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.28 22:07 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 batch — 검수된 괄호·슬래시 표기 정의 backfill VERIFIED / 3.4 배포 준비
+## 현재 batch — 검수된 괄호·슬래시 표기 정의 backfill VERIFIED / 3.4 공개 확인
 
 - Open English WordNet 2025에 실제 표제어가 있는 경우만 수동 검수한 편집 표기를 alias 후보로 연결했다. `(a)round the clock`, `in the (very) nick of time`, `rely (on)`, `date back (to)` 등 45개 source 표기를 원래 사전 표제어와 provenance를 보존한 채 보강했다.
 - 실제 사전 정의 연결은 34,641행(90.77%)에서 34,705행(90.94%)으로 64행 증가했다. alias 후보는 152행/89고유 표제어에서 216행/134고유 표제어로 증가했고, 미일치는 3,522행에서 3,458행으로 감소했다. 원본 정본·한국어 뜻·사용자 학습 기록은 변경하지 않았다.
 - `turn (to)`, `run-off`, `burn-out`, `bale(보석금)`처럼 문장 슬롯·하이픈·주석 제거가 다른 의미를 만들 수 있는 항목은 계속 `source_not_found`로 유지한다. 검수 alias도 sense 매핑 전까지 `dictionary_alias_unreviewed`이며 영영문제 정답 근거로 쓰지 않는다.
-- VERIFIED: 정의 감사 PASS(38,163/38,163 포인터), alias 회귀 4테스트, 변경 파일 ESLint 오류0, TypeScript PASS, 전체 26파일202테스트 통과/인증1skip. 기본 병렬 Vitest는 이 실행에서 worker 9개가 비정상 종료해 같은 테스트를 단일 worker로 재실행했고 모두 통과했다. Production 3.4 build/audit·공개 Pages 확인은 이 batch의 다음 단계다.
+- VERIFIED: 정의 감사 PASS(38,163/38,163 포인터), alias 회귀 4테스트, 변경 파일 ESLint 오류0, TypeScript PASS, 전체 26파일202테스트 통과/인증1skip. 기본 병렬 Vitest는 이 실행에서 worker 9개가 비정상 종료해 같은 테스트를 단일 worker로 재실행했고 모두 통과했다. Production 3.4 감사 HTML22/학습JSON8/정의JSON8/참조누락0, Pages `built`, 공개 release·신규 bundle·3.4 학습 JSON과 `in the (very) nick of time` alias/`turn (to)` 차단 상태를 확인했다.
 - NOT DONE: 영영정의 100%가 아니다. 미일치 3,458행과 다의어 sense 매핑은 별도 근거 기반 backfill이 필요하다.
-- NEXT/P0: full verify→production 3.4 build/audit→Pages 배포→공개 release·bundle·대표 alias/차단 사례 확인.
+- NEXT/P0: 미일치 3,458행 중 숙어·오답·고빈도부터 다른 허가 사전으로 보강하고, 다의어는 한국어 occurrence와 OEWN sense를 분리 매핑한다.
 
 ## 현재 batch — OEWN 철자·하이픈 변형 정의 backfill VERIFIED / 3.3 공개 확인
 
@@ -21,17 +21,17 @@
 - NOT DONE: `영영정의 100%`는 아니다. 22,783개 다의어 행과 alias 152행은 한국어 sense 연결 전까지 문제 정답 근거로 쓰지 않는다. OEWN 미일치 3,522행도 다른 허가 사전 backfill이 남았다.
 - NEXT/P0: `source_not_found` 중 숙어·오답·고빈도부터 다른 허가 사전으로 보강하고 다의어는 한국어 occurrence와 sense를 분리 매핑한다.
 
-## 현재 배포 — 3.3, 전체 로드맵은 부분 완료
+## 현재 배포 — 3.4, 전체 로드맵은 부분 완료
 
 - Production: https://kkyj000807-commits.github.io/vocaknio-quiz/
-- 배포 전3.2 → 배포 후3.3. 앱 표시: 버전 3.3 · 최근 수정 2026.09.28 20:56 KST. 공개 게시·정합성 확인은 21:01 KST다.
-- 앱 소스a5c8962a19396b891c3113f331bdaed9974f9dbe / Pagesd896aa7a6b0da1dab65c7870015a7aecc1453bde. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
-- GitHub Pages build `built`. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion3.3 / builtAt2026-09-28T11:56:43.083Z.
-- 번들 entry-7362e22d4863e15f09868c488c5d695c.js / SHA256 71EC6C90E7D9F961A90C453C44067CFBD96D763277193CA576016E4ED1ABA535.
-- 공개 wordbook HTML·신규 번들·3.3 학습 JSON·8개 OEWN 정의 JSON이 HTTP200이며 release.json3.3과 sourceCommit을 확인했다. 공개 정의 JSON에서 `gung-ho`는 검수 전 alias 후보, 의미가 달라지는 `run-off`는 source_not_found로 유지됨을 확인했다. 공개 문제를 풀어 사용자 저장기록을 만들지는 않았다.
+- 배포 전3.3 → 배포 후3.4. 앱 표시: 버전 3.4 · 최근 수정 2026.09.28 22:02 KST. 공개 게시·정합성 확인은 22:07 KST다.
+- 앱 소스266b243dd7d0cbdae3a10ea5d8247024b853ea04 / Pages01853dd932ebcef439f330fded70cd61a4d6f5b0. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
+- GitHub Pages build `built`. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 때문에 표시. dataVersion v1.4 / learningDataVersion3.4 / builtAt2026-09-28T13:02:04.528Z.
+- 번들 entry-a48dbde49397b94ad0d6d613fbdee49d.js / SHA256 BD5FA6361AF66D8028C4FE7845C30F0E7317049BF71F5397BF221BA227E8C5FC.
+- 공개 wordbook HTML·신규 번들·3.4 학습 JSON·8개 OEWN 정의 JSON이 HTTP200이며 release.json3.4와 sourceCommit을 확인했다. 공개 정의 JSON에서 `in the (very) nick of time`은 `in the nick of time`에 연결된 검수 전 alias 후보이고, 의미가 달라질 수 있는 `turn (to)`는 source_not_found로 유지됨을 확인했다. 공개 문제를 풀어 사용자 저장기록을 만들지는 않았다.
 - 실제 iPhone Safari/Galaxy Tab Samsung Internet/모바일 Chrome 및 모든 기기 캐시는 미검증. in-app browser 결과를 실기기 검증으로 대신하지 않는다.
-- 산출물: C:/Users/USER/AppData/Local/Temp/voca-3.3-20260928-2100
-- 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pagesd22c7dd(3.2)을 보존했다. 배포용 managed worktree 정리는 별도 lifecycle 작업으로 남아 있으며 공개 앱에는 영향이 없다.
+- 산출물: C:/Users/USER/AppData/Local/Temp/voca-3.4-20260928-2210
+- 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pagesd896aa7(3.3)을 보존했다. 배포용 managed worktree 정리는 별도 lifecycle 작업으로 남아 있으며 공개 앱에는 영향이 없다.
 
 ## 최신 제품 계약
 
