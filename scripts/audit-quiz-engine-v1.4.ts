@@ -85,42 +85,55 @@ for (const item of VOCAB_WITH_SYNONYMS) {
 
 const modeCounts: Record<string, number> = {};
 const fullAudits = [
-  { label: "syn-choice", mode: "syn-choice" as const, expected: 11277 },
-  { label: "syn-kor-choice", mode: "syn-kor-choice" as const, expected: 11277 },
+  { label: "definition-choice", mode: "definition-choice" as const, expected: 11373 },
+  { label: "syn-choice", mode: "syn-choice" as const, expected: 11279 },
+  { label: "syn-kor-choice", mode: "syn-kor-choice" as const, expected: 11279 },
   { label: "syn-type", mode: "syn-type" as const, expected: 11277 },
   { label: "kor-choice", mode: "kor-choice" as const, expected: 38163 },
   {
     label: "kor-choice-english",
     mode: "kor-choice" as const,
     choiceLang: "english" as const,
-    expected: 11277,
+    expected: 11279,
   },
   { label: "flashcard", mode: "flashcard" as const, expected: 38163 },
 ];
 
+function buildQuestionsForItems(
+  mode: (typeof fullAudits)[number]["mode"],
+  items: typeof VOCAB,
+  choiceLang?: "english",
+): QuizQuestion[] {
+  const questions: QuizQuestion[] = [];
+  for (let start = 0; start < items.length; start += 200) {
+    const chunk = items.slice(start, start + 200);
+    questions.push(...buildQuizQuestions({
+      mode,
+      choiceLang,
+      itemNums: chunk.map((item) => item.num),
+      count: chunk.length,
+      preserveItemOrder: true,
+    }));
+  }
+  return questions;
+}
+
 for (const audit of fullAudits) {
-  const questions = buildQuizQuestions({
-    mode: audit.mode,
-    choiceLang: audit.choiceLang,
-    rangeId: "all",
-    count: VOCAB.length,
-  });
+  const questions = buildQuestionsForItems(audit.mode, VOCAB, audit.choiceLang);
   auditQuestions(audit.label, questions, audit.expected);
   modeCounts[audit.label] = questions.length;
 }
 
 const sectionAvailability = SECTION_RANGES.map((range) => ({
   id: range.id,
-  synonymQuestions: buildQuizQuestions({
-    mode: "syn-choice",
-    rangeId: range.id,
-    count: range.count,
-  }).length,
-  meaningQuestions: buildQuizQuestions({
-    mode: "kor-choice",
-    rangeId: range.id,
-    count: range.count,
-  }).length,
+  synonymQuestions: buildQuestionsForItems(
+    "syn-choice",
+    VOCAB.slice(range.start, range.end + 1),
+  ).length,
+  meaningQuestions: buildQuestionsForItems(
+    "kor-choice",
+    VOCAB.slice(range.start, range.end + 1),
+  ).length,
 }));
 
 console.log(

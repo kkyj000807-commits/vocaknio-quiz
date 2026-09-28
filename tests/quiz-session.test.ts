@@ -52,6 +52,7 @@ function session(mode: QuizMode = "kor-choice"): QuizSession {
 
 describe("문제 풀이 중단 복원", () => {
   it.each<QuizMode>([
+    "definition-choice",
     "kor-choice",
     "syn-choice",
     "syn-kor-choice",

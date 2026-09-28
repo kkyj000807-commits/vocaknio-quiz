@@ -3,6 +3,38 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useColors } from "@/hooks/use-colors";
 import type { ActiveRecallSense } from "@/lib/active-recall";
+import type { DefinitionQuizEntry } from "@/lib/definition-quiz";
+
+export function DefinitionRecallPrompt({ definition }: { definition: string }) {
+  const colors = useColors();
+  return (
+    <View style={[styles.prompt, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <Text style={[styles.eyebrow, { color: colors.primary }]}>EN · 영영 정의 → 단어</Text>
+      <Text style={[styles.promptText, { color: colors.foreground }]}>{definition}</Text>
+      <Text style={[styles.note, { color: colors.muted }]}>이 정의에 정확히 맞는 영어 표현을 고르세요. 한국어 뜻은 정답 확인 뒤에 표시됩니다.</Text>
+    </View>
+  );
+}
+
+export function DefinitionRecallAnswer({
+  recall,
+  koreanMeaning,
+}: {
+  recall: DefinitionQuizEntry;
+  koreanMeaning: string;
+}) {
+  const colors = useColors();
+  return (
+    <View style={[styles.answer, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <Text style={[styles.answerWord, { color: colors.foreground }]}>{recall.headword}</Text>
+      <Text style={[styles.label, { color: colors.primary }]}>EN</Text>
+      <Text style={[styles.definition, { color: colors.foreground }]}>{recall.definition}</Text>
+      <Text style={[styles.label, { color: colors.primary }]}>KR</Text>
+      <Text style={[styles.korean, { color: colors.foreground }]}>{koreanMeaning}</Text>
+      <Text style={[styles.note, { color: colors.muted }]}>Open English WordNet 2025 · exact single-sense 항목</Text>
+    </View>
+  );
+}
 
 export function ActiveRecallPrompt({ recall, promptId }: { recall: ActiveRecallSense; promptId?: string }) {
   const colors = useColors();

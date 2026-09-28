@@ -24,6 +24,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 VOCAB_PATH = ROOT / "assets" / "vocab-v1.4.json"
 META_PATH = ROOT / "assets" / "vocab-definitions-oewn-2025.json"
+QUIZ_PATH = ROOT / "assets" / "vocab-definition-quiz-oewn-2025.json"
 OUTPUT_DIR = ROOT / "public" / "data" / "vocab-definitions" / "oewn-2025"
 EXPECTED_ARCHIVE_SHA256 = "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
 GROUPS = ("V101", "V201", "V301", "V401", "V501", "V502", "V601", "APPENDIX")
@@ -140,6 +141,26 @@ def normalize_headword(value: str) -> str:
     return " ".join(value.replace("_", " ").strip().lower().split())
 
 
+def definition_exposes_headword(headword: str, definition: str) -> bool:
+    """Reject definitions that reveal the answer or an obvious inflection."""
+
+    word_tokens = re.findall(r"[a-z]+", normalize_headword(headword))
+    definition_tokens = re.findall(r"[a-z]+", definition.casefold())
+    if not word_tokens:
+        return True
+    phrase = " ".join(word_tokens)
+    if phrase in " ".join(definition_tokens):
+        return True
+    if len(word_tokens) != 1 or len(word_tokens[0]) < 5:
+        return False
+    stem = word_tokens[0]
+    return any(
+        token.startswith(stem) or stem.startswith(token)
+        for token in definition_tokens
+        if len(token) >= 5
+    )
+
+
 def safe_alias_candidates(value: str) -> list[dict[str, str]]:
     """Return conservative spelling/format aliases, never semantic fallbacks.
 
@@ -232,7 +253,8 @@ def main() -> int:
         key = normalize_headword(str(item["w"]))
         display_by_key.setdefault(key, str(item["w"]).strip())
 
-    senses_by_key: dict[str, list[dict[str, str]]] = defaultdict(list)
+    senses_by_key: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    sense_headword_by_id: dict[str, str] = {}
     needed_synsets: set[str] = set()
 
     with zipfile.ZipFile(archive) as zf:
@@ -261,11 +283,17 @@ def main() -> int:
                         synset_id = str(sense_row.get("synset", "")).strip()
                         if not sense_id or not synset_id or sense_id in seen_for_key:
                             continue
+                        sense_headword_by_id.setdefault(sense_id, key)
                         senses_by_key[key].append(
                             {
                                 "senseId": sense_id,
                                 "synsetId": synset_id,
                                 "partOfSpeech": POS_LABELS.get(pos_code, pos_code),
+                                "antonymSenseIds": [
+                                    str(value).strip()
+                                    for value in sense_row.get("antonym", [])
+                                    if str(value).strip()
+                                ],
                             }
                         )
                         seen_for_key.add(sense_id)
@@ -283,11 +311,14 @@ def main() -> int:
                 continue
             for synset_id, record in records.items():
                 if synset_id in needed_synsets and isinstance(record, dict):
-                    synset_data[synset_id] = record
+                    synset_data[synset_id] = {
+                        **record,
+                        "_lexicographerFile": Path(name).stem,
+                    }
 
-    raw_definitions_by_key: dict[str, list[dict[str, str]]] = {}
+    raw_definitions_by_key: dict[str, list[dict[str, Any]]] = {}
     for key in sorted(lookup_keys):
-        resolved: list[dict[str, str]] = []
+        resolved: list[dict[str, Any]] = []
         seen_definitions: set[tuple[str, str]] = set()
         for sense in senses_by_key.get(key, []):
             synset = synset_data.get(sense["synsetId"], {})
@@ -305,13 +336,26 @@ def main() -> int:
                 resolved.append(
                     {
                         "senseId": sense["senseId"],
+                        "synsetId": sense["synsetId"],
                         "partOfSpeech": sense["partOfSpeech"],
                         "definition": definition,
+                        "lexicographerFile": str(synset.get("_lexicographerFile", "")),
+                        "synsetMembers": [
+                            normalize_headword(str(member))
+                            for member in synset.get("members", [])
+                            if str(member).strip()
+                        ],
+                        "antonyms": sorted({
+                            sense_headword_by_id[antonym_id]
+                            for antonym_id in sense.get("antonymSenseIds", [])
+                            if antonym_id in sense_headword_by_id
+                            and sense_headword_by_id[antonym_id] != key
+                        }),
                     }
                 )
         raw_definitions_by_key[key] = resolved
 
-    definitions_by_key: dict[str, list[dict[str, str]]] = {}
+    definitions_by_key: dict[str, list[dict[str, Any]]] = {}
     matches_by_key: dict[str, list[dict[str, str]]] = {}
     for key in sorted(wanted):
         exact = raw_definitions_by_key.get(key, [])
@@ -320,7 +364,7 @@ def main() -> int:
             matches_by_key[key] = [{"headword": key, "matchType": "exact"}]
             continue
 
-        resolved: list[dict[str, str]] = []
+        resolved: list[dict[str, Any]] = []
         matches: list[dict[str, str]] = []
         seen_definitions: set[tuple[str, str]] = set()
         for alias in aliases_by_key[key]:
@@ -404,7 +448,16 @@ def main() -> int:
                 "status": status,
                 "representativeSenseId": representative_sense_id,
                 "matches": matches,
-                "senses": senses,
+                # Internal synset metadata is written only to the compact quiz
+                # asset. Keep the browser-facing definition payload stable.
+                "senses": [
+                    {
+                        field: sense[field]
+                        for field in ("senseId", "partOfSpeech", "definition", "matchedHeadword")
+                        if field in sense
+                    }
+                    for sense in senses
+                ],
             }
 
         payload = {
@@ -457,7 +510,55 @@ def main() -> int:
         encoding="utf-8",
     )
 
-    print(json.dumps(metadata["coverage"], ensure_ascii=False, indent=2))
+    quiz_entries: dict[str, Any] = {}
+    excluded_definition_leakage = 0
+    for key in sorted(wanted):
+        senses = definitions_by_key[key]
+        matches = matches_by_key[key]
+        if len(senses) != 1 or matches != [{"headword": key, "matchType": "exact"}]:
+            continue
+        sense = senses[0]
+        if definition_exposes_headword(key, sense["definition"]):
+            excluded_definition_leakage += 1
+            continue
+        quiz_entries[key] = {
+            "headword": display_by_key[key],
+            "senseId": sense["senseId"],
+            "partOfSpeech": sense["partOfSpeech"],
+            "definition": sense["definition"],
+            "lexicographerFile": sense["lexicographerFile"],
+            "synsetMembers": sense["synsetMembers"],
+            "antonyms": sense["antonyms"],
+        }
+
+    quiz_items = {
+        str(item["id"]): normalize_headword(str(item["w"]))
+        for item in vocab
+        if normalize_headword(str(item["w"])) in quiz_entries
+    }
+    quiz_payload = {
+        "schema": 1,
+        "version": "oewn-2025",
+        "source": source,
+        "coverage": {
+            "eligibleHeadwords": len(quiz_entries),
+            "eligibleRows": len(quiz_items),
+            "excludedDefinitionLeakageHeadwords": excluded_definition_leakage,
+        },
+        "items": dict(sorted(quiz_items.items())),
+        "entries": quiz_entries,
+    }
+    QUIZ_PATH.write_text(
+        json.dumps(quiz_payload, ensure_ascii=False, separators=(",", ":")) + "\n",
+        encoding="utf-8",
+    )
+
+    print(json.dumps({
+        **metadata["coverage"],
+        "definitionQuizRows": len(quiz_items),
+        "definitionQuizHeadwords": len(quiz_entries),
+        "definitionQuizLeakageExcludedHeadwords": excluded_definition_leakage,
+    }, ensure_ascii=False, indent=2))
     return 0
 
 

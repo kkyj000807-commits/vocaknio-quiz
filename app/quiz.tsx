@@ -1,5 +1,10 @@
 import { ProblemSenseContext } from "@/components/problem-sense-context";
-import { ActiveRecallAnswer, ActiveRecallPrompt } from "@/components/active-recall-card";
+import {
+  ActiveRecallAnswer,
+  ActiveRecallPrompt,
+  DefinitionRecallAnswer,
+  DefinitionRecallPrompt,
+} from "@/components/active-recall-card";
 import { MnemonicCue } from "@/components/mnemonic-cue";
 import {
   useState,
@@ -127,7 +132,7 @@ export default function QuizScreen() {
     bookmarkNums?: string;
   }>();
 
-  const mode = params.mode ?? "syn-choice";
+  const mode = params.mode ?? "definition-choice";
   const rangeStart = parseInt(params.rangeStart ?? "0");
   const rangeEnd = parseInt(params.rangeEnd ?? "999");
   const count = parseInt(params.count ?? "20");
@@ -415,7 +420,9 @@ export default function QuizScreen() {
 
   const q = questions[currentIdx];
   const isBookmarked = q ? bookmarks.includes(q.item.num) : false;
-  const mnemonicVisual = getMnemonicVisual(q?.recall?.senseId ?? q?.sense?.senseId);
+  const mnemonicVisual = getMnemonicVisual(
+    q?.recall?.senseId ?? q?.sense?.senseId ?? q?.definitionRecall?.senseId,
+  );
 
   const handleImageHint = useCallback(() => {
     if (!q || !mnemonicVisual || imageRevealed) return;
@@ -424,18 +431,18 @@ export default function QuizScreen() {
     void recordSenseLearningEvent({
       targetKey: getQuestionLearningTargetKey(q),
       type: "image_used",
-      questionType: mode,
+      questionType: q.mode,
     });
-  }, [haptic, imageRevealed, mnemonicVisual, mode, q]);
+  }, [haptic, imageRevealed, mnemonicVisual, q]);
 
   const recordImageHelped = useCallback(() => {
     if (!q || !imageRevealed) return;
     void recordSenseLearningEvent({
       targetKey: getQuestionLearningTargetKey(q),
       type: "image_helped",
-      questionType: mode,
+      questionType: q.mode,
     });
-  }, [imageRevealed, mode, q]);
+  }, [imageRevealed, q]);
 
   const makeAdaptiveAnswerContext = useCallback(
     (
@@ -446,7 +453,7 @@ export default function QuizScreen() {
       return {
         sessionId: sessionIdRef.current,
         itemNum: q.item.num,
-        mode,
+        mode: q.mode,
         outcome,
         responseKey,
         answeredAt: Date.now(),
@@ -456,7 +463,7 @@ export default function QuizScreen() {
         hintUsed: hintLevel > 0 || imageRevealed,
       };
     },
-    [hintLevel, imageRevealed, mode, q],
+    [hintLevel, imageRevealed, q],
   );
 
   useEffect(() => {
@@ -873,9 +880,9 @@ export default function QuizScreen() {
   const isChoiceMode = q.choices.length > 0;
 
   const getModeLabel = () => {
+    if (q.definitionRecall) return "영영 정의 → 정확한 단어";
     if (q.recall) {
-      const prompt = q.recall.prompts.find(candidate => candidate.id === q.recallPromptId);
-      return prompt?.kind === "context-recall" ? "문맥 → 단어 인출" : "영영 정의 → 단어 인출";
+      return "영영 정의 → 정확한 단어";
     }
     if (questionMode === "syn-choice") return "동의어 고르기";
     if (questionMode === "kor-choice") {
@@ -889,7 +896,7 @@ export default function QuizScreen() {
   };
 
   const getHintText = () => {
-    if (q.recall) return "영어 단서에 맞는 표현은?";
+    if (q.recall || q.definitionRecall) return "영영 정의에 정확히 맞는 표현은?";
     if (q.sense) return q.answerKind === "meaning" ? "이 문맥에서 표현의 뜻은?" : "이 문맥에서 뜻이 같은 표현은?";
     if (q.answerKind === "meaning") return "올바른 한국어 뜻은?";
     if (questionMode === "syn-kor-choice") return "올바른 동의어(한글뜻)는?";
@@ -1012,7 +1019,7 @@ export default function QuizScreen() {
                 </Pressable>
               </View>
 
-              {!q.recall || answered ? <View style={s.wordPronunciationRow}>
+              {(!q.recall && !q.definitionRecall) || answered ? <View style={s.wordPronunciationRow}>
                 <View style={{ flex: 1 }}>
                   <Text style={s.wordText}>{q.item.w}</Text>
                   {q.item.p ? <Text style={s.ipaText}>{q.item.p}</Text> : null}
@@ -1022,6 +1029,7 @@ export default function QuizScreen() {
 
               {/* 4지선다 모드 */}
               {q.recall && !answered ? <ActiveRecallPrompt recall={q.recall} promptId={q.recallPromptId} /> : null}
+              {q.definitionRecall && !answered ? <DefinitionRecallPrompt definition={q.definitionRecall.definition} /> : null}
               <ProblemSenseContext sense={q.sense} />
               {mnemonicVisual && !answered ? (
                 <View style={s.mnemonicHintArea}>
@@ -1253,8 +1261,11 @@ export default function QuizScreen() {
 
               {/* 해설 패널 */}
               {answered && q.recall ? <ActiveRecallAnswer recall={q.recall} /> : null}
+              {answered && q.definitionRecall ? (
+                <DefinitionRecallAnswer recall={q.definitionRecall} koreanMeaning={q.item.k_short} />
+              ) : null}
               {answered && q.sense && <ProblemSenseContext sense={q.sense} answered />}
-              {answered && !q.sense && !q.recall && questionMode !== "flashcard" && (
+              {answered && !q.sense && !q.recall && !q.definitionRecall && questionMode !== "flashcard" && (
                 <View style={s.explPanel}>
                   <Text style={s.explHeader}>해설</Text>
                   <View style={s.explWordRow}>

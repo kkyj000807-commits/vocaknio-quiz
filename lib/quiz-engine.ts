@@ -17,6 +17,12 @@ import {
 import { getProductionSenseQuestions, hasSenseQuestionMapping, isCurrentSenseQuestion, senseMatchesItem, type SenseQuestion } from "@/lib/sense-questions";
 import { getActiveRecallSenses, isCurrentActiveRecallSense, activeRecallMatchesItem, type ActiveRecallSense } from "@/lib/active-recall";
 import {
+  getDefinitionQuizDistractors,
+  getDefinitionQuizEntry,
+  isCurrentDefinitionQuizEntry,
+  type DefinitionQuizEntry,
+} from "@/lib/definition-quiz";
+import {
   canonicalSenseKey,
   getItemLearningTargets,
   getLearningTargetKey,
@@ -48,6 +54,8 @@ export interface QuizQuestion {
   /** English definition/context → target-word recall, bound to one reviewed sense. */
   recall?: ActiveRecallSense;
   recallPromptId?: string;
+  /** OEWN exact single-sense definition → target-word recall. */
+  definitionRecall?: DefinitionQuizEntry;
 }
 
 export interface BuildQuizOptions {
@@ -74,6 +82,7 @@ interface SynonymOption extends SynonymDetail {
 }
 
 let synonymOptions: SynonymOption[] | undefined;
+const vocabById = new Map(VOCAB.map((item) => [item.id, item]));
 function getSynonymOptions(): SynonymOption[] {
   if (synonymOptions) return synonymOptions;
   // Restoring or grading an existing question does not need the distractor pool.
@@ -208,6 +217,83 @@ function buildMeaningChoices(item: VocabItem): QuizChoice[] | null {
   ]);
 }
 
+function buildReviewedDefinitionQuestion(
+  item: VocabItem,
+  recall: ActiveRecallSense,
+): QuizQuestion | null {
+  const prompt = recall.prompts.find((candidate) => candidate.kind === "definition-recall");
+  if (!prompt) return null;
+  const choices = shuffle([
+    {
+      id: `${recall.id}:target`,
+      value: item.w,
+      label: item.w,
+      word: item.w,
+      meaning: recall.koreanMeaning,
+      isCorrect: true,
+    },
+    ...recall.distractors.map((distractor, index) => ({
+      id: `${recall.id}:distractor:${index}`,
+      value: distractor.word,
+      label: distractor.word,
+      word: distractor.word,
+      meaning: `${recall.antonyms.some((value) => normalizeWord(value) === normalizeWord(distractor.word)) ? "반대축" : "비교선지"} · ${distractor.meaningKo}`,
+      isCorrect: false,
+    })),
+  ]);
+  const question: QuizQuestion = {
+    id: `${item.id}-definition-choice-${recall.id}-${prompt.id}`,
+    item,
+    mode: "definition-choice",
+    answerKind: "target",
+    choices,
+    correct: item.w,
+    acceptedAnswers: [item.w],
+    recall,
+    recallPromptId: prompt.id,
+  };
+  return validateQuestion(question) ? question : null;
+}
+
+function buildOewnDefinitionQuestion(item: VocabItem): QuizQuestion | null {
+  const definitionRecall = getDefinitionQuizEntry(item.id);
+  if (!definitionRecall) return null;
+  const distractors = getDefinitionQuizDistractors(definitionRecall, 3);
+  if (distractors.length !== 3) return null;
+  const choices = shuffle([
+    {
+      id: `${definitionRecall.senseId}:target`,
+      value: item.w,
+      label: item.w,
+      word: item.w,
+      meaning: item.k_short,
+      isCorrect: true,
+    },
+    ...distractors.map((distractor, index) => {
+      const distractorItem = vocabById.get(distractor.itemId);
+      return {
+        id: `${definitionRecall.senseId}:distractor:${index}`,
+        value: distractor.headword,
+        label: distractor.headword,
+        word: distractor.headword,
+        meaning: `${distractor.relation === "antonym" ? "반대축" : "비교선지"} · ${distractorItem?.k_short ?? "뜻 확인"}`,
+        isCorrect: false,
+      };
+    }),
+  ]);
+  const question: QuizQuestion = {
+    id: `${item.id}-definition-choice-${definitionRecall.senseId}`,
+    item,
+    mode: "definition-choice",
+    answerKind: "target",
+    choices,
+    correct: item.w,
+    acceptedAnswers: [item.w],
+    definitionRecall,
+  };
+  return validateQuestion(question) ? question : null;
+}
+
 function makeQuestion(
   item: VocabItem,
   mode: QuizMode,
@@ -239,37 +325,17 @@ function makeQuestion(
     };
   }
 
-  if (mode === "syn-choice") {
+  if (mode === "definition-choice") {
     const recallEntries = getActiveRecallSenses(item.id).filter(entry =>
       activeRecallMatchesItem(entry, item) &&
       !masteredTargetKeys.has(canonicalSenseKey(entry.senseId)));
     if (recallEntries.length > 0) {
       const recall = recallEntries[Math.floor(Math.random() * recallEntries.length)];
-      const prompt = recall.prompts[Math.floor(Math.random() * recall.prompts.length)];
-      const choices = shuffle([
-        { id: `${recall.id}:target`, value: item.w, label: item.w, word: item.w, meaning: recall.koreanMeaning, isCorrect: true },
-        ...recall.distractors.map((distractor, index) => ({
-          id: `${recall.id}:distractor:${index}`,
-          value: distractor.word,
-          label: distractor.word,
-          word: distractor.word,
-          meaning: distractor.meaningKo,
-          isCorrect: false,
-        })),
-      ]);
-      const question: QuizQuestion = {
-        id: `${item.id}-${mode}-${recall.id}-${prompt.id}`,
-        item,
-        mode,
-        answerKind: "target",
-        choices,
-        correct: item.w,
-        acceptedAnswers: [item.w],
-        recall,
-        recallPromptId: prompt.id,
-      };
-      return validateQuestion(question) ? question : null;
+      return buildReviewedDefinitionQuestion(item, recall);
     }
+    const definitionRecall = getDefinitionQuizEntry(item.id);
+    if (definitionRecall && masteredTargetKeys.has(canonicalSenseKey(definitionRecall.senseId))) return null;
+    return buildOewnDefinitionQuestion(item);
   }
 
   const asksForSynonym =
@@ -353,7 +419,7 @@ function canFallBackToMeaning(mode: QuizMode, choiceLang: ChoiceLang): boolean {
  */
 export function getQuizCandidateItems(options: BuildQuizOptions): VocabItem[] {
   if (!Number.isInteger(options.count) || options.count <= 0 || options.count > 200 ||
-      !["syn-choice", "syn-kor-choice", "syn-type", "kor-choice", "flashcard"].includes(options.mode)) return [];
+      !["definition-choice", "syn-choice", "syn-kor-choice", "syn-type", "kor-choice", "flashcard"].includes(options.mode)) return [];
   const choiceLang = options.choiceLang ?? "korean";
   const mastered = new Set(options.masteredNums ?? []);
   const masteredTargets = new Set(options.masteredTargetKeys ?? []);
@@ -368,6 +434,13 @@ export function getQuizCandidateItems(options: BuildQuizOptions): VocabItem[] {
   const meaningFallback =
     options.allowMeaningFallback &&
     canFallBackToMeaning(options.mode, choiceLang);
+  if (options.mode === "definition-choice") {
+    pool = pool.filter((item) =>
+      getActiveRecallSenses(item.id).some((entry) =>
+        entry.prompts.some((prompt) => prompt.kind === "definition-recall"),
+      ) || Boolean(getDefinitionQuizEntry(item.id)),
+    );
+  }
   if (
     !meaningFallback &&
     (options.mode === "syn-choice" ||
@@ -425,7 +498,13 @@ export function buildReviewQuestions(
       .filter((item): item is VocabItem => Boolean(item)),
   );
   for (const item of items) {
-    const mode: QuizMode = getActiveRecallSenses(item.id).length > 0 || item.s.length > 0 ? "syn-choice" : "kor-choice";
+    const mode: QuizMode = getActiveRecallSenses(item.id).some((entry) =>
+      entry.prompts.some((prompt) => prompt.kind === "definition-recall"),
+    ) || getDefinitionQuizEntry(item.id)
+      ? "definition-choice"
+      : item.s.length > 0
+        ? "syn-choice"
+        : "kor-choice";
     const question = makeQuestion(item, mode, "korean");
     if (question) questions.push(question);
     if (questions.length >= count) break;
@@ -445,6 +524,12 @@ export function isChoiceCorrect(
 // Check the stored key independently of its display flag. Otherwise a corrupt
 // flag can make both grading and validation agree on the same wrong answer.
 function matchesAnswerKey(question: QuizQuestion, choice: QuizChoice): boolean {
+  if (question.definitionRecall) {
+    if (!isCurrentDefinitionQuizEntry(question.definitionRecall, question.item)) return false;
+    return question.mode === "definition-choice" && question.answerKind === "target" &&
+      choice.id === `${question.definitionRecall.senseId}:target` &&
+      normalizeWord(choice.value) === normalizeWord(question.item.w);
+  }
   if (question.recall) {
     if (!isCurrentActiveRecallSense(question.recall, question.item)) return false;
     return question.answerKind === "target" && choice.id === `${question.recall.id}:target` && choice.value === question.item.w;
@@ -471,15 +556,22 @@ export function isTypedAnswerCorrect(
 }
 
 export function validateQuestion(question: QuizQuestion): boolean {
+  if (question.definitionRecall) {
+    if (question.mode !== "definition-choice" || question.answerKind !== "target" ||
+      !isCurrentDefinitionQuizEntry(question.definitionRecall, question.item) ||
+      question.choices.length !== 4 || question.choices.filter(choice => choice.isCorrect).length !== 1 ||
+      !question.choices.every(choice => choice.isCorrect === matchesAnswerKey(question, choice))) return false;
+  }
   if (question.recall) {
     const recall = question.recall;
     const prompt = recall.prompts.find(candidate => candidate.id === question.recallPromptId);
-    if (!prompt || question.answerKind !== "target" || !isCurrentActiveRecallSense(recall, question.item) ||
+    if (!prompt || prompt.kind !== "definition-recall" || question.mode !== "definition-choice" ||
+      question.answerKind !== "target" || !isCurrentActiveRecallSense(recall, question.item) ||
       question.choices.length !== 4 || question.choices.filter(choice => choice.isCorrect).length !== 1 ||
       !question.choices.every(choice => choice.isCorrect === matchesAnswerKey(question, choice))) return false;
   }
   if (!question.sense && question.mode !== "flashcard" && question.mode !== "syn-type" &&
-    !question.recall && hasSenseQuestionMapping(question.item.id)) return false;
+    !question.recall && !question.definitionRecall && hasSenseQuestionMapping(question.item.id)) return false;
   if (question.sense) {
     const sense = question.sense;
     if (!isCurrentSenseQuestion(sense, question.item) || sense.status !== "production" ||

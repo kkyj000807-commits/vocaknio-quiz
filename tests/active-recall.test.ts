@@ -41,7 +41,7 @@ describe("영어→영어 active recall", () => {
 
   it("definition → target 문제를 만들고 정답을 하나로 유지한다", () => {
     vi.spyOn(Math, "random").mockReturnValue(0);
-    const [question] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [juryRows[0].num], preserveItemOrder: true });
+    const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [juryRows[0].num], preserveItemOrder: true });
     expect(question.recall?.prompts.find(prompt => prompt.id === question.recallPromptId)?.kind).toBe("definition-recall");
     expect(question.answerKind).toBe("target");
     expect(question.item.w).toBe("jury foreman");
@@ -49,11 +49,10 @@ describe("영어→영어 active recall", () => {
     expect(validateQuestion(question)).toBe(true);
   });
 
-  it("context → target 문제와 오답 복습도 같은 sense 계약을 사용한다", () => {
-    const random = vi.spyOn(Math, "random").mockReturnValue(0);
-    random.mockReturnValueOnce(0).mockReturnValueOnce(0.9);
-    const [question] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [juryRows[1].num], preserveItemOrder: true });
-    expect(question.recall?.prompts.find(prompt => prompt.id === question.recallPromptId)?.kind).toBe("context-recall");
+  it("영영 정의 문제와 오답 복습도 같은 sense 계약을 사용한다", () => {
+    vi.spyOn(Math, "random").mockReturnValue(0.9);
+    const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [juryRows[1].num], preserveItemOrder: true });
+    expect(question.recall?.prompts.find(prompt => prompt.id === question.recallPromptId)?.kind).toBe("definition-recall");
     const [review] = buildReviewQuestions([juryRows[0].num], 1);
     expect(review.recall?.senseId).toBe("jury-foreman:leader-of-jury");
     expect(review.answerKind).toBe("target");
@@ -73,19 +72,12 @@ describe("영어→영어 active recall", () => {
     expect(sense.distractors.find(choice => choice.word === "jump the gun")?.reasonKo).toContain("순서");
   });
 
-  it("숙어의 definition/context 문제 모두 정답 하나와 현재 sense 계약을 유지한다", () => {
-    const random = vi.spyOn(Math, "random").mockReturnValue(0);
-    const [definition] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [cartHorseRows[0].num], preserveItemOrder: true });
+  it("숙어의 definition 문제도 정답 하나와 현재 sense 계약을 유지한다", () => {
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const [definition] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [cartHorseRows[0].num], preserveItemOrder: true });
     expect(definition.recallPromptId).toBe("definition");
     expect(definition.choices.filter(choice => isChoiceCorrect(definition, choice))).toHaveLength(1);
     expect(validateQuestion(definition)).toBe(true);
-
-    random.mockRestore();
-    const contextRandom = vi.spyOn(Math, "random").mockReturnValue(0);
-    contextRandom.mockReturnValueOnce(0).mockReturnValueOnce(0.9);
-    const [context] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [cartHorseRows[0].num], preserveItemOrder: true });
-    expect(context.recallPromptId).toBe("context");
-    expect(context.choices.filter(choice => isChoiceCorrect(context, choice))).toHaveLength(1);
   });
 
   it("take for granted의 사실 전제와 가치 간과를 서로 다른 sense로 유지한다", () => {
@@ -104,17 +96,16 @@ describe("영어→영어 active recall", () => {
 
   it("take for granted 두 sense가 각각 독립된 단일정답 영영 문제를 만든다", () => {
     const firstRandom = vi.spyOn(Math, "random").mockReturnValue(0);
-    const [assumption] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [takeForGrantedRows[0].num], preserveItemOrder: true });
+    const [assumption] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [takeForGrantedRows[0].num], preserveItemOrder: true });
     expect(assumption.recall?.senseId).toBe("take-for-granted:assume-without-checking");
     expect(assumption.choices.filter(choice => isChoiceCorrect(assumption, choice))).toHaveLength(1);
     expect(validateQuestion(assumption)).toBe(true);
     firstRandom.mockRestore();
 
-    const secondRandom = vi.spyOn(Math, "random").mockReturnValue(0);
-    secondRandom.mockReturnValueOnce(0.9).mockReturnValueOnce(0.9);
-    const [appreciation] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [takeForGrantedRows[0].num], preserveItemOrder: true });
+    vi.spyOn(Math, "random").mockReturnValue(0.9);
+    const [appreciation] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [takeForGrantedRows[0].num], preserveItemOrder: true });
     expect(appreciation.recall?.senseId).toBe("take-for-granted:fail-to-appreciate");
-    expect(appreciation.recallPromptId).toBe("context");
+    expect(appreciation.recall?.prompts.find(prompt => prompt.id === appreciation.recallPromptId)?.kind).toBe("definition-recall");
     expect(appreciation.choices.filter(choice => isChoiceCorrect(appreciation, choice))).toHaveLength(1);
     expect(validateQuestion(appreciation)).toBe(true);
   });
@@ -140,8 +131,8 @@ describe("영어→영어 active recall", () => {
   });
 
   it("work out 영영 문제도 정답 하나와 sense 계약을 유지한다", () => {
-    const random = vi.spyOn(Math, "random").mockReturnValue(0);
-    const [question] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [workOutRows[0].num], preserveItemOrder: true });
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [workOutRows[0].num], preserveItemOrder: true });
     expect(question.recall?.senseId).toBe("work-out:solve-problem");
     expect(question.answerKind).toBe("target");
     expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
@@ -163,8 +154,8 @@ describe("영어→영어 active recall", () => {
   });
 
   it("abide by 영영 문제도 정답 하나와 현재 sense 계약을 유지한다", () => {
-    const random = vi.spyOn(Math, "random").mockReturnValue(0);
-    const [question] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [abideByRows[0].num], preserveItemOrder: true });
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [abideByRows[0].num], preserveItemOrder: true });
     expect(question.recall?.senseId).toBe("abide-by:follow-governing-rule");
     expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
     expect(validateQuestion(question)).toBe(true);
@@ -185,8 +176,8 @@ describe("영어→영어 active recall", () => {
   });
 
   it("teem with 영영 문제도 정답 하나와 현재 sense 계약을 유지한다", () => {
-    const random = vi.spyOn(Math, "random").mockReturnValue(0);
-    const [question] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [teemWithRows[0].num], preserveItemOrder: true });
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [teemWithRows[0].num], preserveItemOrder: true });
     expect(question.recall?.senseId).toBe("teem-with:contain-many-active-things");
     expect(question.choices.map(choice => choice.value)).toContain("team up with");
     expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
@@ -211,7 +202,7 @@ describe("영어→영어 active recall", () => {
 
   it("wrap up 영영 문제도 정답 하나와 현재 sense 계약을 유지한다", () => {
     vi.spyOn(Math, "random").mockReturnValue(0);
-    const [question] = buildQuizQuestions({ mode: "syn-choice", count: 1, itemNums: [wrapUpRows[0].num], preserveItemOrder: true });
+    const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [wrapUpRows[0].num], preserveItemOrder: true });
     expect(question.recall?.senseId).toBe("wrap-up:finish-activity");
     expect(question.choices.map(choice => choice.value)).toContain("sum up");
     expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);

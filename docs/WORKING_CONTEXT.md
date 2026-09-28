@@ -1,6 +1,16 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.28 22:07 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.29 00:15 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+
+## 현재 batch — 영영 정의 → 표제어와 동의어 문제 분리 VERIFIED / 3.5 배포 후보
+
+- 기본 학습 모드를 `definition-choice`로 분리했다. 홈 첫 카드·기본 선택은 `영영 정의`이며 영영 정의만 보고 정확한 영어 표제어를 고른다. 한국어·표제어는 제출 전 숨기고 제출 후 EN/KR을 계층적으로 표시한다.
+- 기존 `syn-choice`는 `영어 동의어`로 명칭과 역할을 고정했다. 검수된 active-recall 정의가 더 이상 동의어 문제에 임의로 섞이지 않는다. 문제형별 adaptive 기록도 실제 `q.mode`를 저장한다.
+- Open English WordNet 2025 exact 단일-sense 중 정의에 정답 표제어·명백한 파생형이 노출되지 않는 4,114표제어/11,360행을 별도 출제 자산으로 생성했다. 검수 숙어 정의를 우선해 합산 실제 definition-choice 출제 가능 범위는 11,373행이다. 다의어22,783행·alias216행·미일치3,458행은 오답 위험 때문에 자동 출제하지 않는다.
+- 선지는 OEWN의 sense-level antonym을 확인할 수 있으면 반의어를 먼저 넣고, 나머지는 다른 의미영역(동일 품사 우선, 불가능한 adverb 등은 다른 품사)에서 골라 near-synonym 복수정답·오개념을 피한다. 정답 뒤에는 `반대축`/`비교선지`와 한국어 뜻을 표시한다. 반의어 연결을 사용할 수 있는 안전 정의 표제어는177개다.
+- sense 학습키, MASTERED 제외, 오답복습, 중단 세션 schema를 새 정의 모드와 연결했다. `jury foreman` 등 검수 숙어는 context prompt를 섞지 않고 definition prompt만 사용한다.
+- VERIFIED: definition/active-recall/session/learning 회귀40개, 전체 verify 27파일208테스트 통과/인증1skip, TypeScript와 기존 데이터 감사 PASS. 전체 엔진 감사에서 definition-choice11,373 / synonym-choice11,279 / 한국어 뜻38,163행을 유일정답 계약으로 확인했다.
+- NOT DONE: 3.5 Production build·Pages 공개 확인·실제 모바일 Safari/Samsung Internet 검증. OEWN 다의어와 미일치 행은 근거 기반 sense 매핑 전까지 정의 문제에 넣지 않는다.
 
 ## 현재 batch — 검수된 괄호·슬래시 표기 정의 backfill VERIFIED / 3.4 공개 확인
 

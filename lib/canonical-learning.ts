@@ -1,5 +1,6 @@
 import { getActiveRecallSenses } from "@/lib/active-recall";
 import { getProductionSenseQuestions } from "@/lib/sense-questions";
+import { getDefinitionQuizEntry } from "@/lib/definition-quiz";
 import {
   normalizeMeaning,
   normalizeWord,
@@ -44,6 +45,10 @@ export function getItemLearningTargets(item: VocabItem): LearningTargetRef[] {
   for (const sense of getProductionSenseQuestions(item.id)) {
     reviewed.set(sense.senseId, sense.definitionKo);
   }
+  if (reviewed.size === 0) {
+    const definition = getDefinitionQuizEntry(item.id);
+    if (definition) reviewed.set(definition.senseId, item.k);
+  }
   if (reviewed.size > 0) {
     return [...reviewed].map(([senseId, meaning]) => ({
       key: canonicalSenseKey(senseId),
@@ -75,10 +80,11 @@ export function getQuestionLearningTargetKey(question: {
   item: VocabItem;
   recall?: { senseId: string };
   sense?: { senseId: string };
+  definitionRecall?: { senseId: string };
 }): string {
   return getLearningTargetKey(
     question.item,
-    question.recall?.senseId ?? question.sense?.senseId,
+    question.recall?.senseId ?? question.sense?.senseId ?? question.definitionRecall?.senseId,
   );
 }
 

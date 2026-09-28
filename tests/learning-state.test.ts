@@ -47,7 +47,7 @@ describe("canonical sense learning state", () => {
     const item = getVocabItem(37941)!;
     const mastered = canonicalSenseKey("take-for-granted:assume-without-checking");
     const candidates = getQuizCandidateItems({
-      mode: "syn-choice",
+      mode: "definition-choice",
       itemNums: [item.num],
       count: 1,
       allowMeaningFallback: true,
@@ -55,7 +55,7 @@ describe("canonical sense learning state", () => {
     });
     expect(candidates.map(candidate => candidate.num)).toEqual([item.num]);
     const question = buildQuizQuestions({
-      mode: "syn-choice",
+      mode: "definition-choice",
       itemNums: [item.num],
       count: 1,
       allowMeaningFallback: true,
@@ -75,7 +75,7 @@ describe("canonical sense learning state", () => {
   it("removes a fully mastered real sense from all ordinary target pools", () => {
     const item = getVocabItem(18434)!;
     const mastered = canonicalSenseKey("jury-foreman:leader-of-jury");
-    for (const mode of ["syn-choice", "kor-choice", "flashcard"] as const) {
+    for (const mode of ["definition-choice", "syn-choice", "kor-choice", "flashcard"] as const) {
       expect(getQuizCandidateItems({
         mode,
         itemNums: [item.num],

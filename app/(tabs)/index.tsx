@@ -34,7 +34,7 @@ const DEFAULT_RANGE_ID = CORE_RANGES[0]?.id ?? SECTION_RANGES[0]?.id ?? "all";
 export default function HomeScreen() {
   const colors = useColors();
   const router = useRouter();
-  const [selectedMode, setSelectedMode] = useState<QuizMode>("syn-choice");
+  const [selectedMode, setSelectedMode] = useState<QuizMode>("definition-choice");
   const [selectedRange, setSelectedRange] = useState(DEFAULT_RANGE_ID);
   const [selectedCount, setSelectedCount] = useState(10);
   const [choiceLang, setChoiceLang] = useState<ChoiceLang>("korean");
@@ -155,7 +155,7 @@ export default function HomeScreen() {
             accessibilityLabel="보조 학습 설정"
             accessibilityState={{ expanded: showAuxiliary }}
             onPress={() => {
-              if (showAuxiliary && ["flashcard", "syn-type"].includes(selectedMode)) setSelectedMode("syn-choice");
+              if (showAuxiliary && ["flashcard", "syn-type"].includes(selectedMode)) setSelectedMode("definition-choice");
               setShowAuxiliary(value => !value);
             }}
             style={{ minHeight: 44, justifyContent: "center", marginTop: 8 }}

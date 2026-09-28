@@ -21,7 +21,6 @@ import {
   isTypedAnswerCorrect,
   validateQuestion,
 } from "@/lib/quiz-engine";
-import { getActiveRecallSenses } from "@/lib/active-recall";
 import { getProductionSenseQuestions } from "@/lib/sense-questions";
 
 const EXPECTED_GROUP_COUNTS = {
@@ -229,8 +228,7 @@ describe("shared quiz engine", () => {
           ? rangeItems.length
           : rangeItems.filter((item) =>
               item.s.length > 0 ||
-              getProductionSenseQuestions(item.id).length > 0 ||
-              (mode === "syn-choice" && getActiveRecallSenses(item.id).length > 0),
+              getProductionSenseQuestions(item.id).length > 0,
             ).length;
         expect(questions).toHaveLength(Math.min(12, availableCount));
 

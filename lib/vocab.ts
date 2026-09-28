@@ -166,20 +166,22 @@ export const WORDBOOK_RANGES = [
 export const COUNTS = [10, 20, 30];
 
 export type QuizMode =
+  | "definition-choice"
   | "syn-choice"
   | "kor-choice"
   | "syn-kor-choice"
   | "flashcard"
   | "syn-type";
 
-export const QUIZ_MODES: Array<{
+export const QUIZ_MODES: {
   id: QuizMode;
   icon: string;
   title: string;
   desc: string;
   primary?: boolean;
-}> = [
-  { id: "syn-choice", icon: "EN", title: "영영 인출", desc: "정의·문맥에서 단어 찾기", primary: true },
+}[] = [
+  { id: "definition-choice", icon: "EN", title: "영영 정의", desc: "정의에서 정확한 단어 찾기", primary: true },
+  { id: "syn-choice", icon: "≈", title: "영어 동의어", desc: "같은 sense의 동의어 찾기", primary: true },
   { id: "kor-choice", icon: "🇰🇷", title: "뜻", desc: "정확한 뜻 4택", primary: true },
   { id: "flashcard", icon: "⚡", title: "빠른 암기", desc: "뜻 확인 후 채점", primary: true },
   { id: "syn-kor-choice", icon: "🔀", title: "동의어+뜻", desc: "뜻까지 함께 구분" },
