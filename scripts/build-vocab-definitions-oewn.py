@@ -35,9 +35,97 @@ POS_LABELS = {
     "r": "adverb",
 }
 
+# Manually checked against the current Korean occurrence glosses.  Automatic
+# hyphen removal is unsafe: e.g. run-off (an election) is not the OEWN verb
+# run off, and burn-out (exhaustion) is not the verb meaning to stop working.
+SAFE_HYPHENATION_ALIASES = {
+    "belly up": "belly-up",
+    "big-time": "big time",
+    "bread-and-butter": "bread and butter",
+    "clapped-out": "clapped out",
+    "cul-de-sac": "cul de sac",
+    "double-bind": "double bind",
+    "double-cross": "double cross",
+    "eleventh-hour": "eleventh hour",
+    "eye-opener": "eye opener",
+    "fall-guy": "fall guy",
+    "fence-mending": "fence mending",
+    "free-fall": "free fall",
+    "get-together": "get together",
+    "grass-roots": "grass roots",
+    "gung-ho": "gung ho",
+    "horse-trading": "horse trading",
+    "hurly-burly": "hurly burly",
+    "lump-sum": "lump sum",
+    "mumbo-jumbo": "mumbo jumbo",
+    "name-calling": "name calling",
+    "no-man's land": "no man's land",
+    "nouveau riche": "nouveau-riche",
+    "open and shut": "open-and-shut",
+    "open-door": "open door",
+    "out of date": "out-of-date",
+    "photo-op": "photo op",
+    "photo-opportunity": "photo opportunity",
+    "pipe-dream": "pipe dream",
+    "put - on the line": "put on the line",
+    "put - to death": "put to death",
+    "rank-and-file": "rank and file",
+    "rubber-stamp": "rubber stamp",
+    "saber-rattling": "saber rattling",
+    "sell-off": "sell off",
+    "sweep - under the rug": "sweep under the rug",
+    "think-tank": "think tank",
+    "tit-for-tat": "tit for tat",
+    "top-of-the-line": "top of the line",
+    "tried-and-true": "tried and true",
+    "tug of war": "tug-of-war",
+    "wheeler-dealer": "wheeler dealer",
+}
+
 
 def normalize_headword(value: str) -> str:
     return " ".join(value.replace("_", " ").strip().lower().split())
+
+
+def safe_alias_candidates(value: str) -> list[dict[str, str]]:
+    """Return conservative spelling/format aliases, never semantic fallbacks.
+
+    These rules only remove editorial marks or normalize punctuation inside the
+    same lexical expression.  They deliberately do not lemmatize, shorten a
+    phrase to its head word, or infer a sense from the Korean gloss.
+    """
+
+    key = normalize_headword(value)
+    candidates: list[dict[str, str]] = []
+
+    def add(alias: str, match_type: str) -> None:
+        normalized = normalize_headword(alias)
+        if not normalized or normalized == key:
+            return
+        if any(row["headword"] == normalized for row in candidates):
+            return
+        candidates.append({"headword": normalized, "matchType": match_type})
+
+    if "*" in key:
+        add(key.replace("*", ""), "editorial_mark_removed")
+
+    if key in SAFE_HYPHENATION_ALIASES:
+        add(SAFE_HYPHENATION_ALIASES[key], "reviewed_hyphenation_variant")
+
+    # Whole-word alternatives such as "amatory (or amatorial)".
+    alternate = re.fullmatch(r"([^()\s]+)\s*\(or\s+([^()\s]+)\)", key)
+    if alternate:
+        add(alternate.group(1), "explicit_spelling_alternative")
+        add(alternate.group(2), "explicit_spelling_alternative")
+
+    # Optional spelling letters such as chutzpa(h) or fledg(e)ling.
+    optional = re.fullmatch(r"([a-z'-]*)\(([a-z-]{1,3})\)([a-z'-]*)", key)
+    if optional:
+        prefix, insertion, suffix = optional.groups()
+        add(prefix + suffix, "optional_spelling_letters")
+        add(prefix + insertion + suffix, "optional_spelling_letters")
+
+    return candidates
 
 
 def archive_hash(path: Path) -> str:
@@ -78,6 +166,12 @@ def main() -> int:
         raise TypeError("assets/vocab-v1.4.json must be a list")
 
     wanted = {normalize_headword(str(item["w"])) for item in vocab}
+    aliases_by_key = {key: safe_alias_candidates(key) for key in wanted}
+    lookup_keys = wanted | {
+        alias["headword"]
+        for aliases in aliases_by_key.values()
+        for alias in aliases
+    }
     display_by_key: dict[str, str] = {}
     for item in vocab:
         key = normalize_headword(str(item["w"]))
@@ -96,7 +190,7 @@ def main() -> int:
             entries = load_json(zf, name)
             for raw_headword, pos_map in entries.items():
                 key = normalize_headword(raw_headword)
-                if key not in wanted or not isinstance(pos_map, dict):
+                if key not in lookup_keys or not isinstance(pos_map, dict):
                     continue
                 seen_for_key = {row["senseId"] for row in senses_by_key[key]}
                 for pos_code, pos_payload in pos_map.items():
@@ -136,8 +230,8 @@ def main() -> int:
                 if synset_id in needed_synsets and isinstance(record, dict):
                     synset_data[synset_id] = record
 
-    definitions_by_key: dict[str, list[dict[str, str]]] = {}
-    for key in sorted(wanted):
+    raw_definitions_by_key: dict[str, list[dict[str, str]]] = {}
+    for key in sorted(lookup_keys):
         resolved: list[dict[str, str]] = []
         seen_definitions: set[tuple[str, str]] = set()
         for sense in senses_by_key.get(key, []):
@@ -160,7 +254,33 @@ def main() -> int:
                         "definition": definition,
                     }
                 )
+        raw_definitions_by_key[key] = resolved
+
+    definitions_by_key: dict[str, list[dict[str, str]]] = {}
+    matches_by_key: dict[str, list[dict[str, str]]] = {}
+    for key in sorted(wanted):
+        exact = raw_definitions_by_key.get(key, [])
+        if exact:
+            definitions_by_key[key] = exact
+            matches_by_key[key] = [{"headword": key, "matchType": "exact"}]
+            continue
+
+        resolved: list[dict[str, str]] = []
+        matches: list[dict[str, str]] = []
+        seen_definitions: set[tuple[str, str]] = set()
+        for alias in aliases_by_key[key]:
+            alias_senses = raw_definitions_by_key.get(alias["headword"], [])
+            if not alias_senses:
+                continue
+            matches.append(alias)
+            for sense in alias_senses:
+                signature = (sense["partOfSpeech"], sense["definition"].casefold())
+                if signature in seen_definitions:
+                    continue
+                seen_definitions.add(signature)
+                resolved.append({**sense, "matchedHeadword": alias["headword"]})
         definitions_by_key[key] = resolved
+        matches_by_key[key] = matches
 
     source = {
         "name": "Open English WordNet",
@@ -177,8 +297,11 @@ def main() -> int:
     unique_status = Counter()
 
     for key, senses in definitions_by_key.items():
+        matches = matches_by_key[key]
         if not senses:
             unique_status["source_not_found"] += 1
+        elif matches and matches[0]["matchType"] != "exact":
+            unique_status["dictionary_alias_unreviewed"] += 1
         elif len(senses) == 1:
             unique_status["single_sense"] += 1
         else:
@@ -193,8 +316,11 @@ def main() -> int:
         group_items[group][item_id] = key
         group_keys[group].add(key)
         senses = definitions_by_key[key]
+        matches = matches_by_key[key]
         if not senses:
             row_status["source_not_found"] += 1
+        elif matches and matches[0]["matchType"] != "exact":
+            row_status["dictionary_alias_unreviewed"] += 1
         elif len(senses) == 1:
             row_status["single_sense"] += 1
         else:
@@ -205,9 +331,13 @@ def main() -> int:
         headwords: dict[str, Any] = {}
         for key in sorted(group_keys[group]):
             senses = definitions_by_key[key]
+            matches = matches_by_key[key]
             if not senses:
                 status = "source_not_found"
                 representative_sense_id = None
+            elif matches and matches[0]["matchType"] != "exact":
+                status = "dictionary_alias_unreviewed"
+                representative_sense_id = senses[0]["senseId"]
             elif len(senses) == 1:
                 status = "single_sense"
                 representative_sense_id = senses[0]["senseId"]
@@ -218,6 +348,7 @@ def main() -> int:
                 "headword": display_by_key[key],
                 "status": status,
                 "representativeSenseId": representative_sense_id,
+                "matches": matches,
                 "senses": senses,
             }
 
@@ -250,16 +381,19 @@ def main() -> int:
             "matchedRowPercent": round(matched_rows / total_rows * 100, 2),
             "singleSenseRows": row_status["single_sense"],
             "ambiguousRows": row_status["dictionary_primary_unreviewed"],
+            "aliasMatchedRows": row_status["dictionary_alias_unreviewed"],
             "sourceNotFoundRows": row_status["source_not_found"],
             "matchedUniqueHeadwords": matched_unique,
             "singleSenseUniqueHeadwords": unique_status["single_sense"],
             "ambiguousUniqueHeadwords": unique_status["dictionary_primary_unreviewed"],
+            "aliasMatchedUniqueHeadwords": unique_status["dictionary_alias_unreviewed"],
             "sourceNotFoundUniqueHeadwords": unique_status["source_not_found"],
         },
         "groupRows": {group: len(group_items[group]) for group in GROUPS},
         "quizEligibility": {
             "single_sense": True,
             "dictionary_primary_unreviewed": False,
+            "dictionary_alias_unreviewed": False,
             "source_not_found": False,
         },
     }

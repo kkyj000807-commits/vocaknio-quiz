@@ -116,7 +116,8 @@ function DictionaryDefinition({ entry }: { entry: VocabDefinitionEntry }) {
     );
   }
 
-  const reviewNeeded = entry.status === "dictionary_primary_unreviewed";
+  const reviewNeeded = entry.status !== "single_sense";
+  const aliasMatched = entry.status === "dictionary_alias_unreviewed";
   const visibleSenses = allSensesOpen ? entry.senses : representative ? [representative] : [];
 
   return (
@@ -124,7 +125,11 @@ function DictionaryDefinition({ entry }: { entry: VocabDefinitionEntry }) {
       <Text style={s.senseTitle}>{entry.headword}</Text>
       <View style={s.section}>
         <Text style={s.label}>
-          {reviewNeeded ? "대표 영영 정의 후보 · sense 검수 전" : "영영 정의"}
+          {aliasMatched
+            ? "철자·하이픈 변형으로 찾은 영영 정의 후보"
+            : reviewNeeded
+              ? "대표 영영 정의 후보 · sense 검수 전"
+              : "영영 정의"}
         </Text>
         {visibleSenses.map((sense, index) => (
           <View key={`${sense.senseId}-${index}`} style={s.definitionCandidate}>
@@ -148,7 +153,10 @@ function DictionaryDefinition({ entry }: { entry: VocabDefinitionEntry }) {
       )}
       {reviewNeeded && (
         <Text style={s.note}>
-          현재 한국어 뜻과의 sense 연결 검수 전 자료입니다. 문제 정답 근거와 숙달 판정에는 사용하지 않습니다.
+          {aliasMatched
+            ? `OEWN 표제어 ${entry.matches?.map((match) => match.headword).join(" · ") || "변형"}에서 찾았습니다. `
+            : "현재 한국어 뜻과의 sense 연결 검수 전 자료입니다. "}
+          문제 정답 근거와 숙달 판정에는 사용하지 않습니다.
         </Text>
       )}
       <Text style={s.note}>

@@ -42,11 +42,20 @@ for (const group of groups) {
     if (record.status === "dictionary_primary_unreviewed" && senses.length < 2) {
       fail(`ambiguous definition must contain at least two senses: ${itemId}`);
     }
+    if (record.status === "dictionary_alias_unreviewed" && senses.length < 1) {
+      fail(`alias definition must contain at least one sense: ${itemId}`);
+    }
     if (record.status === "source_not_found" && senses.length !== 0) {
       fail(`source_not_found must not contain senses: ${itemId}`);
     }
-    if (!["single_sense", "dictionary_primary_unreviewed", "source_not_found"].includes(record.status)) {
+    if (!["single_sense", "dictionary_primary_unreviewed", "dictionary_alias_unreviewed", "source_not_found"].includes(record.status)) {
       fail(`Unknown definition status: ${record.status}`);
+    }
+    if (record.status === "dictionary_alias_unreviewed") {
+      const matches = Array.isArray(record.matches) ? record.matches : [];
+      if (matches.length < 1 || matches.some((match) => !match.headword || match.matchType === "exact")) {
+        fail(`Alias definition provenance is missing: ${itemId}`);
+      }
     }
     if (senses.some((sense) => !sense.senseId || !sense.partOfSpeech || !sense.definition)) {
       fail(`Incomplete OEWN sense: ${itemId}`);
@@ -68,6 +77,7 @@ const coverage = meta.coverage;
 if (coverage.totalRows !== vocab.length) fail("Definition metadata totalRows mismatch");
 if ((statusRows.get("single_sense") ?? 0) !== coverage.singleSenseRows) fail("singleSenseRows mismatch");
 if ((statusRows.get("dictionary_primary_unreviewed") ?? 0) !== coverage.ambiguousRows) fail("ambiguousRows mismatch");
+if ((statusRows.get("dictionary_alias_unreviewed") ?? 0) !== coverage.aliasMatchedRows) fail("aliasMatchedRows mismatch");
 if ((statusRows.get("source_not_found") ?? 0) !== coverage.sourceNotFoundRows) fail("sourceNotFoundRows mismatch");
 if (coverage.matchedRows + coverage.sourceNotFoundRows !== coverage.totalRows) fail("Definition coverage arithmetic mismatch");
 
@@ -79,5 +89,6 @@ console.log(JSON.stringify({
   matchedRowPercent: coverage.matchedRowPercent,
   safeSingleSenseRows: coverage.singleSenseRows,
   ambiguousReviewRows: coverage.ambiguousRows,
+  aliasReviewRows: coverage.aliasMatchedRows,
   sourceNotFoundRows: coverage.sourceNotFoundRows,
 }, null, 2));

@@ -12,15 +12,17 @@
   "coverage": {
     "totalRows": 38163,
     "totalUniqueHeadwords": 13347,
-    "matchedRows": 34489,
-    "matchedRowPercent": 90.37,
+    "matchedRows": 34641,
+    "matchedRowPercent": 90.77,
     "singleSenseRows": 11706,
     "ambiguousRows": 22783,
-    "sourceNotFoundRows": 3674,
-    "matchedUniqueHeadwords": 11471,
+    "aliasMatchedRows": 152,
+    "sourceNotFoundRows": 3522,
+    "matchedUniqueHeadwords": 11560,
     "singleSenseUniqueHeadwords": 4285,
     "ambiguousUniqueHeadwords": 7186,
-    "sourceNotFoundUniqueHeadwords": 1876
+    "aliasMatchedUniqueHeadwords": 89,
+    "sourceNotFoundUniqueHeadwords": 1787
   },
   "groupRows": {
     "V101": 4028,
@@ -35,6 +37,7 @@
   "quizEligibility": {
     "single_sense": true,
     "dictionary_primary_unreviewed": false,
+    "dictionary_alias_unreviewed": false,
     "source_not_found": false
   }
 }

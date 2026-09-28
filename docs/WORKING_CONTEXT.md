@@ -1,15 +1,15 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.28 14:30 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.28 20:58 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 batch — OEWN 2025 전 어휘 정의 층 VERIFIED / 3.2 공개 확인
+## 현재 batch — OEWN 철자·하이픈 변형 정의 backfill VERIFIED / 3.3 배포 준비
 
 - Open English WordNet 2025 공식 JSON archive(SHA-256 `7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51`, CC BY 4.0)를 38,163개 정본 행 전체에 exact-headword 방식으로 적용했다. 원본 정본·한국어 뜻·학습 기록은 변경하지 않았다.
-- 38,163행 모두가 명시 상태와 item→headword 포인터를 가진다. 실제 사전 정의 연결은 34,489행(90.37%), 이 중 단일-sense로 바로 표시 가능한 행은 11,706개다. 다의어 22,783행은 OEWN의 모든 후보 sense를 보존하지만 한국어 occurrence와 연결하기 전까지 `dictionary_primary_unreviewed`, 미일치 3,674행은 `source_not_found`로 둔다.
+- 38,163행 모두가 명시 상태와 item→headword 포인터를 가진다. exact match에 더해 별표·명시적 철자 대안·선별 검수한 하이픈 변형 152행/89고유 표제어를 `dictionary_alias_unreviewed`로 보강했다. 실제 사전 정의 연결은 34,641행(90.77%), 단일-sense 11,706행, 다의어 검수 전 22,783행, 미일치 3,522행이다.
 - 기존 검수 해설 152sense/218행은 계속 우선 표시한다. 그 밖의 행은 단어장·문풀·오답의 기존 펼치기에서 OEWN 정의를 읽는다. 다의어는 대표 후보와 전체 후보를 구분하고 `문제 정답 근거로 사용하지 않음`을 표시한다. 미일치에는 가짜 정의나 placeholder를 넣지 않는다.
-- 새 데이터는 `assets/vocab-definitions-oewn-2025.json`과 8개 그룹별 public JSON에 저장된다. 생성기는 공식 archive hash를 강제하고, 감사는 전 행 중복·누락·상태·정의·라이선스를 검사한다. Production 빌드와 산출물 감사도 8개 정의 JSON 및 앱 번들 연결이 없으면 실패한다.
-- VERIFIED: 정의 감사 PASS(38,163/38,163 포인터), TypeScript PASS, 변경 파일 ESLint 오류0, 전체 verify 25파일198테스트 통과/인증1skip. Production 3.2 감사 HTML22/학습JSON8/정의JSON8/참조누락0을 통과했고 in-app browser에서 로컬·공개 단어장의 정의 펼치기를 확인했다. 실제 Safari·Samsung Internet·모바일 Chrome 실기기 검증은 아니다.
-- NOT DONE: `영영정의 100%`는 아니다. 22,783개 다의어 행의 한국어 sense 연결 검수와 3,674개 OEWN 미일치 숙어·표현의 다른 허가 사전 backfill이 남았다. 이 둘은 영영 문제에 자동 승격하지 않는다.
+- 새 데이터는 `assets/vocab-definitions-oewn-2025.json`과 8개 그룹별 public JSON에 저장된다. 생성기는 공식 archive hash를 강제하고, alias의 원 표제어·변환 종류를 보존한다. `run-off`/`burn-out`/`bale(보석금)`처럼 표기 정리로 다른 뜻이 되는 회귀 사례는 계속 `source_not_found`이며 자동 alias를 금지한다.
+- VERIFIED: 정의 감사 PASS(38,163/38,163 포인터), TypeScript PASS, 변경 파일 ESLint 오류0, alias 전용 3테스트 통과, 전체 verify 25파일198테스트 통과/인증1skip. 새 테스트를 포함한 최종 전체 verify·Production 3.3·Pages 확인은 배포 gate에서 다시 닫는다.
+- NOT DONE: `영영정의 100%`는 아니다. 22,783개 다의어 행과 alias 152행은 한국어 sense 연결 전까지 문제 정답 근거로 쓰지 않는다. OEWN 미일치 3,522행도 다른 허가 사전 backfill이 남았다.
 - NEXT/P0: `source_not_found` 중 숙어·오답·고빈도부터 다른 허가 사전으로 보강하고 다의어는 한국어 occurrence와 sense를 분리 매핑한다.
 
 ## 현재 배포 — 3.2, 전체 로드맵은 부분 완료

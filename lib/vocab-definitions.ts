@@ -4,18 +4,21 @@ import { VOCAB_BY_ID } from "@/lib/vocab";
 export type VocabDefinitionStatus =
   | "single_sense"
   | "dictionary_primary_unreviewed"
+  | "dictionary_alias_unreviewed"
   | "source_not_found";
 
 export interface VocabDictionarySense {
   senseId: string;
   partOfSpeech: string;
   definition: string;
+  matchedHeadword?: string;
 }
 
 export interface VocabDefinitionEntry {
   headword: string;
   status: VocabDefinitionStatus;
   representativeSenseId: string | null;
+  matches?: { headword: string; matchType: string }[];
   senses: VocabDictionarySense[];
 }
 
@@ -35,6 +38,7 @@ interface DefinitionMetadata {
     matchedRowPercent: number;
     singleSenseRows: number;
     ambiguousRows: number;
+    aliasMatchedRows: number;
     sourceNotFoundRows: number;
   };
 }
@@ -65,7 +69,7 @@ function isDefinitionEntry(value: unknown): value is VocabDefinitionEntry {
   const entry = value as Partial<VocabDefinitionEntry>;
   return Boolean(
     entry.headword &&
-    ["single_sense", "dictionary_primary_unreviewed", "source_not_found"].includes(
+    ["single_sense", "dictionary_primary_unreviewed", "dictionary_alias_unreviewed", "source_not_found"].includes(
       entry.status ?? "",
     ) &&
     Array.isArray(entry.senses),
