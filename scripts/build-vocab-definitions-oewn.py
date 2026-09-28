@@ -82,6 +82,59 @@ SAFE_HYPHENATION_ALIASES = {
     "wheeler-dealer": "wheeler dealer",
 }
 
+# Editorial notation in the source vocabulary often writes an optional word or
+# alternate spelling inside parentheses/slashes.  Only pairs inspected against
+# both the current Korean occurrence gloss and OEWN are listed here.  Generic
+# parenthesis stripping would corrupt entries such as bale(보석금), while a
+# generic base-word fallback would attach the wrong sense to turn (to).
+SAFE_EDITORIAL_ALIASES = {
+    "(a)round the clock": ["around the clock", "round the clock"],
+    "acknowledgment / acknowledgement": ["acknowledgment", "acknowledgement"],
+    "accoutre (accouter)": ["accoutre"],
+    "add-up / add up": ["add up"],
+    "alzheimer's (disease)": ["alzheimer's disease"],
+    "appertain (to)": ["appertain"],
+    "ascribe (a to b)": ["ascribe"],
+    "at (the) first blush": ["at first blush"],
+    "at (the) least": ["at least", "at the least"],
+    "be-all (and end-all)": ["be-all and end-all"],
+    "by fits (and starts)": ["by fits and starts"],
+    "capitalize (on)": ["capitalize"],
+    "coincide (with)": ["coincide"],
+    "date back (to)": ["date back"],
+    "dig (up)": ["dig up"],
+    "dismissive (of)": ["dismissive"],
+    "disport (oneself)": ["disport"],
+    "district attorney (da)": ["district attorney"],
+    "eon(aeon)": ["eon"],
+    "eventuate (in)": ["eventuate"],
+    "familiarity (with)": ["familiarity"],
+    "fob (off)": ["fob off"],
+    "get (a)round": ["get around"],
+    "get the hang(or knack) of": ["get the hang of"],
+    "hightail (it)": ["hightail it"],
+    "hit the ceiling(or roof)": ["hit the ceiling"],
+    "impostor (imposter)": ["impostor"],
+    "impute (a to b)": ["impute"],
+    "in the (very) nick of time": ["in the nick of time"],
+    "independent (of)": ["independent"],
+    "injurious (to)": ["injurious"],
+    "knickknack/nicknack": ["knickknack", "nicknack"],
+    "lard (with)": ["lard"],
+    "own up (to)": ["own up"],
+    "pork (barrel)": ["pork barrel"],
+    "primary (election)": ["primary election"],
+    "recourse (to)": ["recourse"],
+    "rely (on)": ["rely on"],
+    "resort (to)": ["resort"],
+    "stir (up)": ["stir up"],
+    "swoop (on)": ["swoop"],
+    "synonymous (with)": ["synonymous"],
+    "unrelated (to)": ["unrelated"],
+    "vender (vendor)": ["vender"],
+    "winnow (out)": ["winnow out"],
+}
+
 
 def normalize_headword(value: str) -> str:
     return " ".join(value.replace("_", " ").strip().lower().split())
@@ -111,6 +164,8 @@ def safe_alias_candidates(value: str) -> list[dict[str, str]]:
 
     if key in SAFE_HYPHENATION_ALIASES:
         add(SAFE_HYPHENATION_ALIASES[key], "reviewed_hyphenation_variant")
+    for alias in SAFE_EDITORIAL_ALIASES.get(key, []):
+        add(alias, "reviewed_editorial_variant")
 
     # Whole-word alternatives such as "amatory (or amatorial)".
     alternate = re.fullmatch(r"([^()\s]+)\s*\(or\s+([^()\s]+)\)", key)

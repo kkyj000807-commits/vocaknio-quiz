@@ -12,17 +12,17 @@
   "coverage": {
     "totalRows": 38163,
     "totalUniqueHeadwords": 13347,
-    "matchedRows": 34641,
-    "matchedRowPercent": 90.77,
+    "matchedRows": 34705,
+    "matchedRowPercent": 90.94,
     "singleSenseRows": 11706,
     "ambiguousRows": 22783,
-    "aliasMatchedRows": 152,
-    "sourceNotFoundRows": 3522,
-    "matchedUniqueHeadwords": 11560,
+    "aliasMatchedRows": 216,
+    "sourceNotFoundRows": 3458,
+    "matchedUniqueHeadwords": 11605,
     "singleSenseUniqueHeadwords": 4285,
     "ambiguousUniqueHeadwords": 7186,
-    "aliasMatchedUniqueHeadwords": 89,
-    "sourceNotFoundUniqueHeadwords": 1787
+    "aliasMatchedUniqueHeadwords": 134,
+    "sourceNotFoundUniqueHeadwords": 1742
   },
   "groupRows": {
     "V101": 4028,

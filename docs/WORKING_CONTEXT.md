@@ -1,6 +1,15 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.28 21:01 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.28 22:05 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+
+## 현재 batch — 검수된 괄호·슬래시 표기 정의 backfill VERIFIED / 3.4 배포 준비
+
+- Open English WordNet 2025에 실제 표제어가 있는 경우만 수동 검수한 편집 표기를 alias 후보로 연결했다. `(a)round the clock`, `in the (very) nick of time`, `rely (on)`, `date back (to)` 등 45개 source 표기를 원래 사전 표제어와 provenance를 보존한 채 보강했다.
+- 실제 사전 정의 연결은 34,641행(90.77%)에서 34,705행(90.94%)으로 64행 증가했다. alias 후보는 152행/89고유 표제어에서 216행/134고유 표제어로 증가했고, 미일치는 3,522행에서 3,458행으로 감소했다. 원본 정본·한국어 뜻·사용자 학습 기록은 변경하지 않았다.
+- `turn (to)`, `run-off`, `burn-out`, `bale(보석금)`처럼 문장 슬롯·하이픈·주석 제거가 다른 의미를 만들 수 있는 항목은 계속 `source_not_found`로 유지한다. 검수 alias도 sense 매핑 전까지 `dictionary_alias_unreviewed`이며 영영문제 정답 근거로 쓰지 않는다.
+- VERIFIED: 정의 감사 PASS(38,163/38,163 포인터), alias 회귀 4테스트, 변경 파일 ESLint 오류0, TypeScript PASS, 전체 26파일202테스트 통과/인증1skip. 기본 병렬 Vitest는 이 실행에서 worker 9개가 비정상 종료해 같은 테스트를 단일 worker로 재실행했고 모두 통과했다. Production 3.4 build/audit·공개 Pages 확인은 이 batch의 다음 단계다.
+- NOT DONE: 영영정의 100%가 아니다. 미일치 3,458행과 다의어 sense 매핑은 별도 근거 기반 backfill이 필요하다.
+- NEXT/P0: full verify→production 3.4 build/audit→Pages 배포→공개 release·bundle·대표 alias/차단 사례 확인.
 
 ## 현재 batch — OEWN 철자·하이픈 변형 정의 backfill VERIFIED / 3.3 공개 확인
 
