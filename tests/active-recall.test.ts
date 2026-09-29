@@ -13,6 +13,7 @@ const teemWithRows = VOCAB.filter(item => item.w === "teem with");
 const wrapUpRows = VOCAB.filter(item => item.w === "wrap up");
 const ruleOfThumbRows = VOCAB.filter(item => item.w === "rule of thumb");
 const conduciveToRows = VOCAB.filter(item => item.w === "conducive to");
+const wideRangeRows = VOCAB.filter(item => item.w === "a wide range of");
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -31,13 +32,13 @@ describe("영어→영어 active recall", () => {
     expect(sense?.exactSynonyms).not.toContain("overseer");
     expect(getActiveRecallSenses(juryRows[0].id)).toHaveLength(1);
     expect(getActiveRecallCoverage()).toEqual({
-      senses: 13,
-      rows: 21,
-      definitions: 13,
-      examples: 13,
-      contextualizedExamples: 13,
-      contextExplanations: 13,
-      synonymRelations: 13,
+      senses: 14,
+      rows: 23,
+      definitions: 14,
+      examples: 14,
+      contextualizedExamples: 14,
+      contextExplanations: 14,
+      synonymRelations: 14,
     });
   });
 
@@ -129,6 +130,28 @@ describe("영어→영어 active recall", () => {
     const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [conduciveToRows[0].num], preserveItemOrder: true });
     expect(question.recall?.senseId).toBe(sense.senseId);
     expect(question.choices.map(choice => choice.value)).toContain("detrimental to");
+    expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
+    expect(validateQuestion(question)).toBe(true);
+  });
+
+  it("a wide range of의 중복 2행을 다양성 sense 하나와 반대축에 연결한다", () => {
+    expect(wideRangeRows.map(item => item.id)).toEqual(["JBKROW000017", "JBKROW002047"]);
+    const senseIds = new Set(wideRangeRows.flatMap(item => getActiveRecallSenses(item.id).map(sense => sense.senseId)));
+    expect([...senseIds]).toEqual(["a-wide-range-of:many-different-kinds"]);
+    const [sense] = getActiveRecallSenses(wideRangeRows[0].id);
+    expect(sense).toMatchObject({
+      conciseEnglishDefinition: "a large variety of things of the same general kind",
+      koreanMeaning: "같은 범주 안의 매우 다양한 여러 ~",
+      exactSynonyms: ["a broad range of"],
+      antonyms: ["a narrow range of", "a limited range of"],
+    });
+    expect(sense.contextExplanationKo).toContain("종류의 폭");
+    expect(sense.distractors.find(choice => choice.word === "a narrow range of")?.reasonKo).toContain("반대");
+
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [wideRangeRows[0].num], preserveItemOrder: true });
+    expect(question.recall?.senseId).toBe(sense.senseId);
+    expect(question.choices.map(choice => choice.value)).toContain("a narrow range of");
     expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
     expect(validateQuestion(question)).toBe(true);
   });

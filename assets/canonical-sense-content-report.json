@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAtKst": "2026-09-30T02:28:38+09:00",
+  "generatedAtKst": "2026-09-30T03:15:51+09:00",
   "vocabulary": {
     "sourceRows": 38163,
     "uniqueHeadwords": 13347,
-    "rowsWithCanonicalSense": 237,
-    "rowsWithoutCanonicalSense": 37926
+    "rowsWithCanonicalSense": 239,
+    "rowsWithoutCanonicalSense": 37924
   },
   "rawVocabulary": {
     "recordCount": 38163,
@@ -22,20 +22,20 @@
     "note": "원본 38,163행 스키마는 w/k/s 중심이며, canonical sense 필드는 별도 검수 레이어에서만 제공된다."
   },
   "before": {
-    "canonicalSenseCount": 109,
+    "canonicalSenseCount": 110,
     "blanks": {
-      "englishDefinition": 17,
-      "koreanMeaning": 17,
-      "contextExplanation": 17,
-      "exampleSentence": 17,
-      "exampleExplanation": 17,
-      "synonyms": 43,
-      "distinctionNote": 17,
-      "sourceIds": 17
+      "englishDefinition": 18,
+      "koreanMeaning": 18,
+      "contextExplanation": 18,
+      "exampleSentence": 18,
+      "exampleExplanation": 18,
+      "synonyms": 44,
+      "distinctionNote": 18,
+      "sourceIds": 18
     }
   },
   "after": {
-    "canonicalSenseCount": 103,
+    "canonicalSenseCount": 104,
     "blanks": {
       "englishDefinition": 0,
       "koreanMeaning": 0,
@@ -126,7 +126,7 @@
     }
   ],
   "statusCounts": {
-    "COMPLETE": 85,
+    "COMPLETE": 86,
     "VERIFIED_NO_DATA": 0,
     "FAILED": 0,
     "NEEDS_REVIEW": 18,
@@ -170,7 +170,7 @@
   "firstLoss": {
     "unmappedVocabularyRows": {
       "stage": "sense 매핑",
-      "count": 37926,
+      "count": 37924,
       "reason": "원본 어휘 행에 canonical senseId가 아직 없다."
     },
     "mappedSenseMissingFields": {
@@ -189,6 +189,22 @@
     }
   },
   "sampleAudit": [
+    {
+      "senseId": "a-wide-range-of:many-different-kinds",
+      "word": "a wide range of",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
     {
       "senseId": "abide-by:follow-governing-rule",
       "word": "abide by",
@@ -480,22 +496,6 @@
     {
       "senseId": "crack-down-on:primary",
       "word": "crack down on",
-      "status": "COMPLETE",
-      "checkedFields": {
-        "englishDefinition": true,
-        "koreanMeaning": true,
-        "contextExplanation": true,
-        "exampleSentence": true,
-        "exampleExplanation": true,
-        "synonyms": true,
-        "distinctionNote": true,
-        "sourceIds": true
-      },
-      "sameSenseContract": true
-    },
-    {
-      "senseId": "cut-ground:primary",
-      "word": "cut the ground from under someone",
       "status": "COMPLETE",
       "checkedFields": {
         "englishDefinition": true,

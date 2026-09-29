@@ -138,6 +138,81 @@
       "failureReason": null
     },
     {
+      "id": "a-wide-range-of:many-different-kinds",
+      "headword": "a wide range of",
+      "partOfSpeech": "determiner phrase",
+      "senseId": "a-wide-range-of:many-different-kinds",
+      "itemIds": ["JBKROW000017", "JBKROW002047"],
+      "englishDefinition": "A large variety of people or things belonging to the same general category.",
+      "conciseEnglishDefinition": "a large variety of things of the same general kind",
+      "exactSynonyms": ["a broad range of"],
+      "nearSynonyms": ["a wide variety of", "a broad spectrum of"],
+      "antonyms": ["a narrow range of", "a limited range of"],
+      "variants": [],
+      "relatedWords": ["diverse", "variety"],
+      "exampleSentences": [
+        {
+          "en": "The reading course introduces students to a wide range of arguments, from causal claims to ethical dilemmas.",
+          "ko": "그 독해 강좌는 인과 주장부터 윤리적 딜레마까지 매우 다양한 논증을 학생들에게 접하게 한다.",
+          "cueKo": "from A to B가 논증의 종류가 한두 개가 아니라 서로 다른 여러 범주에 걸쳐 있음을 보여 준다. 여기서 wide는 물리적 너비가 아니라 선택지·종류의 폭이다.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "같은 범주 안의 매우 다양한 여러 ~",
+      "contextExplanationKo": "한 범주 안에 서로 다른 종류·선택지·사례가 넓게 펼쳐진 장면이다. 단순히 수가 많다는 양만 강조하는 표현이 아니라 종류의 폭과 다양성을 드러낸다. 뒤에는 셀 수 있는 복수명사나 불가산 집합명사가 올 수 있다.",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "a large variety of things belonging to the same general category"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "The course covers _____ arguments, from causal claims to ethical dilemmas."
+        }
+      ],
+      "distractors": [
+        {
+          "word": "a narrow range of",
+          "meaningKo": "제한된 소수 종류의 ~",
+          "reasonKo": "종류와 선택지의 폭이 넓다는 목표 표현과 정반대로, 다루는 범위가 좁고 제한적이라는 반대 의미축이다.",
+          "plausible": true
+        },
+        {
+          "word": "a large number of",
+          "meaningKo": "많은 수의 ~",
+          "reasonKo": "개체 수가 많다는 양을 강조할 뿐, 서로 다른 종류가 폭넓게 포함된다는 다양성까지 보장하지 않는다.",
+          "plausible": true
+        },
+        {
+          "word": "regardless of",
+          "meaningKo": "~와 관계없이",
+          "reasonKo": "어떤 조건을 고려하지 않는다는 양보 표현으로, 종류나 선택지의 폭을 나타내지 않는다.",
+          "plausible": false
+        }
+      ],
+      "sources": [
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/definition/english/range_1",
+          "independenceGroup": "Oxford",
+          "note": "range가 같은 일반 범주에 속한 여러 종류를 뜻하고 wide가 그 다양성의 폭을 넓힌다는 sense와 결합을 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/wide-range",
+          "independenceGroup": "Collins",
+          "note": "wide range가 같은 일반 종류 안의 여러 서로 다른 항목을 가리킨다는 sense와 실제 결합 예문을 독립 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.09.30",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
+    },
+    {
       "id": "jury-foreman:leader-of-jury",
       "headword": "jury foreman",
       "partOfSpeech": "noun phrase",

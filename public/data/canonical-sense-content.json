@@ -1,7 +1,54 @@
 {
   "schema": 1,
-  "release": "1.1",
+  "release": "1.2",
   "entries": [
+    {
+      "word": "a wide range of",
+      "variants": [],
+      "senseId": "a-wide-range-of:many-different-kinds",
+      "partOfSpeech": "determiner phrase",
+      "englishDefinition": "A large variety of people or things belonging to the same general category.",
+      "definitionProvenance": {
+        "kind": "editorial",
+        "source": "VOCA NEXUS editorial",
+        "layer": "active-recall",
+        "referenceUrls": [
+          "https://www.oxfordlearnersdictionaries.com/definition/english/range_1",
+          "https://www.collinsdictionary.com/dictionary/english/wide-range"
+        ]
+      },
+      "koreanMeaning": "같은 범주 안의 매우 다양한 여러 ~",
+      "contextExplanation": "한 범주 안에 서로 다른 종류·선택지·사례가 넓게 펼쳐진 장면이다. 단순히 수가 많다는 양만 강조하는 표현이 아니라 종류의 폭과 다양성을 드러낸다. 뒤에는 셀 수 있는 복수명사나 불가산 집합명사가 올 수 있다.",
+      "exampleSentence": "The reading course introduces students to a wide range of arguments, from causal claims to ethical dilemmas.",
+      "exampleTranslation": "그 독해 강좌는 인과 주장부터 윤리적 딜레마까지 매우 다양한 논증을 학생들에게 접하게 한다.",
+      "exampleExplanation": "from A to B가 논증의 종류가 한두 개가 아니라 서로 다른 여러 범주에 걸쳐 있음을 보여 준다. 여기서 wide는 물리적 너비가 아니라 선택지·종류의 폭이다.",
+      "synonyms": [
+        "a broad range of",
+        "a wide variety of",
+        "a broad spectrum of"
+      ],
+      "distinctionNote": "a narrow range of: 종류와 선택지의 폭이 넓다는 목표 표현과 정반대로, 다루는 범위가 좁고 제한적이라는 반대 의미축이다. | a large number of: 개체 수가 많다는 양을 강조할 뿐, 서로 다른 종류가 폭넓게 포함된다는 다양성까지 보장하지 않는다. | regardless of: 어떤 조건을 고려하지 않는다는 양보 표현으로, 종류나 선택지의 폭을 나타내지 않는다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/definition/english/range_1",
+        "https://www.collinsdictionary.com/dictionary/english/wide-range"
+      ],
+      "itemIds": [
+        "JBKROW000017",
+        "JBKROW002047"
+      ],
+      "inputLayers": [
+        "active-recall"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
     {
       "word": "abide by",
       "variants": [],
