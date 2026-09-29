@@ -95,3 +95,10 @@ export function itemIsFullyMastered(
   const targets = getItemLearningTargets(item);
   return targets.length > 0 && targets.every((target) => masteredKeys.has(target.key));
 }
+
+export function excludeFullyMasteredItems<T extends VocabItem>(
+  items: readonly T[],
+  masteredKeys: ReadonlySet<string>,
+): T[] {
+  return items.filter((item) => !itemIsFullyMastered(item, masteredKeys));
+}

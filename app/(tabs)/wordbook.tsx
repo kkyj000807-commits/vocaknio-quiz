@@ -37,7 +37,7 @@ import {
   toggleBookmark,
   type ChoiceLang,
 } from "@/lib/store";
-import { getItemLearningTargets } from "@/lib/canonical-learning";
+import { excludeFullyMasteredItems, getItemLearningTargets } from "@/lib/canonical-learning";
 import type { LearningStatus, SenseLearningState } from "@/lib/learning-state";
 import { useColors } from "@/hooks/use-colors";
 import * as Haptics from "expo-haptics";
@@ -367,6 +367,7 @@ export default function WordbookScreen() {
   const [selectedRange, setSelectedRange] = useState(0);
   const [bookmarks, setBookmarks] = useState<Set<number>>(new Set());
   const [showOnlyBookmarks, setShowOnlyBookmarks] = useState(false);
+  const [showMastered, setShowMastered] = useState(false);
   const [isShuffled, setIsShuffled] = useState(false);
   const [maskMode, setMaskMode] = useState(false);
   const [choiceLang, setChoiceLang] = useState<ChoiceLang>("korean");
@@ -428,6 +429,15 @@ export default function WordbookScreen() {
     const range = RANGE_OPTIONS[selectedRange];
     let list: VocabItem[] = getRangeItems(range);
 
+    if (!showMastered && learningState) {
+      const masteredKeys = new Set(
+        Object.values(learningState.targets)
+          .filter((target) => target.status === "MASTERED")
+          .map((target) => target.key),
+      );
+      list = excludeFullyMasteredItems(list, masteredKeys);
+    }
+
     if (showOnlyBookmarks) {
       list = list.filter((v) => bookmarks.has(v.num));
     }
@@ -484,7 +494,7 @@ export default function WordbookScreen() {
     }
 
     return list;
-  }, [searchQuery, selectedRange, bookmarks, showOnlyBookmarks, isShuffled]);
+  }, [searchQuery, selectedRange, bookmarks, showOnlyBookmarks, showMastered, isShuffled, learningState]);
 
   const renderItem = useCallback(
     ({ item }: { item: VocabItem }) => (
@@ -658,6 +668,23 @@ export default function WordbookScreen() {
         >
           <Text style={{ fontSize: 16 }}>🔖</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.masteredFilterButton,
+            {
+              backgroundColor: showMastered ? colors.warning + "22" : colors.surface,
+              borderColor: showMastered ? colors.warning : colors.border,
+            },
+          ]}
+          onPress={() => setShowMastered((value) => !value)}
+          accessibilityRole="button"
+          accessibilityLabel={showMastered ? "외운 단어 목록에서 숨기기" : "외운 단어 목록에 표시하기"}
+          accessibilityState={{ selected: showMastered }}
+        >
+          <Text style={[styles.masteredFilterText, { color: showMastered ? colors.warning : colors.muted }]}>
+            {showMastered ? "외운 단어 숨기기" : "외운 단어 보기"}
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {/* 구간 필터 — 독립적인 View로 높이 고정 */}
@@ -718,6 +745,7 @@ export default function WordbookScreen() {
           {filteredVocab.length.toLocaleString()}개
           {searchQuery ? ` · "${searchQuery}" 검색 결과` : ""}
           {showOnlyBookmarks ? " · 북마크만" : ""}
+          {!showMastered ? " · 외운 단어 제외" : " · 외운 단어 포함"}
           {isShuffled ? " · 랜덤 순서" : ""}
           {maskMode ? " · 플래시카드 모드" : ""}
         </Text>
@@ -857,6 +885,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  masteredFilterButton: {
+    minHeight: 44,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 10,
+  },
+  masteredFilterText: { fontSize: 11, fontWeight: "700" },
   // ★ 핵심 수정: 구간 필터를 독립 View로 감싸서 높이를 명시적으로 확보
   rangeWrapper: {
     height: 46,

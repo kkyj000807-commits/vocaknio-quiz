@@ -4,7 +4,10 @@ import { LEGACY_THEME_KEY, THEME_KEY, type ThemeMode } from "./theme-preference"
 /** Shared by the pre-paint HTML script and the hydrated ThemeProvider. */
 export function applyWebTheme(mode: ThemeMode, doc: Document, swatches = themeConfig.themeColors) {
   const root = doc.documentElement;
-  const scheme = mode === "dark" ? "dark" : "only light";
+  // The app paints every theme itself. Keeping the browser UI color scheme in
+  // `only light` prevents Samsung Internet's automatic darkening from
+  // remapping white/paper swatches a second time on Galaxy tablets.
+  const scheme = "only light";
   root.dataset.theme = mode;
   root.classList.toggle("dark", mode === "dark");
   root.style.colorScheme = scheme;

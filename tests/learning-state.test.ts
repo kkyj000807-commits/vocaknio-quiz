@@ -7,6 +7,7 @@ import {
 } from "@/lib/learning-state";
 import {
   canonicalSenseKey,
+  excludeFullyMasteredItems,
   getItemLearningTargets,
 } from "@/lib/canonical-learning";
 import { getVocabItem } from "@/lib/vocab";
@@ -84,5 +85,12 @@ describe("canonical sense learning state", () => {
         masteredTargetKeys: [mastered],
       })).toEqual([]);
     }
+  });
+
+  it("hides a mastered wordbook row and restores it after relearning", () => {
+    const item = getVocabItem(18434)!;
+    const target = getItemLearningTargets(item)[0];
+    expect(excludeFullyMasteredItems([item], new Set([target.key]))).toEqual([]);
+    expect(excludeFullyMasteredItems([item], new Set())).toEqual([item]);
   });
 });

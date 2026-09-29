@@ -18,6 +18,19 @@ body {
   margin: 0;
 }
 
+/*
+ * Samsung Internet can apply a second forced-dark transform after the app has
+ * already selected its own Light/Paper/Dark palette. Preserve the authored
+ * white and warm-paper swatches; Dark mode is still rendered by our tokens.
+ */
+html,
+body,
+#root {
+  color-scheme: only light !important;
+  forced-color-adjust: none;
+  -webkit-print-color-adjust: exact;
+}
+
 @supports (height: 100dvh) {
   html, body, #root { height: 100dvh; min-height: 0; }
 }

@@ -31,7 +31,7 @@ describe("three-theme contract", () => {
     expect(root.dataset.theme).toBe(expected);
     expect(root.style.backgroundColor).toBe(palette.background[expected as keyof typeof palette.background]);
     expect(tokens["--color-background"]).toBe(root.style.backgroundColor);
-    expect(root.style.colorScheme).toBe(expected === "dark" ? "dark" : "only light");
+    expect(root.style.colorScheme).toBe("only light");
     expect(classes.has("dark")).toBe(expected === "dark");
     expect(meta['meta[name="theme-color"]']).toBe(root.style.backgroundColor);
   });
