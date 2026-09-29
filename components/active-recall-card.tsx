@@ -15,6 +15,29 @@ import {
 
 type MeaningChoice = { word: string; meaning: string };
 
+function ExampleRelationCue({
+  synonyms,
+  antonyms,
+}: {
+  synonyms: readonly string[];
+  antonyms: readonly string[];
+}) {
+  const colors = useColors();
+  const same = [...new Set(synonyms)].slice(0, 5);
+  const opposite = [...new Set(antonyms)].slice(0, 4);
+  if (same.length === 0 && opposite.length === 0) return null;
+  return (
+    <View style={[styles.exampleRelations, { borderColor: colors.border, backgroundColor: colors.surface }]}>
+      {same.length > 0 ? (
+        <Text style={[styles.exampleRelationText, { color: colors.success }]}>≒ {same.join(" · ")}</Text>
+      ) : null}
+      {opposite.length > 0 ? (
+        <Text style={[styles.exampleRelationText, { color: colors.error }]}>←→ {opposite.join(" · ")}</Text>
+      ) : null}
+    </View>
+  );
+}
+
 export function DefinitionRecallPrompt({ definition }: { definition: string }) {
   const colors = useColors();
   return (
@@ -63,6 +86,7 @@ export function DefinitionRecallAnswer({
             <View key={`${example}:${index}`} style={styles.example}>
               <Text style={[styles.detailText, { color: colors.foreground }]}>{example}</Text>
               <Text style={[styles.note, { color: colors.muted }]}>문맥 이미지: ‘{koreanMeaning}’의 장면이 어떻게 드러나는지 확인합니다.</Text>
+              <ExampleRelationCue synonyms={relations.synonyms} antonyms={relations.antonyms} />
             </View>
           ))}
         </>
@@ -113,6 +137,7 @@ export function SynonymRecallAnswer({
             <View key={example} style={styles.example}>
               <Text style={[styles.detailText, { color: colors.foreground }]}>{example}</Text>
               <Text style={[styles.note, { color: colors.muted }]}>문맥 핵심: ‘{koreanMeaning}’의 상태·작용이 드러나는 대목을 찾습니다.</Text>
+              <ExampleRelationCue synonyms={relations.synonyms} antonyms={relations.antonyms} />
             </View>
           ))}
         </View>
@@ -174,6 +199,10 @@ export function ActiveRecallAnswer({ recall, choices, item }: { recall: ActiveRe
               <Text style={[styles.detailText, { color: colors.foreground }]}>{example.en}</Text>
               {example.ko ? <Text style={[styles.detailText, { color: colors.foreground }]}>{example.ko}</Text> : null}
               {example.cueKo ? <Text style={[styles.note, { color: colors.muted }]}>문맥 단서: {example.cueKo}</Text> : null}
+              <ExampleRelationCue
+                synonyms={[...recall.exactSynonyms, ...recall.nearSynonyms]}
+                antonyms={recall.antonyms}
+              />
             </View>
           ))}
           <Text style={[styles.note, { color: colors.muted }]}>사전 2곳 의미 대조 · 정의와 예문은 학습용 자체 편집</Text>
@@ -196,5 +225,7 @@ const styles = StyleSheet.create({
   moreText: { fontSize: 12, fontWeight: "700" },
   details: { gap: 6, paddingTop: 4 },
   example: { gap: 4 },
+  exampleRelations: { gap: 3, marginTop: 3, paddingHorizontal: 9, paddingVertical: 6, borderWidth: 1, borderRadius: 9 },
+  exampleRelationText: { fontSize: 11, lineHeight: 17, fontWeight: "800" },
   detailText: { fontSize: 13, lineHeight: 21 },
 });
