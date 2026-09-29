@@ -14,6 +14,7 @@ const wrapUpRows = VOCAB.filter(item => item.w === "wrap up");
 const ruleOfThumbRows = VOCAB.filter(item => item.w === "rule of thumb");
 const conduciveToRows = VOCAB.filter(item => item.w === "conducive to");
 const wideRangeRows = VOCAB.filter(item => item.w === "a wide range of");
+const zoomInOnRows = VOCAB.filter(item => item.w === "zoom in on");
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -32,13 +33,13 @@ describe("영어→영어 active recall", () => {
     expect(sense?.exactSynonyms).not.toContain("overseer");
     expect(getActiveRecallSenses(juryRows[0].id)).toHaveLength(1);
     expect(getActiveRecallCoverage()).toEqual({
-      senses: 14,
-      rows: 23,
-      definitions: 14,
-      examples: 14,
-      contextualizedExamples: 14,
-      contextExplanations: 14,
-      synonymRelations: 14,
+      senses: 15,
+      rows: 25,
+      definitions: 15,
+      examples: 15,
+      contextualizedExamples: 15,
+      contextExplanations: 15,
+      synonymRelations: 15,
     });
   });
 
@@ -152,6 +153,28 @@ describe("영어→영어 active recall", () => {
     const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [wideRangeRows[0].num], preserveItemOrder: true });
     expect(question.recall?.senseId).toBe(sense.senseId);
     expect(question.choices.map(choice => choice.value)).toContain("a narrow range of");
+    expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
+    expect(validateQuestion(question)).toBe(true);
+  });
+
+  it("zoom in on의 중복 2행을 비유적 주의 집중 sense 하나와 반대축에 연결한다", () => {
+    expect(zoomInOnRows.map(item => item.id)).toEqual(["JBKROW000093", "JBKROW004059"]);
+    const senseIds = new Set(zoomInOnRows.flatMap(item => getActiveRecallSenses(item.id).map(sense => sense.senseId)));
+    expect([...senseIds]).toEqual(["zoom-in-on:give-close-attention"]);
+    const [sense] = getActiveRecallSenses(zoomInOnRows[0].id);
+    expect(sense).toMatchObject({
+      conciseEnglishDefinition: "to give especially close attention to one particular thing",
+      koreanMeaning: "특정 대상에 초점을 좁혀 집중하다",
+      exactSynonyms: ["focus on"],
+      antonyms: ["zoom out from", "gloss over"],
+    });
+    expect(sense.contextExplanationKo).toContain("비유적 주의 집중 sense");
+    expect(sense.distractors.find(choice => choice.word === "gloss over")?.reasonKo).toContain("자세히");
+
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [zoomInOnRows[0].num], preserveItemOrder: true });
+    expect(question.recall?.senseId).toBe(sense.senseId);
+    expect(question.choices.map(choice => choice.value)).toContain("zoom out from");
     expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
     expect(validateQuestion(question)).toBe(true);
   });

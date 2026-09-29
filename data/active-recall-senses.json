@@ -213,6 +213,81 @@
       "failureReason": null
     },
     {
+      "id": "zoom-in-on:give-close-attention",
+      "headword": "zoom in on",
+      "partOfSpeech": "phrasal verb",
+      "senseId": "zoom-in-on:give-close-attention",
+      "itemIds": ["JBKROW000093", "JBKROW004059"],
+      "englishDefinition": "To notice one particular part of a larger subject and give it especially close attention.",
+      "conciseEnglishDefinition": "to give especially close attention to one particular thing",
+      "exactSynonyms": ["focus on"],
+      "nearSynonyms": ["concentrate on", "zero in on"],
+      "antonyms": ["zoom out from", "gloss over"],
+      "variants": [],
+      "relatedWords": ["scrutinize", "pinpoint"],
+      "exampleSentences": [
+        {
+          "en": "After surveying the entire passage, the editor zoomed in on the sentence that reversed the author's conclusion.",
+          "ko": "편집자는 글 전체를 훑은 뒤, 필자의 결론을 뒤집는 바로 그 문장에 초점을 좁혔다.",
+          "cueKo": "먼저 전체 글을 본 뒤 한 문장으로 시야를 좁히는 흐름이 있다. 카메라가 한 부분을 확대하듯, 여기서는 주의와 분석의 초점을 특정 문장에 집중한다.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "특정 대상에 초점을 좁혀 집중하다",
+      "contextExplanationKo": "넓은 장면이나 주제 전체에서 한 대상·문제·세부 사항만 크게 보이도록 주의의 렌즈를 당기는 장면이다. 단순히 대상을 바라보는 데서 그치지 않고 그 부분을 알아차린 뒤 특별히 자세히 살핀다는 뜻이다. 실제 카메라 확대 sense와 연결되는 학습용 이미지이지만, 이 항목은 비유적 주의 집중 sense다.",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "to notice one particular part of a larger subject and give it especially close attention"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "After reviewing the whole report, the committee decided to _____ the paragraph where the figures contradicted the conclusion."
+        }
+      ],
+      "distractors": [
+        {
+          "word": "zoom out from",
+          "meaningKo": "시야를 넓혀 전체를 보다",
+          "reasonKo": "한 세부 대상으로 초점을 좁히는 것이 아니라 더 넓은 전체 장면을 보도록 시야를 물리는 반대 방향이다.",
+          "plausible": true
+        },
+        {
+          "word": "gloss over",
+          "meaningKo": "중요한 점을 대충 넘기다",
+          "reasonKo": "한 부분을 자세히 살피는 목표 표현과 달리, 불편하거나 중요한 세부를 피상적으로 처리하고 넘어간다.",
+          "plausible": true
+        },
+        {
+          "word": "branch out into",
+          "meaningKo": "새로운 분야로 활동을 넓히다",
+          "reasonKo": "한 대상에 주의를 좁히는 것이 아니라 활동 범위를 다른 분야로 확장한다.",
+          "plausible": false
+        }
+      ],
+      "sources": [
+        {
+          "publisher": "Cambridge Advanced Learner's Dictionary",
+          "url": "https://dictionary.cambridge.org/us/dictionary/english/zoom-in-on",
+          "independenceGroup": "Cambridge",
+          "note": "zoom in on이 특정 대상을 알아차리고 특별한 주의를 주는 비유적 sense임을 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/zoom-in",
+          "independenceGroup": "Collins",
+          "note": "zoom in on의 자세히 조사하거나 세부에 초점을 맞추는 비유적 sense와 문자적 카메라 sense의 경계를 독립 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.09.30",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
+    },
+    {
       "id": "jury-foreman:leader-of-jury",
       "headword": "jury foreman",
       "partOfSpeech": "noun phrase",
