@@ -30,8 +30,25 @@ yarn-error.*
 .DS_Store
 *.pem
 
-# local env files
-.env*.local
+# local env files and credentials
+# Keep the example template reviewable, but never track a real environment file.
+.env
+.env.*
+!.env.example
+*.env
+*.env.*
+!.env.example
+*.secret
+*.secrets
+*credentials*.json
+*credentials*.yml
+*credentials*.yaml
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+*.dump
 
 # typescript
 *.tsbuildinfo
@@ -63,3 +80,10 @@ Thumbs.db
 
 # Webdev artifacts (checkpoint zips, migrations, etc.)
 .webdev/
+
+# Local analysis/build exports can contain copied source or learner data.
+/tmp/
+/output/
+/build/
+/analysis/
+/qa_claude/
