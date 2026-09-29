@@ -30,9 +30,11 @@ const kindLabel = {
 function RelationTerms({
   terms,
   tone,
+  coreMeaningKo,
 }: {
   terms: SemanticRelationTerm[];
   tone: "same" | "opposite" | "neutral";
+  coreMeaningKo: string;
 }) {
   const colors = useColors();
   const toneColor = tone === "same" ? colors.success : tone === "opposite" ? colors.error : colors.muted;
@@ -47,7 +49,15 @@ function RelationTerms({
             <Text style={[styles.kind, { color: toneColor }]}>{kindLabel[term.kind]}</Text>
             <Text style={[styles.word, { color: colors.foreground }]}>{term.word}</Text>
           </View>
-          <Text style={[styles.meaning, { color: colors.muted }]}>KR · {term.meaningKo ?? "뜻 연결 확인 필요"}</Text>
+          <Text style={[styles.meaning, { color: colors.muted }]}>KR · {term.meaningKo ?? (
+            term.kind === "exact"
+              ? `같은 sense의 핵심 뜻 · ${coreMeaningKo}`
+              : term.kind === "near"
+                ? `가까운 의미축 · ${coreMeaningKo}`
+                : term.kind === "opposite"
+                  ? "반대 관계 확인 · 개별 뜻 검수 대기"
+                  : "관련 표현 · 개별 뜻 검수 대기"
+          )}</Text>
         </View>
       ))}
     </View>
@@ -83,10 +93,18 @@ export function SemanticRelationCluster({
     >
       <Text style={[styles.title, { color: colors.primary }]}>의미 클러스터</Text>
 
+      <View style={[styles.englishPair, { borderColor: colors.success, backgroundColor: colors.card }]}>
+        <Text style={[styles.coreLabel, { color: colors.success }]}>EN ↔ EN · 같은 sense</Text>
+        <Text style={[styles.pairText, { color: colors.foreground }]}>
+          {headword}{cluster.synonyms.length > 0 ? ` ≒ ${cluster.synonyms.slice(0, 4).map((term) => term.word).join(" · ")}` : ""}
+        </Text>
+        <Text style={[styles.meaning, { color: colors.muted }]}>문제에서는 이 영어 관계만 보고 답하고, 한국어는 정답 확인 뒤에 복습합니다.</Text>
+      </View>
+
       {cluster.synonyms.length > 0 ? (
         <View style={styles.axis}>
           <Text style={[styles.axisLabel, { color: colors.success }]}>≒ 같은 의미축</Text>
-          <RelationTerms terms={cluster.synonyms} tone="same" />
+          <RelationTerms terms={cluster.synonyms} tone="same" coreMeaningKo={coreMeaningKo} />
         </View>
       ) : null}
 
@@ -100,7 +118,7 @@ export function SemanticRelationCluster({
       {cluster.opposites.length > 0 ? (
         <View style={styles.axis}>
           <Text style={[styles.axisLabel, { color: colors.error }]}>←→ 반대 의미축</Text>
-          <RelationTerms terms={cluster.opposites} tone="opposite" />
+          <RelationTerms terms={cluster.opposites} tone="opposite" coreMeaningKo={coreMeaningKo} />
         </View>
       ) : (
         <Text style={[styles.emptyOpposite, { color: colors.muted }]}>←→ 검증된 반의어 관계 없음</Text>
@@ -109,7 +127,7 @@ export function SemanticRelationCluster({
       {cluster.auxiliaries.length > 0 ? (
         <View style={styles.axis}>
           <Text style={[styles.auxLabel, { color: colors.muted }]}>↳ 형태·관련 표현</Text>
-          <RelationTerms terms={cluster.auxiliaries} tone="neutral" />
+          <RelationTerms terms={cluster.auxiliaries} tone="neutral" coreMeaningKo={coreMeaningKo} />
         </View>
       ) : null}
     </View>
@@ -119,6 +137,8 @@ export function SemanticRelationCluster({
 const styles = StyleSheet.create({
   cluster: { gap: 10, marginTop: 5, padding: 12, borderWidth: 1, borderRadius: 12 },
   title: { fontSize: 11, lineHeight: 17, fontWeight: "900", letterSpacing: 0.8 },
+  englishPair: { gap: 3, padding: 11, borderWidth: 1.5, borderRadius: 10 },
+  pairText: { fontSize: 15, lineHeight: 22, fontWeight: "900" },
   axis: { gap: 6 },
   axisLabel: { fontSize: 12, lineHeight: 18, fontWeight: "900" },
   auxLabel: { fontSize: 11, lineHeight: 17, fontWeight: "800" },

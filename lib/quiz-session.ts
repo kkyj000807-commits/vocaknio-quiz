@@ -97,6 +97,7 @@ const questionSchema = z
     recall: activeRecallSenseSchema.optional(),
     recallPromptId: z.string().optional(),
     definitionRecall: definitionQuizEntrySchema.optional(),
+    synonymRecall: definitionQuizEntrySchema.optional(),
   })
   .refine((q) => {
     // Legacy and sense questions must share the generation/grading contract.

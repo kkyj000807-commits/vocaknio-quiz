@@ -184,7 +184,7 @@ export const QUIZ_MODES: {
   { id: "syn-choice", icon: "≈", title: "영어 동의어", desc: "같은 sense의 동의어 찾기", primary: true },
   { id: "kor-choice", icon: "🇰🇷", title: "뜻", desc: "정확한 뜻 4택", primary: true },
   { id: "flashcard", icon: "⚡", title: "빠른 암기", desc: "뜻 확인 후 채점", primary: true },
-  { id: "syn-kor-choice", icon: "🔀", title: "동의어+뜻", desc: "뜻까지 함께 구분" },
+  { id: "syn-kor-choice", icon: "🔀", title: "동의어 해설형", desc: "영어로 풀고 한국어로 복습" },
   { id: "syn-type", icon: "✍️", title: "직접 입력", desc: "동의어 타이핑" },
 ];
 

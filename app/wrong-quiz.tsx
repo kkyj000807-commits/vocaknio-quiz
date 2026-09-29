@@ -4,6 +4,7 @@ import {
   ActiveRecallPrompt,
   DefinitionRecallAnswer,
   DefinitionRecallPrompt,
+  SynonymRecallAnswer,
 } from "@/components/active-recall-card";
 import {
   useState,
@@ -570,8 +571,11 @@ export default function WrongQuizScreen() {
             {answered && q.definitionRecall ? (
               <DefinitionRecallAnswer recall={q.definitionRecall} koreanMeaning={q.item.k_short} choices={q.choices} item={q.item} />
             ) : null}
+            {answered && q.synonymRecall ? (
+              <SynonymRecallAnswer recall={q.synonymRecall} koreanMeaning={q.item.k_short} choices={q.choices} item={q.item} />
+            ) : null}
             {answered && q.sense && <ProblemSenseContext sense={q.sense} answered />}
-            {answered && !q.sense && !q.recall && !q.definitionRecall && (
+            {answered && !q.sense && !q.recall && !q.definitionRecall && !q.synonymRecall && (
               <View style={s.explPanel}>
                 <Text style={s.explHeader}>해설</Text>
                 <View style={s.explWordRow}>

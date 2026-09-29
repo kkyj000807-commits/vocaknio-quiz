@@ -17,11 +17,11 @@ import {
 import {
   buildQuizQuestions,
   buildReviewQuestions,
+  getQuizCandidateItems,
   isChoiceCorrect,
   isTypedAnswerCorrect,
   validateQuestion,
 } from "@/lib/quiz-engine";
-import { getProductionSenseQuestions } from "@/lib/sense-questions";
 
 const EXPECTED_GROUP_COUNTS = {
   V101: 4028,
@@ -203,13 +203,16 @@ describe("final vocabulary v1.4", () => {
 });
 
 describe("shared quiz engine", () => {
-  it("fills sparse idiom and appendix pools in every synonym mode", () => {
+  it("keeps sparse idiom and appendix synonym pools English-to-English", () => {
     for (const rangeId of ["idioms", "appendix"]) {
       for (const mode of ["syn-kor-choice", "syn-type"] as const) {
         const questions = buildQuizQuestions({ mode, rangeId, count: 30, allowMeaningFallback: true });
-        expect(questions).toHaveLength(30);
+        expect(questions.length).toBeGreaterThan(0);
+        expect(questions.length).toBeLessThanOrEqual(30);
         expect(questions.every(validateQuestion)).toBe(true);
-        expect(questions.some((question) => question.answerKind === "meaning")).toBe(true);
+        expect(questions.every((question) => question.answerKind === "synonym")).toBe(true);
+        expect(questions.every((question) => question.mode === mode)).toBe(true);
+        expect(questions.every((question) => question.choices.every((choice) => !/[가-힣]/u.test(choice.label)))).toBe(true);
       }
     }
   });
@@ -223,13 +226,11 @@ describe("shared quiz engine", () => {
           rangeId: range.id,
           count: 12,
         });
-        const rangeItems = VOCAB.slice(range.start, range.end + 1);
-        const availableCount = mode === "kor-choice"
-          ? rangeItems.length
-          : rangeItems.filter((item) =>
-              item.s.length > 0 ||
-              getProductionSenseQuestions(item.id).length > 0,
-            ).length;
+        const availableCount = getQuizCandidateItems({
+          mode,
+          rangeId: range.id,
+          count: 12,
+        }).length;
         expect(questions).toHaveLength(Math.min(12, availableCount));
 
         for (const question of questions) {
@@ -248,7 +249,7 @@ describe("shared quiz engine", () => {
     }
   });
 
-  it("fills sparse-synonym ranges with validated meaning questions", () => {
+  it("never converts sparse synonym ranges into Korean meaning questions", () => {
     for (const rangeId of ["idioms", "v601", "appendix"] as const) {
       const questions = buildQuizQuestions({
         mode: "syn-choice",
@@ -257,18 +258,17 @@ describe("shared quiz engine", () => {
         allowMeaningFallback: true,
       });
 
-      expect(questions).toHaveLength(20);
-      expect(new Set(questions.map((question) => question.item.num)).size).toBe(
-        20,
-      );
+      expect(questions.length).toBeGreaterThan(0);
+      expect(questions.length).toBeLessThanOrEqual(20);
+      expect(new Set(questions.map((question) => question.item.num)).size).toBe(questions.length);
       expect(questions.every(validateQuestion)).toBe(true);
-      expect(
-        questions.some((question) => question.answerKind === "meaning"),
-      ).toBe(true);
+      expect(questions.every((question) => question.answerKind === "synonym")).toBe(true);
+      expect(questions.every((question) => question.mode === "syn-choice")).toBe(true);
+      expect(questions.every((question) => question.choices.every((choice) => !/[가-힣]/u.test(choice.label)))).toBe(true);
     }
   });
 
-  it("keeps verified synonym format and fills missing synonyms with meaning questions", () => {
+  it("keeps verified synonym choices English-only and omits rows without a safe synonym", () => {
     const questions = buildQuizQuestions({
       mode: "syn-kor-choice",
       itemNums: [1, 2],
@@ -277,9 +277,7 @@ describe("shared quiz engine", () => {
       preserveItemOrder: true,
     });
 
-    expect(questions).toHaveLength(2);
-    expect(questions[1]?.mode).toBe("kor-choice");
-    expect(questions[1]?.answerKind).toBe("meaning");
+    expect(questions).toHaveLength(1);
     expect(questions[0]?.item.num).toBe(1);
     expect(questions[0]?.mode).toBe("syn-kor-choice");
     expect(questions[0]?.answerKind).toBe("synonym");
@@ -288,7 +286,8 @@ describe("shared quiz engine", () => {
         (choice) =>
           Boolean(choice.word) &&
           Boolean(choice.meaning) &&
-          choice.label === `${choice.word} (${choice.meaning})`,
+          choice.label === choice.word &&
+          !/[가-힣]/u.test(choice.label),
       ),
     ).toBe(true);
     expect(
@@ -298,22 +297,16 @@ describe("shared quiz engine", () => {
     ).toHaveLength(1);
   });
 
-  it("does not restore blocked synonyms when a question falls back to meaning", () => {
-    const question = buildQuizQuestions({
+  it("does not restore blocked synonyms or disguise them as a meaning question", () => {
+    const questions = buildQuizQuestions({
       mode: "syn-choice",
       itemNums: [198],
       count: 1,
       allowMeaningFallback: true,
       preserveItemOrder: true,
-    })[0];
+    });
 
-    expect(question).toBeDefined();
-    if (!question) throw new Error("meaning fallback question was not created");
-    expect(question.answerKind).toBe("meaning");
-    expect(question.mode).toBe("kor-choice");
-    expect(
-      question.choices.filter((choice) => isChoiceCorrect(question, choice)),
-    ).toHaveLength(1);
+    expect(questions).toEqual([]);
   });
 
   it("accepts every verified answer in direct-input questions", () => {

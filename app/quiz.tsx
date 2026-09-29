@@ -4,6 +4,7 @@ import {
   ActiveRecallPrompt,
   DefinitionRecallAnswer,
   DefinitionRecallPrompt,
+  SynonymRecallAnswer,
 } from "@/components/active-recall-card";
 import { MnemonicCue } from "@/components/mnemonic-cue";
 import {
@@ -246,7 +247,7 @@ export default function QuizScreen() {
         masteredNums: loadedMastered,
         masteredTargetKeys: masteredKeys,
         itemNums: itemNums.length > 0 ? itemNums : undefined,
-        allowMeaningFallback: true,
+        allowMeaningFallback: false,
       } as const;
       const candidates = getQuizCandidateItems(baseOptions);
       const sessionId = `problem-${Date.now().toString(36)}-${Math.random()
@@ -321,7 +322,7 @@ export default function QuizScreen() {
           masteredNums: loadedMastered,
           masteredTargetKeys: [...masteredTargetKeys(learningState)],
           itemNums: itemNums.length > 0 ? itemNums : undefined,
-          allowMeaningFallback: true,
+          allowMeaningFallback: false,
         }),
       );
       setQuestionsReady(true);
@@ -884,13 +885,13 @@ export default function QuizScreen() {
     if (q.recall) {
       return "영영 정의 → 정확한 단어";
     }
-    if (questionMode === "syn-choice") return "동의어 고르기";
+    if (questionMode === "syn-choice") return "영어 → 같은 sense 영어";
     if (questionMode === "kor-choice") {
       return q.answerKind === "synonym"
         ? "동의어 고르기 (영어)"
         : mode !== "kor-choice" ? "한국어 뜻 고르기 · 동의어 자료 부족" : "한국어 뜻 고르기";
     }
-    if (questionMode === "syn-kor-choice") return "동의어+뜻 고르기";
+    if (questionMode === "syn-kor-choice") return "영어 동의어 · 정답 후 한국어 해설";
     if (questionMode === "flashcard") return "플래시카드";
     return "동의어 입력";
   };
@@ -899,7 +900,7 @@ export default function QuizScreen() {
     if (q.recall || q.definitionRecall) return "영영 정의에 정확히 맞는 표현은?";
     if (q.sense) return q.answerKind === "meaning" ? "이 문맥에서 표현의 뜻은?" : "이 문맥에서 뜻이 같은 표현은?";
     if (q.answerKind === "meaning") return "올바른 한국어 뜻은?";
-    if (questionMode === "syn-kor-choice") return "올바른 동의어(한글뜻)는?";
+    if (questionMode === "syn-kor-choice") return "같은 sense에서 바꿔 쓸 수 있는 영어는?";
     return "올바른 동의어는?";
   };
 
@@ -1264,8 +1265,11 @@ export default function QuizScreen() {
               {answered && q.definitionRecall ? (
                 <DefinitionRecallAnswer recall={q.definitionRecall} koreanMeaning={q.item.k_short} choices={q.choices} item={q.item} />
               ) : null}
+              {answered && q.synonymRecall ? (
+                <SynonymRecallAnswer recall={q.synonymRecall} koreanMeaning={q.item.k_short} choices={q.choices} item={q.item} />
+              ) : null}
               {answered && q.sense && <ProblemSenseContext sense={q.sense} answered />}
-              {answered && !q.sense && !q.recall && !q.definitionRecall && questionMode !== "flashcard" && (
+              {answered && !q.sense && !q.recall && !q.definitionRecall && !q.synonymRecall && questionMode !== "flashcard" && (
                 <View style={s.explPanel}>
                   <Text style={s.explHeader}>해설</Text>
                   <View style={s.explWordRow}>

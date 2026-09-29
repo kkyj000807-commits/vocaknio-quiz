@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import rawCatalog from "@/assets/vocab-definition-quiz-oewn-2025.json";
+import { VOCAB_BY_ID } from "@/lib/vocab";
 
 const nonempty = z.string().trim().min(1);
 
@@ -26,6 +27,13 @@ export type DefinitionAnswerRelations = {
   antonyms: string[];
 };
 
+export type DefinitionRelationMeaning = {
+  word: string;
+  meaning: string;
+  relation: "synonym" | "antonym";
+  source: "same-sense-vocab" | "shared-sense-core" | "linked-antonym-vocab" | "pending-review";
+};
+
 type DefinitionQuizCatalog = {
   schema: 1;
   version: string;
@@ -43,6 +51,7 @@ type DefinitionQuizCatalog = {
 const catalog = rawCatalog as DefinitionQuizCatalog;
 const itemEntry = new Map<string, DefinitionQuizEntry>();
 const representativeItemId = new Map<string, string>();
+const itemIdsByHeadword = new Map<string, string[]>();
 const entriesByPartOfSpeech = new Map<string, DefinitionQuizEntry[]>();
 const allEntries = Object.values(catalog.entries);
 
@@ -50,6 +59,9 @@ for (const [itemId, normalizedHeadword] of Object.entries(catalog.items)) {
   const entry = catalog.entries[normalizedHeadword];
   if (!entry) continue;
   itemEntry.set(itemId, entry);
+  const itemIds = itemIdsByHeadword.get(normalizedHeadword) ?? [];
+  itemIds.push(itemId);
+  itemIdsByHeadword.set(normalizedHeadword, itemIds);
   if (!representativeItemId.has(normalizedHeadword)) {
     representativeItemId.set(normalizedHeadword, itemId);
   }
@@ -88,6 +100,63 @@ export function getDefinitionAnswerRelations(
     synonyms: uniqueRelationWords(entry.synsetMembers, entry.headword),
     antonyms: uniqueRelationWords(entry.antonyms, entry.headword),
   };
+}
+
+function koreanMeaningsForRelation(
+  target: DefinitionQuizEntry,
+  word: string,
+  relation: "synonym" | "antonym",
+): string[] {
+  const key = normalized(word);
+  const relationEntry = catalog.entries[key];
+  if (!relationEntry) return [];
+  if (relation === "synonym" && relationEntry.senseId !== target.senseId) return [];
+  if (
+    relation === "antonym" &&
+    !target.antonyms.map(normalized).includes(key) &&
+    !relationEntry.antonyms.map(normalized).includes(normalized(target.headword))
+  ) return [];
+
+  return [...new Set(
+    (itemIdsByHeadword.get(key) ?? [])
+      .map((itemId) => VOCAB_BY_ID.get(itemId)?.k_short.trim())
+      .filter((meaning): meaning is string => Boolean(meaning)),
+  )];
+}
+
+/**
+ * 같은 OEWN sense로 확인된 영어 관계에만 한국어 뜻을 연결한다.
+ * 별도 표제어 뜻이 없으면 동의어는 현재 sense의 핵심 뜻을 공유하고,
+ * 반의어는 관계만 확인된 상태를 명시해 뜻을 추측하지 않는다.
+ */
+export function getDefinitionRelationMeanings(
+  entry: DefinitionQuizEntry,
+  coreMeaningKo: string,
+): DefinitionRelationMeaning[] {
+  const relations = getDefinitionAnswerRelations(entry);
+  const synonyms = relations.synonyms.map((word): DefinitionRelationMeaning => {
+    const meanings = koreanMeaningsForRelation(entry, word, "synonym");
+    return {
+      word,
+      meaning: meanings.length > 0
+        ? meanings.join(" · ")
+        : `같은 sense의 핵심 뜻 · ${coreMeaningKo.trim()}`,
+      relation: "synonym",
+      source: meanings.length > 0 ? "same-sense-vocab" : "shared-sense-core",
+    };
+  });
+  const antonyms = relations.antonyms.map((word): DefinitionRelationMeaning => {
+    const meanings = koreanMeaningsForRelation(entry, word, "antonym");
+    return {
+      word,
+      meaning: meanings.length > 0
+        ? meanings.join(" · ")
+        : "반대 관계 확인 · 개별 한국어 뜻 검수 대기",
+      relation: "antonym",
+      source: meanings.length > 0 ? "linked-antonym-vocab" : "pending-review",
+    };
+  });
+  return [...synonyms, ...antonyms];
 }
 
 /**

@@ -6,6 +6,7 @@ import {
   getDefinitionQuizCoverage,
   getDefinitionQuizDistractors,
   getDefinitionQuizEntry,
+  getDefinitionRelationMeanings,
 } from "@/lib/definition-quiz";
 import {
   buildQuizQuestions,
@@ -62,6 +63,38 @@ describe("영영 정의 → 정확한 표제어", () => {
     expect(synonymQuestion.answerKind).toBe("synonym");
     expect(synonymQuestion.recall).toBeUndefined();
     expect(synonymQuestion.definitionRecall).toBeUndefined();
+    expect(synonymQuestion.choices.every((choice) => !/[가-힣]/u.test(choice.label))).toBe(true);
+  });
+
+  it("같은 OEWN sense의 영어 동의어를 정답으로 내고 한국어는 채점 데이터로만 보존한다", () => {
+    const item = VOCAB.find((candidate) => candidate.w === "bemuse");
+    expect(item).toBeDefined();
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const [question] = buildQuizQuestions({
+      mode: "syn-choice",
+      count: 1,
+      itemNums: [item!.num],
+      preserveItemOrder: true,
+      allowMeaningFallback: true,
+    });
+
+    expect(question).toBeDefined();
+    expect(question.answerKind).toBe("synonym");
+    expect(question.synonymRecall?.headword).toBe("bemuse");
+    expect(question.choices).toHaveLength(4);
+    expect(question.choices.every((choice) => !/[가-힣]/u.test(choice.label))).toBe(true);
+    expect(question.choices.filter((choice) => isChoiceCorrect(question, choice))).toHaveLength(1);
+    expect(question.choices.find((choice) => choice.isCorrect)?.meaning).toContain("당황");
+  });
+
+  it("동의어와 반의어의 한국어 뜻을 같은 sense에 묶어 정답 해설에 제공한다", () => {
+    const item = VOCAB.find((candidate) => candidate.w === "bemuse")!;
+    const entry = getDefinitionQuizEntry(item.id)!;
+    const relations = getDefinitionRelationMeanings(entry, item.k_short);
+    expect(relations).toEqual(expect.arrayContaining([
+      expect.objectContaining({ word: "bewilder", relation: "synonym", meaning: expect.stringMatching(/[가-힣]/u) }),
+      expect.objectContaining({ word: "discombobulate", relation: "synonym", meaning: expect.stringMatching(/[가-힣]/u) }),
+    ]));
   });
 
   it("정의 선지는 검증된 반의어를 먼저 쓰고 나머지는 다른 의미권에서 고른다", () => {

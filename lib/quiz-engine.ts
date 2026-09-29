@@ -19,6 +19,8 @@ import { getActiveRecallSenses, isCurrentActiveRecallSense, activeRecallMatchesI
 import {
   getDefinitionQuizDistractors,
   getDefinitionQuizEntry,
+  getDefinitionAnswerRelations,
+  getDefinitionRelationMeanings,
   isCurrentDefinitionQuizEntry,
   type DefinitionQuizEntry,
 } from "@/lib/definition-quiz";
@@ -56,6 +58,8 @@ export interface QuizQuestion {
   recallPromptId?: string;
   /** OEWN exact single-sense definition → target-word recall. */
   definitionRecall?: DefinitionQuizEntry;
+  /** OEWN same-synset English → English synonym recall. */
+  synonymRecall?: DefinitionQuizEntry;
 }
 
 export interface BuildQuizOptions {
@@ -83,6 +87,19 @@ interface SynonymOption extends SynonymDetail {
 
 let synonymOptions: SynonymOption[] | undefined;
 const vocabById = new Map(VOCAB.map((item) => [item.id, item]));
+// These rows are the regression fixtures that originally exposed a confirmed
+// wrong-sense or wrong-part-of-speech synonym.  Their legacy synonym links were
+// deliberately removed by the v1 semantic guard.  Do not silently reintroduce
+// a different OEWN sense merely because the same headword has a safe synset.
+const SYNONYM_EXPANSION_BLOCKED_ITEM_IDS = new Set([
+  "JBKROW000203", // appropriate · 착복하다
+  "JBKROW001045", // benign · 양성의
+  "JBKROW009645", // smolder · 감정이 맺히다/그을다
+  "JBKROW001820", // explicit · 노골적인
+  "JBKROW000388", // envoy · 특사
+  "JBKROW001919", // effeminate · 여성적인
+  "JBKROW027217", // refrain · 후렴구
+]);
 function getSynonymOptions(): SynonymOption[] {
   if (synonymOptions) return synonymOptions;
   // Restoring or grading an existing question does not need the distractor pool.
@@ -294,6 +311,59 @@ function buildOewnDefinitionQuestion(item: VocabItem): QuizQuestion | null {
   return validateQuestion(question) ? question : null;
 }
 
+function buildOewnSynonymQuestion(
+  item: VocabItem,
+  mode: "syn-choice" | "syn-kor-choice",
+): QuizQuestion | null {
+  if (SYNONYM_EXPANSION_BLOCKED_ITEM_IDS.has(item.id)) return null;
+  const synonymRecall = getDefinitionQuizEntry(item.id);
+  if (!synonymRecall) return null;
+  const exactSynonyms = getDefinitionAnswerRelations(synonymRecall).synonyms;
+  if (exactSynonyms.length === 0) return null;
+  const correctWord = exactSynonyms[Math.floor(Math.random() * exactSynonyms.length)];
+  const relationMeanings = new Map(
+    getDefinitionRelationMeanings(synonymRecall, item.k_short)
+      .map((relation) => [normalizeWord(relation.word), relation.meaning]),
+  );
+  const reviewedMeanings = new Map(
+    getSynonymDetails(item)
+      .map((relation) => [normalizeWord(relation.word), relation.meaning]),
+  );
+  const distractors = getDefinitionQuizDistractors(synonymRecall, 3);
+  if (distractors.length !== 3) return null;
+  const choices = shuffle([
+    {
+      id: `${synonymRecall.senseId}:synonym:${normalizeWord(correctWord)}`,
+      value: correctWord,
+      label: correctWord,
+      word: correctWord,
+      meaning: reviewedMeanings.get(normalizeWord(correctWord)) ??
+        relationMeanings.get(normalizeWord(correctWord)) ??
+        `같은 sense의 핵심 뜻 · ${item.k_short}`,
+      isCorrect: true,
+    },
+    ...distractors.map((distractor, index) => ({
+      id: `${synonymRecall.senseId}:distractor:${index}`,
+      value: distractor.headword,
+      label: distractor.headword,
+      word: distractor.headword,
+      meaning: `${distractor.relation === "antonym" ? "반의어" : "다른 의미"} · ${vocabById.get(distractor.itemId)?.k_short ?? "한국어 뜻 검수 대기"}`,
+      isCorrect: false,
+    })),
+  ]);
+  const question: QuizQuestion = {
+    id: `${item.id}-${mode}-${synonymRecall.senseId}`,
+    item,
+    mode,
+    answerKind: "synonym",
+    choices,
+    correct: correctWord,
+    acceptedAnswers: exactSynonyms,
+    synonymRecall,
+  };
+  return validateQuestion(question) ? question : null;
+}
+
 function makeQuestion(
   item: VocabItem,
   mode: QuizMode,
@@ -352,7 +422,7 @@ function makeQuestion(
     const choices = shuffle(sense.choices.map((choice): QuizChoice => ({
       id: `${sense.id}:${choice.id}`,
       value: asksForSynonym ? choice.en : choice.ko,
-      label: asksForSynonym ? mode === "syn-kor-choice" ? `${choice.en} (${choice.ko})` : choice.en : choice.ko,
+      label: asksForSynonym ? choice.en : choice.ko,
       word: choice.en,
       meaning: choice.ko,
       isCorrect: choice.id === sense.correctId,
@@ -366,8 +436,12 @@ function makeQuestion(
     return validateQuestion(question) ? question : null;
   }
   if (masteredTargetKeys.has(getLearningTargetKey(item))) return null;
+  if (mode === "syn-choice" || mode === "syn-kor-choice") {
+    const oewnQuestion = buildOewnSynonymQuestion(item, mode);
+    if (oewnQuestion) return oewnQuestion;
+  }
   const choices = asksForSynonym
-    ? buildSynonymChoices(item, mode === "syn-kor-choice")
+    ? buildSynonymChoices(item, false)
     : buildMeaningChoices(item);
   if (!choices) return null;
 
@@ -405,12 +479,9 @@ function resolvePool(options: BuildQuizOptions): VocabItem[] {
 }
 
 function canFallBackToMeaning(mode: QuizMode, choiceLang: ChoiceLang): boolean {
-  return (
-    mode === "syn-choice" ||
-    mode === "syn-kor-choice" ||
-    mode === "syn-type" ||
-    (mode === "kor-choice" && choiceLang === "english")
-  );
+  void mode;
+  void choiceLang;
+  return false;
 }
 
 /**
@@ -447,7 +518,11 @@ export function getQuizCandidateItems(options: BuildQuizOptions): VocabItem[] {
       options.mode === "syn-kor-choice" ||
       options.mode === "syn-type")
   ) {
-    pool = pool.filter((item) => item.s.length > 0 || getActiveRecallSenses(item.id).length > 0 ||
+    pool = pool.filter((item) => item.s.length > 0 ||
+      Boolean(!SYNONYM_EXPANSION_BLOCKED_ITEM_IDS.has(item.id) &&
+        getDefinitionQuizEntry(item.id) &&
+        getDefinitionAnswerRelations(getDefinitionQuizEntry(item.id)!).synonyms.length > 0) ||
+      getActiveRecallSenses(item.id).length > 0 ||
       (options.mode !== "syn-type" && getProductionSenseQuestions(item.id).length > 0));
   }
   if (
@@ -524,6 +599,12 @@ export function isChoiceCorrect(
 // Check the stored key independently of its display flag. Otherwise a corrupt
 // flag can make both grading and validation agree on the same wrong answer.
 function matchesAnswerKey(question: QuizQuestion, choice: QuizChoice): boolean {
+  if (question.synonymRecall) {
+    if (!isCurrentDefinitionQuizEntry(question.synonymRecall, question.item)) return false;
+    const accepted = new Set(getDefinitionAnswerRelations(question.synonymRecall).synonyms.map(normalizeWord));
+    return (question.mode === "syn-choice" || question.mode === "syn-kor-choice") &&
+      question.answerKind === "synonym" && accepted.has(normalizeWord(choice.value));
+  }
   if (question.definitionRecall) {
     if (!isCurrentDefinitionQuizEntry(question.definitionRecall, question.item)) return false;
     return question.mode === "definition-choice" && question.answerKind === "target" &&
@@ -556,6 +637,14 @@ export function isTypedAnswerCorrect(
 }
 
 export function validateQuestion(question: QuizQuestion): boolean {
+  if (question.synonymRecall) {
+    if ((question.mode !== "syn-choice" && question.mode !== "syn-kor-choice") ||
+      question.answerKind !== "synonym" ||
+      !isCurrentDefinitionQuizEntry(question.synonymRecall, question.item) ||
+      question.choices.length !== 4 || question.choices.filter(choice => choice.isCorrect).length !== 1 ||
+      question.choices.some(choice => /[가-힣]/u.test(choice.label)) ||
+      !question.choices.every(choice => choice.isCorrect === matchesAnswerKey(question, choice))) return false;
+  }
   if (question.definitionRecall) {
     if (question.mode !== "definition-choice" || question.answerKind !== "target" ||
       !isCurrentDefinitionQuizEntry(question.definitionRecall, question.item) ||
@@ -571,14 +660,14 @@ export function validateQuestion(question: QuizQuestion): boolean {
       !question.choices.every(choice => choice.isCorrect === matchesAnswerKey(question, choice))) return false;
   }
   if (!question.sense && question.mode !== "flashcard" && question.mode !== "syn-type" &&
-    !question.recall && !question.definitionRecall && hasSenseQuestionMapping(question.item.id)) return false;
+    !question.recall && !question.definitionRecall && !question.synonymRecall && hasSenseQuestionMapping(question.item.id)) return false;
   if (question.sense) {
     const sense = question.sense;
     if (!isCurrentSenseQuestion(sense, question.item) || sense.status !== "production" ||
       !sense.itemIds.includes(question.item.id) || sense.headword !== question.item.w ||
       !question.choices.every(c => sense.choices.some(source => {
         const value = question.answerKind === "synonym" ? source.en : source.ko;
-        const label = question.answerKind === "synonym" && question.mode === "syn-kor-choice" ? `${source.en} (${source.ko})` : value;
+        const label = value;
         return c.id === `${sense.id}:${source.id}` && c.value === value && c.label === label &&
           c.meaning === source.ko && c.isCorrect === (source.id === sense.correctId);
       }))) return false;
