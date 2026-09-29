@@ -566,9 +566,9 @@ export default function WrongQuizScreen() {
             )}
 
             {/* Explanation Panel */}
-            {answered && q.recall ? <ActiveRecallAnswer recall={q.recall} choices={q.choices} /> : null}
+            {answered && q.recall ? <ActiveRecallAnswer recall={q.recall} choices={q.choices} item={q.item} /> : null}
             {answered && q.definitionRecall ? (
-              <DefinitionRecallAnswer recall={q.definitionRecall} koreanMeaning={q.item.k_short} choices={q.choices} />
+              <DefinitionRecallAnswer recall={q.definitionRecall} koreanMeaning={q.item.k_short} choices={q.choices} item={q.item} />
             ) : null}
             {answered && q.sense && <ProblemSenseContext sense={q.sense} answered />}
             {answered && !q.sense && !q.recall && !q.definitionRecall && (

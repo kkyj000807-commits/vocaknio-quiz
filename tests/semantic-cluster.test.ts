@@ -40,4 +40,22 @@ describe("semantic relation cluster", () => {
       { word: "understand", kind: "opposite", meaningKo: undefined },
     ]);
   });
+
+  it("keeps Korean meanings on the same-sense relation lanes after grading", () => {
+    const cluster = buildSemanticCluster({
+      exactSynonyms: ["bewilder"],
+      antonyms: ["clarify"],
+      choiceMeanings: [
+        { word: "bewilder", meaning: "당황하게 하다" },
+        { word: "clarify", meaning: "반대축 · 명확하게 하다" },
+      ],
+    });
+
+    expect(cluster.synonyms[0]).toEqual({ word: "bewilder", kind: "exact", meaningKo: "당황하게 하다" });
+    expect(cluster.opposites[0]).toEqual({
+      word: "clarify",
+      kind: "opposite",
+      meaningKo: "명확하게 하다",
+    });
+  });
 });

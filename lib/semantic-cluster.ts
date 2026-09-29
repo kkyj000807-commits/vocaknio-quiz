@@ -62,9 +62,14 @@ export function buildSemanticCluster(input: BuildSemanticClusterInput) {
       cleanMeaningKo(choice.meaning),
     ]),
   );
+  const withMeaning = (term: SemanticRelationTerm): SemanticRelationTerm => {
+    const meaningKo = meaningByWord.get(normalized(term.word));
+    return meaningKo ? { ...term, meaningKo } : term;
+  };
+  const synonyms = [...exact, ...near].map(withMeaning);
   const opposites = uniqueTerms(input.antonyms ?? [], "opposite", synonymKeys).map((term) => ({
     ...term,
-    meaningKo: meaningByWord.get(normalized(term.word)),
+    ...(meaningByWord.get(normalized(term.word)) ? { meaningKo: meaningByWord.get(normalized(term.word)) } : {}),
   }));
   const used = new Set([
     ...synonymKeys,
@@ -75,7 +80,7 @@ export function buildSemanticCluster(input: BuildSemanticClusterInput) {
   const related = uniqueTerms(input.relatedWords ?? [], "related", used);
 
   return {
-    synonyms: [...exact, ...near],
+    synonyms,
     opposites,
     auxiliaries: [...variants, ...related],
   };

@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useColors } from "@/hooks/use-colors";
 import type { ActiveRecallSense } from "@/lib/active-recall";
 import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
+import { getSynonymDetails, type VocabItem } from "@/lib/vocab";
 import {
   buildDefinitionMeaningBridgeKo,
   getDefinitionAnswerRelations,
@@ -27,14 +28,17 @@ export function DefinitionRecallAnswer({
   recall,
   koreanMeaning,
   choices,
+  item,
 }: {
   recall: DefinitionQuizEntry;
   koreanMeaning: string;
   choices?: MeaningChoice[];
+  item?: VocabItem;
 }) {
   const colors = useColors();
   const relations = getDefinitionAnswerRelations(recall);
   const bridgeKo = buildDefinitionMeaningBridgeKo(koreanMeaning);
+  const storedMeanings = item ? getSynonymDetails(item).map(({ word, meaning }) => ({ word, meaning })) : [];
   return (
     <View style={[styles.answer, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <Text style={[styles.answerWord, { color: colors.foreground }]}>{recall.headword}</Text>
@@ -46,7 +50,7 @@ export function DefinitionRecallAnswer({
         bridgeKo={bridgeKo}
         exactSynonyms={relations.synonyms.slice(0, 8)}
         antonyms={relations.antonyms.slice(0, 8)}
-        choiceMeanings={choices}
+        choiceMeanings={[...storedMeanings, ...(choices ?? [])]}
       />
       {recall.examples.length > 0 ? (
         <>
@@ -78,9 +82,10 @@ export function ActiveRecallPrompt({ recall, promptId }: { recall: ActiveRecallS
   );
 }
 
-export function ActiveRecallAnswer({ recall, choices }: { recall: ActiveRecallSense; choices?: MeaningChoice[] }) {
+export function ActiveRecallAnswer({ recall, choices, item }: { recall: ActiveRecallSense; choices?: MeaningChoice[]; item?: VocabItem }) {
   const colors = useColors();
   const [expanded, setExpanded] = useState(false);
+  const storedMeanings = item ? getSynonymDetails(item).map(({ word, meaning }) => ({ word, meaning })) : [];
   return (
     <View style={[styles.answer, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <Text style={[styles.answerWord, { color: colors.foreground }]}>{recall.headword}</Text>
@@ -95,7 +100,7 @@ export function ActiveRecallAnswer({ recall, choices }: { recall: ActiveRecallSe
         antonyms={recall.antonyms.slice(0, 5)}
         variants={recall.variants.slice(0, 3)}
         relatedWords={recall.relatedWords.slice(0, 3)}
-        choiceMeanings={choices}
+        choiceMeanings={[...storedMeanings, ...(choices ?? [])]}
       />
       <Pressable
         accessibilityRole="button"

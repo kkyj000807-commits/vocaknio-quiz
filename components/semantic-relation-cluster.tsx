@@ -47,9 +47,7 @@ function RelationTerms({
             <Text style={[styles.kind, { color: toneColor }]}>{kindLabel[term.kind]}</Text>
             <Text style={[styles.word, { color: colors.foreground }]}>{term.word}</Text>
           </View>
-          {term.meaningKo ? (
-            <Text style={[styles.meaning, { color: colors.muted }]}>{term.meaningKo}</Text>
-          ) : null}
+          <Text style={[styles.meaning, { color: colors.muted }]}>KR · {term.meaningKo ?? "뜻 연결 확인 필요"}</Text>
         </View>
       ))}
     </View>
@@ -93,7 +91,7 @@ export function SemanticRelationCluster({
       ) : null}
 
       <View style={[styles.core, { borderColor: colors.primary, backgroundColor: colors.card }]}>
-        <Text style={[styles.coreLabel, { color: colors.primary }]}>핵심 의미</Text>
+        <Text style={[styles.coreLabel, { color: colors.primary }]}>KR · 영영 정의 핵심 뜻</Text>
         <Text style={[styles.headword, { color: colors.foreground }]}>{headword}</Text>
         <Text style={[styles.coreMeaning, { color: colors.foreground }]}>{coreMeaningKo}</Text>
         {bridgeKo ? <Text style={[styles.bridge, { color: colors.muted }]}>{bridgeKo}</Text> : null}
