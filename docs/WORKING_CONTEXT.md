@@ -1,15 +1,17 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.30 00:55 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.30 01:05 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 batch — Git 보안 감사·콘텐츠 유지형 버전 재기준화 PARTIAL VERIFIED / 1.0 공개 준비
+## 현재 batch — Git 보안 감사·콘텐츠 유지형 버전 재기준화 VERIFIED / 1.0 공개 확인
 
 - 사용자가 요청한 대로 기존 학습 콘텐츠와 사용자 기록 구조는 유지하고 `release.config.json`과 생성된 학습 인덱스/1.0 그룹 데이터만 새 기준으로 맞췄다. `dataVersion`은 기존 v1.4, 학습 내용 행·정의 자산은 그대로이며 앱 표시/배포 버전만 1.0이다.
 - `.env`, `.env.*`, 자격증명·토큰·개인키·DB 덤프를 기본 무시하도록 `.gitignore`를 보강했다. 기존 사용자 소유 `server/auth.ts`, `pnpm-workspace.yaml`, 분석·출력 디렉터리는 수정·삭제·스테이징하지 않았다.
 - `scripts/audit-git-security.mjs`와 `pnpm security:audit`를 추가했다. 현재 main 추적/표준 미추적 파일, 공개 `origin/gh-pages` 트리의 서버·소스맵·환경파일·고신뢰 토큰 패턴을 값 자체를 출력하지 않고 검사한다.
 - 실제 감사: 고신뢰 비밀 패턴 0, 민감 파일명 0, 공개 브랜치 서버·소스맵·환경파일 0. 공개 Production 산출물에도 JWT/DATABASE/API 키 마커 0. `pnpm security:audit` 자체는 사용자 미추적 `pnpm-workspace.yaml`의 잘못된 workspace 설정 때문에 실행기가 중단되어 동일한 `node scripts/audit-git-security.mjs`로 통과시켰다.
-- TypeScript와 Production 출력 감사는 통과했다. 배포 전 반드시 1.0 release manifest·1.0 학습 JSON·공개 URL의 실제 반영과 Pages 로그를 확인한다.
-- 남은 보안 확인: 오래된 Git 객체 전체의 비밀값은 이 회차에서 자동 이력 정리하지 않았다. 과거에 노출된 키가 발견되면 먼저 폐기·교체한 뒤 이력 정리를 별도로 승인해야 한다. 현재 공개 브랜치와 현재/최근 추적 내용에서는 고신뢰 패턴이 없다.
+- TypeScript와 Production 출력 감사는 통과했다. 최종 산출물은 `C:\Users\USER\AppData\Local\Temp\voca-1.0-final-20260930-005958`이며 version `1.0`, dataVersion `v1.4`, learningDataVersion `1.0`, sourceCommit `b503841416d47c43cc64b36b0c5798d9626bc54d`를 포함한다. `sourceDirty=true`는 보존한 사용자 소유 `server/auth.ts` 미커밋 변경만 의미한다.
+- 최종 Pages 배포는 commit `778afcdc3feb18df3554babdd40338b803d84b39`, Actions `36594737405` (`success`)로 완료했다. `https://kkyj000807-commits.github.io/vocaknio-quiz/`의 `index.html`, `wordbook.html`, `release.json`, 1.0 학습 JSON, 번들을 HTTP 200으로 확인했고, in-app browser에서 `총 38,163 개 단어`와 `3,731 개 · 외운 단어 제외`를 확인했다. 이는 실제 iPhone/iPad/Galaxy 실기기 검증이 아니라 공개 URL·in-app browser 검증이다.
+- 공개 브랜치에는 과거 3.11 학습 데이터 경로도 의도적으로 남아 있다. 현재 `release.json`은 1.0을 선택하며, 기존 북마크·캐시·콘텐츠 참조를 깨지 않기 위한 호환 데이터다.
+- 남은 보안 확인: 오래된 Git 객체 전체의 비밀값은 이 회차에서 자동 이력 정리하지 않았다. 과거에 노출된 키가 발견되면 먼저 폐기·교체한 뒤 이력 정리를 별도로 승인해야 한다. 현재 공개 브랜치와 현재/최근 추적 내용에서는 고신뢰 패턴이 없다. 사용자 미추적 `pnpm-workspace.yaml`의 잘못된 설정 때문에 `pnpm security:audit` 래퍼는 여전히 막혀 있어 직접 Node 스크립트로 재검증했다.
 
 ## 현재 batch — 영어↔영어 동의어 인출·예문 관계축·외운 단어 제외 VERIFIED / 3.11 공개 확인
 
