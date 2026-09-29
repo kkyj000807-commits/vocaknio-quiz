@@ -1,6 +1,17 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.30 02:34 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.30 03:22 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+
+## 현재 batch — `a wide range of` 다양성 sense·영영 인출 VERIFIED / 1.2 공개 확인
+
+- 정본의 중복 occurrence 2개(`JBKROW000017`, `JBKROW002047`)를 `a-wide-range-of:many-different-kinds` 한 canonical sense로 연결했다. The Free Dictionary는 우선 조회했으나 robots 정책으로 자동 접근이 차단되어 근거로 저장하지 않았고, Oxford Advanced Learner's Dictionary와 Collins English Dictionary의 `range=같은 일반 범주의 여러 종류` 및 `wide=큰 다양성` 용법을 독립 대조했다. 사전 원문을 복제하지 않고 학습용 정의·예문을 자체 편집했다.
+- 영영 정의는 `a large variety of things belonging to the same general category`로 경계를 고정했다. 반대축 `a narrow range of`, 수량만 강조하는 `a large number of`, 무관축 `regardless of`를 선지로 두어 다양성의 폭과 단순 개수의 많음을 구별한다. 정답 후에는 exact `a broad range of`, near `a wide variety of`/`a broad spectrum of`, 반대축 `a narrow range of`/`a limited range of`를 색·기호·한국어 뜻과 함께 표시한다.
+- 예문 `The reading course introduces students to a wide range of arguments, from causal claims to ethical dilemmas.`에 한국어 개념 번역과 `from A to B` 문맥 단서를 연결했다. 단어장 상세는 EN 정의 → KR 핵심 뜻 → 문맥 설명·초월번역 → 같은 의미축/반대축 → 영·한 예문 순으로 표시하며, 정답 전 문제 화면에는 한국어를 노출하지 않는다.
+- 실제 backfill 결과 canonical104sense, COMPLETE86, NEEDS_REVIEW18, mapped239행, unmapped37,924행이다. 연결 sense의 영영정의·한국어·문맥·예문·예문해설·구별메모·출처 공란은 0이고, 동의어 검증 대기18sense만 NEEDS_REVIEW로 남겼다. active-recall은 production14sense/23행, 영영 정의·예문·영어→영어 문항23행이다.
+- VERIFIED: 전체 프로젝트 검사에서 TypeScript, 데이터 감사, 28파일227테스트 통과/인증1skip. 변경 ESLint, diff 검사, Production 출력 감사(HTML22·학습JSON8·정의JSON8·참조누락0), Git 보안 감사(고신뢰 findings0)가 통과했다.
+- VERIFIED 배포: 앱 소스 `d6997c4d523d78938a2095a6d7d05127b1b8b204`, Pages `fc2837451b4164bdc8c7f234d704230ac42685c2`, Pages Actions `36611313563` success. 공개 `release.json`은 version1.2, `2026.09.30 03:18 KST`; 실제 URL `https://kkyj000807-commits.github.io/vocaknio-quiz/quiz?mode=definition-choice&count=1&bookmarkNums=15&release=1.2-2026.09.30-03.18`에서 영영 정의와 영어 4선지, 정답 전 한국어 비노출, 정답 후 한국어 정의 해석·동의/반의 축·선지별 한국어 구별을 in-app browser로 확인했다. 단어장 상세와 설정의 버전·KST도 같은 공개 화면에서 확인했다.
+- NOT VERIFIED: 실제 iPhone/iPad Safari, Android Chrome, Galaxy Tab Samsung Internet의 터치·회전·분할 화면은 확인하지 않았다. 이번 공개 확인은 in-app browser의 접근성 트리·클릭 경로이며, 격리 저장소가 기존 학습 기록을 읽지 못한 상태라 사용자 기록 저장은 검증하지 않았다.
+- NEXT/P0: 다음 실행은 미매핑 숙어 `zoom in on`의 2개 occurrence를 독립 사전으로 대조하고, canonical sense → 영영 정의/예문 → definition-choice → 동일 상세 패널까지 한 vertical slice로 닫는다.
 
 ## 현재 batch — `conducive to` 영영 인출·단어장 상세 연결 VERIFIED / 1.1 공개 확인
 
