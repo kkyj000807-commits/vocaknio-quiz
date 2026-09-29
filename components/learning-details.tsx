@@ -3,6 +3,11 @@ import { ActivityIndicator, Linking, Pressable, StyleSheet, Text, View } from "r
 
 import { useColors } from "@/hooks/use-colors";
 import { ReasoningPractice } from "@/components/reasoning-practice";
+import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
+import {
+  getActiveRecallSenses,
+  type ActiveRecallSense,
+} from "@/lib/active-recall";
 import {
   loadLearningEntries,
   type LearningEntry,
@@ -30,8 +35,10 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const activeRecallSenses = getActiveRecallSenses(itemId);
 
   useEffect(() => {
+    if (activeRecallSenses.length > 0) return;
     if (!expanded || entries !== null || dictionary !== undefined) return;
     let cancelled = false;
     setLoading(true);
@@ -50,7 +57,7 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
     return () => {
       cancelled = true;
     };
-  }, [attempt, dictionary, entries, expanded, itemId]);
+  }, [activeRecallSenses.length, attempt, dictionary, entries, expanded, itemId]);
 
   return (
     <View style={s.panel}>
@@ -66,13 +73,21 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
       </Pressable>
       {expanded && (
         <View style={s.body}>
-          {loading && (
+          {activeRecallSenses.map((entry, index) => (
+            <ActiveRecallStudyDetails
+              key={entry.senseId}
+              entry={entry}
+              index={index}
+              count={activeRecallSenses.length}
+            />
+          ))}
+          {activeRecallSenses.length === 0 && loading && (
             <View style={s.loadingRow} accessibilityLiveRegion="polite">
               <ActivityIndicator size="small" color={colors.primary} />
               <Text style={s.note}>학습 해설을 불러오는 중입니다</Text>
             </View>
           )}
-          {error && (
+          {activeRecallSenses.length === 0 && error && (
             <View>
               <Text style={s.note}>해설을 불러오지 못했습니다. 문제 풀이는 계속할 수 있어요.</Text>
               <Pressable
@@ -84,14 +99,85 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
               </Pressable>
             </View>
           )}
-          {entries?.map((entry, index) => (
+          {activeRecallSenses.length === 0 && entries?.map((entry, index) => (
             <SenseDetails key={entry.id} entry={entry} index={index} count={entries.length} />
           ))}
-          {entries?.length === 0 && dictionary && (
+          {activeRecallSenses.length === 0 && entries?.length === 0 && dictionary && (
             <DictionaryDefinition entry={dictionary} />
           )}
         </View>
       )}
+    </View>
+  );
+}
+
+function ActiveRecallStudyDetails({
+  entry,
+  index,
+  count,
+}: {
+  entry: ActiveRecallSense;
+  index: number;
+  count: number;
+}) {
+  const colors = useColors();
+  const s = styles(colors);
+  const relationMeanings = [
+    ...entry.exactSynonyms.map((word) => ({ word, meaning: entry.koreanMeaning })),
+    ...entry.nearSynonyms.map((word) => ({ word, meaning: `가까운 뜻 · ${entry.koreanMeaning}` })),
+    ...entry.distractors.map((choice) => ({ word: choice.word, meaning: choice.meaningKo })),
+  ];
+
+  return (
+    <View style={[s.sense, index > 0 && s.nextSense]}>
+      <Text style={s.senseTitle}>
+        {count > 1 ? `${index + 1}. ` : ""}{entry.headword} · {entry.partOfSpeech}
+      </Text>
+
+      <View style={s.section}>
+        <Text style={s.label}>1. 영영 정의 · 사전 대조 후 편집</Text>
+        <Text style={s.english}>{entry.englishDefinition}</Text>
+        <Text style={s.label}>2. 한국어 핵심 뜻</Text>
+        <Text style={s.text}>{entry.koreanMeaning}</Text>
+      </View>
+
+      <View style={s.section}>
+        <Text style={s.label}>3. 문맥 설명 · 초월번역</Text>
+        <Text style={s.text}>{entry.contextExplanationKo}</Text>
+      </View>
+
+      <SemanticRelationCluster
+        headword={entry.headword}
+        coreMeaningKo={entry.koreanMeaning}
+        bridgeKo={entry.contextExplanationKo}
+        exactSynonyms={entry.exactSynonyms}
+        nearSynonyms={entry.nearSynonyms}
+        antonyms={entry.antonyms}
+        variants={entry.variants}
+        relatedWords={entry.relatedWords}
+        choiceMeanings={relationMeanings}
+      />
+
+      <View style={s.exampleBox}>
+        <Text style={s.label}>4. 예문 · 학습용 창작</Text>
+        {entry.exampleSentences.map((example, exampleIndex) => (
+          <View key={`${example.en}-${exampleIndex}`} style={s.section}>
+            <Text style={s.english}>{example.en}</Text>
+            {example.ko ? <Text style={s.text}>{example.ko}</Text> : null}
+            {example.cueKo ? <Text style={s.note}>문맥 단서: {example.cueKo}</Text> : null}
+            {entry.exactSynonyms.length + entry.nearSynonyms.length > 0 ? (
+              <Text style={[s.relationCue, { color: colors.success }]}>≒ {[...entry.exactSynonyms, ...entry.nearSynonyms].join(" · ")}</Text>
+            ) : null}
+            {entry.antonyms.length > 0 ? (
+              <Text style={[s.relationCue, { color: colors.error }]}>←→ {entry.antonyms.join(" · ")}</Text>
+            ) : null}
+          </View>
+        ))}
+      </View>
+
+      <Text style={s.note}>
+        의미 대조: {entry.sources.map((source) => source.publisher).join(" · ")} · 정의와 예문은 학습용 자체 편집
+      </Text>
     </View>
   );
 }
@@ -346,6 +432,7 @@ const styles = (c: ReturnType<typeof useColors>) => StyleSheet.create({
   scale: { fontSize: 13, lineHeight: 21, color: c.primary, fontWeight: "700" },
   contrastWord: { fontWeight: "700", color: c.primary },
   exampleBox: { gap: 6, paddingLeft: 10, borderLeftWidth: 2, borderLeftColor: c.border },
+  relationCue: { fontSize: 11, lineHeight: 17, fontWeight: "800" },
   sourceToggle: { minHeight: 44, justifyContent: "center" },
   sourceBody: { gap: 5 },
   sourceLink: { minHeight: 44, justifyContent: "center", paddingVertical: 6, gap: 2 },
