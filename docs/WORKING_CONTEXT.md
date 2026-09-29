@@ -1,6 +1,18 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.29 07:44 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.29 21:20 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+
+## 현재 batch — 영어↔영어 동의어 인출·예문 관계축·외운 단어 제외 VERIFIED / 3.11 공개 확인
+
+- 원인: `syn-choice`/`syn-assisted`가 `allowMeaningFallback`으로 한국어 뜻 문항에 조용히 폴백했고, OEWN same-synset 관계는 정의 해설에만 쓰여 영어 동의어 선지 coverage로 연결되지 않았다. 정답 뒤 관계어의 한국어 풀이도 부족했다.
+- 수정: 동의어 두 모드는 같은 canonical sense의 영어→영어만 출제하며 한국어 폴백을 제거했다. OEWN exact same-synset을 안전 범위에 연결하고, 문제 전에는 영어만, 정답 뒤에는 EN 정의·KR 핵심 뜻·동의어/반의어 한국어 관계 해설을 표시한다. 알려진 sense/POS 불일치 7행은 차단했다.
+- 예문마다 초록 `≒` same-sense 동의어와 빨강 `←→` 반대 의미축을 바로 붙였다. 독립 검수 active-recall 예문과 OEWN 정의 예문, 일반/오답 문풀이 같은 공통 답안 컴포넌트를 사용한다.
+- coverage: legacy 동의어 가능 11,277행 → legacy+OEWN exact 합집합 16,937행(+5,660, +50.19%), exact 관계어 26,494개. OEWN 원문 예문은 6,405행이다. The Free Dictionary 자동 bulk 접근은 robots 차단으로 재현되지 않아 전체 import 완료로 주장하지 않는다. `bemuse`는 사용자 제공 TFD 화면의 WordNet 계열 exact sense와 Oxford/Collins를 선별 대조했다.
+- 외운 항목은 단어장 기본 목록에서 canonical target이 전부 MASTERED일 때 제외한다. `외운 단어 보기`를 켜면 다시 나타나고 카드의 `↻ 다시 학습`이 RELEARNING으로 복구한다. 다의어의 일부 sense만 MASTERED이면 행 전체를 숨기지 않는다.
+- Galaxy Tab/Samsung Internet의 이중 forced-dark 변환을 막기 위해 브라우저 `color-scheme`은 `only light`로 고정하고 앱 Light/Paper/Dark 토큰이 직접 색을 칠한다. 백색·미색 변형 방지 CSS를 추가했다. 이는 실제 Galaxy Tab 실기기 확인이 아니라 코드·번들·IAB 검증이다.
+- VERIFIED: TypeScript, 변경 ESLint, active-recall/semantic-cluster/learning-state/theme 34테스트 PASS. production audit HTML22·학습JSON8·정의JSON8·참조누락0. 공개 IAB에서 단어장 `외운 단어 보기`/`외운 단어 제외`, 실제 `영어 → 같은 SENSE 영어` 문항과 영어 선지를 확인했다. 저장소 격리로 기존 기록 읽기가 차단된 IAB에서는 사용자 학습기록을 검증 대상으로 쓰지 않았다.
+- VERIFIED 배포: 앱 소스 `266cf7044ef531b6c67372c646e9694a87555d39`, Pages `1ea5bb5799e316cbdfae4e7db0af8e889dc10c32`, Pages Actions `36567129586` success. 공개 release.json 3.11·sourceCommit, 번들 `entry-ef2d5fb082bf1900139971ba9e36fd30.js`, 공개/로컬 SHA256 `BDD22C38A16931DDC767527C05FC0CA2098132A3224C03490E0700A48A1F7201` 일치.
+- NOT DONE: 전체 38,163행의 sense 검수/동의어/예문 완성이 아니다. 다의어 검수 대기22,783행, OEWN source-not-found3,437행, canonical unmapped37,932행은 자동 승격하지 않았다. 실제 Galaxy Tab Samsung Internet/Android Chrome·iPhone/iPad Safari 실기기 검증은 남아 있다.
 
 ## 현재 batch — `rule of thumb` 영영 인출·해설 vertical slice VERIFIED / 3.8 공개 확인
 
@@ -63,17 +75,17 @@
 - NOT DONE: `영영정의 100%`는 아니다. 22,783개 다의어 행과 alias 152행은 한국어 sense 연결 전까지 문제 정답 근거로 쓰지 않는다. OEWN 미일치 3,522행도 다른 허가 사전 backfill이 남았다.
 - NEXT/P0: `source_not_found` 중 숙어·오답·고빈도부터 다른 허가 사전으로 보강하고 다의어는 한국어 occurrence와 sense를 분리 매핑한다.
 
-## 현재 배포 — 3.8, 전체 로드맵은 부분 완료
+## 현재 배포 — 3.11, 전체 로드맵은 부분 완료
 
 - Production: https://kkyj000807-commits.github.io/vocaknio-quiz/
-- 배포 전3.7 → 배포 후3.8. 앱 표시: 버전 3.8 · 최근 수정 2026.09.29 07:39 KST. 공개 게시·정합성 확인은 07:44 KST다.
-- 앱 소스 `a0eadc0711ba11444843eb7b798a4b62e80dd8fd` / Pages `06d02e742af4047c877127ef7e564e7a0d42f0a0`. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
-- GitHub Pages Actions `36493885920` success. release.json sourceCommit 일치, sourceDirty=true는 보존한 server/auth.ts 및 사용자 파일 때문에 표시. dataVersion v1.4 / learningDataVersion3.8 / builtAt2026-09-28T22:39:20.109Z.
-- 번들 entry-335fb78bf212284b166131c1eb4f2d50.js / SHA256 316DF3BE7CADABB1042D15BB38E1ADF1ECC5DE80156FE8475EEFAC2CA4442BE0.
-- 공개 quiz HTML·신규 번들·3.8 학습 JSON이 HTTP200이며 release.json3.8과 sourceCommit을 확인했다. 공개 번들과 로컬 검증 산출물의 SHA256이 동일하다. in-app browser에서 실제 `rule of thumb` 정의→표제어 문제와 정답 후 EN/KR·핵심 이미지·same-sense 관계, 펼친 원문 유지 정의·편집 예문·초월번역·문맥 단서 표시를 확인했다.
+- 배포 전3.10 → 배포 후3.11. 앱 표시: 버전 3.11 · 최근 수정 2026.09.29 21:14 KST. 공개 게시·정합성 확인은 21:20 KST다.
+- 앱 소스 `266cf7044ef531b6c67372c646e9694a87555d39` / Pages `1ea5bb5799e316cbdfae4e7db0af8e889dc10c32`. 이후 상태 문서 커밋과 앱 소스 SHA는 구분한다.
+- GitHub Pages Actions `36567129586` success. release.json sourceCommit 일치, sourceDirty=true는 보존한 `server/auth.ts` 사용자 변경 때문에 표시. dataVersion v1.4 / learningDataVersion3.11 / builtAt2026-09-29T12:14:37.528Z.
+- 번들 entry-ef2d5fb082bf1900139971ba9e36fd30.js / SHA256 BDD22C38A16931DDC767527C05FC0CA2098132A3224C03490E0700A48A1F7201.
+- 공개 wordbook HTML·신규 번들·3.11 학습 JSON이 HTTP200이며 release.json3.11과 sourceCommit을 확인했다. 공개 번들과 로컬 검증 산출물의 SHA256이 동일하다. in-app browser에서 영어→같은 sense 영어 문항, 단어장 외운 항목 제외/복구 진입 UI를 확인했다.
 - 실제 iPhone Safari/Galaxy Tab Samsung Internet/모바일 Chrome 및 모든 기기 캐시는 미검증. in-app browser 결과를 실기기 검증으로 대신하지 않는다.
-- 산출물: C:/Users/USER/AppData/Local/Temp/voca-3.8-20260929-0740
-- 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pagese0b9d26(3.7)을 보존했다. 배포용 managed worktree의 기존 stash와 이번 배포 중 분리한 임시 stash도 삭제하지 않았다.
+- 산출물: C:/Users/USER/AppData/Local/Temp/voca-3.11-20260929-2120
+- 이전 해시 자산/학습JSON을 삭제하지 않았고 직전 안정 Pages61e0f74(3.10)를 이력으로 보존했다.
 
 ## 최신 제품 계약
 
