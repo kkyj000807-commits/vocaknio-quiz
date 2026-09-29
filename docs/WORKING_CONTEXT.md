@@ -1,6 +1,18 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.30 01:05 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.09.30 02:34 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+
+## 현재 batch — `conducive to` 영영 인출·단어장 상세 연결 VERIFIED / 1.1 공개 확인
+
+- 정본의 중복 occurrence 6개(`JBKROW001279`, `JBKROW002322`, `JBKROW004080`, `JBKROW018320`, `JBKROW021061`, `JBKROW023530`)를 `conducive-to:make-result-more-likely` 한 canonical sense로 연결했다. Oxford Advanced Learner's Dictionary와 Collins English Dictionary를 독립 대조했으며, The Free Dictionary는 자동 접근이 robots 정책으로 막혀 근거를 복제하지 않았다.
+- 자체 편집 영영 정의는 `특정 결과가 일어나기 쉽도록 조건을 조성함`에 경계를 고정했다. 결과를 보장하거나 직접 원인이 된다는 뜻으로 과장하지 않고 `conducive to + 명사·동명사` 결합을 문맥 해설에 명시했다. 예문 `Quiet rooms and clear instructions are conducive to careful reading.`과 한국어 개념 번역·문맥 단서를 함께 연결했다.
+- 영영 정의 문제의 영어 선지는 반대축 `detrimental to`, 촉진 관계와 다른 `compatible with`, 무관축 `irrelevant to`로 구성해 near-synonym 복수정답을 피했다. 정답 후에는 `favorable to`/`helpful to`를 같은 의미축으로, `detrimental to`/`unfavorable to`를 반대축으로 분리한다.
+- 공개 단어장 상세가 active-recall sense를 읽지 못해 `Open English WordNet에서 정확히 일치하는 표제어 정의를 찾지 못했습니다`로 폴백하던 최초 손실 지점을 수정했다. 이제 기존 상세 패널이 active-recall을 우선 읽고 영영 정의 → 한국어 핵심 뜻 → 문맥 설명·초월번역 → 녹색 `≒` 같은 의미축 → 적색 `←→` 반대 의미축 → 영·한 예문·문맥 단서 순으로 표시한다. 해당 sense가 있으면 과거 aggregate 해설과 중복 표시하지 않는다.
+- 실제 backfill 결과 canonical 103sense, COMPLETE85, NEEDS_REVIEW18, mapped237행, unmapped37,926행이다. 연결된 sense의 영영정의·한국어·문맥·예문·예문해설·구별메모·출처 공란은 0이고 동의어 검증 대기18sense만 NEEDS_REVIEW로 남겼다. active-recall은 production13sense/21행, 영영 정의·예문·영어→영어 문항21행이다.
+- VERIFIED: 전체 프로젝트 검사에서 TypeScript, 데이터 감사, 28파일226테스트 통과/인증1skip. Production 출력 감사 HTML22·학습JSON8·정의JSON8·참조누락0. Git 보안 감사의 고신뢰 비밀 패턴0 상태도 유지한다.
+- VERIFIED 배포: 앱 소스 `9c282ec0d4dbb4baf94f07daf734e25890717757`, Pages `c98d3511f200c161c1f3b61b9bd83e127e7e0d88`, Pages Actions `36605522080` success. 공개 `release.json`은 version1.1, `2026.09.30 02:29 KST`; 실제 URL `https://kkyj000807-commits.github.io/vocaknio-quiz/wordbook?release=1.1-2026.09.30-02.29`에서 6개 검색 결과와 위 정의·번역·동의/반의 축·예문을 in-app browser 키보드 접근 경로로 확인했다.
+- NOT VERIFIED: 실제 iPhone/iPad Safari, Android Chrome, Galaxy Tab Samsung Internet의 터치·회전·분할 화면은 확인하지 않았다. in-app browser의 좌표 클릭 자동화는 상세 버튼 대신 인접 뜻 버튼을 눌러 실제 touch 결과로 간주하지 않았고, 접근성 키보드 경로와 공개 DOM 표시만 확인했다.
+- NEXT/P0: 다음 실행은 미매핑 숙어 `a wide range of` 한 sense를 독립 사전으로 대조하고, 정본 occurrence → canonical sense → 영영 정의/예문 → definition-choice → 동일 상세 패널까지 한 vertical slice로 닫는다.
 
 ## 현재 batch — Git 보안 감사·콘텐츠 유지형 버전 재기준화 VERIFIED / 1.0 공개 확인
 
