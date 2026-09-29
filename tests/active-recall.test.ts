@@ -12,6 +12,7 @@ const abideByRows = VOCAB.filter(item => item.w === "abide by");
 const teemWithRows = VOCAB.filter(item => item.w === "teem with");
 const wrapUpRows = VOCAB.filter(item => item.w === "wrap up");
 const ruleOfThumbRows = VOCAB.filter(item => item.w === "rule of thumb");
+const conduciveToRows = VOCAB.filter(item => item.w === "conducive to");
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -30,13 +31,13 @@ describe("영어→영어 active recall", () => {
     expect(sense?.exactSynonyms).not.toContain("overseer");
     expect(getActiveRecallSenses(juryRows[0].id)).toHaveLength(1);
     expect(getActiveRecallCoverage()).toEqual({
-      senses: 12,
-      rows: 15,
-      definitions: 12,
-      examples: 12,
-      contextualizedExamples: 12,
-      contextExplanations: 12,
-      synonymRelations: 12,
+      senses: 13,
+      rows: 21,
+      definitions: 13,
+      examples: 13,
+      contextualizedExamples: 13,
+      contextExplanations: 13,
+      synonymRelations: 13,
     });
   });
 
@@ -99,6 +100,35 @@ describe("영어→영어 active recall", () => {
     const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [ruleOfThumbRows[0].num], preserveItemOrder: true });
     expect(question.recall?.senseId).toBe(sense.senseId);
     expect(question.choices.map(choice => choice.value)).toContain("hard-and-fast rule");
+    expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
+    expect(validateQuestion(question)).toBe(true);
+  });
+
+  it("conducive to의 중복 6행을 결과 가능성을 높이는 한 sense와 반대축에 연결한다", () => {
+    expect(conduciveToRows.map(item => item.id)).toEqual([
+      "JBKROW001279",
+      "JBKROW002322",
+      "JBKROW004080",
+      "JBKROW018320",
+      "JBKROW021061",
+      "JBKROW023530",
+    ]);
+    const senseIds = new Set(conduciveToRows.flatMap(item => getActiveRecallSenses(item.id).map(sense => sense.senseId)));
+    expect([...senseIds]).toEqual(["conducive-to:make-result-more-likely"]);
+    const [sense] = getActiveRecallSenses(conduciveToRows[0].id);
+    expect(sense).toMatchObject({
+      conciseEnglishDefinition: "helping to make a particular result more likely",
+      koreanMeaning: "특정 결과가 일어나기 좋은 조건을 만드는",
+      nearSynonyms: ["favorable to", "helpful to"],
+      antonyms: ["detrimental to", "unfavorable to"],
+    });
+    expect(sense.contextExplanationKo).toContain("보장");
+    expect(sense.distractors.find(choice => choice.word === "detrimental to")?.reasonKo).toContain("반대");
+
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [conduciveToRows[0].num], preserveItemOrder: true });
+    expect(question.recall?.senseId).toBe(sense.senseId);
+    expect(question.choices.map(choice => choice.value)).toContain("detrimental to");
     expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
     expect(validateQuestion(question)).toBe(true);
   });

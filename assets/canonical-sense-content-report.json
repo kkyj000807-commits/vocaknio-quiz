@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAtKst": "2026-09-29T20:23:59+09:00",
+  "generatedAtKst": "2026-09-30T02:16:12+09:00",
   "vocabulary": {
     "sourceRows": 38163,
     "uniqueHeadwords": 13347,
-    "rowsWithCanonicalSense": 231,
-    "rowsWithoutCanonicalSense": 37932
+    "rowsWithCanonicalSense": 237,
+    "rowsWithoutCanonicalSense": 37926
   },
   "rawVocabulary": {
     "recordCount": 38163,
@@ -22,20 +22,20 @@
     "note": "원본 38,163행 스키마는 w/k/s 중심이며, canonical sense 필드는 별도 검수 레이어에서만 제공된다."
   },
   "before": {
-    "canonicalSenseCount": 108,
+    "canonicalSenseCount": 109,
     "blanks": {
-      "englishDefinition": 16,
-      "koreanMeaning": 16,
-      "contextExplanation": 16,
-      "exampleSentence": 16,
-      "exampleExplanation": 16,
-      "synonyms": 42,
-      "distinctionNote": 16,
-      "sourceIds": 16
+      "englishDefinition": 17,
+      "koreanMeaning": 17,
+      "contextExplanation": 17,
+      "exampleSentence": 17,
+      "exampleExplanation": 17,
+      "synonyms": 43,
+      "distinctionNote": 17,
+      "sourceIds": 17
     }
   },
   "after": {
-    "canonicalSenseCount": 102,
+    "canonicalSenseCount": 103,
     "blanks": {
       "englishDefinition": 0,
       "koreanMeaning": 0,
@@ -126,7 +126,7 @@
     }
   ],
   "statusCounts": {
-    "COMPLETE": 84,
+    "COMPLETE": 85,
     "VERIFIED_NO_DATA": 0,
     "FAILED": 0,
     "NEEDS_REVIEW": 18,
@@ -170,7 +170,7 @@
   "firstLoss": {
     "unmappedVocabularyRows": {
       "stage": "sense 매핑",
-      "count": 37932,
+      "count": 37926,
       "reason": "원본 어휘 행에 canonical senseId가 아직 없다."
     },
     "mappedSenseMissingFields": {
@@ -462,6 +462,22 @@
       "sameSenseContract": true
     },
     {
+      "senseId": "conducive-to:make-result-more-likely",
+      "word": "conducive to",
+      "status": "COMPLETE",
+      "checkedFields": {
+        "englishDefinition": true,
+        "koreanMeaning": true,
+        "contextExplanation": true,
+        "exampleSentence": true,
+        "exampleExplanation": true,
+        "synonyms": true,
+        "distinctionNote": true,
+        "sourceIds": true
+      },
+      "sameSenseContract": true
+    },
+    {
       "senseId": "crack-down-on:primary",
       "word": "crack down on",
       "status": "COMPLETE",
@@ -480,22 +496,6 @@
     {
       "senseId": "cut-ground:primary",
       "word": "cut the ground from under someone",
-      "status": "COMPLETE",
-      "checkedFields": {
-        "englishDefinition": true,
-        "koreanMeaning": true,
-        "contextExplanation": true,
-        "exampleSentence": true,
-        "exampleExplanation": true,
-        "synonyms": true,
-        "distinctionNote": true,
-        "sourceIds": true
-      },
-      "sameSenseContract": true
-    },
-    {
-      "senseId": "delve-into:primary",
-      "word": "delve into",
       "status": "COMPLETE",
       "checkedFields": {
         "englishDefinition": true,

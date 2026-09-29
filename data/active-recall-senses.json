@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "checkedAtKst": "2026.09.29",
+  "checkedAtKst": "2026.09.30",
   "entries": [
     {
       "id": "rule-of-thumb:practical-approximate-guide",
@@ -57,6 +57,81 @@
         }
       ],
       "sourceCheckedAt": "2026.09.29",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
+    },
+    {
+      "id": "conducive-to:make-result-more-likely",
+      "headword": "conducive to",
+      "partOfSpeech": "adjective phrase",
+      "senseId": "conducive-to:make-result-more-likely",
+      "itemIds": ["JBKROW001279", "JBKROW002322", "JBKROW004080", "JBKROW018320", "JBKROW021061", "JBKROW023530"],
+      "englishDefinition": "Tending to create conditions that make a particular result easier or more likely to happen.",
+      "conciseEnglishDefinition": "helping to make a particular result more likely",
+      "exactSynonyms": [],
+      "nearSynonyms": ["favorable to", "helpful to"],
+      "antonyms": ["detrimental to", "unfavorable to"],
+      "variants": [],
+      "relatedWords": ["promote", "facilitate"],
+      "exampleSentences": [
+        {
+          "en": "Quiet rooms and clear instructions are conducive to careful reading.",
+          "ko": "조용한 공간과 명확한 지시는 꼼꼼한 독해가 이루어지기 좋은 조건을 만든다.",
+          "cueKo": "조용함과 명확한 지시가 독해 성공을 보장하는 것은 아니지만, 집중과 정확성이 나타나기 쉬운 환경을 조성한다.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "특정 결과가 일어나기 좋은 조건을 만드는",
+      "contextExplanationKo": "원하는 결과로 가는 길의 장애물을 줄여 그 결과가 더 쉽게 일어나게 하는 장면이다. 결과를 직접 보장하거나 반드시 원인이 된다는 뜻은 아니며, 보통 conducive to + 명사·동명사 구조로 쓴다.",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "helping to make a particular result easier or more likely"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "A quiet room with clear instructions is _____ careful reading, although it cannot guarantee comprehension."
+        }
+      ],
+      "distractors": [
+        {
+          "word": "detrimental to",
+          "meaningKo": "~에 해로운",
+          "reasonKo": "목표 결과가 일어나기 좋은 조건을 만드는 것이 아니라 그 결과를 해치거나 방해하는 반대 의미축이다.",
+          "plausible": true
+        },
+        {
+          "word": "compatible with",
+          "meaningKo": "~와 양립할 수 있는",
+          "reasonKo": "둘이 함께 성립할 수 있다는 뜻일 뿐, 한쪽이 다른 결과를 더 쉽게 일어나게 한다는 촉진 관계는 아니다.",
+          "plausible": true
+        },
+        {
+          "word": "irrelevant to",
+          "meaningKo": "~와 관련 없는",
+          "reasonKo": "결과가 일어나도록 돕는 관계가 아니라 애초에 해당 결과와 관련이 없다는 뜻이다.",
+          "plausible": false
+        }
+      ],
+      "sources": [
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/definition/english/conducive",
+          "independenceGroup": "Oxford",
+          "note": "conducive to가 어떤 결과를 쉽거나 가능하거나 개연성 있게 만드는 조건이라는 sense를 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/us/dictionary/english/conducive",
+          "independenceGroup": "Collins",
+          "note": "한 조건이 다른 결과의 발생 가능성을 높인다는 sense와 to 결합을 독립 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.09.30",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",

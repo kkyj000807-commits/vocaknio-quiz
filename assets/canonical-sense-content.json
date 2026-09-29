@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "3.11",
+  "release": "1.0",
   "entries": [
     {
       "word": "abide by",
@@ -1013,6 +1013,56 @@
       "missingFields": [
         "synonyms"
       ]
+    },
+    {
+      "word": "conducive to",
+      "variants": [],
+      "senseId": "conducive-to:make-result-more-likely",
+      "partOfSpeech": "adjective phrase",
+      "englishDefinition": "Tending to create conditions that make a particular result easier or more likely to happen.",
+      "definitionProvenance": {
+        "kind": "editorial",
+        "source": "VOCA NEXUS editorial",
+        "layer": "active-recall",
+        "referenceUrls": [
+          "https://www.oxfordlearnersdictionaries.com/definition/english/conducive",
+          "https://www.collinsdictionary.com/us/dictionary/english/conducive"
+        ]
+      },
+      "koreanMeaning": "특정 결과가 일어나기 좋은 조건을 만드는",
+      "contextExplanation": "원하는 결과로 가는 길의 장애물을 줄여 그 결과가 더 쉽게 일어나게 하는 장면이다. 결과를 직접 보장하거나 반드시 원인이 된다는 뜻은 아니며, 보통 conducive to + 명사·동명사 구조로 쓴다.",
+      "exampleSentence": "Quiet rooms and clear instructions are conducive to careful reading.",
+      "exampleTranslation": "조용한 공간과 명확한 지시는 꼼꼼한 독해가 이루어지기 좋은 조건을 만든다.",
+      "exampleExplanation": "조용함과 명확한 지시가 독해 성공을 보장하는 것은 아니지만, 집중과 정확성이 나타나기 쉬운 환경을 조성한다.",
+      "synonyms": [
+        "favorable to",
+        "helpful to"
+      ],
+      "distinctionNote": "detrimental to: 목표 결과가 일어나기 좋은 조건을 만드는 것이 아니라 그 결과를 해치거나 방해하는 반대 의미축이다. | compatible with: 둘이 함께 성립할 수 있다는 뜻일 뿐, 한쪽이 다른 결과를 더 쉽게 일어나게 한다는 촉진 관계는 아니다. | irrelevant to: 결과가 일어나도록 돕는 관계가 아니라 애초에 해당 결과와 관련이 없다는 뜻이다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/definition/english/conducive",
+        "https://www.collinsdictionary.com/us/dictionary/english/conducive"
+      ],
+      "itemIds": [
+        "JBKROW001279",
+        "JBKROW002322",
+        "JBKROW004080",
+        "JBKROW018320",
+        "JBKROW021061",
+        "JBKROW023530"
+      ],
+      "inputLayers": [
+        "active-recall"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
     },
     {
       "word": "crack down on",
