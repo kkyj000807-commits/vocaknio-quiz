@@ -53,12 +53,25 @@ const expoCli = path.join(
   "bin",
   "cli"
 );
+const configuredMaxWorkers = process.env.VOCANEXUS_BUILD_MAX_WORKERS?.trim();
+if (configuredMaxWorkers && !/^[1-9]\d*$/.test(configuredMaxWorkers)) {
+  throw new Error("VOCANEXUS_BUILD_MAX_WORKERS must be a positive integer");
+}
 
 console.log(`Production 빌드 시각: ${releasedAtKst}`);
 
 const result = spawnSync(
   process.execPath,
-  [expoCli, "export", "--platform", "web", "--clear", "--output-dir", outputDir],
+  [
+    expoCli,
+    "export",
+    "--platform",
+    "web",
+    "--clear",
+    "--output-dir",
+    outputDir,
+    ...(configuredMaxWorkers ? ["--max-workers", configuredMaxWorkers] : []),
+  ],
   {
     cwd: process.cwd(),
     env: {
