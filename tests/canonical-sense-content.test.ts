@@ -36,7 +36,7 @@ describe("canonical sense 공란 backfill", () => {
       (entry) => (entry.missingFields as string[]).includes("synonyms"),
     )).toBe(true);
     expect(pending.categories.verificationPending).toHaveLength(18);
-    expect(pending.categories.senseMappingFailure).toHaveLength(37_921);
+    expect(pending.categories.senseMappingFailure).toHaveLength(37_913);
     expect(pending.categories.actualDataAbsence).toHaveLength(0);
   });
 
@@ -51,12 +51,13 @@ describe("canonical sense 공란 backfill", () => {
     const superseded = [
       "abide-by:primary",
       "cart-horse:primary",
+      "gloss-over:primary",
       "take-for-granted:primary",
       "teem-with:primary",
       "work-out:primary",
       "wrap-up:primary",
     ];
-    expect(report.after.canonicalSenseCount).toBe(107);
+    expect(report.after.canonicalSenseCount).toBe(108);
     expect(report.supersededAggregates).toHaveLength(superseded.length);
     expect(report.supersededAggregates.map((entry) => entry.senseId).sort()).toEqual([...superseded].sort());
     for (const senseId of superseded) {
@@ -84,6 +85,11 @@ describe("canonical sense 공란 backfill", () => {
       definitionStatus: "COMPLETE",
       itemIds: ["JBKROW000093", "JBKROW004059"],
       synonyms: ["focus on", "concentrate on", "zero in on"],
+    });
+    expect(content.entries.find((entry) => entry.senseId === "gloss-over:avoid-unpleasant-detail")).toMatchObject({
+      definitionStatus: "COMPLETE",
+      itemIds: ["JBKROW001061", "JBKROW002838", "JBKROW005017", "JBKROW007057", "JBKROW009466", "JBKROW012192", "JBKROW018844", "JBKROW021403"],
+      synonyms: ["play down", "skim over", "paper over"],
     });
   });
 
@@ -160,6 +166,6 @@ describe("canonical sense 공란 backfill", () => {
       .toBe("To meet someone unexpectedly rather than by prior arrangement.");
     expect(content.entries.find((entry) => entry.senseId === "on-behalf:primary")?.englishDefinition)
       .toBe("Acting or speaking as someone's representative or in their place.");
-    expect(content.entries.filter((entry) => entry.definitionStatus === "COMPLETE")).toHaveLength(89);
+    expect(content.entries.filter((entry) => entry.definitionStatus === "COMPLETE")).toHaveLength(90);
   });
 });

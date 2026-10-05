@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.4",
+  "release": "1.5",
   "entries": [
     {
       "word": "a wide range of",
@@ -1514,6 +1514,59 @@
       ],
       "inputLayers": [
         "vocab-learning"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "gloss over",
+      "variants": [],
+      "senseId": "gloss-over:avoid-unpleasant-detail",
+      "partOfSpeech": "phrasal verb",
+      "englishDefinition": "To avoid discussing an unpleasant, embarrassing, or important matter in enough detail, often so that it seems less serious than it is.",
+      "definitionProvenance": {
+        "kind": "editorial",
+        "source": "VOCA NEXUS editorial",
+        "layer": "active-recall",
+        "referenceUrls": [
+          "https://www.oxfordlearnersdictionaries.com/us/definition/english/gloss-over",
+          "https://www.collinsdictionary.com/dictionary/english/gloss-over"
+        ]
+      },
+      "koreanMeaning": "불편하거나 중요한 사실을 자세히 다루지 않고 얼버무리다",
+      "contextExplanation": "표면에 광택을 입혀 거친 부분이 잘 보이지 않게 하듯, 불편한 문제·실수·반론을 아예 해결하지 않고 짧게 언급하거나 세부를 피해서 덜 심각해 보이게 한다. 이는 현대 의미를 이해하기 위한 이미지이며 역사적 어원 설명이 아니다.",
+      "exampleSentence": "The presentation celebrated the improved average but glossed over the fact that the weakest group had fallen further behind.",
+      "exampleTranslation": "그 발표는 평균 향상을 강조했지만, 가장 취약한 집단이 더 뒤처졌다는 사실은 자세히 다루지 않고 얼버무렸다.",
+      "exampleExplanation": "but 뒤의 불편한 사실을 생략하지는 않았지만 충분히 설명하지 않아 덜 중요해 보이게 만든다.",
+      "synonyms": [
+        "play down",
+        "skim over",
+        "paper over"
+      ],
+      "distinctionNote": "dwell on: 불편한 사실의 세부를 빨리 넘기는 대신 그 문제에 오래 머물며 자세히 다루는 반대 방향이다. | explain away: 문제를 자세히 다루지 않는 데서 끝나지 않고, 이유나 변명을 제시해 문제처럼 보이지 않게 만들려는 뜻이다. | clear up: 세부를 피하는 것이 아니라 원인과 내용을 밝혀 문제를 실제로 해소하는 뜻이다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/gloss-over",
+        "https://www.collinsdictionary.com/dictionary/english/gloss-over"
+      ],
+      "itemIds": [
+        "JBKROW001061",
+        "JBKROW002838",
+        "JBKROW005017",
+        "JBKROW007057",
+        "JBKROW009466",
+        "JBKROW012192",
+        "JBKROW018844",
+        "JBKROW021403"
+      ],
+      "inputLayers": [
+        "active-recall"
       ],
       "conflicts": [],
       "alternateValues": [],

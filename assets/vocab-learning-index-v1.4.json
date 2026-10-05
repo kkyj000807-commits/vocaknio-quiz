@@ -1,8 +1,8 @@
 {
-  "version": "1.4",
+  "version": "1.5",
   "coverage": {
-    "senses": 154,
-    "rows": 219,
+    "senses": 162,
+    "rows": 227,
     "checkedAtKst": "2026.10.05"
   },
   "items": {
@@ -183,6 +183,12 @@
         "learn:correction:JBKROW000819"
       ]
     },
+    "JBKROW001061": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW001061"
+      ]
+    },
     "JBKROW001435": {
       "group": "V201",
       "entryIds": [
@@ -296,6 +302,12 @@
       "group": "V101",
       "entryIds": [
         "learn:correction:JBKROW002456"
+      ]
+    },
+    "JBKROW002838": {
+      "group": "V101",
+      "entryIds": [
+        "learn:correction:JBKROW002838"
       ]
     },
     "JBKROW002985": {
@@ -450,6 +462,12 @@
         "learn:correction:JBKROW004990"
       ]
     },
+    "JBKROW005017": {
+      "group": "V201",
+      "entryIds": [
+        "learn:correction:JBKROW005017"
+      ]
+    },
     "JBKROW005373": {
       "group": "V501",
       "entryIds": [
@@ -516,6 +534,12 @@
       "group": "V201",
       "entryIds": [
         "learn:00905999-v"
+      ]
+    },
+    "JBKROW007057": {
+      "group": "V201",
+      "entryIds": [
+        "learn:correction:JBKROW007057"
       ]
     },
     "JBKROW007192": {
@@ -608,6 +632,12 @@
         "learn:00902519-s"
       ]
     },
+    "JBKROW009466": {
+      "group": "V301",
+      "entryIds": [
+        "learn:correction:JBKROW009466"
+      ]
+    },
     "JBKROW010203": {
       "group": "V301",
       "entryIds": [
@@ -636,6 +666,12 @@
       "group": "V301",
       "entryIds": [
         "learn:01810472-v"
+      ]
+    },
+    "JBKROW012192": {
+      "group": "V301",
+      "entryIds": [
+        "learn:correction:JBKROW012192"
       ]
     },
     "JBKROW012385": {
@@ -925,6 +961,12 @@
         "learn:10574739-n"
       ]
     },
+    "JBKROW018844": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW018844"
+      ]
+    },
     "JBKROW019179": {
       "group": "V501",
       "entryIds": [
@@ -984,6 +1026,12 @@
       "entryIds": [
         "learn:correction:JBKROW021038:accept-unpleasant-reality",
         "learn:correction:JBKROW021038:reach-agreement-with-party"
+      ]
+    },
+    "JBKROW021403": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW021403"
       ]
     },
     "JBKROW022130": {

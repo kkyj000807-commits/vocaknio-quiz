@@ -16,6 +16,7 @@ const conduciveToRows = VOCAB.filter(item => item.w === "conducive to");
 const wideRangeRows = VOCAB.filter(item => item.w === "a wide range of");
 const zoomInOnRows = VOCAB.filter(item => item.w === "zoom in on");
 const withoutFailRows = VOCAB.filter(item => item.w === "without fail");
+const glossOverRows = VOCAB.filter(item => item.w === "gloss over");
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -34,13 +35,13 @@ describe("영어→영어 active recall", () => {
     expect(sense?.exactSynonyms).not.toContain("overseer");
     expect(getActiveRecallSenses(juryRows[0].id)).toHaveLength(1);
     expect(getActiveRecallCoverage()).toEqual({
-      senses: 17,
-      rows: 26,
-      definitions: 17,
-      examples: 17,
-      contextualizedExamples: 17,
-      contextExplanations: 17,
-      synonymRelations: 17,
+      senses: 18,
+      rows: 34,
+      definitions: 18,
+      examples: 18,
+      contextualizedExamples: 18,
+      contextExplanations: 18,
+      synonymRelations: 18,
     });
   });
 
@@ -176,6 +177,39 @@ describe("영어→영어 active recall", () => {
     const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [zoomInOnRows[0].num], preserveItemOrder: true });
     expect(question.recall?.senseId).toBe(sense.senseId);
     expect(question.choices.map(choice => choice.value)).toContain("zoom out from");
+    expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
+    expect(validateQuestion(question)).toBe(true);
+  });
+
+  it("gloss over의 중복 8행을 세부 회피 sense 하나와 개별 관계 뜻에 연결한다", () => {
+    expect(glossOverRows.map(item => item.id)).toEqual([
+      "JBKROW001061",
+      "JBKROW002838",
+      "JBKROW005017",
+      "JBKROW007057",
+      "JBKROW009466",
+      "JBKROW012192",
+      "JBKROW018844",
+      "JBKROW021403",
+    ]);
+    const [sense] = getActiveRecallSenses(glossOverRows[0].id);
+    expect(sense).toMatchObject({
+      senseId: "gloss-over:avoid-unpleasant-detail",
+      conciseEnglishDefinition: "to avoid dealing with an unpleasant matter in enough detail",
+      koreanMeaning: "불편하거나 중요한 사실을 자세히 다루지 않고 얼버무리다",
+      nearSynonyms: ["play down", "skim over", "paper over"],
+      antonyms: ["dwell on", "confront directly"],
+      relationMeaningsKo: {
+        "play down": "실제보다 덜 중요하게 보이도록 말하다",
+        "dwell on": "한 문제를 오래 자세히 말하거나 생각하다",
+      },
+    });
+    expect(sense.contextExplanationKo).toContain("역사적 어원 설명이 아니다");
+
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [glossOverRows[0].num], preserveItemOrder: true });
+    expect(question.recall?.senseId).toBe(sense.senseId);
+    expect(question.choices.map(choice => choice.value)).toContain("dwell on");
     expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
     expect(validateQuestion(question)).toBe(true);
   });

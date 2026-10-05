@@ -18,21 +18,24 @@ type MeaningChoice = { word: string; meaning: string };
 function ExampleRelationCue({
   synonyms,
   antonyms,
+  meanings,
 }: {
   synonyms: readonly string[];
   antonyms: readonly string[];
+  meanings?: Readonly<Record<string, string>>;
 }) {
   const colors = useColors();
   const same = [...new Set(synonyms)].slice(0, 5);
   const opposite = [...new Set(antonyms)].slice(0, 4);
+  const format = (word: string) => meanings?.[word] ? `${word} (${meanings[word]})` : word;
   if (same.length === 0 && opposite.length === 0) return null;
   return (
     <View style={[styles.exampleRelations, { borderColor: colors.border, backgroundColor: colors.surface }]}>
       {same.length > 0 ? (
-        <Text style={[styles.exampleRelationText, { color: colors.success }]}>≒ {same.join(" · ")}</Text>
+        <Text style={[styles.exampleRelationText, { color: colors.success }]}>≒ {same.map(format).join(" · ")}</Text>
       ) : null}
       {opposite.length > 0 ? (
-        <Text style={[styles.exampleRelationText, { color: colors.error }]}>←→ {opposite.join(" · ")}</Text>
+        <Text style={[styles.exampleRelationText, { color: colors.error }]}>←→ {opposite.map(format).join(" · ")}</Text>
       ) : null}
     </View>
   );
@@ -165,6 +168,8 @@ export function ActiveRecallAnswer({ recall, choices, item }: { recall: ActiveRe
   const colors = useColors();
   const [expanded, setExpanded] = useState(false);
   const storedMeanings = item ? getSynonymDetails(item).map(({ word, meaning }) => ({ word, meaning })) : [];
+  const reviewedRelationMeanings = Object.entries(recall.relationMeaningsKo ?? {})
+    .map(([word, meaning]) => ({ word, meaning }));
   return (
     <View style={[styles.answer, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <Text style={[styles.answerWord, { color: colors.foreground }]}>{recall.headword}</Text>
@@ -179,7 +184,7 @@ export function ActiveRecallAnswer({ recall, choices, item }: { recall: ActiveRe
         antonyms={recall.antonyms.slice(0, 5)}
         variants={recall.variants.slice(0, 3)}
         relatedWords={recall.relatedWords.slice(0, 3)}
-        choiceMeanings={[...storedMeanings, ...(choices ?? [])]}
+        choiceMeanings={[...storedMeanings, ...(choices ?? []), ...reviewedRelationMeanings]}
       />
       <Pressable
         accessibilityRole="button"
@@ -202,6 +207,7 @@ export function ActiveRecallAnswer({ recall, choices, item }: { recall: ActiveRe
               <ExampleRelationCue
                 synonyms={[...recall.exactSynonyms, ...recall.nearSynonyms]}
                 antonyms={recall.antonyms}
+                meanings={recall.relationMeaningsKo}
               />
             </View>
           ))}

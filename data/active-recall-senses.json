@@ -1098,6 +1098,98 @@
       "failureReason": null
     },
     {
+      "id": "gloss-over:avoid-unpleasant-detail",
+      "headword": "gloss over",
+      "partOfSpeech": "phrasal verb",
+      "senseId": "gloss-over:avoid-unpleasant-detail",
+      "itemIds": [
+        "JBKROW001061",
+        "JBKROW002838",
+        "JBKROW005017",
+        "JBKROW007057",
+        "JBKROW009466",
+        "JBKROW012192",
+        "JBKROW018844",
+        "JBKROW021403"
+      ],
+      "englishDefinition": "To avoid discussing an unpleasant, embarrassing, or important matter in enough detail, often so that it seems less serious than it is.",
+      "conciseEnglishDefinition": "to avoid dealing with an unpleasant matter in enough detail",
+      "exactSynonyms": [],
+      "nearSynonyms": ["play down", "skim over", "paper over"],
+      "antonyms": ["dwell on", "confront directly"],
+      "variants": [],
+      "relatedWords": ["brush aside"],
+      "relationMeaningsKo": {
+        "play down": "실제보다 덜 중요하게 보이도록 말하다",
+        "skim over": "세부를 빨리 훑고 넘어가다",
+        "paper over": "문제나 차이를 겉으로만 덮어 감추다",
+        "dwell on": "한 문제를 오래 자세히 말하거나 생각하다",
+        "confront directly": "문제를 피하지 않고 정면으로 다루다",
+        "brush aside": "문제나 우려를 대수롭지 않게 밀어내다"
+      },
+      "exampleSentences": [
+        {
+          "en": "The presentation celebrated the improved average but glossed over the fact that the weakest group had fallen further behind.",
+          "ko": "그 발표는 평균 향상을 강조했지만, 가장 취약한 집단이 더 뒤처졌다는 사실은 자세히 다루지 않고 얼버무렸다.",
+          "cueKo": "but 뒤의 불편한 사실을 생략하지는 않았지만 충분히 설명하지 않아 덜 중요해 보이게 만든다.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "불편하거나 중요한 사실을 자세히 다루지 않고 얼버무리다",
+      "contextExplanationKo": "표면에 광택을 입혀 거친 부분이 잘 보이지 않게 하듯, 불편한 문제·실수·반론을 아예 해결하지 않고 짧게 언급하거나 세부를 피해서 덜 심각해 보이게 한다. 이는 현대 의미를 이해하기 위한 이미지이며 역사적 어원 설명이 아니다.",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "to avoid dealing with an unpleasant or embarrassing matter in enough detail, often making it seem less serious"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "The summary praised the reform but tried to _____ the audit's warning about missing records."
+        }
+      ],
+      "distractors": [
+        {
+          "word": "dwell on",
+          "meaningKo": "한 문제를 오래 자세히 말하거나 생각하다",
+          "reasonKo": "불편한 사실의 세부를 빨리 넘기는 대신 그 문제에 오래 머물며 자세히 다루는 반대 방향이다.",
+          "plausible": true
+        },
+        {
+          "word": "explain away",
+          "meaningKo": "그럴듯한 설명을 붙여 문제나 비난을 없애려 하다",
+          "reasonKo": "문제를 자세히 다루지 않는 데서 끝나지 않고, 이유나 변명을 제시해 문제처럼 보이지 않게 만들려는 뜻이다.",
+          "plausible": true
+        },
+        {
+          "word": "clear up",
+          "meaningKo": "혼란이나 문제를 해결하거나 명확히 하다",
+          "reasonKo": "세부를 피하는 것이 아니라 원인과 내용을 밝혀 문제를 실제로 해소하는 뜻이다.",
+          "plausible": false
+        }
+      ],
+      "sources": [
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/gloss-over",
+          "independenceGroup": "Oxford",
+          "note": "불쾌하거나 난처한 일을 자세히 다루지 않음으로써 언급을 피하는 phrasal-verb sense를 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/gloss-over",
+          "independenceGroup": "Collins",
+          "note": "문제·실수 등을 무시하거나 매우 빨리 다뤄 덜 중요해 보이게 하는 sense를 독립 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.10.05",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
+    },
+    {
       "id": "all-but:almost",
       "headword": "all but",
       "partOfSpeech": "adverbial phrase",

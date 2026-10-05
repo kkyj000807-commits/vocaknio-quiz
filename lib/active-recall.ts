@@ -16,6 +16,7 @@ export const activeRecallSenseSchema = z.object({
   antonyms: z.array(nonempty),
   variants: z.array(nonempty),
   relatedWords: z.array(nonempty),
+  relationMeaningsKo: z.record(nonempty, nonempty).optional(),
   exampleSentences: z.array(z.object({
     en: nonempty,
     ko: nonempty.optional(),

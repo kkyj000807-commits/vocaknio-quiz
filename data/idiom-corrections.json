@@ -1992,6 +1992,39 @@
       ]
     },
     {
+      "key": "gloss-over",
+      "partOfSpeech": "phrasal verb",
+      "targets": [
+        {"id": "JBKROW001061", "headword": "gloss over", "before": "얼버무리고 넘어가다"},
+        {"id": "JBKROW002838", "headword": "gloss over", "before": "얼버무리고 넘어가다"},
+        {"id": "JBKROW005017", "headword": "gloss over", "before": "말을 얼버무리다"},
+        {"id": "JBKROW007057", "headword": "gloss over", "before": "말을 얼버무리다"},
+        {"id": "JBKROW009466", "headword": "gloss over", "before": "얼버무리고 넘어가다"},
+        {"id": "JBKROW012192", "headword": "gloss over", "before": "얼버무리고 넘어가다"},
+        {"id": "JBKROW018844", "headword": "gloss over", "before": "얼버무리다"},
+        {"id": "JBKROW021403", "headword": "gloss over", "before": "얼버무리다"}
+      ],
+      "meaningKo": "불편하거나 중요한 사실을 자세히 다루지 않고 얼버무리다",
+      "definitionEn": "To avoid discussing an unpleasant, embarrassing, or important matter in enough detail, often so that it seems less serious than it is.",
+      "definitionKo": "불편한 문제·실수·반론의 세부를 피하거나 빨리 넘겨 실제보다 덜 중요해 보이게 하다.",
+      "memoryKo": "거친 문제 위에 광택만 입혀 표면은 매끈해 보이지만 문제 자체는 그대로 남은 장면이다.",
+      "usageKo": "problem, mistake, objection, fact처럼 자세히 설명해야 할 불편한 대상을 목적어로 둔다.",
+      "examTrapKo": "단순히 빨리 읽는 skim over, 중요성을 낮추는 play down, 변명으로 문제를 없애려는 explain away와 초점이 완전히 같지 않다.",
+      "nearSynonyms": ["play down", "skim over", "paper over"],
+      "contrasts": [
+        {"word": "dwell on", "noteKo": "한 문제에 오래 머물며 자세히 다루므로 목표 표현과 반대 방향이다."},
+        {"word": "explain away", "noteKo": "이유나 변명을 제시해 문제가 아닌 것처럼 만들려 하며, 세부를 피하는 데 초점이 있는 gloss over와 다르다."}
+      ],
+      "example": {
+        "en": "The presentation celebrated the improved average but glossed over the fact that the weakest group had fallen further behind.",
+        "ko": "그 발표는 평균 향상을 강조했지만, 가장 취약한 집단이 더 뒤처졌다는 사실은 자세히 다루지 않고 얼버무렸다."
+      },
+      "sources": [
+        {"name": "Oxford Advanced Learner's Dictionary", "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/gloss-over", "independenceGroup": "Oxford", "noteKo": "불쾌하거나 난처한 일을 자세히 다루지 않음으로써 언급을 피하는 sense 확인."},
+        {"name": "Collins English Dictionary", "url": "https://www.collinsdictionary.com/dictionary/english/gloss-over", "independenceGroup": "Collins", "noteKo": "문제·실수를 무시하거나 매우 빨리 다뤄 덜 중요해 보이게 하는 sense 대조."}
+      ]
+    },
+    {
       "key": "without-fail",
       "partOfSpeech": "adverbial phrase",
       "targets": [

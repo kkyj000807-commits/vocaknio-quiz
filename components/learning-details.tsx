@@ -126,6 +126,7 @@ function ActiveRecallStudyDetails({
     ...entry.exactSynonyms.map((word) => ({ word, meaning: entry.koreanMeaning })),
     ...entry.nearSynonyms.map((word) => ({ word, meaning: `가까운 뜻 · ${entry.koreanMeaning}` })),
     ...entry.distractors.map((choice) => ({ word: choice.word, meaning: choice.meaningKo })),
+    ...Object.entries(entry.relationMeaningsKo ?? {}).map(([word, meaning]) => ({ word, meaning })),
   ];
 
   return (
@@ -166,10 +167,14 @@ function ActiveRecallStudyDetails({
             {example.ko ? <Text style={s.text}>{example.ko}</Text> : null}
             {example.cueKo ? <Text style={s.note}>문맥 단서: {example.cueKo}</Text> : null}
             {entry.exactSynonyms.length + entry.nearSynonyms.length > 0 ? (
-              <Text style={[s.relationCue, { color: colors.success }]}>≒ {[...entry.exactSynonyms, ...entry.nearSynonyms].join(" · ")}</Text>
+              <Text style={[s.relationCue, { color: colors.success }]}>≒ {[...entry.exactSynonyms, ...entry.nearSynonyms]
+                .map((word) => entry.relationMeaningsKo?.[word] ? `${word} (${entry.relationMeaningsKo[word]})` : word)
+                .join(" · ")}</Text>
             ) : null}
             {entry.antonyms.length > 0 ? (
-              <Text style={[s.relationCue, { color: colors.error }]}>←→ {entry.antonyms.join(" · ")}</Text>
+              <Text style={[s.relationCue, { color: colors.error }]}>←→ {entry.antonyms
+                .map((word) => entry.relationMeaningsKo?.[word] ? `${word} (${entry.relationMeaningsKo[word]})` : word)
+                .join(" · ")}</Text>
             ) : null}
           </View>
         ))}
