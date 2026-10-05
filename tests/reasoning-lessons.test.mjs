@@ -15,7 +15,7 @@ describe("문맥 출제 계약", () => {
   it("구성 요소 해설 15개를 모든 대상 행의 실제 배포 JSON에 연결한다", () => {
     const compositions = read("data/expression-composition.json");
     const corrections = read("data/idiom-corrections.json");
-    expect(compositions.entries).toHaveLength(15);
+    expect(compositions.entries).toHaveLength(16);
     for (const composition of compositions.entries) {
       const correction = corrections.entries.find((e) => e.key === composition.key);
       expect(correction?.targets.length).toBeGreaterThan(0);

@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAtKst": "2026-09-30T06:17:31+09:00",
+  "generatedAtKst": "2026-10-05T22:44:19+09:00",
   "vocabulary": {
     "sourceRows": 38163,
     "uniqueHeadwords": 13347,
-    "rowsWithCanonicalSense": 241,
-    "rowsWithoutCanonicalSense": 37922
+    "rowsWithCanonicalSense": 242,
+    "rowsWithoutCanonicalSense": 37921
   },
   "rawVocabulary": {
     "recordCount": 38163,
@@ -22,7 +22,7 @@
     "note": "원본 38,163행 스키마는 w/k/s 중심이며, canonical sense 필드는 별도 검수 레이어에서만 제공된다."
   },
   "before": {
-    "canonicalSenseCount": 111,
+    "canonicalSenseCount": 113,
     "blanks": {
       "englishDefinition": 19,
       "koreanMeaning": 19,
@@ -35,7 +35,7 @@
     }
   },
   "after": {
-    "canonicalSenseCount": 105,
+    "canonicalSenseCount": 107,
     "blanks": {
       "englishDefinition": 0,
       "koreanMeaning": 0,
@@ -126,15 +126,15 @@
     }
   ],
   "statusCounts": {
-    "COMPLETE": 87,
+    "COMPLETE": 89,
     "VERIFIED_NO_DATA": 0,
     "FAILED": 0,
     "NEEDS_REVIEW": 18,
     "PENDING": 0
   },
   "frontend": {
-    "learningDetailSenseCount": 152,
-    "learningDetailRowCount": 218,
+    "learningDetailSenseCount": 154,
+    "learningDetailRowCount": 219,
     "note": "기존 단어장·문풀·오답 화면의 LearningDetails selector가 이 배포 JSON을 읽는다."
   },
   "pipeline": [
@@ -170,7 +170,7 @@
   "firstLoss": {
     "unmappedVocabularyRows": {
       "stage": "sense 매핑",
-      "count": 37922,
+      "count": 37921,
       "reason": "원본 어휘 행에 canonical senseId가 아직 없다."
     },
     "mappedSenseMissingFields": {

@@ -1,6 +1,28 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.09.30 03:22 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.10.05 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+
+## 현재 batch — `without fail` 2sense·결합 해설·영영 인출 VERIFIED / 1.4 배포 대기
+
+- 정본 `APPROW02335`의 `without fail`을 Oxford와 Collins에서 독립 대조했다. The Free Dictionary는 우선 조회했으나 robots 정책으로 자동 접근이 차단되어 근거로 저장하지 않았다. 두 사전이 공통으로 구분하는 명령·약속의 `반드시`와 반복 사실의 `예외 없이 매번`을 `without-fail:required-certainty`, `without-fail:every-time-no-exception` 두 canonical sense로 분리했다.
+- 정답 전에는 sense별 영어 정의와 영어 선지만 표시한다. 정답 뒤에는 한국어 핵심 뜻, exact/near/반대축, 각 오답의 한국어 차이, 자체 편집 영·한 예문과 문맥 단서를 표시한다. `without exception`은 반복 sense의 exact이지만 한 번의 마감 이행 sense에서는 구별해야 하는 선지로 둔다.
+- `without + fail` 결합 해설은 fail을 시험 낙제로 직역하지 않고, 마감·명령과 반복 표지를 먼저 찾아 뜻을 좁히도록 연결했다. `without`가 붙는 모든 표현을 반드시로 일반화하지 않는 한계도 함께 표시한다.
+- 현재 집계는 canonical107sense, COMPLETE89, NEEDS_REVIEW18, mapped242행, unmapped37,921행이다. active-recall은 production17sense/26행, 영영 정의·예문·영어→영어 문항26행이며 실패 상태는 0이다.
+- VERIFIED: 관련 3파일37테스트와 canonical coverage 7테스트 통과. 전체 검사 TypeScript·데이터 감사·28파일229테스트 통과/인증1skip. 변경 ESLint 오류0, diff 검사, Git 보안 감사 tracked496/untracked204/findings0 통과.
+- DEPLOYMENT PENDING: release 설정은 1.4이며 아직 Production 빌드·Pages push·공개 URL 확인 전이다. 이 단계에서는 1.4 배포 완료로 보고하지 않는다.
+- NOT VERIFIED: 실제 iPhone/iPad Safari, Android Chrome, Galaxy Tab Samsung Internet의 터치·회전·분할 화면은 확인하지 않았다.
+- NEXT/P0: source commit 뒤 새 Production 산출물을 만들고 Pages 1.4에 배포한 다음, 실제 공개 단어장과 definition-choice에서 두 sense·정답 전 한국어 비노출·정답 후 상세 해설·설정 버전을 확인한다.
+
+## 현재 batch — `zoom in on` 비유적 집중 sense·영영 인출 VERIFIED / 1.3 공개 확인
+
+- 정본 중복 occurrence 2개(`JBKROW000093`, `JBKROW004059`)를 `zoom-in-on:give-close-attention` 한 canonical sense로 연결했다. The Free Dictionary는 robots 정책으로 자동 접근이 차단되어 근거로 저장하지 않았고, Cambridge와 Collins에서 카메라 확대가 아닌 `특정 부분을 알아차리고 특별히 자세히 살피다`라는 비유적 주의 집중 용법을 독립 대조했다.
+- 자체 편집 영영 정의는 `to give especially close attention to one particular thing`으로 고정했다. exact `focus on`, near `concentrate on`/`zero in on`, 반대축 `zoom out from`/`gloss over`를 분리하고, 정답 전에는 영어 정의·영어 선지만, 정답 뒤에는 한국어 핵심 뜻·관계축·선지별 구별을 표시한다.
+- 예문 `After surveying the entire passage, the editor zoomed in on the sentence that reversed the author's conclusion.`에 한국어 초월번역과 `전체 글 → 결론을 뒤집는 한 문장` 문맥 단서를 연결했다. 단어장 상세도 같은 sense의 EN 정의 → KR 핵심 뜻 → 문맥 설명 → 동의/반의 축 → 영·한 예문을 사용한다.
+- 실제 backfill 결과 canonical105sense, COMPLETE87, NEEDS_REVIEW18, mapped241행, unmapped37,922행이다. active-recall은 production15sense/25행, 영영 정의·예문·영어→영어 문항25행이며 실패 상태는 0이다.
+- VERIFIED: 전체 프로젝트 검사 TypeScript·데이터 감사·28파일228테스트 통과/인증1skip, 변경 ESLint·diff 검사, Production 출력 감사(HTML22·학습JSON8·정의JSON8·참조누락0), Git 보안 감사(고신뢰 findings0)가 통과했다.
+- VERIFIED 배포: 앱 소스 `92206ad7e1a4c63bc6053da3b3c4e24e4b9e92eb`, Pages `a8612801a677a5bf173686b0a46dbae799e3010b`, Pages Actions `36632739671` success. 공개 `release.json`은 version1.3, `2026.09.30 06:20 KST`; 실제 공개 정의 문제에서 정답 전 한국어 비노출과 정답 후 한국어 정의 해석·동의/반의 축·선지별 설명을 in-app browser로 확인했다. 단어장 상세와 설정 버전도 같은 공개 배포에서 확인했다.
+- NOT VERIFIED: 실제 iPhone/iPad Safari, Android Chrome, Galaxy Tab Samsung Internet의 터치·회전·분할 화면은 확인하지 않았다. in-app browser 확인을 실기기 검증으로 대체하지 않는다.
+- NEXT/P0: 다음 실행은 미매핑 숙어 `without fail`의 `반드시` 용법을 독립 사전으로 대조하고, 반복 사실의 `예외 없이 항상` 용법과 구별한 canonical sense → 영영 정의/예문 → definition-choice → 동일 상세 패널까지 한 vertical slice로 닫는다.
 
 ## 현재 batch — `a wide range of` 다양성 sense·영영 인출 VERIFIED / 1.2 공개 확인
 

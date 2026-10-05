@@ -15,6 +15,7 @@ const ruleOfThumbRows = VOCAB.filter(item => item.w === "rule of thumb");
 const conduciveToRows = VOCAB.filter(item => item.w === "conducive to");
 const wideRangeRows = VOCAB.filter(item => item.w === "a wide range of");
 const zoomInOnRows = VOCAB.filter(item => item.w === "zoom in on");
+const withoutFailRows = VOCAB.filter(item => item.w === "without fail");
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -33,13 +34,13 @@ describe("영어→영어 active recall", () => {
     expect(sense?.exactSynonyms).not.toContain("overseer");
     expect(getActiveRecallSenses(juryRows[0].id)).toHaveLength(1);
     expect(getActiveRecallCoverage()).toEqual({
-      senses: 15,
-      rows: 25,
-      definitions: 15,
-      examples: 15,
-      contextualizedExamples: 15,
-      contextExplanations: 15,
-      synonymRelations: 15,
+      senses: 17,
+      rows: 26,
+      definitions: 17,
+      examples: 17,
+      contextualizedExamples: 17,
+      contextExplanations: 17,
+      synonymRelations: 17,
     });
   });
 
@@ -177,6 +178,40 @@ describe("영어→영어 active recall", () => {
     expect(question.choices.map(choice => choice.value)).toContain("zoom out from");
     expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
     expect(validateQuestion(question)).toBe(true);
+  });
+
+  it("without fail의 의무·반복 sense를 분리하고 각각 단일정답 문제로 만든다", () => {
+    expect(withoutFailRows.map(item => item.id)).toEqual(["APPROW02335"]);
+    const senses = getActiveRecallSenses(withoutFailRows[0].id);
+    expect(senses.map(sense => sense.senseId)).toEqual([
+      "without-fail:required-certainty",
+      "without-fail:every-time-no-exception",
+    ]);
+    expect(senses[0]).toMatchObject({
+      conciseEnglishDefinition: "definitely, with no failure to do the required action",
+      koreanMeaning: "명령·약속에서 반드시, 틀림없이",
+      exactSynonyms: ["definitely"],
+    });
+    expect(senses[1]).toMatchObject({
+      conciseEnglishDefinition: "on every occasion, with no exception",
+      koreanMeaning: "반복되는 모든 경우에 예외 없이, 매번",
+      exactSynonyms: ["without exception"],
+    });
+    expect(senses[0].contextExplanationKo).toContain("별도 sense");
+    expect(senses[1].contextExplanationKo).toContain("반복 빈도");
+
+    const firstRandom = vi.spyOn(Math, "random").mockReturnValue(0);
+    const [required] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [withoutFailRows[0].num], preserveItemOrder: true });
+    expect(required.recall?.senseId).toBe("without-fail:required-certainty");
+    expect(required.choices.filter(choice => isChoiceCorrect(required, choice))).toHaveLength(1);
+    expect(validateQuestion(required)).toBe(true);
+    firstRandom.mockRestore();
+
+    vi.spyOn(Math, "random").mockReturnValue(0.9);
+    const [repeated] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [withoutFailRows[0].num], preserveItemOrder: true });
+    expect(repeated.recall?.senseId).toBe("without-fail:every-time-no-exception");
+    expect(repeated.choices.filter(choice => isChoiceCorrect(repeated, choice))).toHaveLength(1);
+    expect(validateQuestion(repeated)).toBe(true);
   });
 
   it("take for granted의 사실 전제와 가치 간과를 서로 다른 sense로 유지한다", () => {

@@ -1,9 +1,9 @@
 {
-  "version": "1.3",
+  "version": "1.4",
   "coverage": {
-    "senses": 152,
-    "rows": 218,
-    "checkedAtKst": "2026.09.05"
+    "senses": 154,
+    "rows": 219,
+    "checkedAtKst": "2026.10.05"
   },
   "items": {
     "APPROW00001": {
@@ -53,6 +53,13 @@
       "group": "APPENDIX",
       "entryIds": [
         "learn:correction:APPROW02128"
+      ]
+    },
+    "APPROW02335": {
+      "group": "APPENDIX",
+      "entryIds": [
+        "learn:correction:APPROW02335:required-certainty",
+        "learn:correction:APPROW02335:every-time-no-exception"
       ]
     },
     "JBKROW000003": {

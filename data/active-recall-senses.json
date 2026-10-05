@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "checkedAtKst": "2026.09.30",
+  "checkedAtKst": "2026.10.05",
   "entries": [
     {
       "id": "rule-of-thumb:practical-approximate-guide",
@@ -282,6 +282,156 @@
         }
       ],
       "sourceCheckedAt": "2026.09.30",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
+    },
+    {
+      "id": "without-fail:required-certainty",
+      "headword": "without fail",
+      "partOfSpeech": "adverbial phrase",
+      "senseId": "without-fail:required-certainty",
+      "itemIds": ["APPROW02335"],
+      "englishDefinition": "Used to stress that a required action will definitely be done, especially by a stated time.",
+      "conciseEnglishDefinition": "definitely, with no failure to do the required action",
+      "exactSynonyms": ["definitely"],
+      "nearSynonyms": ["for certain", "no matter what"],
+      "antonyms": ["if possible", "perhaps"],
+      "variants": [],
+      "relatedWords": ["without exception"],
+      "exampleSentences": [
+        {
+          "en": "Submit the revised statement by noon tomorrow without fail.",
+          "ko": "수정한 진술서를 내일 정오까지 반드시 제출해라.",
+          "cueKo": "명령형 submit과 마감 시각 by noon tomorrow가 함께 있어, 행동을 빼먹거나 미룰 여지가 없다는 의무·확실성을 강조한다.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "명령·약속에서 반드시, 틀림없이",
+      "contextExplanationKo": "해야 할 행동과 마감 시점이 제시된 문맥에서는 그 행동이 반드시 이행되어야 함을 강조한다. fail을 단순히 '시험에 떨어지다'로 읽지 않고 without fail 전체를 묶어 읽는다. every week처럼 반복 단위가 나오면 '매번 예외 없이'라는 별도 sense로 좁혀야 한다.",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "used to stress that a required action will definitely be done, especially by a stated time"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "The final application must reach the admissions office by Friday _____."
+        }
+      ],
+      "distractors": [
+        {
+          "word": "if possible",
+          "meaningKo": "가능하다면",
+          "reasonKo": "행동을 선택 가능한 것으로 약화한다. 목표 표현은 정해진 행동을 반드시 이행해야 한다는 뜻이다.",
+          "plausible": true
+        },
+        {
+          "word": "without exception",
+          "meaningKo": "예외 없이 모두·매번",
+          "reasonKo": "집합의 모든 구성원이나 반복되는 모든 경우를 빠짐없이 포함할 때 알맞다. 한 번의 제출 마감에서 행동 이행을 강조하는 현재 sense와 초점이 다르다.",
+          "plausible": true
+        },
+        {
+          "word": "by accident",
+          "meaningKo": "우연히, 실수로",
+          "reasonKo": "의도하지 않은 우연을 나타내며, 의무나 약속을 확실히 이행한다는 뜻이 아니다.",
+          "plausible": false
+        }
+      ],
+      "sources": [
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/fail_2",
+          "independenceGroup": "Oxford",
+          "note": "without fail이 명령에서 반드시 해야 함을 강조하는 sense와 반복 상황의 always sense를 구분해 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/without-fail",
+          "independenceGroup": "Collins",
+          "note": "명령·약속의 확실성을 강조하는 sense와 매번 일어남을 강조하는 sense를 독립 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.10.05",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
+    },
+    {
+      "id": "without-fail:every-time-no-exception",
+      "headword": "without fail",
+      "partOfSpeech": "adverbial phrase",
+      "senseId": "without-fail:every-time-no-exception",
+      "itemIds": ["APPROW02335"],
+      "englishDefinition": "Used to emphasize that the same thing happens on every occasion, with no exception.",
+      "conciseEnglishDefinition": "on every occasion, with no exception",
+      "exactSynonyms": ["without exception"],
+      "nearSynonyms": ["invariably", "every time"],
+      "antonyms": ["occasionally", "not always"],
+      "variants": [],
+      "relatedWords": ["like clockwork"],
+      "exampleSentences": [
+        {
+          "en": "During the review month, she checked the error log every evening without fail.",
+          "ko": "복습 기간 동안 그녀는 매일 저녁 한 번도 빠짐없이 오답 기록을 확인했다.",
+          "cueKo": "every evening이 반복 단위를 만들고, without fail이 그 반복에서 빠진 날이 하나도 없었음을 강조한다.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "반복되는 모든 경우에 예외 없이, 매번",
+      "contextExplanationKo": "every day, each meeting처럼 반복되는 경우가 제시되면 모든 회차에서 같은 일이 빠짐없이 일어났다는 뜻이다. 한 번의 약속을 반드시 지키라는 의무 sense와 달리, 실제 반복 빈도의 예외 없음에 초점이 있다.",
+      "prompts": [
+        {
+          "id": "definition",
+          "kind": "definition-recall",
+          "text": "on every occasion, with no exception"
+        },
+        {
+          "id": "context",
+          "kind": "context-recall",
+          "text": "For six weeks, the research assistant backed up the files every night _____."
+        }
+      ],
+      "distractors": [
+        {
+          "word": "occasionally",
+          "meaningKo": "가끔",
+          "reasonKo": "일부 경우에만 일어남을 뜻해, 반복되는 모든 경우에 빠짐없다는 목표 표현과 반대다.",
+          "plausible": true
+        },
+        {
+          "word": "if necessary",
+          "meaningKo": "필요하다면",
+          "reasonKo": "필요 여부를 조건으로 삼으므로 매번 일어났다는 반복 빈도를 보장하지 않는다.",
+          "plausible": true
+        },
+        {
+          "word": "in advance",
+          "meaningKo": "미리",
+          "reasonKo": "행동 시점을 앞당기는 말이지, 모든 반복 회차에서 빠짐없이 일어났다는 뜻은 아니다.",
+          "plausible": false
+        }
+      ],
+      "sources": [
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/fail_2",
+          "independenceGroup": "Oxford",
+          "note": "without fail의 always sense와 명령에서 반드시 해야 한다는 sense를 구분해 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/without-fail",
+          "independenceGroup": "Collins",
+          "note": "같은 일이 매번 일어남을 강조하는 sense와 주문·약속의 확실성 강조 sense를 독립 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+        }
+      ],
+      "sourceCheckedAt": "2026.10.05",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",
