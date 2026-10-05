@@ -147,11 +147,11 @@ export function applyLearningEvent(
   } else if (input.type === "wrong") {
     target.wrong += 1;
     target.correctStreak = 0;
-    target.status = previous.status === "MASTERED" ? "RELEARNING" : "WEAK";
+    target.status = previous.status === "MASTERED" || previous.status === "RELEARNING" ? "RELEARNING" : "WEAK";
   } else if (input.type === "unknown") {
     target.unknown += 1;
     target.correctStreak = 0;
-    target.status = previous.status === "MASTERED" ? "RELEARNING" : "WEAK";
+    target.status = "RELEARNING";
   } else if (input.type === "confused") {
     target.confused += 1;
     target.correctStreak = 0;

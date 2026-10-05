@@ -20,11 +20,11 @@ type SemanticRelationClusterProps = {
 };
 
 const kindLabel = {
-  exact: "Exact",
-  near: "Near",
+  exact: "동의어",
+  near: "유사어",
   opposite: "반의어",
-  variant: "Variant",
-  related: "Related",
+  variant: "변형",
+  related: "관련어",
 } as const;
 
 function RelationTerms({
@@ -49,14 +49,14 @@ function RelationTerms({
             <Text style={[styles.kind, { color: toneColor }]}>{kindLabel[term.kind]}</Text>
             <Text style={[styles.word, { color: colors.foreground }]}>{term.word}</Text>
           </View>
-          <Text style={[styles.meaning, { color: colors.muted }]}>KR · {term.meaningKo ?? (
+          <Text style={[styles.meaning, { color: colors.foreground }]}>{term.meaningKo ?? (
             term.kind === "exact"
-              ? `같은 sense의 핵심 뜻 · ${coreMeaningKo}`
+              ? coreMeaningKo
               : term.kind === "near"
-                ? `가까운 의미축 · ${coreMeaningKo}`
+                ? `이 문맥에서는 ${coreMeaningKo}`
                 : term.kind === "opposite"
-                  ? "반대 관계 확인 · 개별 뜻 검수 대기"
-                  : "관련 표현 · 개별 뜻 검수 대기"
+                  ? "한국어 뜻 검수 중"
+                  : "한국어 뜻 검수 중"
           )}</Text>
         </View>
       ))}
@@ -94,22 +94,21 @@ export function SemanticRelationCluster({
       <Text style={[styles.title, { color: colors.primary }]}>의미 클러스터</Text>
 
       <View style={[styles.englishPair, { borderColor: colors.success, backgroundColor: colors.card }]}>
-        <Text style={[styles.coreLabel, { color: colors.success }]}>EN ↔ EN · 같은 sense</Text>
+        <Text style={[styles.coreLabel, { color: colors.success }]}>영어 표현 연결</Text>
         <Text style={[styles.pairText, { color: colors.foreground }]}>
           {headword}{cluster.synonyms.length > 0 ? ` ≒ ${cluster.synonyms.slice(0, 4).map((term) => term.word).join(" · ")}` : ""}
         </Text>
-        <Text style={[styles.meaning, { color: colors.muted }]}>문제에서는 이 영어 관계만 보고 답하고, 한국어는 정답 확인 뒤에 복습합니다.</Text>
       </View>
 
       {cluster.synonyms.length > 0 ? (
         <View style={styles.axis}>
-          <Text style={[styles.axisLabel, { color: colors.success }]}>≒ 같은 의미축</Text>
+          <Text style={[styles.axisLabel, { color: colors.success }]}>≒ 동의어·유사어</Text>
           <RelationTerms terms={cluster.synonyms} tone="same" coreMeaningKo={coreMeaningKo} />
         </View>
       ) : null}
 
       <View style={[styles.core, { borderColor: colors.primary, backgroundColor: colors.card }]}>
-        <Text style={[styles.coreLabel, { color: colors.primary }]}>KR · 영영 정의 핵심 뜻</Text>
+        <Text style={[styles.coreLabel, { color: colors.primary }]}>영영 정의 · 한국어 해석</Text>
         <Text style={[styles.headword, { color: colors.foreground }]}>{headword}</Text>
         <Text style={[styles.coreMeaning, { color: colors.foreground }]}>{coreMeaningKo}</Text>
         {bridgeKo ? <Text style={[styles.bridge, { color: colors.muted }]}>{bridgeKo}</Text> : null}
@@ -117,7 +116,7 @@ export function SemanticRelationCluster({
 
       {cluster.opposites.length > 0 ? (
         <View style={styles.axis}>
-          <Text style={[styles.axisLabel, { color: colors.error }]}>←→ 반대 의미축</Text>
+          <Text style={[styles.axisLabel, { color: colors.error }]}>←→ 반의어</Text>
           <RelationTerms terms={cluster.opposites} tone="opposite" coreMeaningKo={coreMeaningKo} />
         </View>
       ) : (
@@ -145,11 +144,11 @@ const styles = StyleSheet.create({
   terms: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
   term: { maxWidth: "100%", gap: 2, borderWidth: 1.5, borderRadius: 10, paddingHorizontal: 9, paddingVertical: 6 },
   termTop: { flexDirection: "row", alignItems: "baseline", flexWrap: "wrap", gap: 5 },
-  kind: { fontSize: 9, lineHeight: 14, fontWeight: "900" },
-  word: { fontSize: 12, lineHeight: 18, fontWeight: "700", flexShrink: 1 },
-  meaning: { fontSize: 10, lineHeight: 15 },
+  kind: { fontSize: 11, lineHeight: 17, fontWeight: "900" },
+  word: { fontSize: 16, lineHeight: 24, fontWeight: "700", flexShrink: 1 },
+  meaning: { fontSize: 14, lineHeight: 22 },
   core: { gap: 3, padding: 11, borderWidth: 1.5, borderRadius: 10 },
-  coreLabel: { fontSize: 9, lineHeight: 14, fontWeight: "900", letterSpacing: 0.8 },
+  coreLabel: { fontSize: 12, lineHeight: 18, fontWeight: "900", letterSpacing: 0.4 },
   headword: { fontSize: 18, lineHeight: 24, fontWeight: "900" },
   coreMeaning: { fontSize: 14, lineHeight: 21, fontWeight: "800" },
   bridge: { fontSize: 12, lineHeight: 19 },

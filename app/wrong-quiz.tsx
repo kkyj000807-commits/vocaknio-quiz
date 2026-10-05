@@ -45,6 +45,7 @@ import {
 import { loadBookmarks, recordOneAnswer, toggleBookmark } from "@/lib/store";
 import { getQuestionLearningTargetKey } from "@/lib/canonical-learning";
 import { useColors } from "@/hooks/use-colors";
+import { useQuestionTimer } from "@/hooks/use-question-timer";
 
 function NativeSwipeBoundary({
   gesture,
@@ -119,6 +120,8 @@ export default function WrongQuizScreen() {
   const sessionIdRef = useRef(
     `wrong-review-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`,
   );
+  const questionTimer = useQuestionTimer();
+  useEffect(() => { questionTimer.reset(); }, [currentIdx, questionTimer]);
 
   const cardScale = useSharedValue(1);
   const cardAnimStyle = useAnimatedStyle(() => ({
@@ -214,10 +217,11 @@ export default function WrongQuizScreen() {
         outcome: isCorrect ? "correct" : "wrong",
         responseKey: choice?.value,
         answeredAt: Date.now(),
+        ...questionTimer.read(),
         learningTargetKey: getQuestionLearningTargetKey(q),
       });
     },
-    [answered, currentIdx, q, haptic, animateCard],
+    [answered, currentIdx, q, haptic, animateCard, questionTimer],
   );
 
   const handleSkip = useCallback(() => {
@@ -241,10 +245,11 @@ export default function WrongQuizScreen() {
       mode: q.mode,
       outcome: "skip",
       answeredAt: Date.now(),
+      ...questionTimer.read(),
       learningTargetKey: getQuestionLearningTargetKey(q),
       learningEvent: "unknown",
     });
-  }, [answered, currentIdx, q, haptic, animateCard]);
+  }, [answered, currentIdx, q, haptic, animateCard, questionTimer]);
 
   const handleNext = useCallback(async () => {
     if (isMovingRef.current || !answered) return;
@@ -597,7 +602,7 @@ export default function WrongQuizScreen() {
               </View>
             )}
 
-            {answered && <LearningDetails itemId={q.item.id} />}
+            {answered && !q.recall && !q.definitionRecall && <LearningDetails itemId={q.item.id} />}
 
             {(currentIdx > 0 || answered) && (
               <View style={s.questionNavRow}>

@@ -42,7 +42,7 @@ import { FlipCard } from "@/components/flip-card";
 import { PronunciationButton } from "@/components/pronunciation-button";
 import { LearningDetails } from "@/components/learning-details";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { type QuizMode, type VocabItem } from "@/lib/vocab";
+import { getVocabItem, type QuizMode, type VocabItem } from "@/lib/vocab";
 import {
   buildQuizQuestions,
   getQuizCandidateItems,
@@ -55,6 +55,7 @@ import {
   loadBookmarks,
   loadMastered,
   loadSenseLearningState,
+  loadLearningSnapshot,
   markLearningTargetMastered,
   loadQuizSession,
   saveQuizSession,
@@ -75,6 +76,9 @@ import {
 } from "@/lib/learning-state";
 import { getMnemonicVisual } from "@/lib/mnemonic-visual";
 import { useColors } from "@/hooks/use-colors";
+import { useQuestionTimer } from "@/hooks/use-question-timer";
+import { selectAdaptiveItemNums } from "@/lib/adaptive-quiz";
+import { ADAPTIVE_POLICY } from "@/lib/learning-analytics";
 import {
   createEmptyQuestionViewState,
   resumableQuizSession,
@@ -120,7 +124,7 @@ export default function QuizScreen() {
   );
   const sessionIdRef = useRef("");
   const sessionCompletedRef = useRef(false);
-  const questionStartedAtRef = useRef(Date.now());
+  const questionTimer = useQuestionTimer();
   const [restartToken, setRestartToken] = useState(0);
   const [sessionNotice, setSessionNotice] = useState("");
   const params = useLocalSearchParams<{
@@ -235,7 +239,12 @@ export default function QuizScreen() {
         loadSenseLearningState(),
       ]);
       if (cancelled) return;
-      const masteredKeys = [...masteredTargetKeys(learningState)];
+      // Fresh MASTER is protected for one day, not excluded forever. Older
+      // MASTER rejoins the pool with a low, time-dependent sampling weight.
+      const masteredKeys = [...masteredTargetKeys(learningState)].filter(key => {
+        const state = getLearningTargetState(learningState, key);
+        return state.lastStudiedAt > 0 && Date.now() - state.lastStudiedAt < ADAPTIVE_POLICY.masterProtectionMs;
+      });
 
       const baseOptions = {
         mode,
@@ -244,7 +253,7 @@ export default function QuizScreen() {
         count,
         rangeId,
         choiceLang,
-        masteredNums: loadedMastered,
+        masteredNums: loadedMastered.filter(num => { const item = getVocabItem(num); return item && getItemLearningTargets(item).some(target => masteredKeys.includes(target.key)); }),
         masteredTargetKeys: masteredKeys,
         itemNums: itemNums.length > 0 ? itemNums : undefined,
         allowMeaningFallback: false,
@@ -269,6 +278,8 @@ export default function QuizScreen() {
             word: item.w,
             learningKey: rankedTargets[0]?.target.key,
             learningPriority: rankedTargets[0]?.score ?? 0,
+            learningStatus: rankedTargets[0] ? getLearningTargetState(learningState, rankedTargets[0].target.key).status : "NEW",
+            lastStudiedAt: rankedTargets[0] ? getLearningTargetState(learningState, rankedTargets[0].target.key).lastStudiedAt : 0,
           };
         }),
         count,
@@ -458,19 +469,20 @@ export default function QuizScreen() {
         outcome,
         responseKey,
         answeredAt: Date.now(),
-        responseMs: Math.max(0, Date.now() - questionStartedAtRef.current),
+        ...questionTimer.read(),
+        targetKey: getQuestionLearningTargetKey(q),
         learningTargetKey: getQuestionLearningTargetKey(q),
         learningEvent: outcome === "skip" ? "unknown" : undefined,
         hintUsed: hintLevel > 0 || imageRevealed,
       };
     },
-    [hintLevel, imageRevealed, q],
+    [hintLevel, imageRevealed, q, questionTimer],
   );
 
   useEffect(() => {
-    questionStartedAtRef.current = Date.now();
+    questionTimer.reset();
     setImageRevealed(false);
-  }, [currentIdx, q?.id]);
+  }, [currentIdx, q?.id, questionTimer]);
 
   const handleBookmark = useCallback(async () => {
     if (!q) return;
@@ -754,6 +766,33 @@ export default function QuizScreen() {
       return;
     }
     const targetIndex = currentIdx + 1;
+    if (!questionViewStatesRef.current.get(targetIndex)?.answered) {
+      // The answer write is ahead of this snapshot in the shared queue. Re-rank
+      // only unanswered positions; back navigation and saved grades stay intact.
+      try {
+        const snapshot = await loadLearningSnapshot();
+        const remaining = questions.map((question, index) => ({ question, index }))
+          .filter(row => row.index >= targetIndex && !questionViewStatesRef.current.get(row.index)?.answered);
+        const [selectedNum] = selectAdaptiveItemNums({
+          candidates: remaining.map(({ question }) => {
+            const key = getQuestionLearningTargetKey(question);
+            const target = getLearningTargetState(snapshot.learning, key);
+            return { num: question.item.num, word: question.item.w, learningKey: key,
+              conceptId: question.item.conceptId, learningStatus: target.status, lastStudiedAt: target.lastStudiedAt };
+          }), count: 1, mode, history: snapshot.history, legacyWrongNums: snapshot.legacyWrongNums, strategy: "weighted",
+        });
+        const selectedIndex = remaining.find(row => row.question.item.num === selectedNum)?.index;
+        if (selectedIndex !== undefined && selectedIndex !== targetIndex) {
+          const nextQuestions = [...questions];
+          [nextQuestions[targetIndex], nextQuestions[selectedIndex]] = [nextQuestions[selectedIndex], nextQuestions[targetIndex]];
+          const saved = makeSessionSnapshot();
+          await saveQuizSession({ ...saved, questions: nextQuestions, currentIndex: targetIndex });
+          setQuestions(nextQuestions);
+        }
+      } catch {
+        // Unreadable evidence never blocks a valid already-generated question.
+      }
+    }
     restoreQuestionViewState(targetIndex);
     setCurrentIdx(targetIndex);
     animateMoveCard("next");
@@ -761,7 +800,8 @@ export default function QuizScreen() {
     releaseMovingLock();
   }, [
     currentIdx,
-    questions.length,
+    questions,
+    mode,
     correctCount,
     wrongItems,
     haptic,
@@ -771,6 +811,7 @@ export default function QuizScreen() {
     animateMoveCard,
     releaseMovingLock,
     finishSession,
+    makeSessionSnapshot,
   ]);
 
   const handlePrevious = useCallback(() => {
@@ -885,7 +926,7 @@ export default function QuizScreen() {
     if (q.recall) {
       return "영영 정의 → 정확한 단어";
     }
-    if (questionMode === "syn-choice") return "영어 → 같은 sense 영어";
+    if (questionMode === "syn-choice") return "영어 동의어";
     if (questionMode === "kor-choice") {
       return q.answerKind === "synonym"
         ? "동의어 고르기 (영어)"
@@ -900,7 +941,7 @@ export default function QuizScreen() {
     if (q.recall || q.definitionRecall) return "영영 정의에 정확히 맞는 표현은?";
     if (q.sense) return q.answerKind === "meaning" ? "이 문맥에서 표현의 뜻은?" : "이 문맥에서 뜻이 같은 표현은?";
     if (q.answerKind === "meaning") return "올바른 한국어 뜻은?";
-    if (questionMode === "syn-kor-choice") return "같은 sense에서 바꿔 쓸 수 있는 영어는?";
+    if (questionMode === "syn-kor-choice") return "Which expression has the closest meaning?";
     return "올바른 동의어는?";
   };
 
@@ -1199,7 +1240,7 @@ export default function QuizScreen() {
                         onPress={handleFlashMaster}
                       >
                         <Text style={s.masterBtnText}>
-                          ⭐ 마스터 — 다음부터 이 단어 제외
+                          ⭐ 마스터 — 목록 제외 · 나중에 기억 재검증
                         </Text>
                       </Pressable>
                     </View>
@@ -1293,7 +1334,7 @@ export default function QuizScreen() {
                 </View>
               )}
 
-              {answered && <LearningDetails itemId={q.item.id} />}
+              {answered && !q.recall && !q.definitionRecall && <LearningDetails itemId={q.item.id} />}
 
               {/* 문제 이동 */}
               {(currentIdx > 0 || answered) && (

@@ -1,317 +1,48 @@
-import { SCROLL_END_PADDING } from "@/lib/layout";
-import { useState, useCallback } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  Platform,
-} from "react-native";
+import { useCallback, useMemo, useState } from "react";
+import { View, Text, ScrollView } from "react-native";
 import { useFocusEffect } from "expo-router";
-
 import { ScreenContainer } from "@/components/screen-container";
-import { loadStats, type StatsData, loadStudyTime, type StudyTimeData, formatStudyTime } from "@/lib/store";
+import { AdaptiveStatistics } from "@/components/adaptive-statistics";
+import { SCROLL_END_PADDING } from "@/lib/layout";
+import { loadLearningSnapshot, loadStudyTime, formatStudyTime, type StudyTimeData } from "@/lib/store";
+import { VOCAB } from "@/lib/vocab";
+import { getItemLearningTargets } from "@/lib/canonical-learning";
+import { buildLearningStatistics, type LearningItemMeta } from "@/lib/learning-statistics";
 import { useColors } from "@/hooks/use-colors";
 
+let itemMetadata: LearningItemMeta[] | null = null;
+function statisticsItems() {
+  if (!itemMetadata) itemMetadata = VOCAB.flatMap(item => getItemLearningTargets(item).map(target => ({
+    num: item.num, word: item.w, groupId: item.group, sourceId: item.id,
+    learningKey: target.key, conceptId: item.conceptId,
+  })));
+  return itemMetadata;
+}
 export default function StatsScreen() {
   const colors = useColors();
-  const [stats, setStats] = useState<StatsData | null>(null);
+  const [snapshot, setSnapshot] = useState<Awaited<ReturnType<typeof loadLearningSnapshot>> | null>(null);
   const [studyTime, setStudyTime] = useState<StudyTimeData | null>(null);
-
-  useFocusEffect(
-    useCallback(() => {
-      loadStats().then(setStats);
-      loadStudyTime().then(setStudyTime);
-    }, [])
-  );
-
-  const s = styles(colors);
-
-  const accuracy =
-    stats && stats.totalAnswered > 0
-      ? Math.round((stats.totalCorrect / stats.totalAnswered) * 100)
-      : 0;
-
-  return (
-    <ScreenContainer containerClassName="bg-background">
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ paddingBottom: SCROLL_END_PADDING }}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Header */}
-        <View style={s.header}>
-          <Text style={s.headerTitle}>학습 통계</Text>
-          <Text style={s.headerSub}>나의 편입 어휘 학습 현황</Text>
-        </View>
-
-        {/* Main Stats Grid */}
-        <View style={s.statsGrid}>
-          <View style={[s.statCard, s.statCardLarge]}>
-            <Text style={s.statEmoji}>🎯</Text>
-            <Text style={[s.statBigNum, { color: colors.primary2 as string }]}>
-              {accuracy}%
-            </Text>
-            <Text style={s.statCardLabel}>전체 정답률</Text>
-          </View>
-          <View style={[s.statCard, s.statCardLarge]}>
-            <Text style={s.statEmoji}>🔥</Text>
-            <Text style={[s.statBigNum, { color: colors.warning }]}>
-              {stats?.streak ?? 0}
-            </Text>
-            <Text style={s.statCardLabel}>연속 학습일</Text>
-          </View>
-        </View>
-
-        <View style={s.statsGrid}>
-          <View style={s.statCard}>
-            <Text style={s.statEmoji}>📖</Text>
-            <Text style={[s.statNum, { color: colors.success }]}>
-              {stats?.totalAnswered ?? 0}
-            </Text>
-            <Text style={s.statCardLabel}>총 풀이 수</Text>
-          </View>
-          <View style={s.statCard}>
-            <Text style={s.statEmoji}>✅</Text>
-            <Text style={[s.statNum, { color: colors.success }]}>
-              {stats?.totalCorrect ?? 0}
-            </Text>
-            <Text style={s.statCardLabel}>총 정답 수</Text>
-          </View>
-          <View style={s.statCard}>
-            <Text style={s.statEmoji}>📅</Text>
-            <Text style={[s.statNum, { color: colors.primary2 as string }]}>
-              {stats?.todayAnswered ?? 0}
-            </Text>
-            <Text style={s.statCardLabel}>오늘 풀이</Text>
-          </View>
-        </View>
-
-        {/* 학습 시간 섹션 */}
-        <View style={s.timeSection}>
-          <Text style={s.sectionTitle}>⏱ 순공부 시간</Text>
-          <View style={s.timeGrid}>
-            <View style={s.timeCard}>
-              <Text style={s.timeEmoji}>📅</Text>
-              <Text style={[s.timeNum, { color: colors.primary }]}>
-                {formatStudyTime(studyTime?.todaySeconds ?? 0)}
-              </Text>
-              <Text style={s.timeLabel}>오늘</Text>
-            </View>
-            <View style={[s.timeCard, s.timeCardMid]}>
-              <Text style={s.timeEmoji}>📆</Text>
-              <Text style={[s.timeNum, { color: colors.success }]}>
-                {formatStudyTime(studyTime?.weekSeconds ?? 0)}
-              </Text>
-              <Text style={s.timeLabel}>이번 주</Text>
-            </View>
-            <View style={s.timeCard}>
-              <Text style={s.timeEmoji}>🏅</Text>
-              <Text style={[s.timeNum, { color: colors.warning }]}>
-                {formatStudyTime(studyTime?.totalSeconds ?? 0)}
-              </Text>
-              <Text style={s.timeLabel}>누적</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Progress Bar */}
-        {stats && stats.totalAnswered > 0 && (
-          <View style={s.accuracySection}>
-            <Text style={s.sectionTitle}>정답률 현황</Text>
-            <View style={s.accuracyBar}>
-              <View
-                style={[
-                  s.accuracyFill,
-                  { width: `${accuracy}%` as any },
-                ]}
-              />
-            </View>
-            <View style={s.accuracyLabels}>
-              <Text style={s.accuracyLabel}>0%</Text>
-              <Text style={[s.accuracyLabel, { color: colors.primary2 as string }]}>
-                {accuracy}%
-              </Text>
-              <Text style={s.accuracyLabel}>100%</Text>
-            </View>
-          </View>
-        )}
-
-        {/* Encouragement */}
-        <View style={s.encourageCard}>
-          <Text style={s.encourageTitle}>
-            {accuracy >= 80
-              ? "🏆 훌륭한 실력이에요!"
-              : accuracy >= 60
-              ? "⭐ 꾸준히 성장 중이에요!"
-              : "💪 매일 조금씩 공부해요!"}
-          </Text>
-          <Text style={s.encourageText}>
-            {accuracy >= 80
-              ? "편입 시험 준비가 잘 되고 있어요. 계속 유지하세요!"
-              : accuracy >= 60
-              ? "좋은 페이스입니다. 오답 단어를 복습해 보세요!"
-              : "동의어 고르기 모드로 반복 학습을 시작해 보세요!"}
-          </Text>
-        </View>
-      </ScrollView>
-    </ScreenContainer>
-  );
+  const [error, setError] = useState("");
+  const [groupId, setGroupId] = useState(""); const [mode, setMode] = useState("");
+  const [period, setPeriod] = useState<"lifetime" | "today" | "7days">("lifetime");
+  useFocusEffect(useCallback(() => {
+    let active = true;
+    loadLearningSnapshot().then(value => { if (active) { setSnapshot(value); setError(""); } })
+      .catch(() => { if (active) setError("학습 기록을 읽지 못했습니다. 기존 기록을 초기화하지 않고 보존합니다. 설정에서 저장 상태를 확인하세요."); });
+    loadStudyTime().then(value => { if (active) setStudyTime(value); }).catch(() => {});
+    return () => { active = false; };
+  }, []));
+  const model = useMemo(() => snapshot ? buildLearningStatistics(snapshot.history, snapshot.learning, statisticsItems(), { groupId, mode, period, legacyWrongNums: snapshot.legacyWrongNums }) : null, [snapshot, groupId, mode, period]);
+  return <ScreenContainer containerClassName="bg-background">
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: SCROLL_END_PADDING }} showsVerticalScrollIndicator={false}>
+      <View style={{ padding: 16, paddingTop: 28 }}><Text style={{ color: colors.foreground, fontSize: 26, fontWeight: "800" }}>학습 통계</Text><Text style={{ color: colors.muted, marginTop: 6 }}>실제 풀이 기록 · 성과와 복습 우선순위</Text></View>
+      {error ? <Text accessibilityRole="alert" style={{ color: colors.error, padding: 16, lineHeight: 22 }}>{error}</Text> : null}
+      {model && snapshot ? <AdaptiveStatistics model={model} lifetime={snapshot.stats} groupId={groupId} mode={mode} period={period} onGroup={setGroupId} onMode={setMode} onPeriod={setPeriod} /> : !error ? <Text style={{ padding: 16, color: colors.muted }}>학습 기록을 불러오는 중…</Text> : null}
+      <View style={{ marginHorizontal: 16, backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1, borderRadius: 14, padding: 14, gap: 6 }}>
+        <Text style={{ fontSize: 17, fontWeight: "800", color: colors.foreground }}>순공부 시간 · 연속 학습일</Text>
+        <Text style={{ color: colors.foreground, lineHeight: 23 }}>오늘 {formatStudyTime(studyTime?.todaySeconds ?? 0)} · 이번 주 {formatStudyTime(studyTime?.weekSeconds ?? 0)} · 누적 {formatStudyTime(studyTime?.totalSeconds ?? 0)}</Text>
+        <Text style={{ color: colors.muted }}>연속 학습 {snapshot?.stats.streak ?? 0}일 · 총 풀이 {snapshot?.stats.totalAnswered ?? 0}회</Text>
+      </View>
+    </ScrollView>
+  </ScreenContainer>;
 }
-
-const styles = (colors: ReturnType<typeof useColors>) =>
-  StyleSheet.create({
-    header: {
-      paddingTop: 28,
-      paddingBottom: 20,
-      paddingHorizontal: 16,
-    },
-    headerTitle: {
-      fontSize: 26,
-      fontWeight: "800",
-      color: colors.foreground,
-      letterSpacing: -0.5,
-    },
-    headerSub: {
-      fontSize: 13,
-      color: colors.dim,
-      marginTop: 4,
-    },
-    statsGrid: {
-      flexDirection: "row",
-      gap: 10,
-      paddingHorizontal: 16,
-      marginBottom: 10,
-    },
-    statCard: {
-      flex: 1,
-      backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
-      borderRadius: 16,
-      padding: 16,
-      alignItems: "center",
-    },
-    statCardLarge: {
-      paddingVertical: 24,
-    },
-    statEmoji: {
-      fontSize: 24,
-      marginBottom: 8,
-    },
-    statBigNum: {
-      fontSize: 36,
-      fontWeight: "700",
-      fontVariant: ["tabular-nums"],
-    },
-    statNum: {
-      fontSize: 26,
-      fontWeight: "700",
-      fontVariant: ["tabular-nums"],
-    },
-    statCardLabel: {
-      fontSize: 11,
-      color: colors.dim,
-      marginTop: 6,
-      textTransform: "uppercase",
-      letterSpacing: 0.5,
-    },
-    accuracySection: {
-      marginHorizontal: 16,
-      marginTop: 8,
-      marginBottom: 10,
-      backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
-      borderRadius: 16,
-      padding: 20,
-    },
-    sectionTitle: {
-      fontSize: 13,
-      fontWeight: "700",
-      color: colors.muted,
-      marginBottom: 14,
-    },
-    accuracyBar: {
-      height: 8,
-      backgroundColor: colors.border,
-      borderRadius: 4,
-      overflow: "hidden",
-    },
-    accuracyFill: {
-      height: "100%",
-      backgroundColor: colors.primary,
-      borderRadius: 4,
-    },
-    accuracyLabels: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      marginTop: 6,
-    },
-    accuracyLabel: {
-      fontSize: 11,
-      color: colors.dim,
-    },
-    encourageCard: {
-      marginHorizontal: 16,
-      marginTop: 8,
-      backgroundColor: "rgba(108,99,255,0.08)",
-      borderWidth: 1,
-      borderColor: "rgba(108,99,255,0.2)",
-      borderRadius: 16,
-      padding: 20,
-    },
-    encourageTitle: {
-      fontSize: 16,
-      fontWeight: "700",
-      color: colors.primary2 as string,
-      marginBottom: 8,
-    },
-    encourageText: {
-      fontSize: 13,
-      color: colors.muted,
-      lineHeight: 20,
-    },
-    // 학습 시간 섹션
-    timeSection: {
-      marginHorizontal: 16,
-      marginTop: 8,
-      marginBottom: 10,
-      backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
-      borderRadius: 16,
-      padding: 20,
-    },
-    timeGrid: {
-      flexDirection: "row" as const,
-      gap: 0,
-    },
-    timeCard: {
-      flex: 1,
-      alignItems: "center" as const,
-      paddingVertical: 8,
-    },
-    timeCardMid: {
-      borderLeftWidth: 1,
-      borderRightWidth: 1,
-      borderColor: colors.border,
-    },
-    timeEmoji: {
-      fontSize: 22,
-      marginBottom: 6,
-    },
-    timeNum: {
-      fontSize: 18,
-      fontWeight: "700" as const,
-      fontVariant: ["tabular-nums"] as any,
-      textAlign: "center" as const,
-    },
-    timeLabel: {
-      fontSize: 11,
-      color: colors.dim,
-      marginTop: 4,
-      textTransform: "uppercase" as const,
-      letterSpacing: 0.5,
-    },
-  });

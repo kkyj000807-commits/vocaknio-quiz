@@ -1,3 +1,6 @@
+import { ADAPTIVE_POLICY, calculateLearningNeed, emptyEvidence, eventPerformance, learningDay, mergePerformance, responseBaseline, validResponseMs,
+  type ItemEvidence, type LearningAnswerEvent, type DailyPerformance, type EvidenceStatus } from "./learning-analytics";
+
 export const ADAPTIVE_HISTORY_SCHEMA_VERSION = 1 as const;
 
 const MAX_RECENT_SESSIONS = 12;
@@ -15,6 +18,8 @@ export interface AdaptiveCandidate {
   learningKey?: string;
   /** User-state priority. WEAK/RELEARNING values are selected before coverage. */
   learningPriority?: number;
+  learningStatus?: EvidenceStatus;
+  lastStudiedAt?: number;
 }
 
 export interface AdaptiveConfusion {
@@ -36,6 +41,7 @@ export interface AdaptiveItemStats {
   lastAnsweredAt: number;
   lastOutcome: AdaptiveOutcome | null;
   confusions: AdaptiveConfusion[];
+  evidence?: ItemEvidence;
 }
 
 export interface AdaptiveSession {
@@ -54,6 +60,8 @@ export interface AdaptiveHistory {
   recentSessions: AdaptiveSession[];
   seenSessionIds: string[];
   processedAnswerKeys: string[];
+  events?: LearningAnswerEvent[];
+  daily?: Record<string, DailyPerformance>;
 }
 
 export interface SelectAdaptiveItemNumsOptions {
@@ -64,6 +72,8 @@ export interface SelectAdaptiveItemNumsOptions {
   history: AdaptiveHistory;
   legacyWrongNums?: number[];
   random?: () => number;
+  strategy?: "coverage" | "weighted";
+  now?: number;
 }
 
 export interface AdaptiveSessionInput {
@@ -81,6 +91,14 @@ export interface AdaptiveAnswerInput {
   /** 오답으로 고른 단어/뜻/개념의 안정 키. 중복 응답 식별자는 아니다. */
   responseKey?: string;
   answeredAt?: number;
+  presentedAt?: number;
+  responseMs?: number;
+  targetKey?: string;
+  sourceId?: string;
+  groupId?: string;
+  statusBefore?: EvidenceStatus;
+  statusAfter?: EvidenceStatus;
+  hintUsed?: boolean;
 }
 
 type CompactItemStats = [
@@ -97,6 +115,7 @@ type CompactItemStats = [
   lastAnsweredAt: number,
   lastOutcome: "c" | "w" | "s" | "m" | "",
   confusions: [key: string, count: number][],
+  evidence?: ItemEvidence,
 ];
 
 type CompactSession = [
@@ -115,6 +134,7 @@ type CompactHistory = [
   recentSessions: CompactSession[],
   seenSessionIds: string[],
   processedAnswerKeys: string[],
+  telemetry?: { events: LearningAnswerEvent[]; daily: Record<string, DailyPerformance> },
 ];
 
 function nonNegativeInteger(value: unknown, fallback = 0): number {
@@ -207,6 +227,28 @@ function sanitizeConfusions(value: unknown): AdaptiveConfusion[] {
     .slice(0, MAX_CONFUSIONS);
 }
 
+function sanitizeEvidence(value: ItemEvidence): ItemEvidence {
+  const safe = emptyEvidence();
+  for (const key of ["correctStreak", "spacedSuccesses", "lastSuccessAt", "lastFailureAt", "responseCount", "responseTotalMs", "slowCorrect", "fastCorrect", "lapses", "masterChecks", "masterRetained", "newAttempts", "classifiedAttempts"] as const)
+    safe[key] = nonNegativeInteger(value[key]);
+  safe.targetKey = cleanString(value.targetKey); safe.groupId = cleanString(value.groupId); safe.sourceId = cleanString(value.sourceId);
+  safe.lastResponseMs = validResponseMs(value.lastResponseMs);
+  safe.lastHintUsed = value.lastHintUsed === true;
+  safe.recent = Array.isArray(value.recent) ? value.recent.filter(e => e && isAdaptiveOutcome(e.outcome)).slice(-ADAPTIVE_POLICY.itemRecentLimit)
+    .map(e => ({ at: nonNegativeInteger(e.at), outcome: e.outcome, responseMs: validResponseMs(e.responseMs) })) : [];
+  return safe;
+}
+function sanitizeEvents(value: LearningAnswerEvent[]): LearningAnswerEvent[] {
+  const seen = new Set<string>();
+  return Array.isArray(value) ? value.filter(e => e && typeof e.id === "string" && typeof e.mode === "string" && positiveInteger(e.itemNum) && isAdaptiveOutcome(e.outcome) && Number.isFinite(e.answeredAt) && !seen.has(e.id) && !!seen.add(e.id))
+    .slice(-ADAPTIVE_POLICY.recentEventLimit).map(e => ({ ...e, responseMs: validResponseMs(e.responseMs) })) : [];
+}
+function sanitizeDaily(value: Record<string, DailyPerformance>): Record<string, DailyPerformance> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  return Object.fromEntries(Object.entries(value).filter(([, row]) => row && /^\d{4}-\d{2}-\d{2}$/.test(row.day) && typeof row.groupId === "string" && typeof row.mode === "string")
+    .map(([key, row]) => [key, { ...mergePerformance([row]), day: row.day, groupId: row.groupId, mode: row.mode }]));
+}
+
 function emptyStats(mode: string, num: number): AdaptiveItemStats {
   return {
     mode,
@@ -262,6 +304,7 @@ function sanitizeStats(
     lastAnsweredAt: nonNegativeInteger(candidate.lastAnsweredAt),
     lastOutcome,
     confusions: sanitizeConfusions(candidate.confusions),
+    ...(candidate.evidence ? { evidence: sanitizeEvidence(candidate.evidence) } : {}),
   };
 }
 
@@ -321,6 +364,7 @@ function compactToObject(value: unknown): unknown {
           lastAnsweredAt: raw[10],
           lastOutcome: decodeOutcome(raw[11]),
           confusions: raw[12],
+          evidence: raw[13],
         },
         mode,
         num,
@@ -352,6 +396,7 @@ function compactToObject(value: unknown): unknown {
     recentSessions,
     seenSessionIds: value[5],
     processedAnswerKeys: value[6],
+    ...(value[7] && typeof value[7] === "object" ? value[7] : {}),
   };
 }
 
@@ -369,7 +414,7 @@ export function createEmptyAdaptiveHistory(): AdaptiveHistory {
 
 /** Storage must distinguish absent history from an unreadable/version-mismatched envelope. */
 export function isReadableAdaptiveHistory(value: unknown): boolean {
-  if (Array.isArray(value) && (value.length !== 7 || !Array.isArray(value[3])))
+  if (Array.isArray(value) && ((value.length !== 7 && value.length !== 8) || !Array.isArray(value[3])))
     return false;
   const expanded = compactToObject(value);
   if (!expanded || typeof expanded !== "object" || Array.isArray(expanded))
@@ -465,6 +510,8 @@ export function sanitizeAdaptiveHistory(value: unknown): AdaptiveHistory {
       candidate.processedAnswerKeys,
       MAX_PROCESSED_ANSWERS,
     ),
+    ...(candidate.events ? { events: sanitizeEvents(candidate.events) } : {}),
+    ...(candidate.daily ? { daily: sanitizeDaily(candidate.daily) } : {}),
   };
 }
 
@@ -489,6 +536,7 @@ export function serializeAdaptiveHistory(history: AdaptiveHistory): string {
       item.lastAnsweredAt,
       outcomeCode(item.lastOutcome),
       item.confusions.map((confusion) => [confusion.key, confusion.count]),
+      item.evidence,
     ]);
   const compactSessions: CompactSession[] = safe.recentSessions.map(
     (session) => [
@@ -507,6 +555,7 @@ export function serializeAdaptiveHistory(history: AdaptiveHistory): string {
     compactSessions,
     safe.seenSessionIds,
     safe.processedAnswerKeys,
+    safe.events || safe.daily ? { events: safe.events ?? [], daily: safe.daily ?? {} } : undefined,
   ];
   return JSON.stringify(compact);
 }
@@ -612,12 +661,12 @@ export function recordAdaptiveAnswer(
     return next;
 
   const processedKey = answerKey(sessionId, mode, itemNum);
-  if (next.processedAnswerKeys.includes(processedKey)) return next;
+  if (next.processedAnswerKeys.includes(processedKey) || next.events?.some(e => e.id === processedKey)) return next;
 
   const stats = getOrCreateStats(next, mode, itemNum);
   stats.attempts += 1;
   stats.lastOutcome = input.outcome;
-  stats.lastAnsweredAt = nonNegativeInteger(input.answeredAt);
+  stats.lastAnsweredAt = nonNegativeInteger(input.answeredAt ?? Date.now());
   if (input.outcome === "correct") {
     stats.correct += 1;
     stats.wrongStreak = 0;
@@ -635,6 +684,46 @@ export function recordAdaptiveAnswer(
     addConfusion(stats, input.responseKey ?? "");
   }
 
+  const previous = stats.evidence ?? emptyEvidence();
+  const baseline = responseBaseline(next.events ?? [], mode);
+  const time = validResponseMs(input.responseMs);
+  const success = input.outcome === "correct" || input.outcome === "mastered";
+  const masterCheck = input.statusBefore === "MASTERED";
+  stats.evidence = { ...previous,
+    targetKey: input.targetKey || previous.targetKey,
+    sourceId: input.sourceId || previous.sourceId,
+    groupId: input.groupId || previous.groupId,
+    correctStreak: success ? previous.correctStreak + 1 : 0,
+    spacedSuccesses: previous.spacedSuccesses + (success && !input.hintUsed && previous.lastSuccessAt > 0 && stats.lastAnsweredAt - previous.lastSuccessAt >= ADAPTIVE_POLICY.spacedSuccessGapMs ? 1 : 0),
+    lastSuccessAt: success ? stats.lastAnsweredAt : previous.lastSuccessAt,
+    lastFailureAt: success ? previous.lastFailureAt : stats.lastAnsweredAt,
+    lastResponseMs: time,
+    lastHintUsed: input.hintUsed === true,
+    newAttempts: (previous.newAttempts ?? 0) + (input.statusBefore === "NEW" ? 1 : 0),
+    classifiedAttempts: (previous.classifiedAttempts ?? 0) + (input.statusBefore ? 1 : 0),
+    responseCount: previous.responseCount + (time === null ? 0 : 1),
+    responseTotalMs: previous.responseTotalMs + (time ?? 0),
+    slowCorrect: previous.slowCorrect + (success && time !== null && time > baseline * ADAPTIVE_POLICY.slowRatio ? 1 : 0),
+    fastCorrect: previous.fastCorrect + (success && !input.hintUsed && time !== null && time < baseline * ADAPTIVE_POLICY.fastRatio ? 1 : 0),
+    lapses: previous.lapses + (masterCheck && !success ? 1 : 0),
+    masterChecks: previous.masterChecks + (masterCheck ? 1 : 0),
+    masterRetained: previous.masterRetained + (masterCheck && success ? 1 : 0),
+    recent: [...previous.recent, { at: stats.lastAnsweredAt, outcome: input.outcome, responseMs: time }].slice(-ADAPTIVE_POLICY.itemRecentLimit),
+  };
+  const event: LearningAnswerEvent = {
+    id: processedKey, sessionId, itemNum, mode, outcome: input.outcome,
+    sourceId: input.sourceId ?? "", targetKey: input.targetKey ?? "", groupId: input.groupId ?? "unrecorded",
+    presentedAt: typeof input.presentedAt === "number" && input.presentedAt <= stats.lastAnsweredAt ? input.presentedAt : null,
+    answeredAt: stats.lastAnsweredAt, responseMs: time,
+    statusBefore: input.statusBefore ?? null, statusAfter: input.statusAfter ?? null, hintUsed: input.hintUsed === true,
+  };
+  next.events = [...(next.events ?? []), event].slice(-ADAPTIVE_POLICY.recentEventLimit);
+  const day = learningDay(event.answeredAt);
+  const dayKey = `${day}\u0000${event.groupId}\u0000${mode}`;
+  const daily = { ...(next.daily ?? {}) };
+  daily[dayKey] = { ...mergePerformance([daily[dayKey] ?? {}, eventPerformance(event, baseline)]), day, groupId: event.groupId, mode };
+  const cutoff = learningDay(Math.max(event.answeredAt, ...next.events.map(e => e.answeredAt)) - ADAPTIVE_POLICY.dailyRetentionDays * 86400000);
+  next.daily = Object.fromEntries(Object.entries(daily).filter(([, row]) => row.day >= cutoff));
   next.processedAnswerKeys = [...next.processedAnswerKeys, processedKey].slice(
     -MAX_PROCESSED_ANSWERS,
   );
@@ -854,6 +943,7 @@ function selectWithConceptDiversity(
 export function selectAdaptiveItemNums(
   options: SelectAdaptiveItemNumsOptions,
 ): number[] {
+  if (options.strategy === "weighted") return selectWeightedItemNums(options);
   const mode = cleanString(options.mode);
   const requestedCount = nonNegativeInteger(options.count);
   if (!mode || requestedCount <= 0 || !Array.isArray(options.candidates))
@@ -1024,4 +1114,64 @@ export function selectAdaptiveItemNums(
     [selected[index], selected[target]] = [selected[target], selected[index]];
   }
   return selected.map((candidate) => candidate.num);
+}
+
+export function mergeAdaptiveStats(rows: AdaptiveItemStats[]): AdaptiveItemStats | undefined {
+  if (!rows.length) return undefined;
+  const latest = [...rows].sort((a, b) => b.lastAnsweredAt - a.lastAnsweredAt)[0];
+  const merged = { ...latest };
+  for (const key of ["exposures", "attempts", "correct", "wrong", "skips", "mastered"] as const)
+    merged[key] = rows.reduce((sum, row) => sum + row[key], 0);
+  const evidence = rows.flatMap(row => row.evidence ? [row.evidence] : []);
+  if (evidence.length) {
+    merged.evidence = { ...(latest.evidence ?? evidence[0]) };
+    for (const key of ["spacedSuccesses", "responseCount", "responseTotalMs", "slowCorrect", "fastCorrect", "lapses", "masterChecks", "masterRetained", "newAttempts", "classifiedAttempts"] as const)
+      merged.evidence[key] = evidence.reduce((sum, row) => sum + (row[key] ?? 0), 0);
+    merged.evidence.lastSuccessAt = Math.max(...evidence.map(e => e.lastSuccessAt));
+    merged.evidence.lastFailureAt = Math.max(...evidence.map(e => e.lastFailureAt));
+    merged.evidence.recent = evidence.flatMap(e => e.recent).sort((a, b) => a.at - b.at).slice(-ADAPTIVE_POLICY.itemRecentLimit);
+  }
+  return merged;
+}
+
+/** Build once per selection/dashboard, never scan all history for every candidate. */
+export function buildAdaptiveEvidenceIndex(history: AdaptiveHistory, candidates: AdaptiveCandidate[]) {
+  const candidateKeys = new Map(candidates.map(c => [c.num, c.learningKey || normalizePromptWord(c.word) || `num:${c.num}`]));
+  const rows = new Map<string, AdaptiveItemStats[]>();
+  for (const stats of Object.values(history.stats)) {
+    const target = stats.evidence?.targetKey || candidateKeys.get(stats.num) || `num:${stats.num}`;
+    const key = `${stats.mode}\u0000${target}`;
+    const entries = rows.get(key) ?? []; entries.push(stats); rows.set(key, entries);
+  }
+  return new Map([...rows].map(([key, entries]) => [key, mergeAdaptiveStats(entries)!]));
+}
+
+function selectWeightedItemNums(options: SelectAdaptiveItemNumsOptions): number[] {
+  const candidates = [...new Map(options.candidates.filter(c => Number.isInteger(c.num) && c.num > 0).map(c => [c.num, c])).values()];
+  const history = options.history;
+  const index = buildAdaptiveEvidenceIndex(history, candidates);
+  const baseline = responseBaseline(history.events ?? [], options.mode);
+  const random = options.random ?? Math.random;
+  const legacy = new Set(options.legacyWrongNums ?? []);
+  const recent = new Set(history.recentSessions.filter(s => s.mode === options.mode).slice(-3).flatMap(s => s.itemNums));
+  const ranked = candidates.map(candidate => {
+    const key = candidate.learningKey || normalizePromptWord(candidate.word) || `num:${candidate.num}`;
+    const stats = index.get(`${options.mode}\u0000${key}`);
+    const need = calculateLearningNeed(stats, { status: candidate.learningStatus ?? (candidate.learningPriority && candidate.learningPriority >= 120 ? "RELEARNING" : candidate.learningPriority && candidate.learningPriority >= 90 ? "WEAK" : undefined),
+      now: options.now, lastStudiedAt: candidate.lastStudiedAt, baselineMs: baseline, recentlySeen: recent.has(candidate.num), legacyWrong: legacy.has(candidate.num) });
+    const draw = Math.max(Number.EPSILON, Math.min(1 - Number.EPSILON, random()));
+    return { candidate, key, rank: -Math.log(draw) / need.score, isNew: !stats?.attempts && (!candidate.learningStatus || candidate.learningStatus === "NEW") };
+  }).sort((a, b) => a.rank - b.rank || a.candidate.num - b.candidate.num);
+  const count = Math.min(Math.max(0, Math.floor(options.count)), ranked.length);
+  const chosen: number[] = []; const keys = new Set<string>(); const words = new Set<string>(); const concepts = new Set<string>();
+  const take = (row: typeof ranked[number], diverse = true) => {
+    const word = normalizePromptWord(row.candidate.word);
+    if (chosen.length >= count || keys.has(row.key) || (word && words.has(word)) || (diverse && row.candidate.conceptId && concepts.has(row.candidate.conceptId))) return;
+    chosen.push(row.candidate.num); keys.add(row.key); if (word) words.add(word); if (row.candidate.conceptId) concepts.add(row.candidate.conceptId);
+  };
+  const exploration = Math.min(Math.floor(count * ADAPTIVE_POLICY.newWordShare), ranked.filter(r => r.isNew).length);
+  for (const row of ranked.filter(r => r.isNew)) { if (chosen.length >= exploration) break; take(row); }
+  for (const row of ranked) take(row);
+  for (const row of ranked) take(row, false);
+  return chosen;
 }

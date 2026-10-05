@@ -18,12 +18,14 @@ import { getVocabItem } from "@/lib/vocab";
 import { getItemLearningTargets } from "@/lib/canonical-learning";
 import {
   applyLearningEvent,
+  getLearningTargetState,
   createEmptySenseLearningState,
   isReadableSenseLearningState,
   parseSenseLearningState,
   type LearningEventInput,
   type SenseLearningState,
 } from "@/lib/learning-state";
+import { learningDay } from "@/lib/learning-analytics";
 import { QUIZ_SESSION_KEY, parseQuizSession, type QuizSession } from "@/lib/quiz-session";
 import { THEME_KEY, LEGACY_THEME_KEY, isThemeMode, resolveThemePreference, type ThemeMode } from "@/lib/theme-preference";
 
@@ -513,6 +515,7 @@ export async function prepareAdaptiveQuizSession({
       rangeId,
       history,
       legacyWrongNums,
+      strategy: candidates.some(candidate => candidate.learningStatus) ? "weighted" : "coverage",
     });
     const nextHistory = recordAdaptiveSession(history, {
       sessionId,
@@ -529,6 +532,17 @@ export async function prepareAdaptiveQuizSession({
 
 export async function loadAdaptiveQuizHistory() {
   return enqueueLearningStorageTask(readAdaptiveHistoryUnsafe);
+}
+
+/** One serialized snapshot: statistics cannot race an in-flight answer. */
+export function loadLearningSnapshot() {
+  return enqueueLearningStorageTask(async () => {
+    const snapshot = { stats: await readStatsUnsafe(), history: await readAdaptiveHistoryUnsafe(),
+      learning: await readSenseLearningStateUnsafe(), legacyWrongNums: await readWrongWordsUnsafe() };
+    if ([STATS_KEY, ADAPTIVE_QUIZ_HISTORY_KEY, SENSE_LEARNING_STATE_KEY].some(key => unreadableLearningKeys.has(key)))
+      throw new Error("Learning evidence is unreadable; original values are preserved");
+    return snapshot;
+  });
 }
 
 async function readQuizSessionUnsafe(): Promise<QuizSession | null> {
@@ -565,14 +579,13 @@ export async function recordOneAnswer(
   context?: AdaptiveAnswerContext,
   session?: QuizSession,
 ): Promise<void> {
+  const answerCorrect = context ? context.outcome === "correct" || context.outcome === "mastered" : isCorrect;
   const sessionRaw = session ? JSON.stringify(session) : null;
   if (sessionRaw) validateLearningValue(QUIZ_SESSION_KEY, sessionRaw);
   try {
     await enqueueLearningStorageTask(async () => {
       if (sessionRaw) await readQuizSessionUnsafe();
       const history = context ? await readAdaptiveHistoryUnsafe() : null;
-      const nextHistory =
-        history && context ? recordAdaptiveAnswer(history, context) : null;
       const currentLearning = context?.learningTargetKey
         ? await readSenseLearningStateUnsafe()
         : null;
@@ -599,20 +612,28 @@ export async function recordOneAnswer(
           });
         }
       }
+      const item = context ? getVocabItem(context.itemNum) : undefined;
+      const nextHistory = history && context ? recordAdaptiveAnswer(history, {
+        ...context,
+        answeredAt: context.answeredAt ?? Date.now(),
+        targetKey: context.targetKey ?? context.learningTargetKey,
+        sourceId: item?.id,
+        groupId: item?.group,
+        statusBefore: currentLearning && context.learningTargetKey ? getLearningTargetState(currentLearning, context.learningTargetKey).status : undefined,
+        statusAfter: nextLearning && context.learningTargetKey ? getLearningTargetState(nextLearning, context.learningTargetKey).status : undefined,
+      }) : null;
       // A duplicate response must not increment global stats while adaptive stats reject it.
       if (history && nextHistory && nextHistory.revision === history.revision)
         return;
       const stats = await readStatsUnsafe();
-      const today = new Date().toISOString().slice(0, 10);
+      const today = learningDay(context?.answeredAt ?? Date.now());
 
       if (stats.todayDate !== today) {
         stats.todayAnswered = 0;
         stats.todayDate = today;
       }
 
-      const yesterday = new Date(Date.now() - 86400000)
-        .toISOString()
-        .slice(0, 10);
+      const yesterday = learningDay((context?.answeredAt ?? Date.now()) - 86400000);
       if (stats.lastStudyDate === yesterday) {
         stats.streak += 1;
       } else if (stats.lastStudyDate !== today) {
@@ -621,12 +642,12 @@ export async function recordOneAnswer(
       stats.lastStudyDate = today;
       stats.totalAnswered += 1;
       stats.todayAnswered += 1;
-      if (isCorrect) stats.totalCorrect += 1;
+      if (answerCorrect) stats.totalCorrect += 1;
 
       const entries: [string, string][] = [[STATS_KEY, JSON.stringify(stats)]];
       if (sessionRaw) entries.push([QUIZ_SESSION_KEY, sessionRaw]);
 
-      const wrongItemNum = !isCorrect
+      const wrongItemNum = !answerCorrect
         ? (context?.itemNum ?? wrongNum)
         : undefined;
       if (wrongItemNum !== undefined) {

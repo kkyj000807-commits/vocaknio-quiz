@@ -347,7 +347,7 @@ function buildOewnSynonymQuestion(
       value: distractor.headword,
       label: distractor.headword,
       word: distractor.headword,
-      meaning: `${distractor.relation === "antonym" ? "반의어" : "다른 의미"} · ${vocabById.get(distractor.itemId)?.k_short ?? "한국어 뜻 검수 대기"}`,
+      meaning: vocabById.get(distractor.itemId)?.k_short ?? "한국어 뜻 검수 대기",
       isCorrect: false,
     })),
   ]);

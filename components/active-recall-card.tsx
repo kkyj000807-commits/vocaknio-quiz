@@ -7,7 +7,6 @@ import { SemanticRelationCluster } from "@/components/semantic-relation-cluster"
 import { getSynonymDetails, type VocabItem } from "@/lib/vocab";
 import type { QuizChoice } from "@/lib/quiz-engine";
 import {
-  buildDefinitionMeaningBridgeKo,
   getDefinitionAnswerRelations,
   getDefinitionRelationMeanings,
   type DefinitionQuizEntry,
@@ -67,7 +66,6 @@ export function DefinitionRecallAnswer({
   const relations = getDefinitionAnswerRelations(recall);
   const definitionMeanings = getDefinitionRelationMeanings(recall, koreanMeaning)
     .map(({ word, meaning }) => ({ word, meaning }));
-  const bridgeKo = buildDefinitionMeaningBridgeKo(koreanMeaning);
   const storedMeanings = item ? getSynonymDetails(item).map(({ word, meaning }) => ({ word, meaning })) : [];
   return (
     <View style={[styles.answer, { backgroundColor: colors.card, borderColor: colors.border }]}>
@@ -77,7 +75,6 @@ export function DefinitionRecallAnswer({
       <SemanticRelationCluster
         headword={recall.headword}
         coreMeaningKo={koreanMeaning}
-        bridgeKo={bridgeKo}
         exactSynonyms={relations.synonyms.slice(0, 8)}
         antonyms={relations.antonyms.slice(0, 8)}
         choiceMeanings={[...definitionMeanings, ...storedMeanings, ...(choices ?? [])]}
@@ -88,8 +85,7 @@ export function DefinitionRecallAnswer({
           {recall.examples.slice(0, 2).map((example, index) => (
             <View key={`${example}:${index}`} style={styles.example}>
               <Text style={[styles.detailText, { color: colors.foreground }]}>{example}</Text>
-              <Text style={[styles.note, { color: colors.muted }]}>문맥 이미지: ‘{koreanMeaning}’의 장면이 어떻게 드러나는지 확인합니다.</Text>
-              <ExampleRelationCue synonyms={relations.synonyms} antonyms={relations.antonyms} />
+              <ExampleRelationCue synonyms={relations.synonyms} antonyms={relations.antonyms} meanings={Object.fromEntries(definitionMeanings.map(m => [m.word, m.meaning]))} />
             </View>
           ))}
         </>
@@ -119,33 +115,30 @@ export function SynonymRecallAnswer({
 
   return (
     <View style={[styles.answer, { borderColor: colors.border, backgroundColor: colors.card }]}>
-      <Text style={[styles.eyebrow, { color: colors.primary }]}>EN ↔ EN · 같은 sense</Text>
+      <Text style={[styles.eyebrow, { color: colors.primary }]}>영어 동의어</Text>
       <Text style={[styles.answerWord, { color: colors.foreground }]}>
         {recall.headword} ≒ {correct?.word ?? relations.synonyms[0]}
       </Text>
       <Text style={[styles.definition, { color: colors.foreground }]}>{recall.definition}</Text>
-      <Text style={[styles.note, { color: colors.muted }]}>문제에서는 영어만 보고 판단하고, 아래 한국어는 정답 확인 뒤 의미 경계를 복습하는 해설입니다.</Text>
       <SemanticRelationCluster
         headword={recall.headword}
         coreMeaningKo={koreanMeaning}
-        bridgeKo={buildDefinitionMeaningBridgeKo(koreanMeaning)}
         exactSynonyms={relations.synonyms}
         antonyms={relations.antonyms}
         choiceMeanings={[...choices, ...relationMeanings, ...storedMeanings]}
       />
       {recall.examples.length > 0 ? (
         <View style={styles.details}>
-          <Text style={[styles.label, { color: colors.primary }]}>영영사전 예문 · 같은 sense 확인</Text>
+          <Text style={[styles.label, { color: colors.primary }]}>예문</Text>
           {recall.examples.slice(0, 2).map((example) => (
             <View key={example} style={styles.example}>
               <Text style={[styles.detailText, { color: colors.foreground }]}>{example}</Text>
-              <Text style={[styles.note, { color: colors.muted }]}>문맥 핵심: ‘{koreanMeaning}’의 상태·작용이 드러나는 대목을 찾습니다.</Text>
-              <ExampleRelationCue synonyms={relations.synonyms} antonyms={relations.antonyms} />
+              <ExampleRelationCue synonyms={relations.synonyms} antonyms={relations.antonyms} meanings={Object.fromEntries(relationMeanings.map(m => [m.word, m.meaning]))} />
             </View>
           ))}
         </View>
       ) : null}
-      <Text style={[styles.note, { color: colors.muted }]}>관계 근거: Open English WordNet 2025 same-synset. 우선 검수는 The Free Dictionary, Oxford, Collins의 같은 품사·sense를 대조합니다.</Text>
+      <Text style={[styles.note, { color: colors.muted }]}>관계 근거: Open English WordNet 2025</Text>
     </View>
   );
 }

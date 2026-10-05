@@ -82,6 +82,6 @@ export function buildSemanticCluster(input: BuildSemanticClusterInput) {
   return {
     synonyms,
     opposites,
-    auxiliaries: [...variants, ...related],
+    auxiliaries: [...variants, ...related].map(withMeaning),
   };
 }

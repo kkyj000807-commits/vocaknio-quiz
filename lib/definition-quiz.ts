@@ -140,7 +140,7 @@ export function getDefinitionRelationMeanings(
       word,
       meaning: meanings.length > 0
         ? meanings.join(" · ")
-        : `같은 sense의 핵심 뜻 · ${coreMeaningKo.trim()}`,
+        : coreMeaningKo.trim(),
       relation: "synonym",
       source: meanings.length > 0 ? "same-sense-vocab" : "shared-sense-core",
     };

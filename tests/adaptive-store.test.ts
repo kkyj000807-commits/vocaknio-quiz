@@ -55,11 +55,41 @@ import {
   recordOneAnswer,
   getLearningStorageIssue,
   retryLearningStorage,
+  loadLearningSnapshot,
 } from "@/lib/store";
+import { VOCAB } from "@/lib/vocab";
+import { getItemLearningTargets } from "@/lib/canonical-learning";
+import { buildLearningStatistics } from "@/lib/learning-statistics";
 
 describe("adaptive quiz storage", () => {
   beforeEach(() => {
     storageMock.reset();
+  });
+  it("does not present corrupted evidence as healthy zero statistics", async () => {
+    storageMock.values.set(ADAPTIVE_QUIZ_HISTORY_KEY, "{broken");
+    await expect(loadLearningSnapshot()).rejects.toThrow("unreadable");
+    expect(storageMock.values.get(ADAPTIVE_QUIZ_HISTORY_KEY)).toBe("{broken");
+  });
+
+  it("persists actual source-group responses once and reopens the same 70/20 aggregation", async () => {
+    const items = [VOCAB.find(item => item.group === "V101")!, VOCAB.find(item => item.group === "V601")!];
+    for (const [index, correct] of [[0, 7], [1, 2]]) for (let i = 0; i < 10; i++) {
+      const item = items[index]; const correctAnswer = i < correct;
+      const context = { sessionId: `source-${index}-${i}`, itemNum: item.num, mode: "kor-choice", outcome: correctAnswer ? "correct" as const : "skip" as const,
+        responseMs: 4200, answeredAt: Date.now(), learningTargetKey: getItemLearningTargets(item)[0].key };
+      await recordOneAnswer(correctAnswer, item.num, context);
+      await recordOneAnswer(correctAnswer, item.num, context);
+    }
+    const reopened = await loadLearningSnapshot();
+    const metadata = items.map(item => ({ num: item.num, word: item.w, sourceId: item.id, groupId: item.group, learningKey: getItemLearningTargets(item)[0].key }));
+    const model = buildLearningStatistics(reopened.history, reopened.learning, metadata);
+    expect(reopened.stats).toMatchObject({ totalAnswered: 20, totalCorrect: 9 });
+    expect(model.groups.find(row => row.id === "V101")?.accuracy).toBe(70);
+    expect(model.groups.find(row => row.id === "V601")?.accuracy).toBe(20);
+    expect(reopened.history.events).toHaveLength(20);
+    expect(model.performance.responseCount).toBe(20);
+    expect(model.stateCounts.RELEARNING).toBe(2);
+    expect(storageMock.values.get(ADAPTIVE_QUIZ_HISTORY_KEY)).toContain("4200");
   });
 
   it("counts one answer once even when the same event is delivered in parallel", async () => {

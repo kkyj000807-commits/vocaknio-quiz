@@ -1,6 +1,21 @@
 # VOCA NEXUS 현재 작업 상태
 
-기준: 2026.10.05 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.10.06 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+
+## 현재 batch — 적응형 학습·동일 기록 기반 통계 / 1.6 배포 후보
+
+- 기준 공개 버전은 1.5이다. source `d0c751f3c6075b4d41d4ffbe37ac65549d5c1a02`, Pages `b46e2cfa7564cce314c42f2d6af141e8ba9d92af`, 공개 release.json `2026.10.06 00:38 KST`와 HTTP200을 확인했다. 1.5는 gloss over의 회피 sense·결합 해설·영한 예문·관계어 개별 뜻을 추가했다. 실제 기기 검증은 미확인이다.
+- 저장소 잠금: 터미널 6931 / PID6484. 사용자 소유 server/auth.ts 및 미추적 파일은 보존한다.
+- 조사: 기존 로컬 `vocaknio_adaptive_quiz_history_v1`의 유형+행별 집계, `vocaknio_sense_learning_state_v1`의 의미별 상태, `vocaknio_stats`의 누적 풀이를 재사용한다. 서버 user_data/sync API는 오답·북마크·누적 통계만 제공하며 공개 Pages의 새 적응형 기록은 기기 로컬이다. 중앙 마스터 DB 학습 이벤트 연결은 unverified이다.
+- 체크리스트: (1) 기존 호환·중복 방지 VERIFIED (2) 응답시간·최근 이벤트·상태 전후·유형·범위 VERIFIED (3) 가중 무작위·망각·MASTER 재검증 VERIFIED by tests (4) 같은 집계의 KPI/범위/유형/추세/단어 상세·정렬/필터 구현·UI 집계 테스트 VERIFIED (5) 한국어 해석·관계어 뜻 가독성/문구/중복 패널 수정, 전체 콘텐츠 번역 완료 아님 (6) 101 7/10=70%, 601 2/10=20%, 저장 재열기·누락·대량 테스트 VERIFIED (7) 전체 검사·보안 VERIFIED; Production·브라우저·공개 배포 NOT YET VERIFIED.
+- 변경 위치: lib/adaptive-quiz.ts, lib/learning-state.ts, lib/store.ts, app/quiz.tsx, app/wrong-quiz.tsx, 기존 app/(tabs)/stats.tsx와 공통 답안 컴포넌트/관련 테스트. 새 DB·중복 통계 페이지를 만들지 않는다. 최신 사용자 요구의 가중 무작위 정책이 과거 75/25 고정 순환보다 우선한다.
+- 과거 없는 응답시간·일별 이벤트·상태 전환은 소급 생성하지 않는다. 최근 원자료는 크기를 제한하고 누적 집계는 보존한다. 필터의 시간 범위 및 부족한 표본/이력 coverage를 표시한다.
+- 데이터 흐름: 일반/오답 퀴즈 foreground timer → 기존 recordOneAnswer 저장 큐의 동일 배치(누적·적응형·상태·중단 세션·오답) → loadLearningSnapshot → weighted selection → 기존 통계 탭. 기존 v1 compact tuple의 선택 필드만 확장했으며 키·DB·상태 체계를 병렬 생성하지 않았다. source ID·실제 V101~V601/APPENDIX 분류를 사용한다. 서버 sync/schema는 변경하지 않았다.
+- 우선순위: forgettingRisk × 유형 실패율 × 최근 실패 × 연속 실패 제곱 × 마지막 결과/속도 × 현재 상태 × 간격 성공 보상 × lapse × 최근 출제 억제. 모름6 > 오답4 > 느린 정답1.8 > 일반1 > 빠른0.55; 힌트 빠른 정답 보상 없음. 모든 가중치/임계는 lib/learning-analytics.ts의 ADAPTIVE_POLICY. MASTER는 24시간 보호 뒤 0보다 큰 가중치로 재검증하며 실패는 RELEARNING. 자동 MASTER 승격은 도입하지 않고 기존 수동 외움/롤백을 보존한다. 유형은 사용자의 현재 선택을 유지하고 그 유형의 취약도를 반영한다. 과학적으로 보정된 기억 확률 또는 시험 성적 예측 모델이 아니다.
+- 정량 정의: 정답률=정답/실제 응답(모름 실패 포함, 미응답·중복 제외). 누적은 기존 유형+행 집계; 최근은 보관 원자료 중 조건별 최대100건, 원자료 최대1,000건. 날짜별 증분 집계 최근365일, KST. 유효 foreground 응답시간(0초/누락/2분 초과 제외)의 평균·최근 중앙값, 관측 신규/복습과 상태 기록 분모, MASTER 재검증 성공/시도도 표시한다. 손상된 기록은 보존하고 통계를 정상 0으로 표시하지 않는다.
+- VERIFIED: node scripts/verify-project.mjs 데이터·TypeScript·31파일246테스트 PASS, 인증1skip. 변경 앱/엔진/신규 테스트 ESLint 오류0, diff --check PASS, Git 보안 감사 tracked496/untracked212/findings0. 저장 재열기+중복 이벤트 후 실제 V101 7/10=70%, V601 2/10=20%; UI 컴포넌트도 동일 숫자·분모·4.2초 확인. 100,000 누적 응답/38,163 행 통계 재계산 566ms(이 Windows 개발 실행; 모바일 속도 보장 아님), raw 전체 이벤트 재순회 없음. foreground timer의 10분 background 제외도 테스트 통과.
+- 남은/검증 한계: 기기 로컬 사용자의 비공개 기록을 수집하지 않았다. fixture는 테스트 전용이며 실제 공개 통계에 삽입하지 않는다. 과거 없는 날짜/유형/RT는 생성하지 않는다. 동의어 한국어 뜻이 독립 검수되지 않은 관계어는 검수 대기/문맥 풀이를 유지한다. 전체 38,163행 의미 콘텐츠 완료와 실기기 Safari/Chrome/Samsung Internet 검증을 주장하지 않는다.
+- NEXT: 후보 Production 출력 감사 → localhost에서 실제 클릭/저장/재열기 및 좁은 화면 확인 → 승인된 Pages 배포 → 공개 release.json/해시/실제 UI 확인 → 문서 결과 저장·잠금 해제.
 
 ## 현재 batch — `without fail` 2sense·결합 해설·영영 인출 VERIFIED / 1.4 공개 확인
 
