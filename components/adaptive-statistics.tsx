@@ -71,10 +71,11 @@ export function AdaptiveStatistics({ model, lifetime, onGroup, onMode, onPeriod,
       {kpis.map(([label, value, sample]) => <View key={label} style={{ ...card, flexGrow: 1, flexBasis: 145, marginBottom: 0 }}><Text style={note}>{label}</Text><Text style={{ color: colors.primary, fontSize: 25, fontWeight: "800", marginVertical: 6 }}>{value}</Text><Text style={note}>{sample}</Text></View>)}
     </View>
     <View style={card}>
-      <Text style={heading}>현재 학습 상태 · 의미별</Text>
+      <Text style={heading}>현재 학습 상태 · 저장된 의미별</Text>
       <Text style={text}>{Object.entries(model.stateCounts).map(([key, count]) => `${statusLabels[key as EvidenceStatus]} ${count.toLocaleString()}`).join("  ·  ")}</Text>
       <Text style={note}>MASTER 보호 중 {model.stableMaster} · 재검증 가능 {model.dueMaster} · 기록된 lapse {model.performance.lapses}회</Text>
       <Text style={note}>직접 외움 표시도 보존합니다. MASTER 개수와 실제 재검증 유지율은 서로 다른 지표입니다.</Text>
+      <Text style={note}>미학습 수에는 의미별 상태가 저장되지 않은 예전 항목도 포함됩니다. 선택 범위 {model.missingStateTargets}항목은 풀이만 기록되어 있고 상태는 미기록입니다. 이들의 과거 상태를 임의로 만들지 않습니다.</Text>
     </View>
     {table("단어장별 성과", model.groups, "group")}
     {table("문제 유형별 성과", model.modes, "mode")}
@@ -97,6 +98,7 @@ export function AdaptiveStatistics({ model, lifetime, onGroup, onMode, onPeriod,
           <Text style={note}>{word.need.reasons.slice(0, 2).join(" · ")} {expanded === word.key ? "−" : "+"}</Text>
         </Pressable>
         {expanded === word.key ? <View style={{ marginTop: 8, gap: 4 }}>
+          <Text style={note}>{word.groupId} · 원본 항목 {word.sourceId || word.num}</Text>
           <Text style={text}>오답 {word.stats.wrong} · 모름 {word.stats.skips} · 연속 정답 {word.stats.evidence?.correctStreak ?? "기록 없음"}</Text>
           <Text style={text}>최근 응답 {timeLabel(word.lastResponseMs)} · 최근 실패 {word.stats.evidence?.lastFailureAt ? learningDate(word.stats.evidence.lastFailureAt) : "기록 없음"}</Text>
           {word.modes.map(row => <Text key={row.mode} style={text}>{QUESTION_TYPE_LABELS[row.mode] ?? row.mode}: {percentLabel(accuracyPercent(row))} ({row.correct}/{row.attempts}) · 평균 {timeLabel(row.evidence?.responseCount ? row.evidence.responseTotalMs / row.evidence.responseCount : null)}</Text>)}
@@ -109,6 +111,7 @@ export function AdaptiveStatistics({ model, lifetime, onGroup, onMode, onPeriod,
       <Text style={heading}>숫자 읽는 법</Text>
       <Text style={note}>정답률 = 정답 / 실제 응답 수. 모름은 실패에 포함하고, 미응답·중복 응답은 제외합니다. 빠른 암기는 자기채점 기록입니다.</Text>
       <Text style={note}>범위·유형별 누적은 기존 적응형 기록에서 계산합니다. 범위/기간 필터는 선택 범위 수치에만 적용하고, 전체 누적 카드는 기존 기록을 포함한 전체 성과입니다.</Text>
+      <Text style={note}>전체 {lifetime.totalAnswered}응답 중 유형·항목 연결 기록 {model.allLifetimeAttempts}건. 연결 정보 없는 예전 {Math.max(0, lifetime.totalAnswered - model.allLifetimeAttempts)}건은 전체 누적에 보존하고 범위·유형별로 추정 배분하지 않습니다.</Text>
       <Text style={note}>일별 집계 시작: {model.dateCoverageStart ?? "기록 없음"}. 최근 원자료는 최대 1,000건, 최근 성과는 조건에 맞는 그중 최대 100건입니다. 날짜 집계는 최근 365일이며 누적 기록은 삭제하지 않습니다.</Text>
       <Text style={note}>시간은 이 유형의 평소 속도와 비교합니다. 2분 초과·누락은 정답률에는 포함하고 시간 계산에서만 제외합니다. 학습 필요도는 출제 가중치이지 실제 기억 확률이나 시험 점수가 아닙니다. 기기 로컬 기록이며 자동 계정 동기화되지 않습니다.</Text>
     </View>

@@ -26,4 +26,13 @@ describe("statistics renders real aggregate values", () => {
     // Word detail has at most one historical row per target, not 20 phantom words.
     expect(model.uniqueWords).toBe(2);
   });
+  it("explains legacy coverage and never presents missing semantic states as a reset", () => {
+    let history = createEmptyAdaptiveHistory();
+    const items = [{ num: 1, word: "abate", sourceId: "test101", groupId: "V101", learningKey: "sense:abate" }];
+    history = recordAdaptiveAnswer(history, { sessionId: "legacy", itemNum: 1, mode: "kor-choice", outcome: "correct", answeredAt: 1000 });
+    const model = buildLearningStatistics(history, createEmptySenseLearningState(), items, { now: 2000 });
+    const html = renderToStaticMarkup(<AdaptiveStatistics model={model} lifetime={{ totalAnswered: 4, totalCorrect: 1 }} groupId="" mode="" period="lifetime" onGroup={() => {}} onMode={() => {}} onPeriod={() => {}} />);
+    expect(html).toContain("연결 정보 없는 예전 3건");
+    expect(html).toContain("상태는 미기록"); expect(model.stateCounts.MASTERED).toBe(0);
+  });
 });

@@ -81,6 +81,8 @@ export function buildLearningStatistics(history: AdaptiveHistory, learning: Sens
   }).length;
   return { performance, accuracy: accuracyPercent(performance), recent, recentAccuracy: accuracyPercent(recent), today, todayPerformance,
     groups, modes, words, stateCounts, trend, stableMaster, dueMaster: stateCounts.MASTERED - stableMaster,
+    allLifetimeAttempts: countsFor(all).attempts,
+    missingStateTargets: words.filter(word => getLearningTargetState(learning, word.key).status === "NEW").length,
     masterRetention: performance.masterChecks ? Math.round(100 * performance.masterRetained / performance.masterChecks) : null,
     meanMs: performance.responseCount ? performance.responseTotalMs / performance.responseCount : null,
     medianMs: median(times), recentMeanMs: recent.responseCount ? recent.responseTotalMs / recent.responseCount : null,
