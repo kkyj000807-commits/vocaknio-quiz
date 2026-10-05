@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Linking, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useColors } from "@/hooks/use-colors";
 import { ReasoningPractice } from "@/components/reasoning-practice";
 import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
+import { LearningEvidence } from "@/components/learning-evidence";
 import {
   getActiveRecallSenses,
   type ActiveRecallSense,
@@ -111,7 +112,7 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
   );
 }
 
-function ActiveRecallStudyDetails({
+export function ActiveRecallStudyDetails({
   entry,
   index,
   count,
@@ -151,6 +152,7 @@ function ActiveRecallStudyDetails({
         headword={entry.headword}
         coreMeaningKo={entry.koreanMeaning}
         bridgeKo={entry.contextExplanationKo}
+        showDefinitionBridge={false}
         exactSynonyms={entry.exactSynonyms}
         nearSynonyms={entry.nearSynonyms}
         antonyms={entry.antonyms}
@@ -180,9 +182,7 @@ function ActiveRecallStudyDetails({
         ))}
       </View>
 
-      <Text style={s.note}>
-        의미 대조: {entry.sources.map((source) => source.publisher).join(" · ")} · 정의와 예문은 학습용 자체 편집
-      </Text>
+      <LearningEvidence entry={entry} />
     </View>
   );
 }

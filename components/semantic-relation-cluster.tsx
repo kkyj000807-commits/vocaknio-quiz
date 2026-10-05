@@ -1,3 +1,4 @@
+import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { useColors } from "@/hooks/use-colors";
@@ -11,6 +12,7 @@ type SemanticRelationClusterProps = {
   headword: string;
   coreMeaningKo: string;
   bridgeKo?: string;
+  showDefinitionBridge?: boolean;
   exactSynonyms?: readonly string[];
   nearSynonyms?: readonly string[];
   antonyms?: readonly string[];
@@ -68,6 +70,7 @@ export function SemanticRelationCluster({
   headword,
   coreMeaningKo,
   bridgeKo,
+  showDefinitionBridge = true,
   exactSynonyms,
   nearSynonyms,
   antonyms,
@@ -107,12 +110,12 @@ export function SemanticRelationCluster({
         </View>
       ) : null}
 
-      <View style={[styles.core, { borderColor: colors.primary, backgroundColor: colors.card }]}>
+      {showDefinitionBridge ? <View style={[styles.core, { borderColor: colors.primary, backgroundColor: colors.card }]}>
         <Text style={[styles.coreLabel, { color: colors.primary }]}>영영 정의 · 한국어 해석</Text>
         <Text style={[styles.headword, { color: colors.foreground }]}>{headword}</Text>
         <Text style={[styles.coreMeaning, { color: colors.foreground }]}>{coreMeaningKo}</Text>
         {bridgeKo ? <Text style={[styles.bridge, { color: colors.muted }]}>{bridgeKo}</Text> : null}
-      </View>
+      </View> : null}
 
       {cluster.opposites.length > 0 ? (
         <View style={styles.axis}>

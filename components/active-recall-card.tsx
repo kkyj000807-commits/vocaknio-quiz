@@ -1,9 +1,10 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useColors } from "@/hooks/use-colors";
 import type { ActiveRecallSense } from "@/lib/active-recall";
 import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
+import { LearningEvidence } from "@/components/learning-evidence";
 import { getSynonymDetails, type VocabItem } from "@/lib/vocab";
 import type { QuizChoice } from "@/lib/quiz-engine";
 import {
@@ -189,9 +190,9 @@ export function ActiveRecallAnswer({ recall, choices, item }: { recall: ActiveRe
       </Pressable>
       {expanded ? (
         <View style={styles.details}>
-          <Text style={[styles.label, { color: colors.primary }]}>Full EN · 원문 유지</Text>
+          <Text style={[styles.label, { color: colors.primary }]}>영영 정의 · 자세한 풀이</Text>
           <Text style={[styles.detailText, { color: colors.foreground }]}>{recall.englishDefinition}</Text>
-          <Text style={[styles.label, { color: colors.primary }]}>Example</Text>
+          <Text style={[styles.label, { color: colors.primary }]}>예문 · 한국어 해석과 문맥 단서</Text>
           {recall.exampleSentences.map((example, index) => (
             <View key={`${example.en}-${index}`} style={styles.example}>
               <Text style={[styles.detailText, { color: colors.foreground }]}>{example.en}</Text>
@@ -204,9 +205,9 @@ export function ActiveRecallAnswer({ recall, choices, item }: { recall: ActiveRe
               />
             </View>
           ))}
-          <Text style={[styles.note, { color: colors.muted }]}>사전 2곳 의미 대조 · 정의와 예문은 학습용 자체 편집</Text>
         </View>
       ) : null}
+      <LearningEvidence entry={recall} />
     </View>
   );
 }

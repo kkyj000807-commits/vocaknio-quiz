@@ -2,7 +2,15 @@
 
 기준: 2026.10.06 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 batch — `take into account` 고려 sense / 1.7 공개 확인
+## 현재 batch — 사전 근거 카드·중복 설명 정리 / 1.8 검증 중
+
+- 사용자 요청에 따라 정의·예문 지속 보강을 기존 매시간 voca-nexus 자동화에 반영했다. 일정·대화·ACTIVE 상태는 유지하고 빈 정의/영한 예문/문맥 단서와 이해하기 어려운 해설을 우선한다. 새 자동화·대화·별도 학습 DB를 만들지 않았다.
+- 수정 범위: 검수 active-recall 상세/정답의 사전 근거 카드(사전명·직접 링크·실제 대조일·펼침 확인 범위·자체 편집/창작 구분), 단어장 상세의 반복 한국어 뜻·문맥 설명 제거. 영어 정의·정답 후 한국어 해석·관계어 개별 뜻·영한 예문·예문 클러스터는 유지한다. 의미 데이터는 그대로이며 신규 의미 검수나 전체 38,163행 빈칸 보완 완료로 포장하지 않는다.
+- 저장소 잠금: 터미널69723 / PID22072, LOCK_ACQUIRED. 종료 전 Enter로 LOCK_RELEASED를 확인한다. 사용자 server/auth.ts·1.4 학습JSON 내용 없는 변경 표기·미추적 파일은 보존한다.
+- VERIFIED: 실제 컴포넌트 렌더 회귀7테스트(직접 사전 URL·창작/출처 구분·문맥 한 번 표시·정답 후 한국어 유지·정답 전 비노출)와 전체 node scripts/verify-project.mjs(TypeScript·데이터·32파일257 PASS/기존 인증1 SKIP), 변경 ESLint 오류0·diff --check PASS. 콘텐츠 집계는 canonical109sense/COMPLETE91/NEEDS_REVIEW18/mapped251행, active-recall production19sense/35행으로 유지한다. Git 보안 tracked504/untracked206/findings0. 현재 공개 버전은 아직 아래1.7이며 Production·공개 UI는 진행 중이다. 사용자 학습 기록에 테스트 답안을 쓰지 않는다.
+- NEXT: 관련 테스트·전체 검사·Production/Git 보안 감사→승인된 Pages 배포→release/source/KST·실제 공개 출처 카드/중복 제거·모바일/태블릿 에뮬레이션을 확인한다. 이후 숙어의 빈/난해한 정의·예문을 한 source row씩 독립 근거→sense→쉬운 한국어 풀이로 확장한다.
+
+## 직전 batch — `take into account` 고려 sense / 1.7 공개 확인
 
 - 최신 공개 버전은 1.7이다. 앱 source `794fca19cfe72d1087a6ff424704b6c3d85c26a8`, Pages `0b45d3c556f42c6d5ba7ed4f717bfb489c933843`, 공개 release.json의 `2026.10.06 02:08 KST`와 source/KST 일치를 확인했다. 숙어 정본 `APPROW02130`(num37943, APPENDIX)의 기존 뜻·ID를 보존하고 `take-into-account:consider-factor` 한 sense를 추가했다. 별도 원본·학습 DB를 만들지 않았다. 중앙 마스터 DB의 위치·동기화는 unverified이며 재사용 sense의 중앙 반영은 sync_required다.
 - 저장소 잠금: 본 회차 터미널25851 / PID25412, LOCK_ACQUIRED. 검증·기록 커밋 뒤 종료 단계에서 Enter로 LOCK_RELEASED 확인한다. 기존 server/auth.ts·1.4 학습JSON의 내용 없는 변경 표기·미추적 파일은 보존했다. 다음 실행은 이 과거 PID가 아니라 실제 OS 잠금 결과를 기준으로 한다.
