@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.6",
+  "release": "1.7",
   "entries": [
     {
       "word": "a wide range of",
@@ -4743,6 +4743,54 @@
       ],
       "itemIds": [
         "APPROW02128"
+      ],
+      "inputLayers": [
+        "active-recall"
+      ],
+      "conflicts": [],
+      "alternateValues": [],
+      "definitionStatus": "COMPLETE",
+      "backfill": {
+        "attempts": 1,
+        "retryable": false,
+        "failureReasons": []
+      },
+      "missingFields": []
+    },
+    {
+      "word": "take into account",
+      "variants": [],
+      "senseId": "take-into-account:consider-factor",
+      "partOfSpeech": "verb phrase",
+      "englishDefinition": "To include relevant facts or circumstances in one's thinking when making a judgment or decision.",
+      "definitionProvenance": {
+        "kind": "editorial",
+        "source": "VOCA NEXUS editorial",
+        "layer": "active-recall",
+        "referenceUrls": [
+          "https://www.oxfordlearnersdictionaries.com/definition/english/account_1",
+          "https://www.collinsdictionary.com/dictionary/english/take-into-account"
+        ]
+      },
+      "koreanMeaning": "판단·결정할 때 관련 사실이나 사정을 고려에 넣다",
+      "contextExplanation": "관련 정보를 판단의 셈에 넣는 장면이다. take는 받아들이는 동작, into는 판단 범위 안으로 넣는 방향, account는 이 표현에서 고려할 사정이라는 학습 고리로 읽는다. 은행 계좌에 넣는 뜻이나 확인 없이 사실로 전제하는 뜻이 아니다. take A into account와 take into account A가 가능하며, 대명사는 take it into account처럼 가운데 둔다. 이 설명은 학습용 개념 연결이지 역사적 어원 주장이 아니다.",
+      "exampleSentence": "The committee took into account the objections but still approved the plan.",
+      "exampleTranslation": "위원회는 반대 의견을 고려에 넣었지만, 계획은 그대로 승인했다.",
+      "exampleExplanation": "the objections가 검토에 넣은 정보이고 but still approved가 최종 결정이다. 반대 의견을 고려했다고 그 의견에 동의하거나 계획을 거부해야 하는 것은 아니다.",
+      "synonyms": [
+        "take into consideration",
+        "take account of",
+        "consider",
+        "allow for",
+        "bear in mind"
+      ],
+      "distinctionNote": "take for granted: 사실이라고 확인 없이 출발점에 놓는 표현이다. 목표 표현은 관련 정보를 판단에 넣어 검토한다는 뜻이며, 그 정보가 자동으로 참이라는 뜻은 아니다. | approve of: 긍정적으로 평가하고 찬성하는 태도다. 반대 의견을 고려에 넣더라도 그 의견에 동의하지 않을 수 있으므로 고려와 찬성을 구별한다. | account for: 이유·원인·비중을 나타내는 별도 표현이다. 관련 사실을 결정 과정의 고려 대상으로 삼는다는 뜻과 다르며, account가 겹친다고 같은 표현이 아니다.",
+      "sourceIds": [
+        "https://www.oxfordlearnersdictionaries.com/definition/english/account_1",
+        "https://www.collinsdictionary.com/dictionary/english/take-into-account"
+      ],
+      "itemIds": [
+        "APPROW02130"
       ],
       "inputLayers": [
         "active-recall"

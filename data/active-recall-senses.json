@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "checkedAtKst": "2026.10.05",
+  "checkedAtKst": "2026.10.06",
   "entries": [
     {
       "id": "rule-of-thumb:practical-approximate-guide",
@@ -1246,6 +1246,58 @@
       "sourceCheckedAt": "2026.09.10",
       "status": "reviewed",
       "quality": "A",
+      "enrichmentStatus": "complete",
+      "failureReason": null
+    },
+    {
+      "id": "take-into-account:consider-factor",
+      "headword": "take into account",
+      "partOfSpeech": "verb phrase",
+      "senseId": "take-into-account:consider-factor",
+      "itemIds": ["APPROW02130"],
+      "englishDefinition": "To include relevant facts or circumstances in one's thinking when making a judgment or decision.",
+      "conciseEnglishDefinition": "to include relevant facts when making a judgment or decision",
+      "exactSynonyms": ["take into consideration", "take account of"],
+      "nearSynonyms": ["consider", "allow for", "bear in mind"],
+      "antonyms": ["disregard", "leave out of consideration"],
+      "variants": ["take something into account"],
+      "relatedWords": [],
+      "relationMeaningsKo": {
+        "take into consideration": "판단할 때 어떤 사실·사정을 고려에 넣다",
+        "take account of": "판단에 영향을 줄 사실·사정을 참작하다",
+        "consider": "검토하거나 생각해 보다; 이 문맥에서는 고려하다",
+        "allow for": "예상되는 영향·차이를 감안해 여지를 두다",
+        "bear in mind": "판단하는 동안 잊지 않고 염두에 두다",
+        "disregard": "중요한 고려 대상으로 삼지 않고 무시하다",
+        "leave out of consideration": "검토·판단의 고려 대상에서 빼다",
+        "take something into account": "어떤 사실·사정을 판단에 넣어 고려하다"
+      },
+      "exampleSentences": [
+        {
+          "en": "The committee took into account the objections but still approved the plan.",
+          "ko": "위원회는 반대 의견을 고려에 넣었지만, 계획은 그대로 승인했다.",
+          "cueKo": "the objections가 검토에 넣은 정보이고 but still approved가 최종 결정이다. 반대 의견을 고려했다고 그 의견에 동의하거나 계획을 거부해야 하는 것은 아니다.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "판단·결정할 때 관련 사실이나 사정을 고려에 넣다",
+      "contextExplanationKo": "관련 정보를 판단의 셈에 넣는 장면이다. take는 받아들이는 동작, into는 판단 범위 안으로 넣는 방향, account는 이 표현에서 고려할 사정이라는 학습 고리로 읽는다. 은행 계좌에 넣는 뜻이나 확인 없이 사실로 전제하는 뜻이 아니다. take A into account와 take into account A가 가능하며, 대명사는 take it into account처럼 가운데 둔다. 이 설명은 학습용 개념 연결이지 역사적 어원 주장이 아니다.",
+      "prompts": [
+        {"id": "definition", "kind": "definition-recall", "text": "to include relevant facts or circumstances when making a judgment or decision"},
+        {"id": "context", "kind": "context-recall", "text": "When estimating the total cost, the editor must _____ the extra work needed to verify every quotation."}
+      ],
+      "distractors": [
+        {"word": "take for granted", "meaningKo": "확인 없이 사실로 전제하다", "reasonKo": "사실이라고 확인 없이 출발점에 놓는 표현이다. 목표 표현은 관련 정보를 판단에 넣어 검토한다는 뜻이며, 그 정보가 자동으로 참이라는 뜻은 아니다.", "plausible": true},
+        {"word": "approve of", "meaningKo": "좋게 여기거나 찬성하다", "reasonKo": "긍정적으로 평가하고 찬성하는 태도다. 반대 의견을 고려에 넣더라도 그 의견에 동의하지 않을 수 있으므로 고려와 찬성을 구별한다.", "plausible": true},
+        {"word": "account for", "meaningKo": "이유를 설명하다; 원인이 되다; 비중을 차지하다", "reasonKo": "이유·원인·비중을 나타내는 별도 표현이다. 관련 사실을 결정 과정의 고려 대상으로 삼는다는 뜻과 다르며, account가 겹친다고 같은 표현이 아니다.", "plausible": false}
+      ],
+      "sources": [
+        {"publisher": "Oxford Advanced Learner's Dictionary", "url": "https://www.oxfordlearnersdictionaries.com/definition/english/account_1", "independenceGroup": "Oxford", "note": "take account of / take something into account의 결정 시 사실·사정 고려 sense와 구문을 대조함; 정의·예문은 자체 편집"},
+        {"publisher": "Webster's New World College Dictionary via Collins", "url": "https://www.collinsdictionary.com/dictionary/english/take-into-account", "independenceGroup": "HarperCollins", "note": "고려 대상으로 삼는 sense를 Oxford와 독립 대조함; 무료 열람 원문을 앱에 복제하지 않음"}
+      ],
+      "sourceCheckedAt": "2026.10.06",
+      "status": "production",
+      "quality": "B",
       "enrichmentStatus": "complete",
       "failureReason": null
     },

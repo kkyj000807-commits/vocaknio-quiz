@@ -2,7 +2,14 @@
 
 기준: 2026.10.06 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 batch — 적응형 학습·동일 기록 기반 통계 / 1.6 공개 확인
+## 현재 batch — `take into account` 고려 sense / 1.7 배포 후보
+
+- 공개 기준은 아래 검증된 1.6이며 이번 회차는 숙어 정본 `APPROW02130`(num37943, APPENDIX)의 기존 뜻·ID를 보존하고 `take-into-account:consider-factor` 한 sense를 추가한다. 별도 원본·학습 DB를 만들지 않는다. 중앙 마스터 DB의 위치·동기화는 unverified이며 재사용 sense의 중앙 반영은 sync_required다.
+- 저장소 잠금: 터미널25851 / PID25412, LOCK_ACQUIRED. 기존 server/auth.ts·1.4 학습JSON의 내용 없는 변경 표기·미추적 파일은 보존한다. 종료 시 Enter로 LOCK_RELEASED 확인.
+- 요구 체크리스트: 정본 행·구문 확인 DONE; The Free Dictionary 우선 시도(fetch 실패) 후 Oxford·Webster's New World via Collins 독립 의미 대조 DONE; 자체 편집 EN/KR·구성 요소·예문/문맥 단서·개별 관계어 뜻·오답 차이 DONE; 영영 본문항/오답복습·정본 JSON·통합 검사 DONE(250 PASS, 기존 인증1 SKIP); Git 보안 감사 DONE(tracked504/untracked204/findings0); Production·공개 UI 검증 PENDING. 고려했다고 찬성·승인하거나 정보가 참이라고 단정하지 않으며 account for와 분리한다.
+- 변경 예정/현재 범위: 기존 active-recall/idiom-corrections/expression-composition과 관련 테스트·release1.7·생성 자산만 변경. 사용자 학습 원자료에는 시험 답안을 넣지 않는다. 다음 행동은 관련 테스트 → 전체 검사 → Production/보안 감사 → 승인된 Pages → 공개 버전/해시/UI 확인이다.
+
+## 직전 batch — 적응형 학습·동일 기록 기반 통계 / 1.6 공개 확인
 
 - 최신 공개 버전은 1.6이다. 앱 source `ccebf92c71ac93742dc2d0d41e4255e0d794e779`, Pages `3223dec5e568c8128189ff79c6b308071ac9c26c`, 공개 release.json `2026.10.06 01:41 KST`와 HTTP200을 확인했다. 기존 1.5의 gloss over 콘텐츠와 학습 기록을 유지한 채 적응형 출제·통계를 확장했다. 이 문서만의 후속 커밋과 배포된 앱 source SHA는 구분한다.
 - 저장소 잠금: 본 회차 터미널 6931 / PID6484. 검증·기록 커밋 뒤 Enter로 해제하고 LOCK_RELEASED를 확인한다. 다음 실행은 이 과거 PID가 아니라 실제 OS 잠금 결과를 기준으로 한다. 사용자 소유 server/auth.ts, 1.4 학습JSON의 내용 없는 변경 표기 및 미추적 파일은 보존했다.

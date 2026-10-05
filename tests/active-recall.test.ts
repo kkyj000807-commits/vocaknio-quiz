@@ -17,6 +17,7 @@ const wideRangeRows = VOCAB.filter(item => item.w === "a wide range of");
 const zoomInOnRows = VOCAB.filter(item => item.w === "zoom in on");
 const withoutFailRows = VOCAB.filter(item => item.w === "without fail");
 const glossOverRows = VOCAB.filter(item => item.w === "gloss over");
+const takeIntoAccountRows = VOCAB.filter(item => item.w === "take into account");
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -35,13 +36,13 @@ describe("영어→영어 active recall", () => {
     expect(sense?.exactSynonyms).not.toContain("overseer");
     expect(getActiveRecallSenses(juryRows[0].id)).toHaveLength(1);
     expect(getActiveRecallCoverage()).toEqual({
-      senses: 18,
-      rows: 34,
-      definitions: 18,
-      examples: 18,
-      contextualizedExamples: 18,
-      contextExplanations: 18,
-      synonymRelations: 18,
+      senses: 19,
+      rows: 35,
+      definitions: 19,
+      examples: 19,
+      contextualizedExamples: 19,
+      contextExplanations: 19,
+      synonymRelations: 19,
     });
   });
 
@@ -212,6 +213,32 @@ describe("영어→영어 active recall", () => {
     expect(question.choices.map(choice => choice.value)).toContain("dwell on");
     expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
     expect(validateQuestion(question)).toBe(true);
+  });
+
+  it("take into account는 고려를 찬성·사실 전제와 구별하고 개별 한국어 뜻을 갖는다", () => {
+    expect(takeIntoAccountRows.map(item => item.id)).toEqual(["APPROW02130"]);
+    const [sense] = getActiveRecallSenses(takeIntoAccountRows[0].id);
+    expect(sense.senseId).toBe("take-into-account:consider-factor");
+    expect(sense.koreanMeaning).toBe("판단·결정할 때 관련 사실이나 사정을 고려에 넣다");
+    expect(sense.exactSynonyms).toEqual(["take into consideration", "take account of"]);
+    expect(sense.contextExplanationKo).toContain("take it into account");
+    expect(sense.exampleSentences[0].cueKo).toContain("동의");
+    for (const word of [...sense.exactSynonyms, ...sense.nearSynonyms, ...sense.antonyms, ...sense.variants]) {
+      expect(sense.relationMeaningsKo?.[word]).toBeTruthy();
+    }
+    expect(sense.distractors.find(choice => choice.word === "approve of")?.reasonKo).toContain("동의하지 않을");
+  });
+
+  it("take into account 본 문항·오답 복습은 같은 단일 정답 계약을 사용한다", () => {
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [takeIntoAccountRows[0].num], preserveItemOrder: true });
+    expect(question.recall?.senseId).toBe("take-into-account:consider-factor");
+    expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
+    expect(question.choices.map(choice => choice.value)).toEqual(expect.arrayContaining(["take into account", "take for granted", "approve of", "account for"]));
+    expect(validateQuestion(question)).toBe(true);
+    const [review] = buildReviewQuestions([takeIntoAccountRows[0].num], 1);
+    expect(review.recall?.senseId).toBe(question.recall?.senseId);
+    expect(review.choices.filter(choice => isChoiceCorrect(review, choice))).toHaveLength(1);
   });
 
   it("without fail의 의무·반복 sense를 분리하고 각각 단일정답 문제로 만든다", () => {

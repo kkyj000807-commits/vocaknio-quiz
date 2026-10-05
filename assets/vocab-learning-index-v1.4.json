@@ -1,8 +1,8 @@
 {
-  "version": "1.6",
+  "version": "1.7",
   "coverage": {
-    "senses": 162,
-    "rows": 227,
+    "senses": 163,
+    "rows": 228,
     "checkedAtKst": "2026.10.05"
   },
   "items": {
@@ -53,6 +53,12 @@
       "group": "APPENDIX",
       "entryIds": [
         "learn:correction:APPROW02128"
+      ]
+    },
+    "APPROW02130": {
+      "group": "APPENDIX",
+      "entryIds": [
+        "learn:correction:APPROW02130"
       ]
     },
     "APPROW02335": {
