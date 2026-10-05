@@ -12,7 +12,7 @@ afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks(); });
 it("keeps native secure storage and Bearer transport without token or user diagnostics", async () => {
   const log = vi.spyOn(console, "log").mockImplementation(() => {});
   const error = vi.spyOn(console, "error").mockImplementation(() => {});
-  const token = "synthetic-session-value";
+  const token = "example-placeholder-session-token";
   const user = { id: 1, name: "synthetic user", email: "fixture@example.invalid", loginMethod: "test" };
   await auth.setSessionToken(token); await auth.setUserInfo(user);
   expect(await auth.getSessionToken()).toBe(token); expect(await auth.getUserInfo()).toEqual(user);
