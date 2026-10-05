@@ -16,7 +16,7 @@ vi.mock("react-native", () => {
   };
   return { View: component("div"), Text: component("span"), Pressable: component("button"), ActivityIndicator: component("span"), StyleSheet: { create: <T,>(styles: T) => styles }, Linking: { openURL: native.openURL } };
 });
-vi.mock("@/components/reasoning-practice", () => ({ ReasoningPractice: () => null }));
+vi.mock("@/components/reasoning-practice", () => ({ ReasoningPractice: () => null, LazyReasoningPractice: () => null }));
 vi.mock("@/hooks/use-colors", () => ({ useColors: () => ({ foreground: "#222", muted: "#666", primary: "#5046e5", success: "#187", error: "#c33", surface: "#fff", card: "#eee", border: "#ccc" }) }));
 
 const entry = ACTIVE_RECALL_SENSES.find(sense => sense.senseId === "take-into-account:consider-factor")!;

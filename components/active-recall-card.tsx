@@ -5,6 +5,7 @@ import { useColors } from "@/hooks/use-colors";
 import type { ActiveRecallSense } from "@/lib/active-recall";
 import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
 import { LearningEvidence } from "@/components/learning-evidence";
+import { LazyReasoningPractice } from "@/components/reasoning-practice";
 import { getSynonymDetails, type VocabItem } from "@/lib/vocab";
 import type { QuizChoice } from "@/lib/quiz-engine";
 import {
@@ -205,6 +206,7 @@ export function ActiveRecallAnswer({ recall, choices, item }: { recall: ActiveRe
               />
             </View>
           ))}
+          <LazyReasoningPractice itemId={item?.id ?? recall.itemIds[0]} />
         </View>
       ) : null}
       <LearningEvidence entry={recall} />

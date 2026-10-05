@@ -2,6 +2,36 @@ import { useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useColors } from "@/hooks/use-colors";
 import { isPracticeAnswerCorrect, readPracticeAttempt, savePracticeAttempt, type ReasoningLesson, type ReasoningQuestion } from "@/lib/reasoning-practice";
+import { hasLearningEntry, loadLearningEntries } from "@/lib/vocab-learning";
+
+/** Parent mounts only after answer reveal / expanded wordbook details. */
+export function LazyReasoningPractice({ itemId }: { itemId: string }) {
+  return hasLearningEntry(itemId) ? <ReasoningPracticeLoader key={itemId} itemId={itemId} /> : null;
+}
+
+function ReasoningPracticeLoader({ itemId }: { itemId: string }) {
+  const s = styles(useColors());
+  const [lessons, setLessons] = useState<ReasoningLesson[]>([]);
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  useEffect(() => {
+    let cancelled = false;
+    setFailed(false);
+    loadLearningEntries(itemId).then(entries => {
+      if (cancelled) return;
+      const unique = new Map<string, ReasoningLesson>();
+      for (const entry of entries) if (entry.reasoning) unique.set(entry.reasoning.id, entry.reasoning);
+      setLessons([...unique.values()]);
+    }).catch(() => { if (!cancelled) setFailed(true); });
+    return () => { cancelled = true; };
+  }, [itemId, attempt]);
+  return <View>
+    {lessons.map(lesson => <ReasoningPractice key={lesson.id} lesson={lesson} />)}
+    {failed && <Pressable accessibilityRole="button" onPress={() => setAttempt(value => value + 1)} style={s.button}>
+      <Text style={s.note}>문맥 연습을 불러오지 못했습니다 · 다시 시도</Text>
+    </Pressable>}
+  </View>;
+}
 
 export function ReasoningPractice({ lesson }: { lesson: ReasoningLesson }) {
   const s = styles(useColors());
