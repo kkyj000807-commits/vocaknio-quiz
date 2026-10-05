@@ -72,6 +72,8 @@ export interface BuildQuizOptions {
   masteredNums?: number[];
   masteredTargetKeys?: string[];
   itemNums?: number[];
+  /** Explicit statistics review keeps the selected sense, not only its spelling. */
+  learningTargetKeys?: string[];
   /**
    * 동의어 데이터가 없는 항목을 검증된 한국어 뜻 4지선다로 전환합니다.
    * 기본값은 false라서 기존 직접 호출의 동작은 그대로 유지됩니다.
@@ -369,6 +371,7 @@ function makeQuestion(
   mode: QuizMode,
   choiceLang: ChoiceLang,
   masteredTargetKeys: ReadonlySet<string> = new Set(),
+  requestedKeys: ReadonlySet<string> = new Set(),
 ): QuizQuestion | null {
   if (mode === "flashcard") {
     return {
@@ -398,12 +401,14 @@ function makeQuestion(
   if (mode === "definition-choice") {
     const recallEntries = getActiveRecallSenses(item.id).filter(entry =>
       activeRecallMatchesItem(entry, item) &&
+      (!requestedKeys.size || requestedKeys.has(canonicalSenseKey(entry.senseId))) &&
       !masteredTargetKeys.has(canonicalSenseKey(entry.senseId)));
     if (recallEntries.length > 0) {
       const recall = recallEntries[Math.floor(Math.random() * recallEntries.length)];
       return buildReviewedDefinitionQuestion(item, recall);
     }
     const definitionRecall = getDefinitionQuizEntry(item.id);
+    if (requestedKeys.size && (!definitionRecall || !requestedKeys.has(canonicalSenseKey(definitionRecall.senseId)))) return null;
     if (definitionRecall && masteredTargetKeys.has(canonicalSenseKey(definitionRecall.senseId))) return null;
     return buildOewnDefinitionQuestion(item);
   }
@@ -414,6 +419,7 @@ function makeQuestion(
     (mode === "kor-choice" && choiceLang === "english");
   const reviewed = getProductionSenseQuestions(item.id).filter(sense =>
     senseMatchesItem(sense, item) &&
+    (!requestedKeys.size || requestedKeys.has(canonicalSenseKey(sense.senseId))) &&
     !masteredTargetKeys.has(canonicalSenseKey(sense.senseId)));
   // A withheld sense must not quietly fall back to the old headword-level question.
   if (hasSenseQuestionMapping(item.id) && reviewed.length === 0) return null;
@@ -541,7 +547,9 @@ function makeQuestionWithFallback(
   choiceLang: ChoiceLang,
 ): QuizQuestion | null {
   const masteredTargets = new Set(options.masteredTargetKeys ?? []);
-  const primary = makeQuestion(item, options.mode, choiceLang, masteredTargets);
+  const requestedKeys = new Set(options.learningTargetKeys ?? []);
+  const primary = makeQuestion(item, options.mode, choiceLang, masteredTargets, requestedKeys);
+  if (primary && requestedKeys.size && !requestedKeys.has(getLearningTargetKey(item, primary.recall?.senseId ?? primary.sense?.senseId ?? primary.definitionRecall?.senseId))) return null;
   if (primary || !options.allowMeaningFallback) return primary;
   if (!canFallBackToMeaning(options.mode, choiceLang)) return null;
   return makeQuestion(item, "kor-choice", "korean", masteredTargets);

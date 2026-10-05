@@ -53,9 +53,9 @@ const expoCli = path.join(
   "bin",
   "cli"
 );
-const configuredMaxWorkers = process.env.VOCANEXUS_BUILD_MAX_WORKERS?.trim();
+const configuredMaxWorkers = (process.env.FINETUNE_BUILD_MAX_WORKERS ?? process.env.VOCANEXUS_BUILD_MAX_WORKERS)?.trim();
 if (configuredMaxWorkers && !/^[1-9]\d*$/.test(configuredMaxWorkers)) {
-  throw new Error("VOCANEXUS_BUILD_MAX_WORKERS must be a positive integer");
+  throw new Error("FINETUNE_BUILD_MAX_WORKERS must be a positive integer (legacy alias supported)");
 }
 
 console.log(`Production 빌드 시각: ${releasedAtKst}`);

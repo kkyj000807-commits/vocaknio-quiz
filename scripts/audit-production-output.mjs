@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { productionSecurityIssues } from "./lib/production-security.mjs";
 
 const outputRoot = process.argv[2];
 if (!outputRoot || !fs.existsSync(outputRoot)) {
@@ -53,9 +54,12 @@ const indexHtml = fs.readFileSync(path.join(outputRoot, "index.html"), "utf8");
 const bundleUrl = indexHtml.match(/src="\/vocaknio-quiz\/([^\"]*entry-[a-f0-9]+\.js)"/)?.[1];
 const bundle = bundleUrl ? path.join(outputRoot, ...bundleUrl.split("/")) : undefined;
 const bundleText = bundle ? fs.readFileSync(bundle, "utf8") : "";
+const securityIssues = productionSecurityIssues(outputRoot);
+const authDiagnosticsInCurrentBundle = /\[API\] Full URL:|\[API\] Response headers:|\[Auth\] Setting session token|\[OAuth\] Params received:/.test(bundleText);
 const result = {
   status:
     missing.size === 0 &&
+    securityIssues.length === 0 && !authDiagnosticsInCurrentBundle &&
     releaseMetadataValid &&
     rootExpoReferences === 0 &&
     rootAssetReferences === 0 &&
@@ -69,6 +73,8 @@ const result = {
       : "fail",
   release,
   releaseMetadataValid,
+  securityIssues,
+  authDiagnosticsInCurrentBundle,
   htmlFiles: htmlFiles.length,
   missingReferences: [...missing],
   rootExpoReferences,

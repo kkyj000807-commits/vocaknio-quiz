@@ -1,6 +1,6 @@
 ---
 name: transfer-english-reasoning
-description: Design and review exam-oriented English word and idiom lessons, contextual questions, Korean meaning bridges, and evidence-based distractors for VOCA NEXUS. Use for vocabulary content and reading/logic question authoring, not unrelated UI or deployment-only work.
+description: Design and review exam-oriented English word and idiom lessons, contextual questions, Korean meaning bridges, and evidence-based distractors for FINETUNE. Use for vocabulary content and reading/logic question authoring, not unrelated UI or deployment-only work.
 ---
 
 # 편입 실전 어휘·논리 출제

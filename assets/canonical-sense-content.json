@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.8",
+  "release": "1.9",
   "entries": [
     {
       "word": "a wide range of",
@@ -10,7 +10,7 @@
       "englishDefinition": "A large variety of people or things belonging to the same general category.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/definition/english/range_1",
@@ -57,7 +57,7 @@
       "englishDefinition": "To follow a rule or decision, or honor an agreement that governs what you should do.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/abide-by",
@@ -103,7 +103,7 @@
       "englishDefinition": "To be the explanation or cause of a fact, event, or difference.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/account-for",
           "https://www.oxfordlearnersdictionaries.com/definition/american_english/account-for"
@@ -150,7 +150,7 @@
       "englishDefinition": "To form a stated amount or proportion of a larger total.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/account-for",
           "https://www.oxfordlearnersdictionaries.com/definition/american_english/account-for"
@@ -197,7 +197,7 @@
       "englishDefinition": "To give a satisfactory explanation for an event, fact, or action.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/account-for",
           "https://www.oxfordlearnersdictionaries.com/definition/american_english/account-for"
@@ -243,7 +243,7 @@
       "englishDefinition": "Every member of a stated group except the named person, thing, or number.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/all-but",
           "https://www.oxfordlearnersdictionaries.com/us/definition/american_english/all_4"
@@ -344,7 +344,7 @@
       "englishDefinition": "Almost reaching or becoming the stated condition, while still falling slightly short of it.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/all-but",
           "https://www.oxfordlearnersdictionaries.com/us/definition/american_english/all_4"
@@ -445,7 +445,7 @@
       "englishDefinition": "Dependent on the outcome of a situation, with something important potentially being gained or lost.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/us/dictionary/english/at-stake",
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/stake_1"
@@ -491,7 +491,7 @@
       "englishDefinition": "To judge someone favourably while uncertainty remains and there is insufficient evidence against them.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/us/dictionary/english/benefit-of-the-doubt",
           "https://www.oxfordlearnersdictionaries.com/definition/english/benefit_1"
@@ -534,7 +534,7 @@
       "englishDefinition": "A course of action that leads to no useful result or further progress.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "synonym-review",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/definition/english/blind-alley",
@@ -615,7 +615,7 @@
       "englishDefinition": "Used to firmly deny that a description or claim is true.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/us/dictionary/english/by-no-means",
           "https://www.oxfordlearnersdictionaries.com/definition/american_english/means"
@@ -660,7 +660,7 @@
       "englishDefinition": "To use an existing opportunity or situation to gain an advantage for yourself.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/capitalize-on",
           "https://www.collinsdictionary.com/us/dictionary/english/capitalize-on-something"
@@ -706,7 +706,7 @@
       "englishDefinition": "Changing suddenly and unpredictably according to a person's mood or whim.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "synonym-review",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/definition/english/capricious",
@@ -792,7 +792,7 @@
       "englishDefinition": "To put a plan or instruction into action, or to perform a task or investigation.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/carry-out_1",
           "https://www.collinsdictionary.com/us/dictionary/english/carry-out",
@@ -840,7 +840,7 @@
       "englishDefinition": "A particular example that directly illustrates the issue currently being discussed.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/a-case-in-point",
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/case_1"
@@ -887,7 +887,7 @@
       "englishDefinition": "To use strict official measures to stop or control an activity considered unacceptable.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/clamp-down",
           "https://www.collinsdictionary.com/dictionary/english/clamp-down"
@@ -931,7 +931,7 @@
       "englishDefinition": "To learn to accept and deal with a difficult or unpleasant fact or situation.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/come-to-terms-with",
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/terms"
@@ -975,7 +975,7 @@
       "englishDefinition": "To reach an agreement or workable arrangement with another person or group.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/come-to-terms-with",
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/terms"
@@ -1019,7 +1019,7 @@
       "englishDefinition": "An association in which independent countries, many with historical ties to Britain, cooperate voluntarily.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/us/dictionary/english/commonwealth",
           "https://thecommonwealth.org/about-us"
@@ -1069,7 +1069,7 @@
       "englishDefinition": "Tending to create conditions that make a particular result easier or more likely to happen.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/definition/english/conducive",
@@ -1119,7 +1119,7 @@
       "englishDefinition": "To enforce rules more severely in order to stop violations or deal with those responsible.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/crack-down",
           "https://www.collinsdictionary.com/dictionary/english/crack-down"
@@ -1163,7 +1163,7 @@
       "englishDefinition": "To undermine the basis on which another person's argument, position, or plans depend.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/cut-the-ground-from-under-someone",
           "https://www.oxfordlearnersdictionaries.com/definition/english/ground_1"
@@ -1206,7 +1206,7 @@
       "englishDefinition": "The 1995 peace settlement that ended the Bosnian War and set a framework for Bosnia and Herzegovina.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://bih.osce.org/bih/58725",
           "https://www.nato.int/en/what-we-do/operations-and-missions/peace-support-operations-in-bosnia-and-herzegovina-1995-2004"
@@ -1256,7 +1256,7 @@
       "englishDefinition": "To investigate a subject closely in an effort to uncover more information about it.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/definition/english/delve-into",
           "https://www.collinsdictionary.com/dictionary/english/delve",
@@ -1304,7 +1304,7 @@
       "englishDefinition": "A US stock-market index based on the prices of thirty major companies, weighted by each share's price.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.spglobal.com/spdji/en/indices/equity/dow-jones-industrial-average/",
           "https://www.merriam-webster.com/dictionary/the%20Dow-Jones%20Industrial%20Average"
@@ -1354,7 +1354,7 @@
       "englishDefinition": "A claim by executive officials that certain confidential government communications should be protected from compulsory disclosure.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/executive-privilege",
           "https://www.law.cornell.edu/wex/executive_privilege"
@@ -1397,7 +1397,7 @@
       "englishDefinition": "The US constitutional amendment protecting religion, speech, the press, peaceful assembly, and petitioning the government.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/first-amendment",
           "https://www.archives.gov/founding-docs/bill-of-rights/what-does-it-say"
@@ -1447,7 +1447,7 @@
       "englishDefinition": "To successfully deal with or overcome a problem, difficulty, or obstacle.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/get-over",
           "https://www.collinsdictionary.com/us/dictionary/english/get-over"
@@ -1490,7 +1490,7 @@
       "englishDefinition": "To return to a normal state of health or feeling after an illness, shock, or upsetting experience.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/get-over",
           "https://www.collinsdictionary.com/us/dictionary/english/get-over"
@@ -1533,7 +1533,7 @@
       "englishDefinition": "To avoid discussing an unpleasant, embarrassing, or important matter in enough detail, often so that it seems less serious than it is.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/gloss-over",
@@ -1586,7 +1586,7 @@
       "englishDefinition": "To waste further funds trying to rescue something that has already cost money and is unlikely to succeed.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/us/dictionary/english/throw-good-money-after-bad",
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/money",
@@ -1631,7 +1631,7 @@
       "englishDefinition": "China's campaign launched in 1958 to accelerate industrial and agricultural development through mass mobilisation and communes.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/the-great-leap-forward",
           "https://history.state.gov/historicaldocuments/frus1958-60v19/d258"
@@ -1681,7 +1681,7 @@
       "englishDefinition": "A 1996 US law strengthening sanctions on Cuba and extending some consequences to foreign dealings involving confiscated property.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.congress.gov/crs_external_products/RL/PDF/95-248/95-248.3.pdf",
           "https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=COM%3A2021%3A0535%3AFIN"
@@ -1731,7 +1731,7 @@
       "englishDefinition": "Despite a difficulty, danger, or opposition that could prevent an action or result.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/definition/american_english/face_1",
           "https://www.collinsdictionary.com/dictionary/english/in-the-face-of"
@@ -1780,7 +1780,7 @@
       "englishDefinition": "Despite a circumstance that could have prevented an action or made an outcome less likely.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/in-spite-of",
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/spite_1"
@@ -1824,7 +1824,7 @@
       "englishDefinition": "A juror selected to guide the jury's deliberations and speak for the jury in court.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/foreman",
@@ -1869,7 +1869,7 @@
       "englishDefinition": "A jury's decision to acquit despite believing that the defendant committed the offence, because it rejects applying the law in that case.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.law.cornell.edu/wex/jury_nullification",
           "https://www.merriam-webster.com/dictionary/jury%20nullification"
@@ -1912,7 +1912,7 @@
       "englishDefinition": "To punish a perceived wrongdoer yourself instead of leaving the matter to the legal authorities.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/us/dictionary/english/take-the-law-into-your-own-hands",
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/hand_1"
@@ -3945,7 +3945,7 @@
       "englishDefinition": "To care for someone or take responsibility for the proper condition or management of something.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/look-after",
           "https://www.oxfordlearnersdictionaries.com/us/definition/american_english/look-after"
@@ -3991,7 +3991,7 @@
       "englishDefinition": "To cause or help produce a particular result or condition.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/make-for",
           "https://www.oxfordlearnersdictionaries.com/definition/english/make-for"
@@ -4038,7 +4038,7 @@
       "englishDefinition": "A changed condition that people come to regard as ordinary, although it was previously unusual.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/the-new-normal",
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/new"
@@ -4081,7 +4081,7 @@
       "englishDefinition": "Acting or speaking as someone's representative or in their place.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/on-someones-behalf-on-behalf-of-someone",
           "https://www.oxfordlearnersdictionaries.com/definition/english/behalf"
@@ -4127,7 +4127,7 @@
       "englishDefinition": "To ask so much for goods or services that buyers choose other sellers instead.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/to-price-yourself-out-of-the-market",
           "https://www.oxfordlearnersdictionaries.com/definition/english/price_2"
@@ -4173,7 +4173,7 @@
       "englishDefinition": "To abruptly withdraw support that a person or project has been relying on.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/us/dictionary/english/pull-the-rug-from-under-someone-pull-the-rug-from-under-someones-feet",
           "https://www.oxfordlearnersdictionaries.com/definition/american_english/rug"
@@ -4217,7 +4217,7 @@
       "englishDefinition": "To help someone feel relaxed and confident rather than nervous or embarrassed.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/definition/american_english/ease_1",
           "https://www.collinsdictionary.com/dictionary/english/at-ease"
@@ -4261,7 +4261,7 @@
       "englishDefinition": "To do a later step before the earlier step on which it logically depends, reversing the proper order.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/definition/english/cart_1",
@@ -4306,7 +4306,7 @@
       "englishDefinition": "To tolerate a person or situation that is irritating, unpleasant, or otherwise difficult to accept.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/definition/english/put-up-with",
           "https://www.collinsdictionary.com/dictionary/english/put-up-with"
@@ -4352,7 +4352,7 @@
       "englishDefinition": "To end the official restriction that requires someone to remain confined at home.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/definition/english/house-arrest",
           "https://www.merriam-webster.com/dictionary/house%20arrest"
@@ -4395,7 +4395,7 @@
       "englishDefinition": "A practical but approximate guide for judging or doing something, based on experience rather than an exact calculation.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
           "https://dictionary.cambridge.org/us/dictionary/english/rule-of-thumb",
@@ -4440,7 +4440,7 @@
       "englishDefinition": "To meet someone unexpectedly rather than by prior arrangement.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/run-into",
           "https://www.collinsdictionary.com/us/dictionary/english/run-into"
@@ -4484,7 +4484,7 @@
       "englishDefinition": "Used when the reasoning behind one statement also supports the statement that follows.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/token_1",
           "https://www.collinsdictionary.com/us/dictionary/english/by-the-same-token"
@@ -4530,7 +4530,7 @@
       "englishDefinition": "To give official permission or approval for an action.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "sense-question",
         "referenceUrls": [
           "https://dictionary.cambridge.org/us/dictionary/english/sanction",
@@ -4581,7 +4581,7 @@
       "englishDefinition": "To impose an official penalty or restriction for a violation.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "sense-question",
         "referenceUrls": [
           "https://dictionary.cambridge.org/us/dictionary/english/sanction",
@@ -4632,7 +4632,7 @@
       "englishDefinition": "A goal can be reached by several different methods, so another approach may work.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/us/dictionary/english/theres-more-than-one-way-to-skin-a-cat",
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/skin_2"
@@ -4675,7 +4675,7 @@
       "englishDefinition": "To accept that something is true, certain, or available without checking or questioning it.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/take-for-granted",
@@ -4720,7 +4720,7 @@
       "englishDefinition": "To fail to appreciate the value of someone or something because their presence or help seems certain and familiar.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/take-for-granted",
@@ -4765,7 +4765,7 @@
       "englishDefinition": "To include relevant facts or circumstances in one's thinking when making a judgment or decision.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/definition/english/account_1",
@@ -4813,7 +4813,7 @@
       "englishDefinition": "For a place or area to contain very many people, animals, or things, often with a sense of active abundance.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/teem-with",
@@ -4859,7 +4859,7 @@
       "englishDefinition": "Used to add one more fact or quality to what has already been mentioned.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/us/dictionary/english/to-boot",
           "https://www.merriam-webster.com/dictionary/to%20boot"
@@ -4911,7 +4911,7 @@
       "englishDefinition": "Very close to a particular event or change, whether the outcome is welcome or unwelcome.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/on-the-verge-of",
           "https://www.oxfordlearnersdictionaries.com/definition/english/verge_1"
@@ -4960,7 +4960,7 @@
       "englishDefinition": "After an event, especially while its effects or consequences are still being felt.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/in-the-wake-of",
           "https://www.merriam-webster.com/dictionary/in%20the%20wake%20of"
@@ -5008,7 +5008,7 @@
       "englishDefinition": "Used to emphasize that the same thing happens on every occasion, with no exception.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/fail_2",
           "https://www.collinsdictionary.com/dictionary/english/without-fail"
@@ -5075,7 +5075,7 @@
       "englishDefinition": "Used to stress that a required action will definitely be done, especially by a stated time.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/fail_2",
           "https://www.collinsdictionary.com/dictionary/english/without-fail"
@@ -5142,7 +5142,7 @@
       "englishDefinition": "To calculate an amount, answer, or value by using the available figures.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
@@ -5190,7 +5190,7 @@
       "englishDefinition": "For a situation, arrangement, or relationship to develop or end in a satisfactory way.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
@@ -5238,7 +5238,7 @@
       "englishDefinition": "To exercise the body, especially through a planned session of physical training.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
@@ -5286,7 +5286,7 @@
       "englishDefinition": "To find an answer or solution to a problem by thinking about it carefully.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
@@ -5334,7 +5334,7 @@
       "englishDefinition": "To finish an activity, discussion, or piece of work by dealing with its remaining details.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
           "https://www.oxfordlearnersdictionaries.com/us/definition/english/wrap-up",
@@ -5380,7 +5380,7 @@
       "englishDefinition": "To notice one particular part of a larger subject and give it especially close attention.",
       "definitionProvenance": {
         "kind": "editorial",
-        "source": "VOCA NEXUS editorial",
+        "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
           "https://dictionary.cambridge.org/us/dictionary/english/zoom-in-on",

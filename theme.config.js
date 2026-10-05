@@ -2,6 +2,7 @@
 const themeColors = {
   primary:    { light: '#5b50e8', paper: '#5b50e8', dark: '#6c63ff' },
   primary2:   { light: '#7c6ff5', paper: '#7c6ff5', dark: '#a78bfa' },
+  onPrimary:  { light: '#FFFFFF', paper: '#FFFFFF', dark: '#FFFFFF' },
   background: { light: '#F8FAFC', paper: '#F5F0E6', dark: '#07080f' },
   surface:    { light: '#FFFFFF', paper: '#FFFCF5', dark: '#0d0e1a' },
   card:       { light: '#F1F5F9', paper: '#EEE5D6', dark: '#121420' },

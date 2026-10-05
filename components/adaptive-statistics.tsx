@@ -3,6 +3,7 @@ import { View, Text, Pressable, TextInput } from "react-native";
 import { useColors } from "@/hooks/use-colors";
 import { accuracyPercent, type EvidenceStatus } from "@/lib/learning-analytics";
 import type { LearningStatistics, PerformanceRow, WordPerformance } from "@/lib/learning-statistics";
+import { statisticsReviewCandidates } from "@/lib/learning-statistics";
 
 export const QUESTION_TYPE_LABELS: Record<string, string> = {
   "definition-choice": "영영 정의 → 단어", "syn-choice": "영어 동의어",
@@ -13,26 +14,35 @@ const statusLabels: Record<EvidenceStatus, string> = { NEW: "미학습", ACTIVE:
 export const percentLabel = (value: number | null) => value === null ? "기록 없음" : `${value}%`;
 const timeLabel = (value: number | null) => value === null ? "기록 없음" : `${(value / 1000).toFixed(1)}초`;
 
-export function AdaptiveStatistics({ model, lifetime, onGroup, onMode, onPeriod, groupId, mode, period }: {
+export function AdaptiveStatistics({ model, lifetime, onGroup, onMode, onPeriod, groupId, mode, period, onReview, onStudyGroup, detailsInitiallyOpen = false }: {
   model: LearningStatistics; lifetime: { totalAnswered: number; totalCorrect: number };
   onGroup: (value: string) => void; onMode: (value: string) => void;
   onPeriod: (value: "lifetime" | "today" | "7days") => void;
   groupId: string; mode: string; period: "lifetime" | "today" | "7days";
+  onReview?: (groupId?: string, word?: WordPerformance) => void;
+  onStudyGroup?: (groupId: string) => void;
+  detailsInitiallyOpen?: boolean;
 }) {
   const colors = useColors();
   const [status, setStatus] = useState(""); const [sort, setSort] = useState("need");
   const [query, setQuery] = useState(""); const [outcome, setOutcome] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [showDetails, setShowDetails] = useState(detailsInitiallyOpen);
   const card = { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1, borderRadius: 14, padding: 14, marginBottom: 12 };
-  const heading = { color: colors.foreground, fontSize: 17, fontWeight: "800" as const, marginBottom: 10 };
-  const text = { color: colors.foreground, fontSize: 14, lineHeight: 22 };
+  const heading = { color: colors.foreground, fontSize: 18, fontWeight: "600" as const, marginBottom: 10 };
+  const text = { color: colors.foreground, fontSize: 15, lineHeight: 23 };
   const note = { color: colors.muted, fontSize: 12, lineHeight: 19 };
   const chip = (label: string, value: string, selected: string, select: (value: string) => void) => (
     <Pressable key={value || "all"} accessibilityRole="button" accessibilityState={{ selected: selected === value }} onPress={() => select(value)}
       style={{ paddingHorizontal: 12, paddingVertical: 10, minHeight: 44, borderRadius: 10, backgroundColor: selected === value ? colors.primary : colors.card, borderColor: colors.border, borderWidth: 1 }}>
-      <Text style={{ fontSize: 13, fontWeight: "700", color: selected === value ? "#fff" : colors.foreground }}>{label}</Text>
+      <Text style={{ fontSize: 13, fontWeight: "600", color: selected === value ? colors.onPrimary : colors.foreground }}>{label}</Text>
     </Pressable>);
   const controls = { flexDirection: "row" as const, flexWrap: "wrap" as const, gap: 6, marginBottom: 10 };
+  const reviewWords = useMemo(() => statisticsReviewCandidates(model), [model]);
+  const weakGroups = useMemo(() => model.groups.filter(row => row.attempts > 0).map(row => ({ row,
+    need: Math.max(0, ...reviewWords.filter(word => word.groupId === row.id).map(word => word.need.score)),
+  })).sort((a, b) => b.need - a.need).slice(0, 3), [model.groups, reviewWords]);
+  const reviewAction = (label: string, group?: string, word?: WordPerformance) => onReview ? <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={() => onReview(group, word)} style={{ minHeight: 44, justifyContent: "center", paddingVertical: 10 }}><Text style={{ ...text, color: colors.primary, fontWeight: "600" }}>{label} →</Text></Pressable> : null;
   const words = useMemo(() => {
     const result = model.words.filter(w => (!status || w.status === status) && (!query || w.word.toLowerCase().includes(query.toLowerCase().trim())) && (!outcome || w.stats.lastOutcome === outcome));
     const rate = (w: WordPerformance) => accuracyPercent(w.stats) ?? 101;
@@ -61,6 +71,28 @@ export function AdaptiveStatistics({ model, lifetime, onGroup, onMode, onPeriod,
     </Pressable>)}
   </View>;
   return <View style={{ paddingHorizontal: 16 }}>
+    <View style={{ gap: 14, marginBottom: 22 }}>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 14 }}>
+        {[["현재 MASTER", `${model.stateCounts.MASTERED.toLocaleString()}개`, `WEAK ${model.stateCounts.WEAK} · RELEARNING ${model.stateCounts.RELEARNING}`],
+          ["최근 최대 100문제", percentLabel(model.recentAccuracy), `${model.recent.correct}/${model.recent.attempts} 정답`],
+          ["복습 후보", `${reviewWords.length.toLocaleString()}개`, `MASTER 재검증 가능 ${model.dueMaster}개 별도`]].map(([label, value, sample]) => <View key={label} style={{ flexBasis: 145, flexGrow: 1 }}><Text style={note}>{label}</Text><Text style={{ color: colors.foreground, fontSize: 30, fontWeight: "600", marginVertical: 5 }}>{value}</Text><Text style={note}>{sample}</Text></View>)}
+      </View>
+      <Text style={note}>누적 {percentLabel(lifetime.totalAnswered ? Math.round(100 * lifetime.totalCorrect / lifetime.totalAnswered) : null)} · {lifetime.totalCorrect}/{lifetime.totalAnswered} 정답{groupId || mode || period !== "lifetime" ? " · 아래 요약에 상세 필터 적용 중" : ""}</Text>
+      {onReview && reviewWords.length ? <Pressable accessibilityRole="button" accessibilityLabel="약점 복습 시작" onPress={() => onReview()} style={{ minHeight: 48, borderRadius: 12, alignItems: "center", justifyContent: "center", backgroundColor: colors.primary }}><Text style={{ color: colors.onPrimary, fontSize: 16, fontWeight: "600" }}>약점 복습 시작 · 최대 10문제</Text></Pressable> : <Text style={text}>지금 필요한 약점 복습이 없습니다. 새 학습 기록이 쌓이면 우선순위가 표시됩니다.</Text>}
+    </View>
+    {!showDetails ? <>
+      {weakGroups.length ? <View style={{ marginBottom: 18 }}><Text style={heading}>먼저 볼 범위</Text>{weakGroups.map(({ row }) => <View key={row.id} style={{ borderBottomWidth: 1, borderBottomColor: colors.border, paddingVertical: 10 }}>
+        <Pressable accessibilityRole="button" accessibilityLabel={`${row.id.toUpperCase()} 상세 통계`} onPress={() => { onGroup(row.id); setShowDetails(true); }} style={{ minHeight: 44 }}><View style={{ flexDirection: "row", justifyContent: "space-between" }}><Text style={text}>{row.id.toUpperCase()}</Text><Text style={text}>{percentLabel(row.accuracy)}</Text></View><Text style={note}>{row.correct}/{row.attempts} 정답 · 최근 {percentLabel(row.recentAccuracy)}{row.attempts < 5 ? " · 표본 부족" : ""}</Text></Pressable>
+        {statisticsReviewCandidates(model, row.id).length ? reviewAction(`${row.id.toUpperCase()} 약점 복습`, row.id) : null}
+      </View>)}</View> : null}
+      {reviewWords.length ? <View style={{ marginBottom: 14 }}><Text style={heading}>우선 복습할 단어</Text>{reviewWords.slice(0, 3).map(word => <View key={word.key} style={{ paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: colors.border }}>
+        <Pressable accessibilityRole="button" accessibilityState={{ expanded: expanded === word.key }} onPress={() => setExpanded(expanded === word.key ? null : word.key)} style={{ minHeight: 44 }}><Text style={text}>{word.word} · {word.need.level}</Text><Text style={note}>{word.need.reasons.slice(0, 2).join(" · ")}</Text></Pressable>
+        {expanded === word.key ? <View><Text style={text}>{QUESTION_TYPE_LABELS[word.reviewMode] ?? word.reviewMode} · {percentLabel(accuracyPercent(word.modes.find(row => row.mode === word.reviewMode) ?? word.stats))} ({(word.modes.find(row => row.mode === word.reviewMode) ?? word.stats).correct}/{(word.modes.find(row => row.mode === word.reviewMode) ?? word.stats).attempts})</Text><Text style={note}>표현 전체 최근 {percentLabel(word.recentAccuracy)} · 평균 {timeLabel(word.meanMs)}</Text>{reviewAction(`${word.word} 복습 시작`, word.groupId, word)}</View> : null}
+      </View>)}</View> : null}
+    </> : null}
+    <Pressable accessibilityRole="button" accessibilityState={{ expanded: showDetails }} onPress={() => setShowDetails(value => !value)} style={{ minHeight: 44, justifyContent: "center", marginBottom: 12 }}><Text style={{ ...text, color: colors.primary }}>상세 통계·필터 {showDetails ? "접기 −" : "보기 +"}</Text></Pressable>
+    {showDetails ? <>
+    {groupId && onStudyGroup ? <View style={{ marginBottom: 12, gap: 4 }}>{reviewAction(`${groupId} 약점 복습`, groupId)}<Pressable accessibilityRole="button" onPress={() => onStudyGroup(groupId)} style={{ minHeight: 44, justifyContent: "center" }}><Text style={{ ...text, color: colors.primary }}>{groupId} 전체 학습 →</Text></Pressable></View> : null}
     <View style={card}>
       <Text style={heading}>범위·기간·문제 유형</Text>
       <View style={controls}>{chip("전체", "", groupId, onGroup)}{["V101", "V201", "V301", "V401", "V501", "V502", "V601", "APPENDIX"].map(id => chip(id, id, groupId, onGroup))}</View>
@@ -103,6 +135,7 @@ export function AdaptiveStatistics({ model, lifetime, onGroup, onMode, onPeriod,
           <Text style={text}>최근 응답 {timeLabel(word.lastResponseMs)} · 최근 실패 {word.stats.evidence?.lastFailureAt ? learningDate(word.stats.evidence.lastFailureAt) : "기록 없음"}</Text>
           {word.modes.map(row => <Text key={row.mode} style={text}>{QUESTION_TYPE_LABELS[row.mode] ?? row.mode}: {percentLabel(accuracyPercent(row))} ({row.correct}/{row.attempts}) · 평균 {timeLabel(row.evidence?.responseCount ? row.evidence.responseTotalMs / row.evidence.responseCount : null)}</Text>)}
           {word.need.reasons.map(reason => <Text key={reason} style={note}>• {reason}</Text>)}
+          {reviewAction(`${word.word} 복습 시작`, word.groupId, word)}
         </View> : null}
       </View>)}
       {!words.length ? <Text style={note}>조건에 맞는 풀이 기록이 없습니다.</Text> : null}
@@ -115,6 +148,7 @@ export function AdaptiveStatistics({ model, lifetime, onGroup, onMode, onPeriod,
       <Text style={note}>일별 집계 시작: {model.dateCoverageStart ?? "기록 없음"}. 최근 원자료는 최대 1,000건, 최근 성과는 조건에 맞는 그중 최대 100건입니다. 날짜 집계는 최근 365일이며 누적 기록은 삭제하지 않습니다.</Text>
       <Text style={note}>시간은 이 유형의 평소 속도와 비교합니다. 2분 초과·누락은 정답률에는 포함하고 시간 계산에서만 제외합니다. 학습 필요도는 출제 가중치이지 실제 기억 확률이나 시험 점수가 아닙니다. 기기 로컬 기록이며 자동 계정 동기화되지 않습니다.</Text>
     </View>
+    </> : null}
   </View>;
 }
 function learningDate(at: number) { return new Date(at).toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul" }); }

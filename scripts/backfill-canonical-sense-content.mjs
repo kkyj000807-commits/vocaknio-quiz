@@ -123,7 +123,7 @@ function learningDefinitionProvenance(entry) {
   }
   return {
     kind: "editorial",
-    source: "VOCA NEXUS editorial",
+    source: "FINETUNE editorial",
     referenceUrls: unique(entry.sources?.map((source) => source.url) ?? []),
   };
 }
@@ -131,7 +131,7 @@ function learningDefinitionProvenance(entry) {
 function editorialDefinitionProvenance(entry, layer) {
   return {
     kind: "editorial",
-    source: "VOCA NEXUS editorial",
+    source: "FINETUNE editorial",
     layer,
     referenceUrls: unique(entry.sources?.map((source) => source.url) ?? []),
   };

@@ -2,11 +2,6 @@ import { Platform } from "react-native";
 import { getApiBaseUrl } from "@/constants/oauth";
 import * as Auth from "./auth";
 
-type ApiResponse<T> = {
-  data?: T;
-  error?: string;
-};
-
 export async function apiCall<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -19,17 +14,9 @@ export async function apiCall<T>(endpoint: string, options: RequestInit = {}): P
   //   Cookie is set on backend domain via POST /api/auth/session after receiving token via postMessage
   if (Platform.OS !== "web") {
     const sessionToken = await Auth.getSessionToken();
-    console.log("[API] apiCall:", {
-      endpoint,
-      hasToken: !!sessionToken,
-      method: options.method || "GET",
-    });
     if (sessionToken) {
       headers["Authorization"] = `Bearer ${sessionToken}`;
-      console.log("[API] Authorization header added");
     }
-  } else {
-    console.log("[API] apiCall:", { endpoint, platform: "web", method: options.method || "GET" });
   }
 
   const baseUrl = getApiBaseUrl();
@@ -37,55 +24,31 @@ export async function apiCall<T>(endpoint: string, options: RequestInit = {}): P
   const cleanBaseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
   const url = baseUrl ? `${cleanBaseUrl}${cleanEndpoint}` : endpoint;
-  console.log("[API] Full URL:", url);
 
   try {
-    console.log("[API] Making request...");
     const response = await fetch(url, {
       ...options,
       headers,
       credentials: "include",
     });
-
-    console.log("[API] Response status:", response.status, response.statusText);
-    const responseHeaders = Object.fromEntries(response.headers.entries());
-    console.log("[API] Response headers:", responseHeaders);
-
-    // Check if Set-Cookie header is present (cookies are automatically handled in React Native)
-    const setCookie = response.headers.get("Set-Cookie");
-    if (setCookie) {
-      console.log("[API] Set-Cookie header received:", setCookie);
-    }
-
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error("[API] Error response:", errorText);
-      let errorMessage = errorText;
-      try {
-        const errorJson = JSON.parse(errorText);
-        errorMessage = errorJson.error || errorJson.message || errorText;
-      } catch {
-        // Not JSON, use text as is
-      }
-      throw new Error(errorMessage || `API call failed: ${response.statusText}`);
+      // Never surface backend dumps, stack traces or arbitrary response text.
+      throw new Error(`요청을 처리하지 못했습니다 (HTTP ${response.status}).`);
     }
 
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
       const data = await response.json();
-      console.log("[API] JSON response received");
       return data as T;
     }
 
     const text = await response.text();
-    console.log("[API] Text response received");
     return (text ? JSON.parse(text) : {}) as T;
   } catch (error) {
-    console.error("[API] Request failed:", error);
-    if (error instanceof Error) {
+    if (error instanceof Error && /^요청을 처리하지 못했습니다 \(HTTP \d+\)\.$/.test(error.message)) {
       throw error;
     }
-    throw new Error("Unknown error occurred");
+    throw new Error("서버에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요.");
   }
 }
 
@@ -95,20 +58,13 @@ export async function exchangeOAuthCode(
   code: string,
   state: string,
 ): Promise<{ sessionToken: string; user: any }> {
-  console.log("[API] exchangeOAuthCode called");
   // Use GET with query params
   const params = new URLSearchParams({ code, state });
   const endpoint = `/api/oauth/mobile?${params.toString()}`;
-  console.log("[API] Calling OAuth mobile endpoint:", endpoint);
   const result = await apiCall<{ app_session_id: string; user: any }>(endpoint);
 
   // Convert app_session_id to sessionToken for compatibility
   const sessionToken = result.app_session_id;
-  console.log("[API] OAuth exchange result:", {
-    hasSessionToken: !!sessionToken,
-    hasUser: !!result.user,
-    sessionToken: sessionToken ? `${sessionToken.substring(0, 50)}...` : null,
-  });
 
   return {
     sessionToken,
@@ -135,8 +91,7 @@ export async function getMe(): Promise<{
   try {
     const result = await apiCall<{ user: any }>("/api/auth/me");
     return result.user || null;
-  } catch (error) {
-    console.error("[API] getMe failed:", error);
+  } catch  {
     return null;
   }
 }
@@ -145,7 +100,6 @@ export async function getMe(): Promise<{
 // Called after receiving token via postMessage to get a proper Set-Cookie from the backend
 export async function establishSession(token: string): Promise<boolean> {
   try {
-    console.log("[API] establishSession: setting cookie on backend...");
     const baseUrl = getApiBaseUrl();
     const url = `${baseUrl}/api/auth/session`;
 
@@ -159,14 +113,10 @@ export async function establishSession(token: string): Promise<boolean> {
     });
 
     if (!response.ok) {
-      console.error("[API] establishSession failed:", response.status);
       return false;
     }
-
-    console.log("[API] establishSession: cookie set successfully");
     return true;
-  } catch (error) {
-    console.error("[API] establishSession error:", error);
+  } catch  {
     return false;
   }
 }

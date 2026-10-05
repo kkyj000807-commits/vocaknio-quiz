@@ -1,6 +1,7 @@
 import { buildAdaptiveEvidenceIndex, mergeAdaptiveStats, type AdaptiveCandidate, type AdaptiveHistory, type AdaptiveItemStats } from "./adaptive-quiz";
 import { ADAPTIVE_POLICY, accuracyPercent, calculateLearningNeed, eventPerformance, learningDay, median, mergePerformance, responseBaseline, type EvidenceStatus, type PerformanceCounts } from "./learning-analytics";
 import { getLearningTargetState, type SenseLearningState } from "./learning-state";
+import type { QuizMode } from "./vocab";
 
 export interface LearningItemMeta extends AdaptiveCandidate { word: string; groupId: string; sourceId: string }
 export interface StatisticsFilter { groupId?: string; mode?: string; period?: "lifetime" | "today" | "7days"; now?: number; legacyWrongNums?: number[] }
@@ -10,6 +11,8 @@ export interface WordPerformance {
   status: EvidenceStatus; stats: AdaptiveItemStats; modes: AdaptiveItemStats[];
   need: ReturnType<typeof calculateLearningNeed>; recentAccuracy: number | null;
   lastResponseMs: number | null; meanMs: number | null;
+  /** Question type whose existing adaptive need selected the displayed score. */
+  reviewMode: string;
 }
 export function buildLearningStatistics(history: AdaptiveHistory, learning: SenseLearningState, items: LearningItemMeta[], filter: StatisticsFilter = {}) {
   const now = filter.now ?? Date.now();
@@ -66,7 +69,7 @@ export function buildLearningStatistics(history: AdaptiveHistory, learning: Sens
     const typed = modes.map(row => ({ row, need: calculateLearningNeed(index.get(`${row.mode}\u0000${key}`) ?? row, { status, now, lastStudiedAt: target.lastStudiedAt, baselineMs: baselineByMode.get(row.mode), recentlySeen: recentByMode.get(row.mode)?.has(item.num), legacyWrong: legacyWrong.has(item.num) }) })).sort((a, b) => b.need.score - a.need.score);
     const recentResults = stats.evidence?.recent ?? [];
     return { key, word: item.word, num: item.num, groupId: item.groupId, sourceId: item.sourceId, status, stats, modes,
-      need: typed[0].need, recentAccuracy: recentResults.length ? Math.round(100 * recentResults.filter(r => r.outcome === "correct" || r.outcome === "mastered").length / recentResults.length) : null,
+      need: typed[0].need, reviewMode: typed[0].row.mode, recentAccuracy: recentResults.length ? Math.round(100 * recentResults.filter(r => r.outcome === "correct" || r.outcome === "mastered").length / recentResults.length) : null,
       lastResponseMs: stats.evidence?.lastResponseMs ?? null,
       meanMs: stats.evidence?.responseCount ? stats.evidence.responseTotalMs / stats.evidence.responseCount : null };
   });
@@ -92,3 +95,19 @@ export function buildLearningStatistics(history: AdaptiveHistory, learning: Sens
   };
 }
 export type LearningStatistics = ReturnType<typeof buildLearningStatistics>;
+
+/** View/action selection only: uses the engine's need, never a second weakness score. */
+export function statisticsReviewCandidates(model: LearningStatistics, groupId = "") {
+  return model.words.filter(word => (!groupId || word.groupId === groupId) &&
+    (word.status === "WEAK" || word.status === "RELEARNING" || word.need.level === "높음" || word.need.level === "매우 높음"))
+    .sort((a, b) => b.need.score - a.need.score);
+}
+
+export function buildStatisticsReviewParams(model: LearningStatistics, groupId = "", word?: WordPerformance) {
+  const words = word ? [word] : statisticsReviewCandidates(model, groupId).slice(0, 20);
+  if (!words.length) return null;
+  const mode: QuizMode = ["definition-choice", "syn-choice", "syn-kor-choice", "kor-choice", "syn-type", "flashcard"].includes(words[0].reviewMode) ? words[0].reviewMode as QuizMode : "kor-choice";
+  return { mode, rangeId: "statistics-review", count: String(Math.min(10, words.length)),
+    bookmarkNums: [...new Set(words.map(row => row.num))].join(","),
+    reviewKeys: [...new Set(words.map(row => row.key))].join(","), choiceLang: "korean" };
+}

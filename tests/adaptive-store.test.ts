@@ -1,5 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import {
+  ADAPTIVE_QUIZ_HISTORY_KEY,
+  loadAdaptiveQuizHistory,
+  loadStats,
+  loadWrongWords,
+  prepareAdaptiveQuizSession,
+  recordOneAnswer,
+  getLearningStorageIssue,
+  retryLearningStorage,
+  loadLearningSnapshot,
+} from "@/lib/store";
+import { VOCAB } from "@/lib/vocab";
+import { getItemLearningTargets, getQuestionLearningTargetKey } from "@/lib/canonical-learning";
+import { buildLearningStatistics, buildStatisticsReviewParams } from "@/lib/learning-statistics";
+import { buildQuizQuestions } from "@/lib/quiz-engine";
+
 const storageMock = vi.hoisted(() => {
   const values = new Map<string, string>();
   let failNextMultiSet = false;
@@ -46,21 +62,6 @@ vi.mock("@react-native-async-storage/async-storage", () => ({
   },
 }));
 
-import {
-  ADAPTIVE_QUIZ_HISTORY_KEY,
-  loadAdaptiveQuizHistory,
-  loadStats,
-  loadWrongWords,
-  prepareAdaptiveQuizSession,
-  recordOneAnswer,
-  getLearningStorageIssue,
-  retryLearningStorage,
-  loadLearningSnapshot,
-} from "@/lib/store";
-import { VOCAB } from "@/lib/vocab";
-import { getItemLearningTargets } from "@/lib/canonical-learning";
-import { buildLearningStatistics } from "@/lib/learning-statistics";
-
 describe("adaptive quiz storage", () => {
   beforeEach(() => {
     storageMock.reset();
@@ -69,6 +70,36 @@ describe("adaptive quiz storage", () => {
     storageMock.values.set(ADAPTIVE_QUIZ_HISTORY_KEY, "{broken");
     await expect(loadLearningSnapshot()).rejects.toThrow("unreadable");
     expect(storageMock.values.get(ADAPTIVE_QUIZ_HISTORY_KEY)).toBe("{broken");
+  });
+
+  it("connects a real response to weakness, exact-sense review and the next saved result", async () => {
+    const item = VOCAB.find(row => row.w === "without fail")!;
+    const targets = getItemLearningTargets(item);
+    expect(targets.length).toBe(2);
+    const key = targets[1].key;
+    const question = buildQuizQuestions({ mode: "definition-choice", itemNums: [item.num], learningTargetKeys: [key], count: 1 })[0];
+    expect(getQuestionLearningTargetKey(question)).toBe(key);
+    await recordOneAnswer(false, item.num, { sessionId: "stats-flow-failure", itemNum: item.num, mode: question.mode, outcome: "skip", learningTargetKey: key, answeredAt: Date.now(), responseMs: 4200 });
+    const metadata = targets.map(target => ({ num: item.num, word: item.w, sourceId: item.id, groupId: item.group, learningKey: target.key }));
+    const first = await loadLearningSnapshot();
+    const model = buildLearningStatistics(first.history, first.learning, metadata);
+    expect(model.words[0].status).toBe("RELEARNING");
+    const params = buildStatisticsReviewParams(model)!;
+    expect(params).toMatchObject({ mode: "definition-choice", bookmarkNums: String(item.num), reviewKeys: key });
+    const selected = await prepareAdaptiveQuizSession({ sessionId: "stats-flow-review", mode: params.mode, rangeId: params.rangeId, count: 1, candidates: [{ num: item.num, word: item.w, learningKey: key, learningStatus: model.words[0].status }] });
+    const review = buildQuizQuestions({ mode: "definition-choice", itemNums: selected, learningTargetKeys: params.reviewKeys.split(","), count: 1 })[0];
+    expect(getQuestionLearningTargetKey(review)).toBe(key);
+    const response = { sessionId: "stats-flow-review", itemNum: item.num, mode: review.mode, outcome: "correct" as const, learningTargetKey: key, answeredAt: Date.now(), responseMs: 2000 };
+    await recordOneAnswer(true, undefined, response); await recordOneAnswer(true, undefined, response);
+    const reopened = await loadLearningSnapshot();
+    const updated = buildLearningStatistics(reopened.history, reopened.learning, metadata);
+    expect(reopened.stats).toMatchObject({ totalAnswered: 2, totalCorrect: 1 });
+    expect(reopened.history.events).toHaveLength(2);
+    expect(updated.accuracy).toBe(50);
+    expect(updated.words[0].need.score).toBeLessThan(model.words[0].need.score);
+    expect(reopened.learning.targets[targets[0].key]).toBeUndefined();
+    expect(updated.stateCounts.MASTERED).toBe(0);
+    expect(buildStatisticsReviewParams(updated, "V101")).toBeNull();
   });
 
   it("persists actual source-group responses once and reopens the same 70/20 aggregation", async () => {

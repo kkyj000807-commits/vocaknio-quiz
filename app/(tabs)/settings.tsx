@@ -509,7 +509,7 @@ export default function SettingsScreen() {
             <View style={s.card}>
               <View style={s.infoRow}>
                 <Text style={s.infoLabel}>앱 이름</Text>
-                <Text style={s.infoValue}>편입VOCA</Text>
+                <Text style={s.infoValue}>FINETUNE · 파인튠</Text>
               </View>
               <View style={[s.infoRow, { borderTopWidth: 0.5, borderTopColor: colors.border }]}>
                 <Text style={s.infoLabel}>단어 수</Text>

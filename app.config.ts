@@ -3,6 +3,7 @@ import "./scripts/load-env.js";
 import type { ExpoConfig } from "expo/config";
 import releaseConfig from "./release.config.json";
 import themeConfig from "./theme.config";
+import brand from "./constants/brand.json";
 
 const APP_VERSION = releaseConfig.version;
 
@@ -32,7 +33,7 @@ const schemeFromBundleId = `manus${timestamp}`;
 
 const env = {
   // App branding - update these values directly (do not use env vars)
-  appName: "VOCA NEXUS",
+  appName: brand.name,
   appSlug: "vocaknio-quiz",
   // S3 URL of the app logo
   logoUrl: "https://d2xsxph8kpxj0f.cloudfront.net/310519663476278282/WS6D4wDEAVvGHz7A5rpBdJ/icon-DZPdGLq5MBh3nvyrAxeJvU.png",

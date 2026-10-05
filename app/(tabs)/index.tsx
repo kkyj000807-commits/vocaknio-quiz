@@ -19,10 +19,10 @@ import {
   QUIZ_MODES,
   RANGES,
   SECTION_RANGES,
-  VOCAB,
   type QuizMode,
 } from "@/lib/vocab";
 import { useColors } from "@/hooks/use-colors";
+import { PRODUCT_NAME, PRODUCT_PHILOSOPHY } from "@/constants/brand";
 import {
   loadQuizSettings,
   saveQuizSettings,
@@ -94,27 +94,11 @@ export default function HomeScreen() {
         <View style={s.header}>
           <View style={s.headerBadgeRow}>
             <View style={s.headerBadge}>
-              <Text style={s.headerBadgeText}>VOCA NEXUS</Text>
+              <Text style={s.headerBadgeText}>{PRODUCT_NAME}</Text>
             </View>
           </View>
           <Text style={s.headerTitle}>문제 풀이</Text>
-          <Text style={s.headerSub}>편입 어휘 암기를 위한 초효율 학습 앱</Text>
-          <View style={s.statRow}>
-            <View style={s.statItem}>
-              <Text style={s.statNum}>{VOCAB.length.toLocaleString()}</Text>
-              <Text style={s.statLabel}>단어</Text>
-            </View>
-            <View style={s.statDivider} />
-            <View style={s.statItem}>
-              <Text style={s.statNum}>{SECTION_RANGES.length}</Text>
-              <Text style={s.statLabel}>구간</Text>
-            </View>
-            <View style={s.statDivider} />
-            <View style={s.statItem}>
-              <Text style={s.statNum}>{QUIZ_MODES.length}</Text>
-              <Text style={s.statLabel}>모드</Text>
-            </View>
-          </View>
+          <Text style={s.headerSub}>{PRODUCT_PHILOSOPHY}</Text>
         </View>
 
         {/* ── 문제 풀이 방식 ─────────────────────── */}

@@ -135,6 +135,7 @@ export default function QuizScreen() {
     rangeId?: string;
     choiceLang?: string;
     bookmarkNums?: string;
+    reviewKeys?: string;
   }>();
 
   const mode = params.mode ?? "definition-choice";
@@ -155,6 +156,7 @@ export default function QuizScreen() {
     ],
     [params.bookmarkNums],
   );
+  const reviewKeys = useMemo(() => (params.reviewKeys ?? "").split(",").filter(Boolean), [params.reviewKeys]);
 
   const [questionsReady, setQuestionsReady] = useState(false);
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
@@ -177,8 +179,8 @@ export default function QuizScreen() {
   const [hintLevel, setHintLevel] = useState(0);
   const [imageRevealed, setImageRevealed] = useState(false);
   const [masteredOnCard, setMasteredOnCard] = useState(false);
-  const requestKey = useMemo(() => JSON.stringify({ mode, rangeStart, rangeEnd, count, rangeId, choiceLang, itemNums }),
-    [mode, rangeStart, rangeEnd, count, rangeId, choiceLang, itemNums]);
+  const requestKey = useMemo(() => JSON.stringify({ mode, rangeStart, rangeEnd, count, rangeId, choiceLang, itemNums, ...(reviewKeys.length ? { reviewKeys } : {}) }),
+    [mode, rangeStart, rangeEnd, count, rangeId, choiceLang, itemNums, reviewKeys]);
 
   const restoreQuestionViewState = useCallback((index: number) => {
     const snapshot = questionViewStatesRef.current.get(index) ?? createEmptyQuestionViewState();
@@ -256,6 +258,7 @@ export default function QuizScreen() {
         masteredNums: loadedMastered.filter(num => { const item = getVocabItem(num); return item && getItemLearningTargets(item).some(target => masteredKeys.includes(target.key)); }),
         masteredTargetKeys: masteredKeys,
         itemNums: itemNums.length > 0 ? itemNums : undefined,
+        learningTargetKeys: reviewKeys.length ? reviewKeys : undefined,
         allowMeaningFallback: false,
       } as const;
       const candidates = getQuizCandidateItems(baseOptions);
@@ -268,7 +271,7 @@ export default function QuizScreen() {
         rangeId: rangeId || "custom",
         mode,
         candidates: candidates.map((item) => {
-          const targets = getItemLearningTargets(item);
+          const targets = getItemLearningTargets(item).filter(target => !reviewKeys.length || reviewKeys.includes(target.key));
           const rankedTargets = targets
             .map(target => ({ target, score: learningPriority(getLearningTargetState(learningState, target.key)) }))
             .sort((left, right) => right.score - left.score);
@@ -341,7 +344,7 @@ export default function QuizScreen() {
     return () => {
       cancelled = true;
     };
-  }, [choiceLang, count, itemNums, mode, rangeEnd, rangeId, rangeStart, requestKey, restartToken, restoreQuestionViewState]);
+  }, [choiceLang, count, itemNums, mode, rangeEnd, rangeId, rangeStart, reviewKeys, requestKey, restartToken, restoreQuestionViewState]);
 
   const haptic = useCallback(
     (type: "light" | "success" | "error" = "light") => {

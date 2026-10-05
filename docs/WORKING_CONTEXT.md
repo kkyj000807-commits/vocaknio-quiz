@@ -1,8 +1,21 @@
-# VOCA NEXUS 현재 작업 상태
+# FINETUNE 현재 작업 상태
 
 기준: 2026.10.06 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 batch — 사전 근거 카드·중복 설명 정리 / 1.8 공개 확인
+## 현재 batch — FINETUNE 명칭·통계→복습 동선·민감 로그 제거 / 1.9 배포 후보
+
+- 최신 사용자 요구 통합: (1) 표시명/개발 패키지/현재 문서 FINETUNE 정리 DONE (2) 기존 적응형 데이터 재사용·요약/드릴다운·같은 의미/유형 복습 동선 DONE, 공개 UI 검증 대기 (3) 인증 민감 로그/서버 오류 노출·불필요 owner 공개 환경 매핑 제거 DONE, Production 검사 대기 (4) 전체 테마/공통 UI 고도화 PARTIAL (5) sense 단위 누락 정의·예문 보강은 계속 진행할 후속 필수 작업, 이번에는 신규 의미 생성 없음. 모든 누적 요청을 전체 완료라고 하지 않는다.
+- 잠금 터미널70421/PID11552 LOCK_ACQUIRED. 사용자 server/auth.ts 및 기존 미추적 파일·1.4 내용 없는 변경 표기를 보존한다. 종료 시 Enter로 해제한다.
+- 기존 AsyncStorage 공통 저장 큐·compact adaptive history·단어 상태·calculateLearningNeed·통계 집계를 그대로 재사용한다. 통계에서 요약 KPI3개·약한 범위/단어·복습1차 액션을 먼저 표시하고 필터/유형/추세/전체 상세·학습 시간을 접어서 보존한다. Home의 수록어/모드 수 과시 줄은 제거하되 데이터는 설정에서 열람한다. 새 약점 점수·DB·API·migration 없음. 기존 일반/오답/단어장/MASTER 롤백·테마 구조 유지.
+- 정확한 의미 복습: 기존 /quiz·bookmarkNums 목록 출제 경로를 재사용하고 reviewKeys 선택 필드만 전달한다. reviewed sense의 무작위 선택을 해당 key로 좁히며 현재 승인 데이터와 맞지 않는 과거 키를 다른 뜻으로 치환하지 않는다. 선택한 세션 유형 내 기존 weighted random은 유지한다. 중단 세션 requestKey는 reviewKeys가 있을 때만 확장해 기존 세션 호환을 유지한다.
+- VERIFIED 로컬: node scripts/verify-project.mjs TypeScript·데이터 감사·34파일264 PASS/기존 인증1 SKIP. 실제 without fail 2sense 중 두 번째만 모름→RELEARNING→같은 의미/유형 문제→정답 저장→재집계50%, 중복 재저장1회 처리·다른 sense 미변경·need 감소 통합 테스트 PASS. 기존 V101 7/10=70%, V601 2/10=20% 저장/UI 집계 회귀 PASS. 공개 브라우저 새 응답은 배포 후 별도 검증한다.
+- 보안: 인증/콜백73개 console 호출 제거(코드·토큰 일부·사용자·헤더 포함); API/콜백 raw 서버 오류 대신 안전한 오류 안내. native SecureStore·Bearer·웹 쿠키 경로는 유지하며 테스트로 확인했다. client의 미사용 OWNER 공개 매핑/내보내기를 제거하고 서버 OWNER 환경값은 유지한다. 현재 추적/미추적·origin/gh-pages 감사 findings0, 민감 파일명 Git 역사 경로 조사에 결과 없음. 전체 Git 역사 내용·모든 비밀 패턴 완전 검증이라고 주장하지 않는다. 새 Production 감사는 비밀 패턴/.env/서버/소스맵/DB 파일을 차단하며 fault injection2테스트 PASS.
+- 호환 식별자 보존: vocaknio_* 학습/테마 키, vocanexus_* 캐시 키, native bundle/package/OAuth scheme/Expo slug, main 저장소·Pages 주소. FINETUNE_BUILD_MAX_WORKERS를 우선하되 기존 VOCANEXUS_BUILD_MAX_WORKERS 별칭 지원. 내용과 단어 ID·반복 구조는 변경하지 않는다. GitHub Pages에서 필요한 콘텐츠와 클라이언트 로직은 공개 다운로드 가능하며 완전 비밀화를 보장하지 않는다. 보호가 필요하면 인증 서버 범위의 별도 사용자 결정이 필요하다.
+- 콘텐츠 규모: 원본38163 출현/고유 철자13347, 공유 canonical109sense/COMPLETE91/NEEDS_REVIEW18/연결251행, production active-recall19sense/35행 유지. 기존 정의·예문 모두 재사용, 신규 생성0·의미 부분 보강0(편집 출처 표시명만 FINETUNE). 13347 철자 수를 고유 word+POS+sense 총수로 간주하지 않는다. 전체38163 의미 검수/빈칸 보완 완료가 아니다. 중앙 DB unverified/sync_required 유지.
+- 기존 자동화 voca-nexus는 같은 시간표/대화/ACTIVE를 유지하며 FINETUNE 최신 통계/보안/공유 sense 방향으로 갱신했다. 새 자동화·대화 없음.
+- NEXT: Production 출력·최종 Pages 감사→공개 release.json/version/source/KST→Chrome/IAB 실제 새 풀이 저장·통계→단어/범위 복습→새 결과 반영·좁은 viewport 확인. 이후 fall short of 두 source row의 공유 뜻 보강을 진행한다. 실제 iPhone Safari/Galaxy Tab Samsung Internet·강제 다크와 전체 테마 디자인은 미검증/미완료다.
+
+## 직전 batch — 사전 근거 카드·중복 설명 정리 / 1.8 공개 확인
 
 - 사용자 요청에 따라 정의·예문 지속 보강을 기존 매시간 voca-nexus 자동화에 반영했다. 일정·대화·ACTIVE 상태는 유지하고 빈 정의/영한 예문/문맥 단서와 이해하기 어려운 해설을 우선한다. 새 자동화·대화·별도 학습 DB를 만들지 않았다.
 - 수정 범위: 검수 active-recall 상세/정답의 사전 근거 카드(사전명·직접 링크·실제 대조일·펼침 확인 범위·자체 편집/창작 구분), 단어장 상세의 반복 한국어 뜻·문맥 설명 제거. 영어 정의·정답 후 한국어 해석·관계어 개별 뜻·영한 예문·예문 클러스터는 유지한다. 의미 데이터는 그대로이며 신규 의미 검수나 전체 38,163행 빈칸 보완 완료로 포장하지 않는다.

@@ -1,4 +1,4 @@
-# VOCA NEXUS 프로젝트 진입
+# FINETUNE 프로젝트 진입
 
 시작 시 `docs/WORKING_CONTEXT.md`와 `docs/AI_WORK_RULES.md`를 읽고 현행 코드·배포 상태를 확인한다. 사용자 소유 미커밋 변경을 보존한다.
 
