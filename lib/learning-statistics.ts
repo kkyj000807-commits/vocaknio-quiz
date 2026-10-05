@@ -109,5 +109,5 @@ export function buildStatisticsReviewParams(model: LearningStatistics, groupId =
   const mode: QuizMode = ["definition-choice", "syn-choice", "syn-kor-choice", "kor-choice", "syn-type", "flashcard"].includes(words[0].reviewMode) ? words[0].reviewMode as QuizMode : "kor-choice";
   return { mode, rangeId: "statistics-review", count: String(Math.min(10, words.length)),
     bookmarkNums: [...new Set(words.map(row => row.num))].join(","),
-    reviewKeys: [...new Set(words.map(row => row.key))].join(","), choiceLang: "korean" };
+    reviewKeys: JSON.stringify([...new Set(words.map(row => row.key))]), choiceLang: "korean" };
 }

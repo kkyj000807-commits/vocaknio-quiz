@@ -12,7 +12,7 @@ import {
   loadLearningSnapshot,
 } from "@/lib/store";
 import { VOCAB } from "@/lib/vocab";
-import { getItemLearningTargets, getQuestionLearningTargetKey } from "@/lib/canonical-learning";
+import { getItemLearningTargets, getQuestionLearningTargetKey, parseLearningReviewKeys } from "@/lib/canonical-learning";
 import { buildLearningStatistics, buildStatisticsReviewParams } from "@/lib/learning-statistics";
 import { buildQuizQuestions } from "@/lib/quiz-engine";
 
@@ -85,9 +85,9 @@ describe("adaptive quiz storage", () => {
     const model = buildLearningStatistics(first.history, first.learning, metadata);
     expect(model.words[0].status).toBe("RELEARNING");
     const params = buildStatisticsReviewParams(model)!;
-    expect(params).toMatchObject({ mode: "definition-choice", bookmarkNums: String(item.num), reviewKeys: key });
+    expect(params).toMatchObject({ mode: "definition-choice", bookmarkNums: String(item.num), reviewKeys: JSON.stringify([key]) });
     const selected = await prepareAdaptiveQuizSession({ sessionId: "stats-flow-review", mode: params.mode, rangeId: params.rangeId, count: 1, candidates: [{ num: item.num, word: item.w, learningKey: key, learningStatus: model.words[0].status }] });
-    const review = buildQuizQuestions({ mode: "definition-choice", itemNums: selected, learningTargetKeys: params.reviewKeys.split(","), count: 1 })[0];
+    const review = buildQuizQuestions({ mode: "definition-choice", itemNums: selected, learningTargetKeys: parseLearningReviewKeys(decodeURIComponent(params.reviewKeys), [item]), count: 1 })[0];
     expect(getQuestionLearningTargetKey(review)).toBe(key);
     const response = { sessionId: "stats-flow-review", itemNum: item.num, mode: review.mode, outcome: "correct" as const, learningTargetKey: key, answeredAt: Date.now(), responseMs: 2000 };
     await recordOneAnswer(true, undefined, response); await recordOneAnswer(true, undefined, response);
@@ -100,6 +100,19 @@ describe("adaptive quiz storage", () => {
     expect(reopened.learning.targets[targets[0].key]).toBeUndefined();
     expect(updated.stateCounts.MASTERED).toBe(0);
     expect(buildStatisticsReviewParams(updated, "V101")).toBeNull();
+  });
+
+  it("restores exact keys after URL decoding and never maps an unknown key to another meaning", () => {
+    const item = VOCAB.find(row => row.w === "without fail")!;
+    const key = getItemLearningTargets(item)[1].key;
+    expect(parseLearningReviewKeys(decodeURIComponent(key), [item])).toEqual([key]);
+    expect(parseLearningReviewKeys(decodeURIComponent(JSON.stringify([key])), [item])).toEqual([key]);
+    const unknown = "sense:without-fail:unknown";
+    expect(buildQuizQuestions({ mode: "definition-choice", itemNums: [item.num], learningTargetKeys: parseLearningReviewKeys(unknown, [item]), count: 1 })).toEqual([]);
+    const legacy = VOCAB.find(row => getItemLearningTargets(row)[0].kind === "legacy-equivalence" && getItemLearningTargets(row)[0].key.includes("%2C"))!;
+    expect(legacy).toBeTruthy();
+    const legacyKey = getItemLearningTargets(legacy)[0].key;
+    expect(parseLearningReviewKeys(decodeURIComponent(JSON.stringify([legacyKey])), [legacy])).toEqual([legacyKey]);
   });
 
   it("persists actual source-group responses once and reopens the same 70/20 aggregation", async () => {

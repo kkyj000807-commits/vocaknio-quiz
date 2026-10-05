@@ -68,6 +68,7 @@ import {
 import {
   getItemLearningTargets,
   getQuestionLearningTargetKey,
+  parseLearningReviewKeys,
 } from "@/lib/canonical-learning";
 import {
   getLearningTargetState,
@@ -156,7 +157,7 @@ export default function QuizScreen() {
     ],
     [params.bookmarkNums],
   );
-  const reviewKeys = useMemo(() => (params.reviewKeys ?? "").split(",").filter(Boolean), [params.reviewKeys]);
+  const reviewKeys = useMemo(() => parseLearningReviewKeys(params.reviewKeys ?? "", itemNums.map(getVocabItem).filter((item): item is VocabItem => Boolean(item))), [params.reviewKeys, itemNums]);
 
   const [questionsReady, setQuestionsReady] = useState(false);
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);

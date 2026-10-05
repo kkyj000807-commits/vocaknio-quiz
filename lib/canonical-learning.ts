@@ -26,6 +26,25 @@ export function canonicalSenseKey(senseId: string): string {
   return `sense:${encodeKeyPart(senseId)}`;
 }
 
+/** Restore known keys after a router decodes their percent-encoded parts.
+ * JSON preserves commas inside legacy meanings; old CSV links still work.
+ * Unknown or ambiguous values remain unmatched rather than selecting another sense.
+ */
+export function parseLearningReviewKeys(raw: string, items: VocabItem[]): string[] {
+  if (!raw) return [];
+  let values: unknown;
+  try { values = raw.startsWith("[") ? JSON.parse(raw) : raw.split(","); }
+  catch { return [raw]; }
+  if (!Array.isArray(values) || values.some(value => typeof value !== "string")) return [raw];
+  const known = [...new Set(items.flatMap(item => getItemLearningTargets(item).map(target => target.key)))];
+  const decoded = (key: string) => { try { return decodeURIComponent(key); } catch { return key; } };
+  return [...new Set((values as string[]).filter(Boolean).map(value => {
+    if (known.includes(value)) return value;
+    const matches = known.filter(key => decoded(key) === value);
+    return matches.length === 1 ? matches[0] : value;
+  }))];
+}
+
 /**
  * Rows without reviewed sense IDs use a versioned equivalence key. The key is
  * deliberately narrower than a headword: a different displayed meaning stays
