@@ -294,6 +294,25 @@ describe("영어→영어 active recall", () => {
     expect(validateQuestion(repeated)).toBe(true);
   });
 
+  it("without fail 반복 뜻의 모든 관계어를 보강하되 빈도·규칙성 경계를 유지한다", () => {
+    const [required, repeated] = getActiveRecallSenses(withoutFailRows[0].id);
+    expect(required.sourceCheckedAt).toBe("2026.10.05");
+    expect(required.relationMeaningsKo).toBeUndefined();
+    const relations = [...repeated.exactSynonyms, ...repeated.nearSynonyms, ...repeated.antonyms, ...repeated.relatedWords];
+    expect(Object.keys(repeated.relationMeaningsKo!)).toEqual(relations);
+    expect(repeated.relationMeaningsKo?.["not always"]).toContain("never가 아니다");
+    expect(repeated.relationMeaningsKo?.["not always"]).toContain("가끔인지 대체로 그런지까지 정해 주지는 않는다");
+    expect(repeated.relationMeaningsKo?.["like clockwork"]).toContain("늘 바꿔 쓸 수는 없다");
+    expect(repeated.exactSynonyms).not.toContain("like clockwork");
+    expect(repeated.nearSynonyms).not.toContain("like clockwork");
+    expect(repeated.sourceCheckedAt).toBe("2026.10.06");
+    expect(new Set(repeated.sources.map(source => source.independenceGroup))).toEqual(new Set(["Oxford", "Collins"]));
+    expect(repeated.sources.map(source => source.url)).toContain("https://www.collinsdictionary.com/dictionary/english/like-clockwork");
+    expect(repeated.prompts.map(prompt => prompt.id)).toEqual(["definition", "context"]);
+    expect(repeated.exampleSentences).toHaveLength(1);
+    expect(repeated.exampleSentences[0].en).toBe("During the review month, she checked the error log every evening without fail.");
+  });
+
   it("take for granted의 사실 전제와 가치 간과를 서로 다른 sense로 유지한다", () => {
     expect(takeForGrantedRows).toHaveLength(1);
     const senses = getActiveRecallSenses(takeForGrantedRows[0].id);

@@ -22,6 +22,13 @@ export function LearningEvidence({
   const [expanded, setExpanded] = useState(false);
   const [linkFailed, setLinkFailed] = useState(false);
   const ownExamples = entry.exampleSentences.every(example => example.type === "editorial");
+  // Keep the summary compact; extra pages from one publisher are not independent dictionaries.
+  const sourceGroups = new Set<string>();
+  const summarySources = entry.sources.filter(source => {
+    if (sourceGroups.has(source.independenceGroup)) return false;
+    sourceGroups.add(source.independenceGroup);
+    return true;
+  });
   const openSource = async (url: string) => {
     try {
       await Linking.openURL(url);
@@ -39,7 +46,7 @@ export function LearningEvidence({
       </View>
       <Text style={[styles.summary, { color: colors.foreground }]}>뜻·구문은 사전 대조, 설명은 학습에 맞게</Text>
       <View style={styles.sources}>
-        {entry.sources.map((source, index) => (
+        {summarySources.map((source, index) => (
           <Pressable
             key={`${source.url}:${index}`}
             accessibilityRole="link"
@@ -67,7 +74,14 @@ export function LearningEvidence({
         <View style={styles.details}>
           {entry.sources.map((source, index) => (
             <View key={`${source.publisher}:${index}`} style={styles.detail}>
-              <Text style={[styles.fullName, { color: colors.foreground }]}>{source.publisher}</Text>
+              <Pressable
+                accessibilityRole="link"
+                accessibilityLabel={`${source.publisher} 확인 범위·직접 근거 열기`}
+                onPress={() => void openSource(source.url)}
+                style={({ pressed }) => [styles.detailLink, pressed && styles.pressed]}
+              >
+                <Text style={[styles.fullName, { color: colors.primary }]}>{source.publisher} ↗</Text>
+              </Pressable>
               <Text style={[styles.note, { color: colors.muted }]}>{source.note}</Text>
             </View>
           ))}
@@ -93,6 +107,7 @@ const styles = StyleSheet.create({
   toggleText: { fontSize: 12, lineHeight: 20, fontWeight: "700" },
   details: { gap: 10 },
   detail: { gap: 3 },
+  detailLink: { minHeight: 44, justifyContent: "center" },
   fullName: { fontSize: 12, lineHeight: 20, fontWeight: "700" },
   pressed: { opacity: 0.7 },
 });

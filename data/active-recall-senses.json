@@ -433,6 +433,14 @@
       "antonyms": ["occasionally", "not always"],
       "variants": [],
       "relatedWords": ["like clockwork"],
+      "relationMeaningsKo": {
+        "without exception": "모든 경우에 예외 없이. 반복되는 회차를 하나도 빠뜨리지 않았다는 뜻에서 바꿔 쓸 수 있다. 한 번의 명령에서 의무를 강조하는 뜻과는 구분한다.",
+        "invariably": "항상, 어김없이. 같은 상황이 생길 때마다 같은 결과가 나타남을 말한다. almost invariably는 거의 항상, not invariably는 항상 그런 것은 아니라는 뜻으로 범위가 달라진다.",
+        "every time": "매번, 그 일이 일어날 때마다. 반복되는 모든 회차를 가리킨다. 같은 뜻을 전달하더라도 문장 안의 위치와 뒤따르는 절을 맞춰 써야 한다.",
+        "occasionally": "가끔, 이따금. 자주가 아니라 일부 경우에 일어난다. 매번 빠짐없이 일어난다는 without fail과 빈도에서 대조된다.",
+        "not always": "항상 그런 것은 아니다, 매번 그러지는 않는다. 예외가 있다는 뜻이지 전혀 일어나지 않는다는 never가 아니다. 가끔인지 대체로 그런지까지 정해 주지는 않는다.",
+        "like clockwork": "시계처럼 규칙적·정확하게, 또는 계획대로 문제없이. 일정한 시간이나 순조로운 진행에 초점을 둘 때 쓴다. 한 번의 일도 순조로울 수 있으므로 모든 회차에 예외가 없다는 without fail과 늘 바꿔 쓸 수는 없다."
+      },
       "exampleSentences": [
         {
           "en": "During the review month, she checked the error log every evening without fail.",
@@ -487,9 +495,45 @@
           "url": "https://www.collinsdictionary.com/dictionary/english/without-fail",
           "independenceGroup": "Collins",
           "note": "같은 일이 매번 일어남을 강조하는 sense와 주문·약속의 확실성 강조 sense를 독립 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary · always",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/always",
+          "independenceGroup": "Oxford",
+          "note": "매번이라는 빈도 뜻과 not always의 부정 범위를 대조함. 항상 그런 것은 아니라는 말은 never나 가끔이라는 특정 빈도와 같지 않도록 자체 해설함"
+        },
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary · invariably",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/invariably",
+          "independenceGroup": "Oxford",
+          "note": "항상·어김없이의 뜻 및 almost/not과 결합할 때의 범위 변화를 대조함. 같은 출판사의 추가 페이지이지 별도 독립 사전으로 세지 않음"
+        },
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary · occasionally",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/occasionally",
+          "independenceGroup": "Oxford",
+          "note": "가끔이며 자주는 아니라는 빈도 뜻을 확인하고, 모든 회차가 빠짐없다는 뜻과 대조함. 학습용 한국어 설명은 자체 편집함"
+        },
+        {
+          "publisher": "Collins English Dictionary · without exception",
+          "url": "https://www.collinsdictionary.com/dictionary/english/without-exception",
+          "independenceGroup": "Collins",
+          "note": "관련된 모든 경우에 성립한다는 뜻을 확인함. 반복 회차의 예외 없음과 한 번의 명령에서 반드시 해야 한다는 의미 경계를 유지함"
+        },
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary · clockwork",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/clockwork",
+          "independenceGroup": "Oxford",
+          "note": "go/run like clockwork의 계획대로 문제없는 진행과 regular as clockwork의 규칙성을 구분함. 모든 회차의 예외 없음을 자동 보장하는 동의어로 처리하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary · like clockwork",
+          "url": "https://www.collinsdictionary.com/dictionary/english/like-clockwork",
+          "independenceGroup": "Collins",
+          "note": "문제·지연 없이 진행됨 또는 규칙적으로 일어남의 두 초점을 Oxford와 대조함. 관계 표현으로 유지하고 무조건 치환 가능한 동의어로 올리지 않음"
         }
       ],
-      "sourceCheckedAt": "2026.10.05",
+      "sourceCheckedAt": "2026.10.06",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",

@@ -61,6 +61,35 @@ describe("reviewed learning evidence and explanation boundaries", () => {
     expect(native.openURL.mock.calls.map(call => call[0])).toEqual(entry.sources.map(source => source.url));
   });
 
+  it("추가 사전 페이지가 있어도 첫 화면에는 독립 사전별 직접 링크만 한 번 보여준다", async () => {
+    const sense = ACTIVE_RECALL_SENSES.find(entry => entry.senseId === "without-fail:every-time-no-exception")!;
+    expect(sense.sources).toHaveLength(8);
+    const html = render(<LearningEvidence entry={sense} />);
+    expect(native.links).toHaveLength(2);
+    expect(occurrences(html, "Oxford ↗")).toBe(1);
+    expect(occurrences(html, "Collins ↗")).toBe(1);
+    expect(html).not.toContain("· clockwork");
+    for (const link of native.links) link.press();
+    await Promise.resolve();
+    expect(native.openURL.mock.calls.map(call => call[0])).toEqual(sense.sources.slice(0, 2).map(source => source.url));
+  });
+
+  it("without fail 정답 후·단어장에는 개별 뜻을 표시하고 영영 문제에는 노출하지 않는다", () => {
+    const sense = ACTIVE_RECALL_SENSES.find(entry => entry.senseId === "without-fail:every-time-no-exception")!;
+    const answer = render(<ActiveRecallAnswer recall={sense} />);
+    const detail = render(<ActiveRecallStudyDetails entry={sense} index={1} count={2} />);
+    const prompt = render(<ActiveRecallPrompt recall={sense} />);
+    for (const meaning of Object.values(sense.relationMeaningsKo!)) {
+      expect(answer).toContain(meaning);
+      expect(detail).toContain(meaning);
+      expect(prompt).not.toContain(meaning);
+    }
+    expect(answer).not.toContain("한국어 뜻 검수 중");
+    expect(detail).not.toContain("한국어 뜻 검수 중");
+    expect(detail).toContain(sense.exampleSentences[0].ko);
+    expect(prompt).not.toContain(sense.koreanMeaning);
+  });
+
   it("does not describe mixed-source examples as entirely original", () => {
     const html = render(<LearningEvidence entry={{ ...entry, exampleSentences: [{ ...entry.exampleSentences[0], type: "source" }] }} />);
     expect(html).toContain("예문은 항목별 출처·창작 구분");

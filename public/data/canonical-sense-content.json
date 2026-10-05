@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.10",
+  "release": "1.11",
   "entries": [
     {
       "word": "a wide range of",
@@ -5074,7 +5074,13 @@
       "distinctionNote": "한 번의 행동을 반드시 하라는 의무보다 실제 반복 빈도의 예외 없음에 초점이 있다.",
       "sourceIds": [
         "https://www.oxfordlearnersdictionaries.com/us/definition/english/fail_2",
-        "https://www.collinsdictionary.com/dictionary/english/without-fail"
+        "https://www.collinsdictionary.com/dictionary/english/without-fail",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/always",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/invariably",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/occasionally",
+        "https://www.collinsdictionary.com/dictionary/english/without-exception",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/clockwork",
+        "https://www.collinsdictionary.com/dictionary/english/like-clockwork"
       ],
       "itemIds": [
         "APPROW02335"

@@ -2,7 +2,14 @@
 
 기준: 2026.10.06 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 batch — fall short of 공유 sense·기록 호환·새 문맥 연습 / 1.10 공개 확인
+## 현재 batch — without fail 관계어 뜻·확인 범위 / 1.11 검증 중
+
+- 공개 기준은 아래 1.10이다. 잠금 터미널55169/PID7844 LOCK_ACQUIRED. 사용자 server/auth.ts·1.4 내용 없는 변경 표기·미추적 파일 보존. 이번 범위는 APPROW02335(num38148) 반복 sense의 누락 관계어 뜻6개와 출처 상세의 직접 링크만이며 원본38163행·기존 두 sense·정의/예문/문항 ID·저장 키·적응형 알고리즘은 변경하지 않는다.
+- 사전 대조 DONE: TFD without fail/like clockwork 우선 시도(fetch 실패/timeout, 근거 제외), Oxford fail/always/invariably/occasionally/clockwork 및 Collins without-fail/without-exception/like-clockwork 직접 확인(2026.10.06). not always는 never가 아니고 가끔인지도 단정하지 않는다. like clockwork는 규칙적·정확한 반복 또는 계획대로 순조로운 진행이며 매회 예외 없음과 항상 치환할 수 없어 related로 유지한다. 정의·예문 원문 복제 없이 개별 한국어 뜻·교체 조건만 자체 편집했다.
+- 구현 DONE: 반복 sense1개의 relationMeaningsKo 누락6개만 보강, 기존 의무 sense/영영 정의/영한 예문/정답·오답 계약 재사용. 요약 출처는 독립 출판사2개만 표시하며 추가 근거8페이지는 확인 범위에서 직접 링크로 열람한다. 같은 출판사의 페이지를 독립 사전8개로 포장하지 않는다. 테스트/Production/공개 UI는 아직 미완료이며 다음 단계는 관련 회귀→전체 verify→격리 풀이/출처 펼침→감사 통과 후1.11 배포·실제 release/URL 확인이다.
+- VERIFIED 코드·데이터: node scripts/verify-project.mjs TypeScript·원본/매핑/active-recall 감사·34파일277 PASS/기존 인증1 SKIP(총35파일278테스트), 변경 ESLint 오류0·git diff --check PASS. 최초 새 테스트의 부정 범위 문구 기대값 오류1건을 수정한 뒤 전체 재통과했다. 실제 응답→같은 반복 sense 복습→정답→50% 재집계·need 감소·다른 의무 sense 미변경·중복 이벤트 방지 및 MASTER/WEAK/RELEARNING·테마 보존 회귀가 통과했다. Git 보안 tracked520/untracked212/findings0. Production·공개 UI 확인은 다음 단계다.
+
+## 직전 batch — fall short of 공유 sense·기록 호환·새 문맥 연습 / 1.10 공개 확인
 
 - 최신 공개판은 1.10이며 아래 1.9에서 이어졌다. 원본 V501 `JBKROW019982`(num19215)·`JBKROW022793`(num21991)은 모두 `기대에 못 미치다`이며, 출현 두 행/번호/뜻/발음/범위를 변경하지 않았다. 원본 SHA256 `7EBA20F388D04E9D7FB10EDEC635BEAC5DC7A6C726EF6E25D7DABA4CE57908DD`가 시작/최종에 일치했다.
 - 잠금 터미널28915/PID19444 LOCK_ACQUIRED. 종료 전 Enter→LOCK_RELEASED 확인. 기존 server/auth.ts·1.4 내용 없는 변경 표기·미추적 파일은 사용자 소유로 보존하며 배포 커밋에 포함하지 않는다.
