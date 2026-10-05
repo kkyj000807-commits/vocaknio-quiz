@@ -2,7 +2,18 @@
 
 기준: 2026.10.06 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 batch — FINETUNE 명칭·통계→복습 동선·민감 로그 제거 / 1.9 공개 확인
+## 현재 batch — fall short of 공유 sense·기록 호환·새 문맥 연습 / 1.10 검증 중
+
+- 기준 공개판은 아래 1.9이다. 원본 V501 `JBKROW019982`(num19215)·`JBKROW022793`(num21991)은 모두 `기대에 못 미치다`이며, 출현 두 행/번호/뜻/발음/범위를 변경하지 않는다. 원본 SHA256 `7EBA20F388D04E9D7FB10EDEC635BEAC5DC7A6C726EF6E25D7DABA4CE57908DD`를 시작 시 기록했다.
+- 잠금 터미널28915/PID19444 LOCK_ACQUIRED. 종료 전 Enter→LOCK_RELEASED 확인. 기존 server/auth.ts·1.4 내용 없는 변경 표기·미추적 파일은 사용자 소유로 보존하며 배포 커밋에 포함하지 않는다.
+- 체크리스트: 원본·기존 매핑 조사 DONE / TFD 우선 시도(fetch 실패, 근거 제외) 및 Oxford·Collins 독립 사전 대조 DONE / 공유 `fall-short-of:below-required-standard` 1sense, 자체 EN/KR 정의·영한 예문2·문맥 단서·관계어 개별 뜻·교체 조건 DONE / 영영 문항·정답 후 상세·museum guide 새 문맥 문제1 연결 DONE, UI 검증 대기 / 기존 MASTER·WEAK·RELEARNING·유형별 history 보존 검사 진행 / 전체 테스트·Production·Git 감사·공개 UI NOT DONE.
+- 의미 경계: 기준 미달이지 성과 전무가 아니다. 개선 여부와 기준 충족을 분리한다. `stop short of` 행동 경계·`fall behind` 진행 뒤처짐과 대조한다. Oxford https://www.oxfordlearnersdictionaries.com/definition/english/short_2 및 Collins https://www.collinsdictionary.com/dictionary/english/fall-short 를 직접 확인(2026.10.06). 관계어는 Oxford measure-up/live-up-to/fall-behind, Collins exceed도 선별 대조. 사전 원문을 앱에 복제하지 않으며 B는 내부 편집 등급이지 학습 효과/독립 인간 검수 증명이 아니다.
+- 기록 보호: 새 canonical key를 무조건 만들면 기존 legacy 상태·유형별 기록이 분리되는 위험을 발견했다. 사전 대조로 같은 단일 의미임을 확인한 이번 항목에만 `preservedLearningKey`를 명시하고 기존 legacy key를 계속 사용한다. source/sense ID는 해설·문항 경계로 유지한다. 과거 상태를 복제·삭제하거나 새 DB/migration을 만들지 않는다. 다른 다의어에 자동 적용하지 않는다.
+- 기존 active-recall 상세가 legacy 해설 로딩을 생략하여 reasoning practice가 보이지 않는 경로를 확인했다. 펼친 뒤 기존 groupCache/ReasoningPractice만 재사용하여 보조 문맥 연습을 한 번 연결한다. 정답 전·뜻 가림 중에는 접근할 수 없으며 문맥 연습은 기존 기기 로컬 전용으로 본 적응형 정답률에 합산하지 않는다.
+- 생성 집계(검증 진행): 원본38163 출현/고유 철자13347 유지, canonical110/COMPLETE92/NEEDS_REVIEW18/연결253행, active-recall production20sense/37행. 고유 보강1sense를 반복2행에 공유한다. 기존 다른 콘텐츠를 재생성했다고 주장하지 않는다. 호환 export의 per-row learning entry2개는 기존 구조이며 같은 공유 저작 데이터를 소비한다. 중앙 DB unverified/sync_required 유지.
+- NEXT: 실제 데이터 호환·답안·렌더 테스트→전체 verify→Production/Git 보안→격리 Production 풀이/문맥 연습 저장·통계→Pages 공개1.10·소스/KST/UI를 확인한다. 실패 시 미배포로 기록하고 사용자 학습 데이터에 테스트 답안을 쓰지 않는다.
+
+## 직전 batch — FINETUNE 명칭·통계→복습 동선·민감 로그 제거 / 1.9 공개 확인
 
 - 최신 사용자 요구 통합: (1) 표시명/개발 패키지/현재 문서 FINETUNE 정리 DONE (2) 기존 적응형 데이터 재사용·요약/드릴다운·같은 의미/유형 복습 동선 VERIFIED, 공개 조회 및 동일 Production의 격리 로컬 풀이 검증 (3) 인증 민감 로그/서버 오류 노출·불필요 owner 공개 환경 매핑 제거 및 Production 검사 VERIFIED (4) 전체 테마/공통 UI 고도화 PARTIAL (5) sense 단위 누락 정의·예문 보강은 계속 진행할 후속 필수 작업, 이번에는 신규 의미 생성 없음. 모든 누적 요청을 전체 완료라고 하지 않는다.
 - 잠금 터미널70421/PID11552 LOCK_ACQUIRED. 사용자 server/auth.ts 및 기존 미추적 파일·1.4 내용 없는 변경 표기를 보존했다. 최종 기록 커밋/푸시 뒤 Enter로 해제하고 LOCK_RELEASED를 확인하여 종료한다. 다음 실행은 이 과거 PID가 아니라 실제 OS 잠금 결과를 기준으로 한다.

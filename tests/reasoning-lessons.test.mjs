@@ -15,7 +15,7 @@ describe("문맥 출제 계약", () => {
   it("구성 요소 해설을 모든 대상 행의 실제 배포 JSON에 연결한다", () => {
     const compositions = read("data/expression-composition.json");
     const corrections = read("data/idiom-corrections.json");
-    expect(compositions.entries).toHaveLength(18);
+    expect(compositions.entries).toHaveLength(19);
     for (const composition of compositions.entries) {
       const correction = corrections.entries.find((e) => e.key === composition.key);
       expect(correction?.targets.length).toBeGreaterThan(0);
@@ -23,21 +23,33 @@ describe("문맥 출제 계약", () => {
         const published = entries.filter((e) => e.id === `learn:correction:${target.id}` || e.id.startsWith(`learn:correction:${target.id}:`));
         expect(published.length).toBeGreaterThan(0);
         for (const entry of published) {
-          expect(entry.composition).toEqual({ ...composition, checkedAtKst: compositions.checkedAtKst, policy: compositions.policy });
+          expect(entry.composition).toEqual({ ...composition, checkedAtKst: composition.checkedAtKst ?? compositions.checkedAtKst, policy: compositions.policy });
           expect(index.items[target.id]?.entryIds).toContain(entry.id);
         }
       }
     }
   });
-  it("숙어 6개/13개 고유 문맥과 모든 반복 목록을 실제 배포 데이터에 연결한다", () => {
+  it("숙어 7개/14개 고유 문맥과 모든 반복 목록을 실제 배포 데이터에 연결한다", () => {
     expect(validateReasoningLessons(bank, entries)).toBe(bank);
-    expect(bank.lessons).toHaveLength(6);
-    expect(bank.lessons.flatMap((l) => l.questions)).toHaveLength(13);
+    expect(bank.lessons).toHaveLength(7);
+    expect(bank.lessons.flatMap((l) => l.questions)).toHaveLength(14);
     const mapped = entries.filter((e) => e.reasoning);
-    expect(mapped).toHaveLength(19);
+    expect(mapped).toHaveLength(21);
     for (const lesson of bank.lessons) {
       for (const entryId of lesson.entryIds) expect(mapped.find((e) => e.id === entryId)?.reasoning.questions).toEqual(lesson.questions);
     }
+  });
+
+  it("기준 미달 문맥의 단일 정답과 실제 항목별 검수일을 보존한다", () => {
+    const lesson = bank.lessons.find(lesson => lesson.id === "fall-short-of");
+    for (const id of lesson.entryIds) {
+      const entry = entries.find(entry => entry.id === id);
+      expect(entry.reasoning.checkedAtKst).toBe("2026.10.06");
+      expect(entry.verification.checkedAtKst).toBe("2026.10.06");
+      expect(entry.composition.checkedAtKst).toBe("2026.10.06");
+    }
+    expect(entries.find(entry => entry.reasoning?.id === "cart-horse").reasoning.checkedAtKst).toBe(bank.checkedAtKst);
+    expect(lesson.questions[0].choices.find(choice => choice.id === lesson.questions[0].correctChoiceId).text).toBe("It improved, but did not meet the accessibility standard.");
   });
   it("의미핵 실제 데이터·대조 예문·새 문항을 두 목록 행 모두에 연결한다", () => {
     const lesson = bank.lessons.find((l) => l.id === "all-but");

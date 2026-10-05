@@ -1,5 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as initialStore from "@/lib/store";
+import { canonicalSenseKey, getItemLearningTargets, getQuestionLearningTargetKey, legacyEquivalenceKey, excludeFullyMasteredItems } from "@/lib/canonical-learning";
+import { ACTIVE_RECALL_SENSES } from "@/lib/active-recall";
+import { applyLearningEvent, createEmptySenseLearningState, masteredTargetKeys } from "@/lib/learning-state";
+import { getVocabItem, VOCAB_BY_ID } from "@/lib/vocab";
+import { buildQuizQuestions } from "@/lib/quiz-engine";
+import { buildLearningStatistics } from "@/lib/learning-statistics";
 
 const storage = vi.hoisted(() => ({
   values: new Map<string, string>(),
@@ -40,6 +46,52 @@ beforeEach(async () => {
 });
 
 describe("학습 기록의 공통 저장 경로", () => {
+  it("명시된 기존 키 보존은 같은 원본 뜻·단일 검수 sense에만 연결한다", () => {
+    const entries = ACTIVE_RECALL_SENSES.filter(entry => entry.preservedLearningKey);
+    expect(new Set(entries.map(entry => entry.preservedLearningKey)).size).toBe(entries.length);
+    for (const entry of entries) for (const id of entry.itemIds) {
+      const item = VOCAB_BY_ID.get(id)!;
+      expect(legacyEquivalenceKey(item)).toBe(entry.preservedLearningKey);
+      expect(getItemLearningTargets(item)).toHaveLength(1);
+      expect(getItemLearningTargets(item)[0].senseId).toBe(entry.senseId);
+    }
+  });
+
+  it.each(["mastered", "wrong", "unknown"] as const)("보강 전 %s 기록은 새 콘텐츠에서도 초기화·복제되지 않는다", async (type) => {
+    const first = getVocabItem(19215)!;
+    const second = getVocabItem(21991)!;
+    const oldKey = legacyEquivalenceKey(first);
+    const original = { ...applyLearningEvent(createEmptySenseLearningState(), { targetKey: oldKey, type, occurredAt: 1234, questionType: "kor-choice" }), legacyMasteredMigrated: true };
+    const raw = JSON.stringify(original);
+    storage.values.set(store.SENSE_LEARNING_STATE_KEY, raw);
+    expect(canonicalSenseKey("fall-short-of:below-required-standard")).toBe(oldKey);
+    expect(getItemLearningTargets(second)[0].key).toBe(oldKey);
+    expect(await store.loadSenseLearningState()).toEqual(original);
+    expect(storage.values.get(store.SENSE_LEARNING_STATE_KEY)).toBe(raw);
+    const [question] = buildQuizQuestions({ mode: "definition-choice", itemNums: [first.num], count: 1, preserveItemOrder: true });
+    expect(getQuestionLearningTargetKey(question)).toBe(oldKey);
+    if (type === "mastered") expect(excludeFullyMasteredItems([first, second], masteredTargetKeys(original))).toEqual([]);
+    await store.recordOneAnswer(false, first.num, { sessionId: `preserve-${type}`, itemNum: first.num, mode: "definition-choice", outcome: "wrong", responseKey: "live up to", answeredAt: 2000, learningTargetKey: oldKey });
+    const next = await store.loadSenseLearningState();
+    expect(Object.keys(next.targets)).toEqual([oldKey]);
+    expect(next.targets[oldKey].attempts).toBe(original.targets[oldKey].attempts + 1);
+    expect(next.targets[oldKey].status).toBe(type === "wrong" ? "WEAK" : "RELEARNING");
+  });
+
+  it("보강 전후 유형별 응답은 동일 통계·우선순위 키에 모이며 표본을 복제하지 않는다", async () => {
+    const item = getVocabItem(19215)!;
+    const key = legacyEquivalenceKey(item);
+    await store.recordOneAnswer(true, item.num, { sessionId: "old-answer", itemNum: item.num, mode: "kor-choice", outcome: "correct", responseKey: "old", answeredAt: 1000, learningTargetKey: key });
+    await store.recordOneAnswer(false, item.num, { sessionId: "new-answer", itemNum: item.num, mode: "definition-choice", outcome: "skip", responseKey: "new", answeredAt: 2000, learningTargetKey: getItemLearningTargets(item)[0].key });
+    const model = buildLearningStatistics(await store.loadAdaptiveQuizHistory(), await store.loadSenseLearningState(), [{ num: item.num, word: item.w, sourceId: item.id, groupId: item.group, learningKey: key }], { now: 3000 });
+    expect(model.words).toHaveLength(1);
+    expect(model.words[0]).toMatchObject({ key, status: "RELEARNING", reviewMode: "definition-choice" });
+    expect(model.performance.attempts).toBe(2);
+    expect(model.accuracy).toBe(50);
+    expect(model.stateCounts.RELEARNING).toBe(1);
+    expect(model.modes.find(row => row.id === "kor-choice")?.accuracy).toBe(100);
+    expect(model.modes.find(row => row.id === "definition-choice")?.accuracy).toBe(0);
+  });
   it.each([["light", "paper"], ["dark", "dark"], [null, "light"]])("테마 %s 이관은 %s이며 학습 기록과 원본은 보존된다", async (legacy, expected) => {
     if (legacy) storage.values.set(oldThemeKey, legacy);
     storage.values.set("vocaknio_bookmarks", "[9,8]");

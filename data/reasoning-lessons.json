@@ -1,8 +1,40 @@
 {
   "version": 1,
   "checkedAtKst": "2026.09.06",
-  "authorship": "VOCA NEXUS 자체 창작 · 공개 교육 원칙에서 도출한 설계, 강사·사전의 공식 문제 아님",
+  "authorship": "FINETUNE 자체 창작 · 공개 교육 원칙에서 도출한 설계, 강사·사전의 공식 문제 아님",
   "lessons": [
+    {
+      "id": "fall-short-of",
+      "checkedAtKst": "2026.10.06",
+      "entryIds": ["learn:correction:JBKROW019982", "learn:correction:JBKROW022793"],
+      "literalKo": "실제 성과가 요구 기준선까지 닿지 못하다.",
+      "bridgeKo": "of 뒤의 기준과 실제 결과를 비교한다. 이전보다 나아짐과 요구 수준 충족은 별개의 판단이다.",
+      "originStatus": "mnemonic",
+      "originNoteKo": "기준선 이미지는 현대 의미 이해를 위한 학습 고리이며 확인된 역사적 어원이 아니다.",
+      "neighbors": [
+        {"expression": "fail to meet", "noteKo": "기준·요구를 목적어로 두면 가까운 풀이지만, 사람을 만나지 못하는 뜻에는 적용하지 않는다."},
+        {"expression": "not measure up to", "noteKo": "기준에 견주어 부족하다는 뜻. 부정·시제를 맞추어 치환한다."},
+        {"expression": "not live up to", "noteKo": "기대·명성에 부응하지 못한다는 초점. 모든 수량 부족을 대신하지는 않는다."},
+        {"expression": "stop short of", "noteKo": "위험한 행동까지는 하지 않는다는 경계로, 결과의 질을 기준에 비교하는 것과 다르다."}
+      ],
+      "questions": [
+        {
+          "id": "fallshort-access-transfer-1",
+          "passageEn": "The redesigned museum guide fell short of the accessibility standard, even though it was easier to navigate than the old version.",
+          "promptKo": "안내서에 대한 평가로 가장 정확한 것은?",
+          "choices": [
+            {"id": "a", "text": "It became harder to navigate than before.", "errorType": "polarity", "explanationKo": "easier to navigate를 반대로 읽었다. harder라는 근거가 있는 문맥이어야 이 선택지가 맞는다."},
+            {"id": "b", "text": "It improved, but did not meet the accessibility standard.", "errorType": "supported", "explanationKo": "easier는 개선이고 fell short of는 기준 미달이다. 이전보다 나아졌어도 요구 기준을 충족하지 못할 수 있다."},
+            {"id": "c", "text": "It met the standard because it became easier to navigate.", "errorType": "relation", "explanationKo": "개선 사실을 기준 충족으로 바꾸었다. fell short of와 반대이며, 기준을 만족했다는 별도 근거가 있어야 한다."},
+            {"id": "d", "text": "It failed to make any improvement at all.", "errorType": "degree", "explanationKo": "기준 미달을 개선 전무로 강화했다. easier가 일부 개선을 명시하므로 any improvement at all의 전면 부정은 성립하지 않는다."}
+          ],
+          "correctChoiceId": "b",
+          "evidence": ["fell short of the accessibility standard", "easier to navigate than the old version"],
+          "translationKo": "새로 설계한 박물관 안내서는 이전 버전보다 찾아보기 쉬워졌지만, 접근성 기준에는 미치지 못했다.",
+          "relationKo": "양보 even though: 개선됨을 인정하면서도 기준 미달 평가를 유지한다. 기준을 충족했다면 fell short of가 아니라 met the standard가 되어야 하며, 표현을 빼면 개선 여부만 알 수 있고 기준 충족 여부는 정할 수 없다."
+        }
+      ]
+    },
     {
       "id": "cart-horse",
       "entryIds": [

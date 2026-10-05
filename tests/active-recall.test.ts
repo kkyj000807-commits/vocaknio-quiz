@@ -18,6 +18,7 @@ const zoomInOnRows = VOCAB.filter(item => item.w === "zoom in on");
 const withoutFailRows = VOCAB.filter(item => item.w === "without fail");
 const glossOverRows = VOCAB.filter(item => item.w === "gloss over");
 const takeIntoAccountRows = VOCAB.filter(item => item.w === "take into account");
+const fallShortRows = VOCAB.filter(item => item.w === "fall short of");
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -36,14 +37,32 @@ describe("영어→영어 active recall", () => {
     expect(sense?.exactSynonyms).not.toContain("overseer");
     expect(getActiveRecallSenses(juryRows[0].id)).toHaveLength(1);
     expect(getActiveRecallCoverage()).toEqual({
-      senses: 19,
-      rows: 35,
-      definitions: 19,
-      examples: 19,
-      contextualizedExamples: 19,
-      contextExplanations: 19,
-      synonymRelations: 19,
+      senses: 20,
+      rows: 37,
+      definitions: 20,
+      examples: 20,
+      contextualizedExamples: 20,
+      contextExplanations: 20,
+      synonymRelations: 20,
     });
+  });
+
+  it("fall short of의 기준 미달 한 sense를 두 반복 행에 공유하고 개선 전무와 구분한다", () => {
+    expect(fallShortRows.map(item => item.id)).toEqual(["JBKROW019982", "JBKROW022793"]);
+    expect(fallShortRows.map(item => item.k)).toEqual(["기대에 못 미치다", "기대에 못 미치다"]);
+    const sense = getActiveRecallSenses(fallShortRows[0].id)[0];
+    expect(getActiveRecallSenses(fallShortRows[1].id)[0]).toBe(sense);
+    expect(sense.senseId).toBe("fall-short-of:below-required-standard");
+    expect(sense.exampleSentences).toHaveLength(2);
+    expect(sense.contextExplanationKo).toContain("아무 성과도 없었다는 뜻은 아니다");
+    expect(new Set(sense.sources.map(source => source.independenceGroup)).size).toBe(2);
+    for (const word of [...sense.exactSynonyms, ...sense.nearSynonyms, ...sense.antonyms, ...sense.variants]) expect(sense.relationMeaningsKo?.[word]).toBeTruthy();
+    for (const item of fallShortRows) {
+      const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [item.num], preserveItemOrder: true });
+      expect(question.recall?.senseId).toBe(sense.senseId);
+      expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
+      expect(validateQuestion(question)).toBe(true);
+    }
   });
 
   it("definition → target 문제를 만들고 정답을 하나로 유지한다", () => {

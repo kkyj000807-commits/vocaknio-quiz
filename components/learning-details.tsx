@@ -39,12 +39,11 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
   const activeRecallSenses = getActiveRecallSenses(itemId);
 
   useEffect(() => {
-    if (activeRecallSenses.length > 0) return;
     if (!expanded || entries !== null || dictionary !== undefined) return;
     let cancelled = false;
     setLoading(true);
     setError(false);
-    Promise.all([loadLearningEntries(itemId), loadVocabDefinition(itemId)])
+    Promise.all([loadLearningEntries(itemId), activeRecallSenses.length ? Promise.resolve(null) : loadVocabDefinition(itemId)])
       .then(([loadedEntries, loadedDictionary]) => {
         if (!cancelled) {
           setLoading(false);
@@ -82,13 +81,13 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
               count={activeRecallSenses.length}
             />
           ))}
-          {activeRecallSenses.length === 0 && loading && (
+          {loading && (
             <View style={s.loadingRow} accessibilityLiveRegion="polite">
               <ActivityIndicator size="small" color={colors.primary} />
               <Text style={s.note}>학습 해설을 불러오는 중입니다</Text>
             </View>
           )}
-          {activeRecallSenses.length === 0 && error && (
+          {error && (
             <View>
               <Text style={s.note}>해설을 불러오지 못했습니다. 문제 풀이는 계속할 수 있어요.</Text>
               <Pressable
@@ -103,6 +102,10 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
           {activeRecallSenses.length === 0 && entries?.map((entry, index) => (
             <SenseDetails key={entry.id} entry={entry} index={index} count={entries.length} />
           ))}
+          {activeRecallSenses.length > 0 && entries?.filter((entry, index, all) =>
+            entry.reasoning && activeRecallSenses.some(sense => sense.headword === entry.headword) &&
+            all.findIndex(candidate => candidate.reasoning?.id === entry.reasoning!.id) === index,
+          ).map(entry => <ReasoningPractice key={entry.reasoning!.id} lesson={entry.reasoning!} />)}
           {activeRecallSenses.length === 0 && entries?.length === 0 && dictionary && (
             <DictionaryDefinition entry={dictionary} />
           )}

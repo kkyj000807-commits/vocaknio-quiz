@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import data from "@/data/reasoning-lessons.json";
+import { isPracticeAnswerCorrect, readPracticeAttempt, savePracticeAttempt } from "@/lib/reasoning-practice";
 const memory = vi.hoisted(() => new Map<string, string>());
 const fail = vi.hoisted(() => ({ read: false, write: false }));
 vi.mock("@react-native-async-storage/async-storage", () => ({ default: {
   getItem: async (key: string) => { if (fail.read) throw new Error("read failed"); return memory.get(key) ?? null; },
   setItem: async (key: string, value: string) => { if (fail.write) throw new Error("write failed"); memory.set(key, value); },
 } }));
-import data from "@/data/reasoning-lessons.json";
-import { isPracticeAnswerCorrect, readPracticeAttempt, savePracticeAttempt } from "@/lib/reasoning-practice";
 
 describe("문맥 연습 응답", () => {
   const q = data.lessons[0].questions[0];
@@ -22,7 +22,7 @@ describe("문맥 연습 응답", () => {
     await savePracticeAttempt(q, "a", 4200);
     expect(await readPracticeAttempt(q)).toMatchObject({ questionId: q.id, choiceId: "a", elapsedMs: 4200 });
     expect([...memory.keys()].every((key) => key.startsWith("vocanexus:context-practice:"))).toBe(true);
-    expect(await readPracticeAttempt(data.lessons[0].questions[1])).toBeNull();
+    expect(await readPracticeAttempt(data.lessons.find(lesson => lesson.id === "cart-horse")!.questions[1])).toBeNull();
   });
   it("없는 선택지와 잘못된 응답 시간을 기록하지 않는다", async () => {
     await expect(savePracticeAttempt(q, "missing", 1000)).rejects.toThrow();

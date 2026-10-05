@@ -1,4 +1,4 @@
-import { getActiveRecallSenses } from "@/lib/active-recall";
+import { ACTIVE_RECALL_SENSES, getActiveRecallSenses } from "@/lib/active-recall";
 import { getProductionSenseQuestions } from "@/lib/sense-questions";
 import { getDefinitionQuizEntry } from "@/lib/definition-quiz";
 import {
@@ -23,6 +23,13 @@ function encodeKeyPart(value: string): string {
 }
 
 export function canonicalSenseKey(senseId: string): string {
+  // Content enrichment must not reset existing states or split answer history.
+  // This opt-in preserves an already reviewed equivalent single-sense key;
+  // the new sense ID remains the content/answer boundary, not a second store.
+  const entry = ACTIVE_RECALL_SENSES.find(sense => sense.senseId === senseId && sense.status === "production");
+  if (entry?.preservedLearningKey && entry.itemIds.every(id => getActiveRecallSenses(id).length === 1)) {
+    return entry.preservedLearningKey;
+  }
   return `sense:${encodeKeyPart(senseId)}`;
 }
 

@@ -36,7 +36,7 @@ describe("canonical sense 공란 backfill", () => {
       (entry) => (entry.missingFields as string[]).includes("synonyms"),
     )).toBe(true);
     expect(pending.categories.verificationPending).toHaveLength(18);
-    expect(pending.categories.senseMappingFailure).toHaveLength(37_912);
+    expect(pending.categories.senseMappingFailure).toHaveLength(37_910);
     expect(pending.categories.actualDataAbsence).toHaveLength(0);
   });
 
@@ -50,6 +50,7 @@ describe("canonical sense 공란 backfill", () => {
   it("검수 sense로 대체된 aggregate primary를 canonical sense로 중복 집계하지 않는다", () => {
     const superseded = [
       "abide-by:primary",
+      "fall-short-of:primary",
       "cart-horse:primary",
       "gloss-over:primary",
       "take-for-granted:primary",
@@ -58,7 +59,7 @@ describe("canonical sense 공란 backfill", () => {
       "work-out:primary",
       "wrap-up:primary",
     ];
-    expect(report.after.canonicalSenseCount).toBe(109);
+    expect(report.after.canonicalSenseCount).toBe(110);
     expect(report.supersededAggregates).toHaveLength(superseded.length);
     expect(report.supersededAggregates.map((entry) => entry.senseId).sort()).toEqual([...superseded].sort());
     for (const senseId of superseded) {
@@ -100,6 +101,14 @@ describe("canonical sense 공란 backfill", () => {
       definitionStatus: "COMPLETE",
       itemIds: ["APPROW02130"],
       synonyms: ["take into consideration", "take account of", "consider", "allow for", "bear in mind"],
+    });
+  });
+
+  it("fall short of는 공통 콘텐츠 한 개로 두 출현 행에 연결한다", () => {
+    expect(content.entries.filter(entry => entry.word === "fall short of")).toHaveLength(1);
+    expect(content.entries.find(entry => entry.senseId === "fall-short-of:below-required-standard")).toMatchObject({
+      definitionStatus: "COMPLETE", itemIds: ["JBKROW019982", "JBKROW022793"],
+      synonyms: ["fail to meet", "not measure up to", "not live up to"],
     });
   });
 
@@ -176,6 +185,6 @@ describe("canonical sense 공란 backfill", () => {
       .toBe("To meet someone unexpectedly rather than by prior arrangement.");
     expect(content.entries.find((entry) => entry.senseId === "on-behalf:primary")?.englishDefinition)
       .toBe("Acting or speaking as someone's representative or in their place.");
-    expect(content.entries.filter((entry) => entry.definitionStatus === "COMPLETE")).toHaveLength(91);
+    expect(content.entries.filter((entry) => entry.definitionStatus === "COMPLETE")).toHaveLength(92);
   });
 });

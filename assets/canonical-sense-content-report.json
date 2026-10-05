@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "generatedAtKst": "2026-10-06T06:27:20+09:00",
+  "generatedAtKst": "2026-10-06T07:11:26+09:00",
   "vocabulary": {
     "sourceRows": 38163,
     "uniqueHeadwords": 13347,
-    "rowsWithCanonicalSense": 251,
-    "rowsWithoutCanonicalSense": 37912
+    "rowsWithCanonicalSense": 253,
+    "rowsWithoutCanonicalSense": 37910
   },
   "rawVocabulary": {
     "recordCount": 38163,
@@ -22,20 +22,20 @@
     "note": "원본 38,163행 스키마는 w/k/s 중심이며, canonical sense 필드는 별도 검수 레이어에서만 제공된다."
   },
   "before": {
-    "canonicalSenseCount": 117,
+    "canonicalSenseCount": 119,
     "blanks": {
-      "englishDefinition": 21,
-      "koreanMeaning": 21,
-      "contextExplanation": 21,
-      "exampleSentence": 21,
-      "exampleExplanation": 21,
-      "synonyms": 47,
-      "distinctionNote": 21,
-      "sourceIds": 21
+      "englishDefinition": 22,
+      "koreanMeaning": 22,
+      "contextExplanation": 22,
+      "exampleSentence": 22,
+      "exampleExplanation": 22,
+      "synonyms": 48,
+      "distinctionNote": 22,
+      "sourceIds": 22
     }
   },
   "after": {
-    "canonicalSenseCount": 109,
+    "canonicalSenseCount": 110,
     "blanks": {
       "englishDefinition": 0,
       "koreanMeaning": 0,
@@ -143,6 +143,18 @@
       "reason": "동일 occurrence를 더 구체적인 검수 sense가 대체한다."
     },
     {
+      "senseId": "fall-short-of:primary",
+      "word": "fall short of",
+      "itemIds": [
+        "JBKROW019982",
+        "JBKROW022793"
+      ],
+      "replacedBy": [
+        "fall-short-of:below-required-standard"
+      ],
+      "reason": "동일 occurrence를 더 구체적인 검수 sense가 대체한다."
+    },
+    {
       "senseId": "cart-horse:primary",
       "word": "put the cart before the horse",
       "itemIds": [
@@ -155,15 +167,15 @@
     }
   ],
   "statusCounts": {
-    "COMPLETE": 91,
+    "COMPLETE": 92,
     "VERIFIED_NO_DATA": 0,
     "FAILED": 0,
     "NEEDS_REVIEW": 18,
     "PENDING": 0
   },
   "frontend": {
-    "learningDetailSenseCount": 163,
-    "learningDetailRowCount": 228,
+    "learningDetailSenseCount": 165,
+    "learningDetailRowCount": 230,
     "note": "기존 단어장·문풀·오답 화면의 LearningDetails selector가 이 배포 JSON을 읽는다."
   },
   "pipeline": [
@@ -199,7 +211,7 @@
   "firstLoss": {
     "unmappedVocabularyRows": {
       "stage": "sense 매핑",
-      "count": 37912,
+      "count": 37910,
       "reason": "원본 어휘 행에 canonical senseId가 아직 없다."
     },
     "mappedSenseMissingFields": {

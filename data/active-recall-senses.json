@@ -3,6 +3,64 @@
   "checkedAtKst": "2026.10.06",
   "entries": [
     {
+      "id": "fall-short-of:below-required-standard",
+      "headword": "fall short of",
+      "partOfSpeech": "verb phrase",
+      "senseId": "fall-short-of:below-required-standard",
+      "preservedLearningKey": "legacy:v1:idiom:fall%20short%20of:%EA%B8%B0%EB%8C%80%EC%97%90%20%EB%AA%BB%20%EB%AF%B8%EC%B9%98%EB%8B%A4",
+      "itemIds": ["JBKROW019982", "JBKROW022793"],
+      "englishDefinition": "To reach a lower level of quality or achievement than is expected or required, even if some progress has been made.",
+      "conciseEnglishDefinition": "to be below the expected or required level of achievement",
+      "exactSynonyms": ["fail to meet", "not measure up to"],
+      "nearSynonyms": ["not live up to"],
+      "antonyms": ["meet the standard", "exceed the standard"],
+      "variants": ["fall short", "fall short of the mark"],
+      "relatedWords": [],
+      "relationMeaningsKo": {
+        "fail to meet": "요구·기대를 충족하지 못하다; standards·expectations 같은 기준을 목적어로 둘 때 바꿔 쓸 수 있다. 사람을 만나지 못한다는 뜻은 제외한다",
+        "not measure up to": "기준에 견주었을 때 수준이 못 미치다; does not measure up to / did not measure up to처럼 부정과 시제를 맞춘다",
+        "not live up to": "기대·명성에 걸맞게 해내지 못하다; 기대한 모습에 부응하지 못한다는 초점으로, 모든 수량 부족에 그대로 치환하지 않는다",
+        "meet the standard": "요구 기준을 충족하다; 기준 도달이지 반드시 기준 초과는 아니다",
+        "exceed the standard": "요구 기준을 넘어서다; 최소 기준을 충족하는 것보다 더 높은 수준이다",
+        "fall short": "기대·필요 수준에 못 미치다; 비교 기준을 문맥에서 알 때 of 뒤의 대상을 생략할 수 있다",
+        "fall short of the mark": "기대·요구 수준에 못 미치다; mark는 이 표현에서 비교 기준이다"
+      },
+      "exampleSentences": [
+        {
+          "en": "Although the revised report was clearer, its evidence still fell short of the committee's standard.",
+          "ko": "수정 보고서는 더 명확해졌지만, 그 근거는 여전히 위원회의 요구 기준에 미치지 못했다.",
+          "cueKo": "Although와 clearer는 개선이 있었음을, still과 the committee's standard는 개선 후에도 기준 미달임을 보여 준다. 보고서 전체가 쓸모없다거나 모든 근거가 거짓이라는 뜻은 아니다.",
+          "type": "editorial"
+        },
+        {
+          "en": "The campaign raised sixty thousand dollars but fell short of its eighty-thousand-dollar target.",
+          "ko": "모금 운동은 6만 달러를 모았지만, 8만 달러 목표에는 미치지 못했다.",
+          "cueKo": "6만 달러라는 실제 성과와 8만 달러라는 목표를 비교한다. 부족분은 2만 달러이며 모금액이 0이었다는 뜻이 아니다.",
+          "type": "editorial"
+        }
+      ],
+      "koreanMeaning": "성과·수준이 기대하거나 요구한 기준에 미치지 못하다",
+      "contextExplanationKo": "영영 정의의 below는 기준 아래, expected or required는 기대하거나 요구한 기준, achievement는 실제 성과다. 먼저 of 뒤의 기준을 찾고 실제 결과가 거기에 도달했는지 비교한다. 개선되었어도 기준에 못 미치면 쓸 수 있으며, 아무 성과도 없었다는 뜻은 아니다. fall은 여기서 실제 낙하가 아니라 미달 상태를 나타내고, short는 도달에 부족함, of는 비교 대상을 잇는 전치사로 읽는다. 이 연결은 학습용 설명이지 역사적 어원 주장이 아니다. stop short of doing은 어떤 행동까지는 하지 않는다는 경계, fall behind는 남이나 일정에 뒤처지는 진행 상황에 초점이 있다.",
+      "prompts": [
+        {"id": "definition", "kind": "definition-recall", "text": "to be below the expected or required level of achievement"},
+        {"id": "context", "kind": "context-recall", "text": "The evidence may _____ the required standard even after the report becomes clearer."}
+      ],
+      "distractors": [
+        {"word": "live up to", "meaningKo": "기대에 부응하다", "reasonKo": "기대 수준을 충족한다는 뜻으로 below와 반대다. 결과가 충분히 기대에 부응한 문맥이라면 맞지만, 기준 미달을 정의한 여기서는 틀리다.", "plausible": true},
+        {"word": "stop short of", "meaningKo": "어떤 행동까지는 하지 않고 그 직전에 멈추다", "reasonKo": "stop short of accusing처럼 위험을 감수하는 특정 행동까지는 하지 않는 경계에 초점이 있다. 이 정의는 어떤 행동을 자제했다는 뜻이 아니라 실제 성과가 요구 수준보다 낮다는 평가다.", "plausible": true},
+        {"word": "fall behind", "meaningKo": "남이나 일정에 뒤처지다", "reasonKo": "다른 사람이나 진행 일정에 비해 늦어지는 뜻이다. 성과가 요구 기준에 미달했다고 반드시 일정에도 늦거나 경쟁자에게 뒤진 것은 아니다. 진행 속도를 비교하는 문맥이라면 맞다.", "plausible": true}
+      ],
+      "sources": [
+        {"publisher": "Oxford Advanced Learner's Dictionary", "url": "https://www.oxfordlearnersdictionaries.com/definition/english/short_2", "independenceGroup": "Oxford", "note": "fall short of의 기대·필요 기준 미달과 stop short of의 행동 경계를 대조. measure-up/live-up-to/fall-behind 항목도 관계어 구문·부정 방향 확인. 정의·예문은 자체 편집"},
+        {"publisher": "Collins English Dictionary", "url": "https://www.collinsdictionary.com/dictionary/english/fall-short", "independenceGroup": "HarperCollins", "note": "수준·기준에 도달하지 못하는 뜻과 of 구문을 Oxford와 독립 대조. exceed 항목으로 기준 도달/초과 구별 확인. 무료 열람 원문을 앱에 복제하지 않음"}
+      ],
+      "sourceCheckedAt": "2026.10.06",
+      "status": "production",
+      "quality": "B",
+      "enrichmentStatus": "complete",
+      "failureReason": null
+    },
+    {
       "id": "rule-of-thumb:practical-approximate-guide",
       "headword": "rule of thumb",
       "partOfSpeech": "noun phrase",

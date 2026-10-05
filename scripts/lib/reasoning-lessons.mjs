@@ -74,7 +74,7 @@ export function attachReasoningLessons(root, entries) {
     const lesson = byEntry.get(entry.id);
     if (lesson) {
       const { entryIds, ...payload } = lesson;
-      entry.reasoning = { ...payload, authorship: data.authorship, checkedAtKst: data.checkedAtKst };
+      entry.reasoning = { ...payload, authorship: data.authorship, checkedAtKst: lesson.checkedAtKst ?? data.checkedAtKst };
     }
   }
   console.log(`문맥 적용: ${data.lessons.length}개 숙어 / ${data.lessons.reduce((n, l) => n + l.questions.length, 0)}문항 / ${byEntry.size}개 목록 연결`);

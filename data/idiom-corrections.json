@@ -3,6 +3,37 @@
   "definitionPolicy": "영영 풀이·한국어 해설·예문은 출처의 뜻을 대조한 자체 작성이며 사전 원문 또는 공식 번역이 아님.",
   "entries": [
     {
+      "key": "fall-short-of",
+      "checkedAtKst": "2026.10.06",
+      "partOfSpeech": "verb phrase",
+      "targets": [
+        {"id": "JBKROW019982", "headword": "fall short of", "before": "기대에 못 미치다"},
+        {"id": "JBKROW022793", "headword": "fall short of", "before": "기대에 못 미치다"}
+      ],
+      "meaningKo": "기대에 못 미치다",
+      "definitionEn": "To reach a lower level of quality or achievement than is expected or required, even if some progress has been made.",
+      "definitionKo": "성과·수준이 기대하거나 요구한 기준에 미치지 못하다.",
+      "memoryKo": "실제 결과가 기준선 아래에 있다. 일부 성과나 개선이 있어도 기준 미달일 수 있다.",
+      "usageKo": "fall short of + 기대·기준·목표. 과거형은 fell short of다. 비교 기준이 문맥에서 분명하면 fall short로 쓸 수 있다.",
+      "examTrapKo": "기준 미달은 무성과·전면 실패·거짓을 뜻하지 않는다. 행동을 자제하는 stop short of와 일정·상대에 뒤처지는 fall behind를 구별한다.",
+      "exactSynonyms": ["fail to meet", "not measure up to"],
+      "nearSynonyms": ["not live up to"],
+      "contrasts": [
+        {"word": "live up to", "noteKo": "기대에 부응하는 반대 방향이다."},
+        {"word": "stop short of", "noteKo": "특정 행동까지는 하지 않는 경계다. 결과 수준의 미달과 구별한다."},
+        {"word": "fall behind", "noteKo": "진행 상황에서 남이나 일정에 뒤처지는 뜻이다."}
+      ],
+      "example": {
+        "en": "Although the revised report was clearer, its evidence still fell short of the committee's standard.",
+        "ko": "수정 보고서는 더 명확해졌지만, 그 근거는 여전히 위원회의 요구 기준에 미치지 못했다.",
+        "cueKo": "Although/clearer의 개선과 still/of 뒤 기준의 미달을 함께 보존한다."
+      },
+      "sources": [
+        {"name": "Oxford Advanced Learner's Dictionary", "url": "https://www.oxfordlearnersdictionaries.com/definition/english/short_2", "independenceGroup": "Oxford", "noteKo": "기대·필요 기준 미달과 stop short of 행동 경계를 확인. 정의·예문 원문은 복제하지 않음."},
+        {"name": "Collins English Dictionary", "url": "https://www.collinsdictionary.com/dictionary/english/fall-short", "independenceGroup": "HarperCollins", "noteKo": "표준·목표 미달과 of 결합을 독립 대조. 자체 편집 정의·창작 예문 사용."}
+      ]
+    },
+    {
       "key": "abide-by",
       "partOfSpeech": "phrasal verb",
       "targets": [

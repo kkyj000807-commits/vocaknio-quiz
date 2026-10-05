@@ -1,9 +1,9 @@
 {
-  "version": "1.9",
+  "version": "1.10",
   "coverage": {
-    "senses": 163,
-    "rows": 228,
-    "checkedAtKst": "2026.10.05"
+    "senses": 165,
+    "rows": 230,
+    "checkedAtKst": "2026.10.06"
   },
   "items": {
     "APPROW00001": {
@@ -979,6 +979,12 @@
         "learn:correction:JBKROW019179"
       ]
     },
+    "JBKROW019982": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW019982"
+      ]
+    },
     "JBKROW020096": {
       "group": "V501",
       "entryIds": [
@@ -1068,6 +1074,12 @@
       "group": "V501",
       "entryIds": [
         "learn:correction:JBKROW022770"
+      ]
+    },
+    "JBKROW022793": {
+      "group": "V501",
+      "entryIds": [
+        "learn:correction:JBKROW022793"
       ]
     },
     "JBKROW022820": {

@@ -8,6 +8,9 @@ export const activeRecallSenseSchema = z.object({
   headword: nonempty,
   partOfSpeech: nonempty,
   senseId: nonempty,
+  // Explicitly reviewed, equivalent single-sense enrichment only. Never infer
+  // equivalence from a headword or copy word-level mastery into several senses.
+  preservedLearningKey: z.string().startsWith("legacy:v1:").optional(),
   itemIds: z.array(nonempty).min(1),
   englishDefinition: nonempty,
   conciseEnglishDefinition: nonempty,

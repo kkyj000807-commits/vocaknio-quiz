@@ -26,6 +26,20 @@ const occurrences = (text: string, value: string) => text.split(value).length - 
 describe("reviewed learning evidence and explanation boundaries", () => {
   beforeEach(() => { native.links.length = 0; native.openURL.mockReset().mockResolvedValue(undefined); });
 
+  it("fall short of는 정답 후 한국어 풀이·관계어 뜻을 열고 정답 전에는 감춘다", () => {
+    const sense = ACTIVE_RECALL_SENSES.find(entry => entry.senseId === "fall-short-of:below-required-standard")!;
+    const prompt = render(<ActiveRecallPrompt recall={sense} />);
+    expect(prompt).toContain(sense.conciseEnglishDefinition);
+    expect(prompt).not.toContain(sense.koreanMeaning);
+    const answer = render(<ActiveRecallAnswer recall={sense} />);
+    expect(answer).toContain(sense.koreanMeaning);
+    expect(answer).toContain("아무 성과도 없었다는 뜻은 아니다");
+    const detail = render(<ActiveRecallStudyDetails entry={sense} index={0} count={1} />);
+    for (const meaning of Object.values(sense.relationMeaningsKo!)) expect(detail).toContain(meaning);
+    for (const example of sense.exampleSentences) expect(detail).toContain(example.ko);
+    expect(detail).toContain("Collins ↗");
+  });
+
   it("shows actual dictionary provenance, check date and editorial distinction", () => {
     expect(entry).toBeDefined();
     const html = render(<LearningEvidence entry={entry} />);
