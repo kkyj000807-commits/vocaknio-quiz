@@ -2,16 +2,20 @@
 
 기준: 2026.10.06 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 batch — `take into account` 고려 sense / 1.7 배포 후보
+## 현재 batch — `take into account` 고려 sense / 1.7 공개 확인
 
-- 공개 기준은 아래 검증된 1.6이며 이번 회차는 숙어 정본 `APPROW02130`(num37943, APPENDIX)의 기존 뜻·ID를 보존하고 `take-into-account:consider-factor` 한 sense를 추가한다. 별도 원본·학습 DB를 만들지 않는다. 중앙 마스터 DB의 위치·동기화는 unverified이며 재사용 sense의 중앙 반영은 sync_required다.
-- 저장소 잠금: 터미널25851 / PID25412, LOCK_ACQUIRED. 기존 server/auth.ts·1.4 학습JSON의 내용 없는 변경 표기·미추적 파일은 보존한다. 종료 시 Enter로 LOCK_RELEASED 확인.
-- 요구 체크리스트: 정본 행·구문 확인 DONE; The Free Dictionary 우선 시도(fetch 실패) 후 Oxford·Webster's New World via Collins 독립 의미 대조 DONE; 자체 편집 EN/KR·구성 요소·예문/문맥 단서·개별 관계어 뜻·오답 차이 DONE; 영영 본문항/오답복습·정본 JSON·통합 검사 DONE(250 PASS, 기존 인증1 SKIP); Git 보안 감사 DONE(tracked504/untracked204/findings0); Production·공개 UI 검증 PENDING. 고려했다고 찬성·승인하거나 정보가 참이라고 단정하지 않으며 account for와 분리한다.
-- 변경 예정/현재 범위: 기존 active-recall/idiom-corrections/expression-composition과 관련 테스트·release1.7·생성 자산만 변경. 사용자 학습 원자료에는 시험 답안을 넣지 않는다. 다음 행동은 관련 테스트 → 전체 검사 → Production/보안 감사 → 승인된 Pages → 공개 버전/해시/UI 확인이다.
+- 최신 공개 버전은 1.7이다. 앱 source `794fca19cfe72d1087a6ff424704b6c3d85c26a8`, Pages `0b45d3c556f42c6d5ba7ed4f717bfb489c933843`, 공개 release.json의 `2026.10.06 02:08 KST`와 source/KST 일치를 확인했다. 숙어 정본 `APPROW02130`(num37943, APPENDIX)의 기존 뜻·ID를 보존하고 `take-into-account:consider-factor` 한 sense를 추가했다. 별도 원본·학습 DB를 만들지 않았다. 중앙 마스터 DB의 위치·동기화는 unverified이며 재사용 sense의 중앙 반영은 sync_required다.
+- 저장소 잠금: 본 회차 터미널25851 / PID25412, LOCK_ACQUIRED. 검증·기록 커밋 뒤 종료 단계에서 Enter로 LOCK_RELEASED 확인한다. 기존 server/auth.ts·1.4 학습JSON의 내용 없는 변경 표기·미추적 파일은 보존했다. 다음 실행은 이 과거 PID가 아니라 실제 OS 잠금 결과를 기준으로 한다.
+- 의미 체크리스트 DONE: The Free Dictionary 우선 시도(fetch 실패, 근거로 사용하지 않음) 후 Oxford·Webster's New World via Collins 독립 대조. 고려했다고 찬성·승인하거나 정보가 참이라고 단정하지 않으며 account for와 분리한다. 자체 편집 EN/KR 정의·예문/문맥 단서·구문/구성 연결, exact2/near3/antonym2와 변형1의 개별 한국어 뜻, 오답3의 차이를 영영 문항/오답복습·정본 JSON·단어장 상세에 연결했다. 새 문맥 prompt는 데이터에 있으며 별도 새 문맥 퀴즈 유형을 만들었다고 주장하지 않는다.
+- VERIFIED: 관련3파일40테스트, 전체 node scripts/verify-project.mjs(TypeScript·데이터·31파일250 PASS/기존 인증1 SKIP), 변경 ESLint 오류0, diff --check PASS. canonical109sense/COMPLETE91/NEEDS_REVIEW18/mapped251행/unmapped37,912행, active-recall production19sense/35행. 38,163 원본 행과 학습 ID는 변경하지 않았다. 전체 의미 콘텐츠 검수 완료가 아니다.
+- VERIFIED 배포·보안: 새 Production 출력 및 최종 Pages checkout 감사 HTML22·학습JSON8·정의JSON8·참조누락0·base path 오류0. 공개 번들 `entry-0ac5f506cce7f509ee397a34e923d579.js` SHA256 `65BD79AAEB0B13B1D7F5ED8E88D6F8705BF18CC84DBD33D9D34F69B3F77D8B6B`는 로컬 Production과 일치했다. Pages 최신 build built/error null. Git 보안 감사 tracked504/untracked204/findings0, 배포 checkout329파일의 민감 파일명·고신뢰 비밀/서버 설정 표식0. 기존 해시 번들·CSS·학습JSON·아이콘·.nojekyll을 보존했다. sourceDirty=true는 보존한 사용자 server/auth.ts 수정이며 공개 서버 코드·비밀·개인 학습 데이터 반출을 하지 않았다. 이 감사가 모든 가능한 비밀 패턴이나 전체 Git 역사를 완전 검증한 것은 아니다.
+- VERIFIED 공개 UI: https://kkyj000807-commits.github.io/vocaknio-quiz/wordbook?release=1.7-2026.10.06-02-08-KST 에서 Chrome의 정본37943·영영 정의·한국어 해석·동의/반의어 개별 뜻·영한 예문/예문 클러스터를 확인했다. 공개 definition-choice 단일 문항은 정답 전 영어 정의와 영어 선지4개(approve of/account for/take for granted/take into account)였다. 인앱 브라우저390×844 및1024×768 에뮬레이션에서 상세 가로 overflow/화면 밖 버튼0, viewport 원복. Chrome 화면 증거는 로컬 검증 산출물에만 저장하고 Git/Pages에는 넣지 않았다.
+- 한계/남은 문제: 사용자 실제 학습 기록에 테스트 답안을 넣지 않았다. 새 숙어의 공개 브라우저 정답 제출·저장 검증은 미실행이며 답안 계약/저장은 테스트로 확인했다. 실제 iPhone Safari·Galaxy Tab Samsung Internet·강제 다크모드·모바일 Chrome은 이번에도 미검증이다. 단어장 active-recall 상세의 한국어 뜻·문맥 설명이 상단과 클러스터 안에서 반복되는 기존 중복을 발견했으며, 이번 콘텐츠 배포 범위를 늘려 수정하지 않았다. 1.6의 적응형 이벤트 기기 간 sync·실제 학습 coverage 한계는 아래 기록대로 유지한다.
+- NEXT: 먼저 기존 단어장 active-recall 상세의 뜻·문맥 설명 반복을 공통 컴포넌트 옵션으로 한 번만 표시하고, 정답 후 한국어 해석/관계어 뜻은 보존하는 회귀 테스트→공개 UI로 닫는다. 실제 새 학습 이벤트가 쌓이면 중복·상태 전후·유형/범위 통계 coverage를 대조한다. 이후 숙어 한 source row씩 독립 근거→sense→영영 인출→한국어 해설로 확장한다. 이미 공개된1.7이나 과거1.8 후보를 다시 만들지 않는다.
 
 ## 직전 batch — 적응형 학습·동일 기록 기반 통계 / 1.6 공개 확인
 
-- 최신 공개 버전은 1.6이다. 앱 source `ccebf92c71ac93742dc2d0d41e4255e0d794e779`, Pages `3223dec5e568c8128189ff79c6b308071ac9c26c`, 공개 release.json `2026.10.06 01:41 KST`와 HTTP200을 확인했다. 기존 1.5의 gloss over 콘텐츠와 학습 기록을 유지한 채 적응형 출제·통계를 확장했다. 이 문서만의 후속 커밋과 배포된 앱 source SHA는 구분한다.
+- 직전 공개 버전은 1.6이다. 앱 source `ccebf92c71ac93742dc2d0d41e4255e0d794e779`, Pages `3223dec5e568c8128189ff79c6b308071ac9c26c`, 공개 release.json `2026.10.06 01:41 KST`와 HTTP200을 확인했다. 기존 1.5의 gloss over 콘텐츠와 학습 기록을 유지한 채 적응형 출제·통계를 확장했다. 이 문서만의 후속 커밋과 배포된 앱 source SHA는 구분한다.
 - 저장소 잠금: 본 회차 터미널 6931 / PID6484. 검증·기록 커밋 뒤 Enter로 해제하고 LOCK_RELEASED를 확인한다. 다음 실행은 이 과거 PID가 아니라 실제 OS 잠금 결과를 기준으로 한다. 사용자 소유 server/auth.ts, 1.4 학습JSON의 내용 없는 변경 표기 및 미추적 파일은 보존했다.
 - 조사: 기존 로컬 `vocaknio_adaptive_quiz_history_v1`의 유형+행별 집계, `vocaknio_sense_learning_state_v1`의 의미별 상태, `vocaknio_stats`의 누적 풀이를 재사용한다. 서버 user_data/sync API는 오답·북마크·누적 통계만 제공하며 공개 Pages의 새 적응형 기록은 기기 로컬이다. 중앙 마스터 DB 학습 이벤트 연결은 unverified이다.
 - 체크리스트: (1) 기존 호환·중복 방지 VERIFIED (2) 응답시간·최근 이벤트·상태 전후·유형·범위 VERIFIED by storage tests (3) 가중 무작위·망각·MASTER 재검증 VERIFIED by tests (4) 같은 집계의 KPI/범위/유형/추세/단어 상세·정렬/필터 구현·UI 집계 테스트 VERIFIED (5) 한국어 해석·관계어 뜻 가독성/문구/중복 패널 수정, 전체 콘텐츠 번역 완료 아님 (6) 101 7/10=70%, 601 2/10=20%, 저장 재열기·누락·대량 테스트 VERIFIED (7) 전체 검사·보안·Production·공개 배포·인앱 브라우저/데스크톱 Chrome 기존 기록 조회 VERIFIED. 실제 브라우저의 새 풀이 저장과 실기기는 별도 미검증이다.
