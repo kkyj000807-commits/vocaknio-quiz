@@ -2,13 +2,16 @@
 
 기준: 2026.10.06 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 현재 batch — 사전 근거 카드·중복 설명 정리 / 1.8 검증 중
+## 현재 batch — 사전 근거 카드·중복 설명 정리 / 1.8 공개 확인
 
 - 사용자 요청에 따라 정의·예문 지속 보강을 기존 매시간 voca-nexus 자동화에 반영했다. 일정·대화·ACTIVE 상태는 유지하고 빈 정의/영한 예문/문맥 단서와 이해하기 어려운 해설을 우선한다. 새 자동화·대화·별도 학습 DB를 만들지 않았다.
 - 수정 범위: 검수 active-recall 상세/정답의 사전 근거 카드(사전명·직접 링크·실제 대조일·펼침 확인 범위·자체 편집/창작 구분), 단어장 상세의 반복 한국어 뜻·문맥 설명 제거. 영어 정의·정답 후 한국어 해석·관계어 개별 뜻·영한 예문·예문 클러스터는 유지한다. 의미 데이터는 그대로이며 신규 의미 검수나 전체 38,163행 빈칸 보완 완료로 포장하지 않는다.
-- 저장소 잠금: 터미널69723 / PID22072, LOCK_ACQUIRED. 종료 전 Enter로 LOCK_RELEASED를 확인한다. 사용자 server/auth.ts·1.4 학습JSON 내용 없는 변경 표기·미추적 파일은 보존한다.
-- VERIFIED: 실제 컴포넌트 렌더 회귀7테스트(직접 사전 URL·창작/출처 구분·문맥 한 번 표시·정답 후 한국어 유지·정답 전 비노출)와 전체 node scripts/verify-project.mjs(TypeScript·데이터·32파일257 PASS/기존 인증1 SKIP), 변경 ESLint 오류0·diff --check PASS. 콘텐츠 집계는 canonical109sense/COMPLETE91/NEEDS_REVIEW18/mapped251행, active-recall production19sense/35행으로 유지한다. Git 보안 tracked504/untracked206/findings0. 현재 공개 버전은 아직 아래1.7이며 Production·공개 UI는 진행 중이다. 사용자 학습 기록에 테스트 답안을 쓰지 않는다.
-- NEXT: 관련 테스트·전체 검사·Production/Git 보안 감사→승인된 Pages 배포→release/source/KST·실제 공개 출처 카드/중복 제거·모바일/태블릿 에뮬레이션을 확인한다. 이후 숙어의 빈/난해한 정의·예문을 한 source row씩 독립 근거→sense→쉬운 한국어 풀이로 확장한다.
+- 저장소 잠금: 터미널69723 / PID22072, LOCK_ACQUIRED. 최종 기록 커밋 후 Enter로 해제한다. 사용자 server/auth.ts·1.4 학습JSON 내용 없는 변경 표기·미추적 파일은 보존했다. 다음 실행은 과거 PID가 아니라 실제 OS 잠금 결과를 기준으로 한다.
+- VERIFIED: 실제 컴포넌트 렌더 회귀7테스트(직접 사전 URL·창작/출처 구분·문맥 한 번 표시·정답 후 한국어 유지·정답 전 비노출)와 전체 node scripts/verify-project.mjs(TypeScript·데이터·32파일257 PASS/기존 인증1 SKIP), 변경 ESLint 오류0·diff --check PASS. 콘텐츠 집계는 canonical109sense/COMPLETE91/NEEDS_REVIEW18/mapped251행, active-recall production19sense/35행으로 유지한다. 검수 active-recall19sense의 정의/영한 예문/문맥 단서/출처 필수항목 누락0은 확인했으나 전체 수록어 완료를 뜻하지 않는다. 사용자 학습 기록에 테스트 답안을 쓰지 않았다.
+- VERIFIED 배포·보안: 앱 source `2de2cb51de5c0defebcc56d1946bd66dad888c6a`, Pages `f94c5de0250b65d948ac435a854b3dc4819e7162`, 공개 release.json `2026.10.06 02:30 KST`와 source 일치, Pages latest build built/error null. Production 및 최종 checkout 감사 HTML22·학습JSON8·정의JSON8·참조누락0·base path 오류0. 공개 번들 `entry-a2da1bff414220de3f0c98eb5cece356.js` HTTP200/SHA256 `CE83259C3AB9698FD038F17B84AEA7603133912479D612BE91631F6F9B827EBE`는 로컬 출력과 일치했다. Git 보안 tracked506/untracked204/findings0, 최종 checkout329파일의 민감 파일명·고신뢰 비밀/서버 표식0. 기존 해시 번들·CSS·학습JSON·아이콘·.nojekyll은 보존했다. sourceDirty=true는 보존한 사용자 server/auth.ts 수정이며 공개 산출물에 서버 코드·비밀·개인 학습 기록을 넣지 않았다. 가능한 모든 비밀 패턴이나 전체 Git 역사 검증 완료를 의미하지 않는다.
+- VERIFIED 공개 UI: https://kkyj000807-commits.github.io/vocaknio-quiz/wordbook?release=1.8-2026.10.06-02-30-KST 에서 Chrome의 take into account 정본37943·영영 정의·한국어 해석·관계어 뜻·영한 예문 클러스터·사전 카드 확인. 확인 범위 펼침/실제 Oxford 직접 링크 새 탭 열기, 설정 버전/KST를 확인했다. 인앱 브라우저390×844 및1024×768 에뮬레이션에서 문맥 설명1회·가로 overflow0·화면 밖 출처 버튼0, viewport 원복. 화면 증거 `C:/Users/USER/.codex/visualizations/2026/08/02/019fc31d-adea-7f83-b2c0-81d298e78fdd/voca-nexus-1.8-evidence.jpg`는 로컬 검증 산출물만이며 Git/Pages에 넣지 않았다.
+- 한계/남은 문제: 실제 iPhone Safari·Galaxy Tab Samsung Internet/강제 다크·모바일 Chrome은 미검증이다. 새 문제 응답의 공개 브라우저 저장·학습 효과를 이번 출처 UI 검사로 대신하지 않는다. OEWN 일반 정의 경로의 번역/빈 예문과 전체 미매핑 콘텐츠는 여전히 후속 보강 대상이다. 중앙 마스터 DB 위치·동기화 unverified 및 재사용 sense의 중앙 반영 sync_required는 유지한다. 출처 카드 적용 범위는 검수 active-recall이며 나머지 licensed 사전 표시를 전체 검수 완료로 바꾸지 않았다.
+- NEXT: `fall short of` 정본 `JBKROW019982`(num19215), `JBKROW022793`(num21991)은 canonical/active-recall 매핑이 없음을 확인했다. 두 원본 행·현재 앱 정의 상태를 다시 대조→The Free Dictionary 우선 시도/접근 실패 또는 뜻 경계 위험이면 Oxford·Collins 독립 대조→기대·기준 미달의 정확한 sense 확정→자체 편집 EN/KR 정의·예문/문맥 단서·관계어 개별 뜻→영영 문항/정답 후 풀이/공개 UI를 작은 단위로 연결한다. 현재1.8이나 과거 후보를 다시 만들지 않는다.
 
 ## 직전 batch — `take into account` 고려 sense / 1.7 공개 확인
 
