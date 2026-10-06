@@ -93,10 +93,30 @@ describe("영어→영어 active recall", () => {
       koreanMeaning: "일의 선후를 뒤바꾸다",
       exactSynonyms: [],
       relatedWords: ["jump the gun"],
-      sourceCheckedAt: "2026.09.05",
+      sourceCheckedAt: "2026.10.06",
     });
     expect(sense.exampleSentences).toHaveLength(1);
     expect(sense.distractors.find(choice => choice.word === "jump the gun")?.reasonKo).toContain("순서");
+  });
+
+  it("cart-before-horse의 누락 관계어만 보강하고 순서·시기·품사와 기존 학습 키를 보존한다", () => {
+    const [sense] = getActiveRecallSenses(cartHorseRows[0].id);
+    expect(Object.keys(sense.relationMeaningsKo!)).toEqual(["reverse the proper order", "get things backward", "jump the gun"]);
+    expect(sense.relationMeaningsKo?.["reverse the proper order"]).toContain("타동사");
+    expect(sense.relationMeaningsKo?.["reverse the proper order"]).toContain("최종 결론까지 반드시 거짓인 것은 아니다");
+    expect(sense.relationMeaningsKo?.["get things backward"]).toContain("의존하는 관계까지 특정하지는 않는다");
+    expect(sense.relationMeaningsKo?.["get things backward"]).toContain("발전이 뒤떨어졌다는 별도 뜻은 아니다");
+    expect(sense.relationMeaningsKo?.["jump the gun"]).toContain("반드시 단계 순서를 뒤집은 것은 아니다");
+    expect(sense.nearSynonyms).toEqual(["reverse the proper order", "get things backward"]);
+    expect(sense.relatedWords).toEqual(["jump the gun"]);
+    expect(sense.englishDefinition).toBe("To do a later step before the earlier step on which it logically depends, reversing the proper order.");
+    expect(sense.exampleSentences[0].en).toBe("Buying equipment before deciding what to build puts the cart before the horse.");
+    expect(cartHorseRows.map(item => item.id)).toEqual(["JBKROW022984"]);
+    expect(cartHorseRows[0].group).toBe("V501");
+    expect(getItemLearningTargets(cartHorseRows[0]).map(target => target.key)).toEqual(["sense:put-the-cart-before-the-horse%3Areverse-dependent-order"]);
+    expect(sense.sources[0].url).toBe("https://idioms.thefreedictionary.com/put+the+cart+before+the+horse");
+    expect(sense.sources).toHaveLength(7);
+    expect(new Set(sense.sources.map(source => source.independenceGroup)).size).toBe(3);
   });
 
   it("숙어의 definition 문제도 정답 하나와 현재 sense 계약을 유지한다", () => {

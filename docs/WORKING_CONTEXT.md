@@ -4,7 +4,16 @@
 
 사전 우선순위(2026.10.06 사용자 재확인): The Free Dictionary https://www.thefreedictionary.com/ 를 첫 검수 출처로 활용한다. 뜻·숙어·구문·용례·관계어를 sense 단위로 먼저 확인하고 부족/충돌 부분만 다른 독립 사전으로 대조한다. 직전 정책 등록 시 홈페이지 웹 fetch는 읽지 못해 근거로 세지 않았고 당시 문서만 변경하여 공개1.12·학습 데이터를 보존했다(잠금58403/PID22540). 이번1.13에서는 일반 Chrome의 실제 항목 열람을 확인했다. 실제 확인한 범위만 링크/수록 원전/확인일과 함께 기록하며 제한을 우회하거나 대량 원문을 복제하지 않는다. 기존 자동화의 TFD 우선 규칙을 유지하고 새 자동화는 만들지 않았다.
 
-## 현재 batch — zoom in on 관계어 뜻 / 1.17 공개 확인
+## 현재 batch — put the cart before the horse 관계어 뜻 / 1.18 검증 중
+
+- 기준: 공개1.17/source f2424ff2c79292d76e314388af920e8a80639641/2026.10.06 17:14 KST, main f96e54e7·git status/diff 대조. 잠금 터미널47510/PID27492 LOCK_ACQUIRED. 사용자1.4/server/auth.ts·미추적 작업 보존. 완료한1.17/섹션 UI/과거 후보는 재작성하지 않는다.
+- 체크리스트: 기존 공유1sense/1원본행 JBKROW022984/num22182/V501·관계 분류·정의·영한 예문·문항·학습키 유지 → 누락 관계어3개만 보강 → 정답 전 비노출/정답 후 한국어·관계어·예문/출처·응답 저장/동일sense 복습 회귀 → verify/lint/Production/Git 보안 → 격리 UI → 승인 Pages 버전·소스·KST·실제 공개 화면 확인 → 상태 저장·잠금 해제. 전체 작업/배포 완료로 아직 보고하지 않는다.
+- 의미 근거: TFD web fetch4건 실패 후 실제 데스크톱 Chrome에서 cart-before-horse/jump-the-gun/reverse/backward4항목을 우선 열람·American Heritage의 해당 뜻/품사만 대조했다. Collins의 두 숙어 원문·Cambridge backwards(웹403 후 실제 Chrome)의 부사/UK·US 표기를 확인. 직접7페이지/원전3그룹, TFD Collins 전재 중복 계산0. 기존 정의·예문 재사용, 학습용 관계어 풀이 자체 편집·사전 원문 복제0. 스킬의 순서 오류와 시기 오류/치환 조건/최종 결론 비단정 계약을 적용. 중앙 DB unverified/sync_required 유지.
+- DONE 부분 보강: reverse the proper order/get things backward/jump the gun의 뜻·타동사/부사 역할·치환 조건만 자체 편집했다. 기존 영어 정의·영한 예문·문항·관계 분류·공유 학습키를 재사용, 신규 정의/예문/문항/DB/API/migration0. 대상1sense의 relationMeaningsKo/sources/sourceCheckedAt만 변경하고 entries22·원본38163행·고유철자13347·원본 SHA256 `7EBA20F388D04E9D7FB10EDEC635BEAC5DC7A6C726EF6E25D7DABA4CE57908DD`를 보존했다.
+- VERIFIED 코드: 관련63 PASS·변경3테스트 ESLint 오류0·diff --check PASS·Git 보안 tracked578/untracked212/findings0. 첫 전체 verify는 assertion 실패 없이 worker 비정상 종료7건/exit1이므로 통과로 세지 않았다. 현재 프로세스에만 VITEST_MAX_FORKS=2/VITEST_MIN_FORKS=1을 적용해 동일 verify를 재실행: TypeScript·데이터 감사·35파일305 PASS/기존 인증1 SKIP(총36파일306), exit0. 테스트 삭제/완화·설정 파일 변경0. canonical110/COMPLETE92/NEEDS_REVIEW18/연결253/미연결37910·production20sense/37행·호환165/230·reasoning7/14/21 유지.
+- NEXT: Production/격리 학습/UI·공개 검증으로 이번 작은 batch를 닫는다. 실제 공개 확인 전에는1.18 배포 완료로 보고하지 않는다.
+
+## 직전 batch — zoom in on 관계어 뜻 / 1.17 공개 확인
 
 - 기준: 공개1.16/source62e06a6517dc6f2ef79a7e56c9cd44c97d188487/2026.10.06 16:48 KST, main2e1c7eda·git status/diff 대조. 잠금 터미널27998/PID9180 LOCK_ACQUIRED. 기존1.4/server/auth.ts·미추적 사용자 작업을 보존한다. 완료한 섹션 UI/과거 후보는 재작성하지 않는다.
 - 범위: 기존 `zoom-in-on:give-close-attention` 1공유sense/2반복행의 누락 관계어7개 뜻·치환 조건과 실제 검수 출처만 부분 보강한다. 기존 정의·예문·문항·관계 분류·학습키·적응형 엔진·DB/API는 재사용한다. TFD8직접 항목 우선 열람, Cambridge는 web403을 실제 Chrome 열람으로 확인, Collins 원문 대조 완료. 사전 전재를 독립 원전으로 중복 계산하지 않는다. 편입 영어 검수 스킬의 품사·문맥·단일 정답 계약을 적용한다.

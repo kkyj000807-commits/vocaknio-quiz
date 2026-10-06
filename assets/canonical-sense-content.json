@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.17",
+  "release": "1.18",
   "entries": [
     {
       "word": "a wide range of",
@@ -4339,8 +4339,13 @@
         "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
-          "https://www.oxfordlearnersdictionaries.com/definition/english/cart_1",
-          "https://www.collinsdictionary.com/dictionary/english/put-the-cart-before-the-horse"
+          "https://idioms.thefreedictionary.com/put+the+cart+before+the+horse",
+          "https://www.collinsdictionary.com/dictionary/english/put-the-cart-before-the-horse",
+          "https://dictionary.cambridge.org/dictionary/english/backwards",
+          "https://idioms.thefreedictionary.com/jump+the+gun",
+          "https://www.thefreedictionary.com/reverse",
+          "https://www.thefreedictionary.com/backward",
+          "https://www.collinsdictionary.com/dictionary/english/jump-the-gun"
         ]
       },
       "koreanMeaning": "일의 선후를 뒤바꾸다",
@@ -4354,8 +4359,13 @@
       ],
       "distinctionNote": "jump the gun: 시기가 너무 이르다는 뜻이지만 의존하는 두 단계의 순서가 뒤집혔다는 뜻까지는 아니다. | get ahead of oneself: 앞선 결과를 미리 가정한다는 점은 가깝지만 절차의 선후가 뒤집힌 상황을 직접 가리키지는 않는다. | miss the boat: 적절한 기회를 놓친 것이며 해야 할 단계의 순서를 거꾸로 한 것은 아니다.",
       "sourceIds": [
-        "https://www.oxfordlearnersdictionaries.com/definition/english/cart_1",
-        "https://www.collinsdictionary.com/dictionary/english/put-the-cart-before-the-horse"
+        "https://idioms.thefreedictionary.com/put+the+cart+before+the+horse",
+        "https://www.collinsdictionary.com/dictionary/english/put-the-cart-before-the-horse",
+        "https://dictionary.cambridge.org/dictionary/english/backwards",
+        "https://idioms.thefreedictionary.com/jump+the+gun",
+        "https://www.thefreedictionary.com/reverse",
+        "https://www.thefreedictionary.com/backward",
+        "https://www.collinsdictionary.com/dictionary/english/jump-the-gun"
       ],
       "itemIds": [
         "JBKROW022984"

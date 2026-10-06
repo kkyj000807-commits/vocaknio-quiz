@@ -850,6 +850,11 @@
       "antonyms": [],
       "variants": [],
       "relatedWords": ["jump the gun"],
+      "relationMeaningsKo": {
+        "reverse the proper order": "올바른 선후 순서를 뒤집다. reverse는 여기서 순서를 바꾸는 타동사이며 the proper order가 목적어다. 앞 단계가 먼저여야 하는데 뒤 단계를 먼저 처리한 상황을 직접 풀어 쓴다. 차량을 후진시키거나 판결을 뒤집는 별도 뜻과 구분하며, 순서가 잘못됐다고 최종 결론까지 반드시 거짓인 것은 아니다.",
+        "get things backward": "일의 앞뒤를 거꾸로 놓거나 파악하다. 무엇이 먼저이고 나중인지 뒤집혀 있다는 일상적인 표현이다. 순서 오류 문맥에서는 가깝지만, 이 표현만으로 두 단계가 서로 의존하는 관계까지 특정하지는 않는다. backward는 여기서 거꾸로 된 방향·순서를 나타내며, 발전이 뒤떨어졌다는 별도 뜻은 아니다. 미국식 backward와 영국식에서 흔한 backwards를 모두 볼 수 있다.",
+        "jump the gun": "적절한 때가 되기 전에 성급히 시작하다. 핵심은 두 단계의 선후보다 시작 시기가 너무 이르다는 점이다. 승인을 기다리지 않고 실행했다면 순서 오류와 함께 나타날 수 있지만, 예정일보다 일찍 시작한 것만으로 반드시 단계 순서를 뒤집은 것은 아니다. put the cart before the horse의 완전한 동의어로 외우지 않는다. jump만 따로 떼어 뛰어넘다로 번역하지 않고 숙어 전체로 이해한다."
+      },
       "exampleSentences": [
         {
           "en": "Buying equipment before deciding what to build puts the cart before the horse.",
@@ -879,19 +884,49 @@
       ],
       "sources": [
         {
-          "publisher": "Oxford Advanced Learner's Dictionary",
-          "url": "https://www.oxfordlearnersdictionaries.com/definition/english/cart_1",
-          "independenceGroup": "Oxford",
-          "note": "해야 할 일의 순서가 잘못됐다는 기존 독립 검수 결과를 재사용함; 원문은 앱에 복제하지 않음"
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://idioms.thefreedictionary.com/put+the+cart+before+the+horse",
+          "independenceGroup": "American Heritage",
+          "note": "American Heritage Dictionary of Idioms 수록 뜻의 올바른 순서 반전 의미를 실제 열람. 기존 정의·예문의 선후 판단과 reverse the proper order 풀이만 대조하며 사전 예문·역사 설명은 복제하지 않음"
         },
         {
           "publisher": "Collins English Dictionary",
           "url": "https://www.collinsdictionary.com/dictionary/english/put-the-cart-before-the-horse",
           "independenceGroup": "Collins",
-          "note": "부적절한 순서와 비논리적 처리라는 기존 독립 검수 결과를 재사용함; 원문은 앱에 복제하지 않음"
+          "note": "British English의 자연스러운 순서 반전 및 American English의 부적절한 순서 뜻을 독립 원문에서 재확인. TFD의 Collins 전재를 별도 독립 출처로 중복 계산하지 않음"
+        },
+        {
+          "publisher": "Cambridge Dictionary",
+          "url": "https://dictionary.cambridge.org/dictionary/english/backwards",
+          "independenceGroup": "Cambridge",
+          "note": "실제 브라우저에서 backwards의 부사 용법·반대 방향 및 UK backwards/US usually backward 표기 확인. get things backward 전체가 사전의 독립 숙어 항목이라는 뜻은 아니며, 뒤떨어짐·퇴보 뜻과 이 문맥의 순서 반전을 구분하는 범위만 대조"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://idioms.thefreedictionary.com/jump+the+gun",
+          "independenceGroup": "American Heritage",
+          "note": "American Heritage Dictionary of Idioms의 너무 이른 시작·성급한 행동 뜻을 실제 열람. 순서 반전과 동반할 수 있으나 반드시 같은 판단은 아니라는 관계어·오답 차이를 대조"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/reverse",
+          "independenceGroup": "American Heritage",
+          "note": "American Heritage의 동사 위치·순서 반전 용법을 실제 열람. reverse the proper order의 동사+목적어 구조를 설명하며 후진·판결 변경 등 별도 뜻을 합치지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/backward",
+          "independenceGroup": "American Heritage",
+          "note": "American Heritage의 반대 순서·배치 및 부사 backward/backwards 용법을 실제 열람. get things backward의 순서 풀이를 대조하며 발전이 뒤떨어짐을 이 숙어의 뜻으로 붙이지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/jump-the-gun",
+          "independenceGroup": "Collins",
+          "note": "적절한 시작 시각 이전의 행동·성급함을 독립 원문에서 확인. 예정일보다 이른 시작이 논리적 단계 반전을 반드시 포함하지 않는다는 교체 조건을 대조; 사전 원문 예문은 복제하지 않음"
         }
       ],
-      "sourceCheckedAt": "2026.09.05",
+      "sourceCheckedAt": "2026.10.06",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",
