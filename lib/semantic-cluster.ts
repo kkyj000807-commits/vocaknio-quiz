@@ -11,6 +11,15 @@ export type RelationMeaningSource = {
   meaning: string;
 };
 
+/** Example reminder only: detailed substitution notes remain in the relation cluster. */
+export function formatExampleRelation(word: string, meanings?: Readonly<Record<string, string>>): string {
+  const meaning = meanings?.[word]?.trim();
+  if (!meaning) return word;
+  // Stop at an authored Korean sentence boundary, not English abbreviations such as U.S.
+  const gloss = meaning.match(/^(.+?[가-힣)])\.(?:\s|$)/)?.[1] ?? meaning;
+  return `${word} (${gloss})`;
+}
+
 type BuildSemanticClusterInput = {
   exactSynonyms?: readonly string[];
   nearSynonyms?: readonly string[];

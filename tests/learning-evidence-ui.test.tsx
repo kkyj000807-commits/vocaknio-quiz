@@ -83,10 +83,12 @@ describe("reviewed learning evidence and explanation boundaries", () => {
       expect(answer).toContain(meaning);
       expect(detail).toContain(meaning);
       expect(prompt).not.toContain(meaning);
+      expect(occurrences(detail, meaning)).toBe(1);
     }
     expect(answer).not.toContain("한국어 뜻 검수 중");
     expect(detail).not.toContain("한국어 뜻 검수 중");
     expect(detail).toContain(sense.exampleSentences[0].ko);
+    expect(detail).toContain("not always (항상 그런 것은 아니다, 매번 그러지는 않는다)");
     expect(prompt).not.toContain(sense.koreanMeaning);
   });
 

@@ -1,8 +1,20 @@
 import { describe, expect, it } from "vitest";
 
-import { buildSemanticCluster } from "@/lib/semantic-cluster";
+import { buildSemanticCluster, formatExampleRelation } from "@/lib/semantic-cluster";
 
 describe("semantic relation cluster", () => {
+  it("예문 옆에는 짧은 뜻만 남기고 원본 교체 조건은 수정하지 않는다", () => {
+    const meanings = { "not always": "항상 그런 것은 아니다. never와 같지 않다." };
+    expect(formatExampleRelation("not always", meanings)).toBe("not always (항상 그런 것은 아니다)");
+    expect(meanings["not always"]).toBe("항상 그런 것은 아니다. never와 같지 않다.");
+    expect(formatExampleRelation("missing", meanings)).toBe("missing");
+  });
+
+  it("영어 약어·문장 경계가 없는 뜻을 잘못 잘라내지 않는다", () => {
+    expect(formatExampleRelation("court", { court: "U.S. 법원에서 다룬다. 뒤에 교체 조건." })).toBe("court (U.S. 법원에서 다룬다)");
+    expect(formatExampleRelation("certain", { certain: "반드시, 틀림없이" })).toBe("certain (반드시, 틀림없이)");
+  });
+
   it("keeps exact, near, opposite, variant, and related relations in separate lanes", () => {
     const cluster = buildSemanticCluster({
       exactSynonyms: ["bewilder", "bewilder"],

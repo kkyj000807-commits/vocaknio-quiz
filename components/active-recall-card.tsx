@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useColors } from "@/hooks/use-colors";
 import type { ActiveRecallSense } from "@/lib/active-recall";
 import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
+import { formatExampleRelation } from "@/lib/semantic-cluster";
 import { LearningEvidence } from "@/components/learning-evidence";
 import { LazyReasoningPractice } from "@/components/reasoning-practice";
 import { getSynonymDetails, type VocabItem } from "@/lib/vocab";
@@ -28,7 +29,7 @@ function ExampleRelationCue({
   const colors = useColors();
   const same = [...new Set(synonyms)].slice(0, 5);
   const opposite = [...new Set(antonyms)].slice(0, 4);
-  const format = (word: string) => meanings?.[word] ? `${word} (${meanings[word]})` : word;
+  const format = (word: string) => formatExampleRelation(word, meanings);
   if (same.length === 0 && opposite.length === 0) return null;
   return (
     <View style={[styles.exampleRelations, { borderColor: colors.border, backgroundColor: colors.surface }]}>

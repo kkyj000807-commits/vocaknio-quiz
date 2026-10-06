@@ -4,6 +4,7 @@ import { ActivityIndicator, Linking, Pressable, StyleSheet, Text, View } from "r
 import { useColors } from "@/hooks/use-colors";
 import { ReasoningPractice, LazyReasoningPractice } from "@/components/reasoning-practice";
 import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
+import { formatExampleRelation } from "@/lib/semantic-cluster";
 import { LearningEvidence } from "@/components/learning-evidence";
 import {
   getActiveRecallSenses,
@@ -171,12 +172,12 @@ export function ActiveRecallStudyDetails({
             {example.cueKo ? <Text style={s.note}>문맥 단서: {example.cueKo}</Text> : null}
             {entry.exactSynonyms.length + entry.nearSynonyms.length > 0 ? (
               <Text style={[s.relationCue, { color: colors.success }]}>≒ {[...entry.exactSynonyms, ...entry.nearSynonyms]
-                .map((word) => entry.relationMeaningsKo?.[word] ? `${word} (${entry.relationMeaningsKo[word]})` : word)
+                .map((word) => formatExampleRelation(word, entry.relationMeaningsKo))
                 .join(" · ")}</Text>
             ) : null}
             {entry.antonyms.length > 0 ? (
               <Text style={[s.relationCue, { color: colors.error }]}>←→ {entry.antonyms
-                .map((word) => entry.relationMeaningsKo?.[word] ? `${word} (${entry.relationMeaningsKo[word]})` : word)
+                .map((word) => formatExampleRelation(word, entry.relationMeaningsKo))
                 .join(" · ")}</Text>
             ) : null}
           </View>
