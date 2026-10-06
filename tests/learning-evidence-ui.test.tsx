@@ -92,6 +92,32 @@ describe("reviewed learning evidence and explanation boundaries", () => {
     expect(prompt).not.toContain(sense.koreanMeaning);
   });
 
+  it("rule of thumb은 정답 뒤 관계어 4개를 한 번 풀고 TFD 수록 원전별 요약·직접 링크를 제공한다", async () => {
+    const sense = ACTIVE_RECALL_SENSES.find(entry => entry.senseId === "rule-of-thumb:practical-approximate-guide")!;
+    const prompt = render(<ActiveRecallPrompt recall={sense} />);
+    const answer = render(<ActiveRecallAnswer recall={sense} />);
+    const detail = render(<ActiveRecallStudyDetails entry={sense} index={0} count={1} />);
+    for (const meaning of Object.values(sense.relationMeaningsKo!)) {
+      expect(answer).toContain(meaning);
+      expect(occurrences(detail, meaning)).toBe(1);
+      expect(prompt).not.toContain(meaning);
+    }
+    expect(answer).toContain("영영 정의 · 한국어 해석");
+    expect(answer).not.toContain("한국어 뜻 검수 중");
+    expect(detail).toContain(sense.exampleSentences[0].ko);
+    expect(detail).toContain("rough guide (정확한 계산 대신 대략 판단하도록 돕는 어림 지침)");
+    expect(prompt).not.toContain(sense.koreanMeaning);
+    native.links.length = 0;
+    const evidence = render(<LearningEvidence entry={sense} />);
+    expect(occurrences(evidence, "TFD · American Heritage ↗")).toBe(1);
+    expect(occurrences(evidence, "TFD · Collins ↗")).toBe(1);
+    expect(native.links).toHaveLength(4);
+    expect(native.links[0].label).toBe("The Free Dictionary · American Heritage 사전 근거 열기");
+    for (const link of native.links) link.press();
+    await Promise.resolve();
+    expect(native.openURL.mock.calls.map(call => call[0])).toEqual(sense.sources.slice(0, 4).map(source => source.url));
+  });
+
   it("does not describe mixed-source examples as entirely original", () => {
     const html = render(<LearningEvidence entry={{ ...entry, exampleSentences: [{ ...entry.exampleSentences[0], type: "source" }] }} />);
     expect(html).toContain("예문은 항목별 출처·창작 구분");

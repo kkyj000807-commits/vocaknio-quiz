@@ -5,6 +5,7 @@ import { useColors } from "@/hooks/use-colors";
 import type { ActiveRecallSense } from "@/lib/active-recall";
 
 function sourceLabel(publisher: string) {
+  if (publisher.startsWith("The Free Dictionary · ")) return publisher.replace("The Free Dictionary · ", "TFD · ");
   if (publisher.includes("Webster") && publisher.includes("Collins")) return "Webster’s · Collins";
   if (publisher.startsWith("Oxford")) return "Oxford";
   if (publisher.startsWith("Cambridge")) return "Cambridge";

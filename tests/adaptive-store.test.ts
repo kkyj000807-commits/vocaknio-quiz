@@ -72,11 +72,11 @@ describe("adaptive quiz storage", () => {
     expect(storageMock.values.get(ADAPTIVE_QUIZ_HISTORY_KEY)).toBe("{broken");
   });
 
-  it("connects a real response to weakness, exact-sense review and the next saved result", async () => {
-    const item = VOCAB.find(row => row.w === "without fail")!;
+  it.each([["without fail", 1], ["rule of thumb", 0]] as const)("connects %s response to weakness, exact-sense review and the next saved result", async (headword, targetIndex) => {
+    const item = VOCAB.find(row => row.w === headword)!;
     const targets = getItemLearningTargets(item);
-    expect(targets.length).toBe(2);
-    const key = targets[1].key;
+    expect(targets.length).toBe(headword === "without fail" ? 2 : 1);
+    const key = targets[targetIndex].key;
     const question = buildQuizQuestions({ mode: "definition-choice", itemNums: [item.num], learningTargetKeys: [key], count: 1 })[0];
     expect(getQuestionLearningTargetKey(question)).toBe(key);
     await recordOneAnswer(false, item.num, { sessionId: "stats-flow-failure", itemNum: item.num, mode: question.mode, outcome: "skip", learningTargetKey: key, answeredAt: Date.now(), responseMs: 4200 });
@@ -97,7 +97,7 @@ describe("adaptive quiz storage", () => {
     expect(reopened.history.events).toHaveLength(2);
     expect(updated.accuracy).toBe(50);
     expect(updated.words[0].need.score).toBeLessThan(model.words[0].need.score);
-    expect(reopened.learning.targets[targets[0].key]).toBeUndefined();
+    for (const other of targets.filter(target => target.key !== key)) expect(reopened.learning.targets[other.key]).toBeUndefined();
     expect(updated.stateCounts.MASTERED).toBe(0);
     expect(buildStatisticsReviewParams(updated, "V101")).toBeNull();
   });

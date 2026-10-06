@@ -128,6 +128,23 @@ describe("영어→영어 active recall", () => {
     expect(validateQuestion(question)).toBe(true);
   });
 
+  it("rule of thumb의 누락 관계어 뜻만 보강하고 근사 기준·복수형·heuristic 품사 경계를 보존한다", () => {
+    const [sense] = getActiveRecallSenses(ruleOfThumbRows[0].id);
+    expect(Object.keys(sense.relationMeaningsKo!)).toEqual(["practical guideline", "rough guide", "rules of thumb", "heuristic"]);
+    expect(sense.relationMeaningsKo?.["practical guideline"]).toContain("뜻까지 포함하지 않으므로");
+    expect(sense.relationMeaningsKo?.["rough guide"]).toContain("대략적이라는 뜻");
+    expect(sense.relationMeaningsKo?.["rules of thumb"]).toContain("rules에만 복수형");
+    expect(sense.relationMeaningsKo?.heuristic).toContain("명사");
+    expect(sense.relationMeaningsKo?.heuristic).toContain("형용사");
+    expect(sense.exactSynonyms).toEqual([]);
+    expect(sense.relatedWords).toEqual(["heuristic"]);
+    expect(sense.variants).toEqual(["rules of thumb"]);
+    expect(sense.sources[0].url).toBe("https://www.thefreedictionary.com/rule+of+thumb");
+    expect(sense.sources).toHaveLength(6);
+    expect(new Set(sense.sources.map(source => source.independenceGroup)).size).toBe(4);
+    expect(sense.sourceCheckedAt).toBe("2026.10.06");
+  });
+
   it("conducive to의 중복 6행을 결과 가능성을 높이는 한 sense와 반대축에 연결한다", () => {
     expect(conduciveToRows.map(item => item.id)).toEqual([
       "JBKROW001279",

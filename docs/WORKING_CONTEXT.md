@@ -4,7 +4,15 @@
 
 사전 우선순위(2026.10.06 사용자 재확인): The Free Dictionary https://www.thefreedictionary.com/ 를 첫 검수 출처로 활용한다. 뜻·숙어·구문·용례·관계어를 sense 단위로 먼저 확인하고 부족/충돌 부분만 다른 독립 사전으로 대조한다. 웹 조회의 이번 홈페이지 fetch는 접근 제한으로 내용을 읽지 못했으므로 사전 검수 근거로 세지 않는다. 일반 브라우저나 제공 화면에서 실제 확인한 범위만 링크/수록 원전/확인일과 함께 기록하고 제한을 우회하거나 대량 원문을 복제하지 않는다. 기존 자동화의 TFD 우선 규칙은 유지하며 새 자동화를 만들지 않았다. 문서 변경만 수행하여 공개 앱1.12·콘텐츠·학습 데이터는 변경하지 않았다. 잠금 터미널58403/PID22540 사용, 최종 기록 후 Enter로 해제한다.
 
-## 현재 batch — without fail 의무 의미의 관계어 / 1.12 공개 확인
+## 현재 batch — rule of thumb 관계어 뜻 / 1.13 후보
+
+- 기준 공개1.12(source544afc9/Pagesc306263), main7d0a197. 이번 잠금 터미널84972/PID8612 LOCK_ACQUIRED. 사용자 dirty·미추적 파일은 보존하고 커밋에서 제외한다. 최종 기록 후 Enter 해제·LOCK_RELEASED 확인 전까지 같은 저장소를 동시 수정하지 않는다.
+- 구현 범위: APPROW01877(num37690)의 기존 `rule-of-thumb:practical-approximate-guide`에 누락 relationMeaningsKo4개(practical guideline/rough guide/rules of thumb/heuristic)만 부분 보강. 영어 정의·영한 예문·문항·오답·관계 분류·행/sense/학습키·적응형 엔진은 재사용. 신규 의미/영어 정의/예문/문항0, 새 DB/API/migration0. TFD 표시명은 짧게, 실제 수록 원전·확인 범위는 기존 펼침 UI에 보존한다.
+- 의미 근거 VERIFIED(2026.10.06): 웹 조회 TFD 실패 후 일반 Chrome에서 rule of thumb/heuristic/guideline/rough 직접 열람, Cambridge rule-of-thumb도 재열람, Merriam-Webster 원문 페이지 확인. TFD American Heritage의 기준·복수형·guideline·heuristic 품사와 Collins의 rough(근사 추정) 의미를 구분했다. TFD 사이트와 수록 Collins를 별도 독립 사전으로 세지 않는다. 직접 근거6페이지/원전4그룹, 기존 Cambridge/MW 근거 유지, 원문 정의·예문 복제 없이 한국어 뜻·교체 조건 자체 편집. heuristic은 관련어, rules of thumb은 복수형, near2/exact0/antonym0 유지. 코드만으로 의미 검수 완료라 주장하지 않는다.
+- VERIFIED 코드·데이터: 전체 verify TypeScript·데이터 감사·34파일284 PASS/기존 인증1 SKIP(총35파일285테스트). 변경4 TS/TSX ESLint 오류0·diff --check PASS·Git 보안 tracked536/untracked212/findings0. JSON 전후 비교에서 대상1sense의 relationMeaningsKo/sources/sourceCheckedAt만 바뀌었고 entries22·기존 정의/예문/문항/ID/관계 분류는 동일하다. 원본38163행/고유철자13347·canonical110/COMPLETE92/NEEDS_REVIEW18/연결253·production20sense/37행·호환165/230·reasoning7/14/21 유지, 원본 hash7EBA20F3…908DD 일치. 정답 전후·개별뜻1회·직접링크 및 저장→통계→같은 뜻/유형 복습→중복 방지→50% 재집계 회귀 PASS. Production/격리/공개 UI·배포 검증 전이므로 현재 공개는1.12다.
+- NEXT: 전체 verify와 JSON 변경 범위·원본 hash 대조→Production 감사·실제 격리 풀이/390·1024 검증→통과 시 승인된 Pages1.13→공개 release/source/KST/hash/Chrome UI 대조→최종 기록·잠금 해제. 중앙 DB unverified/sync_required 및 실제 Safari/Samsung 기기 미검증은 유지한다.
+
+## 직전 batch — without fail 의무 의미의 관계어 / 1.12 공개 확인
 
 - 최신 공개판1.12는1.11에서 이어졌다. 원본/두 sense 조사·독립 사전 대조·누락 관계어 뜻6개 부분 보강·관련 회귀/전체 verify·Production/보안 감사·격리 풀이/공개 UI VERIFIED. 잠금 터미널64851/PID8556 LOCK_ACQUIRED 사용. 사용자 server/auth.ts·1.4 내용 없는 변경 표기·미추적 파일을 보존하고 배포 커밋에서 제외했다. 최종 기록 푸시 뒤 QA 서버 종료·Enter로 잠금 해제·LOCK_RELEASED 확인 순으로 종료한다. 다음 실행은 과거 PID가 아닌 실제 OS 잠금 결과를 기준으로 한다.
 - 범위·보존: APPROW02335(num38148)의 기존 `without-fail:required-certainty` 1sense에 누락 relationMeaningsKo6개만 보강했다. 기존 반복 의미 `without-fail:every-time-no-exception`은1.11과 동일하다. 영어 정의/간결 정의/영한 예문/문항/오답/관계 분류/두 sense ID/원본 행ID/학습 키·MASTER/WEAK/RELEARNING·적응형 엔진을 재사용했다. 신규 의미/영어 정의/예문/문항0, 새 DB/API/migration0. UI는 기존 클러스터·짧은 예문 관계어·출처 펼침을 재사용했다.

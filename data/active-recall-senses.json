@@ -73,6 +73,12 @@
       "antonyms": [],
       "variants": ["rules of thumb"],
       "relatedWords": ["heuristic"],
+      "relationMeaningsKo": {
+        "practical guideline": "실제로 판단·행동할 때 참고하는 실용적 지침. guideline 자체는 경험에서 얻은 근삿값이라는 뜻까지 포함하지 않으므로, 어림 기준을 말하는 문맥에서 가까운 표현으로 쓴다",
+        "rough guide": "정확한 계산 대신 대략 판단하도록 돕는 어림 지침. rough는 여기서 거칠거나 난폭하다는 뜻이 아니라 대략적이라는 뜻이다. 계획·추정의 근사 기준을 말할 때 가깝지만 모든 상황에서 정확하다는 보장은 없다",
+        "rules of thumb": "경험에 근거한 여러 실용적 어림 기준. rule of thumb의 복수형으로 rules에만 복수형을 붙인다. 여러 기준을 말할 때 쓰며 별개의 의미는 아니다",
+        "heuristic": "문제를 해결할 때 판단의 길잡이로 쓰는 실용적 방법·요령. a heuristic처럼 명사로 쓸 때의 관련 표현이며, heuristic method의 heuristic은 형용사다. 탐색·문제 해결까지 범위가 넓고 항상 정답을 보장하는 절차는 아니므로 모든 rule of thumb과 그대로 바꾸지는 않는다"
+      },
       "exampleSentences": [
         {
           "en": "As a rule of thumb, reserve one hour of editing for every ten pages of draft.",
@@ -102,6 +108,18 @@
       ],
       "sources": [
         {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/rule+of+thumb",
+          "independenceGroup": "Houghton Mifflin Harcourt",
+          "note": "TFD 수록 American Heritage 5판: 유용한 기준이지만 모든 상황에서 엄밀히 정확한 것은 아니라는 뜻과 복수형 rules of thumb 확인. 일반 Chrome에서 실제 열람(2026.10.06); 원문 정의·예문은 복제하지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · Collins",
+          "url": "https://www.thefreedictionary.com/rough",
+          "independenceGroup": "HarperCollins",
+          "note": "TFD 수록 Collins 12판: rough 형용사의 추정·어림값에 쓰는 대략적 의미를 확인하고 표면의 거침·난폭함과 구분. rough guide의 한국어 뜻·교체 조건은 학습용 자체 편집; TFD와 Collins를 별도 독립 사전으로 중복 집계하지 않음"
+        },
+        {
           "publisher": "Cambridge English Dictionary",
           "url": "https://dictionary.cambridge.org/us/dictionary/english/rule-of-thumb",
           "independenceGroup": "Cambridge",
@@ -112,9 +130,21 @@
           "url": "https://www.merriam-webster.com/dictionary/rule%20of%20thumb",
           "independenceGroup": "Merriam-Webster",
           "note": "경험·상식에 기반하며 대략 맞지만 과학적으로 정확한 원칙은 아니라는 sense를 대조함; 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/guideline",
+          "independenceGroup": "Houghton Mifflin Harcourt",
+          "note": "TFD 수록 American Heritage 5판: 행동 방침을 정하는 데 참고하는 지침이라는 뜻 확인. practical guideline은 경험적 근사 기준보다 넓은 표현이라는 경계를 자체 편집; 같은 수록 원전의 추가 페이지이지 별도 독립 사전이 아님"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/heuristic",
+          "independenceGroup": "Houghton Mifflin Harcourt",
+          "note": "TFD 수록 American Heritage 5판: 조사·발견·문제 해결을 이끄는 형용사 용법과 방법·과정을 가리키는 명사 용법 확인. 현재 연결은 문제 해결 방법인 명사 뜻이며 교육·컴퓨터 세부 뜻을 자동 합치지 않음; 설명은 자체 편집"
         }
       ],
-      "sourceCheckedAt": "2026.09.29",
+      "sourceCheckedAt": "2026.10.06",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",
