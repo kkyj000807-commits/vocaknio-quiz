@@ -143,6 +143,31 @@ describe("reviewed learning evidence and explanation boundaries", () => {
     expect(native.openURL.mock.calls.map(call => call[0])).toEqual(sense.sources.slice(0, 3).map(source => source.url));
   });
 
+  it("a wide range of는 정답 뒤 7개 뜻·치환 조건을 연결하고 정의 문제에는 한국어를 노출하지 않는다", async () => {
+    const sense = ACTIVE_RECALL_SENSES.find(entry => entry.senseId === "a-wide-range-of:many-different-kinds")!;
+    const prompt = render(<ActiveRecallPrompt recall={sense} />);
+    const answer = render(<ActiveRecallAnswer recall={sense} />);
+    const detail = render(<ActiveRecallStudyDetails entry={sense} index={0} count={1} />);
+    for (const meaning of Object.values(sense.relationMeaningsKo!)) {
+      expect(answer).toContain(meaning);
+      expect(occurrences(detail, meaning)).toBe(1);
+      expect(prompt).not.toContain(meaning);
+    }
+    expect(answer).toContain("영영 정의 · 한국어 해석");
+    expect(answer).toContain(sense.koreanMeaning);
+    expect(answer).not.toContain("한국어 뜻 검수 중");
+    expect(detail).toContain(sense.exampleSentences[0].ko);
+    expect(detail).toContain("a broad range of (폭넓은 여러 종류의 ~. 같은 범주 안의 종류·선택지 폭을 말할 때 a wide range of와 바꿔 쓸 수 있다)");
+    expect(prompt).not.toContain(sense.koreanMeaning);
+    native.links.length = 0;
+    const evidence = render(<LearningEvidence entry={sense} />);
+    expect(occurrences(evidence, "TFD · American Heritage ↗")).toBe(1);
+    expect(native.links).toHaveLength(3);
+    for (const link of native.links) link.press();
+    await Promise.resolve();
+    expect(native.openURL.mock.calls.map(call => call[0])).toEqual(sense.sources.slice(0, 3).map(source => source.url));
+  });
+
   it("does not describe mixed-source examples as entirely original", () => {
     const html = render(<LearningEvidence entry={{ ...entry, exampleSentences: [{ ...entry.exampleSentences[0], type: "source" }] }} />);
     expect(html).toContain("예문은 항목별 출처·창작 구분");

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.14",
+  "release": "1.15",
   "entries": [
     {
       "word": "a wide range of",
@@ -13,8 +13,15 @@
         "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
+          "https://www.thefreedictionary.com/range",
           "https://www.oxfordlearnersdictionaries.com/definition/english/range_1",
-          "https://www.collinsdictionary.com/dictionary/english/wide-range"
+          "https://www.collinsdictionary.com/dictionary/english/wide-range",
+          "https://www.thefreedictionary.com/broad",
+          "https://www.thefreedictionary.com/variety",
+          "https://www.thefreedictionary.com/spectrum",
+          "https://www.thefreedictionary.com/narrow",
+          "https://www.thefreedictionary.com/limited",
+          "https://www.thefreedictionary.com/diverse"
         ]
       },
       "koreanMeaning": "같은 범주 안의 매우 다양한 여러 ~",
@@ -29,8 +36,15 @@
       ],
       "distinctionNote": "a narrow range of: 종류와 선택지의 폭이 넓다는 목표 표현과 정반대로, 다루는 범위가 좁고 제한적이라는 반대 의미축이다. | a large number of: 개체 수가 많다는 양을 강조할 뿐, 서로 다른 종류가 폭넓게 포함된다는 다양성까지 보장하지 않는다. | regardless of: 어떤 조건을 고려하지 않는다는 양보 표현으로, 종류나 선택지의 폭을 나타내지 않는다.",
       "sourceIds": [
+        "https://www.thefreedictionary.com/range",
         "https://www.oxfordlearnersdictionaries.com/definition/english/range_1",
-        "https://www.collinsdictionary.com/dictionary/english/wide-range"
+        "https://www.collinsdictionary.com/dictionary/english/wide-range",
+        "https://www.thefreedictionary.com/broad",
+        "https://www.thefreedictionary.com/variety",
+        "https://www.thefreedictionary.com/spectrum",
+        "https://www.thefreedictionary.com/narrow",
+        "https://www.thefreedictionary.com/limited",
+        "https://www.thefreedictionary.com/diverse"
       ],
       "itemIds": [
         "JBKROW000017",

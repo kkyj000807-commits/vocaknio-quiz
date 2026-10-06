@@ -218,6 +218,31 @@ describe("영어→영어 active recall", () => {
     expect(validateQuestion(question)).toBe(true);
   });
 
+  it("a wide range of의 관계어 7개를 보강하되 종류·수량·품사와 두 행의 공유 학습키를 구분한다", () => {
+    const [sense] = getActiveRecallSenses(wideRangeRows[0].id);
+    expect(Object.keys(sense.relationMeaningsKo!)).toEqual(["a broad range of", "a wide variety of", "a broad spectrum of", "a narrow range of", "a limited range of", "diverse", "variety"]);
+    expect(sense.relationMeaningsKo?.["a broad range of"]).toContain("모든 결합에서 같은 뜻인 것은 아니며");
+    expect(sense.relationMeaningsKo?.["a wide variety of"]).toContain("상한·하한");
+    expect(sense.relationMeaningsKo?.["a broad spectrum of"]).toContain("빠짐없이 포함한다고 단정하지");
+    expect(sense.relationMeaningsKo?.["a narrow range of"]).toContain("개체가 많이 있어도");
+    expect(sense.relationMeaningsKo?.["a limited range of"]).toContain("순위를 매기지");
+    expect(sense.relationMeaningsKo?.diverse).toContain("형용사");
+    expect(sense.relationMeaningsKo?.diverse).toContain("문장을 바꿔야");
+    expect(sense.relationMeaningsKo?.variety).toContain("명사이며");
+    expect(sense.relationMeaningsKo?.variety).toContain("별도 뜻");
+    expect(sense.exactSynonyms).toEqual(["a broad range of"]);
+    expect(sense.nearSynonyms).toEqual(["a wide variety of", "a broad spectrum of"]);
+    expect(sense.relatedWords).toEqual(["diverse", "variety"]);
+    expect(sense.englishDefinition).toBe("A large variety of people or things belonging to the same general category.");
+    expect(sense.exampleSentences[0].en).toBe("The reading course introduces students to a wide range of arguments, from causal claims to ethical dilemmas.");
+    const keys = new Set(wideRangeRows.flatMap(item => getItemLearningTargets(item).map(target => target.key)));
+    expect([...keys]).toEqual(["sense:a-wide-range-of%3Amany-different-kinds"]);
+    expect(sense.sources[0].url).toBe("https://www.thefreedictionary.com/range");
+    expect(sense.sources).toHaveLength(9);
+    expect(new Set(sense.sources.map(source => source.independenceGroup)).size).toBe(3);
+    expect(sense.sourceCheckedAt).toBe("2026.10.06");
+  });
+
   it("zoom in on의 중복 2행을 비유적 주의 집중 sense 하나와 반대축에 연결한다", () => {
     expect(zoomInOnRows.map(item => item.id)).toEqual(["JBKROW000093", "JBKROW004059"]);
     const senseIds = new Set(zoomInOnRows.flatMap(item => getActiveRecallSenses(item.id).map(sense => sense.senseId)));

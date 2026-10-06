@@ -288,6 +288,15 @@
       "antonyms": ["a narrow range of", "a limited range of"],
       "variants": [],
       "relatedWords": ["diverse", "variety"],
+      "relationMeaningsKo": {
+        "a broad range of": "폭넓은 여러 종류의 ~. 같은 범주 안의 종류·선택지 폭을 말할 때 a wide range of와 바꿔 쓸 수 있다. broad와 wide가 모든 결합에서 같은 뜻인 것은 아니며, 여기서는 단순 개체 수보다 범위의 넓이가 핵심이다",
+        "a wide variety of": "매우 다양한 종류의 ~. 서로 다른 종류가 여럿 있다는 다양성에 초점을 둔다. 이 예문의 arguments처럼 종류를 나열하는 문맥에서는 가깝지만, 수치의 상한·하한 사이 폭을 말하는 range까지 언제나 대신하지는 않는다",
+        "a broad spectrum of": "폭넓은 범주·양상의 ~. 서로 관련된 생각·활동·특성이 넓게 펼쳐진 범위를 말하며, 한쪽 끝에서 다른 쪽 끝까지 여러 양상을 아우르는 데 초점을 둘 수 있다. 여기서는 빛의 파장 뜻이 아니며, 모든 항목을 빠짐없이 포함한다고 단정하지 않는다",
+        "a narrow range of": "좁은 범위의 한정된 종류·선택지의 ~. 여기서는 wide와 반대로 종류의 폭이 좁다는 뜻이다. 같은 종류의 개체가 많이 있어도 범위는 좁을 수 있으므로 개체 수가 적다는 뜻으로만 외우지 않는다",
+        "a limited range of": "종류·선택지가 제한된 ~. 포함되는 범위에 한계가 있다는 뜻으로, 다양성을 넓게 포함하는 목표 표현과 대비된다. 선택지가 전혀 없다는 뜻은 아니며, narrow보다 언제나 더 좁다고 순위를 매기지 않는다",
+        "diverse": "서로 다른 특성을 지닌, 다양한. 명사를 꾸미는 형용사다. diverse arguments처럼 쓸 수 있지만 a wide range of 자리에 그대로 넣으면 관사·명사구 구조가 달라지므로 문장을 바꿔야 한다. 서로 다름을 말할 뿐 수가 많다고 보장하지 않는다",
+        "variety": "다양성, 여러 종류의 모음. 명사이며 a variety of + 복수명사처럼 여러 종류를 묶어 말한다. variety 하나만 목표 표현 자리에 넣지 않고 a wide variety of처럼 구문을 갖춰 쓴다. a variety가 특정한 한 종류·품종을 가리키는 별도 뜻은 이 다양성 뜻과 구별한다"
+      },
       "exampleSentences": [
         {
           "en": "The reading course introduces students to a wide range of arguments, from causal claims to ethical dilemmas.",
@@ -332,19 +341,61 @@
       ],
       "sources": [
         {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/range",
+          "independenceGroup": "American Heritage",
+          "note": "같은 범주 안의 모음·변화의 폭이라는 명사 뜻을 먼저 확인하고 사정거리·산맥·동사 뜻과 구분함. 한국어 뜻과 치환 조건은 자체 편집하며 사전 정의·예문 원문은 복제하지 않음"
+        },
+        {
           "publisher": "Oxford Advanced Learner's Dictionary",
           "url": "https://www.oxfordlearnersdictionaries.com/definition/english/range_1",
           "independenceGroup": "Oxford",
-          "note": "range가 같은 일반 범주에 속한 여러 종류를 뜻하고 wide가 그 다양성의 폭을 넓힌다는 sense와 결합을 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+          "note": "range의 다양성 뜻과 wide/broad 및 narrow/limited 결합을 독립 대조함. 수치의 상한·하한 폭이라는 별도 뜻을 구분했으며 사전 정의·예문 원문은 복제하지 않음"
         },
         {
           "publisher": "Collins English Dictionary",
           "url": "https://www.collinsdictionary.com/dictionary/english/wide-range",
           "independenceGroup": "Collins",
-          "note": "wide range가 같은 일반 종류 안의 여러 서로 다른 항목을 가리킨다는 sense와 실제 결합 예문을 독립 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+          "note": "range의 같은 일반 종류 안에 속한 서로 다른 항목이라는 뜻과 wide range 결합을 독립 대조함. 자동 선정 용례를 사전이 인증한 창작 예문으로 표시하지 않으며 원문은 복제하지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage · broad",
+          "url": "https://www.thefreedictionary.com/broad",
+          "independenceGroup": "American Heritage",
+          "note": "넓은 범위에 걸친 형용사 뜻을 확인하고 물리적 너비·개략적 설명 등 다른 결합 뜻과 구분함. a broad range of의 한국어 뜻·문맥 치환 조건은 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage · variety",
+          "url": "https://www.thefreedictionary.com/variety",
+          "independenceGroup": "American Heritage",
+          "note": "다양성·서로 다른 것의 모음이라는 명사 뜻을 확인하고 한 종류·품종이라는 별도 뜻과 구분함. variety 단독과 a wide variety of의 구문 차이를 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage · spectrum",
+          "url": "https://www.thefreedictionary.com/spectrum",
+          "independenceGroup": "American Heritage",
+          "note": "관련된 생각·활동·특성의 범위라는 비유적 명사 뜻을 확인하고 빛·파장 뜻과 구분함. broad spectrum과 variety의 초점 차이·전체 포함을 단정하지 않는 해설은 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage · narrow",
+          "url": "https://www.thefreedictionary.com/narrow",
+          "independenceGroup": "American Heritage",
+          "note": "범위가 제한된 형용사 뜻을 확인하고 물리적 폭·간신히 성공한 뜻과 구분함. 종류의 폭과 단순 개체 수의 차이는 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage · limited",
+          "url": "https://www.thefreedictionary.com/limited",
+          "independenceGroup": "American Heritage",
+          "note": "일정 한계 안에 제한된 형용사 뜻을 확인함. 선택지 부재·narrow와의 고정 강도 서열로 확대하지 않는 한국어 풀이를 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage · diverse",
+          "url": "https://www.thefreedictionary.com/diverse",
+          "independenceGroup": "American Heritage",
+          "note": "서로 다르거나 다른 특성으로 구성된 형용사 뜻을 확인하고 diverse와 명사구 a wide range of의 문장 구조 차이를 설명함. 한국어 풀이·교체 조건은 자체 편집"
         }
       ],
-      "sourceCheckedAt": "2026.09.30",
+      "sourceCheckedAt": "2026.10.06",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",

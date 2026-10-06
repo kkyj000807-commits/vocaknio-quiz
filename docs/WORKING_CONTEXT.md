@@ -4,7 +4,17 @@
 
 사전 우선순위(2026.10.06 사용자 재확인): The Free Dictionary https://www.thefreedictionary.com/ 를 첫 검수 출처로 활용한다. 뜻·숙어·구문·용례·관계어를 sense 단위로 먼저 확인하고 부족/충돌 부분만 다른 독립 사전으로 대조한다. 직전 정책 등록 시 홈페이지 웹 fetch는 읽지 못해 근거로 세지 않았고 당시 문서만 변경하여 공개1.12·학습 데이터를 보존했다(잠금58403/PID22540). 이번1.13에서는 일반 Chrome의 실제 항목 열람을 확인했다. 실제 확인한 범위만 링크/수록 원전/확인일과 함께 기록하며 제한을 우회하거나 대량 원문을 복제하지 않는다. 기존 자동화의 TFD 우선 규칙을 유지하고 새 자동화는 만들지 않았다.
 
-## 현재 batch — conducive to 관계어 뜻 / 1.14 공개 확인
+## 현재 batch — a wide range of 관계어 뜻 / 1.15 검증 중·미배포
+
+- 기준: 공개1.14/source a958163/2026.10.06 14:12 KST, main ce35805와 보존 dirty를 실제 대조했다. 잠금 터미널39252/PID3172 LOCK_ACQUIRED. 사용자 server/auth.ts·1.4 내용 없는 변경 표기·미추적 파일은 보존하고 커밋에서 제외한다.
+- DONE 구현: 기존 `a-wide-range-of:many-different-kinds` 1공유sense/2반복행(JBKROW000017/num15, JBKROW002047/num2004, V101)에 누락 relationMeaningsKo7개만 부분 보강. 종류의 폭/단순 수량, range/variety/spectrum의 초점, narrow/limited의 반대축, diverse 형용사/variety 명사·교체 조건을 자체 편집했다. 기존 영어 정의·영한 예문·문항·오답·관계 분류·행/sense/학습키·적응형 엔진을 재사용한다. 신규 정의/예문/문항/DB/API/migration0. JSON 전후 비교는 대상1sense의 relationMeaningsKo/sources/sourceCheckedAt만 변경.
+- VERIFIED 의미 근거(2026.10.06): 일반 데스크톱 Chrome에서 TFD range/broad/variety/spectrum/narrow/limited/diverse7페이지를 먼저 실제 열람. 수록 American Heritage 뜻·품사를 구분했다. Oxford range와 Collins wide-range를 독립 웹 열람하여 다양성 뜻 및 broad/wide/narrow/limited 결합을 선별 대조했다. 직접9페이지/원전3그룹이며 TFD의 Collins 전재를 별도 독립 근거로 세지 않는다. 사전 원문 정의·예문 복제 없음. 편입 영어 검수 스킬의 범위·품사·치환 조건과 단일 정답 계약을 적용했다. 시험 성과/전체38163 의미 검수 완료를 주장하지 않는다.
+- 보존: 원본38163행/고유철자13347·SHA256 `7EBA20F388D04E9D7FB10EDEC635BEAC5DC7A6C726EF6E25D7DABA4CE57908DD` 시작 일치. 중앙 DB unverified/sync_required: 누락 관계어7개와 출처는 접근 가능해질 때 동일sense로 충돌 대조 후 중앙 반영할 재사용 정보다. 과거 학습 기록을 초기화하지 않는다.
+- VERIFIED 코드·데이터: 전체 verify TypeScript·데이터 감사·34파일290 PASS/기존 인증1 SKIP(총35파일291테스트), 변경3테스트 ESLint 오류0·diff --check PASS·Git 보안 tracked552/untracked212/findings0. 최초 관련57테스트56 PASS/1 FAIL은 새 테스트가 기존 예문 클러스터의 실제 두 문장 축약을 한 문장으로 기대한 오류였다. 앱 helper는 변경하지 않고 기대값만 수정한 뒤 전체 재통과했다. 7개 한국어 뜻/정답 전 비노출/정답 후1회·9직접링크3원전·반복행/학습키 보존·모름→정확한 뜻/유형 복습→중복 방지→1/2=50%·need 감소 회귀 PASS. 원본·canonical110/COMPLETE92/NEEDS_REVIEW18/연결253/미연결37910·production20sense/37행·호환165/230·reasoning7/14/21 유지.
+- NOT DONE: Production 감사·격리 풀이→통계→같은 뜻/유형 복습→새 결과 재반영·폭 에뮬레이션·공개1.15 확인. 실제 Safari/모바일 Chrome/Galaxy Tab Samsung Internet/강제 다크는 미확인. sourceDirty와 정적 웹 다운로드 한계를 구분해 기록한다.
+- NEXT: 목적 파일만 main 푸시→Production 감사·격리 UI 학습 흐름→승인 Pages 배포→built 확인 후 release/번들 hash·공개 단어장/설정 확인→문서 저장→Enter LOCK_RELEASED. 1.14 이전 완료 batch 재작성·전수 생성은 하지 않는다.
+
+## 직전 batch — conducive to 관계어 뜻 / 1.14 공개 확인
 
 - 기준: 공개 release.json의1.13/source65859f5/2026.10.06 13:12 KST와 main42f7bc8에서 이어졌다. 이번 잠금 터미널54015/PID22592 LOCK_ACQUIRED 사용. 사용자 server/auth.ts·1.4 내용 없는 변경 표기·미추적 파일은 보존하고 커밋에서 제외했다. 최종 기록 푸시→QA 서버60295/이번 탭 정리→Enter 해제·LOCK_RELEASED 확인 순으로 종료한다. 다음 실행은 과거 PID가 아닌 실제 OS 잠금 결과를 기준으로 한다.
 - 구현 범위: 기존 `conducive-to:make-result-more-likely` 1공유sense/6반복행(V101의1253/2277/4011, V501의17583/20282/22726)에 누락 relationMeaningsKo6개만 부분 보강. favorable to/helpful to의 넓은 뜻, detrimental to/unfavorable to의 피해·불리함 차이, promote/facilitate의 타동사 구문·별도 뜻을 설명했다. 영어 정의·간결 정의·영한 예문·문항·오답·관계 분류·행/sense/학습키·적응형 엔진은 재사용. 새 의미/정의/예문/문항/DB/API/migration0. 기존 정답 후·단어장·짧은 예문 클러스터·출처 UI를 재사용한다.
