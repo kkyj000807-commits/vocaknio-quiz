@@ -13,7 +13,8 @@ import { useFocusEffect, useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
-import { VOCAB, type VocabItem } from "@/lib/vocab";
+import { WordSectionLabel } from "@/components/word-section-label";
+import { VOCAB, getSynonymSourceGroups, type VocabItem } from "@/lib/vocab";
 import { loadBookmarks, toggleBookmark } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
 
@@ -84,10 +85,12 @@ export default function BookmarksScreen() {
           {item.s.slice(0, 4).map((syn, i) => (
             <View key={i} style={s.synTag}>
               <Text style={s.synTagText}>{syn}</Text>
+              <WordSectionLabel groups={getSynonymSourceGroups(item, syn)} />
             </View>
           ))}
         </View>
       )}
+      <WordSectionLabel groups={[item.group]} />
     </View>
   );
 
@@ -230,6 +233,8 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       gap: 6,
     },
     synTag: {
+      maxWidth: "100%",
+      flexShrink: 1,
       backgroundColor: "rgba(108,99,255,0.12)",
       borderWidth: 1,
       borderColor: "rgba(108,99,255,0.25)",

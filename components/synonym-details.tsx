@@ -1,7 +1,9 @@
+import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { useColors } from "@/hooks/use-colors";
-import { getSynonymDetails, type VocabItem } from "@/lib/vocab";
+import { getSynonymDetails, getSynonymSourceGroups, type VocabItem } from "@/lib/vocab";
+import { WordSectionLabel } from "@/components/word-section-label";
 
 interface SynonymDetailsProps {
   item: VocabItem;
@@ -22,10 +24,13 @@ export function SynonymDetails({ item, limit, compact = false }: SynonymDetailsP
           key={`${detail.conceptId}:${detail.word}`}
           style={[styles.row, { borderColor: colors.border, backgroundColor: colors.card }]}
         >
-          <Text style={[styles.word, { color: colors.primary }]}>{detail.word}</Text>
-          <Text style={[styles.meaning, { color: colors.muted }]} numberOfLines={compact ? 1 : 3}>
-            {detail.meaning}
-          </Text>
+          <View style={styles.content}>
+            <Text style={[styles.word, { color: colors.primary }]}>{detail.word}</Text>
+            <Text style={[styles.meaning, { color: colors.muted }]} numberOfLines={compact ? 1 : 3}>
+              {detail.meaning}
+            </Text>
+          </View>
+          <WordSectionLabel groups={getSynonymSourceGroups(item, detail.word)} />
         </View>
       ))}
     </View>
@@ -40,13 +45,17 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   row: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 8,
+    maxWidth: "100%",
+    gap: 2,
     paddingHorizontal: 10,
     paddingVertical: 7,
     borderWidth: 1,
     borderRadius: 6,
+  },
+  content: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 8,
   },
   word: {
     width: 104,
@@ -55,6 +64,7 @@ const styles = StyleSheet.create({
   },
   meaning: {
     flex: 1,
+    minWidth: 0,
     fontSize: 12,
     lineHeight: 17,
   },

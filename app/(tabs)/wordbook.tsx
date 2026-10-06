@@ -25,9 +25,10 @@ import { ScreenContainer } from "@/components/screen-container";
 import { PronunciationButton } from "@/components/pronunciation-button";
 import { LearningDetails } from "@/components/learning-details";
 import { ProblemSenseContext } from "@/components/problem-sense-context";
+import { WordSectionLabel } from "@/components/word-section-label";
 import { getProductionSenseQuestions, hasSenseQuestionMapping, senseMatchesItem } from "@/lib/sense-questions";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { getRangeItems, WORDBOOK_RANGES, VOCAB, type VocabItem } from "@/lib/vocab";
+import { getRangeItems, getSynonymSourceGroups, WORDBOOK_RANGES, VOCAB, type VocabItem } from "@/lib/vocab";
 import {
   loadBookmarks,
   loadQuizSettings,
@@ -192,6 +193,7 @@ function WordCard({
                   {item.s.map((syn, i) => (
                     <View key={`${item.num}-${syn}-${i}`} style={s.synTag}>
                       <Text style={s.synTagText}>{syn}</Text>
+                      <WordSectionLabel groups={getSynonymSourceGroups(item, syn)} />
                     </View>
                   ))}
                 </View>
@@ -201,6 +203,7 @@ function WordCard({
         </Animated.View>
       </Pressable>
 
+      <WordSectionLabel groups={[item.group]} />
       {!meaningHidden && (hasReviewedMapping || item.s.length > 0) && (
         <Pressable
           accessibilityRole="button"
@@ -336,6 +339,8 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       marginBottom: 4,
     },
     synTag: {
+      maxWidth: "100%",
+      flexShrink: 1,
       backgroundColor: colors.primary + "18",
       borderWidth: 1,
       borderColor: colors.primary + "35",

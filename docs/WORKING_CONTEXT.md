@@ -4,7 +4,16 @@
 
 사전 우선순위(2026.10.06 사용자 재확인): The Free Dictionary https://www.thefreedictionary.com/ 를 첫 검수 출처로 활용한다. 뜻·숙어·구문·용례·관계어를 sense 단위로 먼저 확인하고 부족/충돌 부분만 다른 독립 사전으로 대조한다. 직전 정책 등록 시 홈페이지 웹 fetch는 읽지 못해 근거로 세지 않았고 당시 문서만 변경하여 공개1.12·학습 데이터를 보존했다(잠금58403/PID22540). 이번1.13에서는 일반 Chrome의 실제 항목 열람을 확인했다. 실제 확인한 범위만 링크/수록 원전/확인일과 함께 기록하며 제한을 우회하거나 대량 원문을 복제하지 않는다. 기존 자동화의 TFD 우선 규칙을 유지하고 새 자동화는 만들지 않았다.
 
-## 현재 batch — a wide range of 관계어 뜻 / 1.15 공개 확인
+## 현재 batch — 단어 관리 섹션 출처 / 1.16 구현 중·미배포
+
+- 사용자 요구 우선: 오답·동의어 목록의 기존 단어장 섹션 표시를 먼저 구현한다. 1.15의 다음 콘텐츠 후보 zoom in on은 보존하고 이번 UI batch에 섞지 않는다. 기준 공개1.15/16:19 KST/source b07c66a, main8e38a94·보존 dirty 대조. 잠금79869/PID10620 LOCK_ACQUIRED.
+- DONE 조사/구현: canonical38163행의 group과 메타 sections8개(V101/V201/V301/V401/V501/V502/V601/APPENDIX)를 재사용한다. 독립 동의어 관리 페이지는 없으며 단어장의 동의어 펼침이 실제 목록이다. 공통 WordSectionLabel(11px/400/16px/metadata semantic token)을 오답·단어장·북마크·결과 오답 목록과 SynonymDetails에 연결. 각 동의어는 기존 getSynonymDetails의 concept-first 후보 원본행을 재사용하며 부모 섹션을 복사하거나 숫자/철자에서 추정하지 않는다. 복수 섹션은 중복 없이 기존 순서로, 연결 없음은 명시한다. 동의어/뜻/ID/저장/출제/상태/DB/API/migration 변경0.
+- VERIFIED 원본 연결 조사:38163행의 group 누락0·실제 s 연결65219건의 후보 섹션 미연결0. capricious num1/V101→erratic V502, fickle V101/V502; attract num8045/V301→enthrall V101/V301/V601; maladroit num37214/부록→awkward V502 확인. 초기 Node ESM import의 CJS export 조회 실패는 require로 조사만 재실행했으며 파일/데이터를 수정하지 않았다. 원본 재생성 없음·중앙 DB unverified 유지.
+- VERIFIED 코드: 전체 verify TypeScript·데이터 감사·35파일299 PASS/기존 인증1 SKIP(총36파일300테스트), 변경파일 ESLint 오류0/기존 경고3, diff --check PASS, Git 보안 findings0. 원본 hash 시작 일치. 생성 파일은 release/version/감사 시각만 변경되고 학습 콘텐츠는 동일했다. 초기 SSR 테스트 React import 누락과 대비 계산의 dark 방향을 수정했다. Light의 기존 muted/card 대비4.34는 낮아 별도 metadata token으로 조정하고3테마 surface/card4.5이상 테스트 PASS. 새 token 타입 선언 누락도 수정하여 전체 타입 검사 재통과.
+- 체크리스트: 기존 분류/개별 동의어 실제 연결 DONE; 공통 저우선 표시 DONE; 누락 비추정 DONE; 세 테마 대비·전체 verify DONE; 모바일/태블릿 줄바꿈·뜻 가리기·북마크/오답/복습·Production 보안·공개 확인 NOT DONE. 실제 Safari/모바일 Chrome/Galaxy Tab 강제 다크는 여전히 미확인.
+- NEXT: 관련 테스트·lint→전체 verify→격리 Production에서8섹션/복수 연결/긴 동의어/뜻 가리기·모바일/태블릿·3테마 확인→목적 파일만 commit/push·배포→공개1.16/release/hash/UI·기존 기록 확인→문서 저장→Enter LOCK_RELEASED.
+
+## 직전 batch — a wide range of 관계어 뜻 / 1.15 공개 확인
 
 - 기준: 공개1.14/source a958163/2026.10.06 14:12 KST, main ce35805와 보존 dirty를 실제 대조했다. 잠금 터미널39252/PID3172 LOCK_ACQUIRED. 사용자 server/auth.ts·1.4 내용 없는 변경 표기·미추적 파일은 보존하고 커밋에서 제외한다.
 - DONE 구현: 기존 `a-wide-range-of:many-different-kinds` 1공유sense/2반복행(JBKROW000017/num15, JBKROW002047/num2004, V101)에 누락 relationMeaningsKo7개만 부분 보강. 종류의 폭/단순 수량, range/variety/spectrum의 초점, narrow/limited의 반대축, diverse 형용사/variety 명사·교체 조건을 자체 편집했다. 기존 영어 정의·영한 예문·문항·오답·관계 분류·행/sense/학습키·적응형 엔진을 재사용한다. 신규 정의/예문/문항/DB/API/migration0. JSON 전후 비교는 대상1sense의 relationMeaningsKo/sources/sourceCheckedAt만 변경.

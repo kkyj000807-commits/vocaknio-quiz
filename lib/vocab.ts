@@ -158,6 +158,13 @@ export const CORE_RANGES = [
   ...RANGES.filter((range) => range.kind !== "idioms" && range.core),
 ];
 export const SECTION_RANGES = RANGES.filter((range) => range.kind === "section");
+/** Display the existing wordbook groups, never infer a section from a number or spelling. */
+export function formatVocabSections(groups: readonly (string | undefined)[]): string {
+  const selected = new Set(groups);
+  const labels = SECTION_RANGES.filter((range) => selected.has(range.group))
+    .map((range) => range.group === "APPENDIX" ? "부록" : range.group);
+  return labels.length > 0 ? `단어장 · ${labels.join(" · ")}` : "섹션 연결 없음";
+}
 export const WORDBOOK_RANGES = [
   ...RANGES.filter((range) => range.kind === "idioms"),
   ...RANGES.filter((range) => range.kind === "all"),
@@ -285,14 +292,23 @@ export function getRelatedWords(item: VocabItem): Set<string> {
   return related;
 }
 
+function getSynonymCandidates(item: VocabItem, synonym: string): VocabItem[] {
+  const normalized = normalizeWord(synonym);
+  const conceptMatches = item.conceptId
+    ? ITEMS_BY_CONCEPT_AND_WORD.get(`${item.conceptId}\u0000${normalized}`) ?? []
+    : [];
+  return conceptMatches.length > 0 ? conceptMatches : ITEMS_BY_WORD.get(normalized) ?? [];
+}
+
+/** Reuse the exact candidate rows behind the existing synonym meaning lookup. */
+export function getSynonymSourceGroups(item: VocabItem, synonym: string): VocabGroup[] {
+  return [...new Set(getSynonymCandidates(item, synonym).map((candidate) => candidate.group))];
+}
+
 export function getSynonymDetails(item: VocabItem): SynonymDetail[] {
   const details: SynonymDetail[] = [];
   for (const synonym of item.s) {
-    const normalized = normalizeWord(synonym);
-    const conceptMatches = item.conceptId
-      ? ITEMS_BY_CONCEPT_AND_WORD.get(`${item.conceptId}\u0000${normalized}`) ?? []
-      : [];
-    const candidates = conceptMatches.length > 0 ? conceptMatches : ITEMS_BY_WORD.get(normalized) ?? [];
+    const candidates = getSynonymCandidates(item, synonym);
     const meanings = [...new Set(candidates.map((candidate) => candidate.k).filter(Boolean))];
     if (meanings.length === 0) continue;
     details.push({

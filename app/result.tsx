@@ -10,7 +10,8 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
-import { VOCAB } from "@/lib/vocab";
+import { WordSectionLabel } from "@/components/word-section-label";
+import { VOCAB, getSynonymSourceGroups } from "@/lib/vocab";
 import { useColors } from "@/hooks/use-colors";
 import { getProductionSenseQuestions } from "@/lib/sense-questions";
 
@@ -167,10 +168,12 @@ export default function ResultScreen() {
                     {item!.s.slice(0, 3).map((syn, i) => (
                       <View key={i} style={s.synTag}>
                         <Text style={s.synTagText}>{syn}</Text>
+                        <WordSectionLabel groups={getSynonymSourceGroups(item!, syn)} />
                       </View>
                     ))}
                   </View>
                 )}
+                <WordSectionLabel groups={[item!.group]} />
               </View>
             ))}
           </View>
@@ -319,6 +322,8 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       marginTop: 8,
     },
     synTag: {
+      maxWidth: "100%",
+      flexShrink: 1,
       backgroundColor: "rgba(108,99,255,0.12)",
       borderWidth: 1,
       borderColor: "rgba(108,99,255,0.25)",

@@ -14,7 +14,8 @@ import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { VOCAB, type VocabItem } from "@/lib/vocab";
+import { WordSectionLabel } from "@/components/word-section-label";
+import { VOCAB, getSynonymSourceGroups, type VocabItem } from "@/lib/vocab";
 import {
   loadWrongWords,
   markLearningTargetMastered,
@@ -156,6 +157,7 @@ export default function WrongScreen() {
                 {item.s.slice(0, 4).map((syn, i) => (
                   <View key={i} style={s.synTag}>
                     <Text style={s.synTagText}>{syn}</Text>
+                    <WordSectionLabel groups={getSynonymSourceGroups(item, syn)} />
                   </View>
                 ))}
               </View>
@@ -166,6 +168,7 @@ export default function WrongScreen() {
             <Text style={s.maskedText}>탭하여 뜻 확인</Text>
           </View>
         )}
+        <WordSectionLabel groups={[item.group]} />
       </Pressable>
     );
   };
@@ -440,6 +443,8 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       gap: 6,
     },
     synTag: {
+      maxWidth: "100%",
+      flexShrink: 1,
       backgroundColor: "rgba(108,99,255,0.12)",
       borderWidth: 1,
       borderColor: "rgba(108,99,255,0.25)",
