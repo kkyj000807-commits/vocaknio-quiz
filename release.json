@@ -1,11 +1,11 @@
 {
-  "version": "1.14",
-  "sourceCommit": "a95816304fde1401b2a81900aabc2cd3fcc7fdcd",
+  "version": "1.15",
+  "sourceCommit": "b07c66aaaecf42a5f354f12b4648d612d2710790",
   "sourceDirty": true,
   "dataVersion": "v1.4",
-  "learningDataVersion": "1.14",
-  "builtAt": "2026-10-06T05:12:19.017Z",
-  "modifiedAtKst": "2026.10.06 14:12 KST",
+  "learningDataVersion": "1.15",
+  "builtAt": "2026-10-06T07:19:37.590Z",
+  "modifiedAtKst": "2026.10.06 16:19 KST",
   "channel": "production",
-  "target": "1.14|2026.10.06 14:12 KST"
+  "target": "1.15|2026.10.06 16:19 KST"
 }
