@@ -4,7 +4,14 @@
 
 사전 우선순위(2026.10.06 사용자 재확인): The Free Dictionary https://www.thefreedictionary.com/ 를 첫 검수 출처로 활용한다. 뜻·숙어·구문·용례·관계어를 sense 단위로 먼저 확인하고 부족/충돌 부분만 다른 독립 사전으로 대조한다. 직전 정책 등록 시 홈페이지 웹 fetch는 읽지 못해 근거로 세지 않았고 당시 문서만 변경하여 공개1.12·학습 데이터를 보존했다(잠금58403/PID22540). 이번1.13에서는 일반 Chrome의 실제 항목 열람을 확인했다. 실제 확인한 범위만 링크/수록 원전/확인일과 함께 기록하며 제한을 우회하거나 대량 원문을 복제하지 않는다. 기존 자동화의 TFD 우선 규칙을 유지하고 새 자동화는 만들지 않았다.
 
-## 현재 batch — 단어 관리 섹션 출처 / 1.16 공개 확인
+## 현재 batch — zoom in on 관계어 뜻 / 1.17 검증 중
+
+- 기준: 공개1.16/source62e06a6517dc6f2ef79a7e56c9cd44c97d188487/2026.10.06 16:48 KST, main2e1c7eda·git status/diff 대조. 잠금 터미널27998/PID9180 LOCK_ACQUIRED. 기존1.4/server/auth.ts·미추적 사용자 작업을 보존한다. 완료한 섹션 UI/과거 후보는 재작성하지 않는다.
+- 범위: 기존 `zoom-in-on:give-close-attention` 1공유sense/2반복행의 누락 관계어7개 뜻·치환 조건과 실제 검수 출처만 부분 보강한다. 기존 정의·예문·문항·관계 분류·학습키·적응형 엔진·DB/API는 재사용한다. TFD8직접 항목 우선 열람, Cambridge는 web403을 실제 Chrome 열람으로 확인, Collins 원문 대조 완료. 사전 전재를 독립 원전으로 중복 계산하지 않는다. 편입 영어 검수 스킬의 품사·문맥·단일 정답 계약을 적용한다.
+- NEXT: 부분 보강→정답 전후·반복행/키·응답 저장/약점 복습 회귀→전체 verify·Git/Production 보안→격리 UI→승인 Pages 공개 확인→문서 저장·잠금 해제. 아직 검증/배포 완료로 보고하지 않는다.
+- VERIFIED 코드: 대상1sense의 relationMeaningsKo/sources/sourceCheckedAt만 변경·entries22 유지. 기존 영어 정의/영한 예문/문항/관계/2반복행/공유학습키 보존. 관련60 PASS, 전체 verify TypeScript·데이터 감사·35파일302 PASS/기존 인증1 SKIP(총36파일303), 변경3테스트 ESLint 오류0, diff --check PASS, Git 보안 tracked570/untracked212/findings0. raw38163/고유철자13347·SHA2567EBA20F388D04E9D7FB10EDEC635BEAC5DC7A6C726EF6E25D7DABA4CE57908DD 일치. canonical110/COMPLETE92/NEEDS_REVIEW18/연결253/미연결37910·production20sense/37행·호환165/230·reasoning7/14/21 유지。 중앙 DB unverified/sync_required 유지.
+
+## 직전 batch — 단어 관리 섹션 출처 / 1.16 공개 확인
 
 - 사용자 요구 우선: 오답·동의어 목록의 기존 단어장 섹션 표시를 먼저 구현한다. 1.15의 다음 콘텐츠 후보 zoom in on은 보존하고 이번 UI batch에 섞지 않는다. 기준 공개1.15/16:19 KST/source b07c66a, main8e38a94·보존 dirty 대조. 잠금79869/PID10620 LOCK_ACQUIRED.
 - DONE 조사/구현: canonical38163행의 group과 메타 sections8개(V101/V201/V301/V401/V501/V502/V601/APPENDIX)를 재사용한다. 독립 동의어 관리 페이지는 없으며 단어장의 동의어 펼침이 실제 목록이다. 공통 WordSectionLabel(11px/400/16px/metadata semantic token)을 오답·단어장·북마크·결과 오답 목록과 SynonymDetails에 연결. 각 동의어는 기존 getSynonymDetails의 concept-first 후보 원본행을 재사용하며 부모 섹션을 복사하거나 숫자/철자에서 추정하지 않는다. 복수 섹션은 중복 없이 기존 순서로, 연결 없음은 명시한다. 동의어/뜻/ID/저장/출제/상태/DB/API/migration 변경0.

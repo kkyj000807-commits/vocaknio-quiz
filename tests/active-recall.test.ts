@@ -265,6 +265,29 @@ describe("영어→영어 active recall", () => {
     expect(validateQuestion(question)).toBe(true);
   });
 
+  it("zoom in on의 누락 관계어 7개를 보강하되 집중·정확한 특정·구문과 두 행의 공유 키를 구분한다", () => {
+    const [sense] = getActiveRecallSenses(zoomInOnRows[0].id);
+    expect(Object.keys(sense.relationMeaningsKo!)).toEqual(["focus on", "concentrate on", "zero in on", "zoom out from", "gloss over", "scrutinize", "pinpoint"]);
+    expect(sense.relationMeaningsKo?.["focus on"]).toContain("전체를 본 뒤 한 세부로 좁힌다는 흐름까지");
+    expect(sense.relationMeaningsKo?.["concentrate on"]).toContain("용액을 농축한다는 별도 뜻");
+    expect(sense.relationMeaningsKo?.["zero in on"]).toContain("정답을 정확히 찾아냈다고 단정하지");
+    expect(sense.relationMeaningsKo?.["zoom out from"]).toContain("무시한다는 뜻은 아니다");
+    expect(sense.relationMeaningsKo?.["gloss over"]).toContain("zoom out from과 같지는 않다");
+    expect(sense.relationMeaningsKo?.scrutinize).toContain("on까지 남겨 바꾸면 안 된다");
+    expect(sense.relationMeaningsKo?.pinpoint).toContain("정확한 특정이라는 의미가 추가될 수");
+    expect(sense.exactSynonyms).toEqual(["focus on"]);
+    expect(sense.nearSynonyms).toEqual(["concentrate on", "zero in on"]);
+    expect(sense.relatedWords).toEqual(["scrutinize", "pinpoint"]);
+    expect(sense.englishDefinition).toBe("To notice one particular part of a larger subject and give it especially close attention.");
+    expect(sense.exampleSentences[0].en).toBe("After surveying the entire passage, the editor zoomed in on the sentence that reversed the author's conclusion.");
+    const keys = new Set(zoomInOnRows.flatMap(item => getItemLearningTargets(item).map(target => target.key)));
+    expect([...keys]).toEqual(["sense:zoom-in-on%3Agive-close-attention"]);
+    expect(sense.sources[0].url).toBe("https://idioms.thefreedictionary.com/zoom+in+on");
+    expect(sense.sources).toHaveLength(10);
+    expect(new Set(sense.sources.map(source => source.independenceGroup)).size).toBe(4);
+    expect(sense.sourceCheckedAt).toBe("2026.10.06");
+  });
+
   it("gloss over의 중복 8행을 세부 회피 sense 하나와 개별 관계 뜻에 연결한다", () => {
     expect(glossOverRows.map(item => item.id)).toEqual([
       "JBKROW001061",

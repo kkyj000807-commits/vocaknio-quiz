@@ -414,6 +414,15 @@
       "antonyms": ["zoom out from", "gloss over"],
       "variants": [],
       "relatedWords": ["scrutinize", "pinpoint"],
+      "relationMeaningsKo": {
+        "focus on": "~에 초점을 맞추다, 주의를 집중하다. 특정 문장·문제를 자세히 살피는 문맥에서 zoom in on과 바꿔 쓸 수 있다. focus on은 주의·노력을 향하는 넓은 표현이라, 전체를 본 뒤 한 세부로 좁힌다는 흐름까지 언제나 뜻하지는 않는다. 카메라의 초점을 맞추는 뜻과 화면을 확대하는 뜻도 구분한다.",
+        "concentrate on": "~에 정신·주의·노력을 집중하다. 다른 대상보다 이 일에 신경을 쓰거나 힘을 모은다는 뜻이다. 분석 대상에 집중하는 문맥에서는 가깝지만, 일 자체에 몰두하는 말도 되므로 한 세부를 찾아 자세히 살핀다는 뜻과 항상 같지는 않다. 여기서는 on + 대상 구문이며 용액을 농축한다는 별도 뜻이 아니다.",
+        "zero in on": "특정 목표·문제에 주의를 모으다, 초점을 좁히다. 여러 대상 중 한 부분을 겨냥해 집중하는 문맥에서 가깝다. 실제 표적을 겨누거나 목표에 접근하는 뜻도 있으므로 주의 집중 문맥인지 확인한다. 초점을 맞췄다는 말만으로 원인·정답을 정확히 찾아냈다고 단정하지 않는다.",
+        "zoom out from": "~에서 시야를 물려 더 넓은 전체를 보다. 카메라 확대를 줄이는 뜻에서 가져온 문맥상 대조 표현이다. 한 문장으로 초점을 좁히는 zoom in on과 방향이 반대이지만, 자세히 살피지 않거나 무시한다는 뜻은 아니다. from 뒤에는 시야를 물리는 출발 대상이 오며, 급히 떠난다는 zoom out의 다른 뜻과 구분한다.",
+        "gloss over": "중요하거나 불편한 점을 자세히 다루지 않고 대충 넘기다. 피상적으로 처리하거나 문제를 작게 보이게 한다는 뜻이다. 한 세부를 면밀하게 살피는 태도와 대조되지만, 시야를 넓혀 전체를 보는 zoom out from과 같지는 않다. gloss over + 대상 구문으로 쓴다.",
+        "scrutinize": "~을 면밀히 살피다, 꼼꼼하게 검토하다. 검토의 세밀함에 초점이 있는 타동사다. 예문의 scrutinized the sentence처럼 목적어를 바로 붙이면 자세한 검토를 말할 수 있지만, zoomed in on the sentence의 on까지 남겨 바꾸면 안 된다. 전체에서 한 부분을 골라 초점을 좁히는 과정까지 반드시 뜻하지는 않는다.",
+        "pinpoint": "원인·위치·문제 등을 정확히 특정하다, 정확히 짚어내다. 단순히 주의를 집중하는 것보다 무엇인지 정확히 알아내거나 어디인지 정하는 데 초점이 있다. 타동사이므로 pinpoint + 대상 구문을 쓴다. zoom in on을 그대로 치환하면 정확한 특정이라는 의미가 추가될 수 있으며, 명사·형용사로 쓰인 pinpoint는 별도 뜻이다."
+      },
       "exampleSentences": [
         {
           "en": "After surveying the entire passage, the editor zoomed in on the sentence that reversed the author's conclusion.",
@@ -458,6 +467,18 @@
       ],
       "sources": [
         {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://idioms.thefreedictionary.com/zoom+in+on",
+          "independenceGroup": "American Heritage",
+          "note": "American Heritage Dictionary of Idioms의 비유적 집중·면밀한 검토 뜻을 카메라 확대 뜻과 구분해 확인함; 학습용 설명은 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · Farlex",
+          "url": "https://idioms.thefreedictionary.com/gloss+over",
+          "independenceGroup": "Farlex",
+          "note": "Farlex Dictionary of Idioms의 피상적 처리·중요성 축소 뜻을 확인함; 시야 확장과 구별해 관계어 풀이를 자체 편집"
+        },
+        {
           "publisher": "Cambridge Advanced Learner's Dictionary",
           "url": "https://dictionary.cambridge.org/us/dictionary/english/zoom-in-on",
           "independenceGroup": "Cambridge",
@@ -468,9 +489,45 @@
           "url": "https://www.collinsdictionary.com/dictionary/english/zoom-in",
           "independenceGroup": "Collins",
           "note": "zoom in on의 자세히 조사하거나 세부에 초점을 맞추는 비유적 sense와 문자적 카메라 sense의 경계를 독립 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/focus",
+          "independenceGroup": "American Heritage",
+          "note": "focus의 동사 주의·에너지 집중 뜻과 on 구문, 광학적 초점 뜻을 구분함; 현재 문맥의 치환 범위만 설명"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/concentrate",
+          "independenceGroup": "American Heritage",
+          "note": "concentrate의 주의 집중 자동사와 on 결합을 농축 뜻·명사와 구분함; 관계어 설명은 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://idioms.thefreedictionary.com/zero+in+on",
+          "independenceGroup": "American Heritage",
+          "note": "American Heritage Dictionary of Idioms의 주의 집중 뜻을 표적 조준·접근 뜻과 구분함; 정확한 원인 발견을 보장하지 않는 치환 경계를 설명"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://idioms.thefreedictionary.com/zoom+out",
+          "independenceGroup": "American Heritage",
+          "note": "American Heritage Dictionary of Phrasal Verbs의 시야 확장·from 결합을 확인함; 비유적 전체 보기 대조는 앱의 문맥 설명이며 급히 떠나는 뜻과 분리"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/scrutinize",
+          "independenceGroup": "American Heritage",
+          "note": "scrutinize의 면밀한 검토 타동사 뜻을 확인함; 목적어 직접 연결과 zoom in on의 구문 차이를 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/pinpoint",
+          "independenceGroup": "American Heritage",
+          "note": "pinpoint의 정확한 특정 타동사 뜻을 명사·형용사 뜻과 구분함; 주의 집중만으로 정확한 특정까지 단정하지 않도록 설명"
         }
       ],
-      "sourceCheckedAt": "2026.09.30",
+      "sourceCheckedAt": "2026.10.06",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",
