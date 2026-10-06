@@ -163,6 +163,14 @@
       "antonyms": ["detrimental to", "unfavorable to"],
       "variants": [],
       "relatedWords": ["promote", "facilitate"],
+      "relationMeaningsKo": {
+        "favorable to": "~에 유리한, ~에 좋은 조건이 되는. 날씨·환경처럼 결과에 유리한 조건을 말할 때 가깝다. 찬성하거나 호의적인 의견을 말하는 favorable은 결과를 촉진한다는 뜻과 다르므로 그대로 바꾸지 않는다",
+        "helpful to": "~에 도움이 되는, ~에 유용한. 필요한 도움이나 쓸모를 제공한다는 넓은 뜻이다. 결과를 돕는 조건을 말할 때 가깝지만, 사람에게 도움이 되거나 도구가 유용하다는 말이 언제나 결과의 발생 가능성을 높이는 조건을 뜻하는 것은 아니다",
+        "detrimental to": "~에 해로운, ~을 손상시키는. 결과를 돕는 조건과 반대 방향으로 악영향을 준다. 단순히 유리하지 않다는 unfavorable보다 피해·손상을 분명히 나타내지만, 반드시 모든 시도를 실패시킨다는 뜻은 아니다",
+        "unfavorable to": "~에 불리한, ~에 좋은 조건이 되지 않는. 목표에 유리하지 않거나 진행을 어렵게 하는 조건을 말한다. detrimental처럼 실제 피해·손상이 생긴다고 반드시 단정하지는 않으며, 반대하는 의견을 말하는 뜻과도 구별한다",
+        "promote": "~의 발전·성장을 촉진하다. 여기서는 결과를 북돋는 타동사이며, 승진시키다·상품을 홍보하다의 뜻은 구별한다. be conducive to + 결과와 달리 promote + 결과 구조로 문장을 바꿔야 하므로 빈칸에 그대로 넣을 수 없다",
+        "facilitate": "~을 더 수월하게 하다. 과정·활동의 진행을 쉽게 하는 타동사다. facilitate + 과정·활동처럼 목적어를 바로 붙인다. be conducive to 자리에 그대로 넣지 않으며, 진행이 쉬워졌다고 결과가 보장되는 것은 아니다"
+      },
       "exampleSentences": [
         {
           "en": "Quiet rooms and clear instructions are conducive to careful reading.",
@@ -207,6 +215,12 @@
       ],
       "sources": [
         {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/conducive",
+          "independenceGroup": "American Heritage",
+          "note": "수록 American Heritage의 결과에 기여하는 형용사 뜻을 우선 확인함. 수록 Collins의 to 결합·가까운 표현 목록도 보조 대조하되 독립 사전 수를 중복 계산하지 않음; 원문 정의·예문은 복제하지 않음"
+        },
+        {
           "publisher": "Oxford Advanced Learner's Dictionary",
           "url": "https://www.oxfordlearnersdictionaries.com/definition/english/conducive",
           "independenceGroup": "Oxford",
@@ -217,9 +231,45 @@
           "url": "https://www.collinsdictionary.com/us/dictionary/english/conducive",
           "independenceGroup": "Collins",
           "note": "한 조건이 다른 결과의 발생 가능성을 높인다는 sense와 to 결합을 독립 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · Collins · favourable",
+          "url": "https://www.thefreedictionary.com/favourable",
+          "independenceGroup": "Collins",
+          "note": "favourable/favorable의 유리한 조건 뜻을 찬성·호의의 뜻과 구분함. TFD 수록 Collins는 Collins 원문과 별도 독립 사전으로 세지 않음; 한국어 풀이·교체 조건은 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage · helpful",
+          "url": "https://www.thefreedictionary.com/helpful",
+          "independenceGroup": "American Heritage",
+          "note": "도움·유용성을 제공하는 형용사 뜻과 conducive의 결과 조건 차이를 대조함; 한국어 풀이·교체 조건은 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage · detrimental",
+          "url": "https://www.thefreedictionary.com/detrimental",
+          "independenceGroup": "American Heritage",
+          "note": "피해·해로움을 나타내는 형용사 뜻을 확인하고, 단순한 불리함과 구분함; 한국어 풀이·교체 조건은 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage · unfavorable",
+          "url": "https://www.thefreedictionary.com/unfavorable",
+          "independenceGroup": "American Heritage",
+          "note": "불리한 조건 뜻을 반대하는 의견의 뜻과 구분하고, 피해 발생의 단정과도 구분함; 한국어 풀이·교체 조건은 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage · promote",
+          "url": "https://www.thefreedictionary.com/promote",
+          "independenceGroup": "American Heritage",
+          "note": "발전·성장 촉진의 타동사 뜻을 승진·홍보의 뜻과 구분함. 형용사구 conducive to와의 구문 변경 조건을 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage · facilitate",
+          "url": "https://www.thefreedictionary.com/facilitate",
+          "independenceGroup": "American Heritage",
+          "note": "과정·활동을 쉽게 하는 타동사 뜻을 확인하고 conducive to와 품사·목적어 구조를 구분함; 한국어 풀이·교체 조건은 자체 편집"
         }
       ],
-      "sourceCheckedAt": "2026.09.30",
+      "sourceCheckedAt": "2026.10.06",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",

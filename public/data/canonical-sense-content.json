@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.13",
+  "release": "1.14",
   "entries": [
     {
       "word": "a wide range of",
@@ -1072,8 +1072,15 @@
         "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
+          "https://www.thefreedictionary.com/conducive",
           "https://www.oxfordlearnersdictionaries.com/definition/english/conducive",
-          "https://www.collinsdictionary.com/us/dictionary/english/conducive"
+          "https://www.collinsdictionary.com/us/dictionary/english/conducive",
+          "https://www.thefreedictionary.com/favourable",
+          "https://www.thefreedictionary.com/helpful",
+          "https://www.thefreedictionary.com/detrimental",
+          "https://www.thefreedictionary.com/unfavorable",
+          "https://www.thefreedictionary.com/promote",
+          "https://www.thefreedictionary.com/facilitate"
         ]
       },
       "koreanMeaning": "특정 결과가 일어나기 좋은 조건을 만드는",
@@ -1087,8 +1094,15 @@
       ],
       "distinctionNote": "detrimental to: 목표 결과가 일어나기 좋은 조건을 만드는 것이 아니라 그 결과를 해치거나 방해하는 반대 의미축이다. | compatible with: 둘이 함께 성립할 수 있다는 뜻일 뿐, 한쪽이 다른 결과를 더 쉽게 일어나게 한다는 촉진 관계는 아니다. | irrelevant to: 결과가 일어나도록 돕는 관계가 아니라 애초에 해당 결과와 관련이 없다는 뜻이다.",
       "sourceIds": [
+        "https://www.thefreedictionary.com/conducive",
         "https://www.oxfordlearnersdictionaries.com/definition/english/conducive",
-        "https://www.collinsdictionary.com/us/dictionary/english/conducive"
+        "https://www.collinsdictionary.com/us/dictionary/english/conducive",
+        "https://www.thefreedictionary.com/favourable",
+        "https://www.thefreedictionary.com/helpful",
+        "https://www.thefreedictionary.com/detrimental",
+        "https://www.thefreedictionary.com/unfavorable",
+        "https://www.thefreedictionary.com/promote",
+        "https://www.thefreedictionary.com/facilitate"
       ],
       "itemIds": [
         "JBKROW001279",

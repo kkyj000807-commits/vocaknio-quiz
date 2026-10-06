@@ -72,7 +72,7 @@ describe("adaptive quiz storage", () => {
     expect(storageMock.values.get(ADAPTIVE_QUIZ_HISTORY_KEY)).toBe("{broken");
   });
 
-  it.each([["without fail", 1], ["rule of thumb", 0]] as const)("connects %s response to weakness, exact-sense review and the next saved result", async (headword, targetIndex) => {
+  it.each([["without fail", 1], ["rule of thumb", 0], ["conducive to", 0]] as const)("connects %s response to weakness, exact-sense review and the next saved result", async (headword, targetIndex) => {
     const item = VOCAB.find(row => row.w === headword)!;
     const targets = getItemLearningTargets(item);
     expect(targets.length).toBe(headword === "without fail" ? 2 : 1);
@@ -99,7 +99,7 @@ describe("adaptive quiz storage", () => {
     expect(updated.words[0].need.score).toBeLessThan(model.words[0].need.score);
     for (const other of targets.filter(target => target.key !== key)) expect(reopened.learning.targets[other.key]).toBeUndefined();
     expect(updated.stateCounts.MASTERED).toBe(0);
-    expect(buildStatisticsReviewParams(updated, "V101")).toBeNull();
+    expect(buildStatisticsReviewParams(updated, item.group === "V101" ? "V601" : "V101")).toBeNull();
   });
 
   it("restores exact keys after URL decoding and never maps an unknown key to another meaning", () => {

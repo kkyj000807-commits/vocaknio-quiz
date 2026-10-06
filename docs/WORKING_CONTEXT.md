@@ -4,7 +4,16 @@
 
 사전 우선순위(2026.10.06 사용자 재확인): The Free Dictionary https://www.thefreedictionary.com/ 를 첫 검수 출처로 활용한다. 뜻·숙어·구문·용례·관계어를 sense 단위로 먼저 확인하고 부족/충돌 부분만 다른 독립 사전으로 대조한다. 직전 정책 등록 시 홈페이지 웹 fetch는 읽지 못해 근거로 세지 않았고 당시 문서만 변경하여 공개1.12·학습 데이터를 보존했다(잠금58403/PID22540). 이번1.13에서는 일반 Chrome의 실제 항목 열람을 확인했다. 실제 확인한 범위만 링크/수록 원전/확인일과 함께 기록하며 제한을 우회하거나 대량 원문을 복제하지 않는다. 기존 자동화의 TFD 우선 규칙을 유지하고 새 자동화는 만들지 않았다.
 
-## 현재 batch — rule of thumb 관계어 뜻 / 1.13 공개 확인
+## 현재 batch — conducive to 관계어 뜻 / 1.14 검증 후보
+
+- 기준: 공개 release.json의1.13/source65859f5/2026.10.06 13:12 KST와 main42f7bc8을 직접 확인했다. 이번 잠금 터미널54015/PID22592 LOCK_ACQUIRED 사용. 사용자 server/auth.ts·1.4 내용 없는 변경 표기·미추적 파일은 보존하고 커밋에서 제외한다. 종료 전 QA 서버/이번 탭 정리→Enter 해제·LOCK_RELEASED 확인한다.
+- 구현 범위: 기존 `conducive-to:make-result-more-likely` 1공유sense/6반복행(V101의1253/2277/4011, V501의17583/20282/22726)에 누락 relationMeaningsKo6개만 부분 보강. favorable to/helpful to의 넓은 뜻, detrimental to/unfavorable to의 피해·불리함 차이, promote/facilitate의 타동사 구문·별도 뜻을 설명했다. 영어 정의·간결 정의·영한 예문·문항·오답·관계 분류·행/sense/학습키·적응형 엔진은 재사용. 새 의미/정의/예문/문항/DB/API/migration0. 기존 정답 후·단어장·짧은 예문 클러스터·출처 UI를 재사용한다.
+- 의미 근거 VERIFIED(2026.10.06): 실제 데스크톱 Chrome에서 TFD conducive/favourable/helpful/detrimental/unfavorable/promote/facilitate7페이지 우선 열람. American Heritage의 기여·손상·불리함·타동사 뜻과 Collins의 favourable 조건/찬성 뜻을 구분했다. Oxford·Collins conducive 원문도 재확인하여 결과 가능성/조건과 결과 보장을 구분했다. 직접 근거9페이지/원전3그룹이며 TFD 수록 Collins를 별도 독립 사전으로 세지 않는다. 사전 원문은 복제하지 않고 개별 한국어 뜻·치환 조건을 자체 편집했다. 정확한 동의어0/가까운 표현2/반대 표현2/관련 동사2를 유지한다.
+- VERIFIED 코드·데이터: 최초 관련54테스트53 PASS/1 FAIL은 새 테스트가 기존 학습키의 `%3A` 인코딩을 생략한 기대값 오류였다. 앱/키/데이터는 변경하지 않고 기대값만 실제 호환 키로 수정했다. 이후 전체 verify TypeScript·데이터 감사·34파일287 PASS/기존 인증1 SKIP(총35파일288테스트), 변경3테스트 ESLint 오류0·diff --check PASS·Git 보안 tracked544/untracked212/findings0. 전후 JSON 비교는 entries22 유지·대상1sense의 relationMeaningsKo/sources/sourceCheckedAt만 변경으로 PASS. 원본38163/13347·canonical110/COMPLETE92/NEEDS_REVIEW18/연결253/미연결37910·production20sense/37행·호환165/230·reasoning7/14/21 유지. 정답 전 한국어 비노출/정답 후6개 뜻1회/직접링크·모름 저장→통계→정확한 뜻/유형 복습→정답 중복 방지→1/2=50%·need 감소 회귀 PASS. Production·격리 브라우저·공개 배포/UI는 아직 미확인이다.
+- 보존 기준: 원본38163행/고유철자13347, SHA256 `7EBA20F388D04E9D7FB10EDEC635BEAC5DC7A6C726EF6E25D7DABA4CE57908DD`를 시작 시 확인했다. 13347 철자를 전체 word+POS+sense 수로 간주하지 않는다. 중앙 DB unverified/sync_required·실제 Safari/모바일 Chrome/Galaxy Tab Samsung Internet/강제 다크·기기 간 이벤트 sync의 기존 한계는 유지한다.
+- NEXT: 감사한 목적 파일만 source 커밋→1.14 Production 감사→격리1253 풀이/통계/동일 뜻·유형 한 번 복습/새 결과 저장 및390×844·1024×768 확인→승인된 Pages 배포→release.json/source/KST/번들·실제 공개 UI 확인. 공개1.14 확인 전 배포 완료라 주장하지 않는다.
+
+## 직전 batch — rule of thumb 관계어 뜻 / 1.13 공개 확인
 
 - 최신 공개1.13은1.12(source544afc9/Pagesc306263)·main7d0a197에서 이어졌다. 이번 잠금 터미널84972/PID8612 LOCK_ACQUIRED 사용. 사용자 server/auth.ts·1.4 내용 없는 변경 표기·미추적 파일은 보존하고 커밋에서 제외했다. 최종 기록 푸시→QA 서버 종료→Enter 해제·LOCK_RELEASED 확인 순으로 종료한다. 다음 실행은 과거 PID가 아닌 실제 OS 잠금 결과를 기준으로 한다.
 - 구현 범위: APPROW01877(num37690)의 기존 `rule-of-thumb:practical-approximate-guide`에 누락 relationMeaningsKo4개(practical guideline/rough guide/rules of thumb/heuristic)만 부분 보강. 영어 정의·영한 예문·문항·오답·관계 분류·행/sense/학습키·적응형 엔진은 재사용. 신규 의미/영어 정의/예문/문항0, 새 DB/API/migration0. TFD 표시명은 짧게, 실제 수록 원전·확인 범위는 기존 펼침 UI에 보존한다.

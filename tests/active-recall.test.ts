@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { ACTIVE_RECALL_SENSES, getActiveRecallCoverage, getActiveRecallSenses } from "@/lib/active-recall";
+import { getItemLearningTargets } from "@/lib/canonical-learning";
 import { buildQuizQuestions, buildReviewQuestions, isChoiceCorrect, validateQuestion } from "@/lib/quiz-engine";
 import { VOCAB } from "@/lib/vocab";
 
@@ -172,6 +173,27 @@ describe("영어→영어 active recall", () => {
     expect(question.choices.map(choice => choice.value)).toContain("detrimental to");
     expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
     expect(validateQuestion(question)).toBe(true);
+  });
+
+  it("conducive to의 누락 관계어 6개만 보강하고 6행의 공유 학습키·구문 경계를 유지한다", () => {
+    const [sense] = getActiveRecallSenses(conduciveToRows[0].id);
+    expect(Object.keys(sense.relationMeaningsKo!)).toEqual(["favorable to", "helpful to", "detrimental to", "unfavorable to", "promote", "facilitate"]);
+    expect(sense.relationMeaningsKo?.["favorable to"]).toContain("호의적인 의견");
+    expect(sense.relationMeaningsKo?.["helpful to"]).toContain("넓은 뜻");
+    expect(sense.relationMeaningsKo?.["detrimental to"]).toContain("피해·손상");
+    expect(sense.relationMeaningsKo?.["unfavorable to"]).toContain("반드시 단정하지는");
+    expect(sense.relationMeaningsKo?.promote).toContain("타동사");
+    expect(sense.relationMeaningsKo?.promote).toContain("빈칸에 그대로 넣을 수 없다");
+    expect(sense.relationMeaningsKo?.facilitate).toContain("결과가 보장되는 것은 아니다");
+    expect(sense.exactSynonyms).toEqual([]);
+    expect(sense.relatedWords).toEqual(["promote", "facilitate"]);
+    expect(sense.exampleSentences[0].en).toBe("Quiet rooms and clear instructions are conducive to careful reading.");
+    const keys = new Set(conduciveToRows.flatMap(item => getItemLearningTargets(item).map(target => target.key)));
+    expect([...keys]).toEqual(["sense:conducive-to%3Amake-result-more-likely"]);
+    expect(sense.sources[0].url).toBe("https://www.thefreedictionary.com/conducive");
+    expect(sense.sources).toHaveLength(9);
+    expect(new Set(sense.sources.map(source => source.independenceGroup)).size).toBe(3);
+    expect(sense.sourceCheckedAt).toBe("2026.10.06");
   });
 
   it("a wide range of의 중복 2행을 다양성 sense 하나와 반대축에 연결한다", () => {
