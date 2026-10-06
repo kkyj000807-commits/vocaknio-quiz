@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.16",
+  "release": "1.17",
   "entries": [
     {
       "word": "a wide range of",
@@ -5479,8 +5479,16 @@
         "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
+          "https://idioms.thefreedictionary.com/zoom+in+on",
+          "https://idioms.thefreedictionary.com/gloss+over",
           "https://dictionary.cambridge.org/us/dictionary/english/zoom-in-on",
-          "https://www.collinsdictionary.com/dictionary/english/zoom-in"
+          "https://www.collinsdictionary.com/dictionary/english/zoom-in",
+          "https://www.thefreedictionary.com/focus",
+          "https://www.thefreedictionary.com/concentrate",
+          "https://idioms.thefreedictionary.com/zero+in+on",
+          "https://idioms.thefreedictionary.com/zoom+out",
+          "https://www.thefreedictionary.com/scrutinize",
+          "https://www.thefreedictionary.com/pinpoint"
         ]
       },
       "koreanMeaning": "특정 대상에 초점을 좁혀 집중하다",
@@ -5495,8 +5503,16 @@
       ],
       "distinctionNote": "zoom out from: 한 세부 대상으로 초점을 좁히는 것이 아니라 더 넓은 전체 장면을 보도록 시야를 물리는 반대 방향이다. | gloss over: 한 부분을 자세히 살피는 목표 표현과 달리, 불편하거나 중요한 세부를 피상적으로 처리하고 넘어간다. | branch out into: 한 대상에 주의를 좁히는 것이 아니라 활동 범위를 다른 분야로 확장한다.",
       "sourceIds": [
+        "https://idioms.thefreedictionary.com/zoom+in+on",
+        "https://idioms.thefreedictionary.com/gloss+over",
         "https://dictionary.cambridge.org/us/dictionary/english/zoom-in-on",
-        "https://www.collinsdictionary.com/dictionary/english/zoom-in"
+        "https://www.collinsdictionary.com/dictionary/english/zoom-in",
+        "https://www.thefreedictionary.com/focus",
+        "https://www.thefreedictionary.com/concentrate",
+        "https://idioms.thefreedictionary.com/zero+in+on",
+        "https://idioms.thefreedictionary.com/zoom+out",
+        "https://www.thefreedictionary.com/scrutinize",
+        "https://www.thefreedictionary.com/pinpoint"
       ],
       "itemIds": [
         "JBKROW000093",
