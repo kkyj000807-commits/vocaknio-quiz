@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.12",
+  "release": "1.13",
   "entries": [
     {
       "word": "a wide range of",
@@ -4445,8 +4445,12 @@
         "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
+          "https://www.thefreedictionary.com/rule+of+thumb",
+          "https://www.thefreedictionary.com/rough",
           "https://dictionary.cambridge.org/us/dictionary/english/rule-of-thumb",
-          "https://www.merriam-webster.com/dictionary/rule%20of%20thumb"
+          "https://www.merriam-webster.com/dictionary/rule%20of%20thumb",
+          "https://www.thefreedictionary.com/guideline",
+          "https://www.thefreedictionary.com/heuristic"
         ]
       },
       "koreanMeaning": "경험에 근거한 실용적 어림 기준",
@@ -4460,8 +4464,12 @@
       ],
       "distinctionNote": "hard-and-fast rule: 예외를 허용하지 않는 엄격한 기준이라서, 대략 맞는 경험적 지침인 목표 표현과 반대되는 정확성 축이다. | scientific law: 검증된 현상의 일반 관계를 말하며, 경험상 빠르게 쓰는 근사 기준과는 근거와 정확성의 성격이 다르다. | red herring: 판단을 돕는 기준이 아니라 핵심에서 벗어나게 하는 무관한 정보다.",
       "sourceIds": [
+        "https://www.thefreedictionary.com/rule+of+thumb",
+        "https://www.thefreedictionary.com/rough",
         "https://dictionary.cambridge.org/us/dictionary/english/rule-of-thumb",
-        "https://www.merriam-webster.com/dictionary/rule%20of%20thumb"
+        "https://www.merriam-webster.com/dictionary/rule%20of%20thumb",
+        "https://www.thefreedictionary.com/guideline",
+        "https://www.thefreedictionary.com/heuristic"
       ],
       "itemIds": [
         "APPROW01877"
