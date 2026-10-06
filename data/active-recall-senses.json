@@ -358,6 +358,14 @@
       "antonyms": ["if possible", "perhaps"],
       "variants": [],
       "relatedWords": ["without exception"],
+      "relationMeaningsKo": {
+        "definitely": "확실히, 틀림없이. 행동을 이행하겠다는 약속에서는 확실성을 강조할 수 있다. 사실이 참이라는 판단에도 쓰이므로, 그 자체가 언제나 반드시 해야 한다는 의무를 뜻하지는 않는다.",
+        "for certain": "확실히, 의심의 여지 없이. 사실을 알거나 결과를 확신하는 데 초점이 있다. 미래 행동의 확실성을 말할 수 있지만, 제출 명령의 without fail을 그대로 바꾸면 의무 강조가 약해지거나 구문이 어색해질 수 있다.",
+        "no matter what": "무슨 일이 있어도, 어떤 상황이든. 장애나 어려움에도 행동을 하겠다는 결의를 강조한다. 확실한 이행과 가까우나 조건이 달라져도 바뀌지 않는다는 초점이 추가되므로 모든 문맥에서 같은 표현은 아니다.",
+        "if possible": "가능하다면. 원하는 행동을 요청하면서도 실행이 어려우면 다른 결과를 받아들일 여지를 둔다. 반드시 이행해야 한다는 without fail과 조건 면에서 대조되며, 그 행동이 불가능하다고 단정하는 말은 아니다.",
+        "perhaps": "어쩌면, 아마 그럴 수도 있다. 행동이나 사실의 가능성을 열어 두지만 확실하다고 말하지 않는다. 틀림없는 이행과 확실성에서 대조되며, 반드시 하지 말라는 금지나 절대 일어나지 않는다는 뜻은 아니다.",
+        "without exception": "모든 대상·경우에 예외 없이. 집합이나 반복되는 회차를 하나도 빼지 않는다는 뜻이다. 한 번의 행동을 반드시 하라는 의무 의미와는 초점이 달라, 현재 뜻에서는 관련 표현으로만 연결한다."
+      },
       "exampleSentences": [
         {
           "en": "Submit the revised statement by noon tomorrow without fail.",
@@ -412,9 +420,51 @@
           "url": "https://www.collinsdictionary.com/dictionary/english/without-fail",
           "independenceGroup": "Collins",
           "note": "명령·약속의 확실성을 강조하는 sense와 매번 일어남을 강조하는 sense를 독립 대조함; 정의와 예문 원문은 앱에 복제하지 않음"
+        },
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary · definitely",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/definitely",
+          "independenceGroup": "Oxford",
+          "note": "의심 없는 사실 판단·확실한 표현의 뜻을 확인함. 약속의 확실성과 명령의 의무를 자동으로 동일시하지 않도록 한국어 교체 조건을 자체 편집함"
+        },
+        {
+          "publisher": "Collins English Dictionary · for certain",
+          "url": "https://www.collinsdictionary.com/dictionary/english/for-certain",
+          "independenceGroup": "Collins",
+          "note": "의심 없이 앎·확신함과 미래 결과의 확실성을 확인하고 Oxford certain의 for certain 항목과 대조함. 의무 명령과 언제나 치환 가능하다고 해설하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary · no matter what",
+          "url": "https://www.collinsdictionary.com/dictionary/english/no-matter-what",
+          "independenceGroup": "Collins",
+          "note": "장애·어려움에도 행동을 실행한다는 강조를 확인하고 Oxford matter의 no matter 구문과 대조함. 단순한 사실 확실성과 조건에 무관한 결의를 구분함"
+        },
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary · perhaps",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/perhaps",
+          "independenceGroup": "Oxford",
+          "note": "가능성을 열어 두거나 판단을 덜 확정적으로 만드는 뜻을 확인함. 확실성의 대조이지 금지·불가능을 뜻하지 않는다고 자체 설명함"
+        },
+        {
+          "publisher": "Collins English Dictionary · perhaps",
+          "url": "https://www.collinsdictionary.com/dictionary/english/perhaps",
+          "independenceGroup": "Collins",
+          "note": "미래에 일어날 가능성·불확실성과 완곡한 의견의 뜻을 Oxford와 독립 대조함. 반드시 발생하거나 절대 발생하지 않는다는 결론으로 강화하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary · possible",
+          "url": "https://www.collinsdictionary.com/dictionary/english/possible",
+          "independenceGroup": "Collins",
+          "note": "if possible의 요청·희망에서 다른 결과를 받아들일 여지를 확인하고 Oxford possible의 실행 가능성 구문과 대조함. 불가능을 확정하는 반의어로 처리하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary · without exception",
+          "url": "https://www.collinsdictionary.com/dictionary/english/without-exception",
+          "independenceGroup": "Collins",
+          "note": "모든 경우에 성립한다는 범위를 확인함. 같은 source의 매회 반복 뜻과 한 번의 의무 뜻을 합치지 않고 관련 표현으로 유지함"
         }
       ],
-      "sourceCheckedAt": "2026.10.05",
+      "sourceCheckedAt": "2026.10.06",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",

@@ -98,6 +98,28 @@ describe("reviewed learning evidence and explanation boundaries", () => {
     expect(html).not.toContain("예문은 학습용 창작");
   });
 
+  it("의무 뜻도 정답 공개 뒤 개별 관계어 뜻·짧은 예문 연결을 보여주고 질문에서는 감춘다", () => {
+    const sense = ACTIVE_RECALL_SENSES.find(entry => entry.senseId === "without-fail:required-certainty")!;
+    const answer = render(<ActiveRecallAnswer recall={sense} />);
+    const detail = render(<ActiveRecallStudyDetails entry={sense} index={0} count={2} />);
+    const prompt = render(<ActiveRecallPrompt recall={sense} />);
+    for (const meaning of Object.values(sense.relationMeaningsKo!)) {
+      expect(answer).toContain(meaning);
+      expect(detail).toContain(meaning);
+      expect(occurrences(detail, meaning)).toBe(1);
+      expect(prompt).not.toContain(meaning);
+    }
+    expect(answer).toContain("영영 정의 · 한국어 해석");
+    expect(answer).not.toContain("한국어 뜻 검수 중");
+    expect(detail).not.toContain("한국어 뜻 검수 중");
+    expect(detail).toContain("perhaps (어쩌면, 아마 그럴 수도 있다)");
+    expect(detail).toContain("no matter what (무슨 일이 있어도, 어떤 상황이든)");
+    expect(detail).toContain(sense.exampleSentences[0].ko);
+    expect(occurrences(detail, "Oxford ↗")).toBe(1);
+    expect(occurrences(detail, "Collins ↗")).toBe(1);
+    expect(prompt).not.toContain(sense.koreanMeaning);
+  });
+
   it("renders the wordbook context once while retaining English, Korean and example clusters", () => {
     const html = render(<ActiveRecallStudyDetails entry={entry} index={0} count={1} />);
     expect(occurrences(html, entry.contextExplanationKo!)).toBe(1);

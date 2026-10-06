@@ -296,8 +296,8 @@ describe("영어→영어 active recall", () => {
 
   it("without fail 반복 뜻의 모든 관계어를 보강하되 빈도·규칙성 경계를 유지한다", () => {
     const [required, repeated] = getActiveRecallSenses(withoutFailRows[0].id);
-    expect(required.sourceCheckedAt).toBe("2026.10.05");
-    expect(required.relationMeaningsKo).toBeUndefined();
+    expect(required.sourceCheckedAt).toBe("2026.10.06");
+    expect(required.relationMeaningsKo?.perhaps).toBeTruthy();
     const relations = [...repeated.exactSynonyms, ...repeated.nearSynonyms, ...repeated.antonyms, ...repeated.relatedWords];
     expect(Object.keys(repeated.relationMeaningsKo!)).toEqual(relations);
     expect(repeated.relationMeaningsKo?.["not always"]).toContain("never가 아니다");
@@ -311,6 +311,26 @@ describe("영어→영어 active recall", () => {
     expect(repeated.prompts.map(prompt => prompt.id)).toEqual(["definition", "context"]);
     expect(repeated.exampleSentences).toHaveLength(1);
     expect(repeated.exampleSentences[0].en).toBe("During the review month, she checked the error log every evening without fail.");
+  });
+
+  it("without fail 의무 뜻의 관계어에서 확실성·조건·가능성을 섞지 않는다", () => {
+    const [required, repeated] = getActiveRecallSenses(withoutFailRows[0].id);
+    const relations = [...required.exactSynonyms, ...required.nearSynonyms, ...required.antonyms, ...required.relatedWords];
+    expect(Object.keys(required.relationMeaningsKo!)).toEqual(relations);
+    expect(required.relationMeaningsKo?.definitely).toContain("언제나 반드시 해야 한다는 의무를 뜻하지는 않는다");
+    expect(required.relationMeaningsKo?.["for certain"]).toContain("의무 강조가 약해지거나 구문이 어색해질 수 있다");
+    expect(required.relationMeaningsKo?.["no matter what"]).toContain("조건이 달라져도 바뀌지 않는다는 초점");
+    expect(required.relationMeaningsKo?.["if possible"]).toContain("불가능하다고 단정하는 말은 아니다");
+    expect(required.relationMeaningsKo?.perhaps).toContain("금지나 절대 일어나지 않는다는 뜻은 아니다");
+    expect(required.relatedWords).toEqual(["without exception"]);
+    expect(required.nearSynonyms).not.toContain("without exception");
+    expect(required.prompts.map(prompt => prompt.id)).toEqual(["definition", "context"]);
+    expect(required.exampleSentences[0].en).toBe("Submit the revised statement by noon tomorrow without fail.");
+    expect(required.englishDefinition).toBe("Used to stress that a required action will definitely be done, especially by a stated time.");
+    expect(new Set(required.sources.map(source => source.independenceGroup))).toEqual(new Set(["Oxford", "Collins"]));
+    expect(required.sources).toHaveLength(9);
+    expect(repeated.relationMeaningsKo?.["not always"]).toContain("never가 아니다");
+    expect(repeated.sources).toHaveLength(8);
   });
 
   it("take for granted의 사실 전제와 가치 간과를 서로 다른 sense로 유지한다", () => {

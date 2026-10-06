@@ -2,7 +2,13 @@
 
 기준: 2026.10.06 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
-## 최신 batch — without fail 관계어 뜻·확인 범위 / 1.11 공개 확인
+## 현재 batch — without fail 의무 의미의 관계어 / 1.12 후보
+
+- 공개 기준1.11·main e60c54e·Pages bb37adb를 대조했다. 잠금 터미널64851/PID8556 LOCK_ACQUIRED. 기존 server/auth.ts·1.4 내용 없는 변경·미추적 파일 보존. 체크리스트: 원본/기존 두 sense 조사 DONE / TFD 우선 시도(fetch 실패, 근거 제외)·Oxford/Collins 대조 DONE / 공유 의무 sense1개의 누락 relationMeaningsKo6개·검수 범위 링크 DONE / 관련 회귀·전체 verify·Production·격리 풀이·공개 UI NOT DONE.
+- 의미 검수: 확실성(definitely/for certain)·장애에도 실행(no matter what)·조건부 요청(if possible)·불확실성(perhaps)·모든 경우 포함(without exception)을 구분한다. 기존 영어 정의/영한 예문/문항/두 sense ID/학습 키와 반복 의미1.11은 변경하지 않는다. 사전 원문을 복제하지 않고 한국어 뜻·교체 조건만 자체 편집한다. 다음은 verify→Production/보안 감사→정답 전/후·같은 의미 복습/새로고침→공개1.12 버전/해시/UI 대조다. 중앙 DB unverified/sync_required 유지.
+- VERIFIED 코드·데이터: node scripts/verify-project.mjs 타입·데이터·34파일281 PASS/기존 인증1 SKIP(총282), 변경2테스트파일 ESLint 오류0·diff --check PASS·Git 보안 findings0. 이전 커밋과 JSON을 대조해 바뀐 sense가 required-certainty 1개뿐임을 확인했고 기존 영어 정의/간결 정의/영한 예문/문항/오답/관계 분류/원본 행ID는 모두 동일하다. 원본 SHA256도1.11과 일치한다. 정답 후·단어장에6개 개별 뜻/교체 조건1회·예문짧은뜻, 정답 전 한국어 비노출 렌더 회귀 PASS. Production·브라우저·공개 배포는 다음 단계다.
+
+## 직전 batch — without fail 관계어 뜻·확인 범위 / 1.11 공개 확인
 
 - 최신 공개판은 1.11이며 아래 1.10에서 이어졌다. 잠금 터미널55169/PID7844 LOCK_ACQUIRED. 사용자 server/auth.ts·1.4 내용 없는 변경 표기·미추적 파일을 보존했고 커밋에 포함하지 않았다. 최종 기록 푸시 뒤 Enter로 잠금을 해제하고 LOCK_RELEASED를 확인하여 종료한다. 다음 실행은 과거 PID가 아닌 실제 OS 잠금 결과를 기준으로 한다.
 - 범위·보존: APPROW02335(num38148)의 기존 `without-fail:every-time-no-exception` 1sense에 누락 관계어 한국어 뜻6개만 부분 보강했다. `without-fail:required-certainty`는 변경하지 않았다. 영영 정의·영한 예문·정답/오답 문항·기존 두 sense ID·학습 키·원본 반복 구조·적응형 알고리즘을 재사용하며 새 DB/API/migration은 없다. 신규 의미/정의/예문/문항 생성0.

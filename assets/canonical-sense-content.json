@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.11",
+  "release": "1.12",
   "entries": [
     {
       "word": "a wide range of",
@@ -5147,7 +5147,14 @@
       "distinctionNote": "가능하면 하라는 선택적 지시나 반복 횟수를 말하는 표현으로 약화하지 않는다.",
       "sourceIds": [
         "https://www.oxfordlearnersdictionaries.com/us/definition/english/fail_2",
-        "https://www.collinsdictionary.com/dictionary/english/without-fail"
+        "https://www.collinsdictionary.com/dictionary/english/without-fail",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/definitely",
+        "https://www.collinsdictionary.com/dictionary/english/for-certain",
+        "https://www.collinsdictionary.com/dictionary/english/no-matter-what",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/perhaps",
+        "https://www.collinsdictionary.com/dictionary/english/perhaps",
+        "https://www.collinsdictionary.com/dictionary/english/possible",
+        "https://www.collinsdictionary.com/dictionary/english/without-exception"
       ],
       "itemIds": [
         "APPROW02335"
