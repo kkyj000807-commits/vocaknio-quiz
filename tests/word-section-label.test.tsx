@@ -17,7 +17,10 @@ vi.mock("@/hooks/use-colors", () => ({ useColors: () => Object.fromEntries(Objec
 
 const render = (element: React.ReactElement) => renderToStaticMarkup(element);
 function luminance(hex: string) {
-  const rgb = [1, 3, 5].map(start => parseInt(hex.slice(start, start + 2), 16) / 255)
+  return rgbLuminance([1, 3, 5].map(start => parseInt(hex.slice(start, start + 2), 16)));
+}
+function rgbLuminance(values: number[]) {
+  const rgb = values.map(value => value / 255)
     .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
   return rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722;
 }
@@ -90,10 +93,17 @@ describe("existing wordbook section provenance", () => {
     expect(html).toContain("max-width:100%");
     expect(html).toContain("flex-shrink:1");
     const palette = themeConfig.themeColors;
-    for (const background of [palette.surface[mode], palette.card[mode]]) {
+    const surfaces = [palette.surface[mode], palette.card[mode]];
+    const chipColors = [[108, 99, 255, 0.12], [...[1, 3, 5].map(start => parseInt(palette.primary[mode].slice(start, start + 2), 16)), 24 / 255]];
+    for (const background of surfaces) {
       const foreground = luminance(palette.metadata[mode]);
       const surface = luminance(background);
       expect((Math.max(surface, foreground) + 0.05) / (Math.min(surface, foreground) + 0.05)).toBeGreaterThanOrEqual(4.5);
+      for (const [red, green, blue, alpha] of chipColors) {
+        const rgb = [1, 3, 5].map(start => parseInt(background.slice(start, start + 2), 16));
+        const chip = rgbLuminance([red, green, blue].map((value, index) => value * alpha + rgb[index] * (1 - alpha)));
+        expect((Math.max(chip, foreground) + 0.05) / (Math.min(chip, foreground) + 0.05)).toBeGreaterThanOrEqual(4.5);
+      }
     }
   });
 });
