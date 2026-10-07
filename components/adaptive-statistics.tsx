@@ -6,6 +6,7 @@ import type { LearningStatistics, PerformanceRow, WordPerformance } from "@/lib/
 import { statisticsReviewCandidates } from "@/lib/learning-statistics";
 
 export const QUESTION_TYPE_LABELS: Record<string, string> = {
+  "sentence-completion": "Sentence Completion · 논리",
   "definition-choice": "영영 정의 → 단어", "syn-choice": "영어 동의어",
   "syn-kor-choice": "동의어 해설형", "kor-choice": "영어 → 한글",
   "syn-type": "동의어 직접 입력", flashcard: "빠른 암기 · 자기채점",
@@ -91,6 +92,15 @@ export function AdaptiveStatistics({ model, lifetime, onGroup, onMode, onPeriod,
       </View>)}</View> : null}
     </> : null}
     <Pressable accessibilityRole="button" accessibilityState={{ expanded: showDetails }} onPress={() => setShowDetails(value => !value)} style={{ minHeight: 44, justifyContent: "center", marginBottom: 12 }}><Text style={{ ...text, color: colors.primary }}>상세 통계·필터 {showDetails ? "접기 −" : "보기 +"}</Text></Pressable>
+    {model.logicPerformance.length ? <View style={{ marginBottom: 18 }}>
+      <Text style={heading}>Sentence Completion · 논리별 성과</Text>
+      {model.logicPerformance.map(row => <View key={row.id} style={{ borderBottomWidth: 1, borderColor: colors.border, paddingVertical: 8 }}>
+        <Text style={text}>{row.label} · {percentLabel(row.accuracy)}</Text>
+        <Text style={note}>{row.correct}/{row.attempts} 정답 · 평균 {timeLabel(row.meanMs)}{row.attempts < 5 ? " · 표본 부족" : ""}</Text>
+        {row.weakest && row.attempts > 0 && (row.weakest.status === "WEAK" || row.weakest.status === "RELEARNING" || row.weakest.need.level === "높음" || row.weakest.need.level === "매우 높음") ? reviewAction(`${row.label} 복습`, row.weakest.groupId, row.weakest) : null}
+      </View>)}
+      <Text style={note}>{model.completionPeriodUsesRecentEvents ? "논리·난도별 기간 성과는 보존된 최근 최대 1,000개 원자료 내 응답입니다. " : ""}논리 성과와 관련 단어의 암기 상태는 구분합니다. 재풀이도 실제 응답으로 포함하며 장기 기억 개선의 증명은 아닙니다.</Text>
+    </View> : null}
     {showDetails ? <>
     {groupId && onStudyGroup ? <View style={{ marginBottom: 12, gap: 4 }}>{reviewAction(`${groupId} 약점 복습`, groupId)}<Pressable accessibilityRole="button" onPress={() => onStudyGroup(groupId)} style={{ minHeight: 44, justifyContent: "center" }}><Text style={{ ...text, color: colors.primary }}>{groupId} 전체 학습 →</Text></Pressable></View> : null}
     <View style={card}>
@@ -111,6 +121,7 @@ export function AdaptiveStatistics({ model, lifetime, onGroup, onMode, onPeriod,
     </View>
     {table("단어장별 성과", model.groups, "group")}
     {table("문제 유형별 성과", model.modes, "mode")}
+    {model.difficultyPerformance.length ? <View style={card}><Text style={heading}>논리 난도별 성과</Text>{model.difficultyPerformance.map(row => <Text key={row.id} style={text}>{row.label} · {percentLabel(row.accuracy)} · {row.correct}/{row.attempts} 정답 · {timeLabel(row.meanMs)}</Text>)}</View> : null}
     <View style={card}>
       <Text style={heading}>최근 일별 성과 · KST</Text>
       {model.trend.length ? model.trend.map(row => <View key={row.day} style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", gap: 6, paddingVertical: 6 }}><Text style={text}>{row.day}</Text><Text style={text}>{percentLabel(accuracyPercent(row))} · {row.correct}/{row.attempts} · {timeLabel(row.responseCount ? row.responseTotalMs / row.responseCount : null)}</Text></View>) : <Text style={note}>날짜가 있는 풀이 기록이 아직 없습니다.</Text>}

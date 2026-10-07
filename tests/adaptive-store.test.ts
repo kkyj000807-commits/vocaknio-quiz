@@ -10,11 +10,13 @@ import {
   getLearningStorageIssue,
   retryLearningStorage,
   loadLearningSnapshot,
+  markLearningTargetMastered,
 } from "@/lib/store";
 import { VOCAB } from "@/lib/vocab";
 import { getItemLearningTargets, getQuestionLearningTargetKey, parseLearningReviewKeys } from "@/lib/canonical-learning";
 import { buildLearningStatistics, buildStatisticsReviewParams } from "@/lib/learning-statistics";
 import { buildQuizQuestions } from "@/lib/quiz-engine";
+import { SENTENCE_COMPLETION_QUESTIONS, sentenceCompletionKey, sentenceCompletionMetadata } from "@/lib/sentence-completion";
 
 const storageMock = vi.hoisted(() => {
   const values = new Map<string, string>();
@@ -71,8 +73,39 @@ describe("adaptive quiz storage", () => {
     await expect(loadLearningSnapshot()).rejects.toThrow("unreadable");
     expect(storageMock.values.get(ADAPTIVE_QUIZ_HISTORY_KEY)).toBe("{broken");
   });
+  it("saves Sentence Completion once, changes its need, reviews the exact question and preserves vocabulary MASTER", async () => {
+    // Re-open the clean mock disk after the preceding corrupt-history fixture;
+    // the real store intentionally retains its unreadable-key protection.
+    await loadLearningSnapshot();
+    const source = SENTENCE_COMPLETION_QUESTIONS[0]; const item = VOCAB.find(v => v.id === source.itemId)!;
+    const vocabularyKey = getItemLearningTargets(item)[0].key; const key = sentenceCompletionKey(source);
+    await markLearningTargetMastered(vocabularyKey, item.num);
+    const q = buildQuizQuestions({ mode: "sentence-completion", itemNums: [item.num], count: 1 })[0];
+    await recordOneAnswer(false, item.num, { sessionId: "sc-first", itemNum: item.num, mode: q.mode, outcome: "skip", learningTargetKey: key, answeredAt: Date.now(), responseMs: 8200 });
+    const failed = await loadLearningSnapshot();
+    const model = buildLearningStatistics(failed.history, failed.learning, sentenceCompletionMetadata(), { mode: "sentence-completion" });
+    expect(model.accuracy).toBe(0); expect(model.words[0].status).toBe("RELEARNING");
+    expect(failed.learning.targets[vocabularyKey].status).toBe("MASTERED");
+    expect(await loadWrongWords()).toContain(item.num);
+    const params = buildStatisticsReviewParams(model)!;
+    expect(params.mode).toBe("sentence-completion"); expect(params.reviewKeys).toBe(JSON.stringify([key]));
+    const nums = await prepareAdaptiveQuizSession({ sessionId: "sc-review", rangeId: params.rangeId, mode: params.mode, count: 1,
+      candidates: [{ num: item.num, word: item.w, learningKey: key, learningStatus: model.words[0].status }] });
+    const review = buildQuizQuestions({ mode: params.mode, itemNums: nums, learningTargetKeys: parseLearningReviewKeys(params.reviewKeys, [item]), count: 1 })[0];
+    expect(review.id).toBe(source.id);
+    const answer = { sessionId: "sc-review", itemNum: item.num, mode: review.mode, outcome: "correct" as const, learningTargetKey: key, answeredAt: Date.now(), responseMs: 4200 };
+    await recordOneAnswer(true, undefined, answer); await recordOneAnswer(true, undefined, answer);
+    const reopened = await loadLearningSnapshot();
+    const updated = buildLearningStatistics(reopened.history, reopened.learning, sentenceCompletionMetadata(), { mode: "sentence-completion" });
+    expect(reopened.history.events).toHaveLength(2); expect(reopened.stats.totalAnswered).toBe(2);
+    expect(updated.accuracy).toBe(50); expect(updated.logicPerformance[0].accuracy).toBe(50);
+    expect(updated.words[0].need.score).toBeLessThan(model.words[0].need.score);
+    expect(updated.words[0].status).not.toBe("MASTERED");
+    expect(reopened.learning.targets[vocabularyKey].status).toBe("MASTERED");
+    expect(updated.performance.responseCount).toBe(2);
+  });
 
-  it.each([["without fail", 1], ["rule of thumb", 0], ["conducive to", 0], ["a wide range of", 0], ["zoom in on", 0], ["put the cart before the horse", 0]] as const)("connects %s response to weakness, exact-sense review and the next saved result", async (headword, targetIndex) => {
+  it.each([["without fail", 1], ["rule of thumb", 0], ["conducive to", 0], ["a wide range of", 0], ["zoom in on", 0], ["put the cart before the horse", 0], ["abide by", 0]] as const)("connects %s response to weakness, exact-sense review and the next saved result", async (headword, targetIndex) => {
     const item = VOCAB.find(row => row.w === headword)!;
     const targets = getItemLearningTargets(item);
     expect(targets.length).toBe(headword === "without fail" ? 2 : 1);

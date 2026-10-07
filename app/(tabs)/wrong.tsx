@@ -21,7 +21,10 @@ import {
   markLearningTargetMastered,
   removeWrongWord,
   clearWrongWords,
+  loadLearningSnapshot,
 } from "@/lib/store";
+import { buildLearningStatistics, buildStatisticsReviewParams, statisticsReviewCandidates, type WordPerformance } from "@/lib/learning-statistics";
+import { getSentenceCompletionByKey, LOGIC_TYPE_LABELS, sentenceCompletionMetadata } from "@/lib/sentence-completion";
 import { getItemLearningTargets } from "@/lib/canonical-learning";
 import { useColors } from "@/hooks/use-colors";
 
@@ -29,6 +32,8 @@ export default function WrongScreen() {
   const colors = useColors();
   const router = useRouter();
   const [wrongNums, setWrongNums] = useState<number[]>([]);
+  const [logicModel, setLogicModel] = useState<ReturnType<typeof buildLearningStatistics> | null>(null);
+  const logicWords: WordPerformance[] = logicModel ? statisticsReviewCandidates(logicModel) : [];
   // 가리기 모드 ON/OFF
   const [hideMode, setHideMode] = useState(false);
   // 개별 카드 공개 상태 (num -> revealed)
@@ -36,10 +41,15 @@ export default function WrongScreen() {
 
   useFocusEffect(
     useCallback(() => {
+      let active = true;
       loadWrongWords().then(setWrongNums);
+      loadLearningSnapshot().then(snapshot => {
+        if (active) setLogicModel(buildLearningStatistics(snapshot.history, snapshot.learning, sentenceCompletionMetadata(), { mode: "sentence-completion" }));
+      }).catch(() => { /* Preserve ordinary wrong words; never reset unreadable evidence. */ });
       // 탭 전환 시 가리기 상태 초기화
       setHideMode(false);
       setRevealed({});
+      return () => { active = false; };
     }, [])
   );
 
@@ -121,6 +131,19 @@ export default function WrongScreen() {
     haptic();
     setRevealed((prev) => ({ ...prev, [num]: !prev[num] }));
   }, [hideMode]);
+
+  const logicHeader = logicWords.length ? <View style={{ marginBottom: 16, gap: 8 }}>
+    <Text style={{ color: colors.foreground, fontSize: 17, fontWeight: "600" }}>Sentence Completion · 논리 복습</Text>
+    <Text style={{ color: colors.muted, fontSize: 12, lineHeight: 19 }}>실제 논리 응답에서 필요한 문항 · 단어 암기 목록과 별도로 유지</Text>
+    {logicWords.slice(0, 12).map(word => <View key={word.key} style={{ borderBottomWidth: 1, borderColor: colors.border, paddingBottom: 8 }}>
+      <Text style={{ color: colors.foreground, fontSize: 14 }}>{word.word} · {LOGIC_TYPE_LABELS[getSentenceCompletionByKey(word.key)!.logicType]} · {word.need.level}</Text>
+      <WordSectionLabel groups={[word.groupId]} />
+      <Pressable accessibilityRole="button" accessibilityLabel={`${word.word} 논리 복습 시작`} style={{ minHeight: 44, justifyContent: "center" }} onPress={() => {
+        const params = logicModel ? buildStatisticsReviewParams(logicModel, "", word) : null;
+        if (params) router.push({ pathname: "/quiz", params });
+      }}><Text style={{ color: colors.primary }}>이 논리 문제 복습 →</Text></Pressable>
+    </View>)}
+  </View> : null;
 
   const s = styles(colors);
 
@@ -217,7 +240,7 @@ export default function WrongScreen() {
         )}
       </View>
 
-      {wrongItems.length === 0 ? (
+      {wrongItems.length === 0 && logicWords.length === 0 ? (
         <View style={s.emptyContainer}>
           <Text style={s.emptyEmoji}>🎯</Text>
           <Text style={s.emptyTitle}>오답 단어가 없어요</Text>
@@ -234,7 +257,7 @@ export default function WrongScreen() {
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
           ListHeaderComponent={
-            hideMode ? (
+            <>{logicHeader}{hideMode ? (
               <View style={s.hideModeInfoBox}>
                 <Text style={s.hideModeInfoText}>
                   뜻 가리기 모드 — 각 카드를 탭하면 뜻이 공개됩니다
@@ -249,7 +272,7 @@ export default function WrongScreen() {
                   💡 단어를 완전히 외웠다면 <Text style={{ color: colors.success }}>✓ 마스터</Text> 버튼으로 목록에서 제거하세요
                 </Text>
               </View>
-            )
+            )}</>
           }
         />
       )}

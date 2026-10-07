@@ -1,6 +1,7 @@
 import { ACTIVE_RECALL_SENSES, getActiveRecallSenses } from "@/lib/active-recall";
 import { getProductionSenseQuestions } from "@/lib/sense-questions";
 import { getDefinitionQuizEntry } from "@/lib/definition-quiz";
+import { getSentenceCompletion, sentenceCompletionKey } from "@/lib/sentence-completion";
 import {
   normalizeMeaning,
   normalizeWord,
@@ -43,7 +44,7 @@ export function parseLearningReviewKeys(raw: string, items: VocabItem[]): string
   try { values = raw.startsWith("[") ? JSON.parse(raw) : raw.split(","); }
   catch { return [raw]; }
   if (!Array.isArray(values) || values.some(value => typeof value !== "string")) return [raw];
-  const known = [...new Set(items.flatMap(item => getItemLearningTargets(item).map(target => target.key)))];
+  const known = [...new Set(items.flatMap(item => [...getItemLearningTargets(item).map(target => target.key), ...(getSentenceCompletion(item.id) ? [sentenceCompletionKey(getSentenceCompletion(item.id)!)] : [])]))];
   const decoded = (key: string) => { try { return decodeURIComponent(key); } catch { return key; } };
   return [...new Set((values as string[]).filter(Boolean).map(value => {
     if (known.includes(value)) return value;
@@ -107,11 +108,19 @@ export function getQuestionLearningTargetKey(question: {
   recall?: { senseId: string };
   sense?: { senseId: string };
   definitionRecall?: { senseId: string };
+  sentenceCompletion?: { id: string };
 }): string {
+  if (question.sentenceCompletion) return sentenceCompletionKey(question.sentenceCompletion);
   return getLearningTargetKey(
     question.item,
     question.recall?.senseId ?? question.sense?.senseId ?? question.definitionRecall?.senseId,
   );
+}
+
+/** A logic success must not certify vocabulary mastery (and vice versa). */
+export function getQuizLearningTargets(item: VocabItem, mode: string): Pick<LearningTargetRef, "key">[] {
+  const completion = mode === "sentence-completion" ? getSentenceCompletion(item.id) : undefined;
+  return mode === "sentence-completion" ? completion ? [{ key: sentenceCompletionKey(completion) }] : [] : getItemLearningTargets(item);
 }
 
 export function itemIsFullyMastered(

@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("../", import.meta.url));
 // Build data before tests: tests must inspect what the next export will ship.
 const steps = [
+  ["Sentence Completion 등록·정답·근거 계약", "--import", "tsx", "scripts/audit-sentence-completion.ts"],
   ["학습 데이터 연결·검증", "scripts/build-vocab-learning-v1.4.mjs"],
   ["전 단어 영영 정의 데이터 감사", "scripts/audit-vocab-definitions.mjs"],
   ["canonical sense 공란 backfill·감사", "scripts/backfill-canonical-sense-content.mjs"],

@@ -23,6 +23,7 @@ import {
 } from "@/lib/vocab";
 import { useColors } from "@/hooks/use-colors";
 import { PRODUCT_NAME, PRODUCT_PHILOSOPHY } from "@/constants/brand";
+import { getQuizCandidateItems } from "@/lib/quiz-engine";
 import {
   loadQuizSettings,
   saveQuizSettings,
@@ -82,6 +83,7 @@ export default function HomeScreen() {
   const isChoiceLangRelevant = selectedMode === "kor-choice";
   const currentRanges = rangeTab === "core" ? CORE_RANGES : RANGES;
   const s = styles(colors);
+  const completionCount = selectedMode === "sentence-completion" ? getQuizCandidateItems({ mode: selectedMode, rangeId: selectedRange, count: 200 }).length : 0;
 
   return (
     <ScreenContainer containerClassName="bg-background">
@@ -134,6 +136,9 @@ export default function HomeScreen() {
             })}
           </View>
 
+          {selectedMode === "sentence-completion" ? <Text style={{ color: colors.muted, fontSize: 13, lineHeight: 21, marginTop: 10 }}>
+            자체 창작 논리 문항 · 선택 범위 {completionCount}문제. 등록 수보다 많이 요청하면 등록된 문항만 출제합니다. 관련 단어의 암기 상태와 논리 성과는 구분됩니다.
+          </Text> : null}
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="보조 학습 설정"

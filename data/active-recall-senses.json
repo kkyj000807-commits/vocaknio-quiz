@@ -1305,6 +1305,13 @@
       "antonyms": ["violate", "disregard"],
       "variants": [],
       "relatedWords": ["observe"],
+      "relationMeaningsKo": {
+        "comply with": "규칙·명령·요구에 따라 행동하다, 준수하다. with 뒤에 따라야 할 대상을 두며, 규칙을 지키는 문맥에서 abide by와 가까운 뜻이다. 요청·요구에 응하는 데에도 쓰이므로 약속을 끝까지 지킨다는 초점까지 항상 같지는 않다.",
+        "adhere to": "규칙·원칙·계획에서 벗어나지 않고 충실히 따르다. to 뒤에 지킬 기준을 두며, 규칙 준수 문맥에서 abide by와 바꿔 쓸 수 있다. 계획을 일관되게 유지하거나 신념을 고수하는 뜻도 있어 목적어와 문맥을 확인해야 한다. 여기서는 물체가 달라붙는 별도 뜻이 아니다.",
+        "violate": "법·규칙·약속을 어기다, 위반하다. 따라 행동하는 abide by와 반대 방향이며, 위반한 기준을 바로 목적어로 받는 타동사다. violate the rule처럼 쓰므로 abide by를 바꿀 때 by를 남기지 않는다. 단순히 그 규칙에 반대 의견이 있다는 말이 아니라 기준을 어기는 행동을 말한다.",
+        "disregard": "규칙·지시를 고려하거나 존중하지 않고 무시하다. 대상을 바로 목적어로 받는 타동사이므로 by 없이 쓴다. 준수할 기준을 무시한다는 점에서 abide by와 반대 방향이다. 조언·위험도 무시할 수 있어 모든 용례가 규칙 위반인 것은 아니며, 조언에 따르지 않았다고 법을 어겼다고 단정하지 않는다.",
+        "observe": "법·규칙·계약 조건을 지키다, 준수하다. 이 뜻에서는 abide by와 가까우며, 지킬 대상을 바로 목적어로 받는 타동사이므로 by 없이 observe the rule처럼 쓴다. 여기서는 눈으로 관찰하거나 알아차린다는 뜻이 아니다. 기념일·의식을 지키거나 기린다는 별도 용례까지 무조건 같은 뜻으로 바꾸지 않는다."
+      },
       "exampleSentences": [
         {
           "en": "Even members who opposed the decision agreed to abide by it until the review was complete.",
@@ -1334,19 +1341,55 @@
       ],
       "sources": [
         {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://idioms.thefreedictionary.com/abide+by",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.06 실제 Chrome에서 TFD 우선 열람. American Heritage의 규칙·결정대로 행동하고 약속을 지키는 뜻만 대조; abide 단독의 머물다·참다 뜻은 합치지 않음. 아래 풀이와 치환 조건은 학습용 자체 편집이며 원문 복제 아님"
+        },
+        {
           "publisher": "Collins English Dictionary",
           "url": "https://www.collinsdictionary.com/dictionary/english/abide-by",
           "independenceGroup": "Collins",
-          "note": "규칙·결정·약속대로 행동하는 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+          "note": "2026.10.06 직접 원문에서 법·합의·결정이 요구하는 대로 행동하는 뜻과 by 뒤 목적어 구문 재대조. TFD의 Collins 전재를 별도 독립 사전으로 세지 않음; 기존 자체 편집 정의·예문 재사용"
         },
         {
           "publisher": "Cambridge Dictionary",
           "url": "https://dictionary.cambridge.org/us/dictionary/english/abide-by",
           "independenceGroup": "Cambridge",
-          "note": "결정·규칙을 받아들이고 준수하는 격식 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+          "note": "2026.10.06 웹403 후 실제 Chrome에서 격식의 합의·결정·규칙 준수 뜻 열람. 같은 페이지의 comply with/adhere to/observe 규칙 준수 용례도 선별 대조; 단순 찬성·관찰 뜻과 구분하며 예문은 기존 학습용 창작"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/comply",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.06 실제 Chrome 우선 열람. 명령·요청·규칙·뜻에 따라 행동하는 자동사와 with 목적어 구문만 대조; 준수와 요청 수용의 범위 차이는 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/adhere",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.06 실제 Chrome 우선 열람. 계획에서 벗어나지 않음·신념을 고수함과 to 구문을 대조하고 물리적 접착 뜻은 분리; TFD Collins의 규칙 준수 용례는 전재 근거로만 사용"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/violate",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.06 실제 Chrome 우선 열람. 법·약속에 어긋나게 행동하는 타동사 뜻만 대조; 다른 뜻을 합치지 않고 by 제거 조건을 학습용으로 설명"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/disregard",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.06 실제 Chrome 우선 열람. 주의를 기울이지 않거나 존중하지 않는 타동사 뜻·조언/위험 대상 범위 대조; 명사 뜻과 분리하고 무시가 항상 법 위반이라는 오개념 방지"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/observe",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.06 실제 Chrome 우선 열람. 타동사3a의 계약 조건 준수 뜻만 관계어로 연결; 관찰·발언·기념/의례 뜻은 구분. 별도 원전이 아닌 반복 페이지는 독립 근거 수에 추가하지 않음"
         }
       ],
-      "sourceCheckedAt": "2026.09.05",
+      "sourceCheckedAt": "2026.10.06",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",

@@ -173,6 +173,7 @@ export const WORDBOOK_RANGES = [
 export const COUNTS = [10, 20, 30];
 
 export type QuizMode =
+  | "sentence-completion"
   | "definition-choice"
   | "syn-choice"
   | "kor-choice"
@@ -187,6 +188,7 @@ export const QUIZ_MODES: {
   desc: string;
   primary?: boolean;
 }[] = [
+  { id: "sentence-completion", icon: "∴", title: "Sentence Completion · 논리", desc: "문맥과 논리로 빈칸 추론", primary: true },
   { id: "definition-choice", icon: "EN", title: "영영 정의", desc: "정의에서 정확한 단어 찾기", primary: true },
   { id: "syn-choice", icon: "≈", title: "영어 동의어", desc: "같은 sense의 동의어 찾기", primary: true },
   { id: "kor-choice", icon: "🇰🇷", title: "뜻", desc: "정확한 뜻 4택", primary: true },

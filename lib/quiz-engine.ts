@@ -29,10 +29,12 @@ import {
   getItemLearningTargets,
   getLearningTargetKey,
   itemIsFullyMastered,
+  getQuestionLearningTargetKey,
 } from "@/lib/canonical-learning";
+import { getSentenceCompletion, isCurrentSentenceCompletion, sentenceCompletionKey, type SentenceCompletionQuestion } from "@/lib/sentence-completion";
 
 export type ChoiceLang = "korean" | "english";
-export type QuizAnswerKind = "synonym" | "meaning" | "target" | "self";
+export type QuizAnswerKind = "synonym" | "meaning" | "target" | "self" | "completion";
 
 export interface QuizChoice {
   id: string;
@@ -60,6 +62,7 @@ export interface QuizQuestion {
   definitionRecall?: DefinitionQuizEntry;
   /** OEWN same-synset English → English synonym recall. */
   synonymRecall?: DefinitionQuizEntry;
+  sentenceCompletion?: SentenceCompletionQuestion;
 }
 
 export interface BuildQuizOptions {
@@ -373,6 +376,18 @@ function makeQuestion(
   masteredTargetKeys: ReadonlySet<string> = new Set(),
   requestedKeys: ReadonlySet<string> = new Set(),
 ): QuizQuestion | null {
+  if (mode === "sentence-completion") {
+    const completion = getSentenceCompletion(item.id);
+    if (!completion || masteredTargetKeys.has(sentenceCompletionKey(completion)) ||
+      (requestedKeys.size && !requestedKeys.has(sentenceCompletionKey(completion)))) return null;
+    const choices = shuffle(completion.choices.map(source => ({
+      id: `${completion.id}:${source.id}`, value: source.text, label: source.text,
+      word: source.text, meaning: "", isCorrect: source.id === completion.correctChoiceId,
+    })));
+    const question: QuizQuestion = { id: completion.id, item, mode, answerKind: "completion", choices,
+      correct: choices.find(c => c.isCorrect)!.value, acceptedAnswers: [], sentenceCompletion: completion };
+    return validateQuestion(question) ? question : null;
+  }
   if (mode === "flashcard") {
     return {
       id: `${item.id}-flashcard`,
@@ -496,11 +511,16 @@ function canFallBackToMeaning(mode: QuizMode, choiceLang: ChoiceLang): boolean {
  */
 export function getQuizCandidateItems(options: BuildQuizOptions): VocabItem[] {
   if (!Number.isInteger(options.count) || options.count <= 0 || options.count > 200 ||
-      !["definition-choice", "syn-choice", "syn-kor-choice", "syn-type", "kor-choice", "flashcard"].includes(options.mode)) return [];
+      !["sentence-completion", "definition-choice", "syn-choice", "syn-kor-choice", "syn-type", "kor-choice", "flashcard"].includes(options.mode)) return [];
   const choiceLang = options.choiceLang ?? "korean";
   const mastered = new Set(options.masteredNums ?? []);
   const masteredTargets = new Set(options.masteredTargetKeys ?? []);
   let pool = resolvePool(options).filter((item) => item.k.length > 0);
+  if (options.mode === "sentence-completion") return pool.filter(item => {
+    const question = getSentenceCompletion(item.id);
+    return question && !masteredTargets.has(sentenceCompletionKey(question)) &&
+      (!options.learningTargetKeys?.length || options.learningTargetKeys.includes(sentenceCompletionKey(question)));
+  });
   if (masteredTargets.size > 0)
     pool = pool.filter((item) => !itemIsFullyMastered(item, masteredTargets));
   // Keep the legacy flashcard-only list until its one-time sense migration has
@@ -549,7 +569,7 @@ function makeQuestionWithFallback(
   const masteredTargets = new Set(options.masteredTargetKeys ?? []);
   const requestedKeys = new Set(options.learningTargetKeys ?? []);
   const primary = makeQuestion(item, options.mode, choiceLang, masteredTargets, requestedKeys);
-  if (primary && requestedKeys.size && !requestedKeys.has(getLearningTargetKey(item, primary.recall?.senseId ?? primary.sense?.senseId ?? primary.definitionRecall?.senseId))) return null;
+  if (primary && requestedKeys.size && !requestedKeys.has(getQuestionLearningTargetKey(primary))) return null;
   if (primary || !options.allowMeaningFallback) return primary;
   if (!canFallBackToMeaning(options.mode, choiceLang)) return null;
   return makeQuestion(item, "kor-choice", "korean", masteredTargets);
@@ -607,6 +627,10 @@ export function isChoiceCorrect(
 // Check the stored key independently of its display flag. Otherwise a corrupt
 // flag can make both grading and validation agree on the same wrong answer.
 function matchesAnswerKey(question: QuizQuestion, choice: QuizChoice): boolean {
+  if (question.sentenceCompletion) return question.mode === "sentence-completion" &&
+    question.answerKind === "completion" && isCurrentSentenceCompletion(question.sentenceCompletion, question.item) &&
+    choice.id === `${question.sentenceCompletion.id}:${question.sentenceCompletion.correctChoiceId}` &&
+    choice.value === question.sentenceCompletion.choices.find(c => c.id === question.sentenceCompletion!.correctChoiceId)?.text;
   if (question.synonymRecall) {
     if (!isCurrentDefinitionQuizEntry(question.synonymRecall, question.item)) return false;
     const accepted = new Set(getDefinitionAnswerRelations(question.synonymRecall).synonyms.map(normalizeWord));
@@ -645,6 +669,14 @@ export function isTypedAnswerCorrect(
 }
 
 export function validateQuestion(question: QuizQuestion): boolean {
+  if (question.mode === "sentence-completion" || question.sentenceCompletion || question.answerKind === "completion") {
+    const completion = question.sentenceCompletion;
+    if (!completion || question.id !== completion.id || question.mode !== "sentence-completion" || question.answerKind !== "completion" ||
+      question.sense || question.recall || question.definitionRecall || question.synonymRecall ||
+      !isCurrentSentenceCompletion(completion, question.item) ||
+      !question.choices.every(c => completion.choices.some(source => c.id === `${completion.id}:${source.id}` &&
+        c.value === source.text && c.label === source.text && c.meaning === "" && c.isCorrect === (source.id === completion.correctChoiceId)))) return false;
+  }
   if (question.synonymRecall) {
     if ((question.mode !== "syn-choice" && question.mode !== "syn-kor-choice") ||
       question.answerKind !== "synonym" ||
@@ -668,7 +700,7 @@ export function validateQuestion(question: QuizQuestion): boolean {
       !question.choices.every(choice => choice.isCorrect === matchesAnswerKey(question, choice))) return false;
   }
   if (!question.sense && question.mode !== "flashcard" && question.mode !== "syn-type" &&
-    !question.recall && !question.definitionRecall && !question.synonymRecall && hasSenseQuestionMapping(question.item.id)) return false;
+    !question.recall && !question.definitionRecall && !question.synonymRecall && !question.sentenceCompletion && hasSenseQuestionMapping(question.item.id)) return false;
   if (question.sense) {
     const sense = question.sense;
     if (!isCurrentSenseQuestion(sense, question.item) || sense.status !== "production" ||

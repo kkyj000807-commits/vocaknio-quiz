@@ -513,6 +513,26 @@ describe("영어→영어 active recall", () => {
     expect(getActiveRecallSenses(abideByRows[1].id)[0].senseId).toBe(sense.senseId);
   });
 
+  it("abide by의 관계어 뜻만 보강하고 준수·무시·관찰 경계와 두 행의 공유 학습 키를 보존한다", () => {
+    const [sense] = getActiveRecallSenses(abideByRows[0].id);
+    expect(Object.keys(sense.relationMeaningsKo!)).toEqual(["comply with", "adhere to", "violate", "disregard", "observe"]);
+    expect(sense.relationMeaningsKo?.["comply with"]).toContain("초점까지 항상 같지는 않다");
+    expect(sense.relationMeaningsKo?.["adhere to"]).toContain("물체가 달라붙는 별도 뜻이 아니다");
+    expect(sense.relationMeaningsKo?.violate).toContain("by를 남기지 않는다");
+    expect(sense.relationMeaningsKo?.disregard).toContain("모든 용례가 규칙 위반인 것은 아니며");
+    expect(sense.relationMeaningsKo?.observe).toContain("관찰하거나 알아차린다는 뜻이 아니다");
+    expect(sense.englishDefinition).toBe("To follow a rule or decision, or honor an agreement that governs what you should do.");
+    expect(sense.exampleSentences[0].en).toBe("Even members who opposed the decision agreed to abide by it until the review was complete.");
+    expect(sense.nearSynonyms).toEqual(["comply with", "adhere to"]);
+    expect(sense.antonyms).toEqual(["violate", "disregard"]);
+    expect(sense.relatedWords).toEqual(["observe"]);
+    expect(abideByRows.map(item => [item.id, item.num, item.group])).toEqual([["JBKROW000004", 2, "V101"], ["JBKROW002049", 2006, "V101"]]);
+    for (const row of abideByRows) expect(getItemLearningTargets(row).map(target => target.key)).toEqual(["sense:abide-by%3Afollow-governing-rule"]);
+    expect(sense.sources[0].url).toBe("https://idioms.thefreedictionary.com/abide+by");
+    expect(sense.sources).toHaveLength(8);
+    expect(new Set(sense.sources.map(source => source.independenceGroup)).size).toBe(3);
+  });
+
   it("abide by 영영 문제도 정답 하나와 현재 sense 계약을 유지한다", () => {
     vi.spyOn(Math, "random").mockReturnValue(0);
     const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [abideByRows[0].num], preserveItemOrder: true });

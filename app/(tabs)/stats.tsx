@@ -9,13 +9,14 @@ import { VOCAB, RANGES } from "@/lib/vocab";
 import { getItemLearningTargets } from "@/lib/canonical-learning";
 import { buildLearningStatistics, buildStatisticsReviewParams, type LearningItemMeta, type WordPerformance } from "@/lib/learning-statistics";
 import { useColors } from "@/hooks/use-colors";
+import { sentenceCompletionMetadata } from "@/lib/sentence-completion";
 
 let itemMetadata: LearningItemMeta[] | null = null;
 function statisticsItems() {
   if (!itemMetadata) itemMetadata = VOCAB.flatMap(item => getItemLearningTargets(item).map(target => ({
     num: item.num, word: item.w, groupId: item.group, sourceId: item.id,
     learningKey: target.key, conceptId: item.conceptId,
-  })));
+  }))).concat(sentenceCompletionMetadata());
   return itemMetadata;
 }
 export default function StatsScreen() {

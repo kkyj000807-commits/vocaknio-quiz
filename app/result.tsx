@@ -22,6 +22,7 @@ export default function ResultScreen() {
     correct: string;
     total: string;
     wrongNums: string;
+    reviewMode?: string;
   }>();
 
   const correct = parseInt(params.correct ?? "0");
@@ -125,6 +126,10 @@ export default function ResultScreen() {
               style={({ pressed }) => [s.btn, s.btnWrong, { width: "100%" }, pressed && { opacity: 0.85 }]}
               onPress={() => {
                 haptic();
+                if (params.reviewMode === "sentence-completion") {
+                  router.replace({ pathname: "/quiz", params: { mode: "sentence-completion", rangeId: "sentence-review", bookmarkNums: wrongNums.join(","), count: Math.min(wrongNums.length, 20) } });
+                  return;
+                }
                 router.replace({
                   pathname: "/wrong-quiz",
                   params: {
@@ -142,7 +147,7 @@ export default function ResultScreen() {
         {/* Wrong Items List */}
         {wrongItems.length > 0 && (
           <View style={s.wrongSection}>
-            <Text style={s.wrongTitle}>오답 목록 ({wrongItems.length}개)</Text>
+            <Text style={s.wrongTitle}>{params.reviewMode === "sentence-completion" ? "논리 오답의 연결 어휘" : "오답 목록"} ({wrongItems.length}개)</Text>
             {wrongItems.map((item, idx) => (
               <View key={idx} style={s.wrongItem}>
                 <View style={s.wrongWordRow}>

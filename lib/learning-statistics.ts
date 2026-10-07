@@ -2,8 +2,9 @@ import { buildAdaptiveEvidenceIndex, mergeAdaptiveStats, type AdaptiveCandidate,
 import { ADAPTIVE_POLICY, accuracyPercent, calculateLearningNeed, eventPerformance, learningDay, median, mergePerformance, responseBaseline, type EvidenceStatus, type PerformanceCounts } from "./learning-analytics";
 import { getLearningTargetState, type SenseLearningState } from "./learning-state";
 import type { QuizMode } from "./vocab";
+import { getSentenceCompletionByKey, LOGIC_TYPE_LABELS, DIFFICULTY_LABELS } from "./sentence-completion";
 
-export interface LearningItemMeta extends AdaptiveCandidate { word: string; groupId: string; sourceId: string }
+export interface LearningItemMeta extends AdaptiveCandidate { word: string; groupId: string; sourceId: string; mode?: string }
 export interface StatisticsFilter { groupId?: string; mode?: string; period?: "lifetime" | "today" | "7days"; now?: number; legacyWrongNums?: number[] }
 export interface PerformanceRow extends PerformanceCounts { id: string; accuracy: number | null; recentAccuracy: number | null; recentCount: number; uniqueWords: number; meanMs: number | null; weakCount: number; relearningCount: number }
 export interface WordPerformance {
@@ -18,9 +19,10 @@ export function buildLearningStatistics(history: AdaptiveHistory, learning: Sens
   const now = filter.now ?? Date.now();
   const today = learningDay(now);
   const cutoff = filter.period === "today" ? today : filter.period === "7days" ? learningDay(now - 6 * 86400000) : "";
-  const byNum = new Map(items.map(item => [item.num, item]));
+  const byNum = new Map(items.filter(item => !item.mode).map(item => [item.num, item]));
+  const byModeNum = new Map(items.filter(item => item.mode).map(item => [`${item.mode}:${item.num}`, item]));
   const all = Object.values(history.stats).filter(row => row.attempts > 0);
-  const meta = (row: AdaptiveItemStats): LearningItemMeta => byNum.get(row.num) ?? { num: row.num, word: `기록 항목 #${row.num}`, groupId: row.evidence?.groupId || "unrecorded", sourceId: row.evidence?.sourceId || "", learningKey: row.evidence?.targetKey };
+  const meta = (row: AdaptiveItemStats): LearningItemMeta => byModeNum.get(`${row.mode}:${row.num}`) ?? byNum.get(row.num) ?? { num: row.num, word: `기록 항목 #${row.num}`, groupId: row.evidence?.groupId || "unrecorded", sourceId: row.evidence?.sourceId || "", learningKey: row.evidence?.targetKey };
   const matches = (group: string, mode: string) => (!filter.groupId || group === filter.groupId) && (!filter.mode || mode === filter.mode);
   const selected = all.filter(row => matches(meta(row).groupId, row.mode));
   const events = (history.events ?? []).filter(e => matches(e.groupId, e.mode) && (!cutoff || learningDay(e.answeredAt) >= cutoff));
@@ -41,8 +43,7 @@ export function buildLearningStatistics(history: AdaptiveHistory, learning: Sens
     const relevantDays = days.filter(e => (kind === "group" ? e.groupId : e.mode) === id);
     const counts = cutoff ? mergePerformance(relevantDays) : countsFor(rows);
     const recentCounts = mergePerformance(relevantEvents.map(e => eventPerformance(e)));
-    const rowNums = new Set(rows.map(row => row.num));
-    const targets = [...new Set(items.filter(item => kind === "group" ? item.groupId === id : rowNums.has(item.num)).map(item => item.learningKey).filter((key): key is string => !!key))];
+    const targets = [...new Set(kind === "group" ? items.filter(item => item.groupId === id && (!filter.mode || (item.mode ?? "") === filter.mode || (!item.mode && filter.mode !== "sentence-completion"))).map(item => item.learningKey).filter((key): key is string => !!key) : rows.map(row => row.evidence?.targetKey || meta(row).learningKey).filter((key): key is string => !!key))];
     return { id, ...counts, accuracy: accuracyPercent(counts), recentAccuracy: accuracyPercent(recentCounts), recentCount: recentCounts.attempts,
       weakCount: targets.filter(key => getLearningTargetState(learning, key).status === "WEAK").length,
       relearningCount: targets.filter(key => getLearningTargetState(learning, key).status === "RELEARNING").length,
@@ -52,7 +53,7 @@ export function buildLearningStatistics(history: AdaptiveHistory, learning: Sens
   const groups = [...new Set(items.map(i => i.groupId).concat(selected.map(r => meta(r).groupId)))].filter(id => !filter.groupId || id === filter.groupId)
     .map(id => rowFor(id, selected.filter(r => meta(r).groupId === id), "group"));
   const modes = [...new Set(selected.map(r => r.mode).concat(days.map(r => r.mode)))].map(id => rowFor(id, selected.filter(r => r.mode === id), "mode"));
-  const index = buildAdaptiveEvidenceIndex(history, items);
+  const index = buildAdaptiveEvidenceIndex(history, items.filter(item => !item.mode));
   const wordRows = new Map<string, { item: LearningItemMeta; modes: AdaptiveItemStats[] }>();
   for (const row of selected) {
     const item = meta(row); const key = row.evidence?.targetKey || item.learningKey || `num:${row.num}`;
@@ -74,7 +75,8 @@ export function buildLearningStatistics(history: AdaptiveHistory, learning: Sens
       meanMs: stats.evidence?.responseCount ? stats.evidence.responseTotalMs / stats.evidence.responseCount : null };
   });
   const stateCounts: Record<EvidenceStatus, number> = { NEW: 0, ACTIVE: 0, MASTERED: 0, WEAK: 0, RELEARNING: 0 };
-  const uniqueTargets = new Map(items.filter(i => !filter.groupId || i.groupId === filter.groupId).map(i => [i.learningKey || `num:${i.num}`, i]));
+  const uniqueTargets = new Map(items.filter(i => (!filter.groupId || i.groupId === filter.groupId) &&
+    (!filter.mode || (filter.mode === "sentence-completion" ? i.mode === filter.mode : !i.mode || i.mode === filter.mode))).map(i => [i.learningKey || `num:${i.num}`, i]));
   for (const key of uniqueTargets.keys()) stateCounts[getLearningTargetState(learning, key).status]++;
   const trend = [...new Set(days.map(d => d.day))].sort().slice(-14).map(day => ({ day, ...mergePerformance(days.filter(d => d.day === day)) }));
   const times = events.map(e => e.responseMs).filter((v): v is number => v !== null && v > 0);
@@ -82,6 +84,18 @@ export function buildLearningStatistics(history: AdaptiveHistory, learning: Sens
     const target = getLearningTargetState(learning, key);
     return target.status === "MASTERED" && target.lastStudiedAt > 0 && now - target.lastStudiedAt < ADAPTIVE_POLICY.masterProtectionMs;
   }).length;
+  // Taxonomy joins stable question keys to the SAME recorded evidence. No new
+  // score or fabricated backfill for historical answers without a question key.
+  const completions = words.filter(word => word.reviewMode === "sentence-completion" && getSentenceCompletionByKey(word.key));
+  const completionRows = (kind: "logicType" | "difficulty") => [...new Set(completions.map(word => getSentenceCompletionByKey(word.key)![kind]))].map(id => {
+    const members = completions.filter(word => getSentenceCompletionByKey(word.key)![kind] === id);
+    const keys = new Set(members.map(word => word.key));
+    const rows = members.flatMap(word => word.modes.filter(row => row.mode === "sentence-completion"));
+    const counts = cutoff ? mergePerformance(events.filter(e => e.mode === "sentence-completion" && keys.has(e.targetKey)).map(eventPerformance)) : countsFor(rows);
+    return { id, label: kind === "logicType" ? LOGIC_TYPE_LABELS[id as keyof typeof LOGIC_TYPE_LABELS] : `난도 ${DIFFICULTY_LABELS[id as keyof typeof DIFFICULTY_LABELS]}`,
+      ...counts, accuracy: accuracyPercent(counts), meanMs: counts.responseCount ? counts.responseTotalMs / counts.responseCount : null,
+      weakest: [...members].sort((a,b) => b.need.score - a.need.score)[0] };
+  });
   return { performance, accuracy: accuracyPercent(performance), recent, recentAccuracy: accuracyPercent(recent), today, todayPerformance,
     groups, modes, words, stateCounts, trend, stableMaster, dueMaster: stateCounts.MASTERED - stableMaster,
     allLifetimeAttempts: countsFor(all).attempts,
@@ -90,7 +104,8 @@ export function buildLearningStatistics(history: AdaptiveHistory, learning: Sens
     meanMs: performance.responseCount ? performance.responseTotalMs / performance.responseCount : null,
     medianMs: median(times), recentMeanMs: recent.responseCount ? recent.responseTotalMs / recent.responseCount : null,
     uniqueWords: new Set(selected.filter(r => !cutoff || learningDay(r.lastAnsweredAt) >= cutoff).map(r => meta(r).word.toLowerCase())).size,
-    recordedEvents: history.events?.length ?? 0,
+    recordedEvents: history.events?.length ?? 0, logicPerformance: completionRows("logicType"), difficultyPerformance: completionRows("difficulty"),
+    completionPeriodUsesRecentEvents: Boolean(cutoff),
     dateCoverageStart: Object.values(history.daily ?? {}).map(d => d.day).sort()[0] ?? null,
   };
 }
@@ -104,9 +119,10 @@ export function statisticsReviewCandidates(model: LearningStatistics, groupId = 
 }
 
 export function buildStatisticsReviewParams(model: LearningStatistics, groupId = "", word?: WordPerformance) {
-  const words = word ? [word] : statisticsReviewCandidates(model, groupId).slice(0, 20);
+  let words = word ? [word] : statisticsReviewCandidates(model, groupId).slice(0, 20);
   if (!words.length) return null;
-  const mode: QuizMode = ["definition-choice", "syn-choice", "syn-kor-choice", "kor-choice", "syn-type", "flashcard"].includes(words[0].reviewMode) ? words[0].reviewMode as QuizMode : "kor-choice";
+  const mode: QuizMode = ["sentence-completion", "definition-choice", "syn-choice", "syn-kor-choice", "kor-choice", "syn-type", "flashcard"].includes(words[0].reviewMode) ? words[0].reviewMode as QuizMode : "kor-choice";
+  words = words.filter(row => row.reviewMode === mode || !["sentence-completion"].includes(row.reviewMode) && mode !== "sentence-completion");
   return { mode, rangeId: "statistics-review", count: String(Math.min(10, words.length)),
     bookmarkNums: [...new Set(words.map(row => row.num))].join(","),
     reviewKeys: JSON.stringify([...new Set(words.map(row => row.key))]), choiceLang: "korean" };

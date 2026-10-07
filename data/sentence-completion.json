@@ -1,0 +1,173 @@
+{
+  "schema": 1,
+  "questions": [
+    {
+      "id": "sc-elaboration-archive-v1", "itemId": "JBKROW000005", "relatedSenseId": "teem-with:contain-many-active-things", "logicType": "elaboration", "difficulty": "low",
+      "passageEn": "The archive teems with overlooked records: its shelves hold not just official reports but also private letters and unfinished drafts, making its account of the period ____.",
+      "promptKo": "문맥 전체에 가장 잘 맞는 표현을 고르세요.", "blankMarker": "____",
+      "choices": [
+        {"id":"a","text":"broader than the official record alone","errorType":"supported","explanationKo":"not just A but also B가 자료의 범위를 넓힌다. 공식 보고서 밖의 편지와 초고까지 포함하므로 공식 기록만 읽는 것보다 폭넓다."},
+        {"id":"b","text":"more uniform than the official record alone","errorType":"relation","explanationKo":"서로 다른 종류의 자료가 늘었다는 단서와 달리 내용이 더 획일적이라는 방향이다. 자료들이 같은 목소리로 정리되었다는 근거가 있어야 한다."},
+        {"id":"c","text":"less varied than the official record alone","errorType":"polarity","explanationKo":"보고서 외에 편지와 초고도 있다는 부연을 자료 다양성 감소로 뒤집었다. 추가 자료를 배제했다는 문맥이라면 가능하다."},
+        {"id":"d","text":"more conclusive than the official record alone","errorType":"degree","explanationKo":"자료 범위가 넓다는 사실만으로 결론의 확정성이 높아졌다고 할 수 없다. 서로 다른 자료가 같은 결론을 검증했다는 단서가 필요하다."}
+      ],
+      "correctChoiceId":"a", "evidence":["not just official reports but also private letters and unfinished drafts"],
+      "translationKo":"기록 보관소에는 간과된 기록이 가득하다. 선반에 공식 보고서뿐 아니라 개인 편지와 미완성 초고도 있어, 그 시대에 대한 서술은 공식 기록만으로 구성한 것보다 폭넓다.",
+      "relationKo":"콜론 뒤의 not just A but also B는 앞의 풍부함을 구체적으로 부연한다. 자료 종류가 추가되는 방향을 유지해야 한다.", "requiredMeaningKo":"자료의 범위가 넓어진다는 뜻. 더 확실하거나 더 획일적이라는 평가는 요구되지 않는다.", "authorship":"generated", "sourceNote":"FINETUNE 자체 창작 · AI 작성 후 문맥/선택지 대조 · 실제 기출 아님"
+    },
+    {
+      "id":"sc-concession-guide-v1", "itemId":"JBKROW019982", "relatedSenseId":"fall-short-of:below-required-standard", "logicType":"concession", "difficulty":"low",
+      "passageEn":"The new guide reduced the time visitors spent looking for exhibits. Nevertheless, several essential routes remained inaccessible, so the reviewer described it as ____.",
+      "promptKo":"문맥 전체에 가장 잘 맞는 표현을 고르세요.", "blankMarker":"____",
+      "choices":[
+        {"id":"a","text":"a change that removed the need for further revision","errorType":"degree","explanationKo":"접근 불가능한 필수 경로가 남았으므로 추가 수정이 불필요하다는 결론은 지나치다. 남은 장애가 모두 해소되었다면 가능하다."},
+        {"id":"b","text":"an improvement that still fell short of the standard","errorType":"supported","explanationKo":"탐색 시간 감소는 개선이고 essential routes remained inaccessible는 기준 미달이다. Nevertheless가 두 사실의 양보 관계를 표시한다."},
+        {"id":"c","text":"a change that made navigation harder than before","errorType":"polarity","explanationKo":"reduced the time이 말하는 탐색 개선을 악화로 뒤집었다. 시간 증가나 새 장애 발생이라는 비교 근거가 있어야 한다."},
+        {"id":"d","text":"an improvement whose remaining flaws were only cosmetic","errorType":"degree","explanationKo":"essential routes의 접근 불가는 핵심 기능 문제다. 단순 외관상의 결함으로 축소할 수 없다."}
+      ],
+      "correctChoiceId":"b", "evidence":["reduced the time", "Nevertheless", "essential routes remained inaccessible"],
+      "translationKo":"새 안내서는 관람객이 전시물을 찾는 시간을 줄였다. 하지만 몇몇 필수 경로는 여전히 접근할 수 없어, 평자는 개선되었지만 기준에는 못 미친다고 평가했다.",
+      "relationKo":"개선 인정 → Nevertheless로 남은 한계 제시 → 최종 평가. 개선과 기준 충족을 같은 것으로 취급하지 않는다.", "requiredMeaningKo":"이전보다 나아졌지만 핵심 기준은 아직 충족하지 못했다는 양면 평가.", "authorship":"generated", "sourceNote":"FINETUNE 자체 창작 · AI 작성 후 문맥/선택지 대조 · 실제 기출 아님"
+    },
+    {
+      "id":"sc-cause-workshop-v1", "itemId":"JBKROW001279", "relatedSenseId":"conducive-to:make-result-more-likely", "logicType":"cause-effect", "difficulty":"medium",
+      "passageEn":"The workshop had attracted few parents because its fee was high and its sessions began before work ended. The organizers removed the fee and moved the sessions into the evening. These changes ____.",
+      "promptKo":"문맥 전체에 가장 잘 맞는 표현을 고르세요.", "blankMarker":"____",
+      "choices":[
+        {"id":"a","text":"made attendance possible only for those who had already registered","errorType":"scope","explanationKo":"요금과 시간을 바꿨지만 기존 등록자에게만 허용했다는 제한은 없다. 신규 등록 금지 규정이 있다면 가능하다."},
+        {"id":"b","text":"guaranteed that every parent would attend the workshop","errorType":"modality","explanationKo":"두 장애를 줄였다고 모두의 출석을 보장할 수 없다. 다른 일정이나 관심도까지 확인되어야 한다."},
+        {"id":"c","text":"made participation more feasible by addressing two reported obstacles","errorType":"supported","explanationKo":"높은 요금과 퇴근 전 시작이라는 두 원인을 각각 제거했다. 참여 여건 개선은 뒷받침되지만 실제 출석 증가는 아직 미확정이다."},
+        {"id":"d","text":"made the fee the sole remaining barrier to participation","errorType":"relation","explanationKo":"removed the fee와 충돌한다. 요금을 유지하고 시간 문제만 해결했다는 문맥이라면 맞을 수 있다."}
+      ],
+      "correctChoiceId":"c", "evidence":["because its fee was high", "before work ended", "removed the fee and moved the sessions into the evening"],
+      "translationKo":"높은 참가비와 퇴근 전 시작 시간 때문에 부모들의 참여가 적었다. 운영진은 참가비를 없애고 저녁으로 옮겼다. 두 장애를 해결해 참여하기 더 수월해졌다.",
+      "relationKo":"불참 원인 두 개 → 각 원인에 대응하는 조치 → 가능한 결과. 여건 개선을 출석 보장으로 강화하지 않는다.", "requiredMeaningKo":"두 장애를 줄여 참여 가능성을 높였다는 뜻.", "authorship":"generated", "sourceNote":"FINETUNE 자체 창작 · AI 작성 후 문맥/선택지 대조 · 실제 기출 아님"
+    },
+    {
+      "id":"sc-effect-logs-v1", "itemId":"JBKROW000004", "relatedSenseId":"abide-by:follow-governing-rule", "logicType":"effect-cause", "difficulty":"medium",
+      "passageEn":"The audit showed that every rejected submission lacked the signature required by the new rule. Submissions with that signature were all accepted, and no other acceptance condition had changed. The pattern points to ____.",
+      "promptKo":"문맥 전체에 가장 잘 맞는 표현을 고르세요.", "blankMarker":"____",
+      "choices":[
+        {"id":"a","text":"failure to meet the signature requirement as the relevant difference","errorType":"supported","explanationKo":"거절된 건은 모두 서명이 없고 서명 있는 건은 모두 승인되었다. 다른 승인 조건이 그대로라는 통제 단서까지 결합하면 서명 요건 불충족이 관련 차이다."},
+        {"id":"b","text":"the signature requirement as a consequence of the rejections","errorType":"causality","explanationKo":"new rule이 먼저 적용되고 그 규칙에 따른 결과를 감사했다. 거절 때문에 서명 요건이 생겼다는 순서가 아니다."},
+        {"id":"c","text":"a change in an unrelated acceptance condition as the relevant difference","errorType":"unsupported","explanationKo":"no other acceptance condition had changed와 충돌한다. 다른 조건도 바뀌었다면 대안 설명이 될 수 있다."},
+        {"id":"d","text":"signed submissions being disadvantaged by the new requirement","errorType":"polarity","explanationKo":"서명 있는 제출은 모두 승인되었으므로 불이익 방향을 뒤집었다. 그 제출들이 거절되었다는 결과가 필요하다."}
+      ],
+      "correctChoiceId":"a", "evidence":["every rejected submission lacked the signature", "with that signature were all accepted", "no other acceptance condition had changed"],
+      "translationKo":"거절된 제출물은 모두 새 규정의 필수 서명이 없었다. 서명 있는 제출물은 모두 승인되었고 다른 승인 조건은 바뀌지 않았다. 이 결과는 서명 요건 불충족이 관련 차이였음을 가리킨다.",
+      "relationKo":"승인/거절 결과의 대비 → 규정 충족 여부의 차이 → 다른 조건 불변을 확인하여 관련 원인을 좁힌다. 관찰을 모든 상황의 보편 법칙으로 넓히지 않는다.", "requiredMeaningKo":"이 감사 범위에서 결과를 가르는 서명 요건의 충족 여부.", "authorship":"generated", "sourceNote":"FINETUNE 자체 창작 · AI 작성 후 문맥/선택지 대조 · 실제 기출 아님"
+    },
+    {
+      "id":"sc-example-training-v1", "itemId":"JBKROW000017", "relatedSenseId":"a-wide-range-of:many-different-kinds", "logicType":"general-specific", "difficulty":"low",
+      "passageEn":"The instructor treats errors as information for revising her teaching. For instance, when several students confuse possibility with certainty, she adds contrasting examples rather than merely repeating the rule. Her response ____.",
+      "promptKo":"문맥 전체에 가장 잘 맞는 표현을 고르세요.", "blankMarker":"____",
+      "choices":[
+        {"id":"a","text":"replaces attention to student errors with a fixed routine","errorType":"polarity","explanationKo":"학생의 구체적 오류에 따라 예시를 추가하므로 오류를 무시한 고정 절차로 바뀌었다는 뜻은 반대다."},
+        {"id":"b","text":"illustrates the use of student errors to adjust instruction","errorType":"supported","explanationKo":"첫 문장의 일반 원칙을 For instance 뒤의 오류별 예시 추가가 구체화한다. 사례가 원칙을 보여 주는 관계다."},
+        {"id":"c","text":"demonstrates that repeating a rule always eliminates confusion","errorType":"scope","explanationKo":"rather than merely repeating the rule과 충돌하며 always도 근거 없이 일반화했다. 반복만으로 모든 혼동이 사라졌다는 자료가 필요하다."},
+        {"id":"d","text":"shows that examples matter only when students make no errors","errorType":"relation","explanationKo":"오류가 발생했을 때 예시를 추가한다. only when no errors는 조건을 정반대로 바꾸었다."}
+      ],
+      "correctChoiceId":"b", "evidence":["errors as information for revising her teaching", "For instance", "adds contrasting examples rather than merely repeating the rule"],
+      "translationKo":"교사는 오류를 수업 수정에 필요한 정보로 본다. 가능성과 확실성을 혼동하는 학생들이 있으면 규칙만 반복하지 않고 대조 예시를 더한다. 이는 학생의 오류에 맞춰 수업을 조정하는 사례다.",
+      "relationKo":"일반 원칙 → For instance로 구체 사례 → 사례의 역할 정리. 사례 하나를 교육 효과의 보편적 증명으로 확대하지 않는다.", "requiredMeaningKo":"학생 오류를 활용한 수업 조정이라는 일반 원칙의 사례.", "authorship":"generated", "sourceNote":"FINETUNE 자체 창작 · AI 작성 후 문맥/선택지 대조 · 실제 기출 아님"
+    },
+    {
+      "id":"sc-evidence-report-v1", "itemId":"APPROW02130", "relatedSenseId":"take-into-account:consider-factor", "logicType":"claim-evidence", "difficulty":"high",
+      "passageEn":"The report credits the new timetable with reducing delays. Its comparison uses routes with the same passenger volume and staffing; routes retaining the old timetable show no similar decline. The evidence ____.",
+      "promptKo":"문맥 전체에 가장 잘 맞는 표현을 고르세요.", "blankMarker":"____",
+      "choices":[
+        {"id":"a","text":"establishes that staffing differences explain the entire decline","errorType":"causality","explanationKo":"same staffing이라는 통제 조건과 충돌한다. 인력 차이가 실제 존재하고 지연 감소와 연결되어야 한다."},
+        {"id":"b","text":"weakens the attribution by showing the same decline on unchanged routes","errorType":"polarity","explanationKo":"옛 시간표 노선에는 no similar decline이다. 동일한 감소가 있었다고 읽으면 대비를 반대로 읽은 것이다."},
+        {"id":"c","text":"supports the attribution without establishing that no other factor played a role","errorType":"supported","explanationKo":"수요와 인력 조건을 맞추고 옛 시간표 노선을 비교한 결과는 시간표의 기여를 지지한다. 모든 다른 요인이 배제되었다는 절대적 단정은 피한다."},
+        {"id":"d","text":"renders the comparison irrelevant because passenger volume was held constant","errorType":"relation","explanationKo":"같은 수요를 비교한 것은 혼동 요인을 줄이는 근거이지 비교를 무관하게 만드는 사유가 아니다. 수요 차이 때문에 비교 불가능했다면 비판이 가능하다."}
+      ],
+      "correctChoiceId":"c", "evidence":["same passenger volume and staffing", "old timetable show no similar decline"],
+      "translationKo":"보고서는 지연 감소에 새 시간표가 기여했다고 본다. 수요와 인력이 같은 노선을 비교하고 옛 시간표 노선에서는 같은 감소가 없었다. 그 근거는 기여 주장을 지지하지만 다른 요인이 전혀 작용하지 않았다고 증명하지는 않는다.",
+      "relationKo":"기여 주장 → 조건을 맞춘 비교와 대조 집단 → 지지 강도의 평가. 통제된 두 요인과 모든 가능한 요인의 배제를 구분한다.", "requiredMeaningKo":"주장을 뒷받침하되 단독 원인이라고 확정하지 않는 제한된 지지.", "authorship":"generated", "sourceNote":"FINETUNE 자체 창작 · AI 작성 후 문맥/선택지 대조 · 실제 기출 아님"
+    },
+    {
+      "id":"sc-solution-backup-v1", "itemId":"JBKROW000044", "relatedSenseId":"work-out:solve-problem", "logicType":"problem-solution", "difficulty":"medium",
+      "passageEn":"The backup copies were intact, but staff could not tell which was the most recent. The proposed fix adds a date and sequence number to each copy without changing its contents. It is designed to ____.",
+      "promptKo":"문맥 전체에 가장 잘 맞는 표현을 고르세요.", "blankMarker":"____",
+      "choices":[
+        {"id":"a","text":"repair damaged contents by replacing every existing copy","errorType":"relation","explanationKo":"intact와 without changing its contents를 놓쳤다. 손상 복구나 전면 교체가 해결 대상이 아니다."},
+        {"id":"b","text":"reduce the need for staff by abolishing all backup copies","errorType":"unsupported","explanationKo":"날짜와 순번을 붙이는 조치는 백업 폐지나 인력 감축을 말하지 않는다. 그 목적을 밝히는 별도 단서가 필요하다."},
+        {"id":"c","text":"keep all copies indistinguishable while making their contents identical","errorType":"polarity","explanationKo":"구별 불가능성이 문제인데 indistinguishable을 유지하는 방향이다. 내용 통일도 제안되지 않았다."},
+        {"id":"d","text":"resolve uncertainty about order rather than repair the stored material","errorType":"supported","explanationKo":"문제는 어느 사본이 최신인지 모르는 것이고 날짜/순번은 순서를 표시한다. 내용은 이미 온전하므로 복구가 아닌 순서 불확실성 해소가 목적이다."}
+      ],
+      "correctChoiceId":"d", "evidence":["copies were intact", "could not tell which was the most recent", "a date and sequence number", "without changing its contents"],
+      "translationKo":"백업 사본은 온전했지만 직원들은 어느 것이 최신인지 몰랐다. 내용은 바꾸지 않고 날짜와 순번을 붙이는 해결책은 저장 자료를 복구하는 대신 사본의 순서에 대한 불확실성을 해결하려는 것이다.",
+      "relationKo":"문제의 정확한 위치(내용이 아니라 순서) → 조치의 기능 → 해결 목적. 문제와 해결 대상이 일치해야 한다.", "requiredMeaningKo":"사본의 최신 순서를 판단하게 하는 해결책.", "authorship":"generated", "sourceNote":"FINETUNE 자체 창작 · AI 작성 후 문맥/선택지 대조 · 실제 기출 아님"
+    },
+    {
+      "id":"sc-attitude-review-v1", "itemId":"JBKROW001061", "relatedSenseId":"gloss-over:avoid-unpleasant-detail", "logicType":"attitude", "difficulty":"high",
+      "passageEn":"The reviewer praises the proposal's lucid summary. She devotes the rest of her assessment to the unexamined assumptions on which its cost estimates depend, noting that none of those assumptions has yet been tested. Her position is ____.",
+      "promptKo":"문맥 전체에 가장 잘 맞는 표현을 고르세요.", "blankMarker":"____",
+      "choices":[
+        {"id":"a","text":"approval of the presentation combined with reservations about its basis","errorType":"supported","explanationKo":"lucid summary에 대한 칭찬과 미검증 가정에 대한 긴 검토를 함께 읽어야 한다. 표현의 명료성은 인정하지만 비용 추정의 근거에는 유보적이다."},
+        {"id":"b","text":"rejection of the presentation combined with acceptance of its basis","errorType":"polarity","explanationKo":"요약을 칭찬하고 근거는 미검증이라고 지적한 두 평가를 모두 뒤집었다."},
+        {"id":"c","text":"unqualified support for the estimates because the summary is lucid","errorType":"relation","explanationKo":"명료한 서술을 타당한 근거로 바꾸었다. 가정이 아직 검증되지 않았다는 지적 때문에 무조건적 지지는 성립하지 않는다."},
+        {"id":"d","text":"proof that the estimates are false rather than merely insufficiently tested","errorType":"modality","explanationKo":"아직 검증 안 됨을 거짓으로 증명됨으로 강화했다. 실제 반증 결과가 있어야 가능하다."}
+      ],
+      "correctChoiceId":"a", "evidence":["praises the proposal's lucid summary", "unexamined assumptions", "none of those assumptions has yet been tested"],
+      "translationKo":"평자는 제안서의 명료한 요약을 칭찬한다. 나머지 평가는 비용 추정의 바탕인 미검증 가정에 집중하며 아직 어느 가정도 검증되지 않았다고 지적한다. 표현 방식은 인정하되 근거에는 유보적이다.",
+      "relationKo":"명시적 역접 접속사가 없어도 칭찬의 대상과 검토의 대상을 분리한다. 긍정/부정 평가가 서로 다른 층위에 함께 존재한다.", "requiredMeaningKo":"표현에는 긍정적이지만 추정 근거에는 비판적·유보적인 태도.", "authorship":"generated", "sourceNote":"FINETUNE 자체 창작 · AI 작성 후 문맥/선택지 대조 · 실제 기출 아님"
+    },
+    {
+      "id":"sc-polarity-check-v1", "itemId":"APPROW02335", "relatedSenseId":"without-fail:every-time-no-exception", "logicType":"polarity", "difficulty":"medium",
+      "passageEn":"For six months the team checked the sensor at every scheduled interval, including holidays and storms. The log contains no missed check, although it does record several faulty readings. The team's record is one of ____.",
+      "promptKo":"문맥 전체에 가장 잘 맞는 표현을 고르세요.", "blankMarker":"____",
+      "choices":[
+        {"id":"a","text":"faultless readings despite occasional omissions of the checks","errorType":"polarity","explanationKo":"누락 없음과 오류 측정값 있음을 둘 다 뒤집었다. check 시행과 reading 정확성을 따로 읽어야 한다."},
+        {"id":"b","text":"consistent checking rather than uniformly accurate readings","errorType":"supported","explanationKo":"매 예정 간격에 빠짐없이 검사했지만 일부 측정값에는 오류가 있다. 수행의 일관성과 결과의 정확성을 분리한다."},
+        {"id":"c","text":"selective checking confined to intervals with favorable weather","errorType":"scope","explanationKo":"including holidays and storms와 충돌한다. 날씨가 좋을 때만 했다는 범위 제한은 성립하지 않는다."},
+        {"id":"d","text":"accurate readings that made scheduled checks unnecessary","errorType":"causality","explanationKo":"잘못된 측정값이 있었고 모든 검사도 실제 시행되었다. 정확성이 검사 불필요의 원인이라는 관계는 없다."}
+      ],
+      "correctChoiceId":"b", "evidence":["every scheduled interval", "no missed check", "several faulty readings"],
+      "translationKo":"팀은 6개월간 휴일과 폭풍 때도 예정된 모든 간격에 센서를 검사했다. 누락은 없지만 일부 측정값에는 오류가 있었다. 기록은 측정값이 언제나 정확했다는 것이 아니라 검사 수행이 일관되었다는 것이다.",
+      "relationKo":"검사 누락의 부정 → 검사 일관성 긍정. 측정값 오류는 별개의 의미축으로 남긴다.", "requiredMeaningKo":"빠짐없는 검사 수행과 항상 정확한 결과를 구별하는 평가.", "authorship":"generated", "sourceNote":"FINETUNE 자체 창작 · AI 작성 후 문맥/선택지 대조 · 실제 기출 아님"
+    },
+    {
+      "id":"sc-contrast-method-v1", "itemId":"JBKROW000093", "relatedSenseId":"zoom-in-on:give-close-attention", "logicType":"comparison", "difficulty":"medium",
+      "passageEn":"One study pools results from all districts and reports a single average. The other separates the districts before comparing them; a small group with sharply different results becomes visible only in that analysis. The second study ____.",
+      "promptKo":"문맥 전체에 가장 잘 맞는 표현을 고르세요.", "blankMarker":"____",
+      "choices":[
+        {"id":"a","text":"confirms that every district follows the pooled average","errorType":"scope","explanationKo":"작은 집단의 sharply different results와 충돌한다. 모든 지역이 평균과 같다는 결론은 불가능하다."},
+        {"id":"b","text":"conceals local variation by replacing separate results with a single figure","errorType":"polarity","explanationKo":"이는 첫 연구의 통합 평균 방식이다. 두 번째 연구의 분리 분석을 반대로 읽었다."},
+        {"id":"c","text":"exposes a difference that aggregation had obscured","errorType":"supported","explanationKo":"첫 연구의 단일 평균에는 드러나지 않은 소집단 차이가 분리 분석에서 보였다. 통합이 가린 차이의 발견이다."},
+        {"id":"d","text":"shows that the small group determined every district's result","errorType":"causality","explanationKo":"차이를 드러냈을 뿐 소집단이 다른 모든 지역의 결과를 야기했다는 근거는 없다. 비교를 인과로 바꾸었다."}
+      ],
+      "correctChoiceId":"c", "evidence":["a single average", "separates the districts", "becomes visible only in that analysis"],
+      "translationKo":"첫 연구는 모든 지역을 합쳐 단일 평균을 보고한다. 두 번째는 지역을 나눠 비교하고 그때만 결과가 크게 다른 작은 집단이 드러난다. 두 번째 연구는 통합이 가렸던 차이를 보여 준다.",
+      "relationKo":"통합 평균 방식과 분리 분석 방식을 비교하여 각각 무엇을 보이거나 가리는지 판단한다.", "requiredMeaningKo":"통합 수준에서는 숨겨진 지역 간 차이를 드러냄.", "authorship":"generated", "sourceNote":"FINETUNE 자체 창작 · AI 작성 후 문맥/선택지 대조 · 실제 기출 아님"
+    },
+    {
+      "id":"sc-condition-grant-v1", "itemId":"JBKROW022984", "relatedSenseId":"put-the-cart-before-the-horse:reverse-dependent-order", "logicType":"condition", "difficulty":"medium",
+      "passageEn":"A grant may be released only after the safety review is approved; completing the application alone does not authorize payment. With the review still pending, the team has already scheduled spending from the grant. Its plan ____.",
+      "promptKo":"문맥 전체에 가장 잘 맞는 표현을 고르세요.", "blankMarker":"____",
+      "choices":[
+        {"id":"a","text":"assumes access to funds before the stated prerequisite is met","errorType":"supported","explanationKo":"only after가 검토 승인을 필수 선행 조건으로 둔다. pending인데 지출을 계획했으므로 조건 충족 전에 자금 사용을 전제했다."},
+        {"id":"b","text":"satisfies the prerequisite by completing the application alone","errorType":"relation","explanationKo":"application alone does not authorize payment를 무시했다. 신청 완료와 안전 검토 승인은 다른 조건이다."},
+        {"id":"c","text":"demonstrates that approval necessarily follows a spending schedule","errorType":"modality","explanationKo":"지출 일정 수립은 승인 보장이 아니다. 승인에서 자금 지급으로 가는 조건을 거꾸로 읽었다."},
+        {"id":"d","text":"establishes that no grant can ever be released after a review","errorType":"scope","explanationKo":"승인 전 제한을 영구 지급 금지로 확대했다. 지문은 승인 후 지급 가능성을 열어 둔다."}
+      ],
+      "correctChoiceId":"a", "evidence":["only after the safety review is approved", "application alone does not authorize payment", "review still pending"],
+      "translationKo":"지원금은 안전 검토 승인 뒤에만 지급할 수 있고 신청서 완료만으로 지급이 허용되지는 않는다. 검토가 아직 진행 중인데 팀은 지원금 지출 일정을 세웠다. 계획은 필수 조건 충족 전에 자금 사용을 전제한다.",
+      "relationKo":"승인이라는 필요조건 → 아직 미충족 → 자금 접근을 전제한 계획의 비판. 지급 가능 조건을 지급 확정이나 영구 금지로 바꾸지 않는다.", "requiredMeaningKo":"명시된 선행 조건을 충족하기 전에 후행 행동을 전제함.", "authorship":"generated", "sourceNote":"FINETUNE 자체 창작 · AI 작성 후 문맥/선택지 대조 · 실제 기출 아님"
+    },
+    {
+      "id":"sc-time-project-v1", "itemId":"JBKROW000016", "relatedSenseId":"wrap-up:finish-activity", "logicType":"time-change", "difficulty":"high",
+      "passageEn":"In its first year, the project measured success by the number of reports submitted. It now rejects reports without independent checks, even when this lowers the total accepted. The change reflects ____.",
+      "promptKo":"문맥 전체에 가장 잘 맞는 표현을 고르세요.", "blankMarker":"____",
+      "choices":[
+        {"id":"a","text":"a continued preference for volume over verification","errorType":"polarity","explanationKo":"검증 없는 보고서를 수량 감소에도 거절하므로 현재 기준을 과거 수량 우선으로 잘못 읽었다."},
+        {"id":"b","text":"the abandonment of evaluation rather than a change in its basis","errorType":"degree","explanationKo":"독립 검증 여부로 계속 평가한다. 평가 기준 변경을 평가 자체의 폐지로 강화했다."},
+        {"id":"c","text":"a reduction in report quality caused by the demand for independent checks","errorType":"causality","explanationKo":"줄어드는 것은 승인 수량이다. 품질 악화라는 결과나 검증이 그 원인이라는 근거는 없다."},
+        {"id":"d","text":"a shift from counting submissions to requiring verified content","errorType":"supported","explanationKo":"과거 number와 현재 independent checks를 대비한다. 수량이 줄어도 검증을 요구하므로 성공 판단 기준이 수량에서 검증으로 옮겨 갔다."}
+      ],
+      "correctChoiceId":"d", "evidence":["In its first year", "number of reports submitted", "now rejects reports without independent checks", "even when this lowers the total accepted"],
+      "translationKo":"처음에는 제출 보고서 수로 성공을 판단했다. 지금은 승인 수가 줄더라도 독립 검증이 없는 보고서를 거절한다. 제출 수를 세던 기준에서 검증된 내용을 요구하는 기준으로 옮겨 갔다.",
+      "relationKo":"과거와 현재의 평가 기준을 대조한다. 수량 감소와 품질 감소를 같게 읽지 않고 무엇을 우선하는지 추론한다.", "requiredMeaningKo":"성공의 기준이 제출 수량에서 내용의 검증 여부로 이동함.", "authorship":"generated", "sourceNote":"FINETUNE 자체 창작 · AI 작성 후 문맥/선택지 대조 · 실제 기출 아님"
+    }
+  ]
+}

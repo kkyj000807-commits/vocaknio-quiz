@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.18",
+  "release": "1.19",
   "entries": [
     {
       "word": "a wide range of",
@@ -74,8 +74,14 @@
         "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
+          "https://idioms.thefreedictionary.com/abide+by",
           "https://www.collinsdictionary.com/dictionary/english/abide-by",
-          "https://dictionary.cambridge.org/us/dictionary/english/abide-by"
+          "https://dictionary.cambridge.org/us/dictionary/english/abide-by",
+          "https://www.thefreedictionary.com/comply",
+          "https://www.thefreedictionary.com/adhere",
+          "https://www.thefreedictionary.com/violate",
+          "https://www.thefreedictionary.com/disregard",
+          "https://www.thefreedictionary.com/observe"
         ]
       },
       "koreanMeaning": "규칙·결정·약속을 따르고 지키다",
@@ -89,8 +95,14 @@
       ],
       "distinctionNote": "agree with: 판단에 동의하는 뜻이다. abide by는 개인적으로 반대해도 규칙·결정을 따라 행동할 수 있다. | put up with: 싫은 대상이나 상황을 견디는 뜻이며, 규칙을 기준으로 삼아 준수한다는 뜻이 아니다. | appeal against: 결정을 바꾸도록 공식적으로 다투는 행동이지, 그 결정대로 행동한다는 뜻이 아니다.",
       "sourceIds": [
+        "https://idioms.thefreedictionary.com/abide+by",
         "https://www.collinsdictionary.com/dictionary/english/abide-by",
-        "https://dictionary.cambridge.org/us/dictionary/english/abide-by"
+        "https://dictionary.cambridge.org/us/dictionary/english/abide-by",
+        "https://www.thefreedictionary.com/comply",
+        "https://www.thefreedictionary.com/adhere",
+        "https://www.thefreedictionary.com/violate",
+        "https://www.thefreedictionary.com/disregard",
+        "https://www.thefreedictionary.com/observe"
       ],
       "itemIds": [
         "JBKROW000004",

@@ -11,6 +11,7 @@
 | 시작·기록 이관·전역 오류 안내 | app/_layout.tsx | lib/vocab-storage-migration.ts, components/learning-storage-notice.tsx |
 | 탭·범위 선택 | app/(tabs)/_layout.tsx, index.tsx | lib/vocab.ts |
 | 문제 생성·정답 판정 | lib/quiz-engine.ts | app/quiz.tsx, app/wrong-quiz.tsx |
+| Sentence Completion 논리 빈칸 | data/sentence-completion.json, lib/sentence-completion.ts | 공통 quiz/session/기록/통계/오답 → components/sentence-completion-card.tsx; audit-sentence-completion.ts |
 | 검수된 sense 문항 경계 | data/sense-questions.json, lib/sense-questions.ts | 공통 엔진/복원/ProblemSenseContext/결과; audit-sense-questions.ts. 나머지 legacy 출제와 coverage를 구분 |
 | 비중복·약점 출제 | lib/adaptive-quiz.ts | lib/store.ts의 세션 선택/응답 기록 |
 | 본 문제풀이 중단 복원 | lib/quiz-session.ts | app/quiz.tsx → lib/store.ts의 공통 큐; 마지막 요청 조건/문제/선택지/응답 저장 |

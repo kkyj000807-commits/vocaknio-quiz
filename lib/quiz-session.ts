@@ -3,6 +3,7 @@ import { getVocabItem, type VocabItem } from "@/lib/vocab";
 import { senseQuestionSchema } from "@/lib/sense-questions";
 import { activeRecallSenseSchema } from "@/lib/active-recall";
 import { definitionQuizEntrySchema } from "@/lib/definition-quiz";
+import { sentenceCompletionSchema } from "@/lib/sentence-completion";
 import {
   isChoiceCorrect,
   isTypedAnswerCorrect,
@@ -71,6 +72,7 @@ const questionSchema = z
       majorConceptLabel: z.string(),
     }),
     mode: z.enum([
+      "sentence-completion",
       "definition-choice",
       "syn-choice",
       "kor-choice",
@@ -78,7 +80,7 @@ const questionSchema = z
       "flashcard",
       "syn-type",
     ]),
-    answerKind: z.enum(["synonym", "meaning", "target", "self"]),
+    answerKind: z.enum(["synonym", "meaning", "target", "self", "completion"]),
     choices: z
       .array(
         z.object({
@@ -98,6 +100,7 @@ const questionSchema = z
     recallPromptId: z.string().optional(),
     definitionRecall: definitionQuizEntrySchema.optional(),
     synonymRecall: definitionQuizEntrySchema.optional(),
+    sentenceCompletion: sentenceCompletionSchema.optional(),
   })
   .refine((q) => {
     // Legacy and sense questions must share the generation/grading contract.

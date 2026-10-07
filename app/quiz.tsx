@@ -41,6 +41,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { FlipCard } from "@/components/flip-card";
 import { PronunciationButton } from "@/components/pronunciation-button";
 import { LearningDetails } from "@/components/learning-details";
+import { SentenceCompletionAnswer, SentenceCompletionPrompt } from "@/components/sentence-completion-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { getVocabItem, type QuizMode, type VocabItem } from "@/lib/vocab";
 import {
@@ -67,6 +68,7 @@ import {
 } from "@/lib/store";
 import {
   getItemLearningTargets,
+  getQuizLearningTargets,
   getQuestionLearningTargetKey,
   parseLearningReviewKeys,
 } from "@/lib/canonical-learning";
@@ -272,7 +274,7 @@ export default function QuizScreen() {
         rangeId: rangeId || "custom",
         mode,
         candidates: candidates.map((item) => {
-          const targets = getItemLearningTargets(item).filter(target => !reviewKeys.length || reviewKeys.includes(target.key));
+          const targets = getQuizLearningTargets(item, mode).filter(target => !reviewKeys.length || reviewKeys.includes(target.key));
           const rankedTargets = targets
             .map(target => ({ target, score: learningPriority(getLearningTargetState(learningState, target.key)) }))
             .sort((left, right) => right.score - left.score);
@@ -765,6 +767,7 @@ export default function QuizScreen() {
           correct: correctCount,
           total: questions.length,
           wrongNums: finalWrongNums.join(","),
+          ...(mode === "sentence-completion" ? { reviewMode: mode } : {}),
         },
       });
       return;
@@ -926,6 +929,7 @@ export default function QuizScreen() {
   const isChoiceMode = q.choices.length > 0;
 
   const getModeLabel = () => {
+    if (q.sentenceCompletion) return "Sentence Completion · 논리";
     if (q.definitionRecall) return "영영 정의 → 정확한 단어";
     if (q.recall) {
       return "영영 정의 → 정확한 단어";
@@ -942,6 +946,7 @@ export default function QuizScreen() {
   };
 
   const getHintText = () => {
+    if (q.sentenceCompletion) return "Which completion best fits the entire context?";
     if (q.recall || q.definitionRecall) return "영영 정의에 정확히 맞는 표현은?";
     if (q.sense) return q.answerKind === "meaning" ? "이 문맥에서 표현의 뜻은?" : "이 문맥에서 뜻이 같은 표현은?";
     if (q.answerKind === "meaning") return "올바른 한국어 뜻은?";
@@ -1065,7 +1070,7 @@ export default function QuizScreen() {
                 </Pressable>
               </View>
 
-              {(!q.recall && !q.definitionRecall) || answered ? <View style={s.wordPronunciationRow}>
+              {!q.sentenceCompletion && ((!q.recall && !q.definitionRecall) || answered) ? <View style={s.wordPronunciationRow}>
                 <View style={{ flex: 1 }}>
                   <Text style={s.wordText}>{q.item.w}</Text>
                   {q.item.p ? <Text style={s.ipaText}>{q.item.p}</Text> : null}
@@ -1074,6 +1079,7 @@ export default function QuizScreen() {
               </View> : null}
 
               {/* 4지선다 모드 */}
+              {q.sentenceCompletion ? <SentenceCompletionPrompt question={q.sentenceCompletion} /> : null}
               {q.recall && !answered ? <ActiveRecallPrompt recall={q.recall} promptId={q.recallPromptId} /> : null}
               {q.definitionRecall && !answered ? <DefinitionRecallPrompt definition={q.definitionRecall.definition} /> : null}
               <ProblemSenseContext sense={q.sense} />
@@ -1148,7 +1154,7 @@ export default function QuizScreen() {
                             </Text>
                           </View>
                           <View style={{ flex: 1 }}>
-                            <Text style={textStyle} numberOfLines={3}>
+                            <Text style={textStyle} numberOfLines={q.sentenceCompletion ? undefined : 3}>
                               {choice.label}
                             </Text>
                             {answered &&
@@ -1306,6 +1312,7 @@ export default function QuizScreen() {
               )}
 
               {/* 해설 패널 */}
+              {answered && q.sentenceCompletion ? <SentenceCompletionAnswer question={q.sentenceCompletion} selectedId={selectedChoice !== null ? q.choices[selectedChoice]?.id : undefined} /> : null}
               {answered && q.recall ? <ActiveRecallAnswer recall={q.recall} choices={q.choices} item={q.item} /> : null}
               {answered && q.definitionRecall ? (
                 <DefinitionRecallAnswer recall={q.definitionRecall} koreanMeaning={q.item.k_short} choices={q.choices} item={q.item} />
@@ -1314,7 +1321,7 @@ export default function QuizScreen() {
                 <SynonymRecallAnswer recall={q.synonymRecall} koreanMeaning={q.item.k_short} choices={q.choices} item={q.item} />
               ) : null}
               {answered && q.sense && <ProblemSenseContext sense={q.sense} answered />}
-              {answered && !q.sense && !q.recall && !q.definitionRecall && !q.synonymRecall && questionMode !== "flashcard" && (
+              {answered && !q.sentenceCompletion && !q.sense && !q.recall && !q.definitionRecall && !q.synonymRecall && questionMode !== "flashcard" && (
                 <View style={s.explPanel}>
                   <Text style={s.explHeader}>해설</Text>
                   <View style={s.explWordRow}>
@@ -1338,7 +1345,7 @@ export default function QuizScreen() {
                 </View>
               )}
 
-              {answered && !q.recall && !q.definitionRecall && <LearningDetails itemId={q.item.id} />}
+              {answered && !q.sentenceCompletion && !q.recall && !q.definitionRecall && <LearningDetails itemId={q.item.id} />}
 
               {/* 문제 이동 */}
               {(currentIdx > 0 || answered) && (

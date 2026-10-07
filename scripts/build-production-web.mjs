@@ -14,6 +14,8 @@ requireEmptyOutput(outputDir);
 const source = spawnSync("git", ["rev-parse", "HEAD"], { encoding: "utf8", shell: false });
 if (source.status !== 0 || !/^[a-f0-9]{40}$/.test(source.stdout.trim())) throw new Error("Cannot identify source commit");
 const sourceCommit = source.stdout.trim();
+const completionAudit = spawnSync(process.execPath, ["--import", "tsx", "scripts/audit-sentence-completion.ts"], { stdio: "inherit", shell: false });
+if (completionAudit.status !== 0) process.exit(completionAudit.status ?? 1);
 const dirty = spawnSync("git", ["diff", "--quiet", "HEAD"], { shell: false });
 if (![0, 1].includes(dirty.status)) throw new Error("Cannot identify source working state");
 const builtAt = new Date().toISOString();
