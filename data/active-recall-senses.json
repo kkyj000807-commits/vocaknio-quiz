@@ -1408,6 +1408,14 @@
       "antonyms": ["be devoid of", "lack"],
       "variants": ["be teeming with"],
       "relatedWords": ["swarm with"],
+      "relationMeaningsKo": {
+        "be full of": "~로 가득하다. 장소에 사람이 많다는 문맥에서는 가깝지만, 물건·액체가 차 있는 경우에도 쓰여 활발하게 북적이는 느낌까지 항상 같지는 않다. 장소 + be full of + 대상으로 바꾸며 with를 남기지 않는다.",
+        "abound with": "~이 풍부하게 많이 있다. 장소에 대상이 많이 있다는 뜻은 가깝지만 움직임이나 북적임을 반드시 말하지는 않는다. 장소 + abound with + 대상으로 바꾸고 be를 앞에 붙이지 않는다. abound in도 쓰이지만 여기서는 with 구문을 비교한다.",
+        "be devoid of": "~이 전혀 없다. 단순히 북적이지 않는 것보다 강한 완전한 부재를 말한다. 장소 + be devoid of + 대상으로 바꾸며 with 대신 of를 쓴다. teem with의 부정문이 곧 완전한 부재라는 뜻은 아니다.",
+        "lack": "~이 없다 또는 부족하다. 대상의 부재뿐 아니라 필요한 만큼 충분하지 않은 경우도 포함하므로 항상 전혀 없다는 뜻은 아니다. 이 타동사 구문은 장소 + lack + 대상이며 with나 of를 넣지 않는다. 명사 lack of와 구분한다.",
+        "be teeming with": "~으로 가득해 북적이고 있다. 장소에 수많은 대상이 있는 상태를 나타내는 표현이다. 예문의 teemed with는 was teeming with로 바꿀 수 있다. be + teeming + with 형태이지 be teem with가 아니며, 팀을 이룬다는 team과도 다르다.",
+        "swarm with": "~으로 우글거리다·북적거리다. 곤충이나 사람이 무리 지어 많이 있는 장소에 잘 쓰이지만, 항상 teem with보다 더 많거나 더 강하다고 단정할 수는 없다. 장소 + swarm with + 대상으로 비교하며, 무리가 어디로 몰려가는 swarm into와 별도 등반 뜻은 구분한다."
+      },
       "exampleSentences": [
         {
           "en": "By midsummer, the wetland teemed with insects and nesting birds.",
@@ -1437,19 +1445,79 @@
       ],
       "sources": [
         {
-          "publisher": "Oxford Advanced Learner's Dictionary",
-          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/teem-with",
-          "independenceGroup": "Oxford",
-          "note": "많은 사람·동물이 움직이는 밀집 상태의 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/teem",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.08 IAB 우선 열람. teem1 자동사의 가득함·풍부함과 teeming 형태를 대조; 비가 쏟아지는 별도 뜻은 제외. 기존 정의·창작 예문은 유지하고 관계어 설명만 자체 편집"
         },
         {
           "publisher": "Collins English Dictionary",
           "url": "https://www.collinsdictionary.com/dictionary/english/teem",
           "independenceGroup": "Collins",
-          "note": "가득함·풍부함과 be teeming with 구조를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+          "note": "2026.10.08 공식 본문 열람. 장소의 많은 대상·활발한 움직임과 be teeming with 구문을 독립 대조; TFD의 Collins 전재를 별도 근거로 중복 계산하지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/full",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.08 IAB 열람. full1 형용사의 많은 대상·가득함만 대조; 활동성까지 항상 같은 뜻으로 보지 않고 full2 직물 가공 동사는 제외"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/full",
+          "independenceGroup": "Collins",
+          "note": "2026.10.08 공식 본문 열람. full of의 많은 사람·사물 포함과 of 구문을 대조; 포만감·회원 자격 등 다른 뜻은 제외"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/abound",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.08 IAB 열람. 장소에 많은 대상이 있는 자동사와 in/with 구문 대조; 풍부함만으로 대상의 움직임을 단정하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/abound",
+          "independenceGroup": "Collins",
+          "note": "2026.10.08 공식 본문 열람. 장소 주어의 풍부함·with/in 구문을 독립 대조; be를 붙이지 않는 동사 구조는 학습용으로 설명"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/devoid",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.08 IAB 열람. 완전한 부재를 나타내는 형용사 뜻 대조; 단순 비밀집이나 부족과 구별"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/devoid",
+          "independenceGroup": "Collins",
+          "note": "2026.10.08 공식 본문 열람. 완전히 없음과 be devoid of의 of 구문 대조; teem with 부정문을 완전한 부재로 강화하지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/lack",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.08 IAB 열람. 타동사의 부재·필요량 부족 뜻만 비교; 명사 lack of 및 별도 자동사 전치사 구문과 분리"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/lack",
+          "independenceGroup": "Collins",
+          "note": "2026.10.08 공식 본문 열람. 대상이 없거나 충분하지 않은 타동사+명사 구문 대조; 부족을 항상 수량0으로 단정하지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/swarm",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.08 IAB 열람. 장소가 많은 대상으로 가득한 swarm1 자동사 뜻과 with 구문 대조; 무리의 이동·명사·swarm2 등반 뜻은 분리"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/swarm",
+          "independenceGroup": "Collins",
+          "note": "2026.10.08 IAB 공식 본문 열람. 장소가 사람들로 북적이는 swarming with·with 대상 구문 대조; teem과 고정된 강도 서열을 만들지 않음"
         }
       ],
-      "sourceCheckedAt": "2026.09.05",
+      "sourceCheckedAt": "2026.10.08",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",

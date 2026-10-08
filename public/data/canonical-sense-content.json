@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.20",
+  "release": "1.21",
   "entries": [
     {
       "word": "a wide range of",
@@ -4921,8 +4921,18 @@
         "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
-          "https://www.oxfordlearnersdictionaries.com/us/definition/english/teem-with",
-          "https://www.collinsdictionary.com/dictionary/english/teem"
+          "https://www.thefreedictionary.com/teem",
+          "https://www.collinsdictionary.com/dictionary/english/teem",
+          "https://www.thefreedictionary.com/full",
+          "https://www.collinsdictionary.com/dictionary/english/full",
+          "https://www.thefreedictionary.com/abound",
+          "https://www.collinsdictionary.com/dictionary/english/abound",
+          "https://www.thefreedictionary.com/devoid",
+          "https://www.collinsdictionary.com/dictionary/english/devoid",
+          "https://www.thefreedictionary.com/lack",
+          "https://www.collinsdictionary.com/dictionary/english/lack",
+          "https://www.thefreedictionary.com/swarm",
+          "https://www.collinsdictionary.com/dictionary/english/swarm"
         ]
       },
       "koreanMeaning": "사람·생물 등으로 가득하다; 북적거리다",
@@ -4936,8 +4946,18 @@
       ],
       "distinctionNote": "team up with: 철자가 비슷하지만 사람·단체가 협력한다는 뜻이다. 장소가 많은 생명체를 품는다는 뜻이 아니다. | trickle into: 소수의 대상이 천천히 유입되는 움직임에 초점이 있어, 이미 수많은 대상이 가득한 상태와 다르다. | clear out: 사람이나 물건을 없애 공간을 비우는 뜻으로, 많은 대상이 가득한 상태와 반대 방향이다.",
       "sourceIds": [
-        "https://www.oxfordlearnersdictionaries.com/us/definition/english/teem-with",
-        "https://www.collinsdictionary.com/dictionary/english/teem"
+        "https://www.thefreedictionary.com/teem",
+        "https://www.collinsdictionary.com/dictionary/english/teem",
+        "https://www.thefreedictionary.com/full",
+        "https://www.collinsdictionary.com/dictionary/english/full",
+        "https://www.thefreedictionary.com/abound",
+        "https://www.collinsdictionary.com/dictionary/english/abound",
+        "https://www.thefreedictionary.com/devoid",
+        "https://www.collinsdictionary.com/dictionary/english/devoid",
+        "https://www.thefreedictionary.com/lack",
+        "https://www.collinsdictionary.com/dictionary/english/lack",
+        "https://www.thefreedictionary.com/swarm",
+        "https://www.collinsdictionary.com/dictionary/english/swarm"
       ],
       "itemIds": [
         "JBKROW000005",

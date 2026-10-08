@@ -4,7 +4,16 @@
 
 사전 우선순위(2026.10.06 사용자 재확인): The Free Dictionary https://www.thefreedictionary.com/ 를 첫 검수 출처로 활용한다. 뜻·숙어·구문·용례·관계어를 sense 단위로 먼저 확인하고 부족/충돌 부분만 다른 독립 사전으로 대조한다. 직전 정책 등록 시 홈페이지 웹 fetch는 읽지 못해 근거로 세지 않았고 당시 문서만 변경하여 공개1.12·학습 데이터를 보존했다(잠금58403/PID22540). 이번1.13에서는 일반 Chrome의 실제 항목 열람을 확인했다. 실제 확인한 범위만 링크/수록 원전/확인일과 함께 기록하며 제한을 우회하거나 대량 원문을 복제하지 않는다. 기존 자동화의 TFD 우선 규칙을 유지하고 새 자동화는 만들지 않았다.
 
-## 현재 공개 batch — 논리 문항의 점검 조건·단정 경계 / 1.20
+## 현재 진행 batch — teem with 관계어 뜻·치환 조건 / 1.21 후보
+
+- 시작 2026.10.08 19:24 KST: 최신 공개1.20/source0959c97a·main/origin fcdc64ba·Pages af165075와 AGENTS/AI_WORK_RULES/AUTOMATION_RUNBOOK·git status/diff 대조. 새 잠금62923/PID8868 LOCK_ACQUIRED. 사용자1.4/인증/미추적 작업 보존, 새 대화·자동화·보조 작업0.
+- 범위: 기존 teem-with:contain-many-active-things의 관계어6개에 한국어 뜻·치환 조건만 부분 보강. 기존 정의/영한예문/문맥문항/정답/두 source행 JBKROW000005(num3)/JBKROW003863(num3801), V101 반복·공유 학습 key 유지. 원본38163행 재생성/DB/API/migration0.
+- 체크리스트: (1) TFD 우선·독립 사전 대조 (2) 누락6필드/출처만 수정 (3) 공유두행·정답 전 숨김/정답 후 표시 회귀 (4) verify/Production/Git 보안 (5) 격리 UI·반응형·공개 manifest/hash/UI 확인. 현재1 완료, 2~5 미완료. 공개 기준은 아래1.20이며 후보를 배포 완료로 보지 않는다.
+- 실제 의미 근거 2026.10.08: TFD 웹 fetch는 제한되어 근거로 세지 않았으나 IAB에서 teem/full/abound/devoid/lack/swarm의 American Heritage 원전을 실제 열람했다. Collins 공식6항목도 웹 또는 IAB 실제 본문으로 대조했다. TFD의 Collins 전재는 독립 근거 수에 추가하지 않는다. devoid는 완전 부재, lack는 부재 또는 부족, full/abound의 풍부함은 활동성까지 항상 같지 않음, swarm의 장소+with 뜻과 무리의 이동/별도 등반 뜻을 구분한다. 사전 원문·예문 복제 없이 한국어 설명 자체 편집. 기존 Oxford 근거의 과거 확인을 오늘 재검수로 포장하지 않고 이번 실제 두 원전으로 출처를 갱신한다. 중앙DB unverified/sync_required·실제 기기/장기효과 미검증 유지.
+- VERIFIED 코드: 관련3파일60 PASS(신규3), 전체 verify42099 TypeScript·등록/학습/정의/sense 감사·37파일333 PASS/기존 인증1 SKIP(총38파일334), exit0. 변경3테스트 ESLint 오류0·diff --check PASS·Git 보안 tracked608/untracked212/findings0. 원본38163행 SHA256 7EBA20F388D04E9D7FB10EDEC635BEAC5DC7A6C726EF6E25D7DABA4CE57908DD 동일. active 공유20sense/37행은 기존층이며 이1sense/2행에만 누락6관계어 보강; 정의/예문/문항 생성0. 호환 학습층165sense/230행은 기존 JSON8개의 version만 갱신하고 콘텐츠를 바꾸지 않는다. canonical 파생 데이터는 새 확인 근거/버전·감사 시각만 반영한다. 처음 새 테스트가 실패한 원인은 active 해설이 호환 JSON에 합쳐진다고 가정한 테스트 오류였고 실제 ActiveRecallStudyDetails 우선 경로와 기존 entryIds로 수정했다. 생성기/공유구조를 바꾸거나 검사를 완화하지 않았다.
+- NEXT: Production 보안 → 격리 실제 UI → 검증된 출력만 Pages 배포·공개1.21 확인. 실패 시 후보를 보존하고 실제 마지막 단계부터 재개한다. 종료 전 소유 QA/탭 정리와 잠금 Enter/LOCK_RELEASED 확인 필수.
+
+## 직전 공개 batch — 논리 문항의 점검 조건·단정 경계 / 1.20
 
 - 시작 2026.10.08 18:25 KST: 공개1.19/source38342e1c·main/origin6d35e638·Pages b0601864와 문서·git status/diff 대조. 이전 잠금/PID 없음 확인 후 새 잠금35978/PID11196 LOCK_ACQUIRED. 사용자1.4/인증/미추적 작업 보존, 새 대화·자동화·보조 작업0.
 - 요구/범위 체크리스트: (1) 기존 난도상3문항의 정답을 가린 채 단서·오답 검토 (2) 실제 확인된 문맥 강화만 최소 수정 (3) ID/관련sense/학습상태·기록 유지 (4) 새 채점/복원/해설 테스트·전체검사 (5) Production/Git 보안·격리 UI·공개 버전 검증. 1~5 완료. 실제 기기/독립 시험 난도/장기 효과와 중앙DB 동기화까지 완료한 것은 아니다.

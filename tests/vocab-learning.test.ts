@@ -7,6 +7,7 @@ import corrections from "@/data/idiom-corrections.json";
 import release from "@/release.config.json";
 import oewnManifest from "@/data/vocab-learning/oewn-2025-definition-manifest.json";
 import { VOCAB } from "@/lib/vocab";
+import { getActiveRecallSenses } from "@/lib/active-recall";
 import { hasLearningEntry, LEARNING_COVERAGE } from "@/lib/vocab-learning";
 
 describe("깊이 학습 인덱스", () => {
@@ -129,6 +130,23 @@ describe("깊이 학습 인덱스", () => {
     expect(priceOut[0]?.exactSynonyms).toEqual(["become uncompetitive by overpricing"]);
     expect(abrogate[0]?.exactSynonyms).toEqual([]);
     expect(abrogate[0]?.nearSynonyms).toEqual(["revoke", "repeal", "annul", "rescind"]);
+  });
+
+  it("teem with 두 행은 같은 active 해설을 재사용하고 기존 공개 호환 데이터는 유지한다", () => {
+    const [source] = getActiveRecallSenses("JBKROW000005");
+    expect(getActiveRecallSenses("JBKROW003863")[0]).toBe(source);
+    expect(Object.keys(source.relationMeaningsKo!)).toHaveLength(6);
+    const payload = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public", "data", "vocab-learning", release.version, "v101.json"), "utf8"));
+    for (const id of source.itemIds) {
+      const pointer = learningIndex.items[id as keyof typeof learningIndex.items];
+      expect(pointer).toEqual({ group: "V101", entryIds: [`learn:correction:${id}`] });
+      const matches = payload.entries.filter((entry: { id: string }) => pointer.entryIds.includes(entry.id));
+      expect(matches).toHaveLength(1);
+      expect(matches[0].itemIds).toEqual([id]);
+      expect(matches[0].senseId).toBe("teem-with:primary");
+      expect(matches[0].definitionEn).toBe("To contain very many people, animals, or other things, often giving an impression of active abundance.");
+      expect(matches[0].example.en).toBe("The shallow pools were teeming with tiny fish.");
+    }
   });
 
   it("Open English WordNet의 같은 synset 동의어만 공개 데이터에 전달한다", () => {

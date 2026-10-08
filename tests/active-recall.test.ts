@@ -555,6 +555,27 @@ describe("영어→영어 active recall", () => {
     expect(getActiveRecallSenses(teemWithRows[1].id)[0].senseId).toBe(sense.senseId);
   });
 
+  it("teem with 관계어만 부분 보강하고 부재·부족·활동성과 두 행의 공유 키를 보존한다", () => {
+    const [sense] = getActiveRecallSenses(teemWithRows[0].id);
+    expect(Object.keys(sense.relationMeaningsKo!)).toEqual(["be full of", "abound with", "be devoid of", "lack", "be teeming with", "swarm with"]);
+    expect(sense.relationMeaningsKo?.["be full of"]).toContain("느낌까지 항상 같지는 않다");
+    expect(sense.relationMeaningsKo?.["abound with"]).toContain("be를 앞에 붙이지 않는다");
+    expect(sense.relationMeaningsKo?.["be devoid of"]).toContain("부정문이 곧 완전한 부재라는 뜻은 아니다");
+    expect(sense.relationMeaningsKo?.lack).toContain("with나 of를 넣지 않는다");
+    expect(sense.relationMeaningsKo?.["be teeming with"]).toContain("was teeming with");
+    expect(sense.relationMeaningsKo?.["swarm with"]).toContain("더 강하다고 단정할 수는 없다");
+    expect(sense.englishDefinition).toBe("For a place or area to contain very many people, animals, or things, often with a sense of active abundance.");
+    expect(sense.exampleSentences[0].en).toBe("By midsummer, the wetland teemed with insects and nesting birds.");
+    expect(sense.exactSynonyms).toEqual([]);
+    expect(sense.nearSynonyms).toEqual(["be full of", "abound with"]);
+    expect(sense.antonyms).toEqual(["be devoid of", "lack"]);
+    expect(teemWithRows.map(item => [item.id, item.num, item.group])).toEqual([["JBKROW000005", 3, "V101"], ["JBKROW003863", 3801, "V101"]]);
+    for (const row of teemWithRows) expect(getItemLearningTargets(row).map(target => target.key)).toEqual(["sense:teem-with%3Acontain-many-active-things"]);
+    expect(sense.sources[0].url).toBe("https://www.thefreedictionary.com/teem");
+    expect(sense.sources).toHaveLength(12);
+    expect(new Set(sense.sources.map(source => source.independenceGroup))).toEqual(new Set(["American Heritage", "Collins"]));
+  });
+
   it("teem with 영영 문제도 정답 하나와 현재 sense 계약을 유지한다", () => {
     vi.spyOn(Math, "random").mockReturnValue(0);
     const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [teemWithRows[0].num], preserveItemOrder: true });
