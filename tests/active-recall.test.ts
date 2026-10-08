@@ -529,7 +529,7 @@ describe("영어→영어 active recall", () => {
     expect(new Set(senses.map(sense => sense.conciseEnglishDefinition)).size).toBe(4);
     expect(senses.every(sense => sense.itemIds.length === 4)).toBe(true);
     expect(senses.every(sense => sense.exampleSentences.length === 1)).toBe(true);
-    expect(senses.map(sense => sense.sources.length)).toEqual([8, 2, 2, 2]);
+    expect(senses.map(sense => sense.sources.length)).toEqual([8, 12, 2, 2]);
   });
 
   it("문제 해결의3관계어만 보강하고 work out 네 뜻·반복4행의 학습 키를 유지한다", () => {
@@ -558,10 +558,42 @@ describe("영어→영어 active recall", () => {
     expect(new Set(solve.sources.map(source => source.independenceGroup))).toEqual(new Set(["American Heritage", "Collins"]));
     expect(solve.sources[0].url).toBe("https://www.thefreedictionary.com/work");
     expect(solve.sourceCheckedAt).toBe("2026.10.09");
-    for (const other of senses.slice(1)) {
+    for (const other of senses.slice(2)) {
       expect(other.relationMeaningsKo).toBeUndefined();
       expect(other.sourceCheckedAt).toBe("2026.09.23");
     }
+  });
+
+  it("계산4관계어를 공유하고 근거 없는 어림을 검증된 반의어로 분류하지 않는다", () => {
+    const senses = getActiveRecallSenses(workOutRows[0].id);
+    const calculate = senses[1];
+    expect(Object.keys(calculate.relationMeaningsKo!)).toEqual(["calculate", "compute", "estimate blindly", "derive"]);
+    expect(calculate.relationMeaningsKo?.calculate).toContain("out을 남기지 않는다");
+    expect(calculate.relationMeaningsKo?.compute).toContain("컴퓨터 사용이 필수는 아니다");
+    expect(calculate.relationMeaningsKo?.["estimate blindly"]).toContain("사전에 확인된 고정 반의어가 아니다");
+    expect(calculate.relationMeaningsKo?.["estimate blindly"]).toContain("근거를 활용한 대략적 계산도 포함");
+    expect(calculate.relationMeaningsKo?.derive).toContain("단순 연산과 항상 같지는 않으므로 관련어");
+    expect(calculate.exactSynonyms).toEqual([]);
+    expect(calculate.nearSynonyms).toEqual(["calculate", "compute"]);
+    expect(calculate.antonyms).toEqual([]);
+    expect(calculate.relatedWords).toEqual(["derive", "estimate blindly"]);
+    expect(calculate.englishDefinition).toBe("To calculate an amount, answer, or value by using the available figures.");
+    expect(calculate.exampleSentences[0].en).toBe("Students worked out the average from the five recorded measurements.");
+    for (const row of workOutRows) {
+      expect(getActiveRecallSenses(row.id)[1]).toBe(calculate);
+      expect(getItemLearningTargets(row).map(target => target.key)).toEqual([
+        "sense:work-out%3Asolve-problem", "sense:work-out%3Acalculate-value",
+        "sense:work-out%3Aend-successfully", "sense:work-out%3Aexercise-body",
+      ]);
+    }
+    expect(calculate.sources).toHaveLength(12);
+    expect(new Set(calculate.sources.map(source => source.url)).size).toBe(12);
+    expect(new Set(calculate.sources.map(source => source.independenceGroup))).toEqual(new Set(["American Heritage", "Collins"]));
+    expect(calculate.sourceCheckedAt).toBe("2026.10.09");
+    const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [workOutRows[0].num], learningTargetKeys: ["sense:work-out%3Acalculate-value"] });
+    expect(question.recall).toBe(calculate);
+    expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
+    expect(validateQuestion(question)).toBe(true);
   });
 
   it("work out 영영 문제도 정답 하나와 sense 계약을 유지한다", () => {

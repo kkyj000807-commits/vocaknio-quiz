@@ -1285,9 +1285,15 @@
       "conciseEnglishDefinition": "to calculate an amount or answer",
       "exactSynonyms": [],
       "nearSynonyms": ["calculate", "compute"],
-      "antonyms": ["estimate blindly"],
+      "antonyms": [],
       "variants": [],
-      "relatedWords": ["derive"],
+      "relatedWords": ["derive", "estimate blindly"],
+      "relationMeaningsKo": {
+        "calculate": "주어진 수치로 양·값·답을 계산하다. calculate the average처럼 수치 목적어를 쓰며, 평균을 구하는 이 예문에서는 worked out을 calculated로 바꿀 수 있다. work it out은 calculate it으로 바꾸고 out을 남기지 않는다. calculate가 결과를 예측하거나 의도적으로 계획한다는 별도 뜻일 때는 이 계산 sense와 구분한다.",
+        "compute": "수치·답을 연산하여 구하다. compute the average처럼 수치 목적어를 써서 이 예문의 worked out을 computed로 바꿀 수 있다. 컴퓨터를 이용하는 경우가 많지만 컴퓨터 사용이 필수는 아니다. 어떤 설명이 말이 된다는 does not compute의 별도 용법은 여기의 수치 계산 뜻이 아니다.",
+        "estimate blindly": "충분한 정보나 검토 없이 값을 어림하다. estimate 자체는 근거를 활용한 대략적 계산도 포함하므로 무작정 찍기와 같지 않다. blindly가 정보·검토의 부족을 더하는 학습용 대비 표현이며 사전에 확인된 고정 반의어가 아니다. 기록된 측정값으로 평균을 산출하는 이 예문과 대비할 뿐, 모든 추정이 계산의 반대라고 일반화하지 않는다.",
+        "derive": "주어진 사실·자료·단계에서 결과를 도출하다. derive a value from the data처럼 결과와 근거를 함께 나타낸다. 계산으로 값을 구하는 문맥에서는 겹칠 수 있지만 결론을 추론하거나 식을 유도할 수도 있어 단순 연산과 항상 같지는 않으므로 관련어로 표시한다. 기원·출처에서 나오다 또는 즐거움·이익을 얻다라는 뜻은 이 계산 sense와 구분한다."
+      },
       "exampleSentences": [
         {
           "en": "Students worked out the average from the five recorded measurements.",
@@ -1317,19 +1323,79 @@
       ],
       "sources": [
         {
-          "publisher": "Oxford Advanced Learner's Dictionary",
-          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
-          "independenceGroup": "Oxford",
-          "note": "계산을 통해 답을 구하는 타동사 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/work",
+          "independenceGroup": "American Heritage",
+          "note": "work out의 수학 문제 해결과 work의 계산·추론 뜻을 우선 확인; 자동사 결과·운동 뜻과 분리. 기존 정의·영한 예문은 자체 편집 콘텐츠이며 사전 원문을 복제하지 않음"
         },
         {
           "publisher": "Collins English Dictionary",
           "url": "https://www.collinsdictionary.com/dictionary/english/work-out",
           "independenceGroup": "Collins",
-          "note": "수치나 답을 계산하는 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+          "note": "수학적 답을 계산하는 타동사 뜻과 work it out 구문 독립 대조; works out at/to의 결과량 용법과 구분. 기존 정의·예문 재사용, 원문 복제 없음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/calculate",
+          "independenceGroup": "American Heritage",
+          "note": "수학적 방법으로 값을 구하는 동사 뜻과 compute와의 겹침 확인; 예측·목적에 맞춘 설계의 별도 뜻과 분리. 한국어 뜻·치환 안내 자체 편집"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/calculate",
+          "independenceGroup": "Collins",
+          "note": "기존 정보에서 수·양을 산출하는 뜻, 명사·절 목적어와 예측·의도 용법 독립 대조; calculate를 언제나 정밀 계산이라고 일반화하지 않음. 원문 복제 없음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/compute",
+          "independenceGroup": "American Heritage",
+          "note": "수치적 방법으로 답을 구하는 뜻 확인; 컴퓨터 이용이 필수라는 오개념과 말이 된다는 별도 용법을 구분. 한국어 풀이 자체 편집"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/compute",
+          "independenceGroup": "Collins",
+          "note": "수·양을 계산하는 동사 뜻과 컴퓨터의 선택적 사용 독립 대조; 해당 수치 목적어 문맥에서만 work out과 치환. 원문 복제 없음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/estimate",
+          "independenceGroup": "American Heritage",
+          "note": "어림 계산·잠정 평가의 동사·명사 뜻 확인; estimate를 근거 없는 추측으로 동일시하지 않음. estimate blindly 전체는 사전 반의어가 아닌 자체 편집 대비 표현"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/estimate",
+          "independenceGroup": "Collins",
+          "note": "대략적 판단·계산 및 근거를 이용한 추정의 뜻·구문 독립 대조; 모든 estimate가 work out의 반의어라는 기존 분류를 바로잡음. 원문 복제 없음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/blindly",
+          "independenceGroup": "American Heritage",
+          "note": "이 URL에 수록된 blind의 정보·준비·이유 부족 뜻과 파생 부사 blindly 확인; estimate blindly 전체의 고정 숙어·사전 반의어 인증이 아님. 한국어 대비 안내 자체 편집"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/blindly",
+          "independenceGroup": "Collins",
+          "note": "충분한 정보나 생각 없이 행동한다는 부사 뜻 독립 대조; estimate 자체와 blindly가 더하는 조건을 구분. 자체 편집 대비 표현의 구성 요소 근거, 원문 복제 없음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/derive",
+          "independenceGroup": "American Heritage",
+          "note": "추론으로 결론을 얻는 뜻과 derive 결과 from 근거 구조 확인; 기원·출처와 물질 획득 용법을 분리. 기존 관련어 분류 유지, 한국어 설명 자체 편집"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/derive",
+          "independenceGroup": "Collins",
+          "note": "추론·단계 적용을 통한 도출 뜻과 from 구조 독립 대조; 출처에서 나오다·이익을 얻다와 구분하고 계산과 무조건 동일시하지 않음. 원문 복제 없음"
         }
       ],
-      "sourceCheckedAt": "2026.09.23",
+      "sourceCheckedAt": "2026.10.09",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",

@@ -210,7 +210,9 @@ describe("깊이 학습 인덱스", () => {
       expect(active).toHaveLength(4);
       expect(active[0]).toBe(first[0]);
       expect(Object.keys(active[0].relationMeaningsKo!)).toHaveLength(3);
-      expect(active.slice(1).every(sense => !sense.relationMeaningsKo)).toBe(true);
+      expect(active[1]).toBe(first[1]);
+      expect(Object.keys(active[1].relationMeaningsKo!)).toHaveLength(4);
+      expect(active.slice(2).every(sense => !sense.relationMeaningsKo)).toBe(true);
       const pointer = learningIndex.items[row.id as keyof typeof learningIndex.items];
       const payload = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public", "data", "vocab-learning", release.version, `${pointer.group.toLowerCase()}.json`), "utf8"));
       const matches = payload.entries.filter((entry: { id: string }) => pointer.entryIds.includes(entry.id));
@@ -220,6 +222,25 @@ describe("깊이 학습 인덱스", () => {
     }
     expect(first[0].exampleSentences[0].type).toBe("editorial");
     expect(first[0].exampleSentences[0].cueKo).toContain("why");
+    expect(VOCAB).toHaveLength(38163);
+  });
+
+  it("계산 해설을 반복4행에 한 번만 공유하고 다른 work out 뜻·별도 difference 행은 합치지 않는다", () => {
+    const rows = VOCAB.filter(item => item.w === "work out");
+    const senses = getActiveRecallSenses(rows[0].id);
+    for (const row of rows) {
+      const active = getActiveRecallSenses(row.id);
+      expect(active[1]).toBe(senses[1]);
+      expect(active[1].exampleSentences).toHaveLength(1);
+      expect(active[1].exampleSentences[0].ko).toBe("학생들은 기록된 다섯 측정값으로 평균을 계산했다.");
+      expect(active[0].relationMeaningsKo).not.toHaveProperty("calculate");
+      expect(active[2].sourceCheckedAt).toBe("2026.09.23");
+      expect(active[3].sourceCheckedAt).toBe("2026.09.23");
+    }
+    expect(senses[1].itemIds).toEqual(rows.map(row => row.id));
+    const differences = VOCAB.filter(item => item.w === "work out difference");
+    expect(differences.map(row => [row.num, row.group])).toEqual([[17756, "V501"], [22339, "V501"]]);
+    for (const row of differences) expect(getActiveRecallSenses(row.id)).not.toContain(senses[1]);
     expect(VOCAB).toHaveLength(38163);
   });
 

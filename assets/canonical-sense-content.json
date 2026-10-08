@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.25",
+  "release": "1.26",
   "entries": [
     {
       "word": "a wide range of",
@@ -5319,8 +5319,18 @@
         "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
-          "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
-          "https://www.collinsdictionary.com/dictionary/english/work-out"
+          "https://www.thefreedictionary.com/work",
+          "https://www.collinsdictionary.com/dictionary/english/work-out",
+          "https://www.thefreedictionary.com/calculate",
+          "https://www.collinsdictionary.com/dictionary/english/calculate",
+          "https://www.thefreedictionary.com/compute",
+          "https://www.collinsdictionary.com/dictionary/english/compute",
+          "https://www.thefreedictionary.com/estimate",
+          "https://www.collinsdictionary.com/dictionary/english/estimate",
+          "https://www.thefreedictionary.com/blindly",
+          "https://www.collinsdictionary.com/dictionary/english/blindly",
+          "https://www.thefreedictionary.com/derive",
+          "https://www.collinsdictionary.com/dictionary/english/derive"
         ]
       },
       "koreanMeaning": "수치·답을 계산해 내다",
@@ -5334,8 +5344,18 @@
       ],
       "distinctionNote": "round off: 계산 결과의 자릿수를 조정할 뿐, 주어진 수치로 답 전체를 계산하는 뜻은 아니다. | add up: 수를 더하는 특정 연산에 초점이 있어 모든 종류의 계산을 포괄하지 않는다. | write down: 값을 기록하는 행위이지 값을 산출하는 계산이 아니다.",
       "sourceIds": [
-        "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
-        "https://www.collinsdictionary.com/dictionary/english/work-out"
+        "https://www.thefreedictionary.com/work",
+        "https://www.collinsdictionary.com/dictionary/english/work-out",
+        "https://www.thefreedictionary.com/calculate",
+        "https://www.collinsdictionary.com/dictionary/english/calculate",
+        "https://www.thefreedictionary.com/compute",
+        "https://www.collinsdictionary.com/dictionary/english/compute",
+        "https://www.thefreedictionary.com/estimate",
+        "https://www.collinsdictionary.com/dictionary/english/estimate",
+        "https://www.thefreedictionary.com/blindly",
+        "https://www.collinsdictionary.com/dictionary/english/blindly",
+        "https://www.thefreedictionary.com/derive",
+        "https://www.collinsdictionary.com/dictionary/english/derive"
       ],
       "itemIds": [
         "JBKROW000044",

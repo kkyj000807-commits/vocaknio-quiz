@@ -368,6 +368,34 @@ describe("reviewed learning evidence and explanation boundaries", () => {
     expect(native.openURL.mock.calls.map(call => call[0])).toEqual(sense.sources.slice(0, 2).map(source => source.url));
   });
 
+  it("work out 계산4관계어는 정답 뒤 표시하고 편집 대비를 반의어로 포장하지 않는다", async () => {
+    const sense = ACTIVE_RECALL_SENSES.find(entry => entry.senseId === "work-out:calculate-value")!;
+    const prompt = render(<ActiveRecallPrompt recall={sense} />);
+    const answer = render(<ActiveRecallAnswer recall={sense} />);
+    const detail = render(<ActiveRecallStudyDetails entry={sense} index={1} count={4} />);
+    for (const meaning of Object.values(sense.relationMeaningsKo!)) {
+      expect(answer).toContain(meaning);
+      expect(occurrences(detail, meaning)).toBe(1);
+      expect(prompt).not.toContain(meaning);
+    }
+    expect(answer).toContain("검증된 반의어 관계 없음");
+    expect(answer).toContain("사전에 확인된 고정 반의어가 아니다");
+    expect(detail).toContain(sense.exampleSentences[0].ko);
+    expect(detail).not.toContain("문제·이유·해결책을 생각해 찾아내다");
+    expect(detail).not.toContain("운동하다·몸을 단련하다");
+    expect(prompt).not.toContain(sense.koreanMeaning);
+    native.links.length = 0;
+    const evidence = render(<LearningEvidence entry={sense} />);
+    expect(occurrences(evidence, "TFD · American Heritage ↗")).toBe(1);
+    expect(occurrences(evidence, "Collins ↗")).toBe(1);
+    expect(evidence).toContain("2026.10.09");
+    expect(evidence).toContain("예문은 학습용 창작");
+    expect(native.links).toHaveLength(2);
+    for (const link of native.links) link.press();
+    await Promise.resolve();
+    expect(native.openURL.mock.calls.map(call => call[0])).toEqual(sense.sources.slice(0, 2).map(source => source.url));
+  });
+
   it("does not describe mixed-source examples as entirely original", () => {
     const html = render(<LearningEvidence entry={{ ...entry, exampleSentences: [{ ...entry.exampleSentences[0], type: "source" }] }} />);
     expect(html).toContain("예문은 항목별 출처·창작 구분");
