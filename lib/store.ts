@@ -647,7 +647,9 @@ export async function recordOneAnswer(
       const entries: [string, string][] = [[STATS_KEY, JSON.stringify(stats)]];
       if (sessionRaw) entries.push([QUIZ_SESSION_KEY, sessionRaw]);
 
-      const wrongItemNum = !answerCorrect
+      // Logic failures are retained by the same adaptive history/target state
+      // and shown in wrong notes as exact questions, not duplicate word errors.
+      const wrongItemNum = !answerCorrect && context?.mode !== "sentence-completion"
         ? (context?.itemNum ?? wrongNum)
         : undefined;
       if (wrongItemNum !== undefined) {

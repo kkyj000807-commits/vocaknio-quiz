@@ -203,8 +203,8 @@ export default function WrongScreen() {
         <View style={{ flex: 1 }}>
           <Text style={s.headerTitle}>오답 노트</Text>
           <Text style={s.headerSub}>
-            {wrongItems.length > 0
-              ? `${wrongItems.length}개 단어 — 한 번이라도 틀린 단어`
+            {wrongItems.length || logicWords.length
+              ? `${wrongItems.length}개 단어 · 논리 복습 ${logicWords.length}문항`
               : "아직 오답이 없어요"}
           </Text>
         </View>
@@ -257,7 +257,7 @@ export default function WrongScreen() {
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
           ListHeaderComponent={
-            <>{logicHeader}{hideMode ? (
+            <>{logicHeader}{wrongItems.length ? hideMode ? (
               <View style={s.hideModeInfoBox}>
                 <Text style={s.hideModeInfoText}>
                   뜻 가리기 모드 — 각 카드를 탭하면 뜻이 공개됩니다
@@ -272,7 +272,7 @@ export default function WrongScreen() {
                   💡 단어를 완전히 외웠다면 <Text style={{ color: colors.success }}>✓ 마스터</Text> 버튼으로 목록에서 제거하세요
                 </Text>
               </View>
-            )}</>
+            ) : null}</>
           }
         />
       )}

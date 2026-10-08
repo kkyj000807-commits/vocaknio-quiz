@@ -1,6 +1,6 @@
 # FINETUNE 현재 작업 상태
 
-기준: 2026.10.06 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.10.08 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
 사전 우선순위(2026.10.06 사용자 재확인): The Free Dictionary https://www.thefreedictionary.com/ 를 첫 검수 출처로 활용한다. 뜻·숙어·구문·용례·관계어를 sense 단위로 먼저 확인하고 부족/충돌 부분만 다른 독립 사전으로 대조한다. 직전 정책 등록 시 홈페이지 웹 fetch는 읽지 못해 근거로 세지 않았고 당시 문서만 변경하여 공개1.12·학습 데이터를 보존했다(잠금58403/PID22540). 이번1.13에서는 일반 Chrome의 실제 항목 열람을 확인했다. 실제 확인한 범위만 링크/수록 원전/확인일과 함께 기록하며 제한을 우회하거나 대량 원문을 복제하지 않는다. 기존 자동화의 TFD 우선 규칙을 유지하고 새 자동화는 만들지 않았다.
 
@@ -13,7 +13,10 @@
 - DONE 연결: sentence-completion mode + QuizQuestion 선택지 셔플/채점/복원/기존 답안 큐 재사용. sentence:<stable question ID> 상태로 단어 sense MASTER와 분리. 논리·난도별 수치는 동일 adaptive 기록을 question key로 연결하며 새 priority 점수0. 논리 기간별 세부 수치는 최근 최대1000 원자료 범위임을 표시, 누적은 기존 집계 전체를 사용한다. 통계/결과/오답노트에서 동일 문항 복습 연결, 영어 본문과 선택지는 정답 전 숨은 어휘/한국어/논리 분류를 노출하지 않는다. 긴 선지의 3줄 자르기를 논리 유형에서만 해제한다.
 - VERIFIED 코드: 최신 verify 전체 TypeScript·데이터 감사·37파일328 PASS/기존 인증1 SKIP(총38파일329), exit0. 변경파일 ESLint 오류0/기존 vocab 배열 표기 warning2·diff --check PASS·Git 보안 findings0. 새 논리19테스트/저장 통합1테스트는 단일정답·shuffle·손상/중복/기출원문·중단복원·어휘 MASTER 분리·모름→우선순위→동일문항 복습→1/2=50%·70%/20% UI·유형/난도/기간·고유단어 중복방지를 검증한다. 10만응답 집계 회귀508ms. 마지막 복습 버튼도 공유 need.level로 판정하며 별도 임계값0, 관련UI3 재통과.
 - 해결한 검사 충돌: 첫 저장 통합 실패는 앞선 손상 기록 fixture의 저장 보호 상태가 남은 것이라 clean snapshot 재열람을 명시했다. 다음 전체검사의 vocab.test는 축소 원본 fixture를 사용하는데 eager 등록 검수가 실제12 source행을 요구해 import 단계에서 실패했다. 구조 검증과 실제 source/sense 검증을 분리하고 production 등록/빌드 감사는 두 검사를 모두 요구하며 런타임도 미연결 문항을 제외한다. 기존 테스트·저장 보호·검수 계약을 삭제/완화하지 않았다. Production/UI/공개 배포는 아직 미완료.
-- NEXT: 관련 테스트와 verify를 완주→감사한 Production 출력으로 격리 브라우저 진입/오답/새로고침/통계/논리별 한 번 복습/새 응답→Light/Paper/Dark·390px/태블릿/데스크톱→승인 Pages1.19/소스/KST/실제 UI 확인. 실제 Safari/iPhone/iPad/mobile Chrome/Samsung Internet·독립 시험 난도/전이 효과·중앙DB 동기화는 미확인으로 남긴다. 기존 abide by 후보까지 함께 검증하되 새 사전 보강/버전1.20은 만들지 않는다.
+- 재개 2026.10.08 17:20 KST: 이전 잠금93897/PID20344·검사52063·QA 서버26670은 종료 상태였으며 결과 미확보 검사는 통과로 세지 않았다. 새 OS 잠금10989/PID26864 LOCK_ACQUIRED. main/origin eb4ab5572674b62c0ccdb40269f5316ad9a0c2c1, 공개1.18 유지. 새 보조 작업/자동화0·사용자 dirty 보존.
+- 실제 Chrome 초기 QA에서 논리 오답이 논리 복습과 일반 단어 오답 카드에 중복 노출되는 경계 오류를 발견했다. 공유 recordOneAnswer에서 sentence-completion 실패는 기존 adaptive history/독립 target state에만 남기고 일반 wrongWords 추가를 막았다. 기존 단어 오답은 그대로 보존한다. 오답노트는 단어 수/논리 문항 수를 구분하고 논리만 있을 때 단어 MASTER 안내를 숨긴다. 통합 테스트에서 기존 wrongWords [2] 보존과 source 단어 MASTER 유지·모름→논리 RELEARNING→동일 문항 복습→1/2=50%를 검증했다.
+- 최종 수정 후 verify72480: 2026.10.08 17:21 KST, TypeScript·데이터 감사·37파일328 PASS/기존 인증1 SKIP(총38파일329), exit0. 이전 Production 출력 finetune-1-19-sc-prod-20261007은 수정 전 QA용이며 배포하지 않는다. 최신 코드의 Production/최종 UI/공개 배포는 아직 미완료.
+- NEXT: 최신 수정 목적 커밋/main 푸시→새 빈 Production 출력→보안 감사→새 격리 원점26671에서 진입/논리 오답만 표시/새로고침 중복방지/통계/한 번 같은 문항 복습/새 정답1/2=50%→Light/Paper/Dark·390px/태블릿/데스크톱→기존 abide by5뜻 회귀→승인 Pages1.19/소스/KST/실제 UI 확인. 현재 browser inventory에는 IAB/MCP Apps만 연결되어 있으므로 이전 실제 Chrome 부분 검증과 이번 IAB 최종 검증을 구분한다. 실제 Safari/iPhone/iPad/mobile Chrome/Samsung Internet·독립 시험 난도/전이 효과·중앙DB 동기화는 미확인으로 남긴다. 새 사전 보강/버전1.20은 만들지 않는다.
 
 ## 직전 batch — abide by 관계어 뜻 / 1.19 후보·메모리 부족으로 공개 보류
 

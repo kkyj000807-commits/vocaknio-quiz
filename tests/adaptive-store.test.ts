@@ -77,6 +77,7 @@ describe("adaptive quiz storage", () => {
     // Re-open the clean mock disk after the preceding corrupt-history fixture;
     // the real store intentionally retains its unreadable-key protection.
     await loadLearningSnapshot();
+    storageMock.values.set("vocaknio_wrong_words", JSON.stringify([2]));
     const source = SENTENCE_COMPLETION_QUESTIONS[0]; const item = VOCAB.find(v => v.id === source.itemId)!;
     const vocabularyKey = getItemLearningTargets(item)[0].key; const key = sentenceCompletionKey(source);
     await markLearningTargetMastered(vocabularyKey, item.num);
@@ -86,7 +87,7 @@ describe("adaptive quiz storage", () => {
     const model = buildLearningStatistics(failed.history, failed.learning, sentenceCompletionMetadata(), { mode: "sentence-completion" });
     expect(model.accuracy).toBe(0); expect(model.words[0].status).toBe("RELEARNING");
     expect(failed.learning.targets[vocabularyKey].status).toBe("MASTERED");
-    expect(await loadWrongWords()).toContain(item.num);
+    expect(await loadWrongWords()).toEqual([2]);
     const params = buildStatisticsReviewParams(model)!;
     expect(params.mode).toBe("sentence-completion"); expect(params.reviewKeys).toBe(JSON.stringify([key]));
     const nums = await prepareAdaptiveQuizSession({ sessionId: "sc-review", rangeId: params.rangeId, mode: params.mode, count: 1,
