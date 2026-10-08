@@ -4,7 +4,16 @@
 
 사전 우선순위(2026.10.06 사용자 재확인): The Free Dictionary https://www.thefreedictionary.com/ 를 첫 검수 출처로 활용한다. 뜻·숙어·구문·용례·관계어를 sense 단위로 먼저 확인하고 부족/충돌 부분만 다른 독립 사전으로 대조한다. 직전 정책 등록 시 홈페이지 웹 fetch는 읽지 못해 근거로 세지 않았고 당시 문서만 변경하여 공개1.12·학습 데이터를 보존했다(잠금58403/PID22540). 이번1.13에서는 일반 Chrome의 실제 항목 열람을 확인했다. 실제 확인한 범위만 링크/수록 원전/확인일과 함께 기록하며 제한을 우회하거나 대량 원문을 복제하지 않는다. 기존 자동화의 TFD 우선 규칙을 유지하고 새 자동화는 만들지 않았다.
 
-## 최신 공개 batch — take for granted 가치 간과 관계어 / 1.24
+## 현재 batch — work out 문제 해결 관계어 / 후보1.25
+
+- 시작 2026.10.09 01:42 KST heartbeat: 최신 공개1.24/source b4cbdb7d·main/origin50905d5b·Pages9a6a8415와 AGENTS/AI_WORK_RULES/WORKING_CONTEXT/AUTOMATION_RUNBOOK·git status/diff 대조. 소유 잠금28539/PID12116 LOCK_ACQUIRED. 사용자1.4/auth/미추적 작업 보존; 새 대화·자동화·보조 작업0.
+- 체크리스트: (1) TFD 우선·독립 Collins 대조 (2) work-out:solve-problem의 누락 solve/figure out/resolve3풀이만 부분 보강 (3) 관련3테스트·verify (4) Production/Git 보안·격리 응답→통계→정확한 뜻 한 번 복습 (5) 반응형·Pages 공개 manifest/hash/UI 확인. 후보는 공개 검증 전 완료로 세지 않는다.
+- 실제 근거 2026.10.09: IAB TFD work/solve/figure/resolve의 American Heritage 본문·원전 열람; Collins 공식 work-out/solve/figure-out/resolve 독립 대조. 문제의 답 찾기·이유 이해·갈등 해결의 차이, 명사/의문사절 목적어·비격식/격식·대명사 배치·결심/명사 결의 경계를 확인. 8직접 페이지/독립2원전·TFD Collins 전재 중복0·사전 원문/예문 복제0. 편입영어 검수 스킬의 의미 강화 반례·치환 조건 적용.
+- 범위: 기존 공유 한 뜻의 relationMeaningsKo3/sources/sourceCheckedAt만 변경. JBKROW000044/004038/006121/008146(42/3973/V101·6012/8012/V201)의 반복4행·다른 세 work out 뜻·학습key·기존 정의/영한예문/문항/정답 유지. 신규 정의·예문·문항·DB/API/migration0. 원본38163행은 재생성하지 않는다.
+- VERIFIED 코드: 관련3파일72 PASS(신규3). 첫 검증의 새 UI 테스트에서 출처 배지 이름 Dictionary 접미 불일치를 발견해 기존 American Heritage 표기로 고치고 재실행; 최종 verify67745 exit0·타입/데이터 감사·37파일345 PASS/기존 인증1 SKIP. 변경3테스트 ESLint 오류0·diff --check PASS·Git 보안 tracked640/untracked212/findings0. JSON 전후 비교상 변경 뜻은 solve-problem 하나/필드는 relationMeaningsKo/sources/sourceCheckedAt뿐. 원본 SHA256 7EBA20F388D04E9D7FB10EDEC635BEAC5DC7A6C726EF6E25D7DABA4CE57908DD 동일. 호환 JSON8개는1.24 대비 version 외 동일; 공유20production sense/37행·기존 호환165sense/230행 유지. 기존 CJS/ESLint 모듈·LF/CRLF 알림은 확인했고 무관한 설정은 변경하지 않음.
+- NEXT: 관련3회귀와 verify→보안 통과한 새 Production 출력→격리 IAB 실제 풀이/통계/복습·테마별 레이아웃→승인 Pages 비강제 배포→공개1.25/소스/KST/번들/화면 확인→소유 서버/탭 정리·Enter LOCK_RELEASED 확인. 실제 Safari/mobile Chrome/Samsung Internet·Galaxy Tab 강제다크·중앙DB unverified/sync_required·장기효과는 미검증 유지.
+
+## 직전 공개 batch — take for granted 가치 간과 관계어 / 1.24
 
 - 시작 2026.10.09 00:39 KST heartbeat: 공개1.23/source e40e154b·main/origin86425898·Pagesdf6b93a0와 AGENTS/AI_WORK_RULES/WORKING_CONTEXT/AUTOMATION_RUNBOOK·git status/diff 대조. 잠금19453/PID19396 LOCK_ACQUIRED. 사용자1.4/auth/미추적 작업 보존; 새 대화·자동화·보조 작업0.
 - 체크리스트: (1) TFD 우선·독립 Collins 대조 (2) APPROW02128/num37941/부록의 fail-to-appreciate 누락5관계어 부분 보강 (3) 관련3회귀·verify (4) Production/Git 보안·격리 응답→통계→한 번 복습 (5) IAB 반응형·Pages manifest/hash/UI까지 이 작은 batch 완료. 전체 콘텐츠 의미 검수·실제 기기·중앙DB·장기효과까지 완료한 것은 아니다.

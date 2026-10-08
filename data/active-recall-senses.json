@@ -1187,6 +1187,11 @@
       "antonyms": [],
       "variants": [],
       "relatedWords": ["resolve"],
+      "relationMeaningsKo": {
+        "solve": "문제·수수께끼의 답이나 해결책을 찾아내다. solve a problem/mystery처럼 해결 결과에 초점이 있다. 단지 문제를 다루는 work on과 다르며 수치 계산에만 쓰이지 않는다. work out을 바꿀 때 out을 남기지 않고, why절로 된 예문은 the problem/mystery 같은 문맥에 맞는 명사 목적어로 문장을 바꾼다.",
+        "figure out": "생각해 이유·방법·답을 알아내거나 이해하다. 비교적 비격식적인 표현으로 figure out why/how...처럼 의문사절을 받을 수 있어 원인을 밝히는 예문과 잘 연결된다. 원인을 이해했다고 현실의 문제가 반드시 해결된 것은 아니다. 대명사 목적어는 figure it out처럼 가운데 둔다. 수치를 계산하는 별도 뜻은 여기서 다루지 않는다.",
+        "resolve": "문제·갈등을 해결하거나 매듭짓다. 격식 있는 resolve a problem/conflict는 해결에 가깝지만 원인을 알아내는 것보다 문제를 정리하는 데 초점을 둘 수 있어 관련어로 표시한다. why절 예문을 그대로 치환하지 말고 상황에 맞는 명사 목적어로 바꾼다. resolve to do의 결심하다와 명사 resolve의 결의는 별도 뜻이다."
+      },
       "exampleSentences": [
         {
           "en": "The researchers worked out why the two samples produced different results.",
@@ -1216,19 +1221,55 @@
       ],
       "sources": [
         {
-          "publisher": "Oxford Advanced Learner's Dictionary",
-          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
-          "independenceGroup": "Oxford",
-          "note": "문제의 답이나 해결책을 찾는 타동사 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/work",
+          "independenceGroup": "American Heritage",
+          "note": "실제 work out 숙어 항목에서 문제의 답·해결책을 찾는 뜻을 확인; 계산·성공적 결과·운동의 별도 용법과 분리. 기존 학습용 정의·창작 예문 재사용, 사전 원문 복제 없음"
         },
         {
           "publisher": "Collins English Dictionary",
           "url": "https://www.collinsdictionary.com/dictionary/english/work-out",
           "independenceGroup": "Collins",
-          "note": "문제를 숙고해 해결하는 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+          "note": "문제의 해답·이유를 생각하거나 논의해 찾아내는 뜻과 명사·의문사절 목적어를 독립 대조; 기존 정의·영한 예문은 자체 편집 콘텐츠이며 사전 원문을 복제하지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/solve",
+          "independenceGroup": "American Heritage",
+          "note": "solve의 문제·수수께끼에 대한 답·설명·해결책을 찾는 동사 뜻 확인; 문제를 다루는 과정과 해결 결과를 구분. 한국어 뜻·치환 안내 자체 편집"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/solve",
+          "independenceGroup": "Collins",
+          "note": "문제·질문의 해결책·답을 찾는 뜻과 명사 목적어 용법 독립 대조; 숫자 계산만으로 제한하지 않음. 사전 원문 복제 없음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/figure",
+          "independenceGroup": "American Heritage",
+          "note": "figure out 숙어의 알아내기·결정하기·풀어내기 뜻을 확인; 이해와 현실 문제 해결을 무조건 동일시하지 않음. 한국어 풀이 자체 편집"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/figure-out",
+          "independenceGroup": "Collins",
+          "note": "이유·해결책을 이해하거나 찾아내는 비격식 표현과 의문사절·명사 목적어, 대명사 가운데 배치 독립 대조; 계산의 별도 뜻과 분리. 원문 복제 없음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/resolve",
+          "independenceGroup": "American Heritage",
+          "note": "문제를 풀거나 갈등을 끝내는 동사 뜻 확인; 결심하다·명사 결의 및 전문 분야 용법과 분리. 기존 관련어 분류 유지, 한국어 뜻 자체 편집"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/resolve",
+          "independenceGroup": "Collins",
+          "note": "문제·논쟁 해결의 격식 용법과 명사 목적어 독립 대조; resolve to/that의 결심 및 명사 결의와 구분. 치환 조건 자체 편집, 사전 원문 복제 없음"
         }
       ],
-      "sourceCheckedAt": "2026.09.23",
+      "sourceCheckedAt": "2026.10.09",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",

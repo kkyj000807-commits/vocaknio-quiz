@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.24",
+  "release": "1.25",
   "entries": [
     {
       "word": "a wide range of",
@@ -5463,8 +5463,14 @@
         "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
-          "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
-          "https://www.collinsdictionary.com/dictionary/english/work-out"
+          "https://www.thefreedictionary.com/work",
+          "https://www.collinsdictionary.com/dictionary/english/work-out",
+          "https://www.thefreedictionary.com/solve",
+          "https://www.collinsdictionary.com/dictionary/english/solve",
+          "https://www.thefreedictionary.com/figure",
+          "https://www.collinsdictionary.com/dictionary/english/figure-out",
+          "https://www.thefreedictionary.com/resolve",
+          "https://www.collinsdictionary.com/dictionary/english/resolve"
         ]
       },
       "koreanMeaning": "문제의 해답을 찾아내다",
@@ -5478,8 +5484,14 @@
       ],
       "distinctionNote": "work on: 해결을 위해 다루는 과정일 수 있지만 해답을 찾아냈다는 결과까지 뜻하지 않는다. | rule out: 후보 하나를 제외하는 것이며 문제 전체의 해결책을 찾아내는 뜻은 아니다. | carry out: 계획을 수행하는 뜻이지 문제를 생각해 풀어내는 뜻이 아니다.",
       "sourceIds": [
-        "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
-        "https://www.collinsdictionary.com/dictionary/english/work-out"
+        "https://www.thefreedictionary.com/work",
+        "https://www.collinsdictionary.com/dictionary/english/work-out",
+        "https://www.thefreedictionary.com/solve",
+        "https://www.collinsdictionary.com/dictionary/english/solve",
+        "https://www.thefreedictionary.com/figure",
+        "https://www.collinsdictionary.com/dictionary/english/figure-out",
+        "https://www.thefreedictionary.com/resolve",
+        "https://www.collinsdictionary.com/dictionary/english/resolve"
       ],
       "itemIds": [
         "JBKROW000044",

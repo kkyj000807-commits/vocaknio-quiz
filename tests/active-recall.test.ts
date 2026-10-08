@@ -529,7 +529,39 @@ describe("영어→영어 active recall", () => {
     expect(new Set(senses.map(sense => sense.conciseEnglishDefinition)).size).toBe(4);
     expect(senses.every(sense => sense.itemIds.length === 4)).toBe(true);
     expect(senses.every(sense => sense.exampleSentences.length === 1)).toBe(true);
-    expect(senses.every(sense => sense.sources.length === 2)).toBe(true);
+    expect(senses.map(sense => sense.sources.length)).toEqual([8, 2, 2, 2]);
+  });
+
+  it("문제 해결의3관계어만 보강하고 work out 네 뜻·반복4행의 학습 키를 유지한다", () => {
+    const senses = getActiveRecallSenses(workOutRows[0].id);
+    const solve = senses[0];
+    expect(Object.keys(solve.relationMeaningsKo!)).toEqual(["solve", "figure out", "resolve"]);
+    expect(solve.relationMeaningsKo?.solve).toContain("명사 목적어로 문장을 바꾼다");
+    expect(solve.relationMeaningsKo?.["figure out"]).toContain("현실의 문제가 반드시 해결된 것은 아니다");
+    expect(solve.relationMeaningsKo?.["figure out"]).toContain("figure it out");
+    expect(solve.relationMeaningsKo?.resolve).toContain("관련어로 표시한다");
+    expect(solve.relationMeaningsKo?.resolve).toContain("결의는 별도 뜻이다");
+    expect(solve.exactSynonyms).toEqual([]);
+    expect(solve.nearSynonyms).toEqual(["solve", "figure out"]);
+    expect(solve.relatedWords).toEqual(["resolve"]);
+    expect(solve.englishDefinition).toBe("To find an answer or solution to a problem by thinking about it carefully.");
+    expect(solve.exampleSentences[0].en).toBe("The researchers worked out why the two samples produced different results.");
+    for (const row of workOutRows) {
+      expect(getActiveRecallSenses(row.id)[0]).toBe(solve);
+      expect(getItemLearningTargets(row).map(target => target.key)).toEqual([
+        "sense:work-out%3Asolve-problem", "sense:work-out%3Acalculate-value",
+        "sense:work-out%3Aend-successfully", "sense:work-out%3Aexercise-body",
+      ]);
+    }
+    expect(solve.sources).toHaveLength(8);
+    expect(new Set(solve.sources.map(source => source.url)).size).toBe(8);
+    expect(new Set(solve.sources.map(source => source.independenceGroup))).toEqual(new Set(["American Heritage", "Collins"]));
+    expect(solve.sources[0].url).toBe("https://www.thefreedictionary.com/work");
+    expect(solve.sourceCheckedAt).toBe("2026.10.09");
+    for (const other of senses.slice(1)) {
+      expect(other.relationMeaningsKo).toBeUndefined();
+      expect(other.sourceCheckedAt).toBe("2026.09.23");
+    }
   });
 
   it("work out 영영 문제도 정답 하나와 sense 계약을 유지한다", () => {

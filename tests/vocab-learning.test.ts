@@ -198,6 +198,31 @@ describe("깊이 학습 인덱스", () => {
     expect(VOCAB).toHaveLength(38163);
   });
 
+  it("work out4출현은 같은 보강을 공유하고 기존 호환 해설·수치·성과·운동 의미를 보존한다", () => {
+    const rows = VOCAB.filter(item => item.w === "work out");
+    expect(rows.map(item => [item.id, item.num, item.group])).toEqual([
+      ["JBKROW000044", 42, "V101"], ["JBKROW004038", 3973, "V101"],
+      ["JBKROW006121", 6012, "V201"], ["JBKROW008146", 8012, "V201"],
+    ]);
+    const first = getActiveRecallSenses(rows[0].id);
+    for (const row of rows) {
+      const active = getActiveRecallSenses(row.id);
+      expect(active).toHaveLength(4);
+      expect(active[0]).toBe(first[0]);
+      expect(Object.keys(active[0].relationMeaningsKo!)).toHaveLength(3);
+      expect(active.slice(1).every(sense => !sense.relationMeaningsKo)).toBe(true);
+      const pointer = learningIndex.items[row.id as keyof typeof learningIndex.items];
+      const payload = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public", "data", "vocab-learning", release.version, `${pointer.group.toLowerCase()}.json`), "utf8"));
+      const matches = payload.entries.filter((entry: { id: string }) => pointer.entryIds.includes(entry.id));
+      expect(matches).toHaveLength(pointer.entryIds.length);
+      expect(matches.every((entry: { itemIds: string[] }) => entry.itemIds.includes(row.id))).toBe(true);
+      expect(matches.some((entry: { senseId: string }) => entry.senseId === "work-out:solve-problem")).toBe(false);
+    }
+    expect(first[0].exampleSentences[0].type).toBe("editorial");
+    expect(first[0].exampleSentences[0].cueKo).toContain("why");
+    expect(VOCAB).toHaveLength(38163);
+  });
+
   it("Open English WordNet의 같은 synset 동의어만 공개 데이터에 전달한다", () => {
     const publicEntries = ["v101", "v201", "v301", "v401", "v501", "v502", "v601", "appendix"]
       .flatMap((group) => (JSON.parse(fs.readFileSync(
