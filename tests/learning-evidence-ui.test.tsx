@@ -396,6 +396,31 @@ describe("reviewed learning evidence and explanation boundaries", () => {
     expect(native.openURL.mock.calls.map(call => call[0])).toEqual(sense.sources.slice(0, 2).map(source => source.url));
   });
 
+  it("결과 뜻의5관계어·영한예문·3원전은 정답 후에만 보이며 상세 해설에서 중복하지 않는다", async () => {
+    const sense = ACTIVE_RECALL_SENSES.find(entry => entry.senseId === "work-out:end-successfully")!;
+    const prompt = render(<ActiveRecallPrompt recall={sense} />);
+    const answer = render(<ActiveRecallAnswer recall={sense} />);
+    const detail = render(<ActiveRecallStudyDetails entry={sense} index={2} count={4} />);
+    for (const meaning of Object.values(sense.relationMeaningsKo!)) {
+      expect(answer).toContain(meaning);
+      expect(occurrences(detail, meaning)).toBe(1);
+      expect(prompt).not.toContain(meaning);
+    }
+    expect(detail).toContain(sense.exampleSentences[0].ko);
+    expect(detail).not.toContain("수치·양·금액을 계산해 구하다");
+    expect(detail).not.toContain("운동하다·몸을 단련하다");
+    expect(prompt).not.toContain(sense.koreanMeaning);
+    native.links.length = 0;
+    const evidence = render(<LearningEvidence entry={sense} />);
+    for (const label of ["TFD · American Heritage ↗", "Collins ↗", "Oxford ↗"]) expect(occurrences(evidence, label)).toBe(1);
+    expect(evidence).toContain("2026.10.09");
+    expect(evidence).toContain("예문은 학습용 창작");
+    expect(native.links).toHaveLength(3);
+    for (const link of native.links) link.press();
+    await Promise.resolve();
+    expect(native.openURL.mock.calls.map(call => call[0])).toEqual([sense.sources[0].url, sense.sources[1].url, sense.sources.at(-1)!.url]);
+  });
+
   it("does not describe mixed-source examples as entirely original", () => {
     const html = render(<LearningEvidence entry={{ ...entry, exampleSentences: [{ ...entry.exampleSentences[0], type: "source" }] }} />);
     expect(html).toContain("예문은 항목별 출처·창작 구분");

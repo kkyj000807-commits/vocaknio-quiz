@@ -529,7 +529,7 @@ describe("영어→영어 active recall", () => {
     expect(new Set(senses.map(sense => sense.conciseEnglishDefinition)).size).toBe(4);
     expect(senses.every(sense => sense.itemIds.length === 4)).toBe(true);
     expect(senses.every(sense => sense.exampleSentences.length === 1)).toBe(true);
-    expect(senses.map(sense => sense.sources.length)).toEqual([8, 12, 2, 2]);
+    expect(senses.map(sense => sense.sources.length)).toEqual([8, 12, 13, 2]);
   });
 
   it("문제 해결의3관계어만 보강하고 work out 네 뜻·반복4행의 학습 키를 유지한다", () => {
@@ -558,7 +558,7 @@ describe("영어→영어 active recall", () => {
     expect(new Set(solve.sources.map(source => source.independenceGroup))).toEqual(new Set(["American Heritage", "Collins"]));
     expect(solve.sources[0].url).toBe("https://www.thefreedictionary.com/work");
     expect(solve.sourceCheckedAt).toBe("2026.10.09");
-    for (const other of senses.slice(2)) {
+    for (const other of senses.slice(3)) {
       expect(other.relationMeaningsKo).toBeUndefined();
       expect(other.sourceCheckedAt).toBe("2026.09.23");
     }
@@ -592,6 +592,42 @@ describe("영어→영어 active recall", () => {
     expect(calculate.sourceCheckedAt).toBe("2026.10.09");
     const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [workOutRows[0].num], learningTargetKeys: ["sense:work-out%3Acalculate-value"] });
     expect(question.recall).toBe(calculate);
+    expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
+    expect(validateQuestion(question)).toBe(true);
+  });
+
+  it("결과5관계어의 강도·구문 경계를 공유하고 정확한 결과 뜻만 출제한다", () => {
+    const senses = getActiveRecallSenses(workOutRows[0].id);
+    const result = senses[2];
+    expect(Object.keys(result.relationMeaningsKo!)).toEqual(["turn out well", "succeed", "fall apart", "go wrong", "resolve itself"]);
+    expect(result.relationMeaningsKo?.["turn out well"]).toContain("turn out만으로 성공을 보장하지 않는다");
+    expect(result.relationMeaningsKo?.["turn out well"]).toContain("well을 두 번 붙이지 않으며");
+    expect(result.relationMeaningsKo?.succeed).toContain("succeed in + 명사/동명사");
+    expect(result.relationMeaningsKo?.["fall apart"]).toContain("모든 work out 실패를 fall apart로 바꿀 수 없다");
+    expect(result.relationMeaningsKo?.["go wrong"]).toContain("모든 것이 완전히 붕괴했다는 말은 아니다");
+    expect(result.relationMeaningsKo?.["resolve itself"]).toContain("복수 주어에는 themselves");
+    expect(result.relationMeaningsKo?.["resolve itself"]).toContain("상황 전체의 성공이나 사람의 노력이 전혀 없었다는 사실까지 보장하지 않는다");
+    expect(result.exactSynonyms).toEqual([]);
+    expect(result.nearSynonyms).toEqual(["turn out well", "succeed"]);
+    expect(result.antonyms).toEqual(["fall apart", "go wrong"]);
+    expect(result.relatedWords).toEqual(["resolve itself"]);
+    expect(result.englishDefinition).toBe("For a situation, arrangement, or relationship to develop or end in a satisfactory way.");
+    expect(result.exampleSentences[0].en).toBe("The first schedule caused delays, but the revised arrangement worked out well.");
+    for (const row of workOutRows) {
+      expect(getActiveRecallSenses(row.id)[2]).toBe(result);
+      expect(getItemLearningTargets(row).map(target => target.key)).toEqual([
+        "sense:work-out%3Asolve-problem", "sense:work-out%3Acalculate-value",
+        "sense:work-out%3Aend-successfully", "sense:work-out%3Aexercise-body",
+      ]);
+    }
+    expect(result.sources).toHaveLength(13);
+    expect(new Set(result.sources.map(source => source.url)).size).toBe(13);
+    expect(new Set(result.sources.map(source => source.independenceGroup))).toEqual(new Set(["American Heritage", "Collins", "Oxford"]));
+    expect(result.sources[0].url).toBe("https://www.thefreedictionary.com/work");
+    expect(result.sources.at(-1)?.url).toBe("https://www.oxfordlearnersdictionaries.com/us/definition/english/resolve_1");
+    expect(result.sourceCheckedAt).toBe("2026.10.09");
+    const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [workOutRows[0].num], learningTargetKeys: ["sense:work-out%3Aend-successfully"] });
+    expect(question.recall).toBe(result);
     expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
     expect(validateQuestion(question)).toBe(true);
   });

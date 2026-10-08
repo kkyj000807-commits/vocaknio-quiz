@@ -1414,6 +1414,13 @@
       "antonyms": ["fall apart", "go wrong"],
       "variants": [],
       "relatedWords": ["resolve itself"],
+      "relationMeaningsKo": {
+        "turn out well": "결과가 좋게 나오다. turn out은 어떤 결과로 끝나는지에 초점을 두며 well이 만족스러운 방향을 더한다. turn out만으로 성공을 보장하지 않는다. 상황·계획을 주어로 한 work out (well)과 바꿀 수 있지만 well을 두 번 붙이지 않으며, 생산하다·불을 끄다라는 타동사 뜻과는 다르다.",
+        "succeed": "의도한 목표를 이루다·계획이 성공하다. 계획·시도가 목적을 달성하는 상황에서는 work out과 가까우나, 전반적으로 잘 풀렸다는 결과 평가보다 목표 달성에 초점이 있다. 사람의 행위에는 succeed in + 명사/동명사를 쓰며 out을 남기지 않는다. 다른 사람의 직책을 이어받다는 뜻은 별개다.",
+        "fall apart": "계획·관계·체계가 무너지거나 제 기능을 잃다. 잘 유지되어 만족스럽게 풀리는 상황과 문맥상 반대 방향이지만, 단순히 기대에 못 미치는 것보다 붕괴·해체가 강하다. 모든 work out 실패를 fall apart로 바꿀 수 없다. 물건이 부서지거나 사람이 감정적으로 무너지는 별도 뜻과 구분한다.",
+        "go wrong": "일이 의도와 다르게 나빠지다·잘못되다. 상황이 만족스럽게 풀리는 work out과 문맥상 반대이며, 진행 중 문제가 생기는 데에도 쓸 수 있다. 잘못된 부분이 있다는 말이지 모든 것이 완전히 붕괴했다는 말은 아니다. 사람이 실수하거나 기계가 고장 나는 별도 뜻을 이 결과 뜻에 섞지 않는다.",
+        "resolve itself": "문제·갈등이 해결되다. 다소 격식 있는 resolve의 해결 뜻에 재귀 목적어 itself를 붙여 문제 자체가 풀리는 결과에 초점을 둔다. 계획·관계가 전반적으로 잘 풀린다는 work out과 항상 같지 않으므로 관련어로 둔다. 주어가 해결할 문제일 때만 비교하고 복수 주어에는 themselves를 쓴다. 상황 전체의 성공이나 사람의 노력이 전혀 없었다는 사실까지 보장하지 않는다. 결심하다·다른 형태로 변하다는 뜻은 별개다."
+      },
       "exampleSentences": [
         {
           "en": "The first schedule caused delays, but the revised arrangement worked out well.",
@@ -1443,19 +1450,85 @@
       ],
       "sources": [
         {
-          "publisher": "Oxford Advanced Learner's Dictionary",
-          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
-          "independenceGroup": "Oxford",
-          "note": "상황이 만족스럽게 전개되거나 끝나는 자동사 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/work",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.09 실제 열람: American Heritage work out의 성공·효과·만족스러운 결과 뜻을 우선 확인; 문제 해결·계산·운동과 분리. 기존 자체 편집 정의·창작 예문 재사용; 원문 복제 없음"
         },
         {
           "publisher": "Collins English Dictionary",
           "url": "https://www.collinsdictionary.com/dictionary/english/work-out",
           "independenceGroup": "Collins",
-          "note": "일이 잘 풀리는 결과 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+          "note": "2026.10.09 공식 COBUILD 상황의 만족스러운 진행·결과 뜻 독립 대조; 자동사 work out (well)과 재귀 work itself out을 구분. TFD Collins 전재는 독립 출처로 중복 계산하지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/turn",
+          "independenceGroup": "American Heritage",
+          "note": "American Heritage turn out의 결과 뜻 우선 확인; 긍정 방향은 well이 더함. 생산·끄다·참석하다와 분리하고 work out과 무조건 같은 뜻으로 처리하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/turn-out",
+          "independenceGroup": "Collins",
+          "note": "지정된 방식·성공 정도로 끝나는 결과 뜻과 부사 구조 독립 대조; turn out 단독의 성공 보장으로 강화하지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/succeed",
+          "independenceGroup": "American Heritage",
+          "note": "의도하거나 원하는 것을 이루는 자동사 뜻 우선 확인; 타동사 뒤를 잇다·직책 승계와 분리. 원문 복제 없음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/succeed",
+          "independenceGroup": "Collins",
+          "note": "계획의 만족스러운 작동·의도한 결과와 succeed in 구문 독립 대조; 목표 성공과 전반적 결과 평가의 치환 조건은 자체 편집 풀이"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/fall",
+          "independenceGroup": "American Heritage",
+          "note": "fall apart의 무너지다·붕괴하다 뜻 우선 확인; 물리적 파손·감정 붕괴를 상황 결과와 무조건 결합하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/fall-apart",
+          "independenceGroup": "Collins",
+          "note": "조직·체계·관계의 기능 상실·해체 뜻 독립 대조; work out과 반대 방향인 문맥에 한정하며 작은 실패까지 붕괴로 강화하지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/wrong",
+          "independenceGroup": "American Heritage",
+          "note": "wrong 본문의 go wrong 결과가 나빠지다 뜻 우선 확인; go 페이지에서는 해당 구문을 확인하지 못해 근거로 세지 않음. 실수·도덕적 일탈과 구분"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/go-wrong",
+          "independenceGroup": "Collins",
+          "note": "상황이 의도한 진행에서 벗어나 나빠지는 뜻 독립 대조; 전체 붕괴·개인의 실수·기계 고장과 동일시하지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/resolve",
+          "independenceGroup": "American Heritage",
+          "note": "문제 해결·갈등의 결론 뜻 우선 확인; resolve itself into의 형태 변화·결심·명사 결의와 구분. 이 본문만으로 자연 해결 구문 전체를 검수했다고 주장하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/resolve",
+          "independenceGroup": "Collins",
+          "note": "격식 있는 문제·갈등 해결 뜻 독립 대조; 상황 전반의 성공과 문제 해결을 관련어 수준으로 분리. 원문 복제 없음"
+        },
+        {
+          "publisher": "Oxford Advanced Learner's Dictionary",
+          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/resolve_1",
+          "independenceGroup": "Oxford",
+          "note": "2026.10.09 문제·어려움의 수용 가능한 해결 뜻 및 resolve itself 재귀 구문을 선별 확인; may/could 용례를 확실한 성공·무노력 보장으로 강화하지 않음. 원문·예문 복제 없음"
         }
       ],
-      "sourceCheckedAt": "2026.09.23",
+      "sourceCheckedAt": "2026.10.09",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",

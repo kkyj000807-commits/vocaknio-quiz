@@ -4,7 +4,16 @@
 
 사전 우선순위(2026.10.06 사용자 재확인): The Free Dictionary https://www.thefreedictionary.com/ 를 첫 검수 출처로 활용한다. 뜻·숙어·구문·용례·관계어를 sense 단위로 먼저 확인하고 부족/충돌 부분만 다른 독립 사전으로 대조한다. 직전 정책 등록 시 홈페이지 웹 fetch는 읽지 못해 근거로 세지 않았고 당시 문서만 변경하여 공개1.12·학습 데이터를 보존했다(잠금58403/PID22540). 이번1.13에서는 일반 Chrome의 실제 항목 열람을 확인했다. 실제 확인한 범위만 링크/수록 원전/확인일과 함께 기록하며 제한을 우회하거나 대량 원문을 복제하지 않는다. 기존 자동화의 TFD 우선 규칙을 유지하고 새 자동화는 만들지 않았다.
 
-## 최신 공개 batch — work out 수치 계산 관계어 / 1.26
+## 진행 후보 — work out 만족스러운 결과 관계어 / 1.27 (공개 전)
+
+- 시작 2026.10.09 05:38 KST heartbeat: 최신 공개1.26/source ef971706·main/origin e5cc7911·Pages6071e6e1/built/error null과 AGENTS/AI_WORK_RULES/WORKING_CONTEXT/AUTOMATION_RUNBOOK·git status/diff 대조. 소유 잠금22632/PID18664 LOCK_ACQUIRED. 사용자1.4/auth/미추적 변경 보존; 새 대화·자동화·보조 작업0.
+- 체크리스트: (1) TFD 우선·독립 사전 대조 (2) end-successfully 한 공유 뜻의 누락5관계어 풀이만 보강 (3) 관련3테스트·verify (4) Production/Git 보안·격리 응답→통계→동일 뜻 한 번 복습 (5) 반응형·Pages 실제 manifest/hash/UI. 공개 검증 전 완료로 세지 않는다.
+- 근거: TFD work/turn/succeed/fall/wrong/resolve의 American Heritage 본문6곳 우선 열람, Collins 공식6곳 독립 대조. go 페이지에서는 go wrong을 확인하지 못해 제외. resolve itself는 AHD·Collins의 기본 해결 뜻만으로 구문 전체 검수라 하지 않고 Oxford resolve_1의 재귀 구조를 선별 확인. 수록 Collins 전재 중복0, 앱 근거13직접 페이지/3원전; 참고 Cambridge 기본 resolve 열람은 별도 추가하지 않음. 원문·예문 복제0.
+- 범위: turn out well/succeed/fall apart/go wrong/resolve itself5뜻·구문·강도·치환 조건과 실제 확인 출처/날짜만 부분 보강. 자동사 결과·목표 달성·붕괴·진행 악화·문제 해결을 구분하고 문맥상 반대/관련어 분류 보존. 기존4반복행·다른3뜻·정의/영한예문/문항/정답·네 학습key·원본38163행 유지. DB/API/migration·신규 정의/예문/문항0. 편입영어 검수 스킬의 의미 강화 반례 적용.
+- VERIFIED 코드: 첫 전용 검사에서 새버전 파생 파일 생성 전 ENOENT·새 테스트의 undefined not.toHaveProperty 오류 발견; 기존 빌더 실행·빈값 분기 수정 후 관련3파일78 PASS(신규3). verify33993 exit0·타입/정의/등록/sense/학습 감사·37파일351 PASS/기존 인증1 SKIP. 수정 테스트 ESLint 오류0·Git 보안 tracked656/untracked212/findings0. JSON 전후 변경 sense end-successfully 하나/필드 relationMeaningsKo,sources,sourceCheckedAt3개; 호환 JSON8개1.26 대비 version 외 동일. 공유20production sense/37행·호환165sense/230행 유지. 원본SHA256 7EBA20F388D04E9D7FB10EDEC635BEAC5DC7A6C726EF6E25D7DABA4CE57908DD 동일. 기존 CJS/ESLint 모듈·LF/CRLF 알림은 무관한 설정 변경 없이 유지.
+- 남은 검증: Production·Git 보안, 격리 UI 기록 순환, 반응형 및 공개 배포 검증. 실제 Safari/mobile Chrome/Samsung Internet·Galaxy Tab 강제다크·중앙DB unverified/sync_required·장기효과 미확인 유지.
+
+## 직전 공개 batch — work out 수치 계산 관계어 / 1.26
 
 - 시작 2026.10.09 04:43 KST heartbeat: 최신 공개1.25/source6ce27fde·main/origin0b803af4·Pages9037618a와 AGENTS/AI_WORK_RULES/WORKING_CONTEXT/AUTOMATION_RUNBOOK·git status/diff 대조. 소유 잠금41327/PID18620 LOCK_ACQUIRED. 사용자1.4/auth/미추적 작업 보존; 새 대화·자동화·보조 작업0.
 - 범위: work-out:calculate-value 한 공유 뜻의 누락 calculate/compute/estimate blindly/derive4풀이·출처·확인일만 부분 보강. 사전 대조상 estimate blindly는 고정 사전 반의어가 아닌 편집 대비이므로 기존 antonyms에서 relatedWords로 이동; estimate의 근거 있는 어림과 blindly의 정보·검토 부족을 구분. 다른 세 work out 뜻·반복4행·정의/영한예문/문항/정답·네 학습key·원본38163행 유지, DB/API/migration·신규 정의/예문/문항0.

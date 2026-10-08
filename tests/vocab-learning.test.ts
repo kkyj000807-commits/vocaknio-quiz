@@ -212,7 +212,9 @@ describe("깊이 학습 인덱스", () => {
       expect(Object.keys(active[0].relationMeaningsKo!)).toHaveLength(3);
       expect(active[1]).toBe(first[1]);
       expect(Object.keys(active[1].relationMeaningsKo!)).toHaveLength(4);
-      expect(active.slice(2).every(sense => !sense.relationMeaningsKo)).toBe(true);
+      expect(active[2]).toBe(first[2]);
+      expect(Object.keys(active[2].relationMeaningsKo!)).toHaveLength(5);
+      expect(active[3].relationMeaningsKo).toBeUndefined();
       const pointer = learningIndex.items[row.id as keyof typeof learningIndex.items];
       const payload = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public", "data", "vocab-learning", release.version, `${pointer.group.toLowerCase()}.json`), "utf8"));
       const matches = payload.entries.filter((entry: { id: string }) => pointer.entryIds.includes(entry.id));
@@ -234,13 +236,34 @@ describe("깊이 학습 인덱스", () => {
       expect(active[1].exampleSentences).toHaveLength(1);
       expect(active[1].exampleSentences[0].ko).toBe("학생들은 기록된 다섯 측정값으로 평균을 계산했다.");
       expect(active[0].relationMeaningsKo).not.toHaveProperty("calculate");
-      expect(active[2].sourceCheckedAt).toBe("2026.09.23");
+      expect(active[2].sourceCheckedAt).toBe("2026.10.09");
       expect(active[3].sourceCheckedAt).toBe("2026.09.23");
     }
     expect(senses[1].itemIds).toEqual(rows.map(row => row.id));
     const differences = VOCAB.filter(item => item.w === "work out difference");
     expect(differences.map(row => [row.num, row.group])).toEqual([[17756, "V501"], [22339, "V501"]]);
     for (const row of differences) expect(getActiveRecallSenses(row.id)).not.toContain(senses[1]);
+    expect(VOCAB).toHaveLength(38163);
+  });
+
+  it("결과 관계어도4출현이 같은 sense를 재사용하며 계산·운동·difference 행으로 새지 않는다", () => {
+    const rows = VOCAB.filter(item => item.w === "work out");
+    const senses = getActiveRecallSenses(rows[0].id);
+    const result = senses[2];
+    for (const row of rows) {
+      expect(getActiveRecallSenses(row.id)[2]).toBe(result);
+      expect(result.itemIds).toContain(row.id);
+      expect(result.exampleSentences).toHaveLength(1);
+      expect(result.exampleSentences[0].ko).toBe("첫 일정은 지연을 일으켰지만 수정된 계획은 결과적으로 잘 풀렸다.");
+    }
+    for (const other of [senses[0], senses[1], senses[3]]) {
+      expect(other.relationMeaningsKo ?? {}).not.toHaveProperty("turn out well");
+      expect(other.relationMeaningsKo ?? {}).not.toHaveProperty("resolve itself");
+    }
+    expect(senses[3].relationMeaningsKo).toBeUndefined();
+    expect(senses[3].sourceCheckedAt).toBe("2026.09.23");
+    expect(result.itemIds).toEqual(rows.map(row => row.id));
+    for (const row of VOCAB.filter(item => item.w === "work out difference")) expect(getActiveRecallSenses(row.id)).not.toContain(result);
     expect(VOCAB).toHaveLength(38163);
   });
 
