@@ -4,7 +4,17 @@
 
 사전 우선순위(2026.10.06 사용자 재확인): The Free Dictionary https://www.thefreedictionary.com/ 를 첫 검수 출처로 활용한다. 뜻·숙어·구문·용례·관계어를 sense 단위로 먼저 확인하고 부족/충돌 부분만 다른 독립 사전으로 대조한다. 직전 정책 등록 시 홈페이지 웹 fetch는 읽지 못해 근거로 세지 않았고 당시 문서만 변경하여 공개1.12·학습 데이터를 보존했다(잠금58403/PID22540). 이번1.13에서는 일반 Chrome의 실제 항목 열람을 확인했다. 실제 확인한 범위만 링크/수록 원전/확인일과 함께 기록하며 제한을 우회하거나 대량 원문을 복제하지 않는다. 기존 자동화의 TFD 우선 규칙을 유지하고 새 자동화는 만들지 않았다.
 
-## 최신 공개 batch — Sentence Completion 정식 문풀 / 1.19
+## 현재 batch — 논리 문항의 점검 조건·단정 경계 / 1.20 후보
+
+- 시작 2026.10.08 18:25 KST: 공개1.19/source38342e1c·main/origin6d35e638·Pages b0601864와 문서·git status/diff 대조. 이전 잠금/PID 없음 확인 후 새 잠금35978/PID11196 LOCK_ACQUIRED. 사용자1.4/인증/미추적 작업 보존, 새 대화·자동화·보조 작업0.
+- 요구/범위 체크리스트: (1) 기존 난도상3문항의 정답을 가린 채 단서·오답 검토 (2) 실제 확인된 문맥 강화만 최소 수정 (3) ID/관련sense/학습상태·기록 유지 (4) 새 채점/복원/해설 테스트·전체검사 (5) Production/Git 보안·격리 UI·공개 버전 검증. 현재1~3/좁은검사 완료,4의 전체검사와5는 미완료. 공개는 아직1.19이며 후보1.20을 공개 완료로 보고하지 않는다.
+- 확인/수정: 기존 claim-evidence/attitude/time-change3문항을 정답 없이 읽은 예측 c/a/d가 저장된 정답과 일치했다. 앞2문항은 이번 수정0. sc-time-project-v1은 rejects reports without independent checks에서 점검 절차의 필요성을 말하는데 기존 정답 requiring verified content/번역 검증된 내용은 성공적인 정확성 입증으로 읽힐 여지가 있었다. 정답 d를 requiring independent checks로 좁히고 정답 이유·필요 의미·first year/now/even when·승인 수량/품질의 구별·오답3개의 배제 및 성립 조건을 자체 편집했다. 지문/문제ID/선지ID/정답ID/난도/어휘sense/학습 target sentence:sc-time-project-v1/등록12문항은 유지한다. 독립 시험 난도·학습효과 검수 완료는 아니다.
+- 의미 근거 2026.10.08: TFD check/verify 웹 fetch는 제한되어 근거로 세지 않았고 실제 IAB에서 American Heritage의 check 명사1a(검사·시험 행위)/verify 동사1(정확성 입증)를 열람했다. [TFD check](https://www.thefreedictionary.com/check), [TFD verify](https://www.thefreedictionary.com/verify). 독립 [Collins check](https://www.collinsdictionary.com/dictionary/english/check) 명사/조사 의미와 [Collins verify](https://www.collinsdictionary.com/dictionary/english/verify)를 대조했다. TFD 내 Collins 전재 중복 계산0, 법률/억제 등 다른 뜻을 합치지 않았다. 두 동사의 의미가 전혀 겹치지 않는다는 주장이 아니라 이 지문에 성공적인 점검 결과가 명시되지 않았다는 문맥 판단이다. 사전 원문/예문 복제0, 스킬의 필요조건·가능→확실 강화 반례 기준 적용. 중앙DB 접근/동기화 unverified/sync_required 유지.
+- 좁은검사: Sentence Completion2파일21 PASS(기존19+신규2). 신규 테스트는 현재 정답/학습 key 유지·옛 강한 정답이 들어간 중단 세션 거절·정답 후 필요조건과 정확성 비단정/승인 수량 표시를 확인한다. 첫 신규 테스트 실패는 QuizChoice.text라는 없는 필드를 읽은 테스트 작성 오류였고 실제 value/label/word 구조로 고쳤다. 앱 엔진/검수 조건 완화0. 전체검사·Production·UI·배포 전까지 후보 유지.
+- VERIFIED 전체검사77355: TypeScript·등록/학습/정의/sense 감사·37파일330 PASS/기존 인증1 SKIP(총38파일331), exit0. 변경2테스트 ESLint 오류0·diff --check PASS. Git 보안 tracked600/untracked212/findings0. 원본38163행 SHA256 7EBA20F388D04E9D7FB10EDEC635BEAC5DC7A6C726EF6E25D7DABA4CE57908DD 동일. 빌더의1.20 학습JSON8개/인덱스·canonical release/감사 시각만 파생 재생성되며 기존 공유165sense/230행 내용 보강0; 사용자1.4/auth 등은 stage하지 않는다. Production/실제 UI/공개 배포는 아직 미완료.
+- NEXT: node scripts/verify-project.mjs 및 변경파일 lint/diff 검사 → Production/Git 보안 → 격리 IAB에서 이 문항의 오답·새 해설·통계/동일 문항 재풀이·새로고침과 Light/Paper/Dark 좁은/태블릿 폭 확인 → 통과 시 승인된 Pages에1.20 배포/공개 manifest·bundle·UI 검증 → 소유 서버/탭 종료·잠금35978에 Enter/LOCK_RELEASED 확인. 실제 Safari/모바일 Chrome/Samsung Internet과 창작 난도·장기 전이 효과는 별도 미확인으로 보존한다.
+
+## 직전 공개 batch — Sentence Completion 정식 문풀 / 1.19
 
 - 기준 2026.10.07 KST: 공개1.18/main4396c503, 기존 abide by 1.19 미커밋 후보와 사용자 dirty를 보존한 채 새 명시 요구를 우선 통합했다. 잠금93897/PID20344 LOCK_ACQUIRED. 시작 가용 물리메모리 약7.9GiB/commit 약42GiB로 이전 OOM 보류 조건이 해소되어 검증을 재개했다. 새 대화·자동화·보조 작업·DB/API/migration0.
 - 기존 조사: 메인 문풀은 QuizQuestion/QuizChoice → quiz-session → recordOneAnswer 공통 저장 큐 → adaptive history/sense state/wrong words → learning-statistics → 같은 /quiz 복습이다. 기출의 ExamQuestion/logic-blank는 별도 화면에서 집계만 기록하며 원문/빈칸/정답 미검수 항목이 있어 자동 승격하지 않았다. 해설 아래 reasoning-practice는 피드백용 로컬 기록이므로 본 성적에 합치지 않았다.

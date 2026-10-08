@@ -63,4 +63,16 @@ describe("Sentence Completion answer-only explanation and real statistics", () =
     expect(typed.performance.attempts).toBe(1); expect(typed.logicPerformance[0].wrong).toBe(1);
     expect(typed.difficultyPerformance[0].label).toBe("난도 하");
   });
+  it("shows the checking requirement and its limit only after the time-change answer", () => {
+    const q = SENTENCE_COMPLETION_QUESTIONS.find(source => source.id === "sc-time-project-v1")!;
+    const prompt = renderToStaticMarkup(<SentenceCompletionPrompt question={q} />);
+    expect(prompt).not.toContain("필요조건");
+    const answer = renderToStaticMarkup(<SentenceCompletionAnswer question={q} selectedId={`${q.id}:c`} />);
+    expect(answer).toContain("a shift from counting submissions to requiring independent checks");
+    expect(answer).not.toContain("requiring verified content");
+    expect(answer).toContain("점검은 승인의 필요조건");
+    expect(answer).toContain("내용의 정확성이 이미 입증되었다는 뜻은 아니다");
+    expect(answer).toContain("승인된 보고서 수");
+    expect(answer).toContain(q.translationKo);
+  });
 });

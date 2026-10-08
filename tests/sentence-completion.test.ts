@@ -72,4 +72,27 @@ describe("Sentence Completion uses the existing question contract", () => {
     const invalid = clone(session); invalid.questions[0].sentenceCompletion!.correctChoiceId = "b";
     expect(parseQuizSession(invalid)).toBeNull();
   });
+  it("keeps the time-change answer within the checking condition and rejects the old stronger answer", () => {
+    const source = SENTENCE_COMPLETION_QUESTIONS.find(q => q.id === "sc-time-project-v1")!;
+    const item = VOCAB_BY_ID.get(source.itemId)!;
+    const q = buildQuizQuestions({ mode: "sentence-completion", itemNums: [item.num], count: 1 })[0];
+    expect(source.passageEn).toContain("rejects reports without independent checks");
+    expect(source.correctChoiceId).toBe("d");
+    expect(sentenceCompletionKey(source)).toBe("sentence:sc-time-project-v1");
+    expect(q.choices.filter(c => isChoiceCorrect(q, c)).map(c => c.value)).toEqual([
+      "a shift from counting submissions to requiring independent checks",
+    ]);
+    const answer = source.choices.find(c => c.id === source.correctChoiceId)!;
+    expect(answer.explanationKo).toContain("필요조건");
+    expect(answer.explanationKo).toContain("이미 입증되었다는 뜻은 아니다");
+    const session = { schema: 1, requestKey: "time-change", sessionId: "existing-time-change", questions: [q], states: [createEmptyQuestionViewState()], currentIndex: 0, completed: false };
+    expect(parseQuizSession(clone(session))?.sessionId).toBe(session.sessionId);
+    const stale = clone(session);
+    const oldText = "a shift from counting submissions to requiring verified content";
+    stale.questions[0].correct = oldText;
+    const oldAnswer = stale.questions[0].choices.find(c => c.isCorrect)!;
+    oldAnswer.value = oldText; oldAnswer.label = oldText; oldAnswer.word = oldText;
+    stale.questions[0].sentenceCompletion!.choices.find(c => c.id === "d")!.text = oldText;
+    expect(parseQuizSession(stale)).toBeNull();
+  });
 });
