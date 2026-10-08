@@ -601,6 +601,26 @@ describe("영어→영어 active recall", () => {
     expect(getActiveRecallSenses(wrapUpRows[1].id)[0].senseId).toBe(sense.senseId);
   });
 
+  it("wrap up 관계어의 종료·미완성·지연·추론 경계를 보강하고 두 행의 공유 키를 보존한다", () => {
+    const [sense] = getActiveRecallSenses(wrapUpRows[0].id);
+    expect(Object.keys(sense.relationMeaningsKo!)).toEqual(["bring to a close", "finish up", "leave unfinished", "drag out", "wrap it up", "conclude"]);
+    expect(sense.relationMeaningsKo?.["bring to a close"]).toContain("‘종료’라는 명사");
+    expect(sense.relationMeaningsKo?.["finish up"]).toContain("결국 어떤 곳에 있게 되는 뜻");
+    expect(sense.relationMeaningsKo?.["leave unfinished"]).toContain("영원히 끝내지 않을 것까지 뜻하지는 않는다");
+    expect(sense.relationMeaningsKo?.["drag out"]).toContain("결국 끝날 수도 있어 미완성과 동일하지 않다");
+    expect(sense.relationMeaningsKo?.["wrap it up"]).toContain("wrap up it이 아니라 wrap it up");
+    expect(sense.relationMeaningsKo?.conclude).toContain("conclude that + 문장");
+    expect(sense.englishDefinition).toBe("To finish an activity, discussion, or piece of work by dealing with its remaining details.");
+    expect(sense.exampleSentences[0].en).toBe("The chair wrapped up the meeting after the committee agreed on the final amendment.");
+    expect(sense.exactSynonyms).toEqual([]);
+    expect(sense.antonyms).toEqual(["leave unfinished", "drag out"]);
+    expect(wrapUpRows.map(item => [item.id, item.num, item.group])).toEqual([["JBKROW000016", 14, "V101"], ["JBKROW004042", 3977, "V101"]]);
+    for (const row of wrapUpRows) expect(getItemLearningTargets(row).map(target => target.key)).toEqual(["sense:wrap-up%3Afinish-activity"]);
+    expect(sense.sources[0].url).toBe("https://www.thefreedictionary.com/wrap");
+    expect(sense.sources).toHaveLength(12);
+    expect(new Set(sense.sources.map(source => source.independenceGroup))).toEqual(new Set(["American Heritage", "Collins"]));
+  });
+
   it("wrap up 영영 문제도 정답 하나와 현재 sense 계약을 유지한다", () => {
     vi.spyOn(Math, "random").mockReturnValue(0);
     const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [wrapUpRows[0].num], preserveItemOrder: true });

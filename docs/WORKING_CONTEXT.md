@@ -4,7 +4,16 @@
 
 사전 우선순위(2026.10.06 사용자 재확인): The Free Dictionary https://www.thefreedictionary.com/ 를 첫 검수 출처로 활용한다. 뜻·숙어·구문·용례·관계어를 sense 단위로 먼저 확인하고 부족/충돌 부분만 다른 독립 사전으로 대조한다. 직전 정책 등록 시 홈페이지 웹 fetch는 읽지 못해 근거로 세지 않았고 당시 문서만 변경하여 공개1.12·학습 데이터를 보존했다(잠금58403/PID22540). 이번1.13에서는 일반 Chrome의 실제 항목 열람을 확인했다. 실제 확인한 범위만 링크/수록 원전/확인일과 함께 기록하며 제한을 우회하거나 대량 원문을 복제하지 않는다. 기존 자동화의 TFD 우선 규칙을 유지하고 새 자동화는 만들지 않았다.
 
-## 현재 공개 batch — teem with 관계어 뜻·치환 조건 / 1.21
+## 현재 후보 batch — wrap up 관계어 뜻·문법 치환 / 1.22
+
+- 시작 2026.10.08 20:30 KST heartbeat: 최신 공개1.21/source3c86a62a·main/origin6d8791cd·Pages389776a9와 AGENTS/AI_WORK_RULES/AUTOMATION_RUNBOOK·git status/diff 대조. 새 잠금54391/PID13948 LOCK_ACQUIRED. 사용자1.4/인증/미추적 작업 보존; 새 대화·자동화·보조 작업0.
+- 범위: 기존 wrap-up:finish-activity의 누락6관계어 한국어 뜻·구문·치환 조건만 부분 보강. JBKROW000016(num14)/JBKROW004042(num3977), V101 반복·공유 sense key·정의/영한예문/문항/정답/학습 기록 유지. 원본38163행 재생성·DB/API/migration0.
+- 실제 의미 근거 2026.10.08: TFD 웹 fetch 제한은 근거로 세지 않았으며 일반 IAB에서 wrap/close/finish/unfinished/drag/conclude의 American Heritage 본문·원전 표시를 열람. Collins 공식 wrap-up/close/finish-up/unfinished/drag-out/conclude 본문 대조. finish up 구문 자체는 Collins의 Webster 원전으로 확인했고 TFD의 AHD finish는 본동사 완료 뜻 근거로만 기록. TFD Collins 전재 중복 근거0. 종료 명사 close/형용사 가까움, finish up의 완료/결국 도달/소비, 미완성 상태/지연/영구성, conclude의 종료/that절 추론/합의 성사를 구분하고 대명사 위치 설명. 스킬의 sense·범위 강화 반례 기준 적용; 사전 원문·예문 복제0. 기존 충분한 정의/예문/문항 신규 생성0. 중앙DB 접근·동기화 unverified/sync_required·실제 기기·장기효과 미검증 유지.
+- 체크리스트: (1) TFD 우선·독립 원전 대조 완료 (2) 누락6필드·실제 출처12페이지 부분 보강 완료 (3) 공유두행/정답 전 숨김·후 표시 관련검사 대기 (4) verify/Production/Git 보안 대기 (5) 격리 IAB 흐름·반응형·공개 manifest/hash/UI 대기. 공개는 아직1.21이며 검증 끝나기 전 배포 완료로 세지 않는다.
+- VERIFIED 코드: 관련3파일63 PASS(신규3), 전체 verify38541 TypeScript·등록/학습/정의/sense 감사·37파일336 PASS/기존 인증1 SKIP(총38파일337), exit0. 변경3테스트 ESLint 오류0·diff --check PASS·Git 보안 tracked616/untracked212/findings0. 원본38163행 SHA256 7EBA20F388D04E9D7FB10EDEC635BEAC5DC7A6C726EF6E25D7DABA4CE57908DD 동일. JSON 차이는 active wrap-up:finish-activity 하나만이며 신규 정의/예문/문항0. 공유20production sense/37행 유지; 호환층165sense/230행 JSON8개는 기존1.21 대비 version 외 내용 동일. canonical 파생 데이터만 새 근거/버전·감사 시각 반영. 21:28/22:27 KST 추가 heartbeat는 중복 실행하지 않고 동일 소유 잠금54391/PID13948 살아 있음·사용자dirty 동일 확인 후 진행했다.
+- NEXT: source 커밋 기준 Production→격리 원점에서 오답/새 해설/통계/동일 sense 복습→반응형→승인 Pages 배포/manifest·공개 UI 확인. 실패 시 현재 후보와 정확한 실패를 보존하고 기존 공개1.21 유지.
+
+## 직전 공개 batch — teem with 관계어 뜻·치환 조건 / 1.21
 
 - 시작 2026.10.08 19:24 KST: 최신 공개1.20/source0959c97a·main/origin fcdc64ba·Pages af165075와 AGENTS/AI_WORK_RULES/AUTOMATION_RUNBOOK·git status/diff 대조. 새 잠금62923/PID8868 LOCK_ACQUIRED. 사용자1.4/인증/미추적 작업 보존, 새 대화·자동화·보조 작업0.
 - 범위: 기존 teem-with:contain-many-active-things의 관계어6개에 한국어 뜻·치환 조건만 부분 보강. 기존 정의/영한예문/문맥문항/정답/두 source행 JBKROW000005(num3)/JBKROW003863(num3801), V101 반복·공유 학습 key 유지. 원본38163행 재생성/DB/API/migration0.

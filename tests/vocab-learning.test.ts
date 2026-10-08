@@ -149,6 +149,23 @@ describe("깊이 학습 인덱스", () => {
     }
   });
 
+  it("wrap up 두 출현 행은 한 active 해설을 공유하고 기존 호환 학습 자료를 그대로 유지한다", () => {
+    const [source] = getActiveRecallSenses("JBKROW000016");
+    expect(getActiveRecallSenses("JBKROW004042")[0]).toBe(source);
+    expect(Object.keys(source.relationMeaningsKo!)).toHaveLength(6);
+    const payload = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public", "data", "vocab-learning", release.version, "v101.json"), "utf8"));
+    for (const id of source.itemIds) {
+      const pointer = learningIndex.items[id as keyof typeof learningIndex.items];
+      expect(pointer).toEqual({ group: "V101", entryIds: [`learn:correction:${id}`] });
+      const matches = payload.entries.filter((entry: { id: string }) => pointer.entryIds.includes(entry.id));
+      expect(matches).toHaveLength(1);
+      expect(matches[0].itemIds).toEqual([id]);
+      expect(matches[0].senseId).toBe("wrap-up:primary");
+      expect(matches[0].definitionEn).toBe("To bring an activity, discussion, or arrangement to a satisfactory close.");
+      expect(matches[0].example.en).toBe("Let's wrap up the meeting by agreeing on one next step.");
+    }
+  });
+
   it("Open English WordNet의 같은 synset 동의어만 공개 데이터에 전달한다", () => {
     const publicEntries = ["v101", "v201", "v301", "v401", "v501", "v502", "v601", "appendix"]
       .flatMap((group) => (JSON.parse(fs.readFileSync(

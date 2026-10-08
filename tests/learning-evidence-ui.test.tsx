@@ -265,6 +265,29 @@ describe("reviewed learning evidence and explanation boundaries", () => {
     expect(native.openURL.mock.calls.map(call => call[0])).toEqual(sense.sources.slice(0, 2).map(source => source.url));
   });
 
+  it("wrap up 관계어6개의 뜻·구문은 정답 후 한 번만 표시하고 실제 두 원전으로 요약한다", async () => {
+    const sense = ACTIVE_RECALL_SENSES.find(entry => entry.senseId === "wrap-up:finish-activity")!;
+    const prompt = render(<ActiveRecallPrompt recall={sense} />);
+    const answer = render(<ActiveRecallAnswer recall={sense} />);
+    const detail = render(<ActiveRecallStudyDetails entry={sense} index={0} count={1} />);
+    for (const meaning of Object.values(sense.relationMeaningsKo!)) {
+      expect(answer).toContain(meaning);
+      expect(occurrences(detail, meaning)).toBe(1);
+      expect(prompt).not.toContain(meaning);
+    }
+    expect(answer).toContain("영영 정의 · 한국어 해석");
+    expect(answer).toContain(sense.koreanMeaning);
+    expect(answer).not.toContain("한국어 뜻 검수 중");
+    expect(detail).toContain(sense.exampleSentences[0].ko);
+    native.links.length = 0;
+    const evidence = render(<LearningEvidence entry={sense} />);
+    expect(occurrences(evidence, "TFD · American Heritage ↗")).toBe(1);
+    expect(native.links).toHaveLength(2);
+    for (const link of native.links) link.press();
+    await Promise.resolve();
+    expect(native.openURL.mock.calls.map(call => call[0])).toEqual(sense.sources.slice(0, 2).map(source => source.url));
+  });
+
   it("does not describe mixed-source examples as entirely original", () => {
     const html = render(<LearningEvidence entry={{ ...entry, exampleSentences: [{ ...entry.exampleSentences[0], type: "source" }] }} />);
     expect(html).toContain("예문은 항목별 출처·창작 구분");

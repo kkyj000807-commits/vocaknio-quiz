@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.21",
+  "release": "1.22",
   "entries": [
     {
       "word": "a wide range of",
@@ -5475,8 +5475,18 @@
         "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
-          "https://www.oxfordlearnersdictionaries.com/us/definition/english/wrap-up",
-          "https://www.collinsdictionary.com/dictionary/english/wrap-up"
+          "https://www.thefreedictionary.com/wrap",
+          "https://www.collinsdictionary.com/dictionary/english/wrap-up",
+          "https://www.thefreedictionary.com/close",
+          "https://www.collinsdictionary.com/dictionary/english/close",
+          "https://www.thefreedictionary.com/finish",
+          "https://www.collinsdictionary.com/dictionary/english/finish-up",
+          "https://www.thefreedictionary.com/unfinished",
+          "https://www.collinsdictionary.com/dictionary/english/unfinished",
+          "https://www.thefreedictionary.com/drag",
+          "https://www.collinsdictionary.com/dictionary/english/drag-out",
+          "https://www.thefreedictionary.com/conclude",
+          "https://www.collinsdictionary.com/dictionary/english/conclude"
         ]
       },
       "koreanMeaning": "일·회의의 남은 부분을 정리해 마무리하다",
@@ -5490,8 +5500,18 @@
       ],
       "distinctionNote": "sum up: 핵심 내용을 간추리는 뜻이다. 회의를 끝내기 전에 할 수 있지만, 남은 절차를 처리해 활동 자체를 마무리한다는 뜻과는 다르다. | put off: 지금 끝맺는 대신 나중으로 연기하는 뜻이므로 목표 sense와 반대 방향이다. | set up: 회의나 활동이 시작되도록 준비하는 뜻이며, 이미 진행한 일을 끝맺는 뜻이 아니다.",
       "sourceIds": [
-        "https://www.oxfordlearnersdictionaries.com/us/definition/english/wrap-up",
-        "https://www.collinsdictionary.com/dictionary/english/wrap-up"
+        "https://www.thefreedictionary.com/wrap",
+        "https://www.collinsdictionary.com/dictionary/english/wrap-up",
+        "https://www.thefreedictionary.com/close",
+        "https://www.collinsdictionary.com/dictionary/english/close",
+        "https://www.thefreedictionary.com/finish",
+        "https://www.collinsdictionary.com/dictionary/english/finish-up",
+        "https://www.thefreedictionary.com/unfinished",
+        "https://www.collinsdictionary.com/dictionary/english/unfinished",
+        "https://www.thefreedictionary.com/drag",
+        "https://www.collinsdictionary.com/dictionary/english/drag-out",
+        "https://www.thefreedictionary.com/conclude",
+        "https://www.collinsdictionary.com/dictionary/english/conclude"
       ],
       "itemIds": [
         "JBKROW000016",

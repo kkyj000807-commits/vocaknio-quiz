@@ -1536,6 +1536,14 @@
       "antonyms": ["leave unfinished", "drag out"],
       "variants": ["wrap it up"],
       "relatedWords": ["conclude"],
+      "relationMeaningsKo": {
+        "bring to a close": "회의·활동을 끝맺다. bring the meeting to a close처럼 끝낼 대상을 bring 뒤에 놓는다. close는 여기서 ‘종료’라는 명사이지 ‘가까운’이라는 형용사가 아니다. 끝난다는 점은 비슷하지만 남은 세부를 정리한다는 초점까지 항상 같지는 않다.",
+        "finish up": "진행하던 일의 남은 부분을 마저 끝내다. finish up the work처럼 업무 완료를 말할 때 가깝다. 음식·음료를 다 먹는 뜻과 finish up in a place처럼 결국 어떤 곳에 있게 되는 뜻은 이 회의 마무리 의미와 구분한다.",
+        "leave unfinished": "일을 끝내지 않은 상태로 남겨 두다. leave the work unfinished처럼 대상 뒤에 unfinished를 놓는다. 완료하지 않았다는 상태가 핵심이며, 일부러 지연했다거나 영원히 끝내지 않을 것까지 뜻하지는 않는다.",
+        "drag out": "회의·절차를 불필요하게 오래 끌다. drag out the meeting 또는 drag the meeting out으로 쓰며, 대명사는 drag it out이다. 신속히 마무리하는 방향과 대비되지만 결국 끝날 수도 있어 미완성과 동일하지 않다. drag information out of someone처럼 억지로 정보를 끌어내는 뜻은 별도다.",
+        "wrap it up": "하던 일을 마무리하다·그 일을 끝내다. it이 이미 언급된 회의·업무를 가리키는 형태이며 wrap up it이 아니라 wrap it up으로 쓴다. 선물 포장이나 따뜻하게 감싸는 뜻도 같은 형태를 쓸 수 있으므로 it이 가리키는 대상을 확인한다.",
+        "conclude": "회의·행사·발언을 끝맺다. conclude the meeting은 이 예문에서 가까운 표현이며 wrap up보다 격식 있는 표현이다. conclude that + 문장은 ‘근거로 판단해 결론을 내리다’, conclude an agreement는 ‘합의를 성사시키다’로 구분한다. 종료 자체에 초점이 있어 남은 세부 정리를 반드시 뜻하지는 않는다."
+      },
       "exampleSentences": [
         {
           "en": "The chair wrapped up the meeting after the committee agreed on the final amendment.",
@@ -1565,19 +1573,29 @@
       ],
       "sources": [
         {
-          "publisher": "Oxford Advanced Learner's Dictionary",
-          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/wrap-up",
-          "independenceGroup": "Oxford",
-          "note": "회의·합의·활동을 마무리하는 비격식 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/wrap",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.08 IAB 실제 열람. wrap up의 종료·최종 처리 뜻을 요약·포장·옷차림 뜻과 구분; 기존 자체 편집 정의·예문·문항은 유지"
         },
         {
           "publisher": "Collins English Dictionary",
           "url": "https://www.collinsdictionary.com/dictionary/english/wrap-up",
           "independenceGroup": "Collins",
-          "note": "일·활동의 만족스러운 완료 sense와 따뜻하게 감싸는 별도 sense를 기존 독립 검수에서 대조함; 원문은 앱에 복제하지 않음"
-        }
+          "note": "2026.10.08 공식 본문 열람. COBUILD 업무 완료 뜻·명사/대명사 목적어 위치와 별도 요약·옷차림 뜻 대조; 사전 원문·예문 복제 없음"
+        },
+        {"publisher": "The Free Dictionary · American Heritage", "url": "https://www.thefreedictionary.com/close", "independenceGroup": "American Heritage", "note": "2026.10.08 IAB 실제 열람. 명사 close의 종료 뜻과 활동 끝맺음 대조; 형용사 가까움 뜻과 구분"},
+        {"publisher": "Collins English Dictionary", "url": "https://www.collinsdictionary.com/dictionary/english/close", "independenceGroup": "Collins", "note": "2026.10.08 공식 본문 열람. bring something to a close의 종료 구문 대조; 한국어 뜻·치환 설명은 자체 편집"},
+        {"publisher": "The Free Dictionary · American Heritage", "url": "https://www.thefreedictionary.com/finish", "independenceGroup": "American Heritage", "note": "2026.10.08 IAB 실제 열람. 본동사 finish의 업무 완료 뜻 대조; finish up 자체 구문은 아래 Collins 공식 항목으로 확인"},
+        {"publisher": "Webster's New World College Dictionary via Collins", "url": "https://www.collinsdictionary.com/dictionary/english/finish-up", "independenceGroup": "Collins", "note": "2026.10.08 공식 본문 열람. finish up의 종료·완료 뜻과 COBUILD의 소비·결국 도달 뜻 구분; 사전 예문은 복제하지 않음"},
+        {"publisher": "The Free Dictionary · American Heritage", "url": "https://www.thefreedictionary.com/unfinished", "independenceGroup": "American Heritage", "note": "2026.10.08 IAB 실제 열람. 완료되지 않은 상태와 표면 가공 안 됨 뜻 구분; 영구 미완성이나 의도적 지연으로 강화하지 않음"},
+        {"publisher": "Collins English Dictionary", "url": "https://www.collinsdictionary.com/dictionary/english/unfinished", "independenceGroup": "Collins", "note": "2026.10.08 공식 본문 열람. 미완성 뜻과 leave + 대상 + unfinished 구문 대조; 설명은 자체 편집"},
+        {"publisher": "The Free Dictionary · American Heritage", "url": "https://www.thefreedictionary.com/drag", "independenceGroup": "American Heritage", "note": "2026.10.08 IAB 실제 열람. 타동사 drag의 지루하게 연장하는 뜻·out 구문과 강제로 끌어내는 별도 뜻 구분"},
+        {"publisher": "Collins English Dictionary", "url": "https://www.collinsdictionary.com/dictionary/english/drag-out", "independenceGroup": "Collins", "note": "2026.10.08 공식 본문 열람. 필요 이상으로 지속시키는 뜻과 대명사 위치·정보를 억지로 끌어내는 별도 뜻 대조; 영원히 미완성이라는 뜻이 아님"},
+        {"publisher": "The Free Dictionary · American Heritage", "url": "https://www.thefreedictionary.com/conclude", "independenceGroup": "American Heritage", "note": "2026.10.08 IAB 실제 열람. 활동 종료·합의 성사·추론에 따른 판단의 세 뜻을 구문별 구분"},
+        {"publisher": "Collins English Dictionary", "url": "https://www.collinsdictionary.com/dictionary/english/conclude", "independenceGroup": "Collins", "note": "2026.10.08 공식 본문 열람. 격식 있는 활동 종료 뜻과 that절 판단·agreement 성사 뜻 대조; 정의·예문은 기존 자체 편집 자료 유지"}
       ],
-      "sourceCheckedAt": "2026.09.05",
+      "sourceCheckedAt": "2026.10.08",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",
