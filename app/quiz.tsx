@@ -1178,7 +1178,7 @@ export default function QuizScreen() {
                   )}
 
                   {/* 패스 후 정답 표시 */}
-                  {answered && skipped && (
+                  {answered && skipped && questionMode !== "sentence-completion" && (
                     <View style={s.skipResultBox}>
                       <Text style={s.skipResultLabel}>정답</Text>
                       <Text style={s.skipResultAnswer}>{q.correct}</Text>
