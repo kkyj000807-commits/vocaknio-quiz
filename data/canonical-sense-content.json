@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.26",
+  "release": "1.27",
   "entries": [
     {
       "word": "a wide range of",
@@ -5387,8 +5387,19 @@
         "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
-          "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
-          "https://www.collinsdictionary.com/dictionary/english/work-out"
+          "https://www.thefreedictionary.com/work",
+          "https://www.collinsdictionary.com/dictionary/english/work-out",
+          "https://www.thefreedictionary.com/turn",
+          "https://www.collinsdictionary.com/dictionary/english/turn-out",
+          "https://www.thefreedictionary.com/succeed",
+          "https://www.collinsdictionary.com/dictionary/english/succeed",
+          "https://www.thefreedictionary.com/fall",
+          "https://www.collinsdictionary.com/dictionary/english/fall-apart",
+          "https://www.thefreedictionary.com/wrong",
+          "https://www.collinsdictionary.com/dictionary/english/go-wrong",
+          "https://www.thefreedictionary.com/resolve",
+          "https://www.collinsdictionary.com/dictionary/english/resolve",
+          "https://www.oxfordlearnersdictionaries.com/us/definition/english/resolve_1"
         ]
       },
       "koreanMeaning": "상황·일이 만족스럽게 풀리다",
@@ -5402,8 +5413,19 @@
       ],
       "distinctionNote": "wear out: 사용이나 피로로 소모되는 뜻이며 상황이 만족스럽게 풀리는 뜻이 아니다. | play out: 과정의 전개를 가리킬 수 있지만 만족스러운 결과를 보장하지 않는다. | break down: 기능이나 관계가 실패하는 뜻으로 목표 sense와 반대 방향이다.",
       "sourceIds": [
-        "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
-        "https://www.collinsdictionary.com/dictionary/english/work-out"
+        "https://www.thefreedictionary.com/work",
+        "https://www.collinsdictionary.com/dictionary/english/work-out",
+        "https://www.thefreedictionary.com/turn",
+        "https://www.collinsdictionary.com/dictionary/english/turn-out",
+        "https://www.thefreedictionary.com/succeed",
+        "https://www.collinsdictionary.com/dictionary/english/succeed",
+        "https://www.thefreedictionary.com/fall",
+        "https://www.collinsdictionary.com/dictionary/english/fall-apart",
+        "https://www.thefreedictionary.com/wrong",
+        "https://www.collinsdictionary.com/dictionary/english/go-wrong",
+        "https://www.thefreedictionary.com/resolve",
+        "https://www.collinsdictionary.com/dictionary/english/resolve",
+        "https://www.oxfordlearnersdictionaries.com/us/definition/english/resolve_1"
       ],
       "itemIds": [
         "JBKROW000044",
