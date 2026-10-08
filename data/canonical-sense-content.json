@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.23",
+  "release": "1.24",
   "entries": [
     {
       "word": "a wide range of",
@@ -4849,7 +4849,15 @@
         "layer": "active-recall",
         "referenceUrls": [
           "https://www.collinsdictionary.com/dictionary/english/take-for-granted",
-          "https://www.merriam-webster.com/dictionary/take%20for%20granted"
+          "https://www.thefreedictionary.com/take",
+          "https://www.thefreedictionary.com/appreciate",
+          "https://www.collinsdictionary.com/dictionary/english/appreciate",
+          "https://www.thefreedictionary.com/undervalue",
+          "https://www.collinsdictionary.com/dictionary/english/undervalue",
+          "https://www.thefreedictionary.com/value",
+          "https://www.collinsdictionary.com/dictionary/english/value",
+          "https://www.thefreedictionary.com/overlook",
+          "https://www.collinsdictionary.com/dictionary/english/overlook"
         ]
       },
       "koreanMeaning": "익숙해서 소중함·고마움을 모르다",
@@ -4864,7 +4872,15 @@
       "distinctionNote": "look down on: 상대를 열등하다고 판단하는 적극적 경멸이며, 익숙한 도움의 가치를 놓치는 뜻과는 다르다. | make up for: 부족이나 손해를 보충한다는 뜻으로, 이미 받는 도움의 가치를 알아보지 못한다는 뜻이 아니다. | show gratitude for: 가치와 도움을 알아보고 감사를 드러내므로 목표 sense와 반대다.",
       "sourceIds": [
         "https://www.collinsdictionary.com/dictionary/english/take-for-granted",
-        "https://www.merriam-webster.com/dictionary/take%20for%20granted"
+        "https://www.thefreedictionary.com/take",
+        "https://www.thefreedictionary.com/appreciate",
+        "https://www.collinsdictionary.com/dictionary/english/appreciate",
+        "https://www.thefreedictionary.com/undervalue",
+        "https://www.collinsdictionary.com/dictionary/english/undervalue",
+        "https://www.thefreedictionary.com/value",
+        "https://www.collinsdictionary.com/dictionary/english/value",
+        "https://www.thefreedictionary.com/overlook",
+        "https://www.collinsdictionary.com/dictionary/english/overlook"
       ],
       "itemIds": [
         "APPROW02128"
