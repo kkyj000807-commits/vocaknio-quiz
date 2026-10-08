@@ -4,7 +4,16 @@
 
 사전 우선순위(2026.10.06 사용자 재확인): The Free Dictionary https://www.thefreedictionary.com/ 를 첫 검수 출처로 활용한다. 뜻·숙어·구문·용례·관계어를 sense 단위로 먼저 확인하고 부족/충돌 부분만 다른 독립 사전으로 대조한다. 직전 정책 등록 시 홈페이지 웹 fetch는 읽지 못해 근거로 세지 않았고 당시 문서만 변경하여 공개1.12·학습 데이터를 보존했다(잠금58403/PID22540). 이번1.13에서는 일반 Chrome의 실제 항목 열람을 확인했다. 실제 확인한 범위만 링크/수록 원전/확인일과 함께 기록하며 제한을 우회하거나 대량 원문을 복제하지 않는다. 기존 자동화의 TFD 우선 규칙을 유지하고 새 자동화는 만들지 않았다.
 
-## 최신 공개 batch — wrap up 관계어 뜻·문법 치환 / 1.22
+## 진행 중 batch — take for granted 사실 전제 관계어 / 후보1.23
+
+- 시작 2026.10.08 23:34 KST heartbeat: 공개1.22/source5a177be6·main/origin d79ad048·Pages9120e191와 AGENTS/AI_WORK_RULES/AUTOMATION_RUNBOOK·git status/diff 대조. 소유 잠금5944/PID15116 LOCK_ACQUIRED. 사용자1.4/auth/미추적 작업 보존; 새 대화·자동화·보조 작업0.
+- 범위: APPROW02128(num37941)/부록의 기존 take-for-granted:assume-without-checking 한 의미에 누락5관계어 풀이만 추가. 별도 fail-to-appreciate 전체·정의/예문/문항/정답·두 학습 key·38163 출현 행 유지. DB/API/migration·신규 정의/예문/문항0.
+- 실제 근거 2026.10.08: TFD 우선 grant의 Kernerman 숙어, assume/given/verify/question/presume의 American Heritage 본문 열람·Collins 공식6항목 대조. TFD take의 AHD 숙어도 읽었으나 확인 생략 근거는 더 명시적인 Kernerman으로 기록한다. TFD Collins 전재 중복 계산0. 전제/객관적 검증, 의심/거짓 입증, 추정/항상 증거 있음, presume to의 별도 행동 용법을 구분. 원문·예문 복제0; 스킬의 의미 강화 반례 기준 적용.
+- 검증/배포: 후보1.23 데이터·회귀3개 작성 중. 관련검사→verify→Production/Git 보안→격리 IAB 전제 sense 응답/통계/한 번 복습→반응형→Pages 공개 manifest/hash/UI 순으로 확인한다. 공개1.22를 아직 변경 완료라고 하지 않는다. 실제 Safari/Chrome/Samsung Internet·강제다크·중앙DB unverified/sync_required·장기효과 미검증.
+- VERIFIED 코드: 관련3파일66 PASS(신규3), verify74961 exit0·TypeScript 및 등록/학습/정의/sense 감사·37파일339 PASS/기존 인증1 SKIP. 변경3테스트 ESLint 오류0·diff --check PASS·Git 보안 tracked624/untracked212/findings0. JSON 전후 비교상 변경 sense는 assume-without-checking 하나뿐. 원본 SHA256 7EBA20F388D04E9D7FB10EDEC635BEAC5DC7A6C726EF6E25D7DABA4CE57908DD 동일·호환 JSON8개는 version 외1.22와 동일. 사용자 미추적 pnpm-workspace.yaml의 packages 누락으로 pnpm exec 실패했으나 파일을 변경하지 않고 설치된 node_modules/vitest/vitest.mjs로 실행·통과. 기존 공유20production sense/37행·호환165sense/230행 유지.
+- NEXT: 아래1.22 완료를 반복하지 않고 이번 누락5풀이의 저장 키/별도 뜻/정답 전 숨김·후 표시를 검증한 뒤 승인된 Pages에만 배포. 실패 시 원인·다음 행동을 이 절에 저장하고 소유5944에 Enter/LOCK_RELEASED 확인.
+
+## 직전 공개 batch — wrap up 관계어 뜻·문법 치환 / 1.22
 
 - 시작 2026.10.08 20:30 KST heartbeat: 최신 공개1.21/source3c86a62a·main/origin6d8791cd·Pages389776a9와 AGENTS/AI_WORK_RULES/AUTOMATION_RUNBOOK·git status/diff 대조. 새 잠금54391/PID13948 LOCK_ACQUIRED. 사용자1.4/인증/미추적 작업 보존; 새 대화·자동화·보조 작업0.
 - 범위: 기존 wrap-up:finish-activity의 누락6관계어 한국어 뜻·구문·치환 조건만 부분 보강. JBKROW000016(num14)/JBKROW004042(num3977), V101 반복·공유 sense key·정의/영한예문/문항/정답/학습 기록 유지. 원본38163행 재생성·DB/API/migration0.

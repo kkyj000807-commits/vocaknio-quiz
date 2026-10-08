@@ -166,6 +166,24 @@ describe("깊이 학습 인덱스", () => {
     }
   });
 
+  it("부록 take for granted의 두 active 뜻을 유지하고 한 기존 호환 해설만 재사용한다", () => {
+    const senses = getActiveRecallSenses("APPROW02128");
+    expect(senses).toHaveLength(2);
+    expect(senses[0].senseId).toBe("take-for-granted:assume-without-checking");
+    expect(Object.keys(senses[0].relationMeaningsKo!)).toHaveLength(5);
+    expect(senses[1].senseId).toBe("take-for-granted:fail-to-appreciate");
+    expect(senses[1].relationMeaningsKo).toBeUndefined();
+    const pointer = learningIndex.items.APPROW02128;
+    expect(pointer).toEqual({ group: "APPENDIX", entryIds: ["learn:correction:APPROW02128"] });
+    const payload = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public", "data", "vocab-learning", release.version, "appendix.json"), "utf8"));
+    const matches = payload.entries.filter((entry: { id: string }) => pointer.entryIds.includes(entry.id));
+    expect(matches).toHaveLength(1);
+    expect(matches[0].itemIds).toEqual(["APPROW02128"]);
+    expect(matches[0].senseId).toBe("take-for-granted:primary");
+    expect(matches[0].definitionEn).toBe("To assume something is true or available without checking, or to overlook the value of someone or something because it seems reliably present.");
+    expect(matches[0].example.en).toBe("I had taken her help for granted until I had to do the work alone.");
+  });
+
   it("Open English WordNet의 같은 synset 동의어만 공개 데이터에 전달한다", () => {
     const publicEntries = ["v101", "v201", "v301", "v401", "v501", "v502", "v601", "appendix"]
       .flatMap((group) => (JSON.parse(fs.readFileSync(

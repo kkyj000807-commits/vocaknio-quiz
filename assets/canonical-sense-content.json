@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.22",
+  "release": "1.23",
   "entries": [
     {
       "word": "a wide range of",
@@ -4783,8 +4783,18 @@
         "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
+          "https://www.thefreedictionary.com/grant",
           "https://www.collinsdictionary.com/dictionary/english/take-for-granted",
-          "https://www.merriam-webster.com/dictionary/take%20for%20granted"
+          "https://www.thefreedictionary.com/assume",
+          "https://www.collinsdictionary.com/dictionary/english/assume",
+          "https://www.thefreedictionary.com/given",
+          "https://www.collinsdictionary.com/dictionary/english/given",
+          "https://www.thefreedictionary.com/verify",
+          "https://www.collinsdictionary.com/dictionary/english/verify",
+          "https://www.thefreedictionary.com/question",
+          "https://www.collinsdictionary.com/dictionary/english/question",
+          "https://www.thefreedictionary.com/presume",
+          "https://www.collinsdictionary.com/dictionary/english/presume"
         ]
       },
       "koreanMeaning": "확인 없이 사실로 전제하다",
@@ -4798,8 +4808,18 @@
       ],
       "distinctionNote": "take into account: 정보를 검토에 포함한다는 뜻으로, 확인 없이 사실로 전제하는 것과 반대 방향이다. | call into question: 참인지 문제 삼는 뜻이며, 참이라고 당연히 전제하는 뜻이 아니다. | leave to chance: 결과를 우연에 맡기는 태도이지 어떤 판단을 사실로 받아들이는 뜻은 아니다.",
       "sourceIds": [
+        "https://www.thefreedictionary.com/grant",
         "https://www.collinsdictionary.com/dictionary/english/take-for-granted",
-        "https://www.merriam-webster.com/dictionary/take%20for%20granted"
+        "https://www.thefreedictionary.com/assume",
+        "https://www.collinsdictionary.com/dictionary/english/assume",
+        "https://www.thefreedictionary.com/given",
+        "https://www.collinsdictionary.com/dictionary/english/given",
+        "https://www.thefreedictionary.com/verify",
+        "https://www.collinsdictionary.com/dictionary/english/verify",
+        "https://www.thefreedictionary.com/question",
+        "https://www.collinsdictionary.com/dictionary/english/question",
+        "https://www.thefreedictionary.com/presume",
+        "https://www.collinsdictionary.com/dictionary/english/presume"
       ],
       "itemIds": [
         "APPROW02128"

@@ -454,6 +454,28 @@ describe("영어→영어 active recall", () => {
     expect(senses.every(sense => sense.exactSynonyms.length === 0)).toBe(true);
   });
 
+  it("take for granted의 사실 전제 관계어만 보강하고 부록 행·두 의미의 학습 키를 보존한다", () => {
+    const [assumption, appreciation] = getActiveRecallSenses(takeForGrantedRows[0].id);
+    expect(Object.keys(assumption.relationMeaningsKo!)).toEqual(["assume without question", "accept as given", "verify", "question", "presume"]);
+    expect(assumption.relationMeaningsKo?.["assume without question"]).toContain("반드시 거짓이라는 뜻");
+    expect(assumption.relationMeaningsKo?.["accept as given"]).toContain("검증된 사실이라는 보장은 없다");
+    expect(assumption.relationMeaningsKo?.verify).toContain("의문을 제기하는 것만으로");
+    expect(assumption.relationMeaningsKo?.question).toContain("이미 거짓임을 입증한 것은 아니다");
+    expect(assumption.relationMeaningsKo?.presume).toContain("항상 증거가 있다는 뜻은 아니다");
+    expect(assumption.englishDefinition).toBe("To accept that something is true, certain, or available without checking or questioning it.");
+    expect(assumption.exampleSentences[0].en).toBe("The committee took for granted that the earlier measurements were accurate.");
+    expect(takeForGrantedRows.map(item => [item.id, item.num, item.group])).toEqual([["APPROW02128", 37941, "APPENDIX"]]);
+    expect(getItemLearningTargets(takeForGrantedRows[0]).map(target => target.key)).toEqual([
+      "sense:take-for-granted%3Aassume-without-checking", "sense:take-for-granted%3Afail-to-appreciate",
+    ]);
+    expect(assumption.sources).toHaveLength(12);
+    expect(new Set(assumption.sources.map(source => source.independenceGroup))).toEqual(new Set(["Kernerman", "Collins", "American Heritage"]));
+    expect(assumption.sources[0].url).toBe("https://www.thefreedictionary.com/grant");
+    expect(appreciation.relationMeaningsKo).toBeUndefined();
+    expect(appreciation.sourceCheckedAt).toBe("2026.09.05");
+    expect(appreciation.sources).toHaveLength(2);
+  });
+
   it("take for granted 두 sense가 각각 독립된 단일정답 영영 문제를 만든다", () => {
     const firstRandom = vi.spyOn(Math, "random").mockReturnValue(0);
     const [assumption] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [takeForGrantedRows[0].num], preserveItemOrder: true });

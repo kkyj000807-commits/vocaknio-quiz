@@ -945,6 +945,13 @@
       "antonyms": ["verify", "question"],
       "variants": [],
       "relatedWords": ["presume"],
+      "relationMeaningsKo": {
+        "assume without question": "의문을 제기하지 않고 사실이라고 가정하다. assume은 명사나 that + 문장을 목적어로 받을 수 있고, without question이 따져 보지 않는 태도를 명시한다. 역할을 맡는 assume이나, 가정한 내용이 반드시 거짓이라는 뜻과는 구분한다.",
+        "accept as given": "이미 주어진 전제로 받아들이다. accept A as given에서 A를 논의의 출발점으로 놓으며, 다시 증명하지 않는 문맥에서 가깝다. given은 선물이 아니라 받아들인 전제이고, 객관적으로 검증된 사실이라는 보장은 없다.",
+        "verify": "자료·조사로 사실 여부나 정확성을 확인하다. verify A / verify that + 문장처럼 쓰며, 확인 없이 전제하는 태도와 대비된다. 확인 절차를 거친다는 점이 핵심이고, 의문을 제기하는 것만으로 검증을 마쳤다고 볼 수는 없다.",
+        "question": "주장·판단의 진실성이나 타당성에 의문을 제기하다. question a claim처럼 대상 자체를 목적어로 받는다. 무비판적으로 전제하는 태도와 반대지만, 의심한다고 이미 거짓임을 입증한 것은 아니다. 사람에게 질문하는 용법과 구분한다.",
+        "presume": "확실히 확인하지는 않았지만 그렇다고 추정하거나 전제하다. presume that + 문장으로 사실 판단을 나타낼 수 있다. 문맥에 따라 단서나 반대 증거의 부재에 기대지만 항상 증거가 있다는 뜻은 아니다. presume to + 동사의 ‘권한 없이 감히 ~하다’는 별도 용법이다."
+      },
       "exampleSentences": [
         {
           "en": "The committee took for granted that the earlier measurements were accurate.",
@@ -974,19 +981,79 @@
       ],
       "sources": [
         {
+          "publisher": "The Free Dictionary · Kernerman",
+          "url": "https://www.thefreedictionary.com/grant",
+          "independenceGroup": "Kernerman",
+          "note": "TFD 수록 Kernerman English Multilingual Dictionary: take for granted의 확인하지 않고 전제하는 뜻을 실제 열람. 가치·고마움을 놓치는 별도 뜻과 구분; 같은 페이지 Collins 전재는 독립 근거로 추가하지 않음. 정의·예문은 기존 자체 편집 자료를 유지"
+        },
+        {
           "publisher": "Collins English Dictionary",
           "url": "https://www.collinsdictionary.com/dictionary/english/take-for-granted",
           "independenceGroup": "Collins",
-          "note": "확인 없이 참이라고 전제하는 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+          "note": "Collins 공식 영국 영어 항목: 의문 없이 받아들이거나 전제하는 뜻을 대조. 가치 간과와 합치지 않고 이번 관계어 풀이만 부분 보강; 원문·사전 예문 미복제"
         },
         {
-          "publisher": "Merriam-Webster",
-          "url": "https://www.merriam-webster.com/dictionary/take%20for%20granted",
-          "independenceGroup": "Merriam-Webster",
-          "note": "당연시하는 판단 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/assume",
+          "independenceGroup": "American Heritage",
+          "note": "TFD American Heritage 5판: 사실이라고 가정하는 assume을 역할·외양을 취하는 별도 뜻과 구분. without question을 결합한 학습용 풀이이며 새로운 고정 숙어라고 주장하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/assume",
+          "independenceGroup": "Collins",
+          "note": "사실 전제 뜻과 명사·that절 목적어 구문 대조. 가정한 내용이 반드시 거짓이라는 결론을 덧붙이지 않음; 한국어 풀이 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/given",
+          "independenceGroup": "American Heritage",
+          "note": "전제로 인정되거나 가정된 given과 명사 given의 뜻 확인. 선물·특정한 시점·습관 용법과 구분하고 accept A as given의 의미 연결을 자체 편집"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/given",
+          "independenceGroup": "Collins",
+          "note": "영국 영어의 전제로 가정된 형용사·가정된 사실인 명사 given 대조. 받아들인 전제와 객관적 검증 완료를 동일시하지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/verify",
+          "independenceGroup": "American Heritage",
+          "note": "증거로 진실성·정확성을 확인하는 뜻 열람. 단순한 의심과 근거를 통한 확인의 차이를 자체 편집; 법률 문서 인증 뜻은 이번 학습 연결에서 제외"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/verify",
+          "independenceGroup": "Collins",
+          "note": "조사로 정확성·사실 여부를 확인하는 뜻과 확인·입증 뜻을 대조. 명사/that절 목적어 확인; 확인 절차와 이미 참으로 판명된 결과를 무조건 같은 단계라고 설명하지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/question",
+          "independenceGroup": "American Heritage",
+          "note": "주장·진실성에 의문을 제기하는 타동사 뜻을 실제 열람. 사람에게 질문·심문하는 뜻과 분리; 의심을 거짓의 입증으로 강화하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/question",
+          "independenceGroup": "Collins",
+          "note": "사물·주장이 참이거나 타당한지 의심하는 COBUILD 뜻과 목적어 용례 대조. 무비판적 전제에 대한 문맥상 대비를 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/presume",
+          "independenceGroup": "American Heritage",
+          "note": "반대 증거 없이 사실로 전제하는 뜻과 합리적 단서가 전제가 되는 뜻 열람. 무권한 행동·presume on의 별도 용법을 구분; 모든 추정에 증거가 있다고 일반화하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/presume",
+          "independenceGroup": "Collins",
+          "note": "COBUILD의 불확실한 사실 추정·논의의 전제 뜻 및 that절 구문 대조. presume to + 동사의 감히 행동하는 뜻과 구분하고 assume보다 항상 확실하다는 강도 서열을 만들지 않음"
         }
       ],
-      "sourceCheckedAt": "2026.09.05",
+      "sourceCheckedAt": "2026.10.08",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",
