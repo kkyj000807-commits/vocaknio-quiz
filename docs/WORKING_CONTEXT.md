@@ -4,7 +4,16 @@
 
 사전 우선순위(2026.10.06 사용자 재확인): The Free Dictionary https://www.thefreedictionary.com/ 를 첫 검수 출처로 활용한다. 뜻·숙어·구문·용례·관계어를 sense 단위로 먼저 확인하고 부족/충돌 부분만 다른 독립 사전으로 대조한다. 직전 정책 등록 시 홈페이지 웹 fetch는 읽지 못해 근거로 세지 않았고 당시 문서만 변경하여 공개1.12·학습 데이터를 보존했다(잠금58403/PID22540). 이번1.13에서는 일반 Chrome의 실제 항목 열람을 확인했다. 실제 확인한 범위만 링크/수록 원전/확인일과 함께 기록하며 제한을 우회하거나 대량 원문을 복제하지 않는다. 기존 자동화의 TFD 우선 규칙을 유지하고 새 자동화는 만들지 않았다.
 
-## 최신 공개 batch — work out 만족스러운 결과 관계어 / 1.27
+## 진행 중 batch — work out 운동 관계어 / 1.28 후보 (공개는 1.27)
+
+- 시작 2026.10.09 06:44 KST heartbeat: AGENTS/AI_WORK_RULES/WORKING_CONTEXT/AUTOMATION_RUNBOOK·main/origin7d0c1c64·공개1.27/source436fd2cb·Pages1ce1935d·git status/diff 대조. 소유 잠금15917/PID12064 LOCK_ACQUIRED. 사용자1.4/auth/미추적 작업 보존; 새 대화·자동화·보조 작업0.
+- 체크리스트: (1) TFD 우선·독립 Collins 대조 DONE (2) exercise-body 한 공유 뜻의 누락3관계어 풀이·출처·확인일만 부분 보강 DONE (3) 관련3테스트81 PASS, 전체 타입 검사에서 새 테스트가 QuizChoice.text를 잘못 참조한 오류 발견→기존 value/label로 수정, verify 재실행 필요 (4) Production/Git 보안·격리 응답→통계→동일 뜻 한 번 복습 NOT DONE (5) 반응형·Pages 실제 manifest/hash/UI NOT DONE. 후보를 공개 완료로 세지 않는다.
+- 실제 근거 2026.10.09: 웹 TFD4곳 조회 제한 후 IAB에서 work/exercise/train/workout의 American Heritage 본문 우선 열람, Collins 공식4페이지 독립 대조. 동사 운동·신체 부위 목적어·권리 행사/훈련 대상·목적/한 단어 가산명사 운동 세션의 뜻·구문·치환 경계만 자체 편집. 8직접 페이지/독립2원전·TFD Collins 전재 중복0·원문/사전 예문 복제0. 기존 자체 편집 정의·영한예문·문항·정답·네 학습key·다른 세 뜻·원본38163행 유지. DB/API/migration·신규 정의/예문/문항0. 편입영어 검수 스킬 의미 강화 반례 적용. 중앙DB 위치 미확인/unverified·재사용 보강 sync_required.
+- 전후 JSON 변경 sense exercise-body 하나/필드 relationMeaningsKo,sources,sourceCheckedAt3개. 같은4출현(42/3973/V101·6012/8012/V201) 공유·별도 work out difference2/V501 분리. 호환 JSON8개1.27 대비 version 외 동일. Git 보안 tracked664/untracked212/findings0·수정 테스트 ESLint 오류0·diff --check PASS. 원본 SHA256 7EBA20F388D04E9D7FB10EDEC635BEAC5DC7A6C726EF6E25D7DABA4CE57908DD 동일. 실제 Safari/mobile Chrome/Samsung Internet·Galaxy Tab 강제다크·장기효과 미검증 유지.
+- VERIFIED 코드: QuizChoice.value/label로 수정 후 verify7282 exit0·타입/등록/정의/학습/sense 감사·37파일354 PASS/기존 인증1 SKIP. 수정 테스트 ESLint 오류0. canonical/public 전후는 release 및 exercise-body 한 entry의 근거 링크만 변경. 공유20production sense/37행·호환165sense/230행 유지.
+- NEXT: fresh Production/보안 감사→격리 IAB 응답 저장·통계·정확한 운동 뜻 한 번 복습→세 테마/모바일·태블릿 viewport→승인된 Pages 공개1.28의 manifest/source/KST/번들해시/UI 확인. 공개 검증 전 완료로 보고하지 않는다. 소유 잠금·QA·탭 종료는 종료 시 실제 확인한다.
+
+## 직전 공개 batch — work out 만족스러운 결과 관계어 / 1.27
 
 - 시작 2026.10.09 05:38 KST heartbeat: 최신 공개1.26/source ef971706·main/origin e5cc7911·Pages6071e6e1/built/error null과 AGENTS/AI_WORK_RULES/WORKING_CONTEXT/AUTOMATION_RUNBOOK·git status/diff 대조. 소유 잠금22632/PID18664 LOCK_ACQUIRED. 사용자1.4/auth/미추적 변경 보존; 새 대화·자동화·보조 작업0.
 - 체크리스트 완료: (1) TFD 우선·독립 사전 대조 (2) end-successfully 한 공유 뜻의 누락5관계어 풀이만 보강 (3) 관련3테스트·verify (4) Production/Git 보안·격리 응답→통계→동일 뜻 한 번 복습 (5) IAB 반응형·Pages 실제 manifest/hash/UI. 실제 기기·전체 콘텐츠 검수는 아래 한계로 구분한다.

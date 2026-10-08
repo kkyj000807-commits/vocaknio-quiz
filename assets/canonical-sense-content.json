@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.27",
+  "release": "1.28",
   "entries": [
     {
       "word": "a wide range of",
@@ -5457,8 +5457,14 @@
         "source": "FINETUNE editorial",
         "layer": "active-recall",
         "referenceUrls": [
-          "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
-          "https://www.collinsdictionary.com/dictionary/english/work-out"
+          "https://www.thefreedictionary.com/work",
+          "https://www.collinsdictionary.com/dictionary/english/work-out",
+          "https://www.thefreedictionary.com/exercise",
+          "https://www.thefreedictionary.com/train",
+          "https://www.thefreedictionary.com/workout",
+          "https://www.collinsdictionary.com/dictionary/english/exercise",
+          "https://www.collinsdictionary.com/dictionary/english/train",
+          "https://www.collinsdictionary.com/dictionary/english/workout"
         ]
       },
       "koreanMeaning": "운동하다·몸을 단련하다",
@@ -5472,8 +5478,14 @@
       ],
       "distinctionNote": "warm up: 본운동 전에 몸을 준비하는 단계이며 운동 세션 전체를 뜻하지 않는다. | stretch out: 특정한 신체 동작이며 계획적으로 운동한다는 뜻 전체와는 다르다. | wear out: 피로하게 만드는 결과를 가리키며 몸을 단련하는 행동 자체가 아니다.",
       "sourceIds": [
-        "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
-        "https://www.collinsdictionary.com/dictionary/english/work-out"
+        "https://www.thefreedictionary.com/work",
+        "https://www.collinsdictionary.com/dictionary/english/work-out",
+        "https://www.thefreedictionary.com/exercise",
+        "https://www.thefreedictionary.com/train",
+        "https://www.thefreedictionary.com/workout",
+        "https://www.collinsdictionary.com/dictionary/english/exercise",
+        "https://www.collinsdictionary.com/dictionary/english/train",
+        "https://www.collinsdictionary.com/dictionary/english/workout"
       ],
       "itemIds": [
         "JBKROW000044",

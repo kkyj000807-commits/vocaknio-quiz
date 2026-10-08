@@ -421,6 +421,34 @@ describe("reviewed learning evidence and explanation boundaries", () => {
     expect(native.openURL.mock.calls.map(call => call[0])).toEqual([sense.sources[0].url, sense.sources[1].url, sense.sources.at(-1)!.url]);
   });
 
+  it("운동의3관계어는 정답 뒤 한 번만 표시하고 명사 workout을 동의 동사로 포장하지 않는다", async () => {
+    const sense = ACTIVE_RECALL_SENSES.find(entry => entry.senseId === "work-out:exercise-body")!;
+    const prompt = render(<ActiveRecallPrompt recall={sense} />);
+    const answer = render(<ActiveRecallAnswer recall={sense} />);
+    const detail = render(<ActiveRecallStudyDetails entry={sense} index={3} count={4} />);
+    for (const meaning of Object.values(sense.relationMeaningsKo!)) {
+      expect(answer).toContain(meaning);
+      expect(occurrences(detail, meaning)).toBe(1);
+      expect(prompt).not.toContain(meaning);
+    }
+    expect(answer).toContain("품사가 달라 관련어로 둔다");
+    expect(answer).toContain("검증된 반의어 관계 없음");
+    expect(detail).toContain(sense.exampleSentences[0].en);
+    expect(detail).toContain(sense.exampleSentences[0].ko);
+    expect(detail).not.toContain("수치·양·금액을 계산해 구하다");
+    expect(detail).not.toContain("상황·계획·관계가 결과적으로 잘 풀리다");
+    expect(prompt).not.toContain(sense.koreanMeaning);
+    native.links.length = 0;
+    const evidence = render(<LearningEvidence entry={sense} />);
+    for (const label of ["TFD · American Heritage ↗", "Collins ↗"]) expect(occurrences(evidence, label)).toBe(1);
+    expect(evidence).toContain("2026.10.09");
+    expect(evidence).toContain("예문은 학습용 창작");
+    expect(native.links).toHaveLength(2);
+    for (const link of native.links) link.press();
+    await Promise.resolve();
+    expect(native.openURL.mock.calls.map(call => call[0])).toEqual(sense.sources.slice(0, 2).map(source => source.url));
+  });
+
   it("does not describe mixed-source examples as entirely original", () => {
     const html = render(<LearningEvidence entry={{ ...entry, exampleSentences: [{ ...entry.exampleSentences[0], type: "source" }] }} />);
     expect(html).toContain("예문은 항목별 출처·창작 구분");

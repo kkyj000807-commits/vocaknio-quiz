@@ -529,7 +529,7 @@ describe("영어→영어 active recall", () => {
     expect(new Set(senses.map(sense => sense.conciseEnglishDefinition)).size).toBe(4);
     expect(senses.every(sense => sense.itemIds.length === 4)).toBe(true);
     expect(senses.every(sense => sense.exampleSentences.length === 1)).toBe(true);
-    expect(senses.map(sense => sense.sources.length)).toEqual([8, 12, 13, 2]);
+    expect(senses.map(sense => sense.sources.length)).toEqual([8, 12, 13, 8]);
   });
 
   it("문제 해결의3관계어만 보강하고 work out 네 뜻·반복4행의 학습 키를 유지한다", () => {
@@ -558,9 +558,8 @@ describe("영어→영어 active recall", () => {
     expect(new Set(solve.sources.map(source => source.independenceGroup))).toEqual(new Set(["American Heritage", "Collins"]));
     expect(solve.sources[0].url).toBe("https://www.thefreedictionary.com/work");
     expect(solve.sourceCheckedAt).toBe("2026.10.09");
-    for (const other of senses.slice(3)) {
-      expect(other.relationMeaningsKo).toBeUndefined();
-      expect(other.sourceCheckedAt).toBe("2026.09.23");
+    for (const other of senses.slice(1)) {
+      for (const relation of ["solve", "figure out", "resolve"]) expect(other.relationMeaningsKo ?? {}).not.toHaveProperty(relation);
     }
   });
 
@@ -638,6 +637,41 @@ describe("영어→영어 active recall", () => {
     expect(question.recall?.senseId).toBe("work-out:solve-problem");
     expect(question.answerKind).toBe("target");
     expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
+    expect(validateQuestion(question)).toBe(true);
+  });
+
+  it("운동3관계어의 동사·명사 및 구문 경계를 공유하고 운동 뜻만 출제한다", () => {
+    const senses = getActiveRecallSenses(workOutRows[0].id);
+    const exercise = senses[3];
+    expect(Object.keys(exercise.relationMeaningsKo!)).toEqual(["exercise", "train", "workout"]);
+    expect(exercise.relationMeaningsKo?.exercise).toContain("권리·판단력을 행사한다는 별도 뜻");
+    expect(exercise.relationMeaningsKo?.train).toContain("train for + 목표 경기");
+    expect(exercise.relationMeaningsKo?.train).toContain("다른 사람을 훈련시키는 타동사");
+    expect(exercise.relationMeaningsKo?.workout).toContain("한 단어로 쓰는 명사");
+    expect(exercise.relationMeaningsKo?.workout).toContain("workout을 그대로 넣을 수 없고");
+    expect(exercise.exactSynonyms).toEqual([]);
+    expect(exercise.nearSynonyms).toEqual(["exercise", "train"]);
+    expect(exercise.relatedWords).toEqual(["workout"]);
+    expect(exercise.antonyms).toEqual([]);
+    expect(exercise.englishDefinition).toBe("To exercise the body, especially through a planned session of physical training.");
+    expect(exercise.exampleSentences[0].en).toBe("She works out three times a week to improve her strength and endurance.");
+    for (const row of workOutRows) {
+      expect(getActiveRecallSenses(row.id)[3]).toBe(exercise);
+      expect(getItemLearningTargets(row).map(target => target.key)).toEqual([
+        "sense:work-out%3Asolve-problem", "sense:work-out%3Acalculate-value",
+        "sense:work-out%3Aend-successfully", "sense:work-out%3Aexercise-body",
+      ]);
+    }
+    expect(exercise.sources).toHaveLength(8);
+    expect(new Set(exercise.sources.map(source => source.url)).size).toBe(8);
+    expect(new Set(exercise.sources.map(source => source.independenceGroup))).toEqual(new Set(["American Heritage", "Collins"]));
+    expect(exercise.sources[0].url).toBe("https://www.thefreedictionary.com/work");
+    expect(exercise.sourceCheckedAt).toBe("2026.10.09");
+    const [question] = buildQuizQuestions({ mode: "definition-choice", count: 1, itemNums: [workOutRows[0].num], learningTargetKeys: ["sense:work-out%3Aexercise-body"] });
+    expect(question.recall).toBe(exercise);
+    expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
+    expect(question.choices.map(choice => choice.value)).not.toContain("workout");
+    expect(question.choices.map(choice => choice.label)).not.toContain("workout");
     expect(validateQuestion(question)).toBe(true);
   });
 

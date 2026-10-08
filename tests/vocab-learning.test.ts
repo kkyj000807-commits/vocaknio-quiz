@@ -214,7 +214,8 @@ describe("깊이 학습 인덱스", () => {
       expect(Object.keys(active[1].relationMeaningsKo!)).toHaveLength(4);
       expect(active[2]).toBe(first[2]);
       expect(Object.keys(active[2].relationMeaningsKo!)).toHaveLength(5);
-      expect(active[3].relationMeaningsKo).toBeUndefined();
+      expect(active[3]).toBe(first[3]);
+      expect(Object.keys(active[3].relationMeaningsKo!)).toHaveLength(3);
       const pointer = learningIndex.items[row.id as keyof typeof learningIndex.items];
       const payload = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public", "data", "vocab-learning", release.version, `${pointer.group.toLowerCase()}.json`), "utf8"));
       const matches = payload.entries.filter((entry: { id: string }) => pointer.entryIds.includes(entry.id));
@@ -237,7 +238,7 @@ describe("깊이 학습 인덱스", () => {
       expect(active[1].exampleSentences[0].ko).toBe("학생들은 기록된 다섯 측정값으로 평균을 계산했다.");
       expect(active[0].relationMeaningsKo).not.toHaveProperty("calculate");
       expect(active[2].sourceCheckedAt).toBe("2026.10.09");
-      expect(active[3].sourceCheckedAt).toBe("2026.09.23");
+      expect(active[3].sourceCheckedAt).toBe("2026.10.09");
     }
     expect(senses[1].itemIds).toEqual(rows.map(row => row.id));
     const differences = VOCAB.filter(item => item.w === "work out difference");
@@ -260,10 +261,28 @@ describe("깊이 학습 인덱스", () => {
       expect(other.relationMeaningsKo ?? {}).not.toHaveProperty("turn out well");
       expect(other.relationMeaningsKo ?? {}).not.toHaveProperty("resolve itself");
     }
-    expect(senses[3].relationMeaningsKo).toBeUndefined();
-    expect(senses[3].sourceCheckedAt).toBe("2026.09.23");
+    expect(Object.keys(senses[3].relationMeaningsKo!)).toEqual(["exercise", "train", "workout"]);
+    expect(senses[3].sourceCheckedAt).toBe("2026.10.09");
     expect(result.itemIds).toEqual(rows.map(row => row.id));
     for (const row of VOCAB.filter(item => item.w === "work out difference")) expect(getActiveRecallSenses(row.id)).not.toContain(result);
+    expect(VOCAB).toHaveLength(38163);
+  });
+
+  it("운동 풀이를 반복4행에 공유하되 다른 뜻과 difference 표현에 합치지 않는다", () => {
+    const rows = VOCAB.filter(item => item.w === "work out");
+    const senses = getActiveRecallSenses(rows[0].id);
+    const exercise = senses[3];
+    for (const row of rows) {
+      expect(getActiveRecallSenses(row.id)[3]).toBe(exercise);
+      expect(exercise.exampleSentences).toHaveLength(1);
+      expect(exercise.exampleSentences[0].ko).toBe("그녀는 근력과 지구력을 높이려고 일주일에 세 번 운동한다.");
+      expect(exercise.exampleSentences[0].cueKo).toContain("strength, endurance");
+    }
+    for (const other of senses.slice(0, 3)) {
+      for (const relation of ["exercise", "train", "workout"]) expect(other.relationMeaningsKo ?? {}).not.toHaveProperty(relation);
+    }
+    expect(exercise.itemIds).toEqual(rows.map(row => row.id));
+    for (const row of VOCAB.filter(item => item.w === "work out difference")) expect(getActiveRecallSenses(row.id)).not.toContain(exercise);
     expect(VOCAB).toHaveLength(38163);
   });
 

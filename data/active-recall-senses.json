@@ -1547,6 +1547,11 @@
       "antonyms": [],
       "variants": [],
       "relatedWords": ["workout"],
+      "relationMeaningsKo": {
+        "exercise": "건강·체력을 위해 몸을 움직여 운동하다. 이 자동사 뜻에서는 work out과 가까우며 exercise regularly처럼 쓴다. work out은 신체 단련을 위한 운동 세션에 초점이 있고, exercise는 운동 전반을 더 넓게 가리킨다. 특정 신체 부위를 목적어로 받는 exercise the muscles는 구문을 바꿔야 하며, 권리·판단력을 행사한다는 별도 뜻은 이 운동 sense와 바꿀 수 없다.",
+        "train": "경기·체력·기술 같은 목적을 위해 훈련하다. 자신이 신체 훈련을 하는 자동사 문맥에서는 work out과 가깝고 train for + 목표 경기처럼 목적을 밝힐 수 있다. train은 특정 능력이나 수행을 준비하는 데 초점이 있어 모든 훈련이 일반적인 몸 단련과 같지는 않다. train someone은 다른 사람을 훈련시키는 타동사 구문이며 직업 교육·정신 훈련·명사 기차 뜻은 여기의 신체 운동과 분리한다.",
+        "workout": "몸을 단련하는 한 차례의 운동·훈련 세션. 한 단어로 쓰는 명사이며 a workout처럼 운동 한 회를 가리킨다. 두 단어 동사 work out의 운동 뜻과 연결되지만 품사가 달라 관련어로 둔다. began to _____ 같은 동사 빈칸에는 workout을 그대로 넣을 수 없고, 운동 세션을 말하려면 have a workout처럼 명사 구문으로 바꾼다. 운동 강도가 늘 같거나 모든 workout이 경기 준비라고 단정하지 않는다."
+      },
       "exampleSentences": [
         {
           "en": "She works out three times a week to improve her strength and endurance.",
@@ -1576,19 +1581,55 @@
       ],
       "sources": [
         {
-          "publisher": "Oxford Advanced Learner's Dictionary",
-          "url": "https://www.oxfordlearnersdictionaries.com/us/definition/english/work-out",
-          "independenceGroup": "Oxford",
-          "note": "신체 운동을 하는 자동사 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/work",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.09 웹 조회 제한 후 IAB에서 TFD 우선 실제 열람. American Heritage work out의 신체 단련을 위한 운동 뜻만 확인; 해결·계산·성공적 결과와 분리. 기존 자체 편집 정의·영한예문 재사용, 원문 복제 아님"
         },
         {
           "publisher": "Collins English Dictionary",
           "url": "https://www.collinsdictionary.com/dictionary/english/work-out",
           "independenceGroup": "Collins",
-          "note": "운동·훈련 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+          "note": "2026.10.09 공식 페이지에서 신체 운동·훈련 자동사 뜻 독립 재대조. TFD의 Collins 전재를 두 번째 독립 근거로 세지 않음; 기존 문항·예문 유지"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/exercise",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.09 IAB 실제 열람. American Heritage의 운동 자동사·신체 부위 훈련 타동사와 권리·판단력 행사 뜻의 경계를 대조; 한국어 치환 설명은 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/train",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.09 IAB 실제 열람. 신체 준비 타동사·훈련을 받는 자동사와 for 경기 목적 구문 확인; 다른 사람 교육·직업/정신 훈련·명사 기차는 운동 sense와 합치지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/workout",
+          "independenceGroup": "American Heritage",
+          "note": "2026.10.09 IAB 실제 열람. American Heritage 명사 운동·연습 세션 확인; 한 단어 명사와 두 단어 동사 구분만 자체 편집, 원문·사전 예문 복제 없음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/exercise",
+          "independenceGroup": "Collins",
+          "note": "2026.10.09 공식 COBUILD/Collins 본문에서 건강·체력을 위한 신체 운동 자동사·신체 부위 목적어 및 권리 행사 별도 뜻 독립 대조; 운동 전반과 세션 초점 차이는 학습용 자체 편집"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/train",
+          "independenceGroup": "Collins",
+          "note": "2026.10.09 공식 Collins 본문에서 특정 목적을 준비하는 운동 자동사·for 경기 구문과 타동사 교육/정신 훈련·명사 기차를 독립 대조; near 관계를 exact로 강화하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/workout",
+          "independenceGroup": "Collins",
+          "note": "2026.10.09 공식 COBUILD 본문에서 가산명사·복수 workouts·신체 운동/훈련 기간 뜻 독립 확인. 동사 빈칸에 명사를 직접 치환하지 않는 구문 설명은 자체 편집"
         }
       ],
-      "sourceCheckedAt": "2026.09.23",
+      "sourceCheckedAt": "2026.10.09",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",
