@@ -314,6 +314,32 @@ describe("reviewed learning evidence and explanation boundaries", () => {
     expect(native.openURL.mock.calls.map(call => call[0])).toEqual(sense.sources.slice(0, 3).map(source => source.url));
   });
 
+  it("가치 간과의5관계어는 정답 뒤에만 표시하고 사실 전제 해설과 출처를 섞지 않는다", async () => {
+    const sense = ACTIVE_RECALL_SENSES.find(entry => entry.senseId === "take-for-granted:fail-to-appreciate")!;
+    const prompt = render(<ActiveRecallPrompt recall={sense} />);
+    const answer = render(<ActiveRecallAnswer recall={sense} />);
+    const detail = render(<ActiveRecallStudyDetails entry={sense} index={1} count={2} />);
+    for (const meaning of Object.values(sense.relationMeaningsKo!)) {
+      expect(answer).toContain(meaning);
+      expect(occurrences(detail, meaning)).toBe(1);
+      expect(prompt).not.toContain(meaning);
+    }
+    expect(answer).toContain("영영 정의 · 한국어 해석");
+    expect(answer).toContain(sense.koreanMeaning);
+    expect(detail).toContain(sense.exampleSentences[0].ko);
+    expect(detail).not.toContain("확인 없이 사실로 전제하다");
+    expect(prompt).not.toContain(sense.koreanMeaning);
+    native.links.length = 0;
+    const evidence = render(<LearningEvidence entry={sense} />);
+    expect(occurrences(evidence, "TFD · American Heritage ↗")).toBe(1);
+    expect(occurrences(evidence, "Collins ↗")).toBe(1);
+    expect(evidence).toContain("2026.10.09");
+    expect(native.links).toHaveLength(2);
+    for (const link of native.links) link.press();
+    await Promise.resolve();
+    expect(native.openURL.mock.calls.map(call => call[0])).toEqual(sense.sources.slice(0, 2).map(source => source.url));
+  });
+
   it("does not describe mixed-source examples as entirely original", () => {
     const html = render(<LearningEvidence entry={{ ...entry, exampleSentences: [{ ...entry.exampleSentences[0], type: "source" }] }} />);
     expect(html).toContain("예문은 항목별 출처·창작 구분");

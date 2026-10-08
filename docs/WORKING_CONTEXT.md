@@ -1,10 +1,19 @@
 # FINETUNE 현재 작업 상태
 
-기준: 2026.10.08 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
+기준: 2026.10.09 KST. 이 파일은 단일 현재 상태다. 구조/명령은 DEVELOPMENT.md, 운영 원칙은 AI_WORK_RULES.md, 자동 재개는 AUTOMATION_RUNBOOK.md를 따른다. 과거 todo/대화/자동화의 1.8 후보 문구보다 최신 실제 Git·공개 상태가 우선한다.
 
 사전 우선순위(2026.10.06 사용자 재확인): The Free Dictionary https://www.thefreedictionary.com/ 를 첫 검수 출처로 활용한다. 뜻·숙어·구문·용례·관계어를 sense 단위로 먼저 확인하고 부족/충돌 부분만 다른 독립 사전으로 대조한다. 직전 정책 등록 시 홈페이지 웹 fetch는 읽지 못해 근거로 세지 않았고 당시 문서만 변경하여 공개1.12·학습 데이터를 보존했다(잠금58403/PID22540). 이번1.13에서는 일반 Chrome의 실제 항목 열람을 확인했다. 실제 확인한 범위만 링크/수록 원전/확인일과 함께 기록하며 제한을 우회하거나 대량 원문을 복제하지 않는다. 기존 자동화의 TFD 우선 규칙을 유지하고 새 자동화는 만들지 않았다.
 
-## 최신 공개 batch — take for granted 사실 전제 관계어 / 1.23
+## 진행 batch — take for granted 가치 간과 관계어 / 1.24 후보
+
+- 시작 2026.10.09 00:39 KST heartbeat: 공개1.23/source e40e154b·main/origin86425898·Pagesdf6b93a0와 AGENTS/AI_WORK_RULES/WORKING_CONTEXT/AUTOMATION_RUNBOOK·git status/diff 대조. 잠금19453/PID19396 LOCK_ACQUIRED. 사용자1.4/auth/미추적 작업 보존; 새 대화·자동화·보조 작업0.
+- 체크리스트: (1) TFD 우선·독립 Collins 대조 VERIFIED (2) APPROW02128/num37941/부록의 fail-to-appreciate 누락5관계어 부분 보강 IMPLEMENTED (3) 관련3회귀·verify PENDING (4) Production/Git 보안·격리 응답→통계→한 번 복습 PENDING (5) 반응형·Pages manifest/hash/UI PENDING. 공개는 아직1.23이며 후보 빌드를 배포 완료로 세지 않는다.
+- 근거 2026.10.09: IAB TFD take/appreciate/undervalue/value/overlook의 American Heritage 본문·원전 확인; Collins 공식5항목 대조. 과소평가/경멸, 감사/실제 발화, 가격 산정/소중히 여김, 놓침/의도적 묵인을 구분. 10직접 페이지·독립2원전, TFD Collins 전재 중복0. 스킬 의미 강화 반례 기준 적용; 한국어 풀이 자체 편집/원문·예문 복제0.
+- 범위: 기존 한 sense의 relationMeaningsKo5 + 최신 실제 출처/확인일만 수정. assumption 의미 전체·두 학습key·정의/영한예문/문항/정답·38163 출현 행·학습 기록 유지. 기존 충분한 데이터 재사용, 신규 정의·예문·문항·DB/API/migration0. 중앙DB 접근/동기화 unverified/sync_required·실제 Safari/Chrome/Samsung Internet/강제다크·장기효과 미검증 유지.
+- VERIFIED 코드: 관련3파일69 PASS(신규3), verify59988 exit0·타입/등록/학습/정의/sense 감사·37파일342 PASS/기존 인증1 SKIP. 변경3테스트 ESLint 오류0·diff --check PASS·Git 보안 tracked632/untracked212/findings0. JSON 전후 변경 sense는 fail-to-appreciate 하나, 변경필드는 relationMeaningsKo/sources/sourceCheckedAt뿐이다. 원본 SHA256 7EBA20F388D04E9D7FB10EDEC635BEAC5DC7A6C726EF6E25D7DABA4CE57908DD 동일; 호환 JSON8개는1.23 대비 version 외 동일. 공유20production sense/37행·기존 호환165sense/230행 유지. 기존 CJS/ESLint 모듈 경고·LF/CRLF 알림은 확인했고 무관한 패키지 설정은 변경하지 않음.
+- NEXT: Production/격리 IAB/보안이 통과할 때만1.24를 기존 Pages에 배포한다. 종료 전 QA와 소유 잠금19453에 Enter/LOCK_RELEASED 확인.
+
+## 직전 공개 batch — take for granted 사실 전제 관계어 / 1.23
 
 - 시작 2026.10.08 23:34 KST heartbeat: 공개1.22/source5a177be6·main/origin d79ad048·Pages9120e191와 AGENTS/AI_WORK_RULES/AUTOMATION_RUNBOOK·git status/diff 대조. 소유 잠금5944/PID15116 LOCK_ACQUIRED. 사용자1.4/auth/미추적 작업 보존; 새 대화·자동화·보조 작업0.
 - 범위: APPROW02128(num37941)/부록의 기존 take-for-granted:assume-without-checking 한 의미에 누락5관계어 풀이만 추가. 별도 fail-to-appreciate 전체·정의/예문/문항/정답·두 학습 key·38163 출현 행 유지. DB/API/migration·신규 정의/예문/문항0.

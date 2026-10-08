@@ -471,9 +471,29 @@ describe("영어→영어 active recall", () => {
     expect(assumption.sources).toHaveLength(12);
     expect(new Set(assumption.sources.map(source => source.independenceGroup))).toEqual(new Set(["Kernerman", "Collins", "American Heritage"]));
     expect(assumption.sources[0].url).toBe("https://www.thefreedictionary.com/grant");
-    expect(appreciation.relationMeaningsKo).toBeUndefined();
-    expect(appreciation.sourceCheckedAt).toBe("2026.09.05");
-    expect(appreciation.sources).toHaveLength(2);
+    expect(appreciation.nearSynonyms).toEqual(["fail to appreciate", "undervalue familiar support"]);
+    expect(appreciation.koreanMeaning).toBe("익숙해서 소중함·고마움을 모르다");
+    expect(appreciation.relationMeaningsKo).not.toHaveProperty("assume without question");
+  });
+
+  it("take for granted 가치 간과의 누락 관계어만 보강하고 감사·가격·묵인의 경계를 유지한다", () => {
+    const [assumption, appreciation] = getActiveRecallSenses(takeForGrantedRows[0].id);
+    expect(Object.keys(appreciation.relationMeaningsKo!)).toEqual(["fail to appreciate", "undervalue familiar support", "appreciate", "value", "overlook"]);
+    expect(appreciation.relationMeaningsKo?.["fail to appreciate"]).toContain("항상 익숙함을 원인으로 뜻하는 것은 아니다");
+    expect(appreciation.relationMeaningsKo?.["undervalue familiar support"]).toContain("고정 숙어가 아니다");
+    expect(appreciation.relationMeaningsKo?.appreciate).toContain("실제로 말했음을 반드시 뜻하지는 않는다");
+    expect(appreciation.relationMeaningsKo?.value).toContain("값을 매기는 value");
+    expect(appreciation.relationMeaningsKo?.overlook).toContain("알면서 눈감아 주는 뜻");
+    expect(appreciation.englishDefinition).toBe("To fail to appreciate the value of someone or something because their presence or help seems certain and familiar.");
+    expect(appreciation.exampleSentences[0].en).toBe("People often take reliable public services for granted until those services stop.");
+    expect(appreciation.prompts).toHaveLength(2);
+    expect(appreciation.distractors.map(choice => choice.word)).toEqual(["look down on", "make up for", "show gratitude for"]);
+    expect(appreciation.sources).toHaveLength(10);
+    expect(new Set(appreciation.sources.map(source => source.independenceGroup))).toEqual(new Set(["Collins", "American Heritage"]));
+    expect(appreciation.sources[1].url).toBe("https://www.thefreedictionary.com/take");
+    expect(appreciation.sourceCheckedAt).toBe("2026.10.09");
+    expect(assumption.sourceCheckedAt).toBe("2026.10.08");
+    expect(assumption.relationMeaningsKo).not.toHaveProperty("fail to appreciate");
   });
 
   it("take for granted 두 sense가 각각 독립된 단일정답 영영 문제를 만든다", () => {

@@ -1072,6 +1072,13 @@
       "antonyms": ["appreciate", "value"],
       "variants": [],
       "relatedWords": ["overlook"],
+      "relationMeaningsKo": {
+        "fail to appreciate": "가치나 고마움을 제대로 알아보지 못하다. fail to + 동사에서 그 행동이 이루어지지 않음을 나타내며, appreciate a person's help / appreciate the value of A처럼 대상을 연결한다. 익숙한 도움을 당연하게 여기는 문맥에서는 가깝지만, 이 표현 자체가 항상 익숙함을 원인으로 뜻하는 것은 아니다.",
+        "undervalue familiar support": "늘 받는 익숙한 도움의 가치를 낮게 평가하다. undervalue + 명사는 가치·중요성을 충분히 인정하지 않는다는 뜻이다. familiar support를 결합한 학습용 풀이이며 고정 숙어가 아니다. 익숙함 때문에 소중함을 놓치는 문맥에서 가깝고, 금전적 가격만 낮게 산정하거나 적극적으로 경멸한다는 뜻으로 한정하지 않는다.",
+        "appreciate": "가치·좋은 점을 알아보고, 받은 도움에 고마움을 느끼다. appreciate + 사람·도움·가치처럼 대상을 바로 목적어로 받는다. 익숙해서 고마움을 놓치는 태도와 대비되지만, 감사 인사를 실제로 말했음을 반드시 뜻하지는 않는다. 상황을 이해하는 뜻이나 자산 가격이 오르는 뜻과는 구분한다.",
+        "value": "사람·도움·조언을 중요하고 소중하게 여기다. value + 명사에서 대상의 가치를 높이 인정한다. 가치를 당연시하는 태도와 대비되며, 도움에 대한 감사에 초점을 둘 때는 appreciate가 더 직접적이다. 값을 매기는 value나 가치라는 명사와 구분하며, 항상 감사를 표현한다는 뜻은 아니다.",
+        "overlook": "가치나 중요성을 미처 알아보지 못하고 놓치다. overlook the value of A처럼 무엇을 놓치는지 명시하면 이 문맥과 연결된다. overlook만으로 익숙함이 원인이라고 단정할 수는 없다. 잘못을 알면서 눈감아 주는 뜻, 높은 곳에서 내려다보는 뜻과는 구분한다."
+      },
       "exampleSentences": [
         {
           "en": "People often take reliable public services for granted until those services stop.",
@@ -1104,16 +1111,64 @@
           "publisher": "Collins English Dictionary",
           "url": "https://www.collinsdictionary.com/dictionary/english/take-for-granted",
           "independenceGroup": "Collins",
-          "note": "사람·도움의 가치를 알아보지 못하는 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+          "note": "Collins 공식 영국 영어 b뜻의 가치·장점을 알아보지 못하는 용법을 독립 대조. TFD Collins 전재를 별도 근거로 세지 않으며 원문·예문은 복제하지 않음"
         },
         {
-          "publisher": "Merriam-Webster",
-          "url": "https://www.merriam-webster.com/dictionary/take%20for%20granted",
-          "independenceGroup": "Merriam-Webster",
-          "note": "익숙한 존재를 과소평가하는 sense를 기존 독립 검수에서 재사용함; 원문은 앱에 복제하지 않음"
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/take",
+          "independenceGroup": "American Heritage",
+          "note": "TFD American Heritage 5판의 take for granted 두 번째 뜻: 사람·도움의 가치를 과소평가하는 용법을 실제 열람. 사실 전제와 분리하고 기존 자체 편집 정의·예문·문항은 유지; 이번 관계어 풀이만 보강"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/appreciate",
+          "independenceGroup": "American Heritage",
+          "note": "가치·중요성을 인정하는 타동사와 도움에 감사하는 뜻 열람. fail to appreciate는 기존 관계어의 합성적 풀이이며, 항상 익숙함이 원인이라는 의미를 추가하지 않음; 가격 상승 뜻 제외"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/appreciate",
+          "independenceGroup": "Collins",
+          "note": "COBUILD의 좋은 점을 알아봄·도움에 감사함과 명사 목적어 구문 대조. 상황 이해·자산 가격 상승을 분리하고 감사의 감정과 실제 발화를 동일시하지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/undervalue",
+          "independenceGroup": "American Heritage",
+          "note": "가치를 너무 낮게 매기거나 충분히 존중하지 않는 타동사 두 뜻 열람. familiar support를 결합한 자체 편집 풀이를 고정 숙어로 포장하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/undervalue",
+          "independenceGroup": "Collins",
+          "note": "COBUILD의 사람·사물의 중요성을 충분히 인정하지 않는 뜻과 명사 목적어 대조. 익숙함·금전 가격·적극적 경멸을 모든 용례의 필수 조건으로 강화하지 않음"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/value",
+          "independenceGroup": "American Heritage",
+          "note": "타동사 value의 소중히 여기는 뜻을 가격 산정·명사 가치와 분리. appreciate와의 비교 주석을 확인하고 감사를 반드시 말한다는 뜻은 덧붙이지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/value",
+          "independenceGroup": "Collins",
+          "note": "COBUILD의 사람·사물을 중요하게 생각하는 동사 뜻과 명사 목적어 대조. 금전적 가치 평가와 구분한 한국어 풀이 자체 편집"
+        },
+        {
+          "publisher": "The Free Dictionary · American Heritage",
+          "url": "https://www.thefreedictionary.com/overlook",
+          "independenceGroup": "American Heritage",
+          "note": "2a의 미처 알아보지 못함을 2b의 의도적 묵인·1의 내려다봄과 분리. overlook the value of A의 학습용 연결이며 익숙함이라는 원인을 무조건 부여하지 않음"
+        },
+        {
+          "publisher": "Collins English Dictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/overlook",
+          "independenceGroup": "Collins",
+          "note": "COBUILD의 중요성을 놓치는 뜻과 명사 목적어 대조. 잘못을 용서·묵인하거나 경치를 내려다보는 뜻은 이번 연결에서 제외; 관계어 한국어 설명 자체 편집"
         }
       ],
-      "sourceCheckedAt": "2026.09.05",
+      "sourceCheckedAt": "2026.10.09",
       "status": "production",
       "quality": "B",
       "enrichmentStatus": "complete",

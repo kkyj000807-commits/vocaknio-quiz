@@ -172,7 +172,7 @@ describe("깊이 학습 인덱스", () => {
     expect(senses[0].senseId).toBe("take-for-granted:assume-without-checking");
     expect(Object.keys(senses[0].relationMeaningsKo!)).toHaveLength(5);
     expect(senses[1].senseId).toBe("take-for-granted:fail-to-appreciate");
-    expect(senses[1].relationMeaningsKo).toBeUndefined();
+    expect(Object.keys(senses[1].relationMeaningsKo!)).toHaveLength(5);
     const pointer = learningIndex.items.APPROW02128;
     expect(pointer).toEqual({ group: "APPENDIX", entryIds: ["learn:correction:APPROW02128"] });
     const payload = JSON.parse(fs.readFileSync(path.join(process.cwd(), "public", "data", "vocab-learning", release.version, "appendix.json"), "utf8"));
@@ -182,6 +182,20 @@ describe("깊이 학습 인덱스", () => {
     expect(matches[0].senseId).toBe("take-for-granted:primary");
     expect(matches[0].definitionEn).toBe("To assume something is true or available without checking, or to overlook the value of someone or something because it seems reliably present.");
     expect(matches[0].example.en).toBe("I had taken her help for granted until I had to do the work alone.");
+  });
+
+  it("가치 간과 관계어 보강은 공유 sense 하나에만 붙고 부록 정본·기존 예문을 재사용한다", () => {
+    const linkedRows = VOCAB.filter(item => item.w === "take for granted");
+    expect(linkedRows.map(item => [item.id, item.num, item.group])).toEqual([["APPROW02128", 37941, "APPENDIX"]]);
+    const [assumption, appreciation] = getActiveRecallSenses(linkedRows[0].id);
+    expect(assumption.relationMeaningsKo).not.toHaveProperty("appreciate");
+    expect(appreciation.relationMeaningsKo).not.toHaveProperty("verify");
+    expect(appreciation.exactSynonyms).toEqual([]);
+    expect(appreciation.nearSynonyms).toEqual(["fail to appreciate", "undervalue familiar support"]);
+    expect(appreciation.exampleSentences).toHaveLength(1);
+    expect(appreciation.exampleSentences[0].type).toBe("editorial");
+    expect(appreciation.exampleSentences[0].cueKo).toContain("서비스가 멈춘 뒤");
+    expect(VOCAB).toHaveLength(38163);
   });
 
   it("Open English WordNet의 같은 synset 동의어만 공개 데이터에 전달한다", () => {
