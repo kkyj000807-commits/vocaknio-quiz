@@ -343,4 +343,29 @@ describe("깊이 학습 인덱스", () => {
     expect(entryIds).toContain("learn:correction:JBKROW000287:almost");
     expect(entryIds).toContain("learn:correction:JBKROW000287:all-except");
   });
+
+  it("all but 관계어 보강은 같은 두 출현의 거의 뜻에만 연결하고 제외 뜻은 보존한다", () => {
+    const source = corrections.entries.find(entry => entry.key === "all-but")!;
+    const almost = source.senses!.find(sense => sense.id === "almost")!;
+    expect(almost.contrasts.map(contrast => contrast.word)).toEqual(["almost", "nearly", "completely", "not at all", "anything but"]);
+    expect(almost.contrasts.find(contrast => contrast.word === "completely")!.noteKo).toContain("사전 반의어로 외우지 않는다");
+    expect(almost.contrasts.find(contrast => contrast.word === "anything but")!.noteKo).toContain("반드시 쉽다는 뜻으로 강화하지 않는다");
+    for (const target of source.targets) {
+      const pointer = learningIndex.items[target.id as keyof typeof learningIndex.items];
+      const filename = `${pointer.group.toLowerCase()}.json`;
+      const read = (version: string) => JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/data/vocab-learning", version, filename), "utf8")).entries;
+      const current = read(release.version);
+      const previous = read("1.28");
+      const find = (entries: typeof current, suffix: string) => entries.find((entry: { id: string }) => entry.id === `learn:correction:${target.id}:${suffix}`);
+      const enriched = find(current, "almost");
+      expect(enriched.contrasts).toEqual(almost.contrasts);
+      expect(enriched.nearSynonyms).toEqual(["almost", "nearly"]);
+      expect(enriched.sources).toHaveLength(12);
+      expect(new Set(enriched.sources.map((source: { url: string }) => source.url)).size).toBe(12);
+      expect(enriched.verification.checkedAtKst).toBe("2026.10.09 KST");
+      expect(enriched.sources.every((source: { edition: string; license: string }) => source.edition.includes("2026.10.09 KST") && source.license === "대조 출처 · 원문 미수록")).toBe(true);
+      for (const field of ["id", "senseId", "itemIds", "definitionEn", "definitionKo", "example", "memoryKo", "usageKo", "examTrapKo"]) expect(enriched[field]).toEqual(find(previous, "almost")[field]);
+      expect(find(current, "all-except")).toEqual(find(previous, "all-except"));
+    }
+  });
 });

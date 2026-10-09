@@ -721,10 +721,102 @@
           "memoryKo": "완전한 상태 바로 앞까지 갔지만 마지막 한 조각이 남아 있다.",
           "usageKo": "all but 뒤에 complete, impossible, disappeared처럼 상태나 변화가 오면 그 상태에 거의 도달했다는 정도를 나타낸다.",
           "examTrapKo": "완전히 그렇다는 뜻이 아니다. 문장에 remain, only, final처럼 남은 차이를 보여 주는 단서가 있는지 확인한다.",
+          "nearSynonyms": ["almost", "nearly"],
           "contrasts": [
             {
+              "word": "almost",
+              "noteKo": "거의 — 말한 상태에 매우 가깝지만 완전히 그렇다고 확정하지 않는 정도 부사다. all but complete를 almost complete로 바꾸면 완료 직전이라는 방향을 유지한다. 다만 all but two처럼 예외 수를 빼는 다른 뜻에는 적용하지 않는다."
+            },
+            {
+              "word": "nearly",
+              "noteKo": "거의 — 상태나 동작이 목표에 가까이 간 정도를 나타낸다. all but disappeared를 nearly disappeared로 바꿀 수 있지만, almost와 모든 구조에서 자유롭게 교환되지는 않는다. almost no처럼 부정어 바로 앞의 용법까지 같은 것으로 넓히지 않는다."
+            },
+            {
+              "word": "completely",
+              "noteKo": "완전히 — 남은 부분 없이 그 상태가 성립하는 정도 부사다. almost finished와 completely finished의 차이는 완료 직전과 전부 완료라는 끝점 차이다. 같은 방향의 정도 대비이지 all but의 일반적인 사전 반의어로 외우지 않는다."
+            },
+            {
+              "word": "not at all",
+              "noteKo": "전혀 ~않은 — 그 상태가 아니라는 부정을 강조한다. all but complete는 거의 완료지만 not at all complete는 전혀 완료가 아니다. 같은 상태를 설명할 때의 문맥상 반대 방향이며, 감사에 대한 응답인 천만에요라는 별도 뜻과 구분한다."
+            },
+            {
               "word": "anything but",
-              "noteKo": "결코 ~이 아닌이라는 강한 부정이다. all but impossible은 거의 불가능하지만 anything but impossible은 결코 불가능하지 않다는 뜻이다."
+              "noteKo": "결코 ~이 아닌 — 뒤의 상태를 강하게 부정하는 혼동 표현이다. all but impossible은 거의 불가능하지만 anything but impossible은 결코 불가능하지 않다는 뜻이다. 부정적 형용사 impossible까지 함께 읽어 방향을 판단하며, 결코 불가능하지 않음을 반드시 쉽다는 뜻으로 강화하지 않는다."
+            }
+          ],
+          "checkedAtKst": "2026.10.09 KST",
+          "sources": [
+            {
+              "name": "The Free Dictionary · American Heritage · all but",
+              "url": "https://idioms.thefreedictionary.com/all+but",
+              "independenceGroup": "American Heritage",
+              "noteKo": "거의 뜻과 almost/nearly 관계만 확인. 별도 집합 제외 뜻은 이번 보강 범위가 아님."
+            },
+            {
+              "name": "Collins · all but",
+              "url": "https://www.collinsdictionary.com/dictionary/english/all-but",
+              "independenceGroup": "Collins",
+              "noteKo": "거의 그 상태라는 정도 뜻과 별도 제외 구문의 경계 대조."
+            },
+            {
+              "name": "The Free Dictionary · American Heritage · almost",
+              "url": "https://www.thefreedictionary.com/almost",
+              "independenceGroup": "American Heritage",
+              "noteKo": "완전히는 아니지만 매우 가까운 정도 부사. 같은 페이지의 Collins 용법 설명에서 부정어 앞 almost/nearly 차이 확인; Collins 전재를 독립 원전으로 중복 계산하지 않음."
+            },
+            {
+              "name": "Collins · almost",
+              "url": "https://www.collinsdictionary.com/dictionary/english/almost",
+              "independenceGroup": "Collins",
+              "noteKo": "완전히 그렇지는 않지만 거의 그렇다는 정도 뜻 대조."
+            },
+            {
+              "name": "The Free Dictionary · American Heritage · nearly",
+              "url": "https://www.thefreedictionary.com/nearly",
+              "independenceGroup": "American Heritage",
+              "noteKo": "거의 이르지만 완전히는 아닌 정도 뜻만 확인; 친밀함이라는 다른 뜻은 제외."
+            },
+            {
+              "name": "Collins · nearly",
+              "url": "https://www.collinsdictionary.com/dictionary/english/nearly",
+              "independenceGroup": "Collins",
+              "noteKo": "미완료에 가까운 상태·동작의 정도 부사 뜻 대조."
+            },
+            {
+              "name": "The Free Dictionary · American Heritage · completely",
+              "url": "https://www.thefreedictionary.com/completely",
+              "independenceGroup": "American Heritage",
+              "noteKo": "complete의 전체·완료 뜻과 파생 부사 completely 확인. all but와의 사전 반의어 인증 근거가 아님."
+            },
+            {
+              "name": "Collins · completely",
+              "url": "https://www.collinsdictionary.com/dictionary/english/completely",
+              "independenceGroup": "Collins",
+              "noteKo": "전체·끝남이라는 complete 뜻과 부사 파생 확인; 정도 끝점 대비는 자체 편집 설명."
+            },
+            {
+              "name": "The Free Dictionary · Farlex · not at all",
+              "url": "https://idioms.thefreedictionary.com/not+at+all",
+              "independenceGroup": "Farlex",
+              "noteKo": "전혀 아니라는 부정과 감사 응답의 별도 뜻 확인."
+            },
+            {
+              "name": "Cambridge · not at all",
+              "url": "https://dictionary.cambridge.org/dictionary/english/not-at-all",
+              "independenceGroup": "Cambridge",
+              "noteKo": "강한 부정 뜻과 예의상 감사 응답을 구별하여 대조."
+            },
+            {
+              "name": "The Free Dictionary · American Heritage · anything but",
+              "url": "https://idioms.thefreedictionary.com/anything+but",
+              "independenceGroup": "American Heritage",
+              "noteKo": "결코 ~아님이라는 강조 부정만 확인. impossible과의 방향 분석은 자체 편집."
+            },
+            {
+              "name": "Collins · anything but",
+              "url": "https://www.collinsdictionary.com/dictionary/english/anything-but",
+              "independenceGroup": "Collins",
+              "noteKo": "상태가 아니라는 강조 부정 대조; not impossible을 easy로 강화하는 근거가 아님."
             }
           ],
           "example": {

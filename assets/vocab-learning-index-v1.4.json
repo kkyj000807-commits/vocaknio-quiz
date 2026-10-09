@@ -1,9 +1,9 @@
 {
-  "version": "1.28",
+  "version": "1.29",
   "coverage": {
     "senses": 165,
     "rows": 230,
-    "checkedAtKst": "2026.10.06"
+    "checkedAtKst": "2026.10.09 KST"
   },
   "items": {
     "APPROW00001": {

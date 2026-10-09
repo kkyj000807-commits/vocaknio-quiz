@@ -4,6 +4,15 @@
 
 사전 우선순위(2026.10.06 사용자 재확인): The Free Dictionary https://www.thefreedictionary.com/ 를 첫 검수 출처로 활용한다. 뜻·숙어·구문·용례·관계어를 sense 단위로 먼저 확인하고 부족/충돌 부분만 다른 독립 사전으로 대조한다. 직전 정책 등록 시 홈페이지 웹 fetch는 읽지 못해 근거로 세지 않았고 당시 문서만 변경하여 공개1.12·학습 데이터를 보존했다(잠금58403/PID22540). 이번1.13에서는 일반 Chrome의 실제 항목 열람을 확인했다. 실제 확인한 범위만 링크/수록 원전/확인일과 함께 기록하며 제한을 우회하거나 대량 원문을 복제하지 않는다. 기존 자동화의 TFD 우선 규칙을 유지하고 새 자동화는 만들지 않았다.
 
+## 현재 검증 중 — all but 거의 뜻의 관계어 / 1.29 후보
+
+- 시작 2026.10.09 09:48 KST heartbeat: 규칙4문서·main/origin47c3adcd·공개1.28/source15d1d1eb·Pages72f53b26·git status/diff 대조. 소유 OS 잠금70933/PID19920 LOCK_ACQUIRED. 사용자1.4/auth/미추적 작업 보존, 새 대화·자동화·보조 작업0.
+- 범위: 실제 공개되는 idiom-corrections의 all-but:almost 한 공유 뜻/기존 JBKROW000287·002103 두 출현만 보강. 기존 contrasts 영역에 almost/nearly/completely/not at all/anything but5풀이·nearSynonyms2·12직접 근거·실제 확인일 추가. 빌더에 선택적 뜻별 sources/checkedAtKst 및 독립 근거 검증을 추가해 별도 all-except와 다른 항목의 자료·출처·확인일은 바꾸지 않는다. 정의/영한 예문/문항/정답/학습key·원본38163행 유지, DB/API/migration·신규 문제0.
+- 근거: TFD 우선6항목의 AHD/Farlex 본문 확인(IAB5·nearly 웹); Collins 공식5페이지·Cambridge not at all IAB 대조. almost/nearly 부정어 앞 차이는 TFD에 수록된 Collins COBUILD 용법 근거이며 독립 원전으로 중복 세지 않는다. completely는 complete 본문·파생 부사로 확인한 정도 끝점 대비이지 사전 반의어 인증이 아니다. impossible의 부정을 easy로 강화하지 않는다. 편입영어 검수 스킬 적용, 원문·사전 예문 복제0.
+- 발견: active-recall의 all-but 두 뜻은 reviewed이며 현재 UI는 기존 production sense 문항·깊이 학습 자료를 사용한다. reviewed 후보를 근거 없이 production으로 올리거나 중복 문제를 만들지 않았다. 별도 후보 relationMeaningsKo 공란을 공개 UI의 공란과 동일시하지 않는다.
+- VERIFIED 코드: 관련3파일25 PASS(신규4), verify12146 exit0·전체 타입·등록/정의/sense/학습 감사·38파일358 PASS/기존 인증1 SKIP. 수정 파일 ESLint 오류0·Git 보안 tracked672/untracked213/findings0·diff --check PASS. 1.28→1.29 JSON 전후 V101의 거의2entry만 변경/다른7그룹 entry와 별도 제외2entry 동일. 공유20production sense/37행·호환165sense/230행 유지. Production·공개 UI는 아직 완료가 아니다. 원본SHA256 7EBA20F388D04E9D7FB10EDEC635BEAC5DC7A6C726EF6E25D7DABA4CE57908DD 확인. 중앙DB 위치 unverified/sync_required·실제 Safari/mobile Chrome/Samsung Internet/Galaxy Tab 강제다크·장기효과 미검증 유지.
+- 다음: verify→Production/Git 감사→격리 실제 앱 저장/통계/동일 뜻 복습 및3테마 반응형→승인 Pages 배포/manifest·bundle·UI 확인→결과 기록·잠금 해제. 완료 전까지 최신 공개는 아래1.28이다.
+
 ## 최신 공개 batch — work out 운동 관계어 / 1.28
 
 - 시작 2026.10.09 06:44 KST heartbeat: AGENTS/AI_WORK_RULES/WORKING_CONTEXT/AUTOMATION_RUNBOOK·main/origin7d0c1c64·공개1.27/source436fd2cb·Pages1ce1935d·git status/diff 대조. 소유 잠금15917/PID12064 LOCK_ACQUIRED. 사용자1.4/auth/미추적 작업 보존; 새 대화·자동화·보조 작업0.

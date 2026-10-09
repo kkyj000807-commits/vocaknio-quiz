@@ -3,8 +3,24 @@ import { SENSE_QUESTIONS, getProductionSenseQuestions, getSenseQuestionCoverage,
 import { buildQuizQuestions, buildReviewQuestions, isChoiceCorrect, validateQuestion } from "@/lib/quiz-engine";
 import { VOCAB } from "@/lib/vocab";
 import { createEmptyQuestionViewState, parseQuizSession, summarizeQuizSession, type QuizSession } from "@/lib/quiz-session";
+import { getItemLearningTargets, getQuestionLearningTargetKey } from "@/lib/canonical-learning";
 
 describe("sense-first production gate", () => {
+  it("all but 상세 보강 후에도 두 뜻의 기존 문제·정답·학습 키와 반복 출현 연결을 유지한다", () => {
+    for (const id of ["JBKROW000287", "JBKROW002103"]) {
+      const item = VOCAB.find(item => item.id === id)!;
+      expect(getItemLearningTargets(item).map(target => target.key).sort()).toEqual(["sense:all-but%3Aall-except", "sense:all-but%3Aalmost"]);
+      expect(getProductionSenseQuestions(id).map(question => question.id)).toEqual(["all-but.almost.v1", "all-but.except.v1"]);
+      for (const senseId of ["all-but:almost", "all-but:all-except"]) {
+        const question = buildQuizQuestions({ mode: "syn-choice", itemNums: [item.num], count: 1, learningTargetKeys: [`sense:${encodeURIComponent(senseId)}`] })[0];
+        expect(question.sense?.senseId).toBe(senseId);
+        expect(validateQuestion(question)).toBe(true);
+        expect(getQuestionLearningTargetKey(question)).toBe(`sense:${encodeURIComponent(senseId)}`);
+        expect(question.choices.filter(choice => isChoiceCorrect(question, choice))).toHaveLength(1);
+        expect(question.sense?.correctId).toBe(senseId.endsWith(":almost") ? "almost" : "except-two");
+      }
+    }
+  });
   it("maps every repeated row without rewriting vocabulary/record IDs", () => {
     expect(getSenseQuestionCoverage()).toMatchObject({ expressions: 4, senses: 6, questions: 6, mappedRows: 16 });
     for (const template of SENSE_QUESTIONS) {

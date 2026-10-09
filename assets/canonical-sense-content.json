@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "release": "1.28",
+  "release": "1.29",
   "entries": [
     {
       "word": "a wide range of",
@@ -372,8 +372,18 @@
         "kind": "editorial",
         "source": "FINETUNE editorial",
         "referenceUrls": [
+          "https://idioms.thefreedictionary.com/all+but",
           "https://www.collinsdictionary.com/dictionary/english/all-but",
-          "https://www.oxfordlearnersdictionaries.com/us/definition/american_english/all_4"
+          "https://www.thefreedictionary.com/almost",
+          "https://www.collinsdictionary.com/dictionary/english/almost",
+          "https://www.thefreedictionary.com/nearly",
+          "https://www.collinsdictionary.com/dictionary/english/nearly",
+          "https://www.thefreedictionary.com/completely",
+          "https://www.collinsdictionary.com/dictionary/english/completely",
+          "https://idioms.thefreedictionary.com/not+at+all",
+          "https://dictionary.cambridge.org/dictionary/english/not-at-all",
+          "https://idioms.thefreedictionary.com/anything+but",
+          "https://www.collinsdictionary.com/dictionary/english/anything-but"
         ]
       },
       "koreanMeaning": "말한 상태에 아주 가까이 갔지만 완전히 그 상태가 되지는 않은.",
@@ -387,7 +397,18 @@
       ],
       "distinctionNote": "완전히 그렇다는 뜻이 아니다. 문장에 remain, only, final처럼 남은 차이를 보여 주는 단서가 있는지 확인한다.",
       "sourceIds": [
+        "https://idioms.thefreedictionary.com/all+but",
         "https://www.collinsdictionary.com/dictionary/english/all-but",
+        "https://www.thefreedictionary.com/almost",
+        "https://www.collinsdictionary.com/dictionary/english/almost",
+        "https://www.thefreedictionary.com/nearly",
+        "https://www.collinsdictionary.com/dictionary/english/nearly",
+        "https://www.thefreedictionary.com/completely",
+        "https://www.collinsdictionary.com/dictionary/english/completely",
+        "https://idioms.thefreedictionary.com/not+at+all",
+        "https://dictionary.cambridge.org/dictionary/english/not-at-all",
+        "https://idioms.thefreedictionary.com/anything+but",
+        "https://www.collinsdictionary.com/dictionary/english/anything-but",
         "https://www.oxfordlearnersdictionaries.com/us/definition/american_english/all_4",
         "https://dictionary.cambridge.org/us/dictionary/english/all-but"
       ],

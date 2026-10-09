@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAtKst": "2026-10-09T06:51:22+09:00",
+  "generatedAtKst": "2026-10-09T09:56:53+09:00",
   "vocabulary": {
     "sourceRows": 38163,
     "uniqueHeadwords": 13347,
@@ -29,7 +29,7 @@
       "contextExplanation": 22,
       "exampleSentence": 22,
       "exampleExplanation": 22,
-      "synonyms": 48,
+      "synonyms": 47,
       "distinctionNote": 22,
       "sourceIds": 22
     }

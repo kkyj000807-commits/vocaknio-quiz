@@ -3,6 +3,13 @@ import path from "node:path";
 
 export const isMissingMeaning = (value) => !String(value ?? "").trim() || /^(?:p\s*\.?\s*\d+|[-—?]+|null|undefined|n\/?a)$/i.test(String(value).trim());
 
+function validateSources(sources, key) {
+  if (!Array.isArray(sources) || new Set(sources.map((source) => source.independenceGroup)).size < 2) throw new Error(`Two independent sources required: ${key}`);
+  for (const source of sources) {
+    if (!source.name || !source.noteKo || !source.independenceGroup || !/^https:\/\//.test(source.url)) throw new Error(`Incomplete evidence: ${key}`);
+  }
+}
+
 export function loadIdiomCorrections(root) {
   const file = path.join(root, "data", "idiom-corrections.json");
   const data = JSON.parse(fs.readFileSync(file, "utf8"));
@@ -39,12 +46,10 @@ export function loadIdiomCorrections(root) {
         senseIds.add(sense.id);
         if (!Array.isArray(sense.contrasts)) throw new Error(`Missing contrasts: ${entry.key}:${sense.id}`);
         if (!sense.example?.en || !sense.example?.ko || !sense.example?.cueKo) throw new Error(`Missing contextualized example: ${entry.key}:${sense.id}`);
+        if (sense.sources !== undefined) validateSources(sense.sources, `${entry.key}:${sense.id}`);
       }
     }
-    if (new Set(entry.sources.map((source) => source.independenceGroup)).size < 2) throw new Error(`Two independent sources required: ${entry.key}`);
-    for (const source of entry.sources) {
-      if (!source.name || !source.noteKo || !/^https:\/\//.test(source.url)) throw new Error(`Incomplete evidence: ${entry.key}`);
-    }
+    validateSources(entry.sources, entry.key);
     for (const target of entry.targets) {
       if (seen.has(target.id)) throw new Error(`Duplicate correction: ${target.id}`);
       seen.add(target.id);
@@ -102,9 +107,9 @@ export function correctionLearningEntries(vocab, data) {
       contrasts: sense.contrasts,
       example: { ...sense.example, kind: "editorial" },
       ...(entry.composition ? { composition: entry.composition } : {}),
-      sources: entry.sources.map((source) => ({ ...source, edition: `확인 ${entry.checkedAtKst ?? data.checkedAtKst}`, license: "대조 출처 · 원문 미수록", role: "reference" })),
-      verification: { status: "cross-agreed", checkedAtKst: entry.checkedAtKst ?? data.checkedAtKst,
-        reviewer: "Codex · 독립 출처 의미 대조 및 한영 학습 해설 검수", evidence: entry.sources },
+      sources: (sense.sources ?? entry.sources).map((source) => ({ ...source, edition: `확인 ${sense.checkedAtKst ?? entry.checkedAtKst ?? data.checkedAtKst}${sense.sources ? ` · ${source.noteKo}` : ""}`, license: "대조 출처 · 원문 미수록", role: "reference" })),
+      verification: { status: "cross-agreed", checkedAtKst: sense.checkedAtKst ?? entry.checkedAtKst ?? data.checkedAtKst,
+        reviewer: "Codex · 독립 출처 의미 대조 및 한영 학습 해설 검수", evidence: sense.sources ?? entry.sources },
     }));
   }));
 }
