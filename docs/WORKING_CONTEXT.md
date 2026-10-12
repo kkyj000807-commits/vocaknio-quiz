@@ -1,5 +1,21 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-13 02:13 KST — 1.0 공개 업데이트 확인
+
+이번 안정화 누적 후보는 실제 공개 배포까지 완료했다. **전체 콘텐츠99%·시험용 최종 안정판 완료는 아니다.** 아래 미배포/BLOCKED 표시는 해당 시점 이력이며 현재 릴리스 상태는 이 절을 기준으로 삼는다.
+
+- 공개: https://kkyj000807-commits.github.io/vocaknio-quiz/ · 표시 **1.0 고정**, 수정 **2026.10.13 01:48:14 KST**, source `095ee9694821b602abc553a4b6fee99166d74ffc`, `sourceDirty=false`, dataVersion `v1.4`, learningDataVersion `1.29`. Pages commit `9e5a0ffbc2b4a36257af35330bf604383ebd3aa6`, 실제 Pages build `built`/오류없음(2026-10-12T17:08:10Z).
+- 공개 번들 `entry-acfa34e2143e4295174107dd76981865.js`: 15,904,138bytes, SHA256 `cfb060d9dd31e422158255106ecf74e4e7ca286d91832d1e1ec191e1de2368cc`, 로컬 출력과 byte 동일. 공개 학습8·OEWN사전8 JSON 모두 source 내용/Git 배포 blob과 일치. 사전8개는 Git CRLF→LF(마지막 줄바꿈1개)만 달라 JSON·정규화 해시 동일; raw byte 동일이라고 보고하지 않는다.
+- 최종 후보 `analysis/qa/production-1.0-20261013-0148`의 Production 빌드/출력 감사 PASS: HTML22/routes21, 누락참조0/보안결함0/학습헤더8 PASS/사전8/녹음17 출처·license 검사 PASS. source Git보안725tracked/0untracked/findings0. 전체 verify exit0 **489 PASS·1 SKIP**, 마지막92.01s. 전체 lint0errors/기존8warnings. 인증logout SKIP은 실제 서버 인증 검증이 아니다.
+- 실제 격리 IAB:30문제 풀이6/30→정확한 뜻/유형1개 복습정답7/31→새로고침7/31. 최종 판본으로 전환 후31응답 유지. 별도 빈-origin에 백업파일 미리보기(6new/3identical/0conflict)→명시복원→7/31→재접속7/31. 실제 다운로드 백업31응답, 인증 제외. 공개 사용자 답안/MASTER/통계로 실험하지 않았다.
+- IAB 320/1024/1280px × light/paper/dark9조합 가로이탈0·하단5탭 접근 확인. Windows QA 서버의273자 font 경로404는 확장경로 `\\?\` 실행으로200/356,840bytes·아이콘 표시 복구; OS설정 변경0, 제품 공개 장애로 오인하지 않는다. 실제 데스크톱Chrome에서 최종설정/음성선택 확인(Google US English 제공). 공개 IAB에서도1.0·수정시각·13,347표제어/38,163반복행·5/10/20/30·발음/로컬백업 안내 확인. 공개 화면 증빙은 비공개 `analysis/qa/public-1.0-20261013.jpg`.
+- 실제 최종 SC:20요청→가능11 안내/실제1/11, 정답 전 영어지문·선지, 오답 후 방향/단서/정답·각오답 근거/한국어 풀이. 생성12 보존·모호1보류·eligible11·실제기출0. legacy268 원문/정답/선지/ID object 동일 보존, 현재 앱 번들에서 제외; 원정답을2/3번 패턴 때문에 바꾸지 않는다. 뜻문제 정답④→복습① 확인, 선지셔플 후 채점/복원 유지.
+- 원본38,163행/고유표제어13,347·정본SHA 보존. OneDrive main `1bf27b9`와 사용자 dirty 그대로, 병합/강제push/삭제0. 소유 구현은 `finetune-exam-stable-1-0` branch에 보관·normal push. 기존 A2시간/ACTIVE 유지, 새자동화0. 이번은 수동 승인 릴리스이며 실제2시간 scheduler-trigger 성공으로 대체하지 않는다.
+
+남은 범위: 전체 예문/의미99% 미달·신규 의미검수0, 실제 기출 원문/정답/공개권리 확보0, 공개 기존 기록 경고의 실제 원인 미확정, 비협력 구버전 탭/실제quota 통합 미검증, 실제 iPhone/iPad Safari·Galaxy Tab Samsung Internet/Chrome·키보드/회전/강제다크 미검증, 음성 청취/여성음색 품질 미검증. 설정의 깊이학습 `165개 뜻` 표시는 실제165export entries/97unique senses/230행이므로 다음 합산 변경에서 문구 정정한다; 이 잔여 문구만으로 즉시 재빌드하지 않는다.
+
+다음: 같은 공개 source의 검사·빌드를 반복하지 않는다. 잠금/최신Git 확인 후 기존 licensed 예문을 sense+POS로 배치연결하고100개 실제 보강·의미검수 통과/보류/소요를 측정한다. 단순 구조1/100을 의미검수 생산량으로 사용하지 않는다. P0 재현은 저장기록 보호 우선으로 처리하며, 검증된 누적 변경만 기존2시간 체크포인트에 같은1.0/새KST로 배포한다. 복구는 이전 Pages `426e5fba947518d6eb6ded25c3f511e8ad6cf4ac`의 산출물을 새 normal commit으로 복원한다; force/reset/사용자저장 초기화 금지. 현재 release source095ee...와 이후 docs-only 보고 커밋은 구분한다.
+
 ## 2026-10-13 01:48 KST — 최종 후보 검증·실제 30문제 QA 통과
 
 - 첫 Production 출력은 빌드 성공 후 감사가 FAIL했다. 실제 dataVersion `v1.4`를 숫자 표시 버전 규칙으로 검사하고, 외부 JSON의 녹음 출처를 JS literal에서 찾던 감사 오류였다. 기존 v접두 데이터 판본을 허용하되 경로 탈출은 거절하고, 공개 학습 JSON의 US 녹음17개 출처·URL·license·attribution을 검사하도록 고쳤다. 합성 출력의 잘못된 헤더/불명확 녹음 메타데이터는 계속 거절한다. 첫 출력은 수정된 감사에서 PASS했지만 최종 수정 코드를 넣어 새 출력으로 재빌드한다.

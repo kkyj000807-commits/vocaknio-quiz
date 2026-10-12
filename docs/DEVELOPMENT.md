@@ -1,5 +1,7 @@
 # 개발 진입 지도
 
+로컬 Production QA: `python scripts/serve-audit-output.py <출력 절대경로> [port]`. Windows에서 export font 경로가260자를 넘고 LongPaths가 꺼져 있으면 QA 서버만 `\\?\` 확장경로로 실행한다: `$qaExtendedRoot = '\\?\' + (Resolve-Path '<QA 출력>').Path` 후 `python scripts/serve-audit-output.py $qaExtendedRoot 26729`. OS/registry를 바꾸지 않는다. 다른 빈-origin 검증은26730 등 별도port로 실행하며, localhost font404를 공개 제품 장애로 단정하지 않는다.
+
 현재 완료/배포 상태는 WORKING_CONTEXT.md만 기준으로 삼는다. 이 문서는 파일 위치와 재현 가능한 명령을 안내한다.
 
 저장 안전 경로(2026.10.13 격리 패치): `lib/store.ts`의 기존 큐 → `lib/learning-write-journal.ts`의 선택적 Web Locks/부분 저장 복구 → 기존 학습 키. `lib/learning-backup.ts`/`components/learning-backup-settings.tsx`는 로컬 파일 검사·빈 저장소 복원만 허용하며 충돌 자동 합산은 하지 않는다. 새 복구 키는 학습 이력의 별도 정본이 아니라 미완료 저장을 완료하는 before/after 기록이다. 실제 브라우저/전체 통합 검증은 WORKING_CONTEXT의 보류 조건을 확인한다.
