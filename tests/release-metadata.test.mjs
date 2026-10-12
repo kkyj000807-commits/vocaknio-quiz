@@ -6,7 +6,7 @@ import { spawnSync } from "node:child_process";
 import { createReleaseMetadata, isReleaseMetadataValid } from "../scripts/lib/release-metadata.mjs";
 
 const source = {
-  sourceCommit: "a".repeat(40), sourceDirty: false, dataVersion: "1.4",
+  sourceCommit: "a".repeat(40), sourceDirty: false, dataVersion: "v1.4",
   builtAt: "2026-10-12T15:20:01.000Z",
 };
 describe("고정 표시 버전과 배포 시각", () => {
@@ -14,6 +14,7 @@ describe("고정 표시 버전과 배포 시각", () => {
     const release = createReleaseMetadata({ version: "1.29", displayVersion: "1.0" }, source);
     expect(release.version).toBe("1.0");
     expect(release.learningDataVersion).toBe("1.29");
+    expect(release.dataVersion).toBe(JSON.parse(fs.readFileSync("assets/vocab-meta-v1.4.json", "utf8")).version);
     expect(release.modifiedAtKst).toBe("2026.10.13 00:20:01 KST");
     expect(isReleaseMetadataValid(release)).toBe(true);
   });
@@ -33,7 +34,7 @@ describe("고정 표시 버전과 배포 시각", () => {
   it("경로 탈출·잘못된 시각·시각 불일치·target 불일치는 거절한다", () => {
     const good = createReleaseMetadata({ version: "1.29", displayVersion: "1.0" }, source);
     for (const change of [
-      { learningDataVersion: "../1.29" }, { version: "" }, { builtAt: "invalid" },
+      { learningDataVersion: "../1.29" }, { dataVersion: "../v1.4" }, { version: "" }, { builtAt: "invalid" },
       { modifiedAtKst: "2026.10.14 00:20:01 KST" }, { target: "1.0|stale" },
       { sourceCommit: "unknown" }, { sourceDirty: "false" },
     ]) expect(isReleaseMetadataValid({ ...good, ...change })).toBe(false);
@@ -49,7 +50,7 @@ describe("고정 표시 버전과 배포 시각", () => {
       };
       write("release.json", JSON.stringify(createReleaseMetadata({ version: "1.29", displayVersion: "1.0" }, source)));
       write("index.html", '<script src="/vocaknio-quiz/_expo/static/js/web/entry-abcdef.js"></script>');
-      write("_expo/static/js/web/entry-abcdef.js", '["vocab-learning","vocab-definitions","Wikimedia Commons","speechSynthesis"]');
+      write("_expo/static/js/web/entry-abcdef.js", '["vocab-learning","vocab-definitions","speechSynthesis","voiceURI","preferRecording"]');
       for (const group of ["v101", "v201", "v301", "v401", "v501", "v502", "v601", "appendix"]) {
         write(`data/vocab-learning/1.29/${group}.json`, '{"version":"1.29","entries":[]}');
         write(`data/vocab-definitions/oewn-2025/${group}.json`, "{}");
@@ -57,6 +58,8 @@ describe("고정 표시 버전과 배포 시각", () => {
       const audit = () => spawnSync(process.execPath, ["scripts/audit-production-output.mjs", output], { encoding: "utf8" });
       expect(audit().status).toBe(0);
       write("data/vocab-learning/1.29/v101.json", '{"version":"1.0","entries":[]}');
+      expect(audit().status).toBe(1);
+      write("data/vocab-learning/1.29/v101.json", '{"version":"1.29","entries":[{"audio":{"url":"https://example.invalid/unverified.mp3","region":"US"}}]}');
       expect(audit().status).toBe(1);
     } finally {
       // This exact directory was created by this test, outside all workspaces.

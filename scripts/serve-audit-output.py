@@ -5,6 +5,9 @@ import sys
 import urllib.parse
 
 root = pathlib.Path(sys.argv[1]).resolve()
+port = int(sys.argv[2]) if len(sys.argv) > 2 else 26729
+if not 1024 <= port <= 65535:
+    raise SystemExit("Expected an unprivileged loopback port")
 if not (root / "release.json").is_file():
     raise SystemExit("Expected an audited static output")
 
@@ -28,4 +31,4 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def log_message(self, *_args):
         pass
 
-http.server.ThreadingHTTPServer(("127.0.0.1", 26729), Handler).serve_forever()
+http.server.ThreadingHTTPServer(("127.0.0.1", port), Handler).serve_forever()

@@ -16,7 +16,7 @@ import {
 import { ScreenContainer } from "@/components/screen-container";
 import { PronunciationSettings } from "@/components/pronunciation-settings";
 import { LearningBackupSettings } from "@/components/learning-backup-settings";
-import { VOCAB } from "@/lib/vocab";
+import { VOCAB, VOCAB_HEADWORD_COUNT } from "@/lib/vocab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
 import { useAuth } from "@/hooks/use-auth";
@@ -511,7 +511,11 @@ export default function SettingsScreen() {
                 <Text style={s.infoValue}>FINETUNE · 파인튠</Text>
               </View>
               <View style={[s.infoRow, { borderTopWidth: 0.5, borderTopColor: colors.border }]}>
-                <Text style={s.infoLabel}>단어 수</Text>
+                <Text style={s.infoLabel}>고유 표제어</Text>
+                <Text style={s.infoValue}>{VOCAB_HEADWORD_COUNT.toLocaleString()}개</Text>
+              </View>
+              <View style={[s.infoRow, { borderTopWidth: 0.5, borderTopColor: colors.border }]}>
+                <Text style={s.infoLabel}>수록 행 · 섹션 반복 포함</Text>
                 <Text style={s.infoValue}>{VOCAB.length.toLocaleString()}개</Text>
               </View>
               <View style={[s.infoRow, { borderTopWidth: 0.5, borderTopColor: colors.border }]}>

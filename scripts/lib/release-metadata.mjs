@@ -1,6 +1,7 @@
 // Display versions may stay fixed. Data partitions are compatibility IDs and
 // must not be renamed when the visible product version changes.
 const safeVersion = (value) => typeof value === "string" && /^\d+(?:\.\d+)+$/.test(value);
+const safeDataVersion = (value) => typeof value === "string" && /^v?\d+(?:\.\d+)+$/.test(value);
 
 export function formatReleaseTimeKst(builtAt, includeSeconds = true) {
   const date = new Date(builtAt);
@@ -28,7 +29,7 @@ export function createReleaseMetadata(config, source) {
 
 export function isReleaseMetadataValid(release) {
   if (!release || typeof release !== "object" || !safeVersion(release.version) ||
-    !safeVersion(release.learningDataVersion) || !safeVersion(release.dataVersion) ||
+    !safeVersion(release.learningDataVersion) || !safeDataVersion(release.dataVersion) ||
     !/^[a-f0-9]{40}$/.test(release.sourceCommit ?? "") ||
     typeof release.sourceDirty !== "boolean" || typeof release.builtAt !== "string" ||
     !Number.isFinite(Date.parse(release.builtAt)) || release.channel !== "production" ||

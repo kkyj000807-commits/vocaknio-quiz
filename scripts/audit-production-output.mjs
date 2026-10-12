@@ -46,9 +46,21 @@ const learningDirectory = releaseMetadataValid
 const learningFiles = learningDirectory && fs.existsSync(learningDirectory)
   ? fs.readdirSync(learningDirectory).filter((name) => name.endsWith(".json"))
   : [];
-const learningPayloadsMatch = learningFiles.length === 8 && learningFiles.every((name) => {
+const learningPayloads = learningFiles.map(name => {
   try {
-    return JSON.parse(fs.readFileSync(path.join(learningDirectory, name), "utf8")).version === release.learningDataVersion;
+    return JSON.parse(fs.readFileSync(path.join(learningDirectory, name), "utf8"));
+  } catch { return null; }
+});
+const learningPayloadsMatch = learningPayloads.length === 8 && learningPayloads.every(payload =>
+  payload?.version === release.learningDataVersion && Array.isArray(payload.entries));
+const recordingEntries = learningPayloads.flatMap(payload => payload?.entries ?? []).filter(entry => entry.audio);
+const recordingMetadataValid = recordingEntries.every(({ audio }) => {
+  try {
+    return audio.region === "US" && audio.source === "Wikimedia Commons" &&
+      new URL(audio.url).protocol === "https:" && new URL(audio.url).hostname === "upload.wikimedia.org" &&
+      new URL(audio.sourcePage).protocol === "https:" && new URL(audio.sourcePage).hostname === "commons.wikimedia.org" &&
+      typeof audio.license === "string" && /^(?:CC0|CC BY(?:-SA)? [1-4]\.0|Public domain)$/i.test(audio.license) &&
+      typeof audio.attribution === "string" && !!audio.attribution.trim();
   } catch { return false; }
 });
 const definitionDirectory = path.join(outputRoot, "data", "vocab-definitions", "oewn-2025");
@@ -72,8 +84,8 @@ const result = {
     definitionFiles.length === 8 &&
     bundleText.includes("vocab-learning") &&
     bundleText.includes("vocab-definitions") &&
-    bundleText.includes("Wikimedia Commons") &&
-    bundleText.includes("speechSynthesis")
+    recordingMetadataValid &&
+    bundleText.includes("speechSynthesis") && bundleText.includes("voiceURI") && bundleText.includes("preferRecording")
       ? "pass"
       : "fail",
   release,
@@ -86,11 +98,13 @@ const result = {
   rootAssetReferences,
   learningFiles: learningFiles.length,
   learningPayloadsMatch,
+  recordingMetadataValid,
+  licensedAmericanRecordingUrls: new Set(recordingEntries.map(entry => entry.audio.url)).size,
   definitionFiles: definitionFiles.length,
   learningUiInBundle: bundleText.includes("vocab-learning"),
   definitionUiInBundle: bundleText.includes("vocab-definitions"),
   americanPronunciationInBundle:
-    bundleText.includes("Wikimedia Commons") && bundleText.includes("speechSynthesis"),
+    bundleText.includes("speechSynthesis") && bundleText.includes("voiceURI") && bundleText.includes("preferRecording"),
   bundle: bundle ? path.basename(bundle) : null,
 };
 console.log(JSON.stringify(result, null, 2));

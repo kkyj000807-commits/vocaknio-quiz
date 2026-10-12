@@ -28,7 +28,7 @@ import { ProblemSenseContext } from "@/components/problem-sense-context";
 import { WordSectionLabel } from "@/components/word-section-label";
 import { getProductionSenseQuestions, hasSenseQuestionMapping, senseMatchesItem } from "@/lib/sense-questions";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { getRangeItems, getSynonymSourceGroups, WORDBOOK_RANGES, VOCAB, type VocabItem } from "@/lib/vocab";
+import { getRangeItems, getSynonymSourceGroups, WORDBOOK_RANGES, VOCAB, VOCAB_HEADWORD_COUNT, type VocabItem } from "@/lib/vocab";
 import {
   loadBookmarks,
   loadQuizSettings,
@@ -565,7 +565,7 @@ export default function WordbookScreen() {
             단어장
           </Text>
           <Text style={[styles.headerSub, { color: colors.muted }]}>
-            총 {VOCAB.length.toLocaleString()}개 단어
+            고유 표제어 {VOCAB_HEADWORD_COUNT.toLocaleString()}개 · 수록 {VOCAB.length.toLocaleString()}행
           </Text>
         </View>
         {/* 버튼 그룹 */}
