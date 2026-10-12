@@ -1,5 +1,15 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-13 03:07 KST — 고효율 구조 감사 2건 수정, 배포 전 검증 대기
+
+- `lib/vocab-definitions.ts`: `typeof null === object`로 잘못 승인한 응답이 성공 Promise에 캐시돼 재시도까지 실패하는 경로를 실제 코드로 재현했다. null/배열/root/그룹 header를 캐시 전에 검사하고 실패 cache eviction을 재사용한다. 고정 데이터 URL은 `no-cache` 재검증, 정상 페이지 내 동시 요청은 기존 cache로 1회만 수행한다. UI의 기존 다시 불러오기·정상 자료 보존 경로는 변경하지 않았다. 공개 서버에서 이 손상이 실제 발생했다고 단정하지 않는다.
+- `scripts/audit-vocab-definitions.mjs`: 행마다 `Array.find`하던 이차 검색을 ID Map으로 바꿨다. 동일 정본38,163행 실측(동일256MiB heap/직렬): 시작→자식exit **10.144s → 0.301s**, OS maxRSS **125.383 → 124.781MiB**. 8그룹/상태/출처/포인터 감사 결과 동일. 첫 원본 행 우선 조회·누락/중복/잘못된 그룹 오류 기준 보존. 단일 전후 실행 결과이며 전체 앱 속도 개선 수치가 아니다.
+- 검증: 수정 전 loader **2PASS/8FAIL**(처음 mock default 결함은 harness 수정 후 별도 구분); 최종 같은 native/Vitest 공유 assertions **12PASS/0FAIL**, 실제 loader의 isolated strict 타입검사0errors, 실제 전체 정의 데이터 감사PASS, Git보안742tracked/3untracked/findings0, 정본SHA `7eba20f388d04e9d7fb10edec635beac5dc7a6c726ef6e25d7daba4ce57908dd` 유지. 잘못된 응답 뒤 정상 재요청, 동시 중복 방지, unknown/missing pointer와 8종 감사 실패 fixture 포함. 타입 의존성은 격리 선언이므로 전체 타입검사를 대신하지 않는다.
+- 미완료: `verify-project`는 RAM766MiB < focused768MiB에서exit75, 새 Vitest/전체 타입/Production/IAB 미검증. 관련 ESLint는 명시256MiB상한·PID17328에서V8_HEAP_LIMIT/exit134로 실패; raw stderr/개인 프로세스 정보는 공개 문서에 저장하지 않는다. 알려진 저RAM(현재435~651MiB)에서 전체 빌드나 같은 실패를 재시도하지 않았다. lint 상한 확대/OS설정/사용자프로그램 종료0.
+- 공개 `release.json`03:07읽기 확인: 1.0/source095ee969/sourceDirty=false/01:48:14KST/learningData1.29 그대로. 이번 변경 미배포. source branch에 소유 파일만 저장하고 main dirty·학습기록·ID·원정답·자동화 보존. 신규 콘텐츠/의미검수0. 잠금60594/PID26876, 종료Enter/LOCK_RELEASED 도구확인.
+
+다음: 추가 잠재문제 목록 탐색 종료. RAM/commit 조건이 바뀌면 관련 loader/Vitest·충분한 자원에서 기존 ESLint→전체verify→새Production·격리UI→공개확인. 동일 입력 감사 재실행 금지; 미통과 게이트 유지. 기존 대량 콘텐츠 작업의 미완료 후보 큐/입력 해시를 이어받되 의미·정답 게이트를 낮추지 않는다. 비공개 영수증 `analysis/qa/resource-runs/1791828159925-24304-native.json`(before), `1791828216470-5244-native.json`(after), 외부 `2026-10-13-structural-efficiency.md`.
+
 ## 2026-10-13 02:46 KST — 메모리 재발 방지 개발도구 적용, 공개판 유지
 
 - 실제 원인 분리: 시작RAM1.448GiB/commit30.568GiB여유/CPU16. Vitest 기본CPU기준 pool과 per-worker 모듈·9.26MiB정본 재로딩은 병렬 증폭 요인이다. 사용자보고20workers를 실제다시 띄워OOM시키지 않고20상한/min fixture에서1~2clamp를 검사했다. 별개로 기존type1GiBheap 실패/실측1,386,835K·2GiB통과는V8상한 문제다. 현재테스트·Metro동시실행0이며Node기타/MCP를20테스트worker로 오인하지 않는다.

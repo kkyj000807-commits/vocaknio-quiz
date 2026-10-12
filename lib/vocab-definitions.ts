@@ -76,6 +76,10 @@ function isDefinitionEntry(value: unknown): value is VocabDefinitionEntry {
   );
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
 async function loadGroup(group: string): Promise<DefinitionGroupFile> {
   const cached = groupCache.get(group);
   if (cached) return cached;
@@ -90,17 +94,26 @@ async function loadGroup(group: string): Promise<DefinitionGroupFile> {
     }
     const basePath = getPublicBasePath();
     const url = `${basePath}/data/vocab-definitions/${encodeURIComponent(DEFINITION_META.version)}/${encodeURIComponent(group.toLowerCase())}.json`;
-    const response = await fetch(url, { cache: "force-cache" });
+    // Revalidate the reused data partition on a new page or failed retry.
+    // Successful requests still share groupCache for the lifetime of this page.
+    const response = await fetch(url, { cache: "no-cache" });
     if (!response.ok) throw new Error(`영영 정의 요청 실패: ${response.status}`);
-    const value = (await response.json()) as Partial<DefinitionGroupFile>;
+    const value: unknown = await response.json();
     if (
+      !isRecord(value) ||
       value.version !== DEFINITION_META.version ||
-      typeof value.items !== "object" ||
-      typeof value.headwords !== "object"
+      value.group !== group ||
+      !isRecord(value.items) ||
+      !isRecord(value.headwords)
     ) {
       throw new Error("영영 정의 판본이 앱과 일치하지 않습니다.");
     }
-    return value as DefinitionGroupFile;
+    return {
+      version: DEFINITION_META.version,
+      group,
+      items: value.items as Record<string, string>,
+      headwords: value.headwords as Record<string, VocabDefinitionEntry>,
+    };
   })();
 
   groupCache.set(group, request);

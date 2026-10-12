@@ -9,7 +9,10 @@ const expectedHash = "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8c
 const readJson = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), "utf8"));
 const vocab = readJson("assets/vocab-v1.4.json");
 const meta = readJson("assets/vocab-definitions-oewn-2025.json");
-const vocabIds = new Set(vocab.map((item) => item.id));
+// One source lookup per row instead of scanning all 38,163 rows each time.
+// Keep the first record, matching Array.find semantics even on a bad duplicate.
+const vocabById = new Map();
+for (const item of vocab) if (!vocabById.has(item.id)) vocabById.set(item.id, item);
 const seenIds = new Set();
 const statusRows = new Map();
 
@@ -29,9 +32,9 @@ for (const group of groups) {
   if (payload.source?.archiveSha256 !== expectedHash) fail(`Definition source mismatch: ${group}`);
 
   for (const [itemId, key] of Object.entries(payload.items ?? {})) {
-    if (!vocabIds.has(itemId)) fail(`Unknown vocabulary item in definition layer: ${itemId}`);
+    if (!vocabById.has(itemId)) fail(`Unknown vocabulary item in definition layer: ${itemId}`);
     if (seenIds.has(itemId)) fail(`Duplicate vocabulary item in definition layer: ${itemId}`);
-    const sourceItem = vocab.find((item) => item.id === itemId);
+    const sourceItem = vocabById.get(itemId);
     if (sourceItem?.group !== group) fail(`Definition item in wrong group: ${itemId}`);
     const record = payload.headwords?.[key];
     if (!record) fail(`Definition headword pointer is broken: ${itemId} -> ${key}`);
@@ -69,7 +72,7 @@ for (const group of groups) {
 }
 
 if (seenIds.size !== vocab.length) {
-  const missing = [...vocabIds].filter((itemId) => !seenIds.has(itemId)).slice(0, 5);
+  const missing = [...vocabById.keys()].filter((itemId) => !seenIds.has(itemId)).slice(0, 5);
   fail(`Definition layer does not cover every row: ${seenIds.size}/${vocab.length}; missing ${missing.join(", ")}`);
 }
 
