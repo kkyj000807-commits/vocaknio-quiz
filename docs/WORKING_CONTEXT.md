@@ -1,10 +1,10 @@
 # FINETUNE 현행 스냅샷
 
-## 2026-10-13 05:09 KST — A 예약 재개: 동일 후보, 자원 미회복으로 배포 보류
+## 2026-10-13 07:16 KST — A 예약 재개: 동일 후보, 자원 미회복으로 배포 보류
 
-실제 heartbeat 수신 후 후보/원격 `704ebe6e`, main `1bf27b98`, Pages `9e5a0ffb`, 공개1.0/source095ee969/01:48:14KST/dirtyfalse/learningData1.29를 읽기 대조했다. 통합 작업실은 시작 시 clean, main 사용자 dirty 목록 그대로. `0639f9e9` 이후 차이는 checkpoint 문서뿐이며 코드·데이터 새 변경0, 기존 targeted12PASS를 전체PASS로 승격하지 않는다. 05:09:41 CIM 가용RAM **271MiB(0.264GiB)**·commit **27.443GiB**, activeVitest/tsc/Metro0. 전체 검사/빌드 각각3GiB·영향검사768MiB·native384MiB 모두 미달: 이번회차 검증·lint·생성·빌드·UI·배포 **실행하지 않음(NOT_RUN_RESOURCE)**, 배포 **BLOCKED**. 직전lint134/verify75 미통과 유지; 기존 검사를 다시 돌려 동일 실패를 만들지 않는다. 직전03:12 checkpoint(RAM401MiB)은 Git `704ebe6e` 및 외부 A-latest의 priorScheduledCheckpoints에 보존했다.
+실제 heartbeat 수신 후 후보/원격 `af3aa198`, main `1bf27b98`, Pages `9e5a0ffb`, 공개1.0/source095ee969/01:48:14KST/dirtyfalse/learningData1.29를 읽기 대조했다. 통합 작업실은 시작 시 clean, main 사용자 dirty 목록 그대로. `0639f9e9` 이후 차이는 checkpoint 문서뿐이며 코드·데이터 새 변경0, 기존 targeted12PASS를 전체PASS로 승격하지 않는다. 07:16:57 CIM 가용RAM **475MiB(0.464GiB)**·commit **26.152GiB**, activeVitest/tsc/Metro0. 전체 검사/빌드 각각3GiB·영향검사768MiB 미달: 이번회차 검증·lint·생성·빌드·UI·배포 **실행하지 않음(NOT_RUN_RESOURCE)**, 배포 **BLOCKED**. native384MiB는허용가능하나동일입력12PASS를반복실행하지않음(NOT_RUN_UNCHANGED_INPUT). 직전lint134/verify75 미통과 유지. 03:12·05:09 checkpoint는 Git `704ebe6e`/`af3aa198` 및 외부 A-latest의 priorScheduledCheckpoints에 보존했다.
 
-OS잠금27899/PID31080으로 이번 checkpoint 문서/외부A-latest만 저장한다. 코드/자료/기록 수정0, 새예약0, Pagespush0. 실제 예약 신호 수신은 확인했으나 정확한2시간 주기/절전복구 성공을 입증한 것은 아니다. 다음은 RAM과commit 각각3GiB 이상·다른heavy실행없음일 때1worker 관련검사/기존lint→전체verify/security→새빈Production/감사→격리학습·공개확인. `lastPassedCommit`095ee969 유지, 해결된 P0 재작성·완료 batch 재처리 금지. 종료Enter/LOCK_RELEASED는도구영수증 확인.
+OS잠금23474/PID10832으로 이번 checkpoint 문서/외부A-latest만 저장한다. 코드/자료/기록 수정0, 새예약0, Pagespush0. 실제 예약 신호 수신은 확인했으나 정확한2시간 주기/절전복구 성공을 입증한 것은 아니다. 다음은 영향검사768MiB 기준 회복 시관련검사, 전체릴리스는RAM과commit 각각3GiB 이상·다른heavy실행없음일 때1worker 기존lint→전체verify/security→새빈Production/감사→격리학습·공개확인. `lastPassedCommit`095ee969 유지, 해결된 P0 재작성·완료 batch 재처리 금지. 종료Enter/LOCK_RELEASED는도구영수증 확인.
 
 ## 2026-10-13 03:07 KST — 고효율 구조 감사 2건 수정, 배포 전 검증 대기
 
