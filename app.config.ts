@@ -5,7 +5,7 @@ import releaseConfig from "./release.config.json";
 import themeConfig from "./theme.config";
 import brand from "./constants/brand.json";
 
-const APP_VERSION = releaseConfig.version;
+const APP_VERSION = releaseConfig.displayVersion ?? releaseConfig.version;
 
 // Bundle ID format: space.manus.<project_name_dots>.<timestamp>
 // e.g., "my-app" created at 2024-01-15 10:30:45 -> "space.manus.my.app.t20240115103045"

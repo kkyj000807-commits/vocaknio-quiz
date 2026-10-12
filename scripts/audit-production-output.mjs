@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { productionSecurityIssues } from "./lib/production-security.mjs";
+import { isReleaseMetadataValid } from "./lib/release-metadata.mjs";
 
 const outputRoot = process.argv[2];
 if (!outputRoot || !fs.existsSync(outputRoot)) {
@@ -38,14 +39,18 @@ for (const file of textFiles) {
 }
 
 const release = JSON.parse(fs.readFileSync(path.join(outputRoot, "release.json"), "utf8"));
-const releaseMetadataValid = /^[a-f0-9]{40}$/.test(release.sourceCommit ?? "") &&
-  typeof release.sourceDirty === "boolean" && typeof release.dataVersion === "string" &&
-  Number.isFinite(Date.parse(release.builtAt)) && release.learningDataVersion === release.version &&
-  release.channel === "production" && release.target === `${release.version}|${release.modifiedAtKst}`;
-const learningDirectory = path.join(outputRoot, "data", "vocab-learning", release.version);
-const learningFiles = fs.existsSync(learningDirectory)
+const releaseMetadataValid = isReleaseMetadataValid(release);
+const learningDirectory = releaseMetadataValid
+  ? path.join(outputRoot, "data", "vocab-learning", release.learningDataVersion)
+  : null;
+const learningFiles = learningDirectory && fs.existsSync(learningDirectory)
   ? fs.readdirSync(learningDirectory).filter((name) => name.endsWith(".json"))
   : [];
+const learningPayloadsMatch = learningFiles.length === 8 && learningFiles.every((name) => {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(learningDirectory, name), "utf8")).version === release.learningDataVersion;
+  } catch { return false; }
+});
 const definitionDirectory = path.join(outputRoot, "data", "vocab-definitions", "oewn-2025");
 const definitionFiles = fs.existsSync(definitionDirectory)
   ? fs.readdirSync(definitionDirectory).filter((name) => name.endsWith(".json"))
@@ -63,7 +68,7 @@ const result = {
     releaseMetadataValid &&
     rootExpoReferences === 0 &&
     rootAssetReferences === 0 &&
-    learningFiles.length === 8 &&
+    learningPayloadsMatch &&
     definitionFiles.length === 8 &&
     bundleText.includes("vocab-learning") &&
     bundleText.includes("vocab-definitions") &&
@@ -80,6 +85,7 @@ const result = {
   rootExpoReferences,
   rootAssetReferences,
   learningFiles: learningFiles.length,
+  learningPayloadsMatch,
   definitionFiles: definitionFiles.length,
   learningUiInBundle: bundleText.includes("vocab-learning"),
   definitionUiInBundle: bundleText.includes("vocab-definitions"),

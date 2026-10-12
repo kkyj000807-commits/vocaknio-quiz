@@ -1,5 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
+import {
+  CANONICAL_REQUIRED_FIELDS,
+  canonicalAuditSample,
+  canonicalFieldPresent,
+  canonicalMissingFields,
+  makeExampleProvenance,
+  selectCanonicalExample,
+  summarizeLearningExport,
+} from "./lib/canonical-content-contract.mjs";
 
 const root = process.cwd();
 const read = (relativePath) => JSON.parse(fs.readFileSync(path.join(root, relativePath), "utf8"));
@@ -14,22 +23,11 @@ const learningEntries = learningGroups.flatMap((group) =>
   read(`public/data/vocab-learning/${release.version}/${String(group).toLowerCase()}.json`).entries,
 );
 
-const requiredFields = [
-  "englishDefinition",
-  "koreanMeaning",
-  "contextExplanation",
-  "exampleSentence",
-  "exampleExplanation",
-  "synonyms",
-  "distinctionNote",
-  "sourceIds",
-];
+const requiredFields = CANONICAL_REQUIRED_FIELDS;
 
 const normalize = (value) => String(value ?? "").trim().replace(/\s+/g, " ");
 const unique = (values) => [...new Set(values.map(normalize).filter(Boolean))];
-const valuePresent = (record, field) => Array.isArray(record[field])
-  ? record[field].length > 0
-  : Boolean(normalize(record[field]));
+const valuePresent = canonicalFieldPresent;
 
 function emptyRecord({ senseId, word = "", partOfSpeech = "", itemIds = [] }) {
   return {
@@ -44,6 +42,8 @@ function emptyRecord({ senseId, word = "", partOfSpeech = "", itemIds = [] }) {
     exampleSentence: null,
     exampleTranslation: null,
     exampleExplanation: null,
+    exampleProvenance: null,
+    alternateExamples: [],
     synonyms: [],
     distinctionNote: null,
     sourceIds: [],
@@ -141,14 +141,20 @@ function mergeList(record, field, values) {
   record[field] = unique([...record[field], ...(values ?? [])]);
 }
 
+function mergeExample(record, entry, layer, example, fields) {
+  Object.assign(record, selectCanonicalExample(record, example,
+    makeExampleProvenance(entry, layer, example, fields)));
+}
+
 function mergeLearning(record, entry) {
   record.inputLayers.push("vocab-learning");
   setDefinition(record, entry.definitionEn, "vocab-learning", learningDefinitionProvenance(entry));
   setScalar(record, "koreanMeaning", entry.definitionKo, "vocab-learning");
   setScalar(record, "contextExplanation", entry.contextExplanationKo ?? entry.usageKo, "vocab-learning");
-  setScalar(record, "exampleSentence", entry.example?.en, "vocab-learning");
-  setScalar(record, "exampleTranslation", entry.example?.ko, "vocab-learning");
-  setScalar(record, "exampleExplanation", entry.example?.cueKo ?? entry.examTrapKo, "vocab-learning");
+  mergeExample(record, entry, "vocab-learning", {
+    ...entry.example,
+    cueKo: entry.example?.cueKo ?? entry.examTrapKo,
+  }, { en: "example.en", ko: "example.ko", cueKo: entry.example?.cueKo === undefined || entry.example?.cueKo === null ? "examTrapKo" : "example.cueKo" });
   setScalar(record, "distinctionNote", entry.examTrapKo, "vocab-learning");
   mergeList(record, "synonyms", [...(entry.exactSynonyms ?? []), ...(entry.nearSynonyms ?? [])]);
   mergeList(record, "sourceIds", entry.sources?.map((source) => source.url));
@@ -161,9 +167,8 @@ function mergeActiveRecall(record, entry) {
   setScalar(record, "koreanMeaning", entry.koreanMeaning, "active-recall");
   setScalar(record, "contextExplanation", entry.contextExplanationKo, "active-recall");
   const example = entry.exampleSentences?.[0];
-  setScalar(record, "exampleSentence", example?.en, "active-recall");
-  setScalar(record, "exampleTranslation", example?.ko, "active-recall");
-  setScalar(record, "exampleExplanation", example?.cueKo, "active-recall");
+  mergeExample(record, entry, "active-recall", example ?? {},
+    { en: "exampleSentences[0].en", ko: "exampleSentences[0].ko", cueKo: "exampleSentences[0].cueKo" });
   mergeList(record, "synonyms", [...(entry.exactSynonyms ?? []), ...(entry.nearSynonyms ?? [])]);
   setScalar(
     record,
@@ -180,9 +185,11 @@ function mergeSenseQuestion(record, entry) {
   setDefinition(record, entry.definitionEn, "sense-question", editorialDefinitionProvenance(entry, "sense-question"));
   setScalar(record, "koreanMeaning", entry.definitionKo, "sense-question");
   setScalar(record, "contextExplanation", entry.bridgeKo, "sense-question");
-  setScalar(record, "exampleSentence", entry.contextEn, "sense-question");
-  setScalar(record, "exampleTranslation", entry.contextKo, "sense-question");
-  setScalar(record, "exampleExplanation", `문맥 핵심 단서: ${entry.evidence}`, "sense-question");
+  mergeExample(record, entry, "sense-question", {
+    en: entry.contextEn,
+    ko: entry.contextKo,
+    cueKo: normalize(entry.evidence) ? `문맥 핵심 단서: ${entry.evidence}` : null,
+  }, { en: "contextEn", ko: "contextKo", cueKo: "evidence" });
   const correct = entry.choices?.find((choice) => choice.id === entry.correctId);
   if (correct) mergeList(record, "synonyms", [correct.en]);
   setScalar(record, "distinctionNote", entry.relation?.constraintKo ?? entry.reviewNote, "sense-question");
@@ -196,9 +203,8 @@ function mergeSynonymReview(record, entry) {
   setScalar(record, "koreanMeaning", entry.definitionKo, "synonym-review");
   setScalar(record, "contextExplanation", entry.bridgeKo, "synonym-review");
   const example = entry.examples?.[0];
-  setScalar(record, "exampleSentence", example?.en, "synonym-review");
-  setScalar(record, "exampleTranslation", example?.ko, "synonym-review");
-  setScalar(record, "exampleExplanation", example?.noteKo, "synonym-review");
+  mergeExample(record, entry, "synonym-review", { ...example, cueKo: example?.noteKo },
+    { en: "examples[0].en", ko: "examples[0].ko", cueKo: "examples[0].noteKo" });
   mergeList(record, "synonyms", [entry.synonym]);
   setScalar(record, "distinctionNote", entry.constraintKo, "synonym-review");
   mergeList(record, "sourceIds", entry.sources?.map((source) => source.url));
@@ -258,7 +264,7 @@ function classify(record) {
     throw new Error(`${record.senseId}: 영영 정의 provenance가 없습니다.`);
   }
   record.backfill.attempts += 1;
-  const missingFields = requiredFields.filter((field) => !valuePresent(record, field));
+  const missingFields = canonicalMissingFields(record);
   const reasons = [];
   if (record.conflicts.length) reasons.push({ category: "sense 매핑 실패", fields: unique(record.conflicts.map((item) => item.field)) });
   if (!record.sourceIds.length) reasons.push({ category: "출처 수집 실패", fields: ["sourceIds"] });
@@ -300,16 +306,15 @@ const statusCounts = Object.fromEntries(
 const sampleAudit = [...records]
   .sort((left, right) => Number(right.definitionStatus === "COMPLETE") - Number(left.definitionStatus === "COMPLETE") || left.senseId.localeCompare(right.senseId))
   .slice(0, 20)
-  .map((record) => ({
-    senseId: record.senseId,
-    word: record.word,
-    status: record.definitionStatus,
-    checkedFields: Object.fromEntries(requiredFields.map((field) => [field, valuePresent(record, field)])),
-    sameSenseContract: record.conflicts.length === 0,
-  }));
+  .map(canonicalAuditSample);
 
 const report = {
   schema: 1,
+  auditScope: {
+    definitionStatus: "structural-field-completeness-only",
+    semanticReview: "NOT_VERIFIED_BY_THIS_AUDIT",
+    note: "COMPLETE는 필수 필드 완비 상태입니다. 출처 검수 상태는 원천 메타데이터로 보존하며, 이 병합·형식 검사는 의미·번역·권리의 재검수가 아닙니다.",
+  },
   generatedAtKst: new Intl.DateTimeFormat("sv-SE", {
     timeZone: "Asia/Seoul",
     year: "numeric",
@@ -332,6 +337,7 @@ const report = {
       koreanMeaning: vocab.filter((item) => !normalize(item.k)).length,
       contextExplanation: vocab.filter((item) => !normalize(item.contextExplanation)).length,
       exampleSentence: vocab.filter((item) => !normalize(item.exampleSentence)).length,
+      exampleTranslation: vocab.filter((item) => !normalize(item.exampleTranslation)).length,
       exampleExplanation: vocab.filter((item) => !normalize(item.exampleExplanation)).length,
       synonyms: vocab.filter((item) => !Array.isArray(item.s) || item.s.length === 0).length,
       distinctionNote: vocab.filter((item) => !normalize(item.distinctionNote)).length,
@@ -344,9 +350,9 @@ const report = {
   supersededAggregates,
   statusCounts,
   frontend: {
-    learningDetailSenseCount: learningEntries.length,
-    learningDetailRowCount: Object.keys(learningIndex.items).length,
-    note: "기존 단어장·문풀·오답 화면의 LearningDetails selector가 이 배포 JSON을 읽는다.",
+    ...summarizeLearningExport(learningEntries, learningIndex.items),
+    canonicalDirectConsumption: false,
+    note: "LearningDetails는 active-recall와 vocab-learning 그룹 JSON 및 OEWN을 읽습니다. canonical JSON 자체의 생성은 실제 UI 반영 검증을 뜻하지 않습니다.",
   },
   pipeline: [
     { stage: "원자료 수집", evidence: "검수 learning source, active recall, sense question, synonym review catalog" },

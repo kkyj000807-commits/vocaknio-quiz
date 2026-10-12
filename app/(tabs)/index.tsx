@@ -7,6 +7,7 @@ import {
   Pressable,
   StyleSheet,
   Platform,
+  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
@@ -55,8 +56,12 @@ export default function HomeScreen() {
   const handleChoiceLangToggle = useCallback(
     async (lang: ChoiceLang) => {
       haptic();
-      setChoiceLang(lang);
-      await saveQuizSettings({ choiceLang: lang });
+      try {
+        await saveQuizSettings({ choiceLang: lang });
+        setChoiceLang(lang);
+      } catch {
+        Alert.alert("설정 저장 실패", "기존 설정을 유지했습니다. 저장소 접근 상태를 확인하고 다시 시도해 주세요.");
+      }
     },
     [haptic],
   );
@@ -288,7 +293,7 @@ export default function HomeScreen() {
           <Text style={s.startNote}>
             {selectedMode === "syn-kor-choice"
               ? "영어 동의어와 한글 뜻이 함께 검증된 문항만 출제됩니다"
-              : "검증된 영영 정의·문맥을 우선하고, 아직 없는 범위만 안전한 기존 문제로 전환합니다"}
+              : "선택한 유형에서 출제 가능한 문항만 사용합니다. 자료가 부족하면 다른 유형을 직접 선택할 수 있습니다"}
           </Text>
         </View>
       </ScrollView>

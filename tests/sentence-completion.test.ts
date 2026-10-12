@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sentenceCompletionCatalogSchema, validateSentenceCompletionCatalog, SENTENCE_COMPLETION_QUESTIONS, blankPosition, sentenceCompletionKey } from "@/lib/sentence-completion";
+import { sentenceCompletionCatalogSchema, validateSentenceCompletionCatalog, SENTENCE_COMPLETION_QUESTIONS, blankPosition, sentenceCompletionKey, isSentenceCompletionEligible } from "@/lib/sentence-completion";
 import { buildQuizQuestions, isChoiceCorrect, validateQuestion } from "@/lib/quiz-engine";
 import { getItemLearningTargets, getQuestionLearningTargetKey, parseLearningReviewKeys } from "@/lib/canonical-learning";
 import { VOCAB_BY_ID } from "@/lib/vocab";
@@ -42,7 +42,7 @@ describe("Sentence Completion uses the existing question contract", () => {
     }
   });
   it("keeps the answer tied to its ID through repeated choice shuffles", () => {
-    for (let i = 0; i < 8; i++) for (const source of SENTENCE_COMPLETION_QUESTIONS) {
+    for (let i = 0; i < 8; i++) for (const source of SENTENCE_COMPLETION_QUESTIONS.filter(isSentenceCompletionEligible)) {
       const item = VOCAB_BY_ID.get(source.itemId)!;
       const q = buildQuizQuestions({ mode: "sentence-completion", itemNums: [item.num], count: 1 })[0];
       expect(validateQuestion(q)).toBe(true);
@@ -51,6 +51,14 @@ describe("Sentence Completion uses the existing question contract", () => {
       const forged = clone(q); forged.choices.forEach(c => { c.isCorrect = !c.isCorrect; });
       expect(validateQuestion(forged)).toBe(false);
     }
+  });
+  it("withholds an ambiguous planning assumption without deleting its original question or answer", () => {
+    const held = SENTENCE_COMPLETION_QUESTIONS.find(q => q.id === "sc-condition-grant-v1")!;
+    expect(held.reviewHold?.reason).toContain("승인 후");
+    expect(held.correctChoiceId).toBe("a");
+    const item = VOCAB_BY_ID.get(held.itemId)!;
+    expect(buildQuizQuestions({ mode: "sentence-completion", itemNums: [item.num], count: 30 })).toEqual([]);
+    expect(SENTENCE_COMPLETION_QUESTIONS.filter(isSentenceCompletionEligible)).toHaveLength(11);
   });
   it("keeps logic targets separate from vocabulary mastery and exact review links", () => {
     const item = VOCAB_BY_ID.get(first.itemId)!;

@@ -22,6 +22,7 @@ export const sentenceCompletionSchema = z.object({
   logicType: z.enum(Object.keys(LOGIC_TYPE_LABELS) as [keyof typeof LOGIC_TYPE_LABELS, ...(keyof typeof LOGIC_TYPE_LABELS)[]]),
   difficulty: z.enum(["low", "medium", "high"]), authorship: z.enum(["generated", "past-exam", "adapted"]),
   sourceNote: text, sourceUrl: z.string().url().startsWith("https://").optional(), originalText: text.optional(),
+  reviewHold: z.object({ reason: text, reviewedAt: text.regex(/^\d{4}-\d{2}-\d{2}$/) }).optional(),
 }).superRefine((q, ctx) => {
   const reject = (message: string) => ctx.addIssue({ code: z.ZodIssueCode.custom, message });
   if (q.passageEn.split(q.blankMarker).length !== 2 || /_{2,}|\[blank\]/i.test(q.passageEn.replace(q.blankMarker, ""))) reject("Exactly one blank is required");
@@ -58,17 +59,18 @@ export function validateSentenceCompletionCatalog(value: unknown) {
 const byItemId = new Map(SENTENCE_COMPLETION_QUESTIONS.map(q => [q.itemId, q]));
 const byId = new Map(SENTENCE_COMPLETION_QUESTIONS.map(q => [q.id, q]));
 export const sentenceCompletionKey = (q: Pick<SentenceCompletionQuestion, "id">) => `sentence:${q.id}`;
+export const isSentenceCompletionEligible = (q: SentenceCompletionQuestion) => !q.reviewHold && hasVerifiedSourceLink(q);
 export function getSentenceCompletion(itemId: string) {
   const q = byItemId.get(itemId);
-  return q && hasVerifiedSourceLink(q) ? q : undefined;
+  return q && isSentenceCompletionEligible(q) ? q : undefined;
 }
 export function getSentenceCompletionByKey(key: string) {
   const q = key.startsWith("sentence:") ? byId.get(key.slice(9)) : undefined;
-  return q && hasVerifiedSourceLink(q) ? q : undefined;
+  return q && isSentenceCompletionEligible(q) ? q : undefined;
 }
 export function isCurrentSentenceCompletion(q: SentenceCompletionQuestion, item: VocabItem) {
   const current = byId.get(q.id);
-  return !!current && hasVerifiedSourceLink(current) && current.itemId === item.id && JSON.stringify(current) === JSON.stringify(q);
+  return !!current && isSentenceCompletionEligible(current) && current.itemId === item.id && JSON.stringify(current) === JSON.stringify(q);
 }
 export function sentenceCompletionMetadata() {
   return SENTENCE_COMPLETION_QUESTIONS.filter(hasVerifiedSourceLink).map(q => {

@@ -185,7 +185,7 @@ function WordCard({
             </View>
           ) : (
             <View>
-              <Text style={s.korText} numberOfLines={expanded ? undefined : 2}>
+              <Text style={s.korText}>
                 {item.k_short}
               </Text>
               {expanded && !hasReviewedMapping && item.s.length > 0 && (

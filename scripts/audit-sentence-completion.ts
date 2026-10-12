@@ -1,9 +1,11 @@
 import catalog from "../data/sentence-completion.json";
-import { validateSentenceCompletionCatalog, blankPosition, sentenceCompletionKey } from "../lib/sentence-completion";
+import { validateSentenceCompletionCatalog, blankPosition, sentenceCompletionKey, isSentenceCompletionEligible } from "../lib/sentence-completion";
 const questions = validateSentenceCompletionCatalog(catalog).questions;
 if (questions.some(q => blankPosition(q).start < 0)) throw new Error("Missing blank");
 console.log(JSON.stringify({ sentenceCompletion: {
   questions: questions.length, stableKeys: new Set(questions.map(sentenceCompletionKey)).size,
+  eligible: questions.filter(isSentenceCompletionEligible).length,
+  held: questions.filter(q => q.reviewHold).length,
   logicTypes: new Set(questions.map(q => q.logicType)).size,
   difficulties: [...new Set(questions.map(q => q.difficulty))],
   generated: questions.filter(q => q.authorship === "generated").length,

@@ -2,7 +2,7 @@ import Constants from "expo-constants";
 
 import releaseConfig from "@/release.config.json";
 
-const APP_VERSION = releaseConfig.version;
+const APP_VERSION = releaseConfig.displayVersion ?? releaseConfig.version;
 
 type ProductionRelease = {
   version?: string;

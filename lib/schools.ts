@@ -16,5 +16,10 @@ export const SCHOOLS: SchoolMeta[] = [
   { id: "logic", label: "논리 시리즈", shortLabel: "논리", color: "#A855F7", glowColor: "rgba(168,85,247,0.3)", tier: "특수", available: true, years: [2024], description: "TOP2/TOP3 스타일앤톤 논리완성 165문제 · 학교 공통 출제 유형" },
 ];
 export function getSchool(id: SchoolId): SchoolMeta { return SCHOOLS.find((s) => s.id === id) ?? SCHOOLS[0]; }
+/** Known labels only; missing school is never inferred from an ID/year/comment. */
+export function normalizeSchoolId(value?: string): Exclude<SchoolId, "all"> | undefined {
+  const school = SCHOOLS.find(s => s.id !== "all" && (s.id === value || s.label === value));
+  return school?.id as Exclude<SchoolId, "all"> | undefined;
+}
 export function getAvailableSchools(): SchoolMeta[] { return SCHOOLS.filter((s) => s.available); }
 export const TIER_ORDER: Record<SchoolMeta["tier"], number> = { SKY: 0, 서성한: 1, 중경외시: 2, 건동홍: 3, 기타: 4, 특수: 5 };

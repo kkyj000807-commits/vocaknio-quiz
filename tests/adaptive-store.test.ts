@@ -61,6 +61,7 @@ vi.mock("@react-native-async-storage/async-storage", () => ({
     getItem: storageMock.getItem,
     setItem: storageMock.setItem,
     multiSet: storageMock.multiSet,
+    removeItem: async (key: string) => { storageMock.values.delete(key); },
   },
 }));
 

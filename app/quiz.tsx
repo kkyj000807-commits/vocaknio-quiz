@@ -41,6 +41,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { FlipCard } from "@/components/flip-card";
 import { PronunciationButton } from "@/components/pronunciation-button";
 import { LearningDetails } from "@/components/learning-details";
+import { QuizEmptyState, QuizSessionHold } from "@/components/quiz-empty-state";
 import { SentenceCompletionAnswer, SentenceCompletionPrompt } from "@/components/sentence-completion-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { getVocabItem, type QuizMode, type VocabItem } from "@/lib/vocab";
@@ -84,6 +85,7 @@ import { selectAdaptiveItemNums } from "@/lib/adaptive-quiz";
 import { ADAPTIVE_POLICY } from "@/lib/learning-analytics";
 import {
   createEmptyQuestionViewState,
+  isQuizSessionContentCurrent,
   resumableQuizSession,
   summarizeQuizSession,
   type QuizQuestionViewState,
@@ -130,6 +132,8 @@ export default function QuizScreen() {
   const questionTimer = useQuestionTimer();
   const [restartToken, setRestartToken] = useState(0);
   const [sessionNotice, setSessionNotice] = useState("");
+  const [staleSessionId, setStaleSessionId] = useState<string | null>(null);
+  const acknowledgedStaleSession = useRef<string | null>(null);
   const params = useLocalSearchParams<{
     mode: QuizMode;
     rangeStart: string;
@@ -223,8 +227,15 @@ export default function QuizScreen() {
       isMovingRef.current = false;
       sessionCompletedRef.current = false;
       setSessionNotice("");
-      const saved = resumableQuizSession(await loadQuizSession(), requestKey);
+      const stored = await loadQuizSession();
       if (cancelled) return;
+      if (stored && !isQuizSessionContentCurrent(stored) && acknowledgedStaleSession.current !== stored.sessionId) {
+        setStaleSessionId(stored.sessionId);
+        setQuestionsReady(true);
+        return;
+      }
+      setStaleSessionId(null);
+      const saved = resumableQuizSession(stored, requestKey);
       if (saved) {
         sessionIdRef.current = saved.sessionId;
         questionViewStatesRef.current = new Map(saved.states.map((state, i) => [i, state]));
@@ -896,29 +907,13 @@ export default function QuizScreen() {
   if (!q) {
     return (
       <ScreenContainer containerClassName="bg-background">
-        <View style={s.emptyContainer}>
-          <Text style={s.emptyEmoji}>{questionsReady ? "📭" : "⏳"}</Text>
-          <Text style={s.emptyTitle}>
-            {questionsReady
-              ? "출제할 문제가 없습니다"
-              : "문제를 준비하고 있습니다"}
-          </Text>
-          {questionsReady ? (
-            <>
-              <Text style={s.emptyText}>
-                선택한 범위나 모드를 바꾼 뒤 다시 시도해 주세요.
-              </Text>
-              <Pressable
-                style={s.emptyButton}
-                onPress={() => router.replace("/")}
-              >
-                <Text style={s.emptyButtonText}>
-                  문제 풀이 설정으로 돌아가기
-                </Text>
-              </Pressable>
-            </>
-          ) : null}
-        </View>
+        {staleSessionId ? <QuizSessionHold
+          onBackup={() => router.push("/(tabs)/settings")}
+          onStart={() => { acknowledgedStaleSession.current = staleSessionId; setStaleSessionId(null); setRestartToken(value => value + 1); }} /> : <QuizEmptyState ready={questionsReady}
+          request={{ mode, choiceLang, rangeId, rangeStart, rangeEnd, count,
+            reviewKeys: params.reviewKeys, bookmarkNums: params.bookmarkNums }}
+          onSettings={() => router.replace("/")}
+          onMeaningStudy={(route) => router.replace(route)} />}
       </ScreenContainer>
     );
   }
@@ -1391,29 +1386,6 @@ export default function QuizScreen() {
 
 const styles = (colors: ReturnType<typeof useColors>) =>
   StyleSheet.create({
-    emptyContainer: {
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
-      paddingHorizontal: 32,
-    },
-    emptyEmoji: { fontSize: 48, marginBottom: 16 },
-    emptyTitle: { fontSize: 19, fontWeight: "700", color: colors.foreground },
-    emptyText: {
-      marginTop: 8,
-      fontSize: 14,
-      lineHeight: 21,
-      textAlign: "center",
-      color: colors.dim,
-    },
-    emptyButton: {
-      marginTop: 20,
-      borderRadius: 12,
-      paddingHorizontal: 18,
-      paddingVertical: 12,
-      backgroundColor: colors.primary,
-    },
-    emptyButtonText: { color: "#FFFFFF", fontWeight: "700" },
     mnemonicHintArea: { marginTop: 10 },
     mnemonicHintBtn: {
       minHeight: 44,

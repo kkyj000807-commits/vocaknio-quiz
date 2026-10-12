@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useRef, useState, type MutableRefObject } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Platform,
   Pressable,
+  AccessibilityInfo,
   StyleSheet,
   type GestureResponderEvent,
   type StyleProp,
@@ -11,7 +12,8 @@ import {
 import { useColors } from "@/hooks/use-colors";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { loadLearningAudio, type LearningAudio } from "@/lib/vocab-learning";
-import { selectAmericanVoice } from "@/lib/us-pronunciation";
+import { playPronunciation, type PronunciationStatus } from "@/lib/pronunciation-playback";
+import { usePronunciationPreference } from "@/hooks/use-pronunciation";
 
 type PronunciationButtonProps = {
   text: string;
@@ -27,16 +29,20 @@ export function PronunciationButton({
   compact = false,
 }: PronunciationButtonProps) {
   const colors = useColors();
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const stopRef = useRef<(() => void) | null>(null);
+  const preference = usePronunciationPreference();
   const [licensedAudio, setLicensedAudio] = useState<LearningAudio | null>(null);
-  const [speaking, setSpeaking] = useState(false);
+  const [status, setStatus] = useState<PronunciationStatus>({ speaking: false, source: "synthesis", failed: false });
+  const { speaking } = status;
+
+  useEffect(() => {
+    if (Platform.OS === "web" && typeof window !== "undefined") window.speechSynthesis?.getVoices();
+    return () => { stopRef.current?.(); stopRef.current = null; };
+  }, [text, itemId, preference]);
 
   useEffect(() => {
     let cancelled = false;
     setLicensedAudio(null);
-    audioRef.current?.pause();
-    audioRef.current = null;
     if (!itemId || Platform.OS !== "web") return;
     loadLearningAudio(itemId)
       .then((audio) => {
@@ -48,52 +54,34 @@ export function PronunciationButton({
     };
   }, [itemId]);
 
-  useEffect(() => {
-    if (!licensedAudio || Platform.OS !== "web" || typeof window === "undefined") return;
-    const audio = new window.Audio(licensedAudio.url);
-    audio.preload = "metadata";
-    audio.onplay = () => setSpeaking(true);
-    audio.onended = () => setSpeaking(false);
-    audio.onerror = () => setSpeaking(false);
-    audioRef.current = audio;
-    return () => {
-      audio.pause();
-      audioRef.current = null;
-    };
-  }, [licensedAudio]);
-
   const handlePress = useCallback(
     (event: GestureResponderEvent) => {
       event.stopPropagation?.();
       if (Platform.OS !== "web" || typeof window === "undefined") return;
 
-      const recordedAudio = audioRef.current;
-      if (recordedAudio) {
-        window.speechSynthesis?.cancel();
-        recordedAudio.currentTime = 0;
-        void recordedAudio.play().catch(() => {
-          setSpeaking(false);
-          speakWithAmericanFallback(text, utteranceRef, setSpeaking);
-        });
+      if (speaking) {
+        stopRef.current?.();
         return;
       }
-
-      speakWithAmericanFallback(text, utteranceRef, setSpeaking);
+      stopRef.current = playPronunciation({ text, preference, recordingUrl: licensedAudio?.url, onStatus: value => {
+        setStatus(value);
+        if (value.failed) AccessibilityInfo.announceForAccessibility("음성을 재생할 수 없습니다. 기기의 영어 음성 설정을 확인하고 다시 눌러 주세요.");
+      } });
     },
-    [text],
+    [text, preference, licensedAudio, speaking],
   );
 
   if (Platform.OS !== "web") return null;
 
-  const sourceLabel = licensedAudio
+  const sourceLabel = (speaking ? status.source === "recording" : preference.preferRecording && licensedAudio)
     ? "라이선스가 확인된 미국식 실제 녹음"
     : "미국 영어 합성음";
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`${text} 미국식 발음 듣기 · ${sourceLabel}`}
-      accessibilityHint={licensedAudio ? "Wikimedia Commons의 이용 허가된 녹음을 재생합니다." : "기기의 미국 영어 음성을 사용합니다."}
+      accessibilityLabel={`${text} 미국식 발음 ${speaking ? "멈추기" : "듣기"} · ${sourceLabel}${status.failed ? " · 재생 실패, 다시 시도" : ""}`}
+      accessibilityHint="설정에서 미국 영어 음성을 고를 수 있습니다. 재생 중 다시 누르면 멈춥니다."
       hitSlop={compact ? 5 : 4}
       onPress={handlePress}
       style={({ pressed }) => [
@@ -114,39 +102,6 @@ export function PronunciationButton({
       />
     </Pressable>
   );
-}
-
-function speakWithAmericanFallback(
-  text: string,
-  utteranceRef: MutableRefObject<SpeechSynthesisUtterance | null>,
-  setSpeaking: (value: boolean) => void,
-) {
-  if (typeof window === "undefined") return;
-
-  const synth = window.speechSynthesis;
-  const Utterance = window.SpeechSynthesisUtterance;
-  const pronunciation = text.trim();
-  if (!synth || !Utterance || !pronunciation) return;
-
-  synth.cancel();
-  const utterance = new Utterance(pronunciation);
-  utterance.lang = "en-US";
-  utterance.rate = 0.85;
-  utterance.pitch = 1;
-  utterance.volume = 1;
-
-  const voices = synth.getVoices();
-  utterance.voice = selectAmericanVoice(voices);
-
-  utterance.onstart = () => setSpeaking(true);
-  utterance.onend = () => {
-    if (utteranceRef.current === utterance) setSpeaking(false);
-  };
-  utterance.onerror = () => {
-    if (utteranceRef.current === utterance) setSpeaking(false);
-  };
-  utteranceRef.current = utterance;
-  synth.speak(utterance);
 }
 
 const styles = StyleSheet.create({

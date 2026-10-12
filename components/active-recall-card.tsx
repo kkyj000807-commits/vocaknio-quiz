@@ -6,6 +6,7 @@ import type { ActiveRecallSense } from "@/lib/active-recall";
 import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
 import { formatExampleRelation } from "@/lib/semantic-cluster";
 import { LearningEvidence } from "@/components/learning-evidence";
+import { PronunciationButton } from "@/components/pronunciation-button";
 import { LazyReasoningPractice } from "@/components/reasoning-practice";
 import { getSynonymDetails, type VocabItem } from "@/lib/vocab";
 import type { QuizChoice } from "@/lib/quiz-engine";
@@ -88,6 +89,7 @@ export function DefinitionRecallAnswer({
           {recall.examples.slice(0, 2).map((example, index) => (
             <View key={`${example}:${index}`} style={styles.example}>
               <Text style={[styles.detailText, { color: colors.foreground }]}>{example}</Text>
+              <PronunciationButton text={example} compact />
               <ExampleRelationCue synonyms={relations.synonyms} antonyms={relations.antonyms} meanings={Object.fromEntries(definitionMeanings.map(m => [m.word, m.meaning]))} />
             </View>
           ))}
@@ -136,6 +138,7 @@ export function SynonymRecallAnswer({
           {recall.examples.slice(0, 2).map((example) => (
             <View key={example} style={styles.example}>
               <Text style={[styles.detailText, { color: colors.foreground }]}>{example}</Text>
+              <PronunciationButton text={example} compact />
               <ExampleRelationCue synonyms={relations.synonyms} antonyms={relations.antonyms} meanings={Object.fromEntries(relationMeanings.map(m => [m.word, m.meaning]))} />
             </View>
           ))}
@@ -198,6 +201,7 @@ export function ActiveRecallAnswer({ recall, choices, item }: { recall: ActiveRe
           {recall.exampleSentences.map((example, index) => (
             <View key={`${example.en}-${index}`} style={styles.example}>
               <Text style={[styles.detailText, { color: colors.foreground }]}>{example.en}</Text>
+              <PronunciationButton text={example.en} compact />
               {example.ko ? <Text style={[styles.detailText, { color: colors.foreground }]}>{example.ko}</Text> : null}
               {example.cueKo ? <Text style={[styles.note, { color: colors.muted }]}>문맥 단서: {example.cueKo}</Text> : null}
               <ExampleRelationCue

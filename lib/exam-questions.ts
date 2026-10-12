@@ -3,30 +3,9 @@
 //           reading-main(독해내용일치), reading-vocab(독해밑줄어휘), reading-blank(독해빈칸),
 //           reading-title(독해제목), grammar(문법)
 
-export type QuestionType =
-  | "vocab-synonym"
-  | "vocab-blank"
-  | "logic-blank"
-  | "reading-main"
-  | "reading-vocab"
-  | "reading-blank"
-  | "reading-title"
-  | "grammar";
-
-export interface ExamQuestion {
-  id: string;
-  school?: string;        // 학교명 (한양대, 성균관대 등)
-  year: number;
-  qNum: number;
-  type: QuestionType;
-  passage?: string;       // 독해 지문
-  question: string;       // 문제 지문/질문 (밑줄 단어 포함)
-  underlined?: string;    // 밑줄 친 단어/구
-  choices: string[];      // 선택지 (4~5개)
-  answer: number;         // 정답 인덱스 (0-based)
-  explanation: string;    // 해설
-  points: number;         // 배점
-}
+import { normalizeSchoolId } from "./schools";
+import type { ExamQuestion, QuestionType } from "./exam-runtime";
+export { shuffleQuestions, shuffleChoices, type ExamQuestion, type QuestionType } from "./exam-runtime";
 
 export const examQuestions: ExamQuestion[] = [
   // ─────────────────────────────────────────────
@@ -1290,22 +1269,6 @@ export function getQuestionsByYear(year: number): ExamQuestion[] {
 // 유형별 필터링
 export function getQuestionsByType(type: QuestionType): ExamQuestion[] {
   return examQuestions.filter((q) => q.type === type);
-}
-
-// 랜덤 셔플
-export function shuffleQuestions(questions: ExamQuestion[]): ExamQuestion[] {
-  return [...questions].sort(() => Math.random() - 0.5);
-}
-
-// 선택지 셔플 (정답 인덱스도 함께 업데이트)
-export function shuffleChoices(question: ExamQuestion): ExamQuestion {
-  const indexed = question.choices.map((c, i) => ({ choice: c, isAnswer: i === question.answer }));
-  const shuffled = indexed.sort(() => Math.random() - 0.5);
-  return {
-    ...question,
-    choices: shuffled.map((c) => c.choice),
-    answer: shuffled.findIndex((c) => c.isAnswer),
-  };
 }
 
 // ─────────────────────────────────────────────
@@ -3557,5 +3520,6 @@ examQuestions.push(...logicQuestions);
 
 // 학교별 필터링
 export function getQuestionsBySchool(school: string): ExamQuestion[] {
-  return examQuestions.filter((q) => q.school === school);
+  const id = normalizeSchoolId(school);
+  return id ? examQuestions.filter(q => normalizeSchoolId(q.school) === id) : [];
 }

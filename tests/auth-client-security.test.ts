@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { apiCall, exchangeOAuthCode } from "@/lib/_core/api";
+import { apiCall, exchangeOAuthCode, callEmailAuth } from "@/lib/_core/api";
 import * as auth from "@/lib/_core/auth";
 
 const memory = vi.hoisted(() => new Map<string, string>());
@@ -31,4 +31,15 @@ it("does not display backend stack traces or query values as error text", async 
 });
 it("keeps console logging out of auth/URL/user callback paths", () => {
   for (const file of ["lib/_core/api.ts", "lib/_core/auth.ts", "app/oauth/callback.tsx"]) expect(fs.readFileSync(file, "utf8")).not.toMatch(/console\.(?:log|error|warn)\(/);
+});
+
+it("email auth never exposes a raw server error, including a JSON error with HTTP 200", async () => {
+  vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({ error: "fixture private backend trace" }), { headers: { "content-type": "application/json" } })));
+  const result = await callEmailAuth("/api/auth/login", { email: "fixture@example.invalid" });
+  expect(result.error).toContain("인증 요청");
+  expect(result.error).not.toContain("private");
+  const settings = fs.readFileSync("app/(tabs)/settings.tsx", "utf8");
+  expect(settings).toContain("!cloudConfigured");
+  expect(settings).toContain("cloudConfigured && isAuthenticated");
+  expect(settings).toContain("의미별 이력·MASTER·중단 세션은 동기화하지 않습니다");
 });

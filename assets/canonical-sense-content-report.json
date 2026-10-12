@@ -1,6 +1,11 @@
 {
   "schema": 1,
-  "generatedAtKst": "2026-10-09T09:56:53+09:00",
+  "auditScope": {
+    "definitionStatus": "structural-field-completeness-only",
+    "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT",
+    "note": "COMPLETE는 필수 필드 완비 상태입니다. 출처 검수 상태는 원천 메타데이터로 보존하며, 이 병합·형식 검사는 의미·번역·권리의 재검수가 아닙니다."
+  },
+  "generatedAtKst": "2026-10-13T01:33:21+09:00",
   "vocabulary": {
     "sourceRows": 38163,
     "uniqueHeadwords": 13347,
@@ -14,6 +19,7 @@
       "koreanMeaning": 0,
       "contextExplanation": 38163,
       "exampleSentence": 38163,
+      "exampleTranslation": 38163,
       "exampleExplanation": 38163,
       "synonyms": 26886,
       "distinctionNote": 38163,
@@ -28,6 +34,7 @@
       "koreanMeaning": 22,
       "contextExplanation": 22,
       "exampleSentence": 22,
+      "exampleTranslation": 22,
       "exampleExplanation": 22,
       "synonyms": 47,
       "distinctionNote": 22,
@@ -41,6 +48,7 @@
       "koreanMeaning": 0,
       "contextExplanation": 0,
       "exampleSentence": 0,
+      "exampleTranslation": 0,
       "exampleExplanation": 0,
       "synonyms": 18,
       "distinctionNote": 0,
@@ -174,9 +182,11 @@
     "PENDING": 0
   },
   "frontend": {
-    "learningDetailSenseCount": 165,
+    "learningDetailExportEntryCount": 165,
+    "learningDetailSenseCount": 97,
     "learningDetailRowCount": 230,
-    "note": "기존 단어장·문풀·오답 화면의 LearningDetails selector가 이 배포 JSON을 읽는다."
+    "canonicalDirectConsumption": false,
+    "note": "LearningDetails는 active-recall와 vocab-learning 그룹 JSON 및 OEWN을 읽습니다. canonical JSON 자체의 생성은 실제 UI 반영 검증을 뜻하지 않습니다."
   },
   "pipeline": [
     {
@@ -221,6 +231,7 @@
         "koreanMeaning": 0,
         "contextExplanation": 0,
         "exampleSentence": 0,
+        "exampleTranslation": 0,
         "exampleExplanation": 0,
         "synonyms": 18,
         "distinctionNote": 0,
@@ -239,12 +250,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "abide-by:follow-governing-rule",
@@ -255,12 +269,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "account-for:be-explanation-or-cause",
@@ -271,12 +288,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "account-for:form-part-of-total",
@@ -287,12 +307,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "account-for:give-explanation",
@@ -303,12 +326,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "all-but:all-except",
@@ -319,12 +345,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "all-but:almost",
@@ -335,12 +364,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "at-stake:primary",
@@ -351,12 +383,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "benefit-doubt:primary",
@@ -367,12 +402,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "blind-alley:fruitless-course",
@@ -383,12 +421,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "by-no-means:primary",
@@ -399,12 +440,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "capitalize-on:primary",
@@ -415,12 +459,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "capricious:unpredictable-whims",
@@ -431,12 +478,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "carry-out:primary",
@@ -447,12 +497,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "case-in-point:primary",
@@ -463,12 +516,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "clamp-down-on:primary",
@@ -479,12 +535,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "come-to-terms:accept-unpleasant-reality",
@@ -495,12 +554,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "come-to-terms:reach-agreement-with-party",
@@ -511,12 +573,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "conducive-to:make-result-more-likely",
@@ -527,12 +592,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     },
     {
       "senseId": "crack-down-on:primary",
@@ -543,12 +611,15 @@
         "koreanMeaning": true,
         "contextExplanation": true,
         "exampleSentence": true,
+        "exampleTranslation": true,
         "exampleExplanation": true,
         "synonyms": true,
         "distinctionNote": true,
         "sourceIds": true
       },
-      "sameSenseContract": true
+      "sameSenseContract": true,
+      "sameSenseContractScope": "selected-example-source-sense-id-only",
+      "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT"
     }
   ]
 }

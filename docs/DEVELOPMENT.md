@@ -2,7 +2,15 @@
 
 현재 완료/배포 상태는 WORKING_CONTEXT.md만 기준으로 삼는다. 이 문서는 파일 위치와 재현 가능한 명령을 안내한다.
 
+저장 안전 경로(2026.10.13 격리 패치): `lib/store.ts`의 기존 큐 → `lib/learning-write-journal.ts`의 선택적 Web Locks/부분 저장 복구 → 기존 학습 키. `lib/learning-backup.ts`/`components/learning-backup-settings.tsx`는 로컬 파일 검사·빈 저장소 복원만 허용하며 충돌 자동 합산은 하지 않는다. 새 복구 키는 학습 이력의 별도 정본이 아니라 미완료 저장을 완료하는 before/after 기록이다. 실제 브라우저/전체 통합 검증은 WORKING_CONTEXT의 보류 조건을 확인한다.
+
+경량 장애 회귀: `pnpm exec vitest run tests/store-read-protection.test.ts tests/learning-write-journal.test.ts tests/learning-backup.test.ts tests/learning-backup-ui.test.tsx tests/basic-study-ui.test.tsx --maxWorkers=1 --minWorkers=1`. 대용량 corpus를 mock한 실제 store/queue 검사이므로 전체 verify/기기 검증을 대신하지 않는다.
+
 ## 구조와 책임
+
+- 저장 snapshot의 유효성은 `parseStoredQuizSession`, 현재 출제/채점은 `parseQuizSession`으로 분리한다. stale 세션을 손상으로 오인하거나 자동 재채점하지 않는다. `vocaknio_problem_session_archive_v1`은 원문 보관용 additive 키로 기존 backup에서만 생략 가능하다. `tests/session-content-lifecycle.test.ts`가 stale/원문보관/탭경합/캡처 시점 회귀를 다룬다.
+- 대량 누락 측정: 격리 worktree에서 `node scripts/measure-content-throughput.mjs --output analysis/qa/content-throughput-<checkpoint>.json --batch-index 0`. 입력 해시가 같으면 NO_CHANGE. 100후보의 구조 검사는 예문 보강/의미 검수 완료가 아니다. `canonical-backfill-contract`와 `content-throughput` 테스트를 먼저 실행한다.
+- 진입은 AGENTS/짧은 현행 WORKING_CONTEXT이며 과거 본문은 `docs/history/WORKING_CONTEXT-through-2026-10-13.md`에 보존했다. 관련 skill과 필요한 참조만 읽는다.
 
 확인한 설치 버전: Expo 54.0.29 / Expo Router 6.0.19 / React 19.1.0 / React Native 0.81.5 / TypeScript 5.9.3 / Vitest 2.1.9. 잠금파일은 pnpm-lock.yaml, 패키지 관리자는 pnpm 9.12.0.
 
@@ -23,6 +31,8 @@
 | Light/Paper/Dark·앱 테마 | lib/theme-provider.tsx, lib/theme-preference.ts, lib/web-theme.ts, theme.config.js | app/+html.tsx 초기 paint/모든 화면/저장 큐. v2 light→v3 paper, 신규light |
 | 웹 공간·반응형 | lib/layout.ts, components/screen-container.tsx | 탭52px, 끝padding48, 웹max-width880, native inset 보존 |
 | 버전·배포 시각 | release.config.json, lib/release-info.ts | app.config.ts, 설정 화면, Production 빌더 |
+
+2026.10.13부터 release.config의 displayVersion은 사용자 표시용 1.0으로 고정한다. 기존 version=1.29는 학습 데이터 파티션이다. build-production-web → scripts/lib/release-metadata.mjs는 공개 version1.0과 learningDataVersion1.29를 구분하고 KST 초 단위 시각으로 target을 만든다. audit-production-output은 표시 버전이 아니라 learningDataVersion 디렉터리/파일 header를 확인한다. lib/vocab-learning의 no-cache는 기존 URL을 재검증하며 페이지 내부 groupCache는 유지한다. 공개 확인 전에는 새1.0을 배포 완료로 기록하지 않는다.
 
 server/, drizzle/, lib/_core/는 별도 인증·API 경로다. GitHub Pages는 정적 웹이며 서버 배포/계정 동기화까지 완료된 것으로 간주하지 않는다. 사용자 소유 server/auth.ts를 포함한 보존 목록은 WORKING_CONTEXT에 있다.
 

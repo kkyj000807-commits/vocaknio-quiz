@@ -52,6 +52,12 @@ export async function apiCall<T>(endpoint: string, options: RequestInit = {}): P
   }
 }
 
+export async function callEmailAuth(endpoint: string, body: object): Promise<{ token?: string; user?: Auth.User; error?: string }> {
+  const data = await apiCall<{ token?: string; user?: Auth.User; error?: unknown }>(endpoint, { method: "POST", body: JSON.stringify(body) });
+  if (data.error) return { error: "인증 요청을 처리하지 못했습니다. 입력 정보와 서버 연결을 확인해 주세요." };
+  return { token: data.token, user: data.user };
+}
+
 // OAuth callback handler - exchange code for session token
 // Calls /api/oauth/mobile endpoint which returns JSON with app_session_id and user
 export async function exchangeOAuthCode(

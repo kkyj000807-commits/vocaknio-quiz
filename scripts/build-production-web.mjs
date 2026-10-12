@@ -2,6 +2,8 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { createPagesFallback, requireEmptyOutput } from "./lib/production-output.mjs";
+import { createReleaseMetadata } from "./lib/release-metadata.mjs";
+import { readSourceState } from "./lib/source-state.mjs";
 
 const outputDir = process.argv[2];
 
@@ -11,13 +13,10 @@ if (!outputDir) {
 }
 
 requireEmptyOutput(outputDir);
-const source = spawnSync("git", ["rev-parse", "HEAD"], { encoding: "utf8", shell: false });
-if (source.status !== 0 || !/^[a-f0-9]{40}$/.test(source.stdout.trim())) throw new Error("Cannot identify source commit");
-const sourceCommit = source.stdout.trim();
+const examAudit = spawnSync(process.execPath, ["--import", "tsx", "scripts/audit-exam-questions.ts"], { stdio: "inherit", shell: false });
+if (examAudit.status !== 0) process.exit(examAudit.status ?? 1);
 const completionAudit = spawnSync(process.execPath, ["--import", "tsx", "scripts/audit-sentence-completion.ts"], { stdio: "inherit", shell: false });
 if (completionAudit.status !== 0) process.exit(completionAudit.status ?? 1);
-const dirty = spawnSync("git", ["diff", "--quiet", "HEAD"], { shell: false });
-if (![0, 1].includes(dirty.status)) throw new Error("Cannot identify source working state");
 const builtAt = new Date().toISOString();
 const dataVersion = JSON.parse(fs.readFileSync("assets/vocab-meta-v1.4.json", "utf8")).version;
 const senseAudit = spawnSync(process.execPath, ["--import", "tsx", "scripts/audit-sense-questions.ts"], { stdio: "inherit", shell: false });
@@ -33,21 +32,16 @@ const definitionAudit = spawnSync(process.execPath, ["scripts/audit-vocab-defini
 if (definitionAudit.error) console.error(definitionAudit.error.message);
 if (definitionAudit.status !== 0) process.exit(definitionAudit.status ?? 1);
 
-const parts = new Intl.DateTimeFormat("en-CA", {
-  timeZone: "Asia/Seoul",
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-  hour: "2-digit",
-  minute: "2-digit",
-  hourCycle: "h23",
-}).formatToParts(new Date(builtAt));
-const value = (type) => parts.find((part) => part.type === type)?.value ?? "";
-const releasedAtKst = `${value("year")}.${value("month")}.${value("day")} ${value("hour")}:${value("minute")} KST`;
 const releaseConfig = JSON.parse(
   fs.readFileSync(path.join(process.cwd(), "release.config.json"), "utf8"),
 );
-const releaseTarget = `${releaseConfig.version}|${releasedAtKst}`;
+const releaseManifest = createReleaseMetadata(releaseConfig, {
+  // Generators above can change data after checkout. Observe their actual result,
+  // including new files that git diff --quiet does not see.
+  ...readSourceState(), dataVersion, builtAt,
+});
+const releasedAtKst = releaseManifest.modifiedAtKst;
+const releaseTarget = releaseManifest.target;
 const expoCli = path.join(
   process.cwd(),
   "node_modules",
@@ -93,18 +87,6 @@ if (result.error) {
 if (result.status !== 0) {
   process.exit(result.status ?? 1);
 }
-
-const releaseManifest = {
-  version: releaseConfig.version,
-  sourceCommit,
-  sourceDirty: dirty.status === 1,
-  dataVersion,
-  learningDataVersion: releaseConfig.version,
-  builtAt,
-  modifiedAtKst: releasedAtKst,
-  channel: "production",
-  target: releaseTarget,
-};
 
 fs.writeFileSync(
   path.join(outputDir, "release.json"),

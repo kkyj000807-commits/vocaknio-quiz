@@ -98,8 +98,9 @@ function isLearningEntry(value: unknown): value is LearningEntry {
       entry.definitionStatus === "production" &&
       entry.definitionKo &&
       entry.contextExplanationKo &&
-      entry.example?.en &&
-      entry.example?.ko &&
+      typeof entry.example?.en === "string" && entry.example.en.trim() &&
+      typeof entry.example?.ko === "string" && entry.example.ko.trim() &&
+      (entry.example.cueKo === undefined || (typeof entry.example.cueKo === "string" && entry.example.cueKo.trim())) &&
       entry.verification?.status === "cross-agreed" &&
       Array.isArray(entry.itemIds) &&
       Array.isArray(entry.sources),
@@ -116,7 +117,9 @@ async function loadGroup(group: string): Promise<LearningGroupFile> {
     }
     const basePath = getPublicBasePath();
     const url = `${basePath}/data/vocab-learning/${encodeURIComponent(LEARNING_INDEX.version)}/${encodeURIComponent(group.toLowerCase())}.json`;
-    const response = await fetch(url, { cache: "force-cache" });
+    // Fixed display versions reuse the data partition. Revalidate on a new
+    // page; groupCache still prevents repeat requests within this page.
+    const response = await fetch(url, { cache: "no-cache" });
     if (!response.ok) throw new Error(`학습 자료 요청 실패: ${response.status}`);
     const value = (await response.json()) as Partial<LearningGroupFile>;
     if (value.version !== LEARNING_INDEX.version || !Array.isArray(value.entries)) {

@@ -14,6 +14,7 @@ const storage = vi.hoisted(() => ({
 }));
 vi.mock("@react-native-async-storage/async-storage", () => ({
   default: {
+    async removeItem(key: string) { storage.values.delete(key); },
     async getItem(key: string) {
       await Promise.resolve();
       if (storage.failRead) throw new Error("read unavailable");
@@ -109,8 +110,9 @@ describe("학습 기록의 공통 저장 경로", () => {
   it("테마 저장 실패와 연속 선택 후 최신 값만 복원한다", async () => {
     storage.values.set(oldThemeKey, "light");
     storage.failWrite = true;
-    expect(await store.loadThemePreference()).toBe("paper");
-    await Promise.all([store.saveThemePreference("dark"), store.saveThemePreference("light")]);
+    await expect(store.loadThemePreference()).rejects.toThrow("quota exceeded");
+    const selections = await Promise.allSettled([store.saveThemePreference("dark"), store.saveThemePreference("light")]);
+    expect(selections.every(result => result.status === "rejected")).toBe(true);
     await store.toggleBookmark(42);
     expect(store.getLearningStorageIssue()).not.toBeNull();
     storage.failWrite = false;
@@ -267,5 +269,21 @@ describe("학습 기록의 공통 저장 경로", () => {
       Array.from({ length: 10 }, () => store.addStudySeconds(5)),
     );
     expect((await store.loadStudyTime()).totalSeconds).toBe(50);
+  });
+
+  it("이전에 읽었어도 새 읽기가 실패하면 다른 탭의 최신 북마크를 캐시로 덮지 않는다", async () => {
+    storage.values.set("vocaknio_bookmarks", "[9]");
+    expect(await store.loadBookmarks()).toEqual([9]);
+    // Another tab/device write happened since this tab's cached read.
+    storage.values.set("vocaknio_bookmarks", "[9,10]");
+    storage.failRead = true;
+    await store.toggleBookmark(1);
+    expect(storage.values.get("vocaknio_bookmarks")).toBe("[9,10]");
+    expect(store.getLearningStorageIssue()).not.toBeNull();
+    storage.failRead = false;
+    await store.retryLearningStorage();
+    expect(storage.values.get("vocaknio_bookmarks")).toBe("[9,10]");
+    expect(store.getLearningStorageIssue()).toContain("다른 창");
+    expect((await store.exportLearningBackup()).pending.vocaknio_bookmarks).toBe("[9,1]");
   });
 });

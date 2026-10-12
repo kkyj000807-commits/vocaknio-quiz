@@ -3,36 +3,32 @@ export interface VoiceLike {
   name: string;
   default?: boolean;
   localService?: boolean;
+  voiceURI?: string;
 }
 
-const QUALITY_NAMES = [
-  "natural",
-  "enhanced",
-  "premium",
-  "samantha",
-  "ava",
-  "allison",
-  "zoe",
-  "aria",
-  "jenny",
-  "guy",
-  "google us english",
-];
+// The browser API has no gender field. These names are preference hints, not
+// a claim that an unknown/default voice is female or that quality is measured.
+const FEMALE_NAMES = /\b(samantha|ava|allison|zoe|aria|jenny|zira|joanna|salli)\b/i;
+const QUALITY_NAMES = /\b(natural|enhanced|premium)\b/i;
+export const PRONUNCIATION_RATE = 0.95;
+
+export function isAmericanVoice(voice: VoiceLike): boolean {
+  return /^en-us(?:-|$)/i.test(voice.lang.replace(/_/g, "-"));
+}
 
 export function scoreAmericanVoice(voice: VoiceLike): number {
-  const language = voice.lang.toLowerCase().replace("_", "-");
-  const name = voice.name.toLowerCase();
-  let score = 0;
-  if (language === "en-us") score += 100;
-  else if (language.startsWith("en-us-")) score += 95;
-  else if (language.startsWith("en")) score += 10;
-  if (QUALITY_NAMES.some((hint) => name.includes(hint))) score += 20;
+  if (!isAmericanVoice(voice)) return 0;
+  let score = 100;
+  if (FEMALE_NAMES.test(voice.name)) score += 40;
+  if (QUALITY_NAMES.test(voice.name)) score += 20;
   if (voice.localService) score += 2;
-  if (voice.default && language.startsWith("en-us")) score += 1;
+  if (voice.default) score += 1;
   return score;
 }
 
-export function selectAmericanVoice<T extends VoiceLike>(voices: readonly T[]): T | null {
+export function selectAmericanVoice<T extends VoiceLike>(voices: readonly T[], voiceURI?: string | null): T | null {
+  const selected = voiceURI && voices.find(voice => voice.voiceURI === voiceURI && isAmericanVoice(voice));
+  if (selected) return selected;
   const ranked = voices
     .map((voice, index) => ({ voice, index, score: scoreAmericanVoice(voice) }))
     .filter((candidate) => candidate.score >= 100)

@@ -22,15 +22,15 @@ import * as Haptics from "expo-haptics";
 import { ScreenContainer } from "@/components/screen-container";
 import { useColors } from "@/hooks/use-colors";
 import { recordOneAnswer } from "@/lib/store";
+import { COUNTS } from "@/lib/vocab";
+import { normalizeSchoolId } from "@/lib/schools";
+import { getPracticeExamQuestions, gradeExamChoice, RETAINED_EXAM_COUNT } from "@/lib/exam-integrity";
 import {
-  examQuestions,
   shuffleQuestions,
   shuffleChoices,
-  getQuestionsByYear,
-  getQuestionsByType,
   type ExamQuestion,
   type QuestionType,
-} from "@/lib/exam-questions";
+} from "@/lib/exam-runtime";
 
 function NativeSwipeBoundary({
   gesture,
@@ -276,6 +276,8 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
         isMovingRef.current ||
         questionViewStatesRef.current.get(idx)?.answered
       ) return;
+      const grading = gradeExamChoice(q, choiceIdx);
+      if (!grading) return; // Unverified/stale content must not affect learner records.
       haptic("light");
       cardScale.value = withSequence(
         withTiming(0.97, { duration: 80 }),
@@ -287,7 +289,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
         answered: true,
         selected: choiceIdx,
       });
-      const isCorrect = choiceIdx === q.answer;
+      const isCorrect = grading.correct;
       if (isCorrect) {
         haptic("success");
         setCorrect((c) => c + 1);
@@ -297,7 +299,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
       // 한 문제 단위 즉시 저장 (기출 문제는 vocab num이 없으므로 오답노트 num은 저장 불가)
       recordOneAnswer(isCorrect);
     },
-    [answered, idx, q.answer, haptic, cardScale]
+    [answered, idx, q, haptic, cardScale]
   );
 
   const handleNext = useCallback(() => {
@@ -435,6 +437,7 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
                 </View>
                 <Text style={[s.choiceText, { color: textColor }]}>
                   {choice}
+                  {answered && ` (원문 ${(q.originalChoiceIndices?.[ci] ?? ci) + 1}번)`}
                 </Text>
               </Pressable>
             );
@@ -445,6 +448,8 @@ function QuizSession({ questions, onFinish }: QuizSessionProps) {
         {answered && (
           <Animated.View entering={FadeIn.duration(300)} style={s.explBox}>
             <Text style={s.explTitle}>해설</Text>
+            <Text style={s.explText}>현재 정답 {q.answer + 1}번: {q.choices[q.answer]}</Text>
+            <Text style={s.explText}>아래 원문 해설의 번호는 원본 선지 기준입니다.</Text>
             <Text style={s.explText}>{q.explanation}</Text>
           </Animated.View>
         )}
@@ -518,12 +523,13 @@ export default function ExamScreen() {
   const [yearFilter, setYearFilter] = useState<FilterYear>("all");
   const [typeFilter, setTypeFilter] = useState<FilterType>("all");
   const [schoolFilter, setSchoolFilter] = useState<FilterSchool>("all");
+  const [selectedCount, setSelectedCount] = useState(10);
   const [quizQuestions, setQuizQuestions] = useState<ExamQuestion[] | null>(null);
   const [result, setResult] = useState<{ correct: number; total: number } | null>(null);
 
   const filteredQuestions = useMemo(() => {
-    let qs = examQuestions;
-    if (schoolFilter !== "all") qs = qs.filter((q) => q.school === schoolFilter);
+    let qs = getPracticeExamQuestions();
+    if (schoolFilter !== "all") qs = qs.filter((q) => normalizeSchoolId(q.school) === schoolFilter);
     if (yearFilter !== "all") qs = qs.filter((q) => q.year === yearFilter);
     if (typeFilter === "vocab") qs = qs.filter((q) => isVocab(q.type));
     else if (typeFilter === "reading") qs = qs.filter((q) => isReading(q.type));
@@ -533,9 +539,9 @@ export default function ExamScreen() {
 
   const handleStart = useCallback(() => {
     if (filteredQuestions.length === 0) return;
-    setQuizQuestions(shuffleQuestions(filteredQuestions));
+    setQuizQuestions(shuffleQuestions(filteredQuestions).slice(0, selectedCount));
     setResult(null);
-  }, [filteredQuestions]);
+  }, [filteredQuestions, selectedCount]);
 
   const handleFinish = useCallback((correct: number, total: number) => {
     setResult({ correct, total });
@@ -591,7 +597,8 @@ export default function ExamScreen() {
         {/* 헤더 */}
         <View style={s.header}>
           <Text style={s.headerTitle}>기출 문제 풀이</Text>
-          <Text style={s.headerSub}>편입 기출 {examQuestions.length}문항 · 한양·성균관·논리 시리즈 · 2020~2026</Text>
+          <Text style={s.headerSub}>보관 {RETAINED_EXAM_COUNT}문항 · 검증 후 출제 {getPracticeExamQuestions().length}문항</Text>
+          <Text style={s.headerSub}>원문·정답·공개 권한을 확인하지 못한 자료는 임시 제외합니다. 원본과 기존 학습 기록은 보존됩니다.</Text>
         </View>
 
         {/* 학교 필터 */}
@@ -658,9 +665,22 @@ export default function ExamScreen() {
         </View>
 
         {/* 문항 수 표시 */}
+        <View style={s.section}>
+          <Text style={s.sectionLabel}>문제 수</Text>
+          <View style={s.chipRow}>
+            {COUNTS.map(count => (
+              <Pressable key={count} accessibilityRole="button" accessibilityLabel={`${count}문제`}
+                accessibilityState={{ selected: selectedCount === count }}
+                onPress={() => setSelectedCount(count)}
+                style={[s.chip, selectedCount === count && s.chipActive]}>
+                <Text style={[s.chipText, selectedCount === count && s.chipTextActive]}>{count}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
         <View style={s.countBox}>
           <Text style={s.countText}>
-            선택된 문항: <Text style={s.countNum}>{filteredQuestions.length}문항</Text>
+            요청 {selectedCount}문항 · 출제 가능 {filteredQuestions.length}문항 · 실제 <Text style={s.countNum}>{Math.min(selectedCount, filteredQuestions.length)}문항</Text>
           </Text>
         </View>
 

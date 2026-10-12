@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Linking, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useColors } from "@/hooks/use-colors";
@@ -6,6 +6,8 @@ import { ReasoningPractice, LazyReasoningPractice } from "@/components/reasoning
 import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
 import { formatExampleRelation } from "@/lib/semantic-cluster";
 import { LearningEvidence } from "@/components/learning-evidence";
+import { PronunciationButton } from "@/components/pronunciation-button";
+import { loadLearningDetailParts } from "@/lib/learning-detail-loader";
 import {
   getActiveRecallSenses,
   type ActiveRecallSense,
@@ -37,29 +39,27 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const loaded = useRef({ entries: false, dictionary: false });
   const activeRecallSenses = getActiveRecallSenses(itemId);
 
   useEffect(() => {
     if (activeRecallSenses.length > 0) return;
-    if (!expanded || entries !== null || dictionary !== undefined) return;
+    if (!expanded || (loaded.current.entries && loaded.current.dictionary)) return;
     let cancelled = false;
     setLoading(true);
     setError(false);
-    Promise.all([loadLearningEntries(itemId), loadVocabDefinition(itemId)])
-      .then(([loadedEntries, loadedDictionary]) => {
-        if (!cancelled) {
-          setLoading(false);
-          setEntries(loadedEntries);
-          setDictionary(loadedDictionary);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) { setLoading(false); setError(true); }
-      });
+    void loadLearningDetailParts({
+      entries: loaded.current.entries ? undefined : () => loadLearningEntries(itemId),
+      dictionary: loaded.current.dictionary ? undefined : () => loadVocabDefinition(itemId),
+    }, {
+      onEntries: value => { if (!cancelled) { loaded.current.entries = true; setEntries(value); } },
+      onDictionary: value => { if (!cancelled) { loaded.current.dictionary = true; setDictionary(value); } },
+      onError: () => { if (!cancelled) setError(true); },
+    }).finally(() => { if (!cancelled) setLoading(false); });
     return () => {
       cancelled = true;
     };
-  }, [activeRecallSenses.length, attempt, dictionary, entries, expanded, itemId]);
+  }, [activeRecallSenses.length, attempt, expanded, itemId]);
 
   return (
     <View style={s.panel}>
@@ -91,7 +91,7 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
           )}
           {activeRecallSenses.length === 0 && error && (
             <View>
-              <Text style={s.note}>해설을 불러오지 못했습니다. 문제 풀이는 계속할 수 있어요.</Text>
+              <Text style={s.note}>일부 학습 자료를 불러오지 못했습니다. 불러온 해설·예문은 유지됩니다.</Text>
               <Pressable
                 accessibilityRole="button"
                 onPress={() => setAttempt((value) => value + 1)}
@@ -105,7 +105,7 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
             <SenseDetails key={entry.id} entry={entry} index={index} count={entries.length} />
           ))}
           {activeRecallSenses.length > 0 && <LazyReasoningPractice itemId={itemId} />}
-          {activeRecallSenses.length === 0 && entries?.length === 0 && dictionary && (
+          {activeRecallSenses.length === 0 && !entries?.length && dictionary && (
             <DictionaryDefinition entry={dictionary} />
           )}
         </View>
@@ -168,6 +168,7 @@ export function ActiveRecallStudyDetails({
         {entry.exampleSentences.map((example, exampleIndex) => (
           <View key={`${example.en}-${exampleIndex}`} style={s.section}>
             <Text style={s.english}>{example.en}</Text>
+            <PronunciationButton text={example.en} compact />
             {example.ko ? <Text style={s.text}>{example.ko}</Text> : null}
             {example.cueKo ? <Text style={s.note}>문맥 단서: {example.cueKo}</Text> : null}
             {entry.exactSynonyms.length + entry.nearSynonyms.length > 0 ? (
@@ -363,6 +364,7 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
       <View style={s.exampleBox}>
         <Text style={s.label}>5. 예문 · {entry.example.kind === "editorial" ? "학습용 창작" : "출처 원문"}</Text>
         <Text style={s.english}>{entry.example.en}</Text>
+        <PronunciationButton text={entry.example.en} compact />
         <Text style={s.text}>{entry.example.ko}</Text>
         <Text style={s.label}>문맥 판별 기준</Text>
         <Text style={s.note}>{entry.example.cueKo ?? entry.examTrapKo}</Text>

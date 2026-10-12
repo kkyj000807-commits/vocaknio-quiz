@@ -14,6 +14,8 @@ import {
   Linking,
 } from "react-native";
 import { ScreenContainer } from "@/components/screen-container";
+import { PronunciationSettings } from "@/components/pronunciation-settings";
+import { LearningBackupSettings } from "@/components/learning-backup-settings";
 import { VOCAB } from "@/lib/vocab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
@@ -21,6 +23,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useThemeContext, type ThemeMode } from "@/lib/theme-provider";
 import { getApiBaseUrl } from "@/constants/oauth";
 import * as Auth from "@/lib/_core/auth";
+import { callEmailAuth as callAuthApi } from "@/lib/_core/api";
 import { trpc } from "@/lib/trpc";
 import { RELEASE_LABEL } from "@/lib/release-info";
 import { LEARNING_COVERAGE } from "@/lib/vocab-learning";
@@ -34,6 +37,7 @@ import {
   loadQuizSettings,
   saveQuizSettings,
   type ChoiceLang,
+  getLearningStorageIssue,
 } from "@/lib/store";
 
 type ThemeOption = { mode: ThemeMode; label: string; icon: "sun.max.fill" | "moon.fill" | "doc.text.fill" };
@@ -51,23 +55,6 @@ const LANG_OPTIONS: LangOption[] = [
   { lang: "english", label: "🔤 영어 동의어", desc: "영어 동의어 4지선다" },
 ];
 
-async function callAuthApi(
-  endpoint: string,
-  body: object
-): Promise<{ token?: string; user?: Auth.User; error?: string }> {
-  const base = getApiBaseUrl();
-  const url = `${base}${endpoint}`;
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify(body),
-  });
-  const data = await res.json();
-  if (!res.ok) return { error: data.error || "오류가 발생했습니다." };
-  return data;
-}
-
 export default function SettingsScreen() {
   const colors = useColors();
   const { user, isAuthenticated, loading: authLoading, logout, refresh: refreshAuth } = useAuth();
@@ -75,14 +62,19 @@ export default function SettingsScreen() {
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState<string | null>(null);
   const [choiceLang, setChoiceLang] = useState<ChoiceLang>("korean");
+  const cloudConfigured = Boolean(getApiBaseUrl());
 
   useEffect(() => {
     loadQuizSettings().then((s) => setChoiceLang(s.choiceLang));
   }, []);
 
   const handleChoiceLangChange = useCallback(async (lang: ChoiceLang) => {
-    setChoiceLang(lang);
-    await saveQuizSettings({ choiceLang: lang });
+    try {
+      await saveQuizSettings({ choiceLang: lang });
+      setChoiceLang(lang);
+    } catch {
+      Alert.alert("설정 저장 실패", "기존 설정을 유지했습니다. 저장소 접근 상태를 확인하고 다시 시도해 주세요.");
+    }
   }, []);
 
   // 로그인 폼 상태
@@ -198,7 +190,8 @@ export default function SettingsScreen() {
       await saveBookmarks(Array.from(new Set([...localBookmarks, ...data.bookmarkNums])));
       const localWrong = await loadWrongWords();
       await saveWrongWords(Array.from(new Set([...localWrong, ...data.wrongNums])));
-      setSyncMsg("✓ 클라우드에서 데이터를 가져왔습니다.");
+      if (getLearningStorageIssue()) throw new Error("Local save incomplete");
+      setSyncMsg("✓ 서버의 오답·북마크·요약 통계를 가져왔습니다. 의미별 기록·MASTER·중단 세션 동기화는 포함하지 않습니다.");
     } catch {
       setSyncMsg("동기화 실패. 다시 시도해주세요.");
     } finally {
@@ -215,6 +208,7 @@ export default function SettingsScreen() {
       const [stats, bookmarks, wrongWords] = await Promise.all([
         loadStats(), loadBookmarks(), loadWrongWords(),
       ]);
+      if (getLearningStorageIssue()) throw new Error("Local evidence unreadable");
       await pushMutation.mutateAsync({
         wrongNums: wrongWords,
         bookmarkNums: bookmarks,
@@ -276,6 +270,9 @@ export default function SettingsScreen() {
             </View>
           </View>
 
+          <PronunciationSettings />
+          <LearningBackupSettings />
+
           {/* 테마 섹션 */}
           <View style={s.section}>
             <Text style={s.sectionTitle}>화면 테마</Text>
@@ -313,7 +310,9 @@ export default function SettingsScreen() {
           {/* 계정 섹션 */}
           <View style={s.section}>
             <Text style={s.sectionTitle}>계정</Text>
-            {authLoading ? (
+            {!cloudConfigured ? (
+              <View style={s.card}><Text style={s.loginDesc}>현재 배포에는 별도 계정·동기화 서버가 연결되어 있지 않습니다. 학습 기록은 이 기기에 저장됩니다. 기기 이동에는 위의 백업 파일을 사용하세요.</Text></View>
+            ) : authLoading ? (
               <View style={s.card}>
                 <ActivityIndicator color={colors.primary} />
               </View>
@@ -338,7 +337,7 @@ export default function SettingsScreen() {
               /* 비로그인 상태 — 이메일 로그인/회원가입 폼 */
               <View style={s.card}>
                 <Text style={s.loginDesc}>
-                  로그인하면 오답·북마크·통계 데이터를{"\n"}여러 기기에서 동기화할 수 있습니다.
+                  별도 서버에 로그인하면 오답·북마크·요약 통계를 수동으로 전송할 수 있습니다. 전체 학습 기록 백업과는 다릅니다.
                 </Text>
 
                 {/* 탭 */}
@@ -423,12 +422,12 @@ export default function SettingsScreen() {
           </View>
 
           {/* 클라우드 동기화 섹션 */}
-          {isAuthenticated && (
+          {cloudConfigured && isAuthenticated && (
             <View style={s.section}>
               <Text style={s.sectionTitle}>클라우드 동기화</Text>
               <View style={s.card}>
                 <Text style={s.syncDesc}>
-                  오답 노트, 북마크, 학습 통계를 서버에 저장하거나 불러옵니다.
+                  오답 단어·북마크·요약 통계만 수동 전송합니다. 의미별 이력·MASTER·중단 세션은 동기화하지 않습니다. 전체 기록은 로컬 백업을 사용하세요.
                 </Text>
                 {syncMsg && (
                   <View style={s.syncMsgBox}>

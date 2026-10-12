@@ -143,6 +143,7 @@
     },
     {
       "id":"sc-condition-grant-v1", "itemId":"JBKROW022984", "relatedSenseId":"put-the-cart-before-the-horse:reverse-dependent-order", "logicType":"condition", "difficulty":"medium",
+      "reviewHold": {"reason":"지출 일정을 세웠다는 사실만으로 승인 전 자금 사용을 전제했다고 단정할 수 없음. 승인 후 집행 일정이라는 반례가 가능하므로 원문·정답을 보존하고 출제 보류.","reviewedAt":"2026-10-13"},
       "passageEn":"A grant may be released only after the safety review is approved; completing the application alone does not authorize payment. With the review still pending, the team has already scheduled spending from the grant. Its plan ____.",
       "promptKo":"문맥 전체에 가장 잘 맞는 표현을 고르세요.", "blankMarker":"____",
       "choices":[

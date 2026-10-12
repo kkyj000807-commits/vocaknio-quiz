@@ -25,6 +25,11 @@ vi.mock("@react-native-async-storage/async-storage", () => ({
       if (disk.fail) throw Error("full");
       for (const [k, v] of entries) disk.values.set(k, v);
     },
+    async setItem(key: string, value: string) {
+      if (disk.fail) throw Error("full");
+      disk.values.set(key, value);
+    },
+    async removeItem(key: string) { disk.values.delete(key); },
   },
 }));
 let store: typeof import("@/lib/store");

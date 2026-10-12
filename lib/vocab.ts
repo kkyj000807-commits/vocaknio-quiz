@@ -170,7 +170,7 @@ export const WORDBOOK_RANGES = [
   ...RANGES.filter((range) => range.kind === "all"),
   ...SECTION_RANGES,
 ];
-export const COUNTS = [10, 20, 30];
+export const COUNTS = [5, 10, 20, 30];
 
 export type QuizMode =
   | "sentence-completion"

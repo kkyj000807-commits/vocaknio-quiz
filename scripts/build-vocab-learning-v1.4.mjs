@@ -57,7 +57,8 @@ for (const entry of entries) {
     }
   }
   if (!Array.isArray(entry.contrasts)) fail(`${entry.id}: contrasts 배열 누락`);
-  if (!entry.example?.en || !entry.example?.ko || !["source", "editorial"].includes(entry.example.kind)) fail(`${entry.id}: 예문 누락`);
+  if (typeof entry.example?.en !== "string" || !entry.example.en.trim() || typeof entry.example?.ko !== "string" || !entry.example.ko.trim() || !["source", "editorial"].includes(entry.example.kind)) fail(`${entry.id}: 예문 누락`);
+  if (entry.example?.cueKo !== undefined && (typeof entry.example.cueKo !== "string" || !entry.example.cueKo.trim())) fail(`${entry.id}: 빈 문맥 단서`);
   if (entry.verification?.status !== "cross-agreed" || !entry.verification.checkedAtKst || !entry.verification.reviewer) fail(`${entry.id}: 교차 검수 미완료`);
   if (!Array.isArray(entry.sources) || entry.sources.length < 2) fail(`${entry.id}: 독립 출처 2개 미만`);
 

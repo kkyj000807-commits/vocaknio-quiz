@@ -40,6 +40,11 @@ export const activeRecallSenseSchema = z.object({
   const normalized = [entry.headword, ...entry.distractors.map(item => item.word)].map(value => value.trim().toLowerCase());
   if (new Set(normalized).size !== 4) ctx.addIssue({ code: "custom", message: "Recall choices must be unique" });
   if (entry.status === "production") {
+    entry.exampleSentences.forEach((example, index) => {
+      for (const field of ["ko", "cueKo"] as const) {
+        if (!example[field]?.trim()) ctx.addIssue({ code: "custom", path: ["exampleSentences", index, field], message: "Production examples require Korean translation and a context cue" });
+      }
+    });
     if (entry.quality === "C" || entry.enrichmentStatus !== "complete") ctx.addIssue({ code: "custom", message: "Only complete A/B entries can ship" });
     if (new Set(entry.sources.map(source => source.independenceGroup)).size < 2) ctx.addIssue({ code: "custom", message: "Two independent sources required" });
     if (entry.distractors.filter(item => item.plausible).length < 2) ctx.addIssue({ code: "custom", message: "Two plausible distractors required" });
