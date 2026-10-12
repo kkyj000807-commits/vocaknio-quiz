@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { writeJsonCheckpoint } from "./lib/json-checkpoint.mjs";
 import {
   CANONICAL_REQUIRED_FIELDS,
   canonicalAuditSample,
@@ -401,11 +402,10 @@ for (const [relativePath, value] of [
   ["assets/canonical-sense-content-report.json", report],
   ["assets/canonical-sense-backfill-pending.json", pending],
 ]) {
-  fs.mkdirSync(path.dirname(path.join(root, relativePath)), { recursive: true });
-  const serialized = relativePath.endsWith("backfill-pending.json")
-    ? JSON.stringify(value)
-    : JSON.stringify(value, null, 2);
-  fs.writeFileSync(path.join(root, relativePath), `${serialized}\n`, "utf8");
+  writeJsonCheckpoint(path.join(root, relativePath), value, {
+    indent: relativePath.endsWith("backfill-pending.json") ? 0 : 2,
+    ignoreGeneratedAt: relativePath.endsWith("backfill-pending.json") || relativePath.endsWith("content-report.json"),
+  });
 }
 
 console.log(JSON.stringify(report, null, 2));

@@ -1,5 +1,16 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-13 02:46 KST — 메모리 재발 방지 개발도구 적용, 공개판 유지
+
+- 실제 원인 분리: 시작RAM1.448GiB/commit30.568GiB여유/CPU16. Vitest 기본CPU기준 pool과 per-worker 모듈·9.26MiB정본 재로딩은 병렬 증폭 요인이다. 사용자보고20workers를 실제다시 띄워OOM시키지 않고20상한/min fixture에서1~2clamp를 검사했다. 별개로 기존type1GiBheap 실패/실측1,386,835K·2GiB통과는V8상한 문제다. 현재테스트·Metro동시실행0이며Node기타/MCP를20테스트worker로 오인하지 않는다.
+- 외부압박:백그라운드 최대프로세스 working set4.42→5.39GiB/private17.39→18.39GiB까지 증가, 가용RAM약0.46~1.45GiB로변동/commit약30GiB여유. 정확한프로세스명·PID·그룹별값은비공개QA보고서에보존했다. sharedworking-set합산을독점RAM사용량으로부르지않는다. 해당프로그램누수는미확정이며사용자프로그램종료/OS페이지파일/실행정책변경0.
+- 구현: `resource-budget`+WindowsCIM측정/`monitored-process`를 pnpmtest·verify·Production·devMetro에 연결. 기존4Vitest env/빌드env/CLI상한을실측1~2로clamp, min1, heap자동확대없음. 다른heavy작업/측정실패/전체RAM·commit3GiB미만이면exit75;출력·학습DB생성금지. 실행단계별PID/종료코드/V8와native오류구분/표본private·working-set/프로세스·thread별OSpeak를비공개QA에기록한다.
+- 처리량/메모리: Production텍스트64KiB청크·JSON그룹별처리·13파생출력NO_CHANGE/atomiccheckpoint. 같은1.0export감사결과 완전동일, OSpeak 약122→71MiB(약42%감소),0.73~0.93s→0.75~0.77s(일반적속도향상보증아님).13/13bytes·mtime보존/원자료변경0. 경계1byte누락과중첩token동시후보를수정해원래보안규칙/긴token/UTF8/reference회귀유지.
+- PASS: 실제Vitest6파일19PASS(이후checkpoint/최종logger패치는Native동일10assertions로별도확인), 최종Node10PASS/264ms, 관련설정타입PASS/전체관련22파일lint0errors, 소스보안findings0, 현재export출력감사PASS/동일결과. Metroconfig실제로maxWorkers1 확인(서버시작없음),64MiB진단fixture PID31168 sampledprivate81MiB, 짧은Node테스트자식PID32372 OSpeak54.5MiB, Metroconfig PID27384 OSpeak140.3MiB. 코드7진단fixture PID28556는 COMMAND_FAILED로기록(P0/실제OOM아님).
+- BLOCKED/NOT_VERIFIED: 변경후verify의데이터7단계PASS→전체type에서RAM1023MiB로exit75, ProductionRAM1006MiB→75/새출력폴더없음. 최종추가Vitest세트RAM748MiB로보류, devMetro최종527MiB로75/서버시작없음. 최신전체회귀·새Production빌드·실제2workerfull시험 미검증. 구판489PASS와 이번19PASS/Native10을혼동하지 않는다. 공개1.0/source095ee969/수정01:48:14유지, main/기존dirty/학습기록/모든원정답보존.
+
+다음: 현행 자동화에서 자원 게이트를 통과할 때 최종추가 파일의 관련Vitest→전체verify→새빈빌드/감사. 같은저RAM환경에서강제재시도·heap확대하지 않는다. 상세는 [메모리 실행 계약](MEMORY_EXECUTION.md), 실측/private보고서는 `analysis/qa/resource-runs` 및 외부 `2026-10-13-memory-engineering.md`. 이번잠금81481/PID21448, 종료Enter/LOCK_RELEASED는도구영수증 확인.
+
 ## 2026-10-13 02:13 KST — 1.0 공개 업데이트 확인
 
 이번 안정화 누적 후보는 실제 공개 배포까지 완료했다. **전체 콘텐츠99%·시험용 최종 안정판 완료는 아니다.** 아래 미배포/BLOCKED 표시는 해당 시점 이력이며 현재 릴리스 상태는 이 절을 기준으로 삼는다.

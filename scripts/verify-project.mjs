@@ -1,5 +1,5 @@
-import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { runMonitoredNode } from "./lib/monitored-process.mjs";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 // Build data before tests: tests must inspect what the next export will ship.
@@ -16,12 +16,11 @@ const steps = [
 ];
 for (const [label, ...args] of steps) {
   console.log(`\n검증: ${label}`);
-  const result = spawnSync(process.execPath, args, {
-    cwd: root,
-    stdio: "inherit",
-    shell: false,
+  const kind = args.includes("--noEmit") ? "type" : "test";
+  const result = await runMonitoredNode(args, {
+    cwd: root, label, kind,
+    focused: !args.includes("--noEmit") && !args.includes("run"),
   });
-  if (result.error) console.error(result.error.message);
   if (result.status !== 0) process.exit(result.status ?? 1);
 }
 console.log(

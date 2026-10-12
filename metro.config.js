@@ -1,7 +1,10 @@
 const { getDefaultConfig } = require("expo/metro-config");
 const { withNativeWind } = require("nativewind/metro");
+const resource = require("./scripts/lib/resource-budget.cjs");
 
 const config = getDefaultConfig(__dirname);
+// Covers direct Expo dev as well as the guarded Production entrypoint.
+config.maxWorkers = resource.chooseResourceBudget(resource.readMemorySnapshotSync(), { kind: "build" }).workers;
 
 // This unrelated Python scratch environment causes EPERM during every file crawl.
 const existingBlockList = config.resolver.blockList ?? [];

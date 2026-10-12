@@ -1,9 +1,9 @@
-import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { createPagesFallback, requireEmptyOutput } from "./lib/production-output.mjs";
 import { createReleaseMetadata } from "./lib/release-metadata.mjs";
 import { readSourceState } from "./lib/source-state.mjs";
+import { runMonitoredNode } from "./lib/monitored-process.mjs";
 
 const outputDir = process.argv[2];
 
@@ -12,25 +12,20 @@ if (!outputDir) {
   process.exit(1);
 }
 
+const preflight = await runMonitoredNode([], { kind: "build", label: "Production admission", admissionOnly: true });
+if (preflight.status !== 0) process.exit(preflight.status);
 requireEmptyOutput(outputDir);
-const examAudit = spawnSync(process.execPath, ["--import", "tsx", "scripts/audit-exam-questions.ts"], { stdio: "inherit", shell: false });
-if (examAudit.status !== 0) process.exit(examAudit.status ?? 1);
-const completionAudit = spawnSync(process.execPath, ["--import", "tsx", "scripts/audit-sentence-completion.ts"], { stdio: "inherit", shell: false });
-if (completionAudit.status !== 0) process.exit(completionAudit.status ?? 1);
+const runTask = async (label, args) => {
+  const task = await runMonitoredNode(args, { label, focused: true });
+  if (task.status !== 0) process.exit(task.status);
+};
+await runTask("exam audit", ["--import", "tsx", "scripts/audit-exam-questions.ts"]);
+await runTask("SC audit", ["--import", "tsx", "scripts/audit-sentence-completion.ts"]);
 const builtAt = new Date().toISOString();
 const dataVersion = JSON.parse(fs.readFileSync("assets/vocab-meta-v1.4.json", "utf8")).version;
-const senseAudit = spawnSync(process.execPath, ["--import", "tsx", "scripts/audit-sense-questions.ts"], { stdio: "inherit", shell: false });
-if (senseAudit.status !== 0) process.exit(senseAudit.status ?? 1);
-const learningBuild = spawnSync(process.execPath, ["scripts/build-vocab-learning-v1.4.mjs"], {
-  cwd: process.cwd(), stdio: "inherit", shell: false,
-});
-if (learningBuild.error) console.error(learningBuild.error.message);
-if (learningBuild.status !== 0) process.exit(learningBuild.status ?? 1);
-const definitionAudit = spawnSync(process.execPath, ["scripts/audit-vocab-definitions.mjs"], {
-  cwd: process.cwd(), stdio: "inherit", shell: false,
-});
-if (definitionAudit.error) console.error(definitionAudit.error.message);
-if (definitionAudit.status !== 0) process.exit(definitionAudit.status ?? 1);
+await runTask("sense audit", ["--import", "tsx", "scripts/audit-sense-questions.ts"]);
+await runTask("learning build", ["scripts/build-vocab-learning-v1.4.mjs"]);
+await runTask("definition audit", ["scripts/audit-vocab-definitions.mjs"]);
 
 const releaseConfig = JSON.parse(
   fs.readFileSync(path.join(process.cwd(), "release.config.json"), "utf8"),
@@ -49,15 +44,9 @@ const expoCli = path.join(
   "bin",
   "cli"
 );
-const configuredMaxWorkers = (process.env.FINETUNE_BUILD_MAX_WORKERS ?? process.env.VOCANEXUS_BUILD_MAX_WORKERS)?.trim();
-if (configuredMaxWorkers && !/^[1-9]\d*$/.test(configuredMaxWorkers)) {
-  throw new Error("FINETUNE_BUILD_MAX_WORKERS must be a positive integer (legacy alias supported)");
-}
-
 console.log(`Production 빌드 시각: ${releasedAtKst}`);
 
-const result = spawnSync(
-  process.execPath,
+const result = await runMonitoredNode(
   [
     expoCli,
     "export",
@@ -66,7 +55,6 @@ const result = spawnSync(
     "--clear",
     "--output-dir",
     outputDir,
-    ...(configuredMaxWorkers ? ["--max-workers", configuredMaxWorkers] : []),
   ],
   {
     cwd: process.cwd(),
@@ -75,14 +63,9 @@ const result = spawnSync(
       EXPO_PUBLIC_RELEASED_AT_KST: releasedAtKst,
       EXPO_PUBLIC_RELEASE_CHANNEL: "production",
     },
-    stdio: "inherit",
-    shell: false,
+    kind: "build", label: "Expo Production export",
   }
 );
-
-if (result.error) {
-  console.error(result.error.message);
-}
 
 if (result.status !== 0) {
   process.exit(result.status ?? 1);
@@ -117,8 +100,7 @@ for (const htmlPath of htmlFiles) {
 console.log(`Production 릴리스 확인 파일: ${releaseManifest.target}`);
 console.log(`자동 갱신 스크립트 적용 HTML: ${htmlFiles.length}개`);
 
-const audit = spawnSync(process.execPath, ["scripts/audit-production-output.mjs", outputDir], {
-  cwd: process.cwd(), stdio: "inherit", shell: false,
+const audit = await runMonitoredNode(["scripts/audit-production-output.mjs", outputDir], {
+  cwd: process.cwd(), label: "Production output audit", focused: true,
 });
-if (audit.error) console.error(audit.error.message);
 process.exitCode = audit.status ?? 1;

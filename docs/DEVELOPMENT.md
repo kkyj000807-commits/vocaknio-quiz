@@ -1,5 +1,7 @@
 # 개발 진입 지도
 
+개발 메모리: [진단·자동워커·청크·증분 실행 계약](MEMORY_EXECUTION.md). `pnpm test`, verify, Production, dev:metro가 매단계 자원 측정/기록을 사용한다. direct Vitest/Metro config도워커를 제한하지만 `pnpm exec vitest`는 monitored entrypoint의 admission/상세진단을 우회하므로 기본명령을 우선한다. 전체3GiB 게이트·기존 OS잠금·사용자프로그램 보존은 유지한다.
+
 로컬 Production QA: `python scripts/serve-audit-output.py <출력 절대경로> [port]`. Windows에서 export font 경로가260자를 넘고 LongPaths가 꺼져 있으면 QA 서버만 `\\?\` 확장경로로 실행한다: `$qaExtendedRoot = '\\?\' + (Resolve-Path '<QA 출력>').Path` 후 `python scripts/serve-audit-output.py $qaExtendedRoot 26729`. OS/registry를 바꾸지 않는다. 다른 빈-origin 검증은26730 등 별도port로 실행하며, localhost font404를 공개 제품 장애로 단정하지 않는다.
 
 현재 완료/배포 상태는 WORKING_CONTEXT.md만 기준으로 삼는다. 이 문서는 파일 위치와 재현 가능한 명령을 안내한다.

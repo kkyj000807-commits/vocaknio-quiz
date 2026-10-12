@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import resource from './lib/resource-budget.cjs';
+const snapshot = resource.readMemorySnapshotSync();
+const result = { schema: 1, snapshot, plans: Object.fromEntries(['test', 'type', 'build'].map(kind => [kind, resource.chooseResourceBudget(snapshot, { kind })])) };
+const output = path.resolve('analysis/qa/memory-current.json');
+fs.mkdirSync(path.dirname(output), { recursive: true });
+fs.writeFileSync(output, JSON.stringify(result, null, 2) + '\n');
+console.log(JSON.stringify(result, null, 2));
+console.log(`비공개 진단: ${output}`);

@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { productionSecurityIssues } from "./lib/production-security.mjs";
 import { isReleaseMetadataValid } from "./lib/release-metadata.mjs";
+import { scanPublicTextFile } from "./lib/public-text-scan.mjs";
 
 const outputRoot = process.argv[2];
 if (!outputRoot || !fs.existsSync(outputRoot)) {
@@ -26,10 +27,11 @@ let rootExpoReferences = 0;
 let rootAssetReferences = 0;
 
 for (const file of textFiles) {
-  const text = fs.readFileSync(file, "utf8");
-  rootExpoReferences += (text.match(/["'=]\/_expo\//g) ?? []).length;
-  rootAssetReferences += (text.match(/["'=]\/assets\//g) ?? []).length;
+  const scan = scanPublicTextFile(file);
+  rootExpoReferences += scan.rootExpoReferences;
+  rootAssetReferences += scan.rootAssetReferences;
   if (!file.endsWith(".html")) continue;
+  const text = fs.readFileSync(file, "utf8");
   for (const match of text.matchAll(/(?:src|href)="([^"]+)"/g)) {
     const url = match[1];
     if (!url.startsWith(prefix)) continue;
@@ -46,14 +48,15 @@ const learningDirectory = releaseMetadataValid
 const learningFiles = learningDirectory && fs.existsSync(learningDirectory)
   ? fs.readdirSync(learningDirectory).filter((name) => name.endsWith(".json"))
   : [];
-const learningPayloads = learningFiles.map(name => {
+let learningPayloadsMatch = learningFiles.length === 8;
+const recordingEntries = [];
+for (const name of learningFiles) {
   try {
-    return JSON.parse(fs.readFileSync(path.join(learningDirectory, name), "utf8"));
-  } catch { return null; }
-});
-const learningPayloadsMatch = learningPayloads.length === 8 && learningPayloads.every(payload =>
-  payload?.version === release.learningDataVersion && Array.isArray(payload.entries));
-const recordingEntries = learningPayloads.flatMap(payload => payload?.entries ?? []).filter(entry => entry.audio);
+    const payload = JSON.parse(fs.readFileSync(path.join(learningDirectory, name), "utf8"));
+    learningPayloadsMatch &&= payload?.version === release.learningDataVersion && Array.isArray(payload.entries);
+    if (Array.isArray(payload.entries)) for (const entry of payload.entries) if (entry.audio) recordingEntries.push({ audio: entry.audio });
+  } catch { learningPayloadsMatch = false; }
+}
 const recordingMetadataValid = recordingEntries.every(({ audio }) => {
   try {
     return audio.region === "US" && audio.source === "Wikimedia Commons" &&
@@ -70,9 +73,9 @@ const definitionFiles = fs.existsSync(definitionDirectory)
 const indexHtml = fs.readFileSync(path.join(outputRoot, "index.html"), "utf8");
 const bundleUrl = indexHtml.match(/src="\/vocaknio-quiz\/([^\"]*entry-[a-f0-9]+\.js)"/)?.[1];
 const bundle = bundleUrl ? path.join(outputRoot, ...bundleUrl.split("/")) : undefined;
-const bundleText = bundle ? fs.readFileSync(bundle, "utf8") : "";
+const bundleScan = bundle ? scanPublicTextFile(bundle, { needles: ["vocab-learning", "vocab-definitions", "speechSynthesis", "voiceURI", "preferRecording"] }) : { found: {}, authDiagnostics: false };
 const securityIssues = productionSecurityIssues(outputRoot);
-const authDiagnosticsInCurrentBundle = /\[API\] Full URL:|\[API\] Response headers:|\[Auth\] Setting session token|\[OAuth\] Params received:/.test(bundleText);
+const authDiagnosticsInCurrentBundle = bundleScan.authDiagnostics;
 const result = {
   status:
     missing.size === 0 &&
@@ -82,10 +85,10 @@ const result = {
     rootAssetReferences === 0 &&
     learningPayloadsMatch &&
     definitionFiles.length === 8 &&
-    bundleText.includes("vocab-learning") &&
-    bundleText.includes("vocab-definitions") &&
+    bundleScan.found["vocab-learning"] &&
+    bundleScan.found["vocab-definitions"] &&
     recordingMetadataValid &&
-    bundleText.includes("speechSynthesis") && bundleText.includes("voiceURI") && bundleText.includes("preferRecording")
+    bundleScan.found.speechSynthesis && bundleScan.found.voiceURI && bundleScan.found.preferRecording
       ? "pass"
       : "fail",
   release,
@@ -101,10 +104,10 @@ const result = {
   recordingMetadataValid,
   licensedAmericanRecordingUrls: new Set(recordingEntries.map(entry => entry.audio.url)).size,
   definitionFiles: definitionFiles.length,
-  learningUiInBundle: bundleText.includes("vocab-learning"),
-  definitionUiInBundle: bundleText.includes("vocab-definitions"),
+  learningUiInBundle: !!bundleScan.found["vocab-learning"],
+  definitionUiInBundle: !!bundleScan.found["vocab-definitions"],
   americanPronunciationInBundle:
-    bundleText.includes("speechSynthesis") && bundleText.includes("voiceURI") && bundleText.includes("preferRecording"),
+    !!(bundleScan.found.speechSynthesis && bundleScan.found.voiceURI && bundleScan.found.preferRecording),
   bundle: bundle ? path.basename(bundle) : null,
 };
 console.log(JSON.stringify(result, null, 2));

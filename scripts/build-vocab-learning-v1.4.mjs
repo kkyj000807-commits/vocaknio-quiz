@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { writeJsonCheckpoint } from "./lib/json-checkpoint.mjs";
 import { correctionLearningEntries, loadIdiomCorrections } from "./lib/idiom-corrections.mjs";
 import { attachReasoningLessons } from "./lib/reasoning-lessons.mjs";
 
@@ -153,8 +154,8 @@ for (const group of groups) {
     ),
   }));
   const payload = { version: learningVersion, group, entries: normalizedEntries };
-  fs.writeFileSync(path.join(outputRoot, `${group.toLowerCase()}.json`), `${JSON.stringify(payload)}\n`, "utf8");
+  writeJsonCheckpoint(path.join(outputRoot, `${group.toLowerCase()}.json`), payload);
 }
-fs.writeFileSync(indexPath, `${JSON.stringify(index, null, 2)}\n`, "utf8");
+writeJsonCheckpoint(indexPath, index, { indent: 2 });
 console.log(`깊이 학습 빌드 완료: ${entries.length}개 뜻 / ${Object.keys(itemPointers).length}개 목록 연결`);
 console.log(`미국식 실제 녹음: ${entries.filter((entry) => entry.audio).length}개`);
