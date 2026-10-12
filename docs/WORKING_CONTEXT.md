@@ -1,5 +1,11 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-13 03:12 KST — A 예약 재개: 동일 후보, 자원 미회복으로 배포 보류
+
+실제 heartbeat 수신 후 후보/원격 `0639f9e9`, main `1bf27b98`, Pages `9e5a0ffb`, 공개1.0/source095ee969/01:48:14KST/dirtyfalse/learningData1.29를 읽기 대조했다. 통합 작업실은 시작 시 clean, main 사용자 dirty 목록 그대로. 코드·데이터 새 변경0, 기존 targeted12PASS를 전체PASS로 승격하지 않는다. 03:12:43 CIM 가용RAM **401MiB(0.391GiB)**·commit **28.451GiB**, activeVitest/tsc/Metro0. 전체 검사/빌드 각각3GiB 및 영향검사768MiB 기준 미달: 이번회차 검증·lint·생성·빌드·UI·배포 **실행하지 않음(NOT_RUN_RESOURCE)**, 배포 **BLOCKED**. 직전lint134/verify75 미통과 유지; 기존 검사를 다시 돌려 동일 실패를 만들지 않는다.
+
+OS잠금71860/PID20980으로 이번 checkpoint 문서/외부A-latest만 저장한다. 코드/자료/기록 수정0, 새예약0, Pagespush0. 실제 예약 신호 수신은 확인했으나 정확한2시간 주기/절전복구 성공을 입증한 것은 아니다. 다음은 RAM과commit 각각3GiB 이상·다른heavy실행없음일 때1worker 관련검사/기존lint→전체verify/security→새빈Production/감사→격리학습·공개확인. `lastPassedCommit`095ee969 유지, 해결된 P0 재작성·완료 batch 재처리 금지. 종료Enter/LOCK_RELEASED는도구영수증 확인.
+
 ## 2026-10-13 03:07 KST — 고효율 구조 감사 2건 수정, 배포 전 검증 대기
 
 - `lib/vocab-definitions.ts`: `typeof null === object`로 잘못 승인한 응답이 성공 Promise에 캐시돼 재시도까지 실패하는 경로를 실제 코드로 재현했다. null/배열/root/그룹 header를 캐시 전에 검사하고 실패 cache eviction을 재사용한다. 고정 데이터 URL은 `no-cache` 재검증, 정상 페이지 내 동시 요청은 기존 cache로 1회만 수행한다. UI의 기존 다시 불러오기·정상 자료 보존 경로는 변경하지 않았다. 공개 서버에서 이 손상이 실제 발생했다고 단정하지 않는다.
