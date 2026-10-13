@@ -17,4 +17,6 @@ export function requireEmptyOutput(directory) {
 
 export function createPagesFallback(directory) {
   fs.copyFileSync(path.join(directory, "+not-found.html"), path.join(directory, "404.html"));
+  // GitHub Pages otherwise runs Jekyll and drops Expo's underscore directory.
+  fs.writeFileSync(path.join(directory, ".nojekyll"), "");
 }

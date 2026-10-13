@@ -15,6 +15,7 @@ describe("Production 빌드 출력 보호", () => {
     fs.writeFileSync(path.join(root, "404.html"), "old-bundle");
     createPagesFallback(root);
     expect(fs.readFileSync(path.join(root, "404.html"), "utf8")).toBe("new-bundle");
+    expect(fs.existsSync(path.join(root, ".nojekyll"))).toBe(true);
   });
   it("없는 폴더나 빈 폴더만 허용하고 기존 파일은 그대로 둔다", () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), "voca-output-test-"));

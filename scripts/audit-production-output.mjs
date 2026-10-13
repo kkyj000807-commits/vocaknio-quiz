@@ -75,10 +75,12 @@ const bundleUrl = indexHtml.match(/src="\/vocaknio-quiz\/([^\"]*entry-[a-f0-9]+\
 const bundle = bundleUrl ? path.join(outputRoot, ...bundleUrl.split("/")) : undefined;
 const bundleScan = bundle ? scanPublicTextFile(bundle, { needles: ["vocab-learning", "vocab-definitions", "speechSynthesis", "voiceURI", "preferRecording"] }) : { found: {}, authDiagnostics: false };
 const securityIssues = productionSecurityIssues(outputRoot);
+const pagesStaticServing = fs.existsSync(path.join(outputRoot, ".nojekyll")) &&
+  fs.statSync(path.join(outputRoot, ".nojekyll")).isFile();
 const authDiagnosticsInCurrentBundle = bundleScan.authDiagnostics;
 const result = {
   status:
-    missing.size === 0 &&
+    pagesStaticServing && missing.size === 0 &&
     securityIssues.length === 0 && !authDiagnosticsInCurrentBundle &&
     releaseMetadataValid &&
     rootExpoReferences === 0 &&
@@ -93,6 +95,7 @@ const result = {
       : "fail",
   release,
   releaseMetadataValid,
+  pagesStaticServing,
   securityIssues,
   authDiagnosticsInCurrentBundle,
   htmlFiles: htmlFiles.length,

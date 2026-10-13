@@ -1,5 +1,13 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-14 01:18 KST — 공개 검증에서 Pages 정적 파일 제외 발견·정상판 복구
+
+543292d 후보는 전체534PASS/빌드/로컬UI를 통과했지만 gh-pages bceaf47 반영 후 새 JS가HTTP404였다. 새 출력에 `.nojekyll`이 없었고 이전 정상판9e5a0ff에는 있었다. Jekyll의 `_expo` 제외를 기존 로컬 참조 감사가 검사하지 못했다. 즉시 이전 정상 출력 tree를 새 자식 commit8d8955d로 normal push해 복구 요청했다(force 없음/기록 변경 없음). 이 후보를 공개 성공으로 보고하지 않는다.
+
+createPagesFallback가 `.nojekyll`을 항상 생성하고 Production 감사가 marker 누락을 실패시키도록 수정했다. 기존 테스트에 회귀 추가: 수정 전1FAIL1PASS, 수정 후 결과/재배포는 외부 영수증으로 기록한다. 전체 입력 재검증·새 clean SHA 빌드·원격 JS HTTP/SHA까지 다시 확인한다.
+
+IAB viewport 정정: 320/390 override를 요청했으나 실제 DOM은374x607이었다. 앞선 요청 폭을 실제 검증 폭으로 해석하지 않는다. 실제 좁은 IAB 렌더와 흐름만 확인했으며 iPhone/Samsung/지정320·390은 NOT_VERIFIED다.
+
 ## 2026-10-14 — FT 표지 통합 릴리스 게이트
 
 사용자 제공 남색 FT 디자인을 이미지 파생본/홈 로고/웹 favicon/Apple 홈 화면 아이콘/공유 OG로 연결했다. 홈은 작은56px 로고와 FineTune 워드마크이며 원본 콜라주를 거대한 표지로 넣지 않는다. 공개 웹 아이콘과 native 설정 변경을 실제 네이티브 앱 출시로 혼동하지 않는다. BRAND_ASSETS에 출처·생성/크기 변환을 기록했다.

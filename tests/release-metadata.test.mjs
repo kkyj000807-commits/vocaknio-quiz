@@ -56,6 +56,10 @@ describe("고정 표시 버전과 배포 시각", () => {
         write(`data/vocab-definitions/oewn-2025/${group}.json`, "{}");
       }
       const audit = () => spawnSync(process.execPath, ["scripts/audit-production-output.mjs", output], { encoding: "utf8" });
+      const missingMarker = audit();
+      expect(missingMarker.status).toBe(1);
+      expect(JSON.parse(missingMarker.stdout).pagesStaticServing).toBe(false);
+      write(".nojekyll", "");
       expect(audit().status).toBe(0);
       write("data/vocab-learning/1.29/v101.json", '{"version":"1.0","entries":[]}');
       expect(audit().status).toBe(1);
