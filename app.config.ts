@@ -47,7 +47,7 @@ const config: ExpoConfig = {
   slug: env.appSlug,
   version: APP_VERSION,
   orientation: "portrait",
-  icon: "./assets/images/icon.png",
+  icon: "./assets/images/finetune-ft-v2.png",
   scheme: env.scheme,
   userInterfaceStyle: "light",
   newArchEnabled: true,
@@ -60,10 +60,8 @@ const config: ExpoConfig = {
   },
   android: {
     adaptiveIcon: {
-      backgroundColor: "#E6F4FE",
-      foregroundImage: "./assets/images/android-icon-foreground.png",
-      backgroundImage: "./assets/images/android-icon-background.png",
-      monochromeImage: "./assets/images/android-icon-monochrome.png",
+      backgroundColor: "#080E50",
+      foregroundImage: "./assets/images/finetune-ft-v2.png",
     },
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
@@ -86,7 +84,7 @@ const config: ExpoConfig = {
   web: {
     bundler: "metro",
     output: "static",
-    favicon: "./assets/images/favicon.png",
+    favicon: "./assets/images/finetune-favicon-v2.png",
   },
   extra: {
     productionRelease: {
@@ -113,7 +111,7 @@ const config: ExpoConfig = {
     [
       "expo-splash-screen",
       {
-        image: "./assets/images/splash-icon.png",
+        image: "./assets/images/finetune-ft-v2.png",
         imageWidth: 200,
         resizeMode: "contain",
         backgroundColor: themeConfig.themeColors.background.light,

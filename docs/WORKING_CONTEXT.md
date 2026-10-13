@@ -1,5 +1,13 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-14 — FT 표지 통합 릴리스 게이트
+
+사용자 제공 남색 FT 디자인을 이미지 파생본/홈 로고/웹 favicon/Apple 홈 화면 아이콘/공유 OG로 연결했다. 홈은 작은56px 로고와 FineTune 워드마크이며 원본 콜라주를 거대한 표지로 넣지 않는다. 공개 웹 아이콘과 native 설정 변경을 실제 네이티브 앱 출시로 혼동하지 않는다. BRAND_ASSETS에 출처·생성/크기 변환을 기록했다.
+
+전체 verify exit0: 534PASS·1SKIP/62suitePASS·1SKIP, 타입 PASS,94.12초, sample peak private3,107MiB. 관련 ESLint exit0, Git보안753tracked+8untracked/0findings, diff check PASS. 선행4744653 clean 빌드/감사PASS. 격리 localhost27814 IAB390에서 실제 논리오답→새로고침 동일문항/보기/답안 유지→통계0/1→정확문항 복습정답→결과1/1→재접속 통계1/2·논리오답1개 보존 확인. 실제공개/iPhone사용자 기록은 수정하지 않았다.
+
+새 브랜드 입력의 최종 clean 빌드/공개 검증은 다음 게이트다. 이 기록만으로 배포 성공으로 간주하지 않는다. 외부 최종 영수증/A-latest 참조. 실제 iPhone Safari·Samsung Internet은 NOT_VERIFIED이며 저장보호 원인 미확정, 전체 콘텐츠 미완료 상태는 유지한다.
+
 ## 2026-10-14 — 영어 우선 표시·압축 레이아웃 공개 후보
 
 사용자 최신 요청: 업데이트는 공개 Pages 배포까지이며, 콘텐츠 전체 완료를 기다리지 않고 검증된 UI/기존 누적 수정부터 릴리스한다. 표시1.0/내부학습1.29 유지. 로컬 `C:/Users/USER/Projects/FINETUNE` 잠금42606/PID29192에서 작업.

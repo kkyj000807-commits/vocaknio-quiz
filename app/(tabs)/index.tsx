@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Platform,
   Alert,
+  Image,
 } from "react-native";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
@@ -99,13 +100,11 @@ export default function HomeScreen() {
       >
         {/* ── 헤더 ─────────────────────────────── */}
         <View style={s.header}>
-          <View style={s.headerBadgeRow}>
-            <View style={s.headerBadge}>
-              <Text style={s.headerBadgeText}>{PRODUCT_NAME}</Text>
-            </View>
+          <Image source={require("@/assets/images/finetune-home-v2.png")} style={s.brandIcon} accessibilityLabel="파인튠 FT 로고" />
+          <View style={s.brandText}>
+            <Text style={s.headerTitle} accessibilityLabel={PRODUCT_NAME}>FineTune</Text>
+            <Text style={s.headerSub}>{PRODUCT_PHILOSOPHY}</Text>
           </View>
-          <Text style={s.headerTitle}>문제 풀이</Text>
-          <Text style={s.headerSub}>{PRODUCT_PHILOSOPHY}</Text>
         </View>
 
         {/* ── 문제 풀이 방식 ─────────────────────── */}
@@ -305,30 +304,18 @@ const styles = (colors: ReturnType<typeof useColors>) =>
   StyleSheet.create({
     // ── 헤더
     header: {
+      flexDirection: "row",
       alignItems: "center",
-      paddingTop: 28,
+      justifyContent: "center",
+      gap: 14,
+      paddingTop: 20,
       paddingBottom: 20,
       paddingHorizontal: 20,
     },
-    headerBadgeRow: {
-      marginBottom: 10,
-    },
-    headerBadge: {
-      borderWidth: 1,
-      borderColor: (colors.primary as string) + "60",
-      borderRadius: 20,
-      paddingHorizontal: 14,
-      paddingVertical: 4,
-      backgroundColor: (colors.primary as string) + "15",
-    },
-    headerBadgeText: {
-      fontSize: 10,
-      fontWeight: "700",
-      color: colors.primary as string,
-      letterSpacing: 2.5,
-    },
+    brandIcon: { width: 56, height: 56, borderRadius: 14 },
+    brandText: { flexShrink: 1 },
     headerTitle: {
-      fontSize: 36,
+      fontSize: 28,
       fontWeight: "900",
       color: colors.foreground as string,
       letterSpacing: -1,
@@ -338,7 +325,6 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontSize: 13,
       color: colors.muted as string,
       letterSpacing: 0.3,
-      marginBottom: 20,
     },
     statRow: {
       flexDirection: "row",
