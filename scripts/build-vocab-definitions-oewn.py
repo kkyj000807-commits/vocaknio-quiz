@@ -10,6 +10,7 @@ records rather than receiving fabricated placeholder definitions.
 from __future__ import annotations
 
 import argparse
+import ctypes
 import hashlib
 import json
 import os
@@ -227,7 +228,37 @@ def parse_args() -> argparse.Namespace:
     default_archive = Path(os.environ.get("TEMP", ".")) / "voca-oewn-2025.json.zip"
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--archive", type=Path, default=default_archive)
+    parser.add_argument("--reference-stage", type=Path, help="Private analysis/qa candidate output; never changes app data")
     return parser.parse_args()
+
+
+def stage_location(requested: Path) -> Path:
+    boundary = ROOT / "analysis" / "qa"
+    output = requested if requested.is_absolute() else ROOT / requested
+    if not output.resolve().is_relative_to(boundary.resolve()) or output.suffix != ".json":
+        raise ValueError("Reference stage must be JSON inside analysis/qa")
+    for parent in (output, *output.parents):
+        if parent.is_symlink():
+            raise ValueError("Reference stage cannot use symbolic links")
+        if parent == ROOT:
+            break
+    return output.resolve()
+
+
+def own_peak_working_set() -> int | None:
+    if os.name != "nt":
+        return None
+    class Counters(ctypes.Structure):
+        _fields_ = [("cb", ctypes.c_uint32), ("faults", ctypes.c_uint32)] + [
+            (name, ctypes.c_size_t) for name in ("peak", "working", "peakPaged", "paged", "peakNonPaged", "nonPaged", "pagefile", "peakPagefile", "private")
+        ]
+    kernel = ctypes.WinDLL("kernel32")
+    kernel.GetCurrentProcess.restype = ctypes.c_void_p
+    counters = Counters()
+    counters.cb = ctypes.sizeof(counters)
+    psapi = ctypes.WinDLL("psapi")
+    psapi.GetProcessMemoryInfo.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.c_uint32]
+    return int(counters.peak) if psapi.GetProcessMemoryInfo(kernel.GetCurrentProcess(), ctypes.byref(counters), counters.cb) else None
 
 
 def main() -> int:
@@ -242,6 +273,19 @@ def main() -> int:
             "Unexpected OEWN archive hash: "
             f"expected {EXPECTED_ARCHIVE_SHA256}, got {actual_hash}"
         )
+
+    stage_path = stage_location(args.reference_stage) if args.reference_stage else None
+    checkpoint_path = stage_path.with_suffix(".checkpoint.json") if stage_path else None
+    stage_input = hashlib.sha256((actual_hash + archive_hash(VOCAB_PATH) + archive_hash(Path(__file__))).encode()).hexdigest()
+    if stage_path and stage_path.exists():
+        if not checkpoint_path or not checkpoint_path.is_file():
+            raise ValueError("Unowned stage output preserved; checkpoint missing")
+        previous = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+        if previous.get("generator") != "finetune-oewn-reference-stage-v1" or previous.get("outputSha256") != archive_hash(stage_path):
+            raise ValueError("Modified or unowned stage output preserved")
+        if previous.get("inputHash") == stage_input:
+            print(json.dumps({"status": "NO_CHANGE", "inputHash": stage_input, "productionChanges": 0}))
+            return 0
 
     vocab = json.loads(VOCAB_PATH.read_text(encoding="utf-8"))
     if not isinstance(vocab, list):
@@ -407,6 +451,52 @@ def main() -> int:
         "attribution": "Princeton WordNet; Open English WordNet Team",
         "archiveSha256": actual_hash,
     }
+
+    if stage_path:
+        # Reuse the importer's actual sense/synset extraction. Shared clusters
+        # appear once; original row IDs point to headword/sense candidates.
+        clusters: dict[str, dict[str, Any]] = {}
+        headwords = {}
+        held = []
+        rows_by_key: dict[str, list[str]] = defaultdict(list)
+        for item in vocab:
+            rows_by_key[normalize_headword(str(item["w"]))].append(str(item["id"]))
+        for key, senses in definitions_by_key.items():
+            pointers = []
+            for sense in senses:
+                cluster = clusters.setdefault(sense["synsetId"], {
+                    "synsetId": sense["synsetId"], "partOfSpeech": sense["partOfSpeech"], "definitions": [],
+                    "members": sense["synsetMembers"], "examples": sense["examples"],
+                    "status": "licensed-source-reference-not-editorially-reviewed",
+                })
+                if sense["definition"] not in cluster["definitions"]:
+                    cluster["definitions"].append(sense["definition"])
+                pointers.append({"senseId": sense["senseId"], "synsetId": sense["synsetId"], "partOfSpeech": sense["partOfSpeech"], "antonyms": sense["antonyms"]})
+            headwords[key] = {"headword": display_by_key[key], "itemIds": rows_by_key[key], "matches": matches_by_key[key], "senses": pointers}
+            held.append({"headword": key, "itemIds": rows_by_key[key], "resumeKey": hashlib.sha256(key.encode()).hexdigest(),
+                         "reasons": ["Korean sense alignment and individual relation glosses not newly reviewed", "Example translation/context quality not newly reviewed"]
+                         + (["source_not_found"] if not senses else [])})
+        payload = {"schema": 1, "status": "CANDIDATES_NOT_PRODUCTION", "inputHash": stage_input, "source": source,
+                   "sourceVocabularySha256": archive_hash(VOCAB_PATH), "headwords": headwords, "clusters": clusters, "heldQueue": held,
+                   "restrictions": ["No answer or learner ID changes", "No Korean inference from headword alone", "No semantic promotion", "No app export or UI delivery by staging"]}
+        stage_path.parent.mkdir(parents=True, exist_ok=True)
+        serialized = json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + "\n"
+        temporary = stage_path.with_name(f"{stage_path.name}.{os.getpid()}.tmp")
+        with temporary.open("x", encoding="utf-8") as handle:
+            handle.write(serialized)
+        temporary.replace(stage_path)
+        checkpoint = {"generator": "finetune-oewn-reference-stage-v1", "inputHash": stage_input, "outputSha256": archive_hash(stage_path)}
+        temporary_checkpoint = checkpoint_path.with_name(f"{checkpoint_path.name}.{os.getpid()}.tmp")
+        with temporary_checkpoint.open("x", encoding="utf-8") as handle:
+            handle.write(json.dumps(checkpoint, ensure_ascii=False) + "\n")
+        temporary_checkpoint.replace(checkpoint_path)
+        print(json.dumps({"status": "STAGED_NOT_PRODUCTION", "headwords": len(headwords), "sourceRows": len(vocab),
+                          "lexicalSenses": len({sense["senseId"] for value in headwords.values() for sense in value["senses"]}),
+                          "sharedClusters": len(clusters), "clustersWithExamples": sum(bool(cluster["examples"]) for cluster in clusters.values()),
+                          "headwordsWithAnySourceExample": sum(any(clusters[sense["synsetId"]]["examples"] for sense in value["senses"]) for value in headwords.values()),
+                          "heldHeadwords": len(held), "newSemanticReviewPass": 0, "productionChanges": 0,
+                          "peakWorkingSetBytes": own_peak_working_set(), "inputHash": stage_input}))
+        return 0
 
     group_items: dict[str, dict[str, str]] = {group: {} for group in GROUPS}
     group_keys: dict[str, set[str]] = {group: set() for group in GROUPS}

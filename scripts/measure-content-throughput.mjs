@@ -249,7 +249,8 @@ export function runContentMeasurement(root, outputArgument, batchIndex = 0, { ru
   const files = ["release.config.json", "assets/vocab-v1.4.json", "assets/vocab-learning-index-v1.4.json",
     "assets/vocab-definitions-oewn-2025.json", "assets/vocab-definition-quiz-oewn-2025.json", "assets/canonical-sense-content.json",
     "data/active-recall-senses.json", "data/sense-questions.json", "scripts/measure-content-throughput.mjs", "scripts/lib/canonical-content-contract.mjs",
-    "components/learning-details.tsx", "components/active-recall-card.tsx", "components/relation-chips.tsx", "lib/semantic-cluster.ts", "lib/vocab-learning.ts", "lib/quiz-engine.ts",
+    "components/learning-details.tsx", "components/active-recall-card.tsx", "components/relation-chips.tsx", "components/semantic-relation-cluster.tsx", "components/synonym-details.tsx",
+    "app/(tabs)/wordbook.tsx", "lib/vocab.ts", "lib/semantic-cluster.ts", "lib/vocab-learning.ts", "lib/quiz-engine.ts",
     "lib/active-recall.ts", "lib/sense-questions.ts", "lib/vocab-definitions.ts", "lib/definition-quiz.ts",
     ...definitionPaths, ...learningPaths].sort();
   const inputHashes = Object.fromEntries(files.map(file => [file, digest(fs.readFileSync(path.join(root, file)))]));

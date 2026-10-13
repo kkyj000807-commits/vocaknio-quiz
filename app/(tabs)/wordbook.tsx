@@ -27,6 +27,7 @@ import { LearningDetails } from "@/components/learning-details";
 import { ProblemSenseContext } from "@/components/problem-sense-context";
 import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
 import { SynonymDetails } from "@/components/synonym-details";
+import { getDefinitionQuizEntry, getDefinitionAnswerRelations } from "@/lib/definition-quiz";
 import { WordSectionLabel } from "@/components/word-section-label";
 import { getProductionSenseQuestions, hasSenseQuestionMapping, senseMatchesItem } from "@/lib/sense-questions";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -90,6 +91,8 @@ function WordCard({
   const isBookmarked = bookmarks.has(item.num);
   const s = cardStyles(colors);
   const hasReviewedMapping = hasSenseQuestionMapping(item.id);
+  const dictionaryEntry = getDefinitionQuizEntry(item.id);
+  const hasDictionarySynonyms = !!dictionaryEntry && getDefinitionAnswerRelations(dictionaryEntry).synonyms.length > 0;
   const reviewedSenses = getProductionSenseQuestions(item.id).filter(sense => senseMatchesItem(sense, item));
 
   // 상태는 즉시 바꾸고 회전은 표시 효과만 담당해 Safari에서도 멈추지 않습니다.
@@ -198,7 +201,7 @@ function WordCard({
 
       <WordSectionLabel groups={[item.group]} />
       {!meaningHidden && expanded && !hasReviewedMapping && <SynonymDetails item={item} compact />}
-      {!meaningHidden && (hasReviewedMapping || item.s.length > 0) && (
+      {!meaningHidden && (hasReviewedMapping || item.s.length > 0 || hasDictionarySynonyms) && (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={`${item.w} 동의어 ${expanded ? "접기" : "보기"}`}

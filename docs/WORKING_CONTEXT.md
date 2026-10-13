@@ -1,5 +1,19 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-13 — 최신 재개 지점: 전체 후보 준비·빈 동의어 연결 보완, 배포 보류
+
+중간 후보 `532c0de0`의 앱/데이터는 whole verify **523 PASS·1 SKIP / 타입 PASS**, 변경 파일 lint/security 통과했다. 이후 원자료 s 배열이 비어 있어도 유효한 OEWN 동의어가 있으면 단어장 버튼/칩이 나오게 보완했다. 사전 sense 동의어를 먼저 표시하고, 다른 원자료 관계는 대조 전 추가 영역으로 보존한다. 마지막 보완은 실제 corpus 관련 Vitest **31 PASS**, 동일 단위 회귀 native **9 PASS**, 후속 pipeline/동일 회귀 Vitest **16 PASS**, 변경 4파일 lint PASS다. **마지막 보완 후 whole type/verify는 아직 미검증**이며 523건을 최신 전체 성공으로 승격하지 않는다.
+
+빌드 preflight exit75: 가용 물리 3,004MiB < 3,072MiB. 이후 가용 RAM은 727~2,083MiB로 변동했다. 새 출력은 생성하지 않았고 Production 출력·실제 브라우저·Pages 배포는 NOT_VERIFIED/BLOCKED다. 공개는 **1.0 / 2026.10.13 01:48:14 KST / source095ee969 / sourceDirty=false** 그대로다. 버전/시각만 새로 찍어 배포한 것으로 가장하지 않는다. 테스트용 mock/SSR/viewport 이벤트를 실기기 결과로 쓰지 않는다.
+
+독립 대량 처리: 공식 OEWN 2025 JSON archive를 private cache에 확보해 승인 SHA `7d749f6e…4b51`과 일치 확인. 기존 Python importer의 `--reference-stage` 모드는 **public/assets를 쓰기 전에 반환**하며 private `analysis/qa/oewn-reference-stage-20261013.json`만 만든다. 전체 **13,347 표제어 / 38,163행 / 32,382 lexical sense / 24,507 공유 synset 클러스터**를 준비했고 13,523클러스터·8,099표제어에 원문 용례가 있었다. 원문 출처/CC BY 4.0/귀속·원본 ID·POS·sense/synset 참조를 보존했다. 2,993ms / own peak working set262,148,096bytes(약250MiB), 재실행228ms/NO_CHANGE/mtime 유지. 출력 경계 4사례·AST 검사 통과. **신규 의미/번역 검수0, production 변경0, 후보8,099를 실제 UI 연결2,099와 혼동 금지.** 후보가 여러 뜻/구문과 겹치면 한국어 뜻과의 연결·자연스러운 문장·번역/단서를 검수한 뒤 기존 export로 통합한다.
+
+앱 입력/관계어 전수 감사의 최신 hash는 `124f0ea98f0b0398439de65e8f4448e9ce48c6b2cb4a555c8e5aa01119c5a8e7`. 원자료/구현/표시 경로까지 hash에 넣고 동일 입력은 NO_CHANGE다. 기존 예문 접근 가능 경로101→2,099표제어/243→6,573행, 간결한 개별 뜻437관계·1,281행, 미완료 관계어 뜻8,267건. private 전체 구조 queue13,262표제어와 새로운 사전 참고 후보13,347표제어 queue는 **다른 범위**이며 기존 검수 자료를 재생성/강등하는 숫자가 아니다.
+
+main의 사용자 untracked 3.10 학습 JSON도 읽기 전용으로 확인했다: 152 export entries/92 unique senses, 기존 통합1.29의 entry ID 밖 신규0. 내용/권리의 신규 의미 검수가 아니며 자동 복사·stage하지 않았다. 중앙2027 DB 연결은 미확인/sync_required다. 기존 원본·학습 기록·MASTER·오답·저장키·모든 정답은 변경하지 않았다. OS 잠금33063/PID11832는 종료 Enter/LOCK_RELEASED 영수증으로 해제 확인한다.
+
+**다음 실행:** 동일 통합 작업실의 저장된 후보에서 물리+commit 각각3GiB 이상을 확인하면 1worker whole verify/최종 lint/security → 깨끗한 해당 source SHA의 새 `audit-output*` 빌드/출력 감사 → 격리 브라우저의 단어장(4회귀 표본)/답·해설·오답·통계·복습·복원/viewport → 승인 Pages·공개 manifest·번들 확인. 버전1.0/내부1.29 유지. 후보 source만으로 배포 성공이라 하지 않는다. 그 다음 기존 검수 자료를 먼저 재사용해 `--reference-stage`의 같은 sense 예문·개별 한국어 뜻·문맥 해석을 batch로 채우며 실패/미검수 큐만 재개한다. supersede A (with B)/supplant A의 base lemma 연결은 아직 보류다.
+
 ## 2026-10-13 12:05 KST — 동의어·모바일·전 범위 기존 콘텐츠 연결 후보
 
 기준 `11a6122a`, 통합 worktree 단독 OS 잠금 `33063/PID11832`. main `1bf27b98`와 사용자 dirty 파일은 읽기 전용으로 보존했다. 공개는 아직 `1.0 / 095ee969 / 01:48:14 KST`; 아래 변경은 빌드·격리 UI·공개 확인 전 후보다.
@@ -15,14 +29,14 @@
 
 | 범위 | 출현 행 | 정의 후보 행 | 기존 EN 예문 행 | 기존 영한 예문 행 | 짧은 관계어 뜻 연결 행 |
 |---|---:|---:|---:|---:|---:|
-| V101 | 4,028 | 3,666 | 733 | 62 | 재집계 JSON 참조 |
-| V201 | 4,016 | 3,749 | 769 | 36 | 재집계 JSON 참조 |
-| V301 | 4,854 | 4,716 | 950 | 20 | 재집계 JSON 참조 |
-| V401 | 3,965 | 3,527 | 605 | 34 | 재집계 JSON 참조 |
-| V501 | 5,888 | 4,333 | 755 | 58 | 재집계 JSON 참조 |
-| V502 | 10,127 | 9,810 | 1,891 | 27 | 재집계 JSON 참조 |
-| V601 | 2,935 | 2,855 | 449 | 5 | 재집계 JSON 참조 |
-| 부록 | 2,350 | 2,070 | 421 | 11 | 재집계 JSON 참조 |
+| V101 | 4,028 | 3,666 | 733 | 62 | 135 |
+| V201 | 4,016 | 3,749 | 769 | 36 | 160 |
+| V301 | 4,854 | 4,716 | 950 | 20 | 159 |
+| V401 | 3,965 | 3,527 | 605 | 34 | 113 |
+| V501 | 5,888 | 4,333 | 755 | 58 | 139 |
+| V502 | 10,127 | 9,810 | 1,891 | 27 | 431 |
+| V601 | 2,935 | 2,855 | 449 | 5 | 89 |
+| 부록 | 2,350 | 2,070 | 421 | 11 | 55 |
 
 검증: whole verify exit0 / 타입 PASS / **523 PASS·1 SKIP**, 변경 22파일 ESLint PASS·0error/0warning, pnpm security:audit PASS(745 tracked+5 untracked/0 findings), 동일 assertions native 8 PASS. 첫 영향 검사 17실패는 펼침 UI 계약 16건과 특정 단어의 안전한 뜻 연결을 가정한 테스트 1건이었다. 기존 의미 보존 검사는 상세 열린 상태에 유지하고 별도로 기본 화면 비노출·순서를 검사했다. ESLint 512MiB 제한은 실제 V8 heap failure였으며 자원 회복 후 기존 기본 heap으로 실행하여 통과했다(한 fixture display-name 수정). 사용자 프로그램 종료/OS 설정/테스트 약화 없음.
 

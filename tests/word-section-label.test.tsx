@@ -5,6 +5,7 @@ import themeConfig from "../theme.config";
 import { WordSectionLabel } from "@/components/word-section-label";
 import { SynonymDetails } from "@/components/synonym-details";
 import { VOCAB, SECTION_RANGES, formatVocabSections, getSynonymDetails, getSynonymSourceGroups, normalizeWord } from "@/lib/vocab";
+import { getDefinitionQuizEntry, getDefinitionAnswerRelations } from "@/lib/definition-quiz";
 
 const theme = vi.hoisted(() => ({ mode: "light" as "light" | "paper" | "dark" }));
 vi.mock("react-native", () => {
@@ -26,6 +27,17 @@ function rgbLuminance(values: number[]) {
 }
 
 describe("existing wordbook section provenance", () => {
+  it("shows valid dictionary synonyms even when the original synonym array is empty", () => {
+    const item = VOCAB.find(row => row.s.length === 0 && (() => {
+      const entry = getDefinitionQuizEntry(row.id);
+      return entry && getDefinitionAnswerRelations(entry).synonyms.length > 0;
+    })())!;
+    expect(item).toBeDefined();
+    const entry = getDefinitionQuizEntry(item.id)!;
+    const html = render(<SynonymDetails item={item} compact />);
+    expect(html).toContain(getDefinitionAnswerRelations(entry).synonyms[0]);
+    expect(html).toContain("같은 사전 sense 동의어");
+  });
   it("reuses all eight real groups, keeps the V prefix and localizes only APPENDIX", () => {
     expect(SECTION_RANGES).toHaveLength(8);
     for (const range of SECTION_RANGES) {

@@ -14,6 +14,7 @@ const host = tag => function MockNative({ children, ...props }) {
   return React.createElement(tag, { role: props.accessibilityRole, 'aria-label': props.accessibilityLabel }, children);
 };
 const native = { View: host('div'), Text: host('span'), Pressable: host('button'), ActivityIndicator: host('span'),
+  FlatList: host('div'), ScrollView: host('div'), TextInput: host('input'), TouchableOpacity: host('button'), Platform: { OS: 'web' },
   StyleSheet: { create: value => value }, Linking: { openURL: async () => {} } };
 const colors = { foreground: '#222', muted: '#666', primary: '#456', success: '#187', error: '#c33', border: '#ccc', surface: '#fff', card: '#eee', background: '#fff' };
 const fixtureReference = { senseId: 'fixture:one', headword: 'fixture', examples: ['A fixture example.'], synsetMembers: ['fixture', 'equivalent'], antonyms: [] };
@@ -21,14 +22,26 @@ function load(relative) {
   if (cache.has(relative)) return cache.get(relative);
   const exports = {};
   const source = fs.readFileSync(new URL(`../../${relative}`, import.meta.url), 'utf8');
-  const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText;
+  const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText
+    + (relative === 'app/(tabs)/wordbook.tsx' ? '\nexports.WordCardForTest = WordCard;\n' : '');
   const dependencies = {
     'react': React, 'react/jsx-runtime': jsx, 'react-native': native, 'zod': { z },
     '@/assets/vocab-definition-quiz-oewn-2025.json': { entries: {
       boast: { headword: 'boast', senseId: 'boast%lexical', partOfSpeech: 'verb', definition: 'talk with excessive pride', synsetMembers: ['boast', 'brag'], antonyms: [], lexicographerFile: 'verb.communication', examples: [] },
       brag: { headword: 'brag', senseId: 'brag%lexical', partOfSpeech: 'verb', definition: 'talk with excessive pride', synsetMembers: ['brag', 'boast'], antonyms: [], lexicographerFile: 'verb.communication', examples: [] },
     }, items: { boastRow: 'boast', bragRow: 'brag' } },
-    '@/lib/vocab': { VOCAB_BY_ID: new Map([['boastRow', { k_short: '자랑하다' }], ['bragRow', { k_short: '자랑하다' }]]) },
+    '@/lib/vocab': { VOCAB_BY_ID: new Map([['boastRow', { k_short: '자랑하다' }], ['bragRow', { k_short: '자랑하다' }]]),
+      getSynonymDetails: () => [], getSynonymSourceGroups: () => [], normalizeWord: word => word.trim().toLowerCase(),
+      WORDBOOK_RANGES: [], VOCAB: [], VOCAB_HEADWORD_COUNT: 1, getRangeItems: () => [] },
+    'react-native-reanimated': { __esModule: true, default: { View: host('div') }, FadeIn: { duration: () => ({}) },
+      useSharedValue: value => ({ value }), useAnimatedStyle: fn => fn(), withTiming: value => value, interpolate: () => 1, Extrapolation: { CLAMP: 'clamp' } },
+    'expo-router': { useRouter: () => ({ push: () => {} }) }, 'expo-haptics': {}, 'expo-audio': {},
+    '@/components/word-section-label': { WordSectionLabel: () => null },
+    '@/components/screen-container': { ScreenContainer: host('div') },
+    '@/components/problem-sense-context': { ProblemSenseContext: () => null },
+    '@/components/ui/icon-symbol': { IconSymbol: () => null },
+    '@/lib/sense-questions': { hasSenseQuestionMapping: () => false, getProductionSenseQuestions: () => [] },
+    '@/lib/store': {}, '@/lib/canonical-learning': {},
     '@/hooks/use-colors': { useColors: () => colors },
     '@/components/reasoning-practice': { ReasoningPractice: () => null, LazyReasoningPractice: () => null },
     '@/components/pronunciation-button': { PronunciationButton: ({ text }) => React.createElement('button', null, text) },
@@ -54,6 +67,17 @@ function load(relative) {
 }
 const render = element => renderToStaticMarkup(element);
 export const relationLayoutCases = [
+  ['a valid dictionary relation enables the wordbook button and chips even with no original synonyms', () => {
+    const { WordCardForTest } = load('app/(tabs)/wordbook.tsx');
+    const { SynonymDetails } = load('components/synonym-details.tsx');
+    const item = { id: 'fixture-row', num: 1, w: 'fixture', k_short: '기본 뜻', k: '기본 뜻', s: [], group: 'V101' };
+    const html = render(React.createElement(WordCardForTest, { item, bookmarks: new Set(), colors, maskMode: false, learningStatus: 'NEW',
+      onToggleBookmark: () => {}, onPlayHide: () => {}, onPlayReveal: () => {}, onLearningStatusPress: () => {} }));
+    assert.match(html, /동의어 보기/);
+    const chips = render(React.createElement(SynonymDetails, { item, compact: true }));
+    assert.match(chips, /equivalent/); assert.match(chips, /같은 사전 sense 동의어/);
+    assert.doesNotMatch(chips, /\(기본 뜻\)/);
+  }],
   ['answer-side basic order is Korean core, synonyms, definition, English example, translation', () => {
     const { ActiveRecallAnswer } = load('components/active-recall-card.tsx');
     const recall = { headword: 'boast', koreanMeaning: '자랑하다', conciseEnglishDefinition: 'Talk proudly about oneself.', englishDefinition: 'Talk proudly about oneself in detail.',
