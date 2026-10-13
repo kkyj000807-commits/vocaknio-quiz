@@ -1,5 +1,17 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-14 01:26 KST — 영어 우선 UI·FT 브랜드 공개 확인 완료
+
+현재 공개 **1.0 / 2026.10.14 01:21:16 KST / source841fbdd8cfc601dc22fca7e3d906a4a39d09e448 / sourceDirty=false / Pages4ca05ff03cf3a79459a1e588ff15307486e3ca60**. GitHub Pages built, 일반 release URL 일치, 공개 JS/Apple180/공유512/favicon/V101 학습JSON의 SHA-256이 감사 산출물과 모두 일치했다. 공개 IAB 홈 FT로고·실제 entry-829f97c87856ccfd11d8eac3ccbac95f.js 로딩 확인, 사용자 공개 답변·개인 기록 조작 없음.
+
+영어 동의어/예문 우선 + 한국어 해석·뜻·단서 펼침, 압축 문제 상단,15sense 누적 콘텐츠, 시작 오류 고정코드/백업 export-only, 제공 FT아이콘(홈/파비콘/Apple/공유) 반영. 별도 native 설치 앱 출시나 메신저 캐시 즉시 갱신을 주장하지 않는다. 전체534PASS·1기존SKIP/타입PASS, 영향회귀7PASS, lint/security761tracked0findings, 새 빌드/Production 감사PASS(pagesStaticServing=true). 전체회귀91.15초/samplepeak2,342MiB, 빌드130.52초/samplepeak2,070MiB.
+
+중간배포에서 `.nojekyll` 누락으로 JS404를 발견했고 정상판으로 normal commit 복구 후 생성기/감사/회귀를 고쳐 새로 빌드·배포했다. 실패 이력은 아래와 외부 영수증에 보존한다. 이번 최종 공개에서는 JS200+SHA/로고 확인을 통과했다.
+
+실제 관찰한 IAB 좁은 화면은374px, 공개 홈은 데스크톱이다. 지정320/390 override는 실제 미적용으로 NOT_VERIFIED. 실제 iPhone/Samsung Internet·키보드/회전 검증 및 사용자의 iPhone 저장 실패 원인은 여전히 미확정이다. 보호 경고가 지속되면 새 고정 오류 코드부터 확인하며 데이터 삭제·초기화를 안내하지 않는다.
+
+전체13,347표제어·38,163출현행 원본SHA불변. deep111표제어/112sense/310행이며 전체 콘텐츠 완성을 주장하지 않는다. 다음은 기존 섹션별①영어 예문·관계어②번역③깊이해설 queue를 입력해시 기준으로 재개, 완성batch 재처리 금지. 외부 `2026-10-14-english-first-release.json`과 A-latest에 명령/출력/복구경로/잠금 해제 영수증 보존. 이 문단은 배포 후 문서 기록이며 공개 source SHA와 구분한다.
+
 ## 2026-10-14 01:18 KST — 공개 검증에서 Pages 정적 파일 제외 발견·정상판 복구
 
 543292d 후보는 전체534PASS/빌드/로컬UI를 통과했지만 gh-pages bceaf47 반영 후 새 JS가HTTP404였다. 새 출력에 `.nojekyll`이 없었고 이전 정상판9e5a0ff에는 있었다. Jekyll의 `_expo` 제외를 기존 로컬 참조 감사가 검사하지 못했다. 즉시 이전 정상 출력 tree를 새 자식 commit8d8955d로 normal push해 복구 요청했다(force 없음/기록 변경 없음). 이 후보를 공개 성공으로 보고하지 않는다.
