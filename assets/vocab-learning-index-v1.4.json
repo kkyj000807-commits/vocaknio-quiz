@@ -1,9 +1,11 @@
 {
   "version": "1.29",
   "coverage": {
-    "senses": 165,
-    "rows": 230,
-    "checkedAtKst": "2026.10.09 KST"
+    "senses": 112,
+    "headwords": 111,
+    "exportEntries": 180,
+    "rows": 310,
+    "checkedAtKst": "2026.10.14"
   },
   "items": {
     "APPROW00001": {
@@ -92,6 +94,12 @@
         "learn:01288942-s"
       ]
     },
+    "JBKROW000015": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abhorrent"
+      ]
+    },
     "JBKROW000016": {
       "group": "V101",
       "entryIds": [
@@ -122,6 +130,12 @@
         "learn:correction:JBKROW000036"
       ]
     },
+    "JBKROW000038": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abominate"
+      ]
+    },
     "JBKROW000039": {
       "group": "V101",
       "entryIds": [
@@ -146,6 +160,12 @@
         "learn:correction:JBKROW000055"
       ]
     },
+    "JBKROW000061": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:adage"
+      ]
+    },
     "JBKROW000069": {
       "group": "V101",
       "entryIds": [
@@ -156,6 +176,24 @@
       "group": "V101",
       "entryIds": [
         "learn:correction:JBKROW000075"
+      ]
+    },
+    "JBKROW000092": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:acquiesce"
+      ]
+    },
+    "JBKROW000094": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abolish"
+      ]
+    },
+    "JBKROW000097": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abiding"
       ]
     },
     "JBKROW000132": {
@@ -175,6 +213,12 @@
       "group": "V101",
       "entryIds": [
         "learn:correction:JBKROW000327"
+      ]
+    },
+    "JBKROW000437": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:altruistic"
       ]
     },
     "JBKROW000555": {
@@ -213,6 +257,24 @@
         "learn:correction:JBKROW001578"
       ]
     },
+    "JBKROW001683": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:accountant"
+      ]
+    },
+    "JBKROW001752": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abundant"
+      ]
+    },
+    "JBKROW001771": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:acclimate"
+      ]
+    },
     "JBKROW001773": {
       "group": "V601",
       "entryIds": [
@@ -225,10 +287,34 @@
         "learn:10574739-n"
       ]
     },
+    "JBKROW001818": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:adore"
+      ]
+    },
+    "JBKROW001943": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:adroit"
+      ]
+    },
+    "JBKROW002040": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:accomplice"
+      ]
+    },
     "JBKROW002043": {
       "group": "V101",
       "entryIds": [
         "learn:correction:JBKROW002043"
+      ]
+    },
+    "JBKROW002048": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abhorrent"
       ]
     },
     "JBKROW002049": {
@@ -237,10 +323,76 @@
         "learn:correction:JBKROW002049"
       ]
     },
+    "JBKROW002050": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abiding"
+      ]
+    },
+    "JBKROW002051": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abolish"
+      ]
+    },
+    "JBKROW002053": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abominate"
+      ]
+    },
+    "JBKROW002063": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abundant"
+      ]
+    },
+    "JBKROW002068": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:acclimate"
+      ]
+    },
     "JBKROW002069": {
       "group": "V601",
       "entryIds": [
         "learn:09229873-n"
+      ]
+    },
+    "JBKROW002070": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:accomplice"
+      ]
+    },
+    "JBKROW002072": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:accountant"
+      ]
+    },
+    "JBKROW002076": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:acquiesce"
+      ]
+    },
+    "JBKROW002081": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:adage"
+      ]
+    },
+    "JBKROW002088": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:adore"
+      ]
+    },
+    "JBKROW002089": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:adroit"
       ]
     },
     "JBKROW002103": {
@@ -248,6 +400,12 @@
       "entryIds": [
         "learn:correction:JBKROW002103:almost",
         "learn:correction:JBKROW002103:all-except"
+      ]
+    },
+    "JBKROW002112": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:altruistic"
       ]
     },
     "JBKROW002148": {
@@ -418,6 +576,12 @@
         "learn:01693210-s"
       ]
     },
+    "JBKROW004298": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abolish"
+      ]
+    },
     "JBKROW004299": {
       "group": "V501",
       "entryIds": [
@@ -428,6 +592,18 @@
       "group": "V401",
       "entryIds": [
         "learn:00177411-a"
+      ]
+    },
+    "JBKROW004431": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:altercation"
+      ]
+    },
+    "JBKROW004693": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abominate"
       ]
     },
     "JBKROW004694": {
@@ -450,10 +626,22 @@
         "learn:correction:JBKROW004705"
       ]
     },
+    "JBKROW004720": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:ambivalent"
+      ]
+    },
     "JBKROW004759": {
       "group": "V301",
       "entryIds": [
         "learn:00299633-a"
+      ]
+    },
+    "JBKROW004814": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:altruistic"
       ]
     },
     "JBKROW004867": {
@@ -486,6 +674,18 @@
         "learn:00770823-v"
       ]
     },
+    "JBKROW005507": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:acquiesce"
+      ]
+    },
+    "JBKROW005763": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abundant"
+      ]
+    },
     "JBKROW006121": {
       "group": "V201",
       "entryIds": [
@@ -498,10 +698,28 @@
         "learn:02554908-v"
       ]
     },
+    "JBKROW006152": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abolish"
+      ]
+    },
+    "JBKROW006153": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abominate"
+      ]
+    },
     "JBKROW006158": {
       "group": "V501",
       "entryIds": [
         "learn:02484173-v"
+      ]
+    },
+    "JBKROW006166": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abundant"
       ]
     },
     "JBKROW006173": {
@@ -510,6 +728,30 @@
         "learn:correction:JBKROW006173:be-explanation-or-cause",
         "learn:correction:JBKROW006173:give-explanation",
         "learn:correction:JBKROW006173:form-part-of-total"
+      ]
+    },
+    "JBKROW006178": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:acquiesce"
+      ]
+    },
+    "JBKROW006237": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:altercation"
+      ]
+    },
+    "JBKROW006238": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:altruistic"
+      ]
+    },
+    "JBKROW006244": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:ambivalent"
       ]
     },
     "JBKROW006336": {
@@ -626,6 +868,18 @@
         "learn:00770823-v"
       ]
     },
+    "JBKROW008380": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:adore"
+      ]
+    },
+    "JBKROW008391": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abominate"
+      ]
+    },
     "JBKROW008630": {
       "group": "V301",
       "entryIds": [
@@ -638,10 +892,34 @@
         "learn:00902519-s"
       ]
     },
+    "JBKROW008955": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:acquiesce"
+      ]
+    },
+    "JBKROW009031": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:altercation"
+      ]
+    },
     "JBKROW009466": {
       "group": "V301",
       "entryIds": [
         "learn:correction:JBKROW009466"
+      ]
+    },
+    "JBKROW009789": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:adroit"
+      ]
+    },
+    "JBKROW009896": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abundant"
       ]
     },
     "JBKROW010203": {
@@ -650,10 +928,58 @@
         "learn:00299633-a"
       ]
     },
+    "JBKROW010939": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abolish"
+      ]
+    },
+    "JBKROW011259": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abolish"
+      ]
+    },
+    "JBKROW011260": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abominate"
+      ]
+    },
     "JBKROW011270": {
       "group": "V501",
       "entryIds": [
         "learn:00902519-s"
+      ]
+    },
+    "JBKROW011271": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abundant"
+      ]
+    },
+    "JBKROW011283": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:acquiesce"
+      ]
+    },
+    "JBKROW011292": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:adore"
+      ]
+    },
+    "JBKROW011295": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:adroit"
+      ]
+    },
+    "JBKROW011327": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:altercation"
       ]
     },
     "JBKROW011540": {
@@ -710,6 +1036,12 @@
         "learn:00177411-a"
       ]
     },
+    "JBKROW013606": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:altercation"
+      ]
+    },
     "JBKROW013637": {
       "group": "V401",
       "entryIds": [
@@ -720,6 +1052,12 @@
       "group": "V401",
       "entryIds": [
         "learn:04759785-n"
+      ]
+    },
+    "JBKROW013698": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:accomplice"
       ]
     },
     "JBKROW013804": {
@@ -808,12 +1146,24 @@
         "learn:00902519-s"
       ]
     },
+    "JBKROW015622": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:accomplice"
+      ]
+    },
     "JBKROW015623": {
       "group": "V401",
       "entryIds": [
         "learn:correction:JBKROW015623:be-explanation-or-cause",
         "learn:correction:JBKROW015623:give-explanation",
         "learn:correction:JBKROW015623:form-part-of-total"
+      ]
+    },
+    "JBKROW015674": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:altercation"
       ]
     },
     "JBKROW015766": {
@@ -930,6 +1280,12 @@
         "learn:00902519-s"
       ]
     },
+    "JBKROW017655": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:ambivalent"
+      ]
+    },
     "JBKROW017980": {
       "group": "V501",
       "entryIds": [
@@ -1031,6 +1387,12 @@
       "group": "V501",
       "entryIds": [
         "learn:00902519-s"
+      ]
+    },
+    "JBKROW020687": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:ambivalent"
       ]
     },
     "JBKROW021038": {
@@ -1256,16 +1618,34 @@
         "learn:07519226-n"
       ]
     },
+    "JBKROW024020": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:adage"
+      ]
+    },
     "JBKROW024543": {
       "group": "V301",
       "entryIds": [
         "learn:00299633-a"
       ]
     },
+    "JBKROW025069": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abolish"
+      ]
+    },
     "JBKROW025612": {
       "group": "V301",
       "entryIds": [
         "learn:01764521-v"
+      ]
+    },
+    "JBKROW025628": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abolish"
       ]
     },
     "JBKROW026187": {
@@ -1280,10 +1660,46 @@
         "learn:07519226-n"
       ]
     },
+    "JBKROW026531": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abhorrent"
+      ]
+    },
+    "JBKROW027060": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:adroit"
+      ]
+    },
+    "JBKROW027347": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abominate"
+      ]
+    },
     "JBKROW027365": {
       "group": "V301",
       "entryIds": [
         "learn:07519226-n"
+      ]
+    },
+    "JBKROW027368": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abhorrent"
+      ]
+    },
+    "JBKROW027439": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:altercation"
+      ]
+    },
+    "JBKROW027845": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abiding"
       ]
     },
     "JBKROW028123": {
@@ -1298,10 +1714,22 @@
         "learn:00902519-s"
       ]
     },
+    "JBKROW028517": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:acclimate"
+      ]
+    },
     "JBKROW028758": {
       "group": "V301",
       "entryIds": [
         "learn:00299633-a"
+      ]
+    },
+    "JBKROW029226": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abolish"
       ]
     },
     "JBKROW029645": {
@@ -1316,10 +1744,64 @@
         "learn:07519226-n"
       ]
     },
+    "JBKROW029688": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abominate"
+      ]
+    },
+    "JBKROW030055": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abhorrent"
+      ]
+    },
+    "JBKROW030056": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abiding"
+      ]
+    },
+    "JBKROW030061": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abolish"
+      ]
+    },
+    "JBKROW030062": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:abominate"
+      ]
+    },
     "JBKROW030079": {
       "group": "V501",
       "entryIds": [
         "learn:00902519-s"
+      ]
+    },
+    "JBKROW030086": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:acclimate"
+      ]
+    },
+    "JBKROW030107": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:adage"
+      ]
+    },
+    "JBKROW030127": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:adroit"
+      ]
+    },
+    "JBKROW030179": {
+      "group": "V101",
+      "entryIds": [
+        "learn:batch-20261014:altercation"
       ]
     },
     "JBKROW030307": {

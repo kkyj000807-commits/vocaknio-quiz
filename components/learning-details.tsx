@@ -7,6 +7,7 @@ import { SemanticRelationCluster } from "@/components/semantic-relation-cluster"
 import { formatExampleRelation } from "@/lib/semantic-cluster";
 import { LearningEvidence } from "@/components/learning-evidence";
 import { PronunciationButton } from "@/components/pronunciation-button";
+import { KoreanReveal } from "@/components/korean-reveal";
 import { loadLearningDetailParts } from "@/lib/learning-detail-loader";
 import { getDefinitionQuizEntry, getDefinitionAnswerRelations, getDefinitionRelationMeanings } from "@/lib/definition-quiz";
 import {
@@ -152,7 +153,6 @@ export function ActiveRecallStudyDetails({
         coreMeaningKo={entry.koreanMeaning}
         bridgeKo={entry.contextExplanationKo}
         showDefinitionBridge={false}
-        showRelationNotes
         exactSynonyms={entry.exactSynonyms}
         nearSynonyms={entry.nearSynonyms}
         antonyms={entry.antonyms}
@@ -172,6 +172,7 @@ export function ActiveRecallStudyDetails({
           <View key={`${example.en}-${exampleIndex}`} style={s.section}>
             <Text style={s.english}>{example.en}</Text>
             <PronunciationButton text={example.en} compact />
+            <KoreanReveal>
             {example.ko ? <Text style={s.text}>{example.ko}</Text> : null}
             {example.cueKo ? <Text style={s.note}>문맥 단서: {example.cueKo}</Text> : null}
             {entry.exactSynonyms.length + entry.nearSynonyms.length > 0 ? (
@@ -184,14 +185,17 @@ export function ActiveRecallStudyDetails({
                 .map((word) => formatExampleRelation(word, entry.relationMeaningsKo))
                 .join(" · ")}</Text>
             ) : null}
+            </KoreanReveal>
           </View>
         ))}
       </View>
 
+      <KoreanReveal label="문맥 상세 설명">
       <View style={s.section}>
         <Text style={s.label}>문맥 설명 · 초월번역</Text>
         <Text style={s.text}>{entry.contextExplanationKo}</Text>
       </View>
+      </KoreanReveal>
 
       <LearningEvidence entry={entry} />
     </View>
@@ -288,7 +292,7 @@ export function DictionaryDefinition({ entry, itemId }: { entry: VocabDefinition
   );
 }
 
-function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: number; count: number }) {
+export function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: number; count: number }) {
   const colors = useColors();
   const s = styles(colors);
   const [sourcesOpen, setSourcesOpen] = useState(false);
@@ -314,7 +318,8 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
 
       <Text style={s.text}>{entry.definitionKo}</Text>
       <SemanticRelationCluster headword={entry.headword} coreMeaningKo={entry.definitionKo} showDefinitionBridge={false}
-        exactSynonyms={entry.exactSynonyms} nearSynonyms={entry.nearSynonyms} />
+        exactSynonyms={entry.exactSynonyms} nearSynonyms={entry.nearSynonyms}
+        choiceMeanings={Object.entries(entry.relationMeaningsKo ?? {}).map(([word, meaning]) => ({ word, meaning }))} />
       <View style={s.section}>
         <Text style={s.label}>{entry.definitionKind === "editorial" ? "영영 정의 · 사전 대조 후 편집" : "영영 정의"}</Text>
         <Text style={s.english}>{entry.definitionEn}</Text>
@@ -323,8 +328,10 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
         <Text style={s.label}>예문 · {entry.example.kind === "editorial" ? "학습용 창작" : "출처 원문"}</Text>
         <Text style={s.english}>{entry.example.en}</Text>
         <PronunciationButton text={entry.example.en} compact />
-        <Text style={s.text}>{entry.example.ko}</Text>
-        <Text style={s.note}>문맥 단서: {entry.example.cueKo ?? entry.examTrapKo}</Text>
+        <KoreanReveal key={`${entry.id}:${entry.example.en}`}>
+          <Text style={s.text}>{entry.example.ko}</Text>
+          <Text style={s.note}>문맥 단서: {entry.example.cueKo ?? entry.examTrapKo}</Text>
+        </KoreanReveal>
       </View>
       <Pressable accessibilityRole="button" accessibilityState={{ expanded: detailsOpen }} onPress={() => setDetailsOpen(value => !value)} style={s.sourceToggle}>
         <Text style={s.linkText}>의미 차이·구문·상세 해설 {detailsOpen ? "접기" : "보기"}</Text>

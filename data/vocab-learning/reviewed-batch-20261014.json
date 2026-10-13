@@ -1,0 +1,1294 @@
+[
+  {
+    "id": "learn:batch-20261014:abhorrent",
+    "senseId": "editorial:abhorrent:abhorrent%5:00:00:offensive:01",
+    "headword": "abhorrent",
+    "group": "V101",
+    "partOfSpeech": "adjective",
+    "itemIds": [
+      "JBKROW000015",
+      "JBKROW002048",
+      "JBKROW026531",
+      "JBKROW027368",
+      "JBKROW030055"
+    ],
+    "localGlosses": [
+      "혐오감을 주는",
+      "몹시 싫은, 지겨운",
+      "몹시 싫은"
+    ],
+    "definitionKind": "editorial",
+    "definitionEn": "causing strong disgust or moral rejection",
+    "definitionKo": "몹시 불쾌하거나 도덕적으로 혐오스러운",
+    "memoryKo": "단순히 마음에 안 드는 정도보다 강한 거부감이다.",
+    "usageKo": "행동·관행을 보고 느끼는 강한 혐오를 나타낸다. 사람의 감정 자체보다 혐오를 일으키는 대상을 수식하는 뜻을 다룬다.",
+    "examTrapKo": "반대한다는 사실만으로 혐오까지 추론하지 않는다.",
+    "exactSynonyms": [
+      "repugnant"
+    ],
+    "nearSynonyms": [
+      "offensive"
+    ],
+    "relationMeaningsKo": {
+      "repugnant": "혐오스러운",
+      "offensive": "불쾌감을 주는"
+    },
+    "contrasts": [
+      {
+        "word": "offensive",
+        "noteKo": "offensive는 불쾌감을 주는 범위가 넓으며, 강한 혐오를 반드시 뜻하지 않는다."
+      }
+    ],
+    "example": {
+      "en": "The committee found the practice abhorrent because it deliberately exploited vulnerable workers.",
+      "ko": "위원회는 그 관행이 취약한 노동자들을 의도적으로 착취했기 때문에 몹시 혐오스럽다고 판단했다.",
+      "kind": "editorial",
+      "cueKo": "because 이하의 의도적 착취가 강한 도덕적 거부감의 이유다."
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025",
+        "role": "reference",
+        "independenceGroup": "WordNet"
+      },
+      {
+        "name": "Collins",
+        "url": "https://www.collinsdictionary.com/dictionary/english/abhorrent",
+        "license": "의미 대조 참고만 사용; 사전 정의·예문 원문 미수록",
+        "edition": "accessed 2026.10.14",
+        "role": "reference",
+        "independenceGroup": "IndependentDictionary"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial source comparison (not independent human review)",
+      "checkedAtKst": "2026.10.14",
+      "scope": "명시된 원자료 행의 의미·품사, 자체 편집 정의·번역·창작 예문·문맥 단서·표시용 관계어 대조. 새 출제 정답 승격 없음.",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "lexicalSenseId": "abhorrent%5:00:00:offensive:01",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51",
+          "result": "selected-sense-reference"
+        },
+        {
+          "source": "Collins",
+          "independenceGroup": "IndependentDictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/abhorrent",
+          "result": "selected-sense-compared",
+          "checkedAtKst": "2026.10.14"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:batch-20261014:abiding",
+    "senseId": "editorial:abiding:abiding%5:00:00:permanent:00",
+    "headword": "abiding",
+    "group": "V101",
+    "partOfSpeech": "adjective",
+    "itemIds": [
+      "JBKROW000097",
+      "JBKROW002050",
+      "JBKROW027845",
+      "JBKROW030056"
+    ],
+    "localGlosses": [
+      "지속적인",
+      "지속하는"
+    ],
+    "definitionKind": "editorial",
+    "definitionEn": "remaining strong or present over many years",
+    "definitionKo": "오랫동안 지속되는",
+    "memoryKo": "순간의 감정이 아니라 시간이 지나도 남는다.",
+    "usageKo": "abiding interest/love/belief처럼 오래 유지되는 관심·애정·신념을 주로 명사 앞에서 설명한다.",
+    "examTrapKo": "강렬하다는 뜻만으로 오래 지속된다는 조건이 충족되지는 않는다.",
+    "exactSynonyms": [
+      "enduring",
+      "lasting"
+    ],
+    "nearSynonyms": [],
+    "relationMeaningsKo": {
+      "enduring": "오래 지속되는",
+      "lasting": "지속적인"
+    },
+    "contrasts": [
+      {
+        "word": "enduring",
+        "noteKo": "lasting은 효과·인상에도 폭넓게 쓰며, abiding은 지속되는 감정이나 관심을 말할 때 특히 자연스럽다."
+      }
+    ],
+    "example": {
+      "en": "Although she changed careers twice, her abiding interest in astronomy never faded.",
+      "ko": "그녀는 직업을 두 번 바꾸었지만 천문학에 대한 오랜 관심은 결코 사그라들지 않았다.",
+      "kind": "editorial",
+      "cueKo": "Although는 직업의 변화와 관심의 지속을 대조하고 never faded가 지속성을 확인한다."
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025",
+        "role": "reference",
+        "independenceGroup": "WordNet"
+      },
+      {
+        "name": "Collins",
+        "url": "https://www.collinsdictionary.com/dictionary/english/abiding",
+        "license": "의미 대조 참고만 사용; 사전 정의·예문 원문 미수록",
+        "edition": "accessed 2026.10.14",
+        "role": "reference",
+        "independenceGroup": "IndependentDictionary"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial source comparison (not independent human review)",
+      "checkedAtKst": "2026.10.14",
+      "scope": "명시된 원자료 행의 의미·품사, 자체 편집 정의·번역·창작 예문·문맥 단서·표시용 관계어 대조. 새 출제 정답 승격 없음.",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "lexicalSenseId": "abiding%5:00:00:permanent:00",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51",
+          "result": "selected-sense-reference"
+        },
+        {
+          "source": "Collins",
+          "independenceGroup": "IndependentDictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/abiding",
+          "result": "selected-sense-compared",
+          "checkedAtKst": "2026.10.14"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:batch-20261014:abolish",
+    "senseId": "editorial:abolish:abolish%2:41:00::",
+    "headword": "abolish",
+    "group": "V101",
+    "partOfSpeech": "verb",
+    "itemIds": [
+      "JBKROW000094",
+      "JBKROW002051",
+      "JBKROW004298",
+      "JBKROW006152",
+      "JBKROW010939",
+      "JBKROW011259",
+      "JBKROW025069",
+      "JBKROW025628",
+      "JBKROW029226",
+      "JBKROW030061"
+    ],
+    "localGlosses": [
+      "폐지하다",
+      "(판례·제도 등을)폐지하다",
+      "(판례·제도 등을) 폐지하다",
+      "(관례·제도 등을) 폐지하다"
+    ],
+    "definitionKind": "editorial",
+    "definitionEn": "officially end a rule, institution, or established practice",
+    "definitionKo": "법·제도·관행을 공식적으로 폐지하다",
+    "memoryKo": "잠시 멈추는 것이 아니라 제도 자체를 없앤다.",
+    "usageKo": "타동사이므로 abolished the rule처럼 폐지하는 대상을 바로 목적어로 둔다. suspend는 중단 후 재개 가능성을 남긴다.",
+    "examTrapKo": "운영을 잠시 중지했다는 근거만으로 영구 폐지라고 판단하지 않는다.",
+    "exactSynonyms": [],
+    "nearSynonyms": [
+      "repeal"
+    ],
+    "relationMeaningsKo": {
+      "repeal": "법을 폐지하다"
+    },
+    "contrasts": [
+      {
+        "word": "repeal",
+        "noteKo": "repeal은 법이나 법적 규정을 폐지할 때 가깝다. 관습을 없애는 모든 문맥에서 그대로 교체하지 않는다."
+      }
+    ],
+    "example": {
+      "en": "The council abolished the permit requirement, so residents no longer had to apply before holding a street party.",
+      "ko": "의회가 허가 요건을 폐지하여 주민들은 거리 축제를 열기 전에 더 이상 신청할 필요가 없어졌다.",
+      "kind": "editorial",
+      "cueKo": "so 뒤의 no longer had to apply는 허가 제도가 없어졌다는 결과다."
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025",
+        "role": "reference",
+        "independenceGroup": "WordNet"
+      },
+      {
+        "name": "The Free Dictionary · American Heritage / Collins",
+        "url": "https://www.thefreedictionary.com/abolish",
+        "license": "의미 대조 참고만 사용; 사전 정의·예문 원문 미수록",
+        "edition": "accessed 2026.10.14",
+        "role": "reference",
+        "independenceGroup": "IndependentDictionary"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial source comparison (not independent human review)",
+      "checkedAtKst": "2026.10.14",
+      "scope": "명시된 원자료 행의 의미·품사, 자체 편집 정의·번역·창작 예문·문맥 단서·표시용 관계어 대조. 새 출제 정답 승격 없음.",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "lexicalSenseId": "abolish%2:41:00::",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51",
+          "result": "selected-sense-reference"
+        },
+        {
+          "source": "The Free Dictionary",
+          "independenceGroup": "IndependentDictionary",
+          "url": "https://www.thefreedictionary.com/abolish",
+          "result": "selected-sense-compared",
+          "checkedAtKst": "2026.10.14"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:batch-20261014:abominate",
+    "senseId": "editorial:abominate:abominate%2:37:00::",
+    "headword": "abominate",
+    "group": "V101",
+    "partOfSpeech": "verb",
+    "itemIds": [
+      "JBKROW000038",
+      "JBKROW002053",
+      "JBKROW004693",
+      "JBKROW006153",
+      "JBKROW008391",
+      "JBKROW011260",
+      "JBKROW027347",
+      "JBKROW029688",
+      "JBKROW030062"
+    ],
+    "localGlosses": [
+      "혐오하다"
+    ],
+    "definitionKind": "editorial",
+    "definitionEn": "feel intense dislike and disgust toward someone or something",
+    "definitionKo": "몹시 싫어하고 혐오하다",
+    "memoryKo": "싫다는 감정에 강한 역겨움과 거부감이 더해진다.",
+    "usageKo": "타동사로 혐오하는 대상을 바로 뒤에 둔다. 격식 있는 강한 표현이며 가벼운 불만보다 정도가 높다.",
+    "examTrapKo": "dislike와 방향은 같지만 강도가 같지는 않다.",
+    "exactSynonyms": [
+      "loathe",
+      "detest"
+    ],
+    "nearSynonyms": [],
+    "relationMeaningsKo": {
+      "loathe": "몹시 싫어하다",
+      "detest": "혐오하다"
+    },
+    "contrasts": [
+      {
+        "word": "loathe",
+        "noteKo": "loathe·detest는 강한 혐오를 나타내어 이 문맥에서 가깝다. dislike로 바꾸면 감정의 강도가 약해질 수 있다."
+      }
+    ],
+    "example": {
+      "en": "She abominates cruelty and refuses to support any business that mistreats animals.",
+      "ko": "그녀는 잔혹함을 혐오하며 동물을 학대하는 어떤 기업도 지원하기를 거부한다.",
+      "kind": "editorial",
+      "cueKo": "refuses to support와 mistreats가 단순한 취향 차이가 아닌 강한 거부감을 보여 준다."
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025",
+        "role": "reference",
+        "independenceGroup": "WordNet"
+      },
+      {
+        "name": "Collins",
+        "url": "https://www.collinsdictionary.com/dictionary/english/abominate",
+        "license": "의미 대조 참고만 사용; 사전 정의·예문 원문 미수록",
+        "edition": "accessed 2026.10.14",
+        "role": "reference",
+        "independenceGroup": "IndependentDictionary"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial source comparison (not independent human review)",
+      "checkedAtKst": "2026.10.14",
+      "scope": "명시된 원자료 행의 의미·품사, 자체 편집 정의·번역·창작 예문·문맥 단서·표시용 관계어 대조. 새 출제 정답 승격 없음.",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "lexicalSenseId": "abominate%2:37:00::",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51",
+          "result": "selected-sense-reference"
+        },
+        {
+          "source": "Collins",
+          "independenceGroup": "IndependentDictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/abominate",
+          "result": "selected-sense-compared",
+          "checkedAtKst": "2026.10.14"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:batch-20261014:abundant",
+    "senseId": "editorial:abundant:abundant%3:00:00::",
+    "headword": "abundant",
+    "group": "V101",
+    "partOfSpeech": "adjective",
+    "itemIds": [
+      "JBKROW001752",
+      "JBKROW002063",
+      "JBKROW005763",
+      "JBKROW006166",
+      "JBKROW009896",
+      "JBKROW011271"
+    ],
+    "localGlosses": [
+      "풍부한",
+      "풍성한",
+      "많은"
+    ],
+    "definitionKind": "editorial",
+    "definitionEn": "available or present in a large amount",
+    "definitionKo": "양이 많고 풍부한",
+    "memoryKo": "핵심은 질이나 가격이 아니라 존재하는 양이다.",
+    "usageKo": "abundant resources는 자원이 많다는 뜻이고 abundant in water는 물이 풍부하다는 구조다.",
+    "examTrapKo": "많다는 사실이 곧 값싸거나 누구나 이용 가능하다는 뜻은 아니다.",
+    "exactSynonyms": [
+      "plentiful"
+    ],
+    "nearSynonyms": [
+      "ample"
+    ],
+    "relationMeaningsKo": {
+      "plentiful": "풍부한",
+      "ample": "충분한"
+    },
+    "contrasts": [
+      {
+        "word": "ample",
+        "noteKo": "ample은 목적에 필요한 만큼 넉넉하다는 판단을 더한다. abundant는 우선 양이 많다는 뜻이다."
+      }
+    ],
+    "example": {
+      "en": "After weeks of rain, water was abundant, but clean containers were still scarce.",
+      "ko": "몇 주 동안 비가 내린 뒤 물은 풍부했지만 깨끗한 용기는 여전히 부족했다.",
+      "kind": "editorial",
+      "cueKo": "but가 abundant water와 scarce containers의 수량 대비를 만든다."
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025",
+        "role": "reference",
+        "independenceGroup": "WordNet"
+      },
+      {
+        "name": "Collins",
+        "url": "https://www.collinsdictionary.com/dictionary/english/abundant",
+        "license": "의미 대조 참고만 사용; 사전 정의·예문 원문 미수록",
+        "edition": "accessed 2026.10.14",
+        "role": "reference",
+        "independenceGroup": "IndependentDictionary"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial source comparison (not independent human review)",
+      "checkedAtKst": "2026.10.14",
+      "scope": "명시된 원자료 행의 의미·품사, 자체 편집 정의·번역·창작 예문·문맥 단서·표시용 관계어 대조. 새 출제 정답 승격 없음.",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "lexicalSenseId": "abundant%3:00:00::",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51",
+          "result": "selected-sense-reference"
+        },
+        {
+          "source": "Collins",
+          "independenceGroup": "IndependentDictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/abundant",
+          "result": "selected-sense-compared",
+          "checkedAtKst": "2026.10.14"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:batch-20261014:acclimate",
+    "senseId": "editorial:acclimate:acclimate%2:30:00::",
+    "headword": "acclimate",
+    "group": "V101",
+    "partOfSpeech": "verb",
+    "itemIds": [
+      "JBKROW001771",
+      "JBKROW002068",
+      "JBKROW028517",
+      "JBKROW030086"
+    ],
+    "localGlosses": [
+      "적응시키다",
+      "(사람·풍토 등을) 새 환경에 익히다"
+    ],
+    "definitionKind": "editorial",
+    "definitionEn": "become used to a different climate, or help someone do so",
+    "definitionKo": "새 기후에 적응하다·적응시키다",
+    "memoryKo": "환경을 즉시 바꾸는 대신 몸이 새 조건에 익숙해진다.",
+    "usageKo": "이 항목은 OEWN과 겹치는 기후 적응 뜻이다. acclimate to the heat는 스스로 적응, acclimate someone to the heat는 누군가를 적응시키는 구조다.",
+    "examTrapKo": "기후를 바꾸는 것과 그 기후에 익숙해지는 것을 구별한다.",
+    "exactSynonyms": [],
+    "nearSynonyms": [
+      "adapt"
+    ],
+    "relationMeaningsKo": {
+      "adapt": "적응하다"
+    },
+    "contrasts": [
+      {
+        "word": "adapt",
+        "noteKo": "adapt는 기술·계획의 변경까지 범위가 넓다. 여기서는 새 기후에 적응하는 경우에만 가깝다."
+      }
+    ],
+    "example": {
+      "en": "The runners trained in the heat for two weeks to acclimate before the race.",
+      "ko": "주자들은 경주 전에 더위에 적응하려고 2주 동안 더운 환경에서 훈련했다.",
+      "kind": "editorial",
+      "cueKo": "in the heat와 for two weeks가 적응 대상과 시간을, to가 훈련 목적을 보여 준다."
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025",
+        "role": "reference",
+        "independenceGroup": "WordNet"
+      },
+      {
+        "name": "Collins",
+        "url": "https://www.collinsdictionary.com/dictionary/english/acclimate",
+        "license": "의미 대조 참고만 사용; 사전 정의·예문 원문 미수록",
+        "edition": "accessed 2026.10.14",
+        "role": "reference",
+        "independenceGroup": "IndependentDictionary"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial source comparison (not independent human review)",
+      "checkedAtKst": "2026.10.14",
+      "scope": "명시된 원자료 행의 의미·품사, 자체 편집 정의·번역·창작 예문·문맥 단서·표시용 관계어 대조. 새 출제 정답 승격 없음.",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "lexicalSenseId": "acclimate%2:30:00::",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51",
+          "result": "selected-sense-reference"
+        },
+        {
+          "source": "Collins",
+          "independenceGroup": "IndependentDictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/acclimate",
+          "result": "selected-sense-compared",
+          "checkedAtKst": "2026.10.14"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:batch-20261014:accomplice",
+    "senseId": "editorial:accomplice:accomplice%1:18:00::",
+    "headword": "accomplice",
+    "group": "V101",
+    "partOfSpeech": "noun",
+    "itemIds": [
+      "JBKROW002040",
+      "JBKROW002070",
+      "JBKROW013698",
+      "JBKROW015622"
+    ],
+    "localGlosses": [
+      "공범",
+      "공범자"
+    ],
+    "definitionKind": "editorial",
+    "definitionEn": "a person who knowingly helps another carry out a crime or wrongdoing",
+    "definitionKo": "범죄나 잘못된 행위를 함께 돕는 공범",
+    "memoryKo": "함께 있다는 사실이 아니라 잘못된 행동에 가담한다.",
+    "usageKo": "일반 어휘로서 범행을 돕는 사람을 가리킨다. 단순한 친구·동료나 사건을 목격한 사람과 구분한다.",
+    "examTrapKo": "현장에 있었다는 사실만으로 공범이라고 단정하지 않는다.",
+    "exactSynonyms": [
+      "partner in crime"
+    ],
+    "nearSynonyms": [],
+    "relationMeaningsKo": {
+      "partner in crime": "공범"
+    },
+    "contrasts": [
+      {
+        "word": "partner in crime",
+        "noteKo": "partner in crime은 범죄 맥락에서 가깝다. 일상적인 농담으로 쓰는 '짝꿍' 의미와 혼합하지 않는다."
+      }
+    ],
+    "example": {
+      "en": "The thief's accomplice disabled the alarm while the thief entered the warehouse.",
+      "ko": "도둑이 창고에 들어가는 동안 공범은 경보 장치를 껐다.",
+      "kind": "editorial",
+      "cueKo": "disabled the alarm이 범행을 직접 돕는 행동이다. while은 두 행동의 동시성을 나타낸다."
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025",
+        "role": "reference",
+        "independenceGroup": "WordNet"
+      },
+      {
+        "name": "Collins",
+        "url": "https://www.collinsdictionary.com/dictionary/english/accomplice",
+        "license": "의미 대조 참고만 사용; 사전 정의·예문 원문 미수록",
+        "edition": "accessed 2026.10.14",
+        "role": "reference",
+        "independenceGroup": "IndependentDictionary"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial source comparison (not independent human review)",
+      "checkedAtKst": "2026.10.14",
+      "scope": "명시된 원자료 행의 의미·품사, 자체 편집 정의·번역·창작 예문·문맥 단서·표시용 관계어 대조. 새 출제 정답 승격 없음.",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "lexicalSenseId": "accomplice%1:18:00::",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51",
+          "result": "selected-sense-reference"
+        },
+        {
+          "source": "Collins",
+          "independenceGroup": "IndependentDictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/accomplice",
+          "result": "selected-sense-compared",
+          "checkedAtKst": "2026.10.14"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:batch-20261014:accountant",
+    "senseId": "editorial:accountant:accountant%1:18:00::",
+    "headword": "accountant",
+    "group": "V101",
+    "partOfSpeech": "noun",
+    "itemIds": [
+      "JBKROW001683",
+      "JBKROW002072"
+    ],
+    "localGlosses": [
+      "회계사"
+    ],
+    "definitionKind": "editorial",
+    "definitionEn": "a person whose work involves preparing or checking financial accounts",
+    "definitionKo": "재무 장부를 작성하거나 점검하는 회계 담당자·회계사",
+    "memoryKo": "돈을 받는 사람이 아니라 돈의 기록을 정리·점검한다.",
+    "usageKo": "회계 업무를 하는 사람을 뜻하며 이 단어만으로 특정 국가의 공인 자격까지 보장하지 않는다.",
+    "examTrapKo": "직업명 accountant와 은행 계좌를 뜻하는 account를 혼동하지 않는다.",
+    "exactSynonyms": [],
+    "nearSynonyms": [
+      "bookkeeper"
+    ],
+    "relationMeaningsKo": {
+      "bookkeeper": "장부 담당자"
+    },
+    "contrasts": [
+      {
+        "word": "bookkeeper",
+        "noteKo": "bookkeeper는 일상적인 장부 기록 업무에 초점이 있다. 회계 분석·감사까지 포함하는 모든 accountant 업무와 동일하지 않다."
+      }
+    ],
+    "example": {
+      "en": "The accountant compared the invoices with the ledger and found a payment recorded twice.",
+      "ko": "회계 담당자는 청구서와 장부를 비교하다가 한 지급액이 두 번 기록된 것을 발견했다.",
+      "kind": "editorial",
+      "cueKo": "invoices·ledger·recorded twice가 재무 기록을 점검하는 업무를 구체화한다."
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025",
+        "role": "reference",
+        "independenceGroup": "WordNet"
+      },
+      {
+        "name": "Collins",
+        "url": "https://www.collinsdictionary.com/dictionary/english/accountant",
+        "license": "의미 대조 참고만 사용; 사전 정의·예문 원문 미수록",
+        "edition": "accessed 2026.10.14",
+        "role": "reference",
+        "independenceGroup": "IndependentDictionary"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial source comparison (not independent human review)",
+      "checkedAtKst": "2026.10.14",
+      "scope": "명시된 원자료 행의 의미·품사, 자체 편집 정의·번역·창작 예문·문맥 단서·표시용 관계어 대조. 새 출제 정답 승격 없음.",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "lexicalSenseId": "accountant%1:18:00::",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51",
+          "result": "selected-sense-reference"
+        },
+        {
+          "source": "Collins",
+          "independenceGroup": "IndependentDictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/accountant",
+          "result": "selected-sense-compared",
+          "checkedAtKst": "2026.10.14"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:batch-20261014:acquiesce",
+    "senseId": "editorial:acquiesce:acquiesce%2:32:00::",
+    "headword": "acquiesce",
+    "group": "V101",
+    "partOfSpeech": "verb",
+    "itemIds": [
+      "JBKROW000092",
+      "JBKROW002076",
+      "JBKROW005507",
+      "JBKROW006178",
+      "JBKROW008955",
+      "JBKROW011283"
+    ],
+    "localGlosses": [
+      "마지못해 따르다; 묵인하다",
+      "묵인하다",
+      "동의하다",
+      "마지못해 순응하다"
+    ],
+    "definitionKind": "editorial",
+    "definitionEn": "accept a decision or demand without continuing to object",
+    "definitionKo": "반대하지 않고 받아들이다·순응하다",
+    "memoryKo": "찬성해서 기쁜 것과 반대를 거두고 따르는 것은 다르다.",
+    "usageKo": "자동사로 acquiesce in/to 뒤에 결정·요구를 둔다. 적극 지지나 만족까지 뜻하지 않는다.",
+    "examTrapKo": "저항하지 않았다는 사실을 열렬히 찬성했다는 결론으로 확대하지 않는다.",
+    "exactSynonyms": [],
+    "nearSynonyms": [
+      "assent",
+      "comply"
+    ],
+    "relationMeaningsKo": {
+      "assent": "동의하다",
+      "comply": "따르다"
+    },
+    "contrasts": [
+      {
+        "word": "assent",
+        "noteKo": "assent는 동의 자체, comply는 요구에 맞게 행동하는 데 초점이 있다. acquiesce의 소극적 수용과 항상 같지는 않다."
+      }
+    ],
+    "example": {
+      "en": "Although he disliked the new schedule, he eventually acquiesced and stopped asking for changes.",
+      "ko": "그는 새 일정이 마음에 들지 않았지만 결국 받아들이고 변경을 요구하는 일을 멈췄다.",
+      "kind": "editorial",
+      "cueKo": "Although disliked와 stopped asking의 대조가 내키지 않아도 반대를 거둔 상태를 보여 준다."
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025",
+        "role": "reference",
+        "independenceGroup": "WordNet"
+      },
+      {
+        "name": "The Free Dictionary · American Heritage / Collins",
+        "url": "https://www.thefreedictionary.com/acquiesce",
+        "license": "의미 대조 참고만 사용; 사전 정의·예문 원문 미수록",
+        "edition": "accessed 2026.10.14",
+        "role": "reference",
+        "independenceGroup": "IndependentDictionary"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial source comparison (not independent human review)",
+      "checkedAtKst": "2026.10.14",
+      "scope": "명시된 원자료 행의 의미·품사, 자체 편집 정의·번역·창작 예문·문맥 단서·표시용 관계어 대조. 새 출제 정답 승격 없음.",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "lexicalSenseId": "acquiesce%2:32:00::",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51",
+          "result": "selected-sense-reference"
+        },
+        {
+          "source": "The Free Dictionary",
+          "independenceGroup": "IndependentDictionary",
+          "url": "https://www.thefreedictionary.com/acquiesce",
+          "result": "selected-sense-compared",
+          "checkedAtKst": "2026.10.14"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:batch-20261014:adage",
+    "senseId": "editorial:adage:adage%1:10:00::",
+    "headword": "adage",
+    "group": "V101",
+    "partOfSpeech": "noun",
+    "itemIds": [
+      "JBKROW000061",
+      "JBKROW002081",
+      "JBKROW024020",
+      "JBKROW030107"
+    ],
+    "localGlosses": [
+      "격언"
+    ],
+    "definitionKind": "editorial",
+    "definitionEn": "a familiar short saying that expresses a widely accepted lesson about life",
+    "definitionKo": "삶의 교훈을 담아 널리 전해지는 격언",
+    "memoryKo": "많이 쓰이는 짧은 말에 경험에서 얻은 교훈이 담긴다.",
+    "usageKo": "관용적으로 인정받는 교훈을 가리킨다. 널리 받아들여진 말이라는 사실이 예외 없는 과학 법칙임을 뜻하지는 않는다.",
+    "examTrapKo": "격언을 인용했다는 이유만으로 주장의 사실성이 입증되었다고 보지 않는다.",
+    "exactSynonyms": [
+      "proverb"
+    ],
+    "nearSynonyms": [
+      "saying"
+    ],
+    "relationMeaningsKo": {
+      "proverb": "속담·격언",
+      "saying": "흔히 하는 말"
+    },
+    "contrasts": [
+      {
+        "word": "saying",
+        "noteKo": "saying은 흔히 하는 말 전반을 포함한다. adage는 오래 전해지고 교훈으로 받아들여진다는 점에 초점이 있다."
+      }
+    ],
+    "example": {
+      "en": "Before signing the risky deal, Mira recalled the adage 'Look before you leap' and reviewed the terms again.",
+      "ko": "미라는 위험한 계약에 서명하기 전에 '행동하기 전에 살펴보라'는 격언을 떠올리고 조건을 다시 검토했다.",
+      "kind": "editorial",
+      "cueKo": "reviewed the terms again이 행동 전 신중히 살피라는 격언을 실제 행동으로 풀어 준다."
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025",
+        "role": "reference",
+        "independenceGroup": "WordNet"
+      },
+      {
+        "name": "Collins",
+        "url": "https://www.collinsdictionary.com/dictionary/english/adage",
+        "license": "의미 대조 참고만 사용; 사전 정의·예문 원문 미수록",
+        "edition": "accessed 2026.10.14",
+        "role": "reference",
+        "independenceGroup": "IndependentDictionary"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial source comparison (not independent human review)",
+      "checkedAtKst": "2026.10.14",
+      "scope": "명시된 원자료 행의 의미·품사, 자체 편집 정의·번역·창작 예문·문맥 단서·표시용 관계어 대조. 새 출제 정답 승격 없음.",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "lexicalSenseId": "adage%1:10:00::",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51",
+          "result": "selected-sense-reference"
+        },
+        {
+          "source": "Collins",
+          "independenceGroup": "IndependentDictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/adage",
+          "result": "selected-sense-compared",
+          "checkedAtKst": "2026.10.14"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:batch-20261014:adore",
+    "senseId": "editorial:adore:adore%2:37:00::",
+    "headword": "adore",
+    "group": "V101",
+    "partOfSpeech": "verb",
+    "itemIds": [
+      "JBKROW001818",
+      "JBKROW002088",
+      "JBKROW008380",
+      "JBKROW011292"
+    ],
+    "localGlosses": [
+      "흠모하다"
+    ],
+    "definitionKind": "editorial",
+    "definitionEn": "feel deep love and admiration for someone",
+    "definitionKo": "깊이 사랑하고 흠모하다",
+    "memoryKo": "가벼운 호감보다 강한 애정과 우러러보는 마음이다.",
+    "usageKo": "여기서는 사람에 대한 깊은 애정 뜻을 다룬다. adore + 사람을 쓰며, 음식 등을 아주 좋아한다는 비격식 용법은 별도다.",
+    "examTrapKo": "상대를 존중한다는 사실만으로 깊이 사랑한다고 확대하지 않는다.",
+    "exactSynonyms": [],
+    "nearSynonyms": [
+      "love",
+      "admire"
+    ],
+    "relationMeaningsKo": {
+      "love": "사랑하다",
+      "admire": "존경하다"
+    },
+    "contrasts": [
+      {
+        "word": "love",
+        "noteKo": "love는 애정의 폭이 넓고 admire는 훌륭함을 인정하는 존경에 가깝다. admire만으로 깊은 애정까지 보장하지 않는다."
+      }
+    ],
+    "example": {
+      "en": "The children adore their grandfather; they save their best stories to tell him every weekend.",
+      "ko": "아이들은 할아버지를 무척 사랑해서 주말마다 들려드리려고 가장 재미있는 이야기를 아껴 둔다.",
+      "kind": "editorial",
+      "cueKo": "세미콜론 뒤의 특별한 관심과 기다림이 강한 애정을 행동으로 보여 준다."
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025",
+        "role": "reference",
+        "independenceGroup": "WordNet"
+      },
+      {
+        "name": "Collins",
+        "url": "https://www.collinsdictionary.com/dictionary/english/adore",
+        "license": "의미 대조 참고만 사용; 사전 정의·예문 원문 미수록",
+        "edition": "accessed 2026.10.14",
+        "role": "reference",
+        "independenceGroup": "IndependentDictionary"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial source comparison (not independent human review)",
+      "checkedAtKst": "2026.10.14",
+      "scope": "명시된 원자료 행의 의미·품사, 자체 편집 정의·번역·창작 예문·문맥 단서·표시용 관계어 대조. 새 출제 정답 승격 없음.",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "lexicalSenseId": "adore%2:37:00::",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51",
+          "result": "selected-sense-reference"
+        },
+        {
+          "source": "Collins",
+          "independenceGroup": "IndependentDictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/adore",
+          "result": "selected-sense-compared",
+          "checkedAtKst": "2026.10.14"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:batch-20261014:adroit",
+    "senseId": "editorial:adroit:adroit%3:00:00::",
+    "headword": "adroit",
+    "group": "V101",
+    "partOfSpeech": "adjective",
+    "itemIds": [
+      "JBKROW001943",
+      "JBKROW002089",
+      "JBKROW009789",
+      "JBKROW011295",
+      "JBKROW027060",
+      "JBKROW030127"
+    ],
+    "localGlosses": [
+      "능숙한",
+      "노련한",
+      "솜씨 좋은"
+    ],
+    "definitionKind": "editorial",
+    "definitionEn": "skillful and quick in handling an action or a difficult situation",
+    "definitionKo": "행동이나 상황 처리에 능숙하고 재빠른",
+    "memoryKo": "단지 빠른 것이 아니라 잘 처리하는 능력이다.",
+    "usageKo": "adroit at handling problems처럼 at 뒤에 능숙한 행동을 붙일 수 있다. 손기술뿐 아니라 판단·협상에도 쓴다.",
+    "examTrapKo": "속도가 빠르다는 것만으로 능숙함이 입증되지 않는다.",
+    "exactSynonyms": [
+      "skillful"
+    ],
+    "nearSynonyms": [
+      "clever"
+    ],
+    "relationMeaningsKo": {
+      "skillful": "능숙한",
+      "clever": "영리한"
+    },
+    "contrasts": [
+      {
+        "word": "clever",
+        "noteKo": "clever는 영리함을 나타내지만 그 상황을 실제로 능숙하게 처리했다는 뜻이 항상 따라오지는 않는다."
+      }
+    ],
+    "example": {
+      "en": "The adroit negotiator found wording that both sides could accept without abandoning their main demands.",
+      "ko": "능숙한 협상가는 양측이 핵심 요구를 포기하지 않고도 받아들일 수 있는 표현을 찾아냈다.",
+      "kind": "editorial",
+      "cueKo": "both sides could accept와 without abandoning이 어려운 조건을 능숙하게 처리한 결과다."
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025",
+        "role": "reference",
+        "independenceGroup": "WordNet"
+      },
+      {
+        "name": "Collins",
+        "url": "https://www.collinsdictionary.com/dictionary/english/adroit",
+        "license": "의미 대조 참고만 사용; 사전 정의·예문 원문 미수록",
+        "edition": "accessed 2026.10.14",
+        "role": "reference",
+        "independenceGroup": "IndependentDictionary"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial source comparison (not independent human review)",
+      "checkedAtKst": "2026.10.14",
+      "scope": "명시된 원자료 행의 의미·품사, 자체 편집 정의·번역·창작 예문·문맥 단서·표시용 관계어 대조. 새 출제 정답 승격 없음.",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "lexicalSenseId": "adroit%3:00:00::",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51",
+          "result": "selected-sense-reference"
+        },
+        {
+          "source": "Collins",
+          "independenceGroup": "IndependentDictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/adroit",
+          "result": "selected-sense-compared",
+          "checkedAtKst": "2026.10.14"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:batch-20261014:altercation",
+    "senseId": "editorial:altercation:altercation%1:10:00::",
+    "headword": "altercation",
+    "group": "V101",
+    "partOfSpeech": "noun",
+    "itemIds": [
+      "JBKROW004431",
+      "JBKROW006237",
+      "JBKROW009031",
+      "JBKROW011327",
+      "JBKROW013606",
+      "JBKROW015674",
+      "JBKROW027439",
+      "JBKROW030179"
+    ],
+    "localGlosses": [
+      "언쟁"
+    ],
+    "definitionKind": "editorial",
+    "definitionEn": "an angry, often noisy argument between people",
+    "definitionKo": "화를 내며 벌이는 언쟁",
+    "memoryKo": "차분한 의견 교환이 아니라 격해진 말다툼이다.",
+    "usageKo": "an altercation with someone 또는 between two people처럼 누구와 다투는지 연결한다.",
+    "examTrapKo": "의견이 달랐다는 사실만으로 격한 언쟁이나 신체적 폭력이 있었다고 보지 않는다.",
+    "exactSynonyms": [
+      "quarrel"
+    ],
+    "nearSynonyms": [
+      "argument"
+    ],
+    "relationMeaningsKo": {
+      "quarrel": "말다툼",
+      "argument": "논쟁·언쟁"
+    },
+    "contrasts": [
+      {
+        "word": "argument",
+        "noteKo": "argument는 주장이나 논거라는 다른 뜻도 있다. 사람들 사이의 말다툼을 나타낼 때만 여기서 가깝다."
+      }
+    ],
+    "example": {
+      "en": "What began as a calm discussion became an altercation when both speakers raised their voices and traded insults.",
+      "ko": "차분한 토론으로 시작된 대화는 두 사람이 목소리를 높이고 모욕적인 말을 주고받자 언쟁으로 변했다.",
+      "kind": "editorial",
+      "cueKo": "became은 변화, raised their voices와 traded insults는 격한 말다툼의 근거다."
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025",
+        "role": "reference",
+        "independenceGroup": "WordNet"
+      },
+      {
+        "name": "Collins",
+        "url": "https://www.collinsdictionary.com/dictionary/english/altercation",
+        "license": "의미 대조 참고만 사용; 사전 정의·예문 원문 미수록",
+        "edition": "accessed 2026.10.14",
+        "role": "reference",
+        "independenceGroup": "IndependentDictionary"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial source comparison (not independent human review)",
+      "checkedAtKst": "2026.10.14",
+      "scope": "명시된 원자료 행의 의미·품사, 자체 편집 정의·번역·창작 예문·문맥 단서·표시용 관계어 대조. 새 출제 정답 승격 없음.",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "lexicalSenseId": "altercation%1:10:00::",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51",
+          "result": "selected-sense-reference"
+        },
+        {
+          "source": "Collins",
+          "independenceGroup": "IndependentDictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/altercation",
+          "result": "selected-sense-compared",
+          "checkedAtKst": "2026.10.14"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:batch-20261014:altruistic",
+    "senseId": "editorial:altruistic:altruistic%3:00:00::",
+    "headword": "altruistic",
+    "group": "V101",
+    "partOfSpeech": "adjective",
+    "itemIds": [
+      "JBKROW000437",
+      "JBKROW002112",
+      "JBKROW004814",
+      "JBKROW006238"
+    ],
+    "localGlosses": [
+      "이타적인"
+    ],
+    "definitionKind": "editorial",
+    "definitionEn": "motivated by concern for other people's welfare rather than personal gain",
+    "definitionKo": "자기 이익보다 타인의 행복을 생각하는 이타적인",
+    "memoryKo": "누가 이득을 얻는지보다 무엇을 위해 행동했는지가 핵심이다.",
+    "usageKo": "행동·동기가 타인의 복지에 향한다는 뜻이다. 겉으로 도움을 주는 행동만으로 동기가 입증되는 것은 아니다.",
+    "examTrapKo": "기부했다는 사실만으로 대가·명성에 대한 기대가 없었다고 단정하지 않는다.",
+    "exactSynonyms": [
+      "selfless"
+    ],
+    "nearSynonyms": [
+      "generous"
+    ],
+    "relationMeaningsKo": {
+      "selfless": "이타적인",
+      "generous": "너그러운"
+    },
+    "contrasts": [
+      {
+        "word": "generous",
+        "noteKo": "generous는 시간·돈 등을 넉넉히 베푸는 성향에 가깝다. 이타적 동기와 항상 동일하지 않다."
+      }
+    ],
+    "example": {
+      "en": "Her altruistic motive was clear: she offered her time to help the neighbors and asked for nothing in return.",
+      "ko": "그녀의 이타적인 동기는 분명했다. 이웃을 돕기 위해 시간을 내고 아무런 대가도 요구하지 않았다.",
+      "kind": "editorial",
+      "cueKo": "asked for nothing in return이 개인적 보상을 바라지 않는 동기를 뒷받침한다."
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025",
+        "role": "reference",
+        "independenceGroup": "WordNet"
+      },
+      {
+        "name": "Collins",
+        "url": "https://www.collinsdictionary.com/dictionary/english/altruistic",
+        "license": "의미 대조 참고만 사용; 사전 정의·예문 원문 미수록",
+        "edition": "accessed 2026.10.14",
+        "role": "reference",
+        "independenceGroup": "IndependentDictionary"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial source comparison (not independent human review)",
+      "checkedAtKst": "2026.10.14",
+      "scope": "명시된 원자료 행의 의미·품사, 자체 편집 정의·번역·창작 예문·문맥 단서·표시용 관계어 대조. 새 출제 정답 승격 없음.",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "lexicalSenseId": "altruistic%3:00:00::",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51",
+          "result": "selected-sense-reference"
+        },
+        {
+          "source": "Collins",
+          "independenceGroup": "IndependentDictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/altruistic",
+          "result": "selected-sense-compared",
+          "checkedAtKst": "2026.10.14"
+        }
+      ]
+    }
+  },
+  {
+    "id": "learn:batch-20261014:ambivalent",
+    "senseId": "editorial:ambivalent:ambivalent%5:00:00:uncertain:02",
+    "headword": "ambivalent",
+    "group": "V101",
+    "partOfSpeech": "adjective",
+    "itemIds": [
+      "JBKROW004720",
+      "JBKROW006244",
+      "JBKROW017655",
+      "JBKROW020687"
+    ],
+    "localGlosses": [
+      "상반된 태도를 지닌",
+      "찬반이 공존하는"
+    ],
+    "definitionKind": "editorial",
+    "definitionEn": "having opposing feelings about the same thing, making it hard to decide",
+    "definitionKo": "한 대상에 상반된 감정이 있어 결정을 망설이는",
+    "memoryKo": "찬성과 반대가 동시에 마음에 남는 상태다.",
+    "usageKo": "ambivalent about/toward 뒤에 감정의 대상을 둔다. 정보가 부족해 모르는 경우나 무관심과는 구분한다.",
+    "examTrapKo": "의미가 모호한 ambiguous와 사람의 상반된 태도를 나타내는 ambivalent를 혼동하지 않는다.",
+    "exactSynonyms": [],
+    "nearSynonyms": [
+      "undecided"
+    ],
+    "relationMeaningsKo": {
+      "undecided": "결정하지 못한"
+    },
+    "contrasts": [
+      {
+        "word": "undecided",
+        "noteKo": "undecided는 아직 결정하지 않은 상태만 말한다. ambivalent는 양쪽으로 끌리는 감정 때문에 망설이는 문맥에서 더 구체적이다."
+      }
+    ],
+    "example": {
+      "en": "Nora felt ambivalent about the promotion: she welcomed the higher pay but dreaded spending less time with her family.",
+      "ko": "노라는 승진에 대해 마음이 엇갈렸다. 급여 인상은 반가웠지만 가족과 보내는 시간이 줄어드는 것은 두려웠다.",
+      "kind": "editorial",
+      "cueKo": "welcomed와 dreaded가 같은 승진에 대한 상반된 감정을, but가 그 대비를 나타낸다."
+    },
+    "nuance": {},
+    "sources": [
+      {
+        "name": "Open English WordNet",
+        "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+        "license": "CC BY 4.0",
+        "edition": "2025",
+        "role": "reference",
+        "independenceGroup": "WordNet"
+      },
+      {
+        "name": "Collins",
+        "url": "https://www.collinsdictionary.com/dictionary/english/ambivalent",
+        "license": "의미 대조 참고만 사용; 사전 정의·예문 원문 미수록",
+        "edition": "accessed 2026.10.14",
+        "role": "reference",
+        "independenceGroup": "IndependentDictionary"
+      }
+    ],
+    "verification": {
+      "status": "cross-agreed",
+      "reviewer": "Codex editorial source comparison (not independent human review)",
+      "checkedAtKst": "2026.10.14",
+      "scope": "명시된 원자료 행의 의미·품사, 자체 편집 정의·번역·창작 예문·문맥 단서·표시용 관계어 대조. 새 출제 정답 승격 없음.",
+      "evidence": [
+        {
+          "source": "Open English WordNet 2025",
+          "independenceGroup": "WordNet",
+          "lexicalSenseId": "ambivalent%5:00:00:uncertain:02",
+          "contentSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51",
+          "result": "selected-sense-reference"
+        },
+        {
+          "source": "Collins",
+          "independenceGroup": "IndependentDictionary",
+          "url": "https://www.collinsdictionary.com/dictionary/english/ambivalent",
+          "result": "selected-sense-compared",
+          "checkedAtKst": "2026.10.14"
+        }
+      ]
+    }
+  }
+]

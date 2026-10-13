@@ -5,7 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
-import { ActivityIndicator, Platform, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import "@/lib/_core/nativewind-pressable";
 import { ThemeProvider, useThemeContext } from "@/lib/theme-provider";
 import { useColors } from "@/hooks/use-colors";
@@ -23,6 +23,8 @@ import { useStudyTimer } from "@/hooks/use-study-timer";
 import { migrateStoredVocabLists } from "@/lib/store";
 import { LearningStorageNotice } from "@/components/learning-storage-notice";
 import { subscribeWebViewport } from "@/lib/web-viewport";
+import { getVocabStorageFailureMessage } from "@/lib/vocab-storage-migration";
+import { LearningBackupSettings } from "@/components/learning-backup-settings";
 
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
 const DEFAULT_WEB_FRAME: Rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -46,13 +48,15 @@ function RootContents() {
 
   const [parentMetrics, setParentMetrics] = useState<Metrics | null>(null);
   const [migrationStatus, setMigrationStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [migrationIssue, setMigrationIssue] = useState("");
 
   const runStorageMigration = useCallback(() => {
     setMigrationStatus("loading");
+    setMigrationIssue("");
     migrateStoredVocabLists()
       .then(() => setMigrationStatus("ready"))
       .catch((error) => {
-        console.error("Vocabulary storage migration failed", error);
+        setMigrationIssue(getVocabStorageFailureMessage(error));
         setMigrationStatus("error");
       });
   }, []);
@@ -133,12 +137,13 @@ function RootContents() {
 
   if (migrationStatus !== "ready") {
     return (
-        <View
-          style={{
-            flex: 1,
+        <ScrollView style={{ flex: 1, backgroundColor: colors.background }}
+          contentContainerStyle={{
+            flexGrow: 1,
             alignItems: "center",
             justifyContent: "center",
             paddingHorizontal: 32,
+            paddingVertical: 48,
             backgroundColor: colors.background,
           }}
         >
@@ -155,7 +160,7 @@ function RootContents() {
                 학습 기록을 불러오지 못했습니다
               </Text>
               <Text style={{ color: colors.muted, marginTop: 8, textAlign: "center", lineHeight: 20 }}>
-                기존 기록은 삭제되지 않았습니다. 다시 시도해 주세요.
+                {migrationIssue}
               </Text>
               <Pressable
                 onPress={runStorageMigration}
@@ -163,9 +168,12 @@ function RootContents() {
               >
                 <Text style={{ color: "#FFFFFF", fontWeight: "700" }}>다시 시도</Text>
               </Pressable>
+              <View style={{ marginTop: 20, width: "100%", maxWidth: 600 }}>
+                <LearningBackupSettings exportOnly />
+              </View>
             </>
           )}
-        </View>
+        </ScrollView>
     );
   }
 

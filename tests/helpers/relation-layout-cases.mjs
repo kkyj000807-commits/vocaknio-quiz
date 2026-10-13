@@ -84,7 +84,10 @@ export const relationLayoutCases = [
       exactSynonyms: ['brag'], nearSynonyms: ['flaunt'], antonyms: [], variants: [], relatedWords: [],
       relationMeaningsKo: { brag: '자랑하다', flaunt: '과시하다' }, itemIds: ['fixture-row'],
       exampleSentences: [{ en: 'He boasted about winning the prize.', ko: '그는 상을 받은 일을 자랑했다.', cueKo: 'about 뒤에 자랑하는 내용을 둔다.' }] };
-    const html = render(React.createElement(ActiveRecallAnswer, { recall }));
+    const closed = render(React.createElement(ActiveRecallAnswer, { recall }));
+    assert.doesNotMatch(closed, /그는 상을 받은 일을 자랑했다/);
+    assert.match(closed, /해석·단서 보기/);
+    const html = render(React.createElement(ActiveRecallAnswer, { recall, showRelationNotes: true }));
     const positions = ['자랑하다', 'brag', 'Talk proudly about oneself.', 'He boasted about winning the prize.', '그는 상을 받은 일을 자랑했다.'].map(text => html.indexOf(text));
     assert.ok(positions.every(position => position >= 0));
     assert.ok(positions.every((position, index) => index === 0 || position > positions[index - 1]));
@@ -111,7 +114,7 @@ export const relationLayoutCases = [
     const { RelationChips } = load('components/relation-chips.tsx');
     const terms = [{ word: 'brag', meaningKo: '자랑하다' }, { word: 'flaunt', meaningKo: '과시하다' }, { word: 'vaunt', meaningKo: '자랑하다' }, { word: 'near', meaningKo: '긴 문맥 설명이다. 교체 조건과 다른 의미의 차이를 보존한다.' }];
     const closed = render(React.createElement(RelationChips, { terms }));
-    assert.match(closed, /brag/); assert.match(closed, /자랑하다/); assert.match(closed, /과시하다/);
+    assert.match(closed, /brag/); assert.doesNotMatch(closed, /자랑하다|과시하다/);
     assert.doesNotMatch(closed, /긴 문맥 설명이다/); assert.match(closed, /관계어 뜻·차이/);
     const details = render(React.createElement(RelationChips, { terms, showNotes: true }));
     assert.match(details, /긴 문맥 설명이다. 교체 조건과 다른 의미의 차이를 보존한다./);

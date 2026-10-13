@@ -47,6 +47,18 @@ beforeEach(async () => {
 });
 
 describe("학습 기록의 공통 저장 경로", () => {
+  it("시작 실패 복구용 백업은 이전 변환 원문을 포함하고 journal을 실행하거나 기록을 쓰지 않는다", async () => {
+    storage.values.set("vocaknio_vocab_v1_4_migration_backup", "{unreadable-original-backup");
+    storage.values.set("vocaknio_learning_write_journal_v1", "{unreadable-journal");
+    storage.values.set("vocaknio_bookmarks", "[9]");
+    const before = new Map(storage.values);
+    const backup = await store.exportLearningBackup();
+    expect(backup.migrationBackup).toBe("{unreadable-original-backup");
+    expect(backup.recoveryJournal).toBe("{unreadable-journal");
+    expect(backup.records.vocaknio_bookmarks).toBe("[9]");
+    expect(storage.values).toEqual(before);
+  });
+
   it("명시된 기존 키 보존은 같은 원본 뜻·단일 검수 sense에만 연결한다", () => {
     const entries = ACTIVE_RECALL_SENSES.filter(entry => entry.preservedLearningKey);
     expect(new Set(entries.map(entry => entry.preservedLearningKey)).size).toBe(entries.length);

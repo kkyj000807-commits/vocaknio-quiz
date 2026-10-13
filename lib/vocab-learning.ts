@@ -30,6 +30,7 @@ export interface LearningEntry {
   definitionKo: string;
   exactSynonyms?: string[];
   nearSynonyms?: string[];
+  relationMeaningsKo?: Record<string, string>;
   memoryKo: string;
   usageKo: string;
   contextExplanationKo: string;

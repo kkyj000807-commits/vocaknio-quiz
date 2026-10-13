@@ -12,10 +12,10 @@ import { hasLearningEntry, LEARNING_COVERAGE } from "@/lib/vocab-learning";
 
 describe("깊이 학습 인덱스", () => {
   it("기존 검수 해설과 모든 숙어 보완을 학습 인덱스에 연결한다", () => {
-    expect(LEARNING_COVERAGE.senses).toBe(40 + corrections.entries.reduce(
-      (sum, entry) => sum + entry.targets.length * ((entry as { senses?: unknown[] }).senses?.length ?? 1),
-      0,
-    ));
+    const exported = [...new Set(Object.values(learningIndex.items).map(pointer => pointer.group))]
+      .flatMap(group => JSON.parse(fs.readFileSync(path.join(process.cwd(), "public", "data", "vocab-learning", release.version, `${group.toLowerCase()}.json`), "utf8")).entries as { senseId: string }[]);
+    expect(LEARNING_COVERAGE.senses).toBe(new Set(exported.map(entry => entry.senseId)).size);
+    expect(LEARNING_COVERAGE.senses).toBeGreaterThanOrEqual(97);
     expect(LEARNING_COVERAGE.rows).toBe(Object.keys(learningIndex.items).length);
     expect(LEARNING_COVERAGE.rows).toBeGreaterThanOrEqual(40);
   });

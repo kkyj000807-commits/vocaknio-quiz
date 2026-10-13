@@ -1,5 +1,72 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-14 — 영어 우선 표시·압축 레이아웃 공개 후보
+
+사용자 최신 요청: 업데이트는 공개 Pages 배포까지이며, 콘텐츠 전체 완료를 기다리지 않고 검증된 UI/기존 누적 수정부터 릴리스한다. 표시1.0/내부학습1.29 유지. 로컬 `C:/Users/USER/Projects/FINETUNE` 잠금42606/PID29192에서 작업.
+
+- 공통 RelationChips는 영어 칩을 먼저 표시하고 한국어 개별 뜻·긴 차이는 별도 펼침으로 보존한다. KoreanReveal은 영어 예문 아래 해석·단서를 기본 닫힘/44px 조작으로 제공한다. 단어장·정답 후 해설의 공통 경로 적용, 의미/정답/ID/저장키 변경 없음.
+- 문제 상단 큰 통계 카드3개와 반복 제스처 안내를 정리했다. 정답·오답·새 문제를 한 줄에, 진행은 기존 분수/진행선에만 표시한다. 카드 내부24→16px. safe-area/동적viewport 기존 구현을 유지하며 실기기 해결을 단정하지 않는다.
+- 기존 소유 시작 오류 구분/백업 내보내기와 15sense 보강도 이번 누적 후보에 포함한다. 사용자 iPhone 원인은 여전히 미확정이며 시작 보호를 우회하지 않는다.
+- 콘텐츠 후속 공정은 섹션별 ①예문·관계어 확보 ②한국어 번역 ③상세 해설 순이다. 단계별 체크포인트/입력해시를 재사용하고 기존 우수 내용을 덮지 않는다. 이번 UI 릴리스를 전체13,347표제어 보강 완료로 세지 않는다. 미검수 후보는 정답 자료로 승격하지 않는다.
+- 검증/공개 판본의 최종 영수증은 외부 `2026-10-14-english-first-release.json` 및 A-latest에 저장한다. 이 문단 자체는 배포 성공 판정이 아니다.
+
+## 2026-10-14 00:50 KST — 로컬 전환 검증 통과·백업 준비, 새 배포 아님
+
+새 로컬 `C:/Users/USER/Projects/FINETUNE`에서 `node scripts/verify-project.mjs` exit0: 데이터/전체 타입 PASS, 61개 suite PASS·1SKIP / 532테스트 PASS·1SKIP, 회귀88.67초. 실측 sampled peak private 타입1,207MiB/회귀2,848MiB. `pnpm security:audit` exit0/750tracked+2untracked/0findings. 1worker `node scripts/build-production-web.mjs audit-output-local-20261014-0050` exit0, Expo bundle 약111초/샘플peak2,133MiB, 자동 Production 출력 감사 PASS(누락참조0/보안0/학습JSON일치). QA manifest1.0/source34e3de43/sourceDirty=true/00:47:12KST: **dirty 로컬 검증물이며 공개 배포하지 않음**. 실제 브라우저/실기기 미검증.
+
+OneDrive만 사용자 승인 후 재시작했고 테스트·빌드 뒤 가용RAM4,218MiB/전체commit20.56GiB, OneDrive전용933MiB·handles10,213. 초반401MiB보다 증가했으므로 내부 누수 해결·장기 무재발을 확정하지 않는다. 기존41GiB점유가 아닌 상태에서 실제 전체검사/빌드는 통과했다. 다른 앱 종료·페이지파일/heap 변경 없음.
+
+기존 원자료/QA 631파일을 `C:/Users/USER/Projects/FINETUNE-reference`로 별도 복사해 해시 불일치0 확인. 앱 자료와 자동 병합하지 않았다. 관련 데이터/사전캐시/검수/생성/테스트/빌드는 로컬에서 처리한다. 기존4개 예약도 로컬로 전환했고 주기/상태/대상대화 일치 재확인. A의 하루1회 변경분 백업은 외부 local-backup.py를 재사용하며 클라우드 업로드를 개발 대기조건으로 삼지 않는다. 백업 fixture4개 PASS(미커밋/미추적·Git복원, 중복생략, 경로격리, 클라우드실패 후 로컬보존·재시도). ZIP/실제 첫 복사 결과는 외부 backup-latest.json 참조.
+
+다음: 현재 소스/데이터의 공개 전 격리 브라우저 게이트와 사용자 iPhone 원인 진단은 여전히 필요하다. 환경 작업을 콘텐츠 확장 완료로 세지 않는다. 활성 deep111표제어/112sense, 전체13,347표제어의 미보강 범위는 이전 큐에서 대량 처리한다. 최신 로컬 dirty를 옛 worktree로 덮거나 동시에 개발하지 않는다.
+
+## 2026-10-14 00:44 KST — 로컬 개발 전환, 검증 진행 중
+
+활성 작업 경로는 **C:/Users/USER/Projects/FINETUNE**이다. 기존 OneDrive main과 finetune-audit-trial은 원본/복구용으로 보존하며 개발을 재개하지 않는다. 같은 branch `finetune-exam-stable-1-0`, HEAD `34e3de436b240b706235fbda9b9b9dc1e8fb4bab` 및 이전 소유 dirty 25+untracked2개를 보존했다. 최초 소스752·의존성51,834파일 SHA-256 불일치0, HEAD/status/staged 동일, git fsck connectivity PASS. `.git`와 node_modules는 독립 로컬 실체이며 Git alternates/의존성 junction 없음. pnpm virtualStoreDir만 로컬 경로로 수정했다. 재설치/원본 삭제/사용자 기록 변경 없음.
+
+OneDrive PID22892 정상종료 응답 없음 → 사용자 별도 승인 후 해당 PID만 강제종료·background 재실행(PID32104). 직전 전용41.447GiB/전체commit60.399GiB/RAM가용1236MiB → 재실행5초 전용0.031GiB/commit19.080GiB/가용3373MiB. 이후 전용약401.5MiB/가용약4.7GiB. 직접적인 압박 해소는 확인했으나 내부 원인·장기 재발 여부는 미확정이다. 사용자 앱 종료를 예약에 자동화하지 않는다.
+
+기존 A/B/C/D 예약의 경로를 목적 도구로 로컬에 전환(주기/권한/ID 보존). 원본 잠금26782/PID27088과 로컬 잠금95523/PID26280을 사용해 복사·전환했고 해제 결과는 외부 보고서에 기록한다. 1worker whole verify를 로컬에서 실행 중이다. 공개판/배포 상태는 이전과 같으며 환경 전환을 공개 앱 수정으로 보고하지 않는다. 최종 결과는 아래 후속 기록과 외부 `2026-10-14-local-migration.json` 참조.
+
+## 2026-10-14 00:30 KST — 영한 콘텐츠 15sense 실제 추가·저장 회귀 검증, 미배포
+
+기준34e3de43/동일 통합 작업실. 기존 시작복구9개 코드·테스트와 main 사용자 dirty를 보존했다. OS 잠금2565/PID16456; 종료 영수증은 외부 A-latest. 원본38,163출현행/13,347고유표제어 SHA `7eba20f388d04e9d7fb10edec635beac5dc7a6c726ef6e25d7daba4ce57908dd` 불변. 사용자 기록·정답·ID·원본 뜻 수정 없음.
+
+- `reviewed-batch-20261014.json`: abhorrent/abiding/abolish/abominate/abundant/acclimate/accomplice/accountant/acquiesce/adage/adore/adroit/altercation/altruistic/ambivalent의 명시 sense15개에 자체 편집 영영·한국어 정의, 창작 영한 예문15개, 문맥 단서, 구문·오답 주의, 짧은 관계어 뜻25개를 추가했다. OEWN2025와 TFD(AHD/Collins) 또는 Collins 직접 페이지를2026.10.14 대조했다. 사전 원문 예문 복제 없음; AI 출처 대조 편집이며 독립 사람 검수 아님. 새 정답 문항 승격0.
+- 기존 builder→index→public group→LearningDetails에80행 연결. 깊이 학습 **96→111고유표제어 /97→112고유sense /165→180출력항목 /230→310연결행**. 반복 출력항목을 sense로 표시하던 집계를 수정했다. canonical110→125sense/253→333행, 필드 COMPLETE92→107·NEEDS_REVIEW18유지. COMPLETE는 자동 필드 완비이며 의미 전수 보증이 아니다.
+- deep SenseDetails에서 공통클러스터로 개별 한국어 뜻을 전달하지 않던 경로 수정. 영어(짧은뜻)·유사어·상세펼침 보존. 미완료9표제어 및 ambivalent/altercation의6행은 private `analysis/qa/reviewed-batch-20261014-held.json`에 저장했다. 전체13,347개 완료 아님.
+- native 연결·수량검사 수정 전2PASS2FAIL→4PASS. deep 렌더28PASS·데이터17PASS. 기존 시작복구의 저장23/이관6/백업10/UI4=43PASS. 전체 실행527PASS5FAIL1SKIP의 실패는 backup mock두곳의 새키 누락4건과110개 고정 baseline1건. 실제키를 모형에 추가하고 신규15개를 분리한 뒤 **기존110개 콘텐츠 SHA를 변경 없이 대조**, 해당3suite40PASS. 타입은 직전 PASS이나 최종 mock상수 추가 후 재검증은 보류.
+- 최종 `verify-project.mjs`: 앞선 데이터 게이트 PASS, type admission 물리3068MiB<3072로exit1 BLOCKED_RESOURCE. 이후 물리2564MiB/commit4498MiB. 변경19파일 lint exit0/오류0·기존배열표기경고4, pnpm security:audit exit0/검출0. 동일 generator 재실행469ms, 주요4출력 hash/mtime불변. 테스트 시간을 의미 검수 생산량으로 계산하지 않았다.
+- 공개00:29재확인: **1.0/source095ee969/2026.10.13 01:48:14KST/dirtyfalse/학습데이터1.29**. 새 Production·격리브라우저·실기기·배포 미실행. 아이폰 실제 원인·해결 미확인. 전체최종PASS나 배포완료로 표시하지 않는다. 자세한 명령·경계는 외부 `2026-10-14-content-and-startup-validation.json`.
+
+**다음:** 이번 소유 미커밋/시작복구 패치를 보존. 물리+commit각각3GiB 회복 시 보류 게이트인 monitored type/full regression부터 재개(입력불변 데이터 감사 반복 불필요). 통과 후 명시stage/security/source커밋→새빈Production/감사→격리학습·재접속→승인Pages·공개 확인. 완료15개는 재작성하지 않고 private OEWN stage와 보류큐에서 다음 batch를 처리한다.
+
+23:19 KST A 점검: 후보34e3de43와 소유 시작복구9개 코드/테스트 패치는 불변, 원본 main 사용자 변경 보존. 가용 물리537MiB/commit7,167MiB·active heavy0으로 영향검사768MiB와 전체3GiB 조건 미달. 검사·빌드·배포 반복0, 기존 FAIL/BLOCKED/NOT_VERIFIED 유지. 실제 원격main1bf27b98/Pages9e5a0ffb·공개1.0/source095ee969/01:48:14KST/dirtyfalse 재확인. checkpoint만 저장하며 다음은 자원 회복 후 기존 시작복구 영향검사부터 재개한다. 잠금79939/PID10396, 해제 영수증은 외부 A-latest. iPhone 원인/해결 및 새 공개 반영은 미확인이다.
+
+21:24 KST A 점검: 시작 복구 후보9개 코드/테스트와 문서의 기존 미커밋 변경을 보존했고 새 코드 수정0. 가용 물리699→450MiB/commit8,584→8,413MiB, active heavy0. 영향검사768MiB·전체검사/빌드3GiB에 미달하여 동일 입력 검증을 반복하지 않았다. 원격34e3de43/main1bf27b98/Pages9e5a0ffb와 공개1.0/source095ee969/01:48:14KST/dirtyfalse를 재확인했다. 배포 BLOCKED_RESOURCE, 기존 미통과 게이트·iPhone 원인 미확정 유지. 잠금99730/PID31076으로 checkpoint만 저장한다. 다음은 메모리 회복 후 migration/backup/store 영향검사부터 재개하며 종료 LOCK_RELEASED 영수증은 외부 A-latest에 기록한다.
+
+19:20 KST A 점검: 18:12 시작 복구 대응9개 코드/테스트와 checkpoint 문서는 소유 확인된 미커밋 그대로이며 추가 코드 변경0. 가용 물리637MiB/commit10,983MiB, active heavy0. focused768MiB·전체3GiB 조건 미달로 미통과 Vitest/type/lint/build는 재시도하지 않았고 이전 isolated5검사·syntax/security 결과를 전체 통과로 승격하지 않았다. 원격34e3de43/main1bf27b98/Pages9e5a0ffb·공개1.0/095ee969/01:48:14KST 재확인. 사용자 iPhone 원인·수정 효과는 미확인, 진단/백업 UI 패치도 아직 미배포다. 잠금23581/PID13024로 이번 기록만 저장; 해제는 A-latest 영수증. 다음 우선순위는 아래 시작복구 관련 focused 검증이며 기존 완료 batch는 반복하지 않는다.
+
+## 2026-10-13 18:12 KST — 사용자 iPhone 시작 실패: 원인 안내·복구 백업 후보, 미배포
+
+사용자가 공개판에서 `학습 기록을 불러오지 못했습니다` 화면을 보고했다고 확인했다. 공개 HTML/JS/CSS/quiz/wordbook HTTP200, IAB 새 탭 첫 화면 표시와 iPhone UA HTTP200은 확인했으나 실기기 저장 실패 원인은 미확정이다. `app/_layout.tsx`가 migration/journal 실패를 같은 문구로 가리고 백업이 있는 설정 진입까지 막는 경로를 확인했다. 원본 기록·버전키·정답·저장 차단은 그대로 유지한다.
+
+소유 변경: vocab-storage-migration에 고정 오류 코드(접근 거부/읽기/공간 부족/쓰기/형식), store에 journal 실패 구분; root의 원본 오류 console 출력 제거·스크롤 가능한 시작 안내·기존 LearningBackupSettings의 exportOnly 경로 연결. 시작 화면에서 복원/덮어쓰기 입력은 제공하지 않는다. 기존 exportLearningBackup에 원본 migration backup을 선택 필드로 보존하고 자동 restore 대상으로 쓰지 않는다. 기존 백업 형식과 구버전 백업 호환 유지. 공개 실패를 임의 bypass하거나 손상/원인 해결로 확정하지 않았다.
+
+검증: 실제 작은 migration 모듈+격리 adapter에서 기존3FAIL→3PASS(접근/형식/quota; 원본 보존), 실제 백업 UI SSR1PASS(exportOnly/자동 호출0), 실제 store의 격리 export1PASS(legacy/journal 원문 보존·복구실행0·쓰기0). 변경9개 TS/TSX syntax0errors, Git보안750tracked/0findings, diff check PASS. 이는 전체 타입·실제 브라우저 검증이 아니다. 새 회귀는 기존 migration/backup UI/store/backup 테스트에 추가했다. focused Vitest 시도는 가용632MiB<768로 exit75; 끝663MiB/commit11,930MiB라 전체3GiB 게이트 미충족, lint/전체verify/빌드/공개배포 보류. 공개1.0/source095ee969/01:48:14KST 유지. 이번 변경이 아이폰에 반영됐다고 보고하지 않는다.
+
+기준34e3de43, OS잠금6879/PID9848. 이전 checkpoint 문서와 이번9파일 패치는 이 대화 소유 미커밋이며 main dirty는 수정하지 않았다. 다음: 새4개 관련 Vitest/저장journal회귀→타입/lint/전체verify→깨끗한소스의 새빌드/출력감사→격리 시작실패/백업/재시도와 기존학습흐름→공개확인. iPhone에서는 오류 코드 확보 전 데이터 삭제 금지; 직접 사이트 저장값/개인 백업은 공개하거나 로그에 넣지 않는다. 잠금 해제 영수증은 A-latest에 기록한다.
+
+17:19 KST A 재확인: 동일 후보34e3de43·공개095ee969/1.0/01:48:14KST, 소유 확인된 checkpoint 문서만 dirty. 가용 물리546MiB/commit13,666MiB, active heavy0. 전체3GiB와 영향768MiB 기준 미달, unchanged native 검사도 반복하지 않음. 코드/데이터 변경0, 전체verify·빌드·UI·배포 보류, lastPassed095ee969 유지. 잠금73005/PID15128 아래 상태 기록만 저장. 다음 조건/게이트 동일, 해제 영수증은 A-latest에 기록.
+
+15:19 KST A 재확인: 후보34e3de43·원격·공개095ee969 모두 동일, 이전13:24 checkpoint만 소유 확인된 미커밋 변경이다. 가용 물리1,139MiB/commit15,023MiB, 실행 중 heavy검사0으로 전체3GiB 조건 미충족. 기존 영향검사는 입력 불변으로 재실행하지 않고 전체검사/빌드/배포 BLOCKED_RESOURCE 유지. 신규 코드·콘텐츠·사용자기록 변경0. 잠금89154/PID14880으로 이번 상태만 저장하고 최종 해제 영수증은 외부 A-latest에 기록한다. 재개 조건과 남은 게이트는 아래와 동일하다.
+
+## 2026-10-13 13:24 KST — A 예약: 동일 후보, RAM 미회복으로 배포 보류
+
+통합/원격 `34e3de43`는 시작 시 clean, main `1bf27b98` 사용자 변경과 Pages `9e5a0ffb`는 보존됐다. 공개 release.json은 **1.0 / 01:48:14 KST / source095ee969 / sourceDirty=false / learningData1.29**로 재확인했다. CIM 가용 물리 RAM **1,067→827MiB**, 가용 commit **15,842→15,654MiB**로 전체 검사·빌드의 각각3,072MiB 기준에 RAM이 미달했다. 명령 분류상 Vitest/tsc/Metro/Expo export 실행0개. 다른 Node를 테스트 worker로 세거나 사용자 프로그램을 종료하지 않았다.
+
+코드·자료 입력 변화0. 기존 통과 영향 검사는 재사용하며 전체 verify/type·Production·격리UI·배포는 **NOT_RUN_RESOURCE/NOT_VERIFIED/BLOCKED**다. 중간 후보523PASS를 최신 전체 통과로 승격하지 않는다. 신규 구현·의미검수·배포0, lastPassedCommit095ee969 유지. 잠금13224/PID3056 아래 checkpoint만 저장하고 종료 Enter/LOCK_RELEASED 영수증을 외부 A-latest에 남긴다. 다음은 물리/commit 각각3GiB 회복 후 아래 후보의 남은 전체 게이트부터 직렬 재개한다. 동일 저메모리 실패나 완료 데이터 batch를 반복하지 않는다.
+
 ## 2026-10-13 — 최신 재개 지점: 전체 후보 준비·빈 동의어 연결 보완, 배포 보류
 
 중간 후보 `532c0de0`의 앱/데이터는 whole verify **523 PASS·1 SKIP / 타입 PASS**, 변경 파일 lint/security 통과했다. 이후 원자료 s 배열이 비어 있어도 유효한 OEWN 동의어가 있으면 단어장 버튼/칩이 나오게 보완했다. 사전 sense 동의어를 먼저 표시하고, 다른 원자료 관계는 대조 전 추가 영역으로 보존한다. 마지막 보완은 실제 corpus 관련 Vitest **31 PASS**, 동일 단위 회귀 native **9 PASS**, 후속 pipeline/동일 회귀 Vitest **16 PASS**, 변경 4파일 lint PASS다. **마지막 보완 후 whole type/verify는 아직 미검증**이며 523건을 최신 전체 성공으로 승격하지 않는다.

@@ -7,6 +7,8 @@ export interface LearningBackup {
   records: Record<string, string | null>;
   pending: Record<string, string>;
   recoveryJournal: string | null;
+  /** Raw legacy originals for manual recovery only; never automatically applied. */
+  migrationBackup?: string | null;
   unreadableKeys: string[];
 }
 export interface LearningBackupPreview {
@@ -30,6 +32,7 @@ export function parseLearningBackup(text: string, allowed: readonly string[], va
     if (!allowed.includes(key)) throw new Error("Unsupported optional record");
     if (!(key in data.records)) data.records[key] = null;
   }
+  if (!(data.migrationBackup === undefined || data.migrationBackup === null || typeof data.migrationBackup === "string")) throw new Error("Unsupported migration backup");
   if (Object.keys(data.records).length !== allowed.length || allowed.some(key => !(key in data.records))) throw new Error("Incomplete backup");
   for (const [key, raw] of Object.entries(data.records)) {
     if (!allowed.includes(key) || !(raw === null || typeof raw === "string")) throw new Error("Unsupported record");

@@ -15,6 +15,8 @@ import {
 import {
   migrateVocabStorage,
   VOCAB_LIST_STORAGE_KEYS,
+  VOCAB_STORAGE_BACKUP_KEY,
+  VocabStorageError,
 } from "@/lib/vocab-storage-migration";
 import type { QuizMode } from "@/lib/vocab";
 import { getVocabItem } from "@/lib/vocab";
@@ -288,12 +290,15 @@ export function exportLearningBackup(): Promise<LearningBackup> {
     }
     let vocabStorageVersion: string | null = null;
     let recoveryJournal: string | null = null;
+    let migrationBackup: string | null = null;
     try { vocabStorageVersion = await AsyncStorage.getItem("vocaknio_vocab_storage_version"); }
     catch { unreadableKeys.push("vocabStorageVersion"); }
     try { recoveryJournal = await AsyncStorage.getItem(LEARNING_WRITE_JOURNAL_KEY); }
     catch { unreadableKeys.push("recoveryJournal"); }
+    try { migrationBackup = await AsyncStorage.getItem(VOCAB_STORAGE_BACKUP_KEY); }
+    catch { unreadableKeys.push("migrationBackup"); }
     return { format: LEARNING_BACKUP_FORMAT, createdAt: new Date().toISOString(), vocabStorageVersion,
-      records, pending: Object.fromEntries([...pendingLearningWrites].filter(([key]) => BACKUP_RECORD_KEYS.includes(key))), recoveryJournal, unreadableKeys };
+      records, pending: Object.fromEntries([...pendingLearningWrites].filter(([key]) => BACKUP_RECORD_KEYS.includes(key))), recoveryJournal, migrationBackup, unreadableKeys };
   }, false);
 }
 
@@ -422,7 +427,9 @@ async function readWrongWordsUnsafe(): Promise<number[]> {
 
 export async function migrateStoredVocabLists() {
   return enqueueLearningStorageTask(async () => {
-    if (["conflict", "unreadable", "failed"].includes(journalStatus)) throw new Error("Learning recovery required before migration");
+    if (journalStatus === "conflict") throw new VocabStorageError("recovery-conflict");
+    if (journalStatus === "unreadable") throw new VocabStorageError("recovery-unreadable");
+    if (journalStatus === "failed") throw new VocabStorageError("recovery-failed");
     return migrateVocabStorage({
     getItem: (key) => AsyncStorage.getItem(key),
     setItem: (key, value) => AsyncStorage.setItem(key, value),

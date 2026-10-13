@@ -5,12 +5,12 @@
     "semanticReview": "NOT_VERIFIED_BY_THIS_AUDIT",
     "note": "COMPLETE는 필수 필드 완비 상태입니다. 출처 검수 상태는 원천 메타데이터로 보존하며, 이 병합·형식 검사는 의미·번역·권리의 재검수가 아닙니다."
   },
-  "generatedAtKst": "2026-10-13T01:43:50+09:00",
+  "generatedAtKst": "2026-10-14T00:21:42+09:00",
   "vocabulary": {
     "sourceRows": 38163,
     "uniqueHeadwords": 13347,
-    "rowsWithCanonicalSense": 253,
-    "rowsWithoutCanonicalSense": 37910
+    "rowsWithCanonicalSense": 333,
+    "rowsWithoutCanonicalSense": 37830
   },
   "rawVocabulary": {
     "recordCount": 38163,
@@ -28,7 +28,7 @@
     "note": "원본 38,163행 스키마는 w/k/s 중심이며, canonical sense 필드는 별도 검수 레이어에서만 제공된다."
   },
   "before": {
-    "canonicalSenseCount": 119,
+    "canonicalSenseCount": 134,
     "blanks": {
       "englishDefinition": 22,
       "koreanMeaning": 22,
@@ -42,7 +42,7 @@
     }
   },
   "after": {
-    "canonicalSenseCount": 110,
+    "canonicalSenseCount": 125,
     "blanks": {
       "englishDefinition": 0,
       "koreanMeaning": 0,
@@ -175,16 +175,16 @@
     }
   ],
   "statusCounts": {
-    "COMPLETE": 92,
+    "COMPLETE": 107,
     "VERIFIED_NO_DATA": 0,
     "FAILED": 0,
     "NEEDS_REVIEW": 18,
     "PENDING": 0
   },
   "frontend": {
-    "learningDetailExportEntryCount": 165,
-    "learningDetailSenseCount": 97,
-    "learningDetailRowCount": 230,
+    "learningDetailExportEntryCount": 180,
+    "learningDetailSenseCount": 112,
+    "learningDetailRowCount": 310,
     "canonicalDirectConsumption": false,
     "note": "LearningDetails는 active-recall와 vocab-learning 그룹 JSON 및 OEWN을 읽습니다. canonical JSON 자체의 생성은 실제 UI 반영 검증을 뜻하지 않습니다."
   },
@@ -221,7 +221,7 @@
   "firstLoss": {
     "unmappedVocabularyRows": {
       "stage": "sense 매핑",
-      "count": 37910,
+      "count": 37830,
       "reason": "원본 어휘 행에 canonical senseId가 아직 없다."
     },
     "mappedSenseMissingFields": {

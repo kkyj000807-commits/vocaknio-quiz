@@ -1003,20 +1003,9 @@ export default function QuizScreen() {
                 />
                 <Text style={s.backBtnText}>문제 풀이 설정</Text>
               </Pressable>
-              <Text style={s.swipeHint}>
-                위아래 스크롤 · 정답 후 왼쪽=다음 · 오른쪽=이전
-              </Text>
             </View>
 
             {sessionNotice ? <Text accessibilityLiveRegion="polite" style={{ color: colors.foreground, paddingHorizontal: 20, paddingBottom: 12, fontSize: 13, lineHeight: 20 }}>{sessionNotice}</Text> : null}
-            <Pressable accessibilityRole="button" accessibilityLabel="같은 범위에서 새 문제 시작" style={{ padding: 12, alignSelf: "flex-end" }} onPress={async () => {
-              if (isMovingRef.current) return;
-              isMovingRef.current = true;
-              await finishSession();
-              setRestartToken((value) => value + 1);
-            }}>
-              <Text style={{ color: colors.primary, fontSize: 13 }}>같은 범위 · 새 문제 시작</Text>
-            </Pressable>
             {/* Stats Row */}
             <View style={s.statsRow}>
               <View style={[s.statBox, s.statOk]}>
@@ -1031,12 +1020,14 @@ export default function QuizScreen() {
                 </Text>
                 <Text style={s.statLabel}>오답</Text>
               </View>
-              <View style={s.statBox}>
-                <Text style={[s.statNum, { color: colors.primary2 as string }]}>
-                  {currentIdx}
-                </Text>
-                <Text style={s.statLabel}>진행</Text>
-              </View>
+              <Pressable accessibilityRole="button" accessibilityLabel="같은 범위에서 새 문제 시작" style={{ minHeight: 44, justifyContent: "center", marginLeft: "auto", paddingHorizontal: 8 }} onPress={async () => {
+                if (isMovingRef.current) return;
+                isMovingRef.current = true;
+                await finishSession();
+                setRestartToken((value) => value + 1);
+              }}>
+                <Text style={{ color: colors.primary, fontSize: 12 }}>새 문제</Text>
+              </Pressable>
             </View>
 
             {/* Progress Bar */}
@@ -1404,10 +1395,11 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     statsRow: {
       flexDirection: "row",
+      alignItems: "center",
       gap: 8,
       paddingHorizontal: 16,
       paddingTop: 4,
-      marginBottom: 14,
+      marginBottom: 8,
     },
     navigationRow: {
       minHeight: 52,
@@ -1440,27 +1432,24 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       textAlign: "right",
     },
     statBox: {
-      flex: 1,
-      backgroundColor: colors.surface,
-      borderWidth: 1,
-      borderColor: colors.border,
-      borderRadius: 12,
-      paddingVertical: 10,
+      flexDirection: "row",
+      gap: 5,
+      paddingVertical: 2,
       alignItems: "center",
     },
     statOk: {},
     statErr: {},
     statNum: {
-      fontSize: 20,
+      fontSize: 14,
       fontWeight: "700",
       fontVariant: ["tabular-nums"],
     },
     statLabel: {
-      fontSize: 9,
+      fontSize: 12,
       color: colors.dim,
       textTransform: "uppercase",
       letterSpacing: 1,
-      marginTop: 2,
+      marginTop: 0,
     },
     progressContainer: {
       paddingHorizontal: 16,
@@ -1492,7 +1481,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       borderWidth: 1,
       borderColor: colors.border,
       borderRadius: 20,
-      padding: 24,
+      padding: 16,
     },
     questionHeader: {
       flexDirection: "row",

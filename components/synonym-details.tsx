@@ -13,7 +13,7 @@ interface SynonymDetailsProps {
   compact?: boolean;
 }
 
-export function SynonymDetails({ item, limit, compact = false }: SynonymDetailsProps) {
+export function SynonymDetails({ item, limit }: SynonymDetailsProps) {
   const details = getSynonymDetails(item);
   const colors = useColors();
   const [sourceOpen, setSourceOpen] = useState(false);
@@ -37,12 +37,12 @@ export function SynonymDetails({ item, limit, compact = false }: SynonymDetailsP
     <View>
       <Text style={{ color: colors.dim, fontSize: 11 }}>{dictionaryWords.length ? "같은 사전 sense 동의어 · OEWN 2025" : "원자료 관계 · 의미 대조 전"} · 개별 뜻 미대조 항목은 영어만 표시</Text>
       <RelationChips terms={primary}
-        limit={limit ?? 5} showNotes={!compact}
+        limit={limit ?? 5}
         renderSource={sourceLabel} />
       {additional.length > 0 && <Pressable accessibilityRole="button" accessibilityState={{ expanded: sourceOpen }} onPress={() => setSourceOpen(value => !value)} style={{ minHeight: 44, justifyContent: "center" }}>
         <Text style={{ color: colors.dim, fontSize: 12 }}>원자료 추가 관계 · 의미 대조 전 {sourceOpen ? "접기" : "보기"}</Text>
       </Pressable>}
-      {sourceOpen && <RelationChips terms={additional.map(detail => ({ word: detail.word, meaningKo: detail.meaning, glossEligible: false }))} showNotes={!compact} renderSource={sourceLabel} />}
+      {sourceOpen && <RelationChips terms={additional.map(detail => ({ word: detail.word, meaningKo: detail.meaning, glossEligible: false }))} renderSource={sourceLabel} />}
     </View>
   );
 }

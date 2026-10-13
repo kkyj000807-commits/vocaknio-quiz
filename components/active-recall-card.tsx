@@ -4,9 +4,9 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useColors } from "@/hooks/use-colors";
 import type { ActiveRecallSense } from "@/lib/active-recall";
 import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
-import { formatExampleRelation } from "@/lib/semantic-cluster";
 import { LearningEvidence } from "@/components/learning-evidence";
 import { PronunciationButton } from "@/components/pronunciation-button";
+import { KoreanReveal } from "@/components/korean-reveal";
 import { LazyReasoningPractice } from "@/components/reasoning-practice";
 import { type VocabItem } from "@/lib/vocab";
 import type { QuizChoice } from "@/lib/quiz-engine";
@@ -21,7 +21,6 @@ type MeaningChoice = { word: string; meaning: string };
 function ExampleRelationCue({
   synonyms,
   antonyms,
-  meanings,
 }: {
   synonyms: readonly string[];
   antonyms: readonly string[];
@@ -30,7 +29,7 @@ function ExampleRelationCue({
   const colors = useColors();
   const same = [...new Set(synonyms)].slice(0, 5);
   const opposite = [...new Set(antonyms)].slice(0, 4);
-  const format = (word: string) => formatExampleRelation(word, meanings);
+  const format = (word: string) => word;
   if (same.length === 0 && opposite.length === 0) return null;
   return (
     <View style={[styles.exampleRelations, { borderColor: colors.border, backgroundColor: colors.surface }]}>
@@ -191,10 +190,12 @@ export function ActiveRecallAnswer({ recall, choices, item, showRelationNotes = 
       {recall.exampleSentences.slice(0, 1).map(example => <View key={example.en} style={styles.example}>
         <Text style={[styles.detailText, { color: colors.foreground }]}>{example.en}</Text>
         <PronunciationButton text={example.en} compact />
-        {example.ko && <Text style={[styles.detailText, { color: colors.foreground }]}>{example.ko}</Text>}
-        {example.cueKo && <Text style={[styles.note, { color: colors.muted }]}>문맥 단서: {example.cueKo}</Text>}
+        <KoreanReveal defaultOpen={showRelationNotes}>
+          {example.ko && <Text style={[styles.detailText, { color: colors.foreground }]}>{example.ko}</Text>}
+          {example.cueKo && <Text style={[styles.note, { color: colors.muted }]}>문맥 단서: {example.cueKo}</Text>}
+        </KoreanReveal>
       </View>)}
-      {recall.contextExplanationKo && <Text style={[styles.note, { color: colors.muted }]}>{recall.contextExplanationKo}</Text>}
+      {recall.contextExplanationKo && <KoreanReveal label="문맥 상세 설명" defaultOpen={showRelationNotes}><Text style={[styles.note, { color: colors.muted }]}>{recall.contextExplanationKo}</Text></KoreanReveal>}
       <Pressable
         accessibilityRole="button"
         accessibilityState={{ expanded }}
@@ -212,8 +213,10 @@ export function ActiveRecallAnswer({ recall, choices, item, showRelationNotes = 
             <View key={`${example.en}-${index}`} style={styles.example}>
               <Text style={[styles.detailText, { color: colors.foreground }]}>{example.en}</Text>
               <PronunciationButton text={example.en} compact />
-              {example.ko ? <Text style={[styles.detailText, { color: colors.foreground }]}>{example.ko}</Text> : null}
-              {example.cueKo ? <Text style={[styles.note, { color: colors.muted }]}>문맥 단서: {example.cueKo}</Text> : null}
+              <KoreanReveal>
+                {example.ko ? <Text style={[styles.detailText, { color: colors.foreground }]}>{example.ko}</Text> : null}
+                {example.cueKo ? <Text style={[styles.note, { color: colors.muted }]}>문맥 단서: {example.cueKo}</Text> : null}
+              </KoreanReveal>
               <ExampleRelationCue
                 synonyms={[...recall.exactSynonyms, ...recall.nearSynonyms]}
                 antonyms={recall.antonyms}

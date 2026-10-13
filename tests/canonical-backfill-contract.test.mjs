@@ -105,9 +105,14 @@ describe("canonical backfill source tuple contract", () => {
 });
 
 it("preserves the 110-record content/ID/meaning/source/status baseline while enriching audit metadata", () => {
-  // Explicit pre-change baseline for this metadata-only repair. Future reviewed
-  // content changes must intentionally update this snapshot, never silently.
-  const entries = JSON.parse(fs.readFileSync("assets/canonical-sense-content.json", "utf8")).entries;
+  // Keep the original hash: the explicitly approved additive batch must not
+  // rewrite any of the 110 pre-existing records or weaken their baseline.
+  const allEntries = JSON.parse(fs.readFileSync("assets/canonical-sense-content.json", "utf8")).entries;
+  const batch = JSON.parse(fs.readFileSync("data/vocab-learning/reviewed-batch-20261014.json", "utf8"));
+  const newIds = new Set(batch.map(entry => entry.senseId));
+  expect(newIds.size).toBe(15);
+  expect(allEntries.filter(entry => newIds.has(entry.senseId))).toHaveLength(15);
+  const entries = allEntries.filter(entry => !newIds.has(entry.senseId));
   const fields = ["senseId", "word", "partOfSpeech", "englishDefinition", "koreanMeaning", "contextExplanation",
     "exampleSentence", "exampleTranslation", "exampleExplanation", "synonyms", "distinctionNote", "sourceIds", "itemIds", "definitionStatus"];
   const snapshot = entries.map(entry => Object.fromEntries(fields.map(field => [field, entry[field]])))

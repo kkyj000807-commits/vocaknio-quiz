@@ -24,6 +24,16 @@ vi.mock("@/hooks/use-colors", () => ({ useColors: () => ({ foreground: "#222", m
 beforeEach(() => { ui.index = 0; ui.expanded = true; ui.preview = null; ui.messages = []; ui.buttons = []; store.restore.mockReset(); store.inspect.mockReset(); store.export.mockReset(); });
 const preview = { backup: { createdAt: "2026-10-12T15:00:00Z" }, entries: [["fixture", "[]"]], conflicts: [], unchanged: 7 };
 
+it("makes startup export reachable without offering restore writes before migration is ready", () => {
+  ui.preview = preview;
+  const html = renderToStaticMarkup(<LearningBackupSettings exportOnly />);
+  expect(html).toContain("백업 파일 다운로드");
+  expect(html).not.toContain('type="file"');
+  expect(html).not.toContain("빈 학습 저장소에 복원");
+  expect(store.restore).not.toHaveBeenCalled();
+  expect(store.export).not.toHaveBeenCalled();
+});
+
 it("does not restore merely by opening settings or selecting a preview", () => {
   ui.preview = preview;
   const html = renderToStaticMarkup(<LearningBackupSettings />);

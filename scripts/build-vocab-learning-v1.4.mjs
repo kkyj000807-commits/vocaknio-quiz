@@ -6,7 +6,7 @@ import { attachReasoningLessons } from "./lib/reasoning-lessons.mjs";
 
 const root = process.cwd();
 const sourceDirectory = path.join(root, "data", "vocab-learning");
-const sourcePaths = ["reviewed-a-v1.4.json", "reviewed-b-v1.4.json"].map((name) =>
+const sourcePaths = ["reviewed-a-v1.4.json", "reviewed-b-v1.4.json", "reviewed-batch-20261014.json"].map((name) =>
   path.join(sourceDirectory, name),
 );
 const vocabPath = path.join(root, "assets", "vocab-v1.4.json");
@@ -58,6 +58,13 @@ for (const entry of entries) {
     }
   }
   if (!Array.isArray(entry.contrasts)) fail(`${entry.id}: contrasts 배열 누락`);
+  if (entry.relationMeaningsKo !== undefined) {
+    if (!entry.relationMeaningsKo || typeof entry.relationMeaningsKo !== "object" || Array.isArray(entry.relationMeaningsKo)) fail(`${entry.id}: 관계어 뜻 형식 오류`);
+    const relations = new Set([...(entry.exactSynonyms ?? []), ...(entry.nearSynonyms ?? [])]);
+    for (const [word, meaning] of Object.entries(entry.relationMeaningsKo)) {
+      if (!relations.has(word) || typeof meaning !== "string" || !meaning.trim() || meaning.length > 48) fail(`${entry.id}: 개별 관계어 뜻 오류: ${word}`);
+    }
+  }
   if (typeof entry.example?.en !== "string" || !entry.example.en.trim() || typeof entry.example?.ko !== "string" || !entry.example.ko.trim() || !["source", "editorial"].includes(entry.example.kind)) fail(`${entry.id}: 예문 누락`);
   if (entry.example?.cueKo !== undefined && (typeof entry.example.cueKo !== "string" || !entry.example.cueKo.trim())) fail(`${entry.id}: 빈 문맥 단서`);
   if (entry.verification?.status !== "cross-agreed" || !entry.verification.checkedAtKst || !entry.verification.reviewer) fail(`${entry.id}: 교차 검수 미완료`);
@@ -123,7 +130,13 @@ const checkedAtKst = [...entries]
   .at(-1);
 const index = {
   version: learningVersion,
-  coverage: { senses: entries.length, rows: Object.keys(itemPointers).length, checkedAtKst },
+  coverage: {
+    senses: new Set(entries.map((entry) => entry.senseId ?? entry.id)).size,
+    headwords: new Set(entries.map((entry) => normalizeLexeme(entry.headword))).size,
+    exportEntries: entries.length,
+    rows: Object.keys(itemPointers).length,
+    checkedAtKst,
+  },
   items: Object.fromEntries(Object.entries(itemPointers).sort(([left], [right]) => left.localeCompare(right))),
 };
 
@@ -157,5 +170,5 @@ for (const group of groups) {
   writeJsonCheckpoint(path.join(outputRoot, `${group.toLowerCase()}.json`), payload);
 }
 writeJsonCheckpoint(indexPath, index, { indent: 2 });
-console.log(`깊이 학습 빌드 완료: ${entries.length}개 뜻 / ${Object.keys(itemPointers).length}개 목록 연결`);
+console.log(`깊이 학습 빌드 완료: ${index.coverage.headwords}개 고유 표제어 / ${index.coverage.senses}개 고유 뜻 / ${entries.length}개 출력 항목 / ${index.coverage.rows}개 목록 연결`);
 console.log(`미국식 실제 녹음: ${entries.filter((entry) => entry.audio).length}개`);

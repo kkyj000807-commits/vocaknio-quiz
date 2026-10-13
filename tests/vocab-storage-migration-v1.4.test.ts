@@ -8,6 +8,7 @@ import {
   VOCAB_STORAGE_BACKUP_KEY,
   VOCAB_STORAGE_VERSION_KEY,
   type VocabStorageAdapter,
+  getVocabStorageFailureMessage,
 } from "@/lib/vocab-storage-migration";
 
 class MemoryStorage implements VocabStorageAdapter {
@@ -27,6 +28,40 @@ class MemoryStorage implements VocabStorageAdapter {
 }
 
 describe("runtime vocabulary storage migration", () => {
+  it("distinguishes blocked reads without exposing the original storage error or writing records", async () => {
+    const storage = new MemoryStorage();
+    storage.values.set(VOCAB_LIST_STORAGE_KEYS.bookmarks, "[1]");
+    storage.getItem = async () => { throw Object.assign(new Error("private browser detail"), { name: "SecurityError" }); };
+    const error = await migrateVocabStorage(storage).catch(error => error);
+    expect(error.code).toBe("read-blocked");
+    expect(getVocabStorageFailureMessage(error)).toContain("접근");
+    expect(String(error)).not.toContain("private browser detail");
+    expect([...storage.values]).toEqual([[VOCAB_LIST_STORAGE_KEYS.bookmarks, "[1]"]]);
+  });
+
+  it("preserves malformed source bytes and reports format failure, not storage-access failure", async () => {
+    const storage = new MemoryStorage();
+    storage.values.set(VOCAB_LIST_STORAGE_KEYS.bookmarks, "{broken");
+    const before = new Map(storage.values);
+    const error = await migrateVocabStorage(storage).catch(error => error);
+    expect(error.code).toBe("record-format");
+    expect(storage.values).toEqual(before);
+  });
+
+  it("reports quota failure while preserving originals and succeeds on an explicitly retried recovered adapter", async () => {
+    const storage = new MemoryStorage();
+    storage.values.set(VOCAB_LIST_STORAGE_KEYS.bookmarks, "[1]");
+    const write = storage.setItem.bind(storage);
+    storage.setItem = async () => { throw Object.assign(new Error("private quota detail"), { name: "QuotaExceededError" }); };
+    const error = await migrateVocabStorage(storage).catch(error => error);
+    expect(error.code).toBe("storage-full");
+    expect(storage.values.get(VOCAB_LIST_STORAGE_KEYS.bookmarks)).toBe("[1]");
+    expect(storage.values.has(VOCAB_STORAGE_VERSION_KEY)).toBe(false);
+    storage.setItem = write;
+    await migrateVocabStorage(storage);
+    expect(storage.values.get(VOCAB_STORAGE_VERSION_KEY)).toBe(VOCAB_STORAGE_VERSION);
+  });
+
   it("backs up originals before writing mapped v1.4 lists", async () => {
     const mappedLegacyNum = Number(Object.keys(VOCAB_META.legacyMigration.numMap)[0]);
     const unresolvedLegacyNum = VOCAB_META.legacyMigration.unresolvedNums[0];

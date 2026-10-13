@@ -8,6 +8,12 @@ import { VOCAB, SECTION_RANGES, formatVocabSections, getSynonymDetails, getSynon
 import { getDefinitionQuizEntry, getDefinitionAnswerRelations } from "@/lib/definition-quiz";
 
 const theme = vi.hoisted(() => ({ mode: "light" as "light" | "paper" | "dark" }));
+const disclosure = vi.hoisted(() => ({ open: false }));
+vi.mock("@/components/korean-reveal", async importOriginal => {
+  const original = await importOriginal<typeof import("@/components/korean-reveal")>();
+  return { KoreanReveal: (props: React.ComponentProps<typeof original.KoreanReveal>) =>
+    <original.KoreanReveal {...props} defaultOpen={disclosure.open} /> };
+});
 vi.mock("react-native", () => {
   const component = (tag: string) => function Mock({ children, style, testID }: { children?: React.ReactNode; style?: object | object[]; testID?: string }) {
     return React.createElement(tag, { style: Object.assign({}, ...(Array.isArray(style) ? style : [style])), "data-testid": testID }, children);
@@ -80,7 +86,11 @@ describe("existing wordbook section provenance", () => {
     const details = getSynonymDetails(item);
     const html = render(<SynonymDetails item={item} compact limit={1} />);
     expect(html).toContain(details[0].word);
+    expect(html).not.toContain(details[0].meaning);
+    expect(html).toContain("관계어 뜻·차이 보기");
+    disclosure.open = true;
     const full = render(<SynonymDetails item={item} compact={false} limit={1} />);
+    disclosure.open = false;
     expect(full).toContain(details[0].meaning);
     expect(html).toContain("단어장 · V502");
     expect(html.match(/data-testid="word-section-label"/g)).toHaveLength(1);

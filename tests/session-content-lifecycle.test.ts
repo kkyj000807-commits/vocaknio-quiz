@@ -18,7 +18,7 @@ vi.mock("@/lib/quiz-engine", () => ({ validateQuestion: () => fixture.current,
 vi.mock("@/lib/canonical-learning", () => ({ getItemLearningTargets: () => [] }));
 vi.mock("@/lib/vocab-storage-migration", () => ({ VOCAB_LIST_STORAGE_KEYS: {
   bookmarks: "vocaknio_bookmarks", wrongWords: "vocaknio_wrong_words", mastered: "vocaknio_mastered",
-}, migrateVocabStorage: async () => undefined }));
+}, VOCAB_STORAGE_BACKUP_KEY: "vocaknio_vocab_v1_4_migration_backup", migrateVocabStorage: async () => undefined }));
 vi.mock("@react-native-async-storage/async-storage", () => ({ default: {
   getItem: async (key: string) => fixture.disk.get(key) ?? null,
   setItem: async (key: string, raw: string) => { fixture.disk.set(key, raw); },

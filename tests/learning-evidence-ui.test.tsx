@@ -3,12 +3,15 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ActiveRecallAnswer, ActiveRecallPrompt } from "@/components/active-recall-card";
-import { ActiveRecallStudyDetails, LearningDetails } from "@/components/learning-details";
+import { ActiveRecallStudyDetails, LearningDetails, SenseDetails } from "@/components/learning-details";
+import reviewedBatch from "@/data/vocab-learning/reviewed-batch-20261014.json";
+import type { LearningEntry } from "@/lib/vocab-learning";
 import { LearningEvidence } from "@/components/learning-evidence";
 import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
 import { ACTIVE_RECALL_SENSES } from "@/lib/active-recall";
 
 const native = vi.hoisted(() => ({ openURL: vi.fn(), links: [] as { label: string; press: () => void }[] }));
+const disclosure = vi.hoisted(() => ({ forceOpen: true }));
 vi.mock("react-native", () => {
   const component = (tag: string) => function MockComponent({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) {
     if (props.accessibilityRole === "link") native.links.push({ label: String(props.accessibilityLabel), press: props.onPress as () => void });
@@ -17,6 +20,13 @@ vi.mock("react-native", () => {
   return { View: component("div"), Text: component("span"), Pressable: component("button"), ActivityIndicator: component("span"), StyleSheet: { create: <T,>(styles: T) => styles }, Linking: { openURL: native.openURL } };
 });
 vi.mock("@/components/reasoning-practice", () => ({ ReasoningPractice: () => null, LazyReasoningPractice: () => null }));
+// These tests check full content preservation. Real disclosure defaults and
+// interaction are tested separately in relation-layout-cases and browser QA.
+vi.mock("@/components/korean-reveal", async importOriginal => {
+  const original = await importOriginal<typeof import("@/components/korean-reveal")>();
+  return { KoreanReveal: (props: React.ComponentProps<typeof original.KoreanReveal>) =>
+    <original.KoreanReveal {...props} defaultOpen={disclosure.forceOpen || props.defaultOpen} /> };
+});
 vi.mock("@/components/pronunciation-button", () => ({ PronunciationButton: ({ text }: { text: string }) => React.createElement("button", { "aria-label": "예문 읽기", "data-speech": text }) }));
 vi.mock("@/hooks/use-colors", () => ({ useColors: () => ({ foreground: "#222", muted: "#666", primary: "#5046e5", success: "#187", error: "#c33", surface: "#fff", card: "#eee", border: "#ccc" }) }));
 
@@ -28,7 +38,27 @@ const render = (element: React.ReactElement) => renderToStaticMarkup(element.typ
 const occurrences = (text: string, value: string) => text.split(value).length - 1;
 
 describe("reviewed learning evidence and explanation boundaries", () => {
-  beforeEach(() => { native.links.length = 0; native.openURL.mockReset().mockResolvedValue(undefined); });
+  it("passes each reviewed batch relation gloss through the real deep-detail renderer", () => {
+    for (const source of reviewedBatch) {
+      const entry: LearningEntry = {
+        ...source, contextExplanationKo: source.usageKo, definitionStatus: "production", definitionKind: "editorial",
+        example: { ...source.example, kind: "editorial" },
+        verification: { ...source.verification, status: "cross-agreed" },
+        relationMeaningsKo: Object.fromEntries(Object.entries(source.relationMeaningsKo)
+          .filter((pair): pair is [string, string] => typeof pair[1] === "string")),
+      };
+      const html = render(<SenseDetails entry={entry} index={0} count={1} />);
+      expect(html).toContain(entry.example.en);
+      expect(html).toContain(entry.example.ko);
+      expect(html).toContain(entry.example.cueKo!);
+      for (const [word, meaning] of Object.entries(entry.relationMeaningsKo!)) {
+        expect(html.replace(/<[^>]+>/g, "")).toContain(`${word} (${meaning})`);
+      }
+      expect(html.indexOf("의미 클러스터")).toBeLessThan(html.indexOf(entry.definitionEn));
+      expect(html).not.toContain(entry.contrasts[0].noteKo);
+    }
+  });
+  beforeEach(() => { disclosure.forceOpen = true; native.links.length = 0; native.openURL.mockReset().mockResolvedValue(undefined); });
 
   it("fall short of는 정답 후 한국어 풀이·관계어 뜻을 열고 정답 전에는 감춘다", () => {
     const sense = ACTIVE_RECALL_SENSES.find(entry => entry.senseId === "fall-short-of:below-required-standard")!;
@@ -536,6 +566,7 @@ describe("reviewed learning evidence and explanation boundaries", () => {
 
   it("keeps long reviewed meanings behind details in the default answer, without deleting them", () => {
     const sense = ACTIVE_RECALL_SENSES.find(entry => entry.senseId === "without-fail:every-time-no-exception")!;
+    disclosure.forceOpen = false;
     const closed = renderToStaticMarkup(<ActiveRecallAnswer recall={sense} />);
     const opened = render(<ActiveRecallAnswer recall={sense} />);
     expect(closed).toContain("관계어 뜻·차이 보기");
@@ -543,6 +574,8 @@ describe("reviewed learning evidence and explanation boundaries", () => {
       expect(closed).not.toContain(meaning);
       expect(opened).toContain(meaning);
     }
-    expect(closed).toContain(sense.exampleSentences[0].ko);
+    expect(closed).toContain(sense.exampleSentences[0].en);
+    expect(closed).not.toContain(sense.exampleSentences[0].ko);
+    expect(opened).toContain(sense.exampleSentences[0].ko);
   });
 });

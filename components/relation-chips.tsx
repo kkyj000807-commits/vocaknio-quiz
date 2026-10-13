@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useColors } from "@/hooks/use-colors";
+import { KoreanReveal } from "@/components/korean-reveal";
 import { shortRelationGloss, type SemanticRelationTerm } from "@/lib/semantic-cluster";
 
 type ChipTerm = Pick<SemanticRelationTerm, "word" | "meaningKo"> & { kind?: SemanticRelationTerm["kind"]; glossEligible?: boolean };
@@ -14,16 +15,14 @@ export function RelationChips({ terms, limit = 5, showNotes = false, renderSourc
 }) {
   const colors = useColors();
   const [allOpen, setAllOpen] = useState(false);
-  const [notesOpen, setNotesOpen] = useState(false);
   const count = Number.isFinite(limit) ? Math.max(1, Math.floor(limit)) : 5;
   const visible = allOpen ? terms : terms.slice(0, count);
-  const notes = terms.filter(term => term.meaningKo && (term.glossEligible === false || !shortRelationGloss(term.meaningKo)));
+  const notes = visible.filter(term => term.meaningKo);
   return <View style={s.body}>
     <View style={s.chips}>
       {visible.map(term => <View key={`${term.kind ?? "source"}:${term.word}`} style={[s.chip, { backgroundColor: colors.background }]}>
         <Text style={[s.word, { color: colors.foreground }]}>
           {term.kind === "near" ? "≈ " : ""}{term.word}
-          {term.glossEligible !== false && shortRelationGloss(term.meaningKo) ? <Text style={[s.gloss, { color: colors.muted }]}> ({shortRelationGloss(term.meaningKo)})</Text> : null}
         </Text>
         {renderSource?.(term.word)}
       </View>)}
@@ -31,10 +30,11 @@ export function RelationChips({ terms, limit = 5, showNotes = false, renderSourc
     {terms.length > count && <Pressable accessibilityRole="button" accessibilityState={{ expanded: allOpen }} onPress={() => setAllOpen(value => !value)} style={s.button}>
       <Text style={{ color: colors.primary }}>{allOpen ? "접기" : `더보기 · ${terms.length - count}개`}</Text>
     </Pressable>}
-    {notes.length > 0 && !showNotes && <Pressable accessibilityRole="button" accessibilityState={{ expanded: notesOpen }} onPress={() => setNotesOpen(value => !value)} style={s.button}>
-      <Text style={{ color: colors.primary }}>관계어 뜻·차이 {notesOpen ? "접기" : "보기"}</Text>
-    </Pressable>}
-    {(showNotes || notesOpen) && notes.map(term => <Text key={`note:${term.word}`} style={[s.note, { color: colors.muted }]}>{term.word} — {term.meaningKo}</Text>)}
+    {notes.length > 0 && <KoreanReveal key={terms.map(term => `${term.word}:${term.meaningKo ?? ""}`).join("|")} label="관계어 뜻·차이" defaultOpen={showNotes}>
+      {notes.map(term => <Text key={`note:${term.word}`} style={[s.note, { color: colors.muted }]}>
+        {term.word}{term.glossEligible !== false && shortRelationGloss(term.meaningKo) ? ` (${shortRelationGloss(term.meaningKo)})` : ` — ${term.meaningKo}`}
+      </Text>)}
+    </KoreanReveal>}
   </View>;
 }
 
