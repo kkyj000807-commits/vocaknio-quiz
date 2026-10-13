@@ -10,6 +10,10 @@
     "archiveSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51"
   },
   "coverage": {
+    "referenceExampleHeadwords": 8056,
+    "referenceExampleSenses": 18999,
+    "referenceExampleRows": 26230,
+    "reviewedExampleTranslations": 40,
     "totalRows": 38163,
     "totalUniqueHeadwords": 13347,
     "matchedRows": 34726,

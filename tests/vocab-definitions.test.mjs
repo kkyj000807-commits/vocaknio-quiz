@@ -22,6 +22,24 @@ function recordsForHeadword(headword) {
 }
 
 describe("OEWN definition aliases", () => {
+  it("delivers licensed sense-specific examples independently of quiz eligibility", () => {
+    const unique = new Map(files.flatMap(file => Object.entries(file.headwords)));
+    const withExamples = [...unique.values()].filter(entry => entry.senses.some(sense => sense.examples?.length));
+    expect(withExamples.length).toBe(meta.coverage.referenceExampleHeadwords);
+    expect(withExamples.length).toBeGreaterThan(7900);
+    const abandon = unique.get("abandon");
+    expect(abandon.status).toBe("dictionary_primary_unreviewed");
+    expect(abandon.senses.find(s => s.senseId === "abandon%1:07:00::").examples).toContain("she danced with abandon");
+    expect(abandon.senses.filter(s => s.partOfSpeech === "verb").every(s => !s.examples.includes("she danced with abandon"))).toBe(true);
+    for (const entry of unique.values()) for (const sense of entry.senses) {
+      expect(new Set(sense.examples).size).toBe(sense.examples.length);
+      expect(sense.examples.every(en => typeof en === "string" && en.trim() && !en.startsWith("{'"))).toBe(true);
+      for (const example of sense.reviewedExamples) {
+        expect(sense.examples).toContain(example.en);
+        expect(example.ko.trim()).not.toBe("");
+      }
+    }
+  });
   it("exposes reviewed punctuation variants as non-quiz dictionary candidates", () => {
     const records = recordsForHeadword("gung-ho");
     expect(records.length).toBeGreaterThan(0);

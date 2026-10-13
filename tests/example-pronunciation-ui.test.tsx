@@ -1,7 +1,7 @@
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, it, vi } from "vitest";
-import { ActiveRecallStudyDetails } from "@/components/learning-details";
+import { ActiveRecallStudyDetails, DictionaryExamples } from "@/components/learning-details";
 import { ActiveRecallPrompt, DefinitionRecallPrompt } from "@/components/active-recall-card";
 import { ACTIVE_RECALL_SENSES } from "@/lib/active-recall";
 const disclosure = vi.hoisted(() => ({ open: false }));
@@ -47,4 +47,28 @@ it("answer-side examples and audio never leak into the prompt", () => {
   expect(html).not.toContain("data-example-speech");
   expect(html).not.toContain(entry.koreanMeaning);
   expect(renderToStaticMarkup(<DefinitionRecallPrompt definition="An English definition." />)).not.toContain("data-example-speech");
+});
+
+it("dictionary reference examples are available without quiz eligibility and keep Korean optional", () => {
+  const sense = { senseId: "reference-only", partOfSpeech: "verb", definition: "A distinct meaning.",
+    examples: ["They abandoned the plan.", "She abandoned the search.", "He abandoned the project."],
+    reviewedExamples: [{ en: "They abandoned the plan.", ko: "그들은 그 계획을 포기했다.", cueKo: "계획을 더 추진하지 않았다." }] };
+  disclosure.open = false;
+  const html = renderToStaticMarkup(<DictionaryExamples sense={sense} />);
+  expect(html).toContain("They abandoned the plan.");
+  expect(html).not.toContain("그들은 그 계획을 포기했다.");
+  expect(html.match(/data-example-speech=/g)).toHaveLength(2);
+  expect(html).toContain("모두 보기");
+  disclosure.open = true;
+  expect(renderToStaticMarkup(<DictionaryExamples sense={sense} />)).toContain("그들은 그 계획을 포기했다.");
+  disclosure.open = false;
+});
+
+it("does not borrow a translation from a different example or synthesize missing examples", () => {
+  disclosure.open = true;
+  const sense = { senseId: "different-sense", partOfSpeech: "noun", definition: "Another meaning.", examples: ["A source phrase"],
+    reviewedExamples: [{ en: "Not this example", ko: "다른 뜻의 번역", cueKo: "다른 문맥" }] };
+  expect(renderToStaticMarkup(<DictionaryExamples sense={sense} />)).not.toContain("다른 뜻의 번역");
+  expect(renderToStaticMarkup(<DictionaryExamples sense={{ ...sense, examples: [] }} />)).toBe("");
+  disclosure.open = false;
 });

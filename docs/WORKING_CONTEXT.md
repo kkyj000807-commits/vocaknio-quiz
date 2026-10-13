@@ -1,5 +1,17 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-14 — 전체 사전 용례 연결·40개 영한 예문 배치
+
+배포 전 최종 verify exit0: 537PASS·1기존SKIP/62suitePASS·1SKIP, 타입·데이터 PASS, 95.22초/samplepeak2381MiB. 관련 ESLint exit0, Git 보안761tracked+1untracked/0findings, diff check PASS. 최초 검사에서 발견한 신규 예문 필드와 옛 fixture 불일치는 fixture 보완 및 잘못된 번역 연결 거부 검사 추가 후 해소했다. 아직 새 공개 배포를 뜻하지 않으며 최종 manifest·브라우저·Pages 결과는 후속 체크포인트로 남긴다.
+
+로컬 잠금67393/PID14680. 사용자 요청은 예문 작업과 공개 배포. OEWN 원본 ZIP SHA7d749f6e…b51을 공식 주소에서 다시 확보해 기존 pinned hash와 일치 확인했다. 출제용 단일-sense 자산에만 있던 예문 경로를 전체 사전 lexical sense 참고층으로 확장했다. 8,056고유표제어/18,999lexical sense/26,230출현행에 원문 용례 연결; 기존 사전경로2,023표제어 대비 신규연결6,057(객체 예문만 있던24표제어 보류). 짧은 구·같은 의미군의 다른 단어 용례도 있으므로 전체 자연스러운 문장·한국어 뜻 정합성 검수 완료로 세지 않는다.
+
+전체 데이터의 예문/용례 도달 가능 범위는8,122/13,347표제어, 영한+단서 tuple155표제어. 40개 표제어/40sense/40원문 예문에 자체 한국어 해석·문맥 단서를 추가하고 원본행/사전ZIP/공개JSON 각각40/40대조. 독립 사람 검수 아님; 정답 승격 없음. 영어 먼저, 한국어 펼침, 용례2개 이후 더보기. capsize 경고문 번역의 조건 연결을 '흔들면'으로 명확화했다. 원문에 별도 출처가 달린 object 예문은 권리 재검토 전 제외하여 Python dict문자열 노출도 차단했다.
+
+기존 quiz4114표제어/11360행·정답·원본38163행·저장키 불변. generator 재실행3,983ms/10개산출물 hash+mtime불변. `analysis/qa/examples-delivery-20261014.json`에 전체 섹션별 집계/잔여queue/입력해시 저장. 원문과 맞지 않는annuity/call it quits/bottle up 등5항목은 배치held, 전체 영어용례없는5,225표제어는 남은 보강 대상. 중앙DB연결미확인 sync_required. 통합 검증/빌드/공개 확인 결과는 이 회차 외부 release 영수증에 이어 기록하며 이 문단만으로 배포 완료를 뜻하지 않는다.
+
+2026-10-14 01:31 KST 예약 A: **NO_CHANGE**. 로컬/원격 source3f26d78은 공개841fbdd 이후 이 문서 기록만 추가됐고 앱·데이터 입력과 초기 working tree는 변경 없음. 공개1.0/01:21:16/source841fbdd/Pages4ca05ff 및 실제 JS HTTP200 재확인. 전체 검사·빌드·재배포 생략, 기존 실패·실기기 미검증 상태 유지. 세부 명령/잠금/백업 결과는 외부 A-latest.json latestHeartbeatCheckpoint에 기록하며 이 체크포인트 자체를 새 배포 이유로 삼지 않는다.
+
 ## 2026-10-14 01:26 KST — 영어 우선 UI·FT 브랜드 공개 확인 완료
 
 현재 공개 **1.0 / 2026.10.14 01:21:16 KST / source841fbdd8cfc601dc22fca7e3d906a4a39d09e448 / sourceDirty=false / Pages4ca05ff03cf3a79459a1e588ff15307486e3ca60**. GitHub Pages built, 일반 release URL 일치, 공개 JS/Apple180/공유512/favicon/V101 학습JSON의 SHA-256이 감사 산출물과 모두 일치했다. 공개 IAB 홈 FT로고·실제 entry-829f97c87856ccfd11d8eac3ccbac95f.js 로딩 확인, 사용자 공개 답변·개인 기록 조작 없음.

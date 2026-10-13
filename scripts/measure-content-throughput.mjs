@@ -102,9 +102,12 @@ export function measureContent(inputs, batchIndex = 0) {
     const oewnQuiz = rows.map(row => definitionQuiz.entries[definitionQuiz.items[row.id]]).filter(Boolean);
     const examples = [...active.flatMap(entry => entry.exampleSentences ?? []), ...learning.map(entry => entry.example).filter(Boolean),
       ...questions.map(entry => ({ en: entry.contextEn, ko: entry.contextKo, cueKo: entry.evidence }))];
-    const hasEnglishExample = examples.some(example => present(example.en)) || oewnQuiz.some(entry => entry.examples?.some(present));
+    const hasEnglishExample = examples.some(example => present(example.en)) || oewnQuiz.some(entry => entry.examples?.some(present))
+      || dictionary.some(entry => entry?.senses?.some(sense => sense.examples?.some(present)));
     const hasBilingualCueTuple = examples.some(example => present(example.en) && present(example.ko) && present(example.cueKo))
-      || learning.some(entry => present(entry.example?.en) && present(entry.example?.ko) && present(entry.example?.cueKo ?? entry.examTrapKo));
+      || learning.some(entry => present(entry.example?.en) && present(entry.example?.ko) && present(entry.example?.cueKo ?? entry.examTrapKo))
+      || dictionary.some(entry => entry?.senses?.some(sense => sense.reviewedExamples?.some(example =>
+        sense.examples?.includes(example.en) && present(example.ko) && present(example.cueKo))));
     const deliveryPaths = [...new Set([...rows.map(row => activeByRow.has(row.id) ? "active-recall-detail"
       : learningByRow.has(row.id) ? "vocab-learning-detail"
         : dictionaryByRow.get(row.id)?.senses?.length ? "dictionary-definition-fallback" : "original-korean-meaning-only"),
@@ -159,7 +162,8 @@ export function measureContent(inputs, batchIndex = 0) {
       ...questions.map(entry => ({ en: entry.contextEn, ko: entry.contextKo }))].filter(Boolean);
     const reference = definitionQuiz.entries[definitionQuiz.items[row.id]];
     const matched = reference && dictionary?.senses?.some(sense => sense.senseId === reference.senseId);
-    const hasReferenceExample = Boolean(matched && reference.examples?.some(present));
+    const hasReferenceExample = Boolean(matched && reference.examples?.some(present))
+      || Boolean(dictionary?.senses?.some(sense => sense.examples?.some(present)));
     const hasReferenceRelation = Boolean(matched && (reference.synsetMembers?.some(word => normalize(word) !== normalize(row.w)) || reference.antonyms?.length));
     const relationGlosses = matched && inputs.relationLookup ? inputs.relationLookup(row) : undefined;
     if (relationGlosses && !relationClusters.has(reference.senseId)) relationClusters.set(reference.senseId, {
@@ -170,13 +174,15 @@ export function measureContent(inputs, batchIndex = 0) {
     if (oldExamples.some(example => present(example?.en))) wordbookBefore.add(row.id);
     if (examples.some(example => present(example?.en)) || hasReferenceExample) wordbookAfter.add(row.id);
     if (examples.some(example => present(example.en)) || hasReferenceExample) section.englishExampleRows++;
-    if (examples.some(example => present(example.en) && present(example.ko))) section.bilingualExampleRows++;
+    if (examples.some(example => present(example.en) && present(example.ko))
+      || dictionary?.senses?.some(sense => sense.reviewedExamples?.some(example => sense.examples?.includes(example.en) && present(example.ko)))) section.bilingualExampleRows++;
     if (hasReferenceExample) section.reusableDictionaryExampleRows++;
     if (hasReferenceRelation) section.reusableDictionaryRelationRows++;
     if (hasReferenceExample || hasReferenceRelation) referenceRows.push({ itemId: row.id, headword: row.w, group: row.group,
-      senseId: reference.senseId, partOfSpeech: reference.partOfSpeech,
+      senseId: reference?.senseId ?? null, partOfSpeech: reference?.partOfSpeech ?? null,
+      referenceSenseIds: dictionary?.senses?.filter(sense => sense.examples?.some(present)).map(sense => sense.senseId) ?? [],
       examples: hasReferenceExample, relations: hasReferenceRelation,
-      source: "assets/vocab-definition-quiz-oewn-2025.json", license: "CC BY 4.0",
+      source: "public/data/vocab-definitions/oewn-2025 + assets/vocab-definition-quiz-oewn-2025.json", license: "CC BY 4.0",
       disposition: "dictionary-reference-only", semanticPromotion: false,
       ...(relationGlosses ? { relationClusterKey: reference.senseId } : {}) });
     sections.set(row.group, section);
@@ -235,7 +241,10 @@ export function measureContent(inputs, batchIndex = 0) {
 }
 
 export function runContentMeasurement(root, outputArgument, batchIndex = 0, { runtimeRelations = false } = {}) {
-  if (!fs.statSync(path.join(root, ".git")).isFile()) throw new Error("Run only in an isolated Git worktree");
+  const gitEntry = fs.statSync(path.join(root, ".git"));
+  if (!gitEntry.isFile() && !(gitEntry.isDirectory() && path.resolve(root).toLowerCase() === path.resolve("C:/Users/USER/Projects/FINETUNE").toLowerCase())) {
+    throw new Error("Run only in the approved local repository or an isolated Git worktree");
+  }
   const output = privateMeasurementOutput(root, outputArgument);
   if (!Number.isInteger(batchIndex) || batchIndex < 0) throw new Error("Invalid batch index");
   const started = performance.now();

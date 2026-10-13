@@ -22,6 +22,7 @@ import {
   loadVocabDefinition,
   VOCAB_DEFINITION_SOURCE,
   type VocabDefinitionEntry,
+  type VocabDictionarySense,
 } from "@/lib/vocab-definitions";
 
 type LearningDetailsProps = { itemId: string };
@@ -202,6 +203,34 @@ export function ActiveRecallStudyDetails({
   );
 }
 
+export function DictionaryExamples({ sense, fallback = [] }: { sense: VocabDictionarySense; fallback?: string[] }) {
+  const colors = useColors();
+  const s = styles(colors);
+  const [allOpen, setAllOpen] = useState(false);
+  const examples = [...new Set(sense.examples ?? fallback)];
+  if (!examples.length) return null;
+  return <View style={s.exampleBox}>
+    <Text style={s.label}>사전 용례 · OEWN 2025 · CC BY 4.0</Text>
+    {(allOpen ? examples : examples.slice(0, 2)).map(en => {
+      const translation = sense.reviewedExamples?.find(value => value.en === en);
+      return <View key={en} style={s.section}>
+        <Text style={s.english}>{en}</Text>
+        <PronunciationButton text={en} compact />
+        {translation && <KoreanReveal>
+          <Text style={s.text}>{translation.ko}</Text>
+          <Text style={s.note}>문맥 단서: {translation.cueKo}</Text>
+          <Text style={s.note}>한국어 해석·단서는 FINETUNE 자체 편집이며 사전 공식 번역이 아닙니다.</Text>
+        </KoreanReveal>}
+      </View>;
+    })}
+    {examples.length > 2 && <Pressable accessibilityRole="button" accessibilityState={{ expanded: allOpen }}
+      onPress={() => setAllOpen(value => !value)} style={s.sourceToggle}>
+      <Text style={s.linkText}>용례 {examples.length}개 {allOpen ? "접기" : "모두 보기"}</Text>
+    </Pressable>}
+    <Text style={s.note}>해당 사전 의미군의 원문 용례로, 다른 동의어나 구 형태가 포함될 수 있습니다. 현재 단어장의 한국어 뜻과 일치하는지는 별도 검수 대상입니다.</Text>
+  </View>;
+}
+
 export function DictionaryDefinition({ entry, itemId }: { entry: VocabDefinitionEntry; itemId: string }) {
   const colors = useColors();
   const s = styles(colors);
@@ -250,16 +279,8 @@ export function DictionaryDefinition({ entry, itemId }: { entry: VocabDefinition
                   .map(({ word, meaning }) => ({ word, meaning }))} />
             </>}
             <Text style={s.english}>{sense.definition}</Text>
-            {reference?.senseId === sense.senseId && <>
-              {reference.examples.length > 0 && <View style={s.exampleBox}>
-                <Text style={s.label}>사전 용례 · OEWN 2025 · CC BY 4.0</Text>
-                {reference.examples.map(example => <View key={example} style={s.section}>
-                  <Text style={s.english}>{example}</Text>
-                  <PronunciationButton text={example} compact />
-                </View>)}
-                <Text style={s.note}>해당 사전 sense의 원문 용례입니다. 한국어 해석·현재 원자료 뜻과의 연결은 추가 검수 전입니다.</Text>
-              </View>}
-            </>}
+            <DictionaryExamples key={sense.senseId} sense={sense}
+              fallback={reference?.senseId === sense.senseId ? reference.examples : []} />
           </View>
         ))}
       </View>

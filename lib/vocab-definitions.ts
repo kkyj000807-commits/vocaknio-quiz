@@ -9,9 +9,12 @@ export type VocabDefinitionStatus =
 
 export interface VocabDictionarySense {
   senseId: string;
+  synsetId?: string;
   partOfSpeech: string;
   definition: string;
   matchedHeadword?: string;
+  examples?: string[];
+  reviewedExamples?: { en: string; ko: string; cueKo: string }[];
 }
 
 export interface VocabDefinitionEntry {

@@ -15,6 +15,10 @@ const vocabById = new Map();
 for (const item of vocab) if (!vocabById.has(item.id)) vocabById.set(item.id, item);
 const seenIds = new Set();
 const statusRows = new Map();
+const referenceWords = new Set();
+const referenceSenses = new Set();
+const translations = new Set();
+let referenceRows = 0;
 
 function fail(message) {
   throw new Error(message);
@@ -63,6 +67,20 @@ for (const group of groups) {
     if (senses.some((sense) => !sense.senseId || !sense.partOfSpeech || !sense.definition)) {
       fail(`Incomplete OEWN sense: ${itemId}`);
     }
+    if (senses.some(sense => sense.examples?.length)) {
+      referenceRows++;
+      referenceWords.add(key);
+    }
+    for (const sense of senses) {
+      if (!Array.isArray(sense.examples) || sense.examples.some(en => typeof en !== "string" || !en.trim() || en.startsWith("{'"))) {
+        fail(`Malformed source example: ${itemId}`);
+      }
+      if (sense.examples.length) referenceSenses.add(sense.senseId);
+      for (const example of sense.reviewedExamples ?? []) {
+        if (!sense.examples.includes(example.en) || !example.ko?.trim() || !example.cueKo?.trim()) fail(`Unlinked example translation: ${itemId}`);
+        translations.add(`${sense.senseId}\0${example.en}`);
+      }
+    }
     if (senses.length > 0 && record.representativeSenseId !== senses[0].senseId) {
       fail(`Representative sense is not deterministic dictionary order: ${itemId}`);
     }
@@ -78,6 +96,8 @@ if (seenIds.size !== vocab.length) {
 
 const coverage = meta.coverage;
 if (coverage.totalRows !== vocab.length) fail("Definition metadata totalRows mismatch");
+if (referenceRows !== coverage.referenceExampleRows || referenceWords.size !== coverage.referenceExampleHeadwords
+  || referenceSenses.size !== coverage.referenceExampleSenses || translations.size !== coverage.reviewedExampleTranslations) fail("Example coverage mismatch");
 if ((statusRows.get("single_sense") ?? 0) !== coverage.singleSenseRows) fail("singleSenseRows mismatch");
 if ((statusRows.get("dictionary_primary_unreviewed") ?? 0) !== coverage.ambiguousRows) fail("ambiguousRows mismatch");
 if ((statusRows.get("dictionary_alias_unreviewed") ?? 0) !== coverage.aliasMatchedRows) fail("aliasMatchedRows mismatch");
@@ -94,4 +114,7 @@ console.log(JSON.stringify({
   ambiguousReviewRows: coverage.ambiguousRows,
   aliasReviewRows: coverage.aliasMatchedRows,
   sourceNotFoundRows: coverage.sourceNotFoundRows,
+  referenceExampleHeadwords: referenceWords.size,
+  referenceExampleRows: referenceRows,
+  reviewedExampleTranslations: translations.size,
 }, null, 2));

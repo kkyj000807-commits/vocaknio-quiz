@@ -224,6 +224,12 @@ def load_json(zf: zipfile.ZipFile, name: str) -> Any:
         return json.load(handle)
 
 
+def write_json_if_changed(path: Path, value: Any, pretty: bool = False) -> None:
+    serialized = json.dumps(value, ensure_ascii=False, **({"indent": 2} if pretty else {"separators": (",", ":")})) + "\n"
+    if not path.is_file() or path.read_text(encoding="utf-8") != serialized:
+        path.write_text(serialized, encoding="utf-8")
+
+
 def parse_args() -> argparse.Namespace:
     default_archive = Path(os.environ.get("TEMP", ".")) / "voca-oewn-2025.json.zip"
     parser = argparse.ArgumentParser(description=__doc__)
@@ -290,6 +296,13 @@ def main() -> int:
     vocab = json.loads(VOCAB_PATH.read_text(encoding="utf-8"))
     if not isinstance(vocab, list):
         raise TypeError("assets/vocab-v1.4.json must be a list")
+
+    # Translation review is independent of dictionary-sense/quiz approval.
+    translation_path = ROOT / "data/vocab-learning/reviewed-examples-20261014.json"
+    translation_batch = json.loads(translation_path.read_text(encoding="utf-8"))
+    if translation_batch["source"]["archiveSha256"] != actual_hash or translation_batch["source"]["sourceVocabularySha256"] != archive_hash(VOCAB_PATH):
+        raise ValueError("Translation source edition does not match the current inputs")
+    translations = translation_batch["entries"]
 
     wanted = {normalize_headword(str(item["w"])) for item in vocab}
     aliases_by_key = {key: safe_alias_candidates(key) for key in wanted}
@@ -404,12 +417,15 @@ def main() -> int:
                         "examples": [
                             example
                             for example in dict.fromkeys(
-                                " ".join(str(value).split())
+                                " ".join(value.split())
                                 for value in (
                                     synset.get("example", [])
                                     if isinstance(synset.get("example", []), list)
                                     else [synset.get("example", "")]
                                 )
+                                # Attributed object examples need separate rights
+                                # review; never display Python dict repr as English.
+                                if isinstance(value, str)
                             )
                             if example
                         ],
@@ -533,6 +549,28 @@ def main() -> int:
         else:
             row_status["dictionary_primary_unreviewed"] += 1
 
+    translation_keys: set[tuple[str, str]] = set()
+    source_ids = {str(item["id"]) for item in vocab}
+    source_by_id = {str(item["id"]): item for item in vocab}
+    for translation in translations:
+        key = normalize_headword(translation["headword"])
+        signature = (translation["senseId"], translation["en"])
+        source_sense = next((sense for sense in definitions_by_key.get(key, [])
+                             if sense["senseId"] == translation["senseId"]), None)
+        if signature in translation_keys or not source_sense or translation["en"] not in source_sense["examples"]:
+            raise ValueError("Duplicate or unlinked reviewed example translation")
+        if not all(isinstance(translation.get(field), str) and translation[field].strip() for field in ("ko", "cueKo")):
+            raise ValueError("Incomplete reviewed example translation")
+        if not translation.get("sourceRowIds") or not set(translation["sourceRowIds"]).issubset(source_ids):
+            raise ValueError("Reviewed example references unknown source rows")
+        if translation.get("reviewStatus") != "ai-reviewed-example-translation" or any(
+            normalize_headword(source_by_id[row_id]["w"]) != key
+            or source_by_id[row_id]["k"] != translation.get("sourceMeaningKo")
+            for row_id in translation["sourceRowIds"]
+        ):
+            raise ValueError("Reviewed translation source word/meaning/status mismatch")
+        translation_keys.add(signature)
+
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     for group in GROUPS:
         headwords: dict[str, Any] = {}
@@ -556,13 +594,20 @@ def main() -> int:
                 "status": status,
                 "representativeSenseId": representative_sense_id,
                 "matches": matches,
-                # Internal synset metadata is written only to the compact quiz
-                # asset. Keep the browser-facing definition payload stable.
+                # Licensed reference examples belong to each lexical sense,
+                # not only the smaller set of eligible quiz entries.
                 "senses": [
                     {
-                        field: sense[field]
-                        for field in ("senseId", "partOfSpeech", "definition", "matchedHeadword")
-                        if field in sense
+                        **{field: sense[field] for field in (
+                            "senseId", "synsetId", "partOfSpeech", "definition", "matchedHeadword", "examples"
+                        ) if field in sense},
+                        "reviewedExamples": [
+                            {field: translation[field] for field in ("en", "ko", "cueKo")}
+                            for translation in translations
+                            if translation["senseId"] == sense["senseId"]
+                            and normalize_headword(translation["headword"]) == key
+                            and translation["en"] in sense["examples"]
+                        ],
                     }
                     for sense in senses
                 ],
@@ -577,10 +622,7 @@ def main() -> int:
             "headwords": headwords,
         }
         output_path = OUTPUT_DIR / f"{group.lower()}.json"
-        output_path.write_text(
-            json.dumps(payload, ensure_ascii=False, separators=(",", ":")) + "\n",
-            encoding="utf-8",
-        )
+        write_json_if_changed(output_path, payload)
 
     total_rows = len(vocab)
     total_unique = len(wanted)
@@ -591,6 +633,10 @@ def main() -> int:
         "version": "oewn-2025",
         "source": source,
         "coverage": {
+            "referenceExampleHeadwords": sum(any(sense["examples"] for sense in senses) for senses in definitions_by_key.values()),
+            "referenceExampleSenses": len({sense["senseId"] for senses in definitions_by_key.values() for sense in senses if sense["examples"]}),
+            "referenceExampleRows": sum(any(sense["examples"] for sense in definitions_by_key[normalize_headword(str(item["w"]))]) for item in vocab),
+            "reviewedExampleTranslations": len(translations),
             "totalRows": total_rows,
             "totalUniqueHeadwords": total_unique,
             "matchedRows": matched_rows,
@@ -613,10 +659,7 @@ def main() -> int:
             "source_not_found": False,
         },
     }
-    META_PATH.write_text(
-        json.dumps(metadata, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    write_json_if_changed(META_PATH, metadata, pretty=True)
 
     quiz_entries: dict[str, Any] = {}
     excluded_definition_leakage = 0
@@ -661,10 +704,7 @@ def main() -> int:
         "items": dict(sorted(quiz_items.items())),
         "entries": quiz_entries,
     }
-    QUIZ_PATH.write_text(
-        json.dumps(quiz_payload, ensure_ascii=False, separators=(",", ":")) + "\n",
-        encoding="utf-8",
-    )
+    write_json_if_changed(QUIZ_PATH, quiz_payload)
 
     print(json.dumps({
         **metadata["coverage"],

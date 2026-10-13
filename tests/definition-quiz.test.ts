@@ -21,8 +21,10 @@ describe("영영 정의 → 정확한 표제어", () => {
       eligibleHeadwords: 4114,
       eligibleRows: 11360,
       excludedDefinitionLeakageHeadwords: 171,
-      exampleHeadwords: 2023,
-      exampleRows: 6405,
+      // Attributed object examples used to be rendered as Python dict repr.
+      // Hold those examples for individual rights review; quiz answers unchanged.
+      exampleHeadwords: 1999,
+      exampleRows: 6337,
     });
   });
 

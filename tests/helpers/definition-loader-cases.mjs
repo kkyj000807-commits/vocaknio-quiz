@@ -86,11 +86,11 @@ function auditFixture() {
   const groups = ['V101', 'V201', 'V301', 'V401', 'V501', 'V502', 'V601', 'APPENDIX'];
   const files = {
     'vocab-v1.4.json': [{ id: 'row', group: 'V101' }],
-    'vocab-definitions-oewn-2025.json': { version: 'oewn-2025', source: { archiveSha256: hash, license: 'CC BY 4.0' }, coverage: { totalRows: 1, matchedRows: 1, singleSenseRows: 1, ambiguousRows: 0, aliasMatchedRows: 0, sourceNotFoundRows: 0 } },
+    'vocab-definitions-oewn-2025.json': { version: 'oewn-2025', source: { archiveSha256: hash, license: 'CC BY 4.0' }, coverage: { totalRows: 1, matchedRows: 1, singleSenseRows: 1, ambiguousRows: 0, aliasMatchedRows: 0, sourceNotFoundRows: 0, referenceExampleHeadwords: 0, referenceExampleSenses: 0, referenceExampleRows: 0, reviewedExampleTranslations: 0 } },
   };
   for (const group of groups) files[`${group.toLowerCase()}.json`] = { version: 'oewn-2025', group, source: { archiveSha256: hash }, items: {}, headwords: {} };
   files['v101.json'].items.row = 'test';
-  files['v101.json'].headwords.test = { status: 'single_sense', representativeSenseId: 's1', senses: [{ senseId: 's1', partOfSpeech: 'n', definition: 'a test' }] };
+  files['v101.json'].headwords.test = { status: 'single_sense', representativeSenseId: 's1', senses: [{ senseId: 's1', partOfSpeech: 'n', definition: 'a test', examples: [] }] };
   return files;
 }
 
@@ -107,7 +107,7 @@ function audit(files) {
 
 export const definitionAuditCases = [
   ['indexed source lookup preserves coverage and status counts', () => {
-    assert.deepEqual(audit(auditFixture()), { status: 'PASS', version: 'oewn-2025', totalRows: 1, matchedRows: 1, safeSingleSenseRows: 1, ambiguousReviewRows: 0, aliasReviewRows: 0, sourceNotFoundRows: 0 });
+    assert.deepEqual(audit(auditFixture()), { status: 'PASS', version: 'oewn-2025', totalRows: 1, matchedRows: 1, safeSingleSenseRows: 1, ambiguousReviewRows: 0, aliasReviewRows: 0, sourceNotFoundRows: 0, referenceExampleHeadwords: 0, referenceExampleRows: 0, reviewedExampleTranslations: 0 });
   }],
   ['indexed audit still rejects unknown/wrong/duplicate/missing rows, broken pointers and invalid senses', () => {
     const mutations = [
@@ -119,6 +119,8 @@ export const definitionAuditCases = [
       [files => { files['v101.json'].headwords.test.senses = []; }, /exactly one sense/],
       [files => { files['v101.json'].headwords.test.senses[0].partOfSpeech = ''; }, /Incomplete OEWN/],
       [files => { files['vocab-definitions-oewn-2025.json'].coverage.singleSenseRows = 2; }, /singleSenseRows mismatch/],
+      [files => { files['v101.json'].headwords.test.senses[0].examples = ["{'text': 'not English'}"]; }, /Malformed source example/],
+      [files => { files['v101.json'].headwords.test.senses[0].reviewedExamples = [{ en: 'not in this sense', ko: '번역', cueKo: '단서' }]; }, /Unlinked example translation/],
     ];
     for (const [mutate, error] of mutations) { const files = auditFixture(); mutate(files); assert.throws(() => audit(files), error); }
   }],
