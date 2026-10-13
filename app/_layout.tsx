@@ -22,6 +22,7 @@ import { initManusRuntime, subscribeSafeAreaInsets } from "@/lib/_core/manus-run
 import { useStudyTimer } from "@/hooks/use-study-timer";
 import { migrateStoredVocabLists } from "@/lib/store";
 import { LearningStorageNotice } from "@/components/learning-storage-notice";
+import { subscribeWebViewport } from "@/lib/web-viewport";
 
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
 const DEFAULT_WEB_FRAME: Rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -43,8 +44,7 @@ function RootContents() {
   // 앱 포그라운드/백그라운드 전환 기반 순공부 시간 측정
   useStudyTimer();
 
-  const [insets, setInsets] = useState<EdgeInsets>(initialInsets);
-  const [frame, setFrame] = useState<Rect>(initialFrame);
+  const [parentMetrics, setParentMetrics] = useState<Metrics | null>(null);
   const [migrationStatus, setMigrationStatus] = useState<"loading" | "ready" | "error">("loading");
 
   const runStorageMigration = useCallback(() => {
@@ -67,8 +67,7 @@ function RootContents() {
   }, []);
 
   const handleSafeAreaUpdate = useCallback((metrics: Metrics) => {
-    setInsets(metrics.insets);
-    setFrame(metrics.frame);
+    setParentMetrics(metrics);
   }, []);
 
   useEffect(() => {
@@ -76,6 +75,11 @@ function RootContents() {
     const unsubscribe = subscribeSafeAreaInsets(handleSafeAreaUpdate);
     return () => unsubscribe();
   }, [handleSafeAreaUpdate]);
+
+  useEffect(() => {
+    if (Platform.OS !== "web" || typeof window === "undefined") return;
+    return subscribeWebViewport(window);
+  }, []);
 
   // Create clients once and reuse them
   const [queryClient] = useState(
@@ -165,13 +169,15 @@ function RootContents() {
     );
   }
 
-  const shouldOverrideSafeArea = Platform.OS === "web";
+  // Standalone browsers use the provider's measured CSS env insets.
+  // Only an actual preview-container update may override them.
+  const shouldOverrideSafeArea = Platform.OS === "web" && parentMetrics !== null;
 
   if (shouldOverrideSafeArea) {
     return (
         <SafeAreaProvider initialMetrics={providerInitialMetrics}>
-          <SafeAreaFrameContext.Provider value={frame}>
-            <SafeAreaInsetsContext.Provider value={insets}>
+          <SafeAreaFrameContext.Provider value={parentMetrics!.frame}>
+            <SafeAreaInsetsContext.Provider value={parentMetrics!.insets}>
               {content}
             </SafeAreaInsetsContext.Provider>
           </SafeAreaFrameContext.Provider>

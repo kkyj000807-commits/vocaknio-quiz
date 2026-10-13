@@ -11,7 +11,7 @@ vi.mock("react-native", () => {
   const component = (tag: string) => function Mock({ children, style, testID }: { children?: React.ReactNode; style?: object | object[]; testID?: string }) {
     return React.createElement(tag, { style: Object.assign({}, ...(Array.isArray(style) ? style : [style])), "data-testid": testID }, children);
   };
-  return { Text: component("span"), View: component("div"), StyleSheet: { create: <T,>(styles: T) => styles } };
+  return { Text: component("span"), View: component("div"), Pressable: component("button"), StyleSheet: { create: <T,>(styles: T) => styles } };
 });
 vi.mock("@/hooks/use-colors", () => ({ useColors: () => Object.fromEntries(Object.entries(themeConfig.themeColors).map(([key, value]) => [key, value[theme.mode]])) }));
 
@@ -68,7 +68,8 @@ describe("existing wordbook section provenance", () => {
     const details = getSynonymDetails(item);
     const html = render(<SynonymDetails item={item} compact limit={1} />);
     expect(html).toContain(details[0].word);
-    expect(html).toContain(details[0].meaning);
+    const full = render(<SynonymDetails item={item} compact={false} limit={1} />);
+    expect(full).toContain(details[0].meaning);
     expect(html).toContain("단어장 · V502");
     expect(html.match(/data-testid="word-section-label"/g)).toHaveLength(1);
   });

@@ -1,5 +1,35 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-13 12:05 KST — 동의어·모바일·전 범위 기존 콘텐츠 연결 후보
+
+기준 `11a6122a`, 통합 worktree 단독 OS 잠금 `33063/PID11832`. main `1bf27b98`와 사용자 dirty 파일은 읽기 전용으로 보존했다. 공개는 아직 `1.0 / 095ee969 / 01:48:14 KST`; 아래 변경은 빌드·격리 UI·공개 확인 전 후보다.
+
+- 공통 RelationChips: `brag (자랑하다)` 형식, 5개 우선/더보기, exact와 ≈ near 구분. 개별 뜻이 없을 때 긴 표제어 정의를 복사하지 않는다. 긴 관계어 해설·원자료 대조 전 뜻은 별도 펼침으로 보존한다. 단어장 일반/검수 관계 표시를 같은 컴포넌트로 연결했다.
+- 정보 순서: 한국어 핵심 뜻 → 관계어 → 영영 정의 → 영한 예문. 정답 전·뜻 가림 중 비노출 유지. active-recall/deep 층이 기본 사전 참고를 가리던 경로를 열고, 추가 예문·용법과 다른 사전 sense는 선택해서 볼 수 있다.
+- 웹 루트의 항상 0인 Safe Area override 제거, 실제 inset을 탭에 한 번 반영(기본 52px 유지), visualViewport의 툴바/키보드 높이 반영과 pinch zoom 제외. SCROLL_END_PADDING 48 유지; 임의 대형 padding 없음. 실제 Safari/Samsung Internet/태블릿 검증은 NOT_VERIFIED다.
+- OEWN lexical sense ID를 공통 synset ID처럼 비교하던 한국어 뜻 연결 오류 수정. 명시된 member 집합·품사·정의 일치와 원자료 뜻 단일성만 이용하며, 서로 다른 뜻을 합치거나 정답/ID를 바꾸지 않았다.
+
+전수 집계: **13,347 고유 표제어 / 38,163 출현 행**. OEWN 정의 후보 11,611 표제어·34,726행, 사전 lexical sense ID 32,382개(검수 canonical 110개와 다른 단위). 기존 영어 예문이 하나라도 있는 표제어 2,099개; 영한 예문·문맥 단서 tuple 103개. 코드 경로상 단어장 예문 접근은 101→2,099 표제어, 243→6,573행. 새 창작/새 의미 검수는 0이며 UI/의미 품질 전수 완료를 뜻하지 않는다.
+
+기존 자료 재사용 manifest: 3,397 표제어·9,819행, 영어 예문 2,023 표제어·6,405행, 사전 관계 8,769행, 간결한 개별 한국어 뜻 437관계·1,281행. OEWN 2025 CC BY 4.0/Princeton WordNet·OEWN Team attribution 유지. 원자료/공개 JSON을 중복 생성하지 않았다. 구조적 미완료 queue 13,262표제어와 관계어 뜻 검토 queue 8,267건을 private `analysis/qa/synonym-example-coverage-20261013.json`에 입력 해시·재개 키로 저장했다. 1.703초 전수 연결 감사, 동일 입력 재실행 NO_CHANGE/mtime 유지. 이는 의미 검수 생산성이 아니다.
+
+| 범위 | 출현 행 | 정의 후보 행 | 기존 EN 예문 행 | 기존 영한 예문 행 | 짧은 관계어 뜻 연결 행 |
+|---|---:|---:|---:|---:|---:|
+| V101 | 4,028 | 3,666 | 733 | 62 | 재집계 JSON 참조 |
+| V201 | 4,016 | 3,749 | 769 | 36 | 재집계 JSON 참조 |
+| V301 | 4,854 | 4,716 | 950 | 20 | 재집계 JSON 참조 |
+| V401 | 3,965 | 3,527 | 605 | 34 | 재집계 JSON 참조 |
+| V501 | 5,888 | 4,333 | 755 | 58 | 재집계 JSON 참조 |
+| V502 | 10,127 | 9,810 | 1,891 | 27 | 재집계 JSON 참조 |
+| V601 | 2,935 | 2,855 | 449 | 5 | 재집계 JSON 참조 |
+| 부록 | 2,350 | 2,070 | 421 | 11 | 재집계 JSON 참조 |
+
+검증: whole verify exit0 / 타입 PASS / **523 PASS·1 SKIP**, 변경 22파일 ESLint PASS·0error/0warning, pnpm security:audit PASS(745 tracked+5 untracked/0 findings), 동일 assertions native 8 PASS. 첫 영향 검사 17실패는 펼침 UI 계약 16건과 특정 단어의 안전한 뜻 연결을 가정한 테스트 1건이었다. 기존 의미 보존 검사는 상세 열린 상태에 유지하고 별도로 기본 화면 비노출·순서를 검사했다. ESLint 512MiB 제한은 실제 V8 heap failure였으며 자원 회복 후 기존 기본 heap으로 실행하여 통과했다(한 fixture display-name 수정). 사용자 프로그램 종료/OS 설정/테스트 약화 없음.
+
+회귀 표본: capricious 8행/기존 deep4행, boast9/deep3행. supersede A (with B)/supplant A를 포함한 표제어군은 각각6/10행이며 검수 deep/원자료 동의어가 없다. 기본 뜻은 보존하고, 해당 구문과 사전 base lemma의 sense 연결·짧은 번역·영한 예문 보강은 큐의 미완료다. 샘플 몇 개나 필드 존재를 전체 품질 완료로 승격하지 않는다.
+
+다음: 깨끗한 소스 후보의 새 Production 빌드/감사 → 격리 단어장·문풀·복원·좁은 화면 확인 → 승인 Pages 공개 확인. 이후 큐를 source/sense별로 계속 처리한다. 기존 미검증 기출 268개 보류·SC11가능/1보류·저장키/MASTER/오답/원정답 유지. 최종판/99% 완료 아님.
+
 ## 2026-10-13 11:17 KST — A 예약 재개: 동일 후보, 자원 미회복으로 배포 보류
 
 실제 heartbeat 수신 후 후보/원격 `64760e8c`, main `1bf27b98`, Pages `9e5a0ffb`, 공개 1.0/source095ee969/01:48:14KST/dirtyfalse/learningData1.29를 읽기 대조했다. 통합 작업실은 시작 시 clean이며 main 사용자 dirty 목록은 그대로다. `0639f9e9` 이후 차이는 checkpoint 문서뿐이고 코드·데이터 새 변경은 0건이다. 기존 targeted12PASS를 전체 PASS로 승격하지 않는다. 11:17:13 CIM 가용 RAM **493MiB(0.482GiB)**·commit **22.116GiB**, 실행 중 Vitest/tsc/Metro는 0개다. 전체 검사/빌드 각각 3GiB·영향 검사 768MiB에 미달하므로 이번 회차 검증·lint·생성·빌드·UI·배포는 **실행하지 않음(NOT_RUN_RESOURCE)**, 배포는 **BLOCKED**다. native384MiB는 허용 가능하지만 동일 입력의 기존 12PASS를 재실행하지 않는다(NOT_RUN_UNCHANGED_INPUT). 직전 lint134/verify75 미통과 상태를 유지한다. 이전 checkpoint는 각 Git commit과 외부 A-latest의 priorScheduledCheckpoints에 보존했다.

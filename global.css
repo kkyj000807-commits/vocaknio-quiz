@@ -31,8 +31,14 @@ body,
   -webkit-print-color-adjust: exact;
 }
 
+/* visualViewport follows virtual keyboards as well as browser toolbars. */
+html, body, #root {
+  height: var(--finetune-viewport-height, 100vh);
+  min-height: 0;
+}
+
 @supports (height: 100dvh) {
-  html, body, #root { height: 100dvh; min-height: 0; }
+  html, body, #root { height: var(--finetune-viewport-height, 100dvh); }
 }
 
 button,

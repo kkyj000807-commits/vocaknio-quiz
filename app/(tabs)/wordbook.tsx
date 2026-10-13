@@ -25,10 +25,12 @@ import { ScreenContainer } from "@/components/screen-container";
 import { PronunciationButton } from "@/components/pronunciation-button";
 import { LearningDetails } from "@/components/learning-details";
 import { ProblemSenseContext } from "@/components/problem-sense-context";
+import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
+import { SynonymDetails } from "@/components/synonym-details";
 import { WordSectionLabel } from "@/components/word-section-label";
 import { getProductionSenseQuestions, hasSenseQuestionMapping, senseMatchesItem } from "@/lib/sense-questions";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { getRangeItems, getSynonymSourceGroups, WORDBOOK_RANGES, VOCAB, VOCAB_HEADWORD_COUNT, type VocabItem } from "@/lib/vocab";
+import { getRangeItems, WORDBOOK_RANGES, VOCAB, VOCAB_HEADWORD_COUNT, type VocabItem } from "@/lib/vocab";
 import {
   loadBookmarks,
   loadQuizSettings,
@@ -83,6 +85,7 @@ function WordCard({
   onLearningStatusPress: (item: VocabItem) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const [relationDetailsOpen, setRelationDetailsOpen] = useState(false);
   const [meaningHidden, setMeaningHidden] = useState(maskMode);
   const isBookmarked = bookmarks.has(item.num);
   const s = cardStyles(colors);
@@ -188,22 +191,13 @@ function WordCard({
               <Text style={s.korText}>
                 {item.k_short}
               </Text>
-              {expanded && !hasReviewedMapping && item.s.length > 0 && (
-                <View style={s.synRow}>
-                  {item.s.map((syn, i) => (
-                    <View key={`${item.num}-${syn}-${i}`} style={s.synTag}>
-                      <Text style={s.synTagText}>{syn}</Text>
-                      <WordSectionLabel groups={getSynonymSourceGroups(item, syn)} />
-                    </View>
-                  ))}
-                </View>
-              )}
             </View>
           )}
         </Animated.View>
       </Pressable>
 
       <WordSectionLabel groups={[item.group]} />
+      {!meaningHidden && expanded && !hasReviewedMapping && <SynonymDetails item={item} compact />}
       {!meaningHidden && (hasReviewedMapping || item.s.length > 0) && (
         <Pressable
           accessibilityRole="button"
@@ -224,8 +218,14 @@ function WordCard({
         <Text style={s.expandHint}>검수된 문맥별 뜻 · 다른 뜻과 섞지 않아요</Text>
         {reviewedSenses.length === 0 && <Text style={s.expandHint}>의미 관계 재검수 중</Text>}
         {reviewedSenses.map(sense => <View key={sense.id}>
-          <Text style={s.korText}>{sense.contextEn}</Text>
-          <ProblemSenseContext sense={sense} answered />
+          <Text style={s.expandHint}>{sense.partOfSpeech} · {sense.definitionKo}</Text>
+          <SemanticRelationCluster headword={sense.headword} coreMeaningKo={sense.definitionKo} showDefinitionBridge={false}
+            nearSynonyms={sense.relation ? [sense.relation.targetWord] : []}
+            choiceMeanings={sense.choices.filter(choice => choice.id === sense.correctId).map(choice => ({ word: choice.en, meaning: choice.ko }))} />
+          <Pressable accessibilityRole="button" accessibilityState={{ expanded: relationDetailsOpen }} onPress={() => setRelationDetailsOpen(value => !value)} style={s.expandButton}>
+            <Text style={s.expandHint}>문맥·선지 차이 {relationDetailsOpen ? "접기" : "보기"}</Text>
+          </Pressable>
+          {relationDetailsOpen && <><Text style={s.korText}>{sense.contextEn}</Text><ProblemSenseContext sense={sense} answered /></>}
         </View>)}
       </View>}
       {!meaningHidden && <LearningDetails itemId={item.id} />}

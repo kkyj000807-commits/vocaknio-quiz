@@ -8,7 +8,7 @@ import { formatExampleRelation } from "@/lib/semantic-cluster";
 import { LearningEvidence } from "@/components/learning-evidence";
 import { PronunciationButton } from "@/components/pronunciation-button";
 import { LazyReasoningPractice } from "@/components/reasoning-practice";
-import { getSynonymDetails, type VocabItem } from "@/lib/vocab";
+import { type VocabItem } from "@/lib/vocab";
 import type { QuizChoice } from "@/lib/quiz-engine";
 import {
   getDefinitionAnswerRelations,
@@ -58,8 +58,6 @@ export function DefinitionRecallPrompt({ definition }: { definition: string }) {
 export function DefinitionRecallAnswer({
   recall,
   koreanMeaning,
-  choices,
-  item,
 }: {
   recall: DefinitionQuizEntry;
   koreanMeaning: string;
@@ -69,20 +67,22 @@ export function DefinitionRecallAnswer({
   const colors = useColors();
   const relations = getDefinitionAnswerRelations(recall);
   const definitionMeanings = getDefinitionRelationMeanings(recall, koreanMeaning)
+    .filter(value => value.source === "same-sense-vocab" || value.source === "linked-antonym-vocab")
     .map(({ word, meaning }) => ({ word, meaning }));
-  const storedMeanings = item ? getSynonymDetails(item).map(({ word, meaning }) => ({ word, meaning })) : [];
   return (
     <View style={[styles.answer, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <Text style={[styles.answerWord, { color: colors.foreground }]}>{recall.headword}</Text>
-      <Text style={[styles.label, { color: colors.primary }]}>EN · 영영사전 원문</Text>
-      <Text style={[styles.definition, { color: colors.foreground }]}>{recall.definition}</Text>
+      <Text style={[styles.detailText, { color: colors.foreground }]}>{koreanMeaning}</Text>
       <SemanticRelationCluster
         headword={recall.headword}
         coreMeaningKo={koreanMeaning}
-        exactSynonyms={relations.synonyms.slice(0, 8)}
-        antonyms={relations.antonyms.slice(0, 8)}
-        choiceMeanings={[...definitionMeanings, ...storedMeanings, ...(choices ?? [])]}
+        showDefinitionBridge={false}
+        exactSynonyms={relations.synonyms}
+        antonyms={relations.antonyms}
+        choiceMeanings={definitionMeanings}
       />
+      <Text style={[styles.label, { color: colors.primary }]}>EN · 영영사전 원문</Text>
+      <Text style={[styles.definition, { color: colors.foreground }]}>{recall.definition}</Text>
       {recall.examples.length > 0 ? (
         <>
           <Text style={[styles.label, { color: colors.primary }]}>예문 · 영영사전 원문</Text>
@@ -104,7 +104,6 @@ export function SynonymRecallAnswer({
   recall,
   koreanMeaning,
   choices,
-  item,
 }: {
   recall: DefinitionQuizEntry;
   koreanMeaning: string;
@@ -114,8 +113,8 @@ export function SynonymRecallAnswer({
   const colors = useColors();
   const relations = getDefinitionAnswerRelations(recall);
   const relationMeanings = getDefinitionRelationMeanings(recall, koreanMeaning)
+    .filter(value => value.source === "same-sense-vocab" || value.source === "linked-antonym-vocab")
     .map(({ word, meaning }) => ({ word, meaning }));
-  const storedMeanings = item ? getSynonymDetails(item).map(({ word, meaning }) => ({ word, meaning })) : [];
   const correct = choices.find((choice) => choice.isCorrect);
 
   return (
@@ -124,14 +123,16 @@ export function SynonymRecallAnswer({
       <Text style={[styles.answerWord, { color: colors.foreground }]}>
         {recall.headword} ≒ {correct?.word ?? relations.synonyms[0]}
       </Text>
-      <Text style={[styles.definition, { color: colors.foreground }]}>{recall.definition}</Text>
+      <Text style={[styles.detailText, { color: colors.foreground }]}>{koreanMeaning}</Text>
       <SemanticRelationCluster
         headword={recall.headword}
         coreMeaningKo={koreanMeaning}
+        showDefinitionBridge={false}
         exactSynonyms={relations.synonyms}
         antonyms={relations.antonyms}
-        choiceMeanings={[...choices, ...relationMeanings, ...storedMeanings]}
+        choiceMeanings={relationMeanings}
       />
+      <Text style={[styles.definition, { color: colors.foreground }]}>{recall.definition}</Text>
       {recall.examples.length > 0 ? (
         <View style={styles.details}>
           <Text style={[styles.label, { color: colors.primary }]}>예문</Text>
@@ -163,28 +164,37 @@ export function ActiveRecallPrompt({ recall, promptId }: { recall: ActiveRecallS
   );
 }
 
-export function ActiveRecallAnswer({ recall, choices, item }: { recall: ActiveRecallSense; choices?: MeaningChoice[]; item?: VocabItem }) {
+export function ActiveRecallAnswer({ recall, choices, item, showRelationNotes = false }: { recall: ActiveRecallSense; choices?: MeaningChoice[]; item?: VocabItem; showRelationNotes?: boolean }) {
   const colors = useColors();
   const [expanded, setExpanded] = useState(false);
-  const storedMeanings = item ? getSynonymDetails(item).map(({ word, meaning }) => ({ word, meaning })) : [];
   const reviewedRelationMeanings = Object.entries(recall.relationMeaningsKo ?? {})
     .map(([word, meaning]) => ({ word, meaning }));
   return (
     <View style={[styles.answer, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <Text style={[styles.answerWord, { color: colors.foreground }]}>{recall.headword}</Text>
-      <Text style={[styles.label, { color: colors.primary }]}>EN</Text>
-      <Text style={[styles.definition, { color: colors.foreground }]}>{recall.conciseEnglishDefinition}</Text>
+      <Text style={[styles.detailText, { color: colors.foreground }]}>{recall.koreanMeaning}</Text>
       <SemanticRelationCluster
         headword={recall.headword}
         coreMeaningKo={recall.koreanMeaning}
         bridgeKo={recall.contextExplanationKo}
-        exactSynonyms={recall.exactSynonyms.slice(0, 5)}
-        nearSynonyms={recall.nearSynonyms.slice(0, 5)}
-        antonyms={recall.antonyms.slice(0, 5)}
-        variants={recall.variants.slice(0, 3)}
-        relatedWords={recall.relatedWords.slice(0, 3)}
-        choiceMeanings={[...storedMeanings, ...(choices ?? []), ...reviewedRelationMeanings]}
+        showDefinitionBridge={false}
+        showRelationNotes={showRelationNotes}
+        exactSynonyms={recall.exactSynonyms}
+        nearSynonyms={recall.nearSynonyms}
+        antonyms={recall.antonyms}
+        variants={recall.variants}
+        relatedWords={recall.relatedWords}
+        choiceMeanings={[...(choices ?? []), ...reviewedRelationMeanings]}
       />
+      <Text style={[styles.label, { color: colors.primary }]}>영영 정의 · 한국어 해석</Text>
+      <Text style={[styles.definition, { color: colors.foreground }]}>{recall.conciseEnglishDefinition}</Text>
+      {recall.exampleSentences.slice(0, 1).map(example => <View key={example.en} style={styles.example}>
+        <Text style={[styles.detailText, { color: colors.foreground }]}>{example.en}</Text>
+        <PronunciationButton text={example.en} compact />
+        {example.ko && <Text style={[styles.detailText, { color: colors.foreground }]}>{example.ko}</Text>}
+        {example.cueKo && <Text style={[styles.note, { color: colors.muted }]}>문맥 단서: {example.cueKo}</Text>}
+      </View>)}
+      {recall.contextExplanationKo && <Text style={[styles.note, { color: colors.muted }]}>{recall.contextExplanationKo}</Text>}
       <Pressable
         accessibilityRole="button"
         accessibilityState={{ expanded }}

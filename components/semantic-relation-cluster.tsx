@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { useColors } from "@/hooks/use-colors";
+import { RelationChips } from "@/components/relation-chips";
 import {
   buildSemanticCluster,
   type RelationMeaningSource,
@@ -13,6 +14,7 @@ type SemanticRelationClusterProps = {
   coreMeaningKo: string;
   bridgeKo?: string;
   showDefinitionBridge?: boolean;
+  showRelationNotes?: boolean;
   exactSynonyms?: readonly string[];
   nearSynonyms?: readonly string[];
   antonyms?: readonly string[];
@@ -21,49 +23,14 @@ type SemanticRelationClusterProps = {
   choiceMeanings?: readonly RelationMeaningSource[];
 };
 
-const kindLabel = {
-  exact: "동의어",
-  near: "유사어",
-  opposite: "반의어",
-  variant: "변형",
-  related: "관련어",
-} as const;
-
 function RelationTerms({
   terms,
-  tone,
-  coreMeaningKo,
+  showNotes,
 }: {
   terms: SemanticRelationTerm[];
-  tone: "same" | "opposite" | "neutral";
-  coreMeaningKo: string;
+  showNotes: boolean;
 }) {
-  const colors = useColors();
-  const toneColor = tone === "same" ? colors.success : tone === "opposite" ? colors.error : colors.muted;
-  return (
-    <View style={styles.terms}>
-      {terms.map((term) => (
-        <View
-          key={`${term.kind}:${term.word}`}
-          style={[styles.term, { borderColor: toneColor, backgroundColor: colors.surface }]}
-        >
-          <View style={styles.termTop}>
-            <Text style={[styles.kind, { color: toneColor }]}>{kindLabel[term.kind]}</Text>
-            <Text style={[styles.word, { color: colors.foreground }]}>{term.word}</Text>
-          </View>
-          <Text style={[styles.meaning, { color: colors.foreground }]}>{term.meaningKo ?? (
-            term.kind === "exact"
-              ? coreMeaningKo
-              : term.kind === "near"
-                ? `이 문맥에서는 ${coreMeaningKo}`
-                : term.kind === "opposite"
-                  ? "한국어 뜻 검수 중"
-                  : "한국어 뜻 검수 중"
-          )}</Text>
-        </View>
-      ))}
-    </View>
-  );
+  return <RelationChips terms={terms} showNotes={showNotes} />;
 }
 
 export function SemanticRelationCluster({
@@ -71,6 +38,7 @@ export function SemanticRelationCluster({
   coreMeaningKo,
   bridgeKo,
   showDefinitionBridge = true,
+  showRelationNotes = false,
   exactSynonyms,
   nearSynonyms,
   antonyms,
@@ -87,26 +55,19 @@ export function SemanticRelationCluster({
     relatedWords,
     choiceMeanings,
   });
+  if (!showDefinitionBridge && !cluster.synonyms.length && !cluster.opposites.length && !cluster.auxiliaries.length) return null;
 
   return (
     <View
-      accessible
       accessibilityLabel={`${headword} 의미 클러스터. 같은 의미축과 반대 의미축`}
       style={[styles.cluster, { borderColor: colors.border, backgroundColor: colors.surface }]}
     >
       <Text style={[styles.title, { color: colors.primary }]}>의미 클러스터</Text>
 
-      <View style={[styles.englishPair, { borderColor: colors.success, backgroundColor: colors.card }]}>
-        <Text style={[styles.coreLabel, { color: colors.success }]}>영어 표현 연결</Text>
-        <Text style={[styles.pairText, { color: colors.foreground }]}>
-          {headword}{cluster.synonyms.length > 0 ? ` ≒ ${cluster.synonyms.slice(0, 4).map((term) => term.word).join(" · ")}` : ""}
-        </Text>
-      </View>
-
       {cluster.synonyms.length > 0 ? (
         <View style={styles.axis}>
-          <Text style={[styles.axisLabel, { color: colors.success }]}>≒ 동의어·유사어</Text>
-          <RelationTerms terms={cluster.synonyms} tone="same" coreMeaningKo={coreMeaningKo} />
+          <Text style={[styles.axisLabel, { color: colors.success }]}>동의어 · ≈ 유사어</Text>
+          <RelationTerms terms={cluster.synonyms} showNotes={showRelationNotes} />
         </View>
       ) : null}
 
@@ -120,7 +81,7 @@ export function SemanticRelationCluster({
       {cluster.opposites.length > 0 ? (
         <View style={styles.axis}>
           <Text style={[styles.axisLabel, { color: colors.error }]}>←→ 반의어</Text>
-          <RelationTerms terms={cluster.opposites} tone="opposite" coreMeaningKo={coreMeaningKo} />
+          <RelationTerms terms={cluster.opposites} showNotes={showRelationNotes} />
         </View>
       ) : (
         <Text style={[styles.emptyOpposite, { color: colors.muted }]}>←→ 검증된 반의어 관계 없음</Text>
@@ -129,7 +90,7 @@ export function SemanticRelationCluster({
       {cluster.auxiliaries.length > 0 ? (
         <View style={styles.axis}>
           <Text style={[styles.auxLabel, { color: colors.muted }]}>↳ 형태·관련 표현</Text>
-          <RelationTerms terms={cluster.auxiliaries} tone="neutral" coreMeaningKo={coreMeaningKo} />
+          <RelationTerms terms={cluster.auxiliaries} showNotes={showRelationNotes} />
         </View>
       ) : null}
     </View>

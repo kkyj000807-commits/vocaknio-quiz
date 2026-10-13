@@ -8,6 +8,7 @@ import { formatExampleRelation } from "@/lib/semantic-cluster";
 import { LearningEvidence } from "@/components/learning-evidence";
 import { PronunciationButton } from "@/components/pronunciation-button";
 import { loadLearningDetailParts } from "@/lib/learning-detail-loader";
+import { getDefinitionQuizEntry, getDefinitionAnswerRelations, getDefinitionRelationMeanings } from "@/lib/definition-quiz";
 import {
   getActiveRecallSenses,
   type ActiveRecallSense,
@@ -41,9 +42,10 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
   const [attempt, setAttempt] = useState(0);
   const loaded = useRef({ entries: false, dictionary: false });
   const activeRecallSenses = getActiveRecallSenses(itemId);
+  const [referenceOpen, setReferenceOpen] = useState(false);
+  const [additionalOpen, setAdditionalOpen] = useState(false);
 
   useEffect(() => {
-    if (activeRecallSenses.length > 0) return;
     if (!expanded || (loaded.current.entries && loaded.current.dictionary)) return;
     let cancelled = false;
     setLoading(true);
@@ -83,13 +85,13 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
               count={activeRecallSenses.length}
             />
           ))}
-          {activeRecallSenses.length === 0 && loading && (
+          {loading && (
             <View style={s.loadingRow} accessibilityLiveRegion="polite">
               <ActivityIndicator size="small" color={colors.primary} />
               <Text style={s.note}>학습 해설을 불러오는 중입니다</Text>
             </View>
           )}
-          {activeRecallSenses.length === 0 && error && (
+          {error && (
             <View>
               <Text style={s.note}>일부 학습 자료를 불러오지 못했습니다. 불러온 해설·예문은 유지됩니다.</Text>
               <Pressable
@@ -101,13 +103,17 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
               </Pressable>
             </View>
           )}
-          {activeRecallSenses.length === 0 && entries?.map((entry, index) => (
+          {activeRecallSenses.length > 0 && !!entries?.length && <Pressable accessibilityRole="button" accessibilityState={{ expanded: additionalOpen }} onPress={() => setAdditionalOpen(value => !value)} style={s.retry}>
+            <Text style={s.linkText}>추가 예문·용법 {additionalOpen ? "접기" : "보기"}</Text>
+          </Pressable>}
+          {(activeRecallSenses.length === 0 || additionalOpen) && entries?.map((entry, index) => (
             <SenseDetails key={entry.id} entry={entry} index={index} count={entries.length} />
           ))}
           {activeRecallSenses.length > 0 && <LazyReasoningPractice itemId={itemId} />}
-          {activeRecallSenses.length === 0 && !entries?.length && dictionary && (
-            <DictionaryDefinition entry={dictionary} />
-          )}
+          {dictionary && (activeRecallSenses.length > 0 || !!entries?.length) && <Pressable accessibilityRole="button" accessibilityState={{ expanded: referenceOpen }} onPress={() => setReferenceOpen(value => !value)} style={s.retry}>
+            <Text style={s.linkText}>사전 참고 · 다른 뜻·용례 {referenceOpen ? "접기" : "보기"}</Text>
+          </Pressable>}
+          {dictionary && ((activeRecallSenses.length === 0 && !entries?.length) || referenceOpen) && <DictionaryDefinition entry={dictionary} itemId={itemId} />}
         </View>
       )}
     </View>
@@ -126,8 +132,6 @@ export function ActiveRecallStudyDetails({
   const colors = useColors();
   const s = styles(colors);
   const relationMeanings = [
-    ...entry.exactSynonyms.map((word) => ({ word, meaning: entry.koreanMeaning })),
-    ...entry.nearSynonyms.map((word) => ({ word, meaning: `가까운 뜻 · ${entry.koreanMeaning}` })),
     ...entry.distractors.map((choice) => ({ word: choice.word, meaning: choice.meaningKo })),
     ...Object.entries(entry.relationMeaningsKo ?? {}).map(([word, meaning]) => ({ word, meaning })),
   ];
@@ -139,15 +143,8 @@ export function ActiveRecallStudyDetails({
       </Text>
 
       <View style={s.section}>
-        <Text style={s.label}>1. 영영 정의 · 사전 대조 후 편집</Text>
-        <Text style={s.english}>{entry.englishDefinition}</Text>
-        <Text style={s.label}>2. 한국어 핵심 뜻</Text>
+        <Text style={s.label}>한국어 핵심 뜻</Text>
         <Text style={s.text}>{entry.koreanMeaning}</Text>
-      </View>
-
-      <View style={s.section}>
-        <Text style={s.label}>3. 문맥 설명 · 초월번역</Text>
-        <Text style={s.text}>{entry.contextExplanationKo}</Text>
       </View>
 
       <SemanticRelationCluster
@@ -155,6 +152,7 @@ export function ActiveRecallStudyDetails({
         coreMeaningKo={entry.koreanMeaning}
         bridgeKo={entry.contextExplanationKo}
         showDefinitionBridge={false}
+        showRelationNotes
         exactSynonyms={entry.exactSynonyms}
         nearSynonyms={entry.nearSynonyms}
         antonyms={entry.antonyms}
@@ -163,8 +161,13 @@ export function ActiveRecallStudyDetails({
         choiceMeanings={relationMeanings}
       />
 
+      <View style={s.section}>
+        <Text style={s.label}>영영 정의 · 사전 대조 후 편집</Text>
+        <Text style={s.english}>{entry.englishDefinition}</Text>
+      </View>
+
       <View style={s.exampleBox}>
-        <Text style={s.label}>4. 예문 · 학습용 창작</Text>
+        <Text style={s.label}>예문 · 학습용 창작</Text>
         {entry.exampleSentences.map((example, exampleIndex) => (
           <View key={`${example.en}-${exampleIndex}`} style={s.section}>
             <Text style={s.english}>{example.en}</Text>
@@ -185,15 +188,21 @@ export function ActiveRecallStudyDetails({
         ))}
       </View>
 
+      <View style={s.section}>
+        <Text style={s.label}>문맥 설명 · 초월번역</Text>
+        <Text style={s.text}>{entry.contextExplanationKo}</Text>
+      </View>
+
       <LearningEvidence entry={entry} />
     </View>
   );
 }
 
-function DictionaryDefinition({ entry }: { entry: VocabDefinitionEntry }) {
+export function DictionaryDefinition({ entry, itemId }: { entry: VocabDefinitionEntry; itemId: string }) {
   const colors = useColors();
   const s = styles(colors);
   const [allSensesOpen, setAllSensesOpen] = useState(false);
+  const reference = getDefinitionQuizEntry(itemId);
   const representative = entry.senses.find(
     (sense) => sense.senseId === entry.representativeSenseId,
   ) ?? entry.senses[0];
@@ -228,7 +237,25 @@ function DictionaryDefinition({ entry }: { entry: VocabDefinitionEntry }) {
         {visibleSenses.map((sense, index) => (
           <View key={`${sense.senseId}-${index}`} style={s.definitionCandidate}>
             <Text style={s.note}>{sense.partOfSpeech}</Text>
+            {reference?.senseId === sense.senseId && <>
+              <SemanticRelationCluster headword={entry.headword} coreMeaningKo="" showDefinitionBridge={false}
+                exactSynonyms={getDefinitionAnswerRelations(reference).synonyms}
+                antonyms={getDefinitionAnswerRelations(reference).antonyms}
+                choiceMeanings={getDefinitionRelationMeanings(reference, "")
+                  .filter(value => value.source === "same-sense-vocab" || value.source === "linked-antonym-vocab")
+                  .map(({ word, meaning }) => ({ word, meaning }))} />
+            </>}
             <Text style={s.english}>{sense.definition}</Text>
+            {reference?.senseId === sense.senseId && <>
+              {reference.examples.length > 0 && <View style={s.exampleBox}>
+                <Text style={s.label}>사전 용례 · OEWN 2025 · CC BY 4.0</Text>
+                {reference.examples.map(example => <View key={example} style={s.section}>
+                  <Text style={s.english}>{example}</Text>
+                  <PronunciationButton text={example} compact />
+                </View>)}
+                <Text style={s.note}>해당 사전 sense의 원문 용례입니다. 한국어 해석·현재 원자료 뜻과의 연결은 추가 검수 전입니다.</Text>
+              </View>}
+            </>}
           </View>
         ))}
       </View>
@@ -256,6 +283,7 @@ function DictionaryDefinition({ entry }: { entry: VocabDefinitionEntry }) {
       <Text style={s.note}>
         출처: {VOCAB_DEFINITION_SOURCE.name} {VOCAB_DEFINITION_SOURCE.edition} · {VOCAB_DEFINITION_SOURCE.license}
       </Text>
+      <Text style={s.note}>{VOCAB_DEFINITION_SOURCE.attribution}</Text>
     </View>
   );
 }
@@ -265,6 +293,7 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
   const s = styles(colors);
   const [sourcesOpen, setSourcesOpen] = useState(false);
   const [linkError, setLinkError] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const nuance = entry.nuance;
   const core = entry.reasoning?.coreMeaning;
 
@@ -283,6 +312,24 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
         {count > 1 ? `${index + 1}. ` : ""}{entry.headword} · {entry.partOfSpeech}
       </Text>
 
+      <Text style={s.text}>{entry.definitionKo}</Text>
+      <SemanticRelationCluster headword={entry.headword} coreMeaningKo={entry.definitionKo} showDefinitionBridge={false}
+        exactSynonyms={entry.exactSynonyms} nearSynonyms={entry.nearSynonyms} />
+      <View style={s.section}>
+        <Text style={s.label}>{entry.definitionKind === "editorial" ? "영영 정의 · 사전 대조 후 편집" : "영영 정의"}</Text>
+        <Text style={s.english}>{entry.definitionEn}</Text>
+      </View>
+      <View style={s.exampleBox}>
+        <Text style={s.label}>예문 · {entry.example.kind === "editorial" ? "학습용 창작" : "출처 원문"}</Text>
+        <Text style={s.english}>{entry.example.en}</Text>
+        <PronunciationButton text={entry.example.en} compact />
+        <Text style={s.text}>{entry.example.ko}</Text>
+        <Text style={s.note}>문맥 단서: {entry.example.cueKo ?? entry.examTrapKo}</Text>
+      </View>
+      <Pressable accessibilityRole="button" accessibilityState={{ expanded: detailsOpen }} onPress={() => setDetailsOpen(value => !value)} style={s.sourceToggle}>
+        <Text style={s.linkText}>의미 차이·구문·상세 해설 {detailsOpen ? "접기" : "보기"}</Text>
+      </Pressable>
+      {detailsOpen && <>
       {core && <View style={s.memoryBox}>
         <Text style={s.label}>1. 핵심 뜻</Text>
         <Text style={s.text}>{core.keyMeaningKo}</Text>
@@ -307,13 +354,6 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
         <Text style={s.label}>기억 고리</Text>
         <Text style={s.text}>{entry.memoryKo}</Text>
       </View>}
-
-      <View style={s.section}>
-        <Text style={s.label}>1. {entry.definitionKind === "editorial" ? "영영 정의 · 사전 대조 후 편집" : "영영 정의"}</Text>
-        <Text style={s.english}>{entry.definitionEn}</Text>
-        <Text style={s.label}>2. 한국어 핵심 뜻</Text>
-        <Text style={s.text}>{entry.definitionKo}</Text>
-      </View>
 
       {entry.composition && <View style={s.section}>
         <Text style={s.label}>왜 이 조합이 이 뜻일까?</Text>
@@ -361,14 +401,7 @@ function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: nu
         <ReasoningPractice lesson={entry.reasoning} />
       </>}
 
-      <View style={s.exampleBox}>
-        <Text style={s.label}>5. 예문 · {entry.example.kind === "editorial" ? "학습용 창작" : "출처 원문"}</Text>
-        <Text style={s.english}>{entry.example.en}</Text>
-        <PronunciationButton text={entry.example.en} compact />
-        <Text style={s.text}>{entry.example.ko}</Text>
-        <Text style={s.label}>문맥 판별 기준</Text>
-        <Text style={s.note}>{entry.example.cueKo ?? entry.examTrapKo}</Text>
-      </View>
+      </>}
 
       {entry.audio && (
         <Text style={s.note}>

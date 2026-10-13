@@ -97,6 +97,15 @@ describe("영영 정의 → 정확한 표제어", () => {
     ]));
   });
 
+  it("different OEWN lexical IDs do not prevent Korean gloss lookup for an explicitly shared synset", () => {
+    const stored = VOCAB.flatMap(item => {
+      const entry = getDefinitionQuizEntry(item.id);
+      return entry ? getDefinitionRelationMeanings(entry, item.k_short).filter(relation => relation.source === "same-sense-vocab") : [];
+    });
+    expect(stored.length).toBeGreaterThan(0);
+    expect(stored.every(relation => !relation.meaning.includes(" / "))).toBe(true);
+  });
+
   it("정의 선지는 검증된 반의어를 먼저 쓰고 나머지는 다른 의미권에서 고른다", () => {
     const item = VOCAB.find((candidate) => candidate.w === "adroit");
     expect(item).toBeDefined();

@@ -1,8 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { buildSemanticCluster, formatExampleRelation } from "@/lib/semantic-cluster";
+import { buildSemanticCluster, formatExampleRelation, shortRelationGloss } from "@/lib/semantic-cluster";
 
 describe("semantic relation cluster", () => {
+  it("never truncates long notes, invents unknown Korean, or flattens alternatives into a short gloss", () => {
+    expect(shortRelationGloss("자랑하다")).toBe("자랑하다");
+    for (const meaning of [undefined, "pending", "뜻 A / 뜻 B", "길고 자세한 문장이다. 교체 조건도 보존해야 한다."])
+      expect(shortRelationGloss(meaning)).toBeUndefined();
+  });
   it("예문 옆에는 짧은 뜻만 남기고 원본 교체 조건은 수정하지 않는다", () => {
     const meanings = { "not always": "항상 그런 것은 아니다. never와 같지 않다." };
     expect(formatExampleRelation("not always", meanings)).toBe("not always (항상 그런 것은 아니다)");

@@ -55,12 +55,13 @@ export function ScreenContainer({
         "bg-background",
         containerClassName
       )}
+      style={{ minHeight: 0 }}
       {...props}
     >
       <SafeAreaView
         edges={edges}
         className={cn("flex-1", safeAreaClassName)}
-        style={style}
+        style={[{ minHeight: 0 }, style]}
       >
         <View
           className={cn("flex-1", className)}

@@ -11,6 +11,13 @@ export type RelationMeaningSource = {
   meaning: string;
 };
 
+/** Display an existing concise gloss intact; never invent or truncate a sense. */
+export function shortRelationGloss(meaning?: string): string | undefined {
+  const value = meaning?.trim();
+  if (!value || !/[가-힣]/u.test(value) || value.length > 24 || /[\n.!?。/|;]|검수|뜻 확인|이 문맥에서는|가까운 뜻 ·/u.test(value)) return undefined;
+  return value;
+}
+
 /** Example reminder only: detailed substitution notes remain in the relation cluster. */
 export function formatExampleRelation(word: string, meanings?: Readonly<Record<string, string>>): string {
   const meaning = meanings?.[word]?.trim();

@@ -41,7 +41,8 @@ describe("three-theme contract", () => {
   });
 
   it("compacts web only and retains native safe-area math", () => {
-    expect(getTabMetrics(true, 34)).toMatchObject({ height: 52, iconSize: 21, minTouchHeight: 44 });
+    expect(getTabMetrics(true, 34)).toMatchObject({ height: 86, paddingBottom: 36, iconSize: 21, minTouchHeight: 44 });
+    expect(getTabMetrics(true, 0)).toMatchObject({ height: 52, paddingBottom: 2 });
     expect(getTabMetrics(false, 34)).toMatchObject({ height: 90, paddingBottom: 34, minTouchHeight: 48 });
     expect(getTabMetrics(false, 0)).toMatchObject({ height: 64, paddingBottom: 8 });
     expect(SCROLL_END_PADDING).toBeGreaterThanOrEqual(44);

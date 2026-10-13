@@ -23,6 +23,10 @@ describe("bounded private content measurement", () => {
     });
     expect(result.coverage.normalizedHeadwords).toBe(4);
     expect(result.coverage.sourceOccurrences).toBe(5);
+    expect(result.coverage.bySection.V101.sourceRows).toBe(3);
+    expect(result.coverage.bySection.V601.sourceRows).toBe(1);
+    expect(result.coverage.canonicalSenseIds).toBe(1);
+    expect(result.fullHeldQueue.some(entry => entry.headword === "unmapped")).toBe(true);
     expect(result.coverage.byStratum).toEqual({ "single-sense-candidate": 1, "polysemous-candidate": 1, "idiom-or-phrase": 1, "unresolved-mapping": 1 });
     expect(result.coverage.headwordsWithAnyEnglishExample).toBe(2);
     expect(result.coverage.headwordsWithAnyBilingualCueTuple).toBe(1);

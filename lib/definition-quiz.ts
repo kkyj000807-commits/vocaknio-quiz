@@ -110,18 +110,32 @@ function koreanMeaningsForRelation(
   const key = normalized(word);
   const relationEntry = catalog.entries[key];
   if (!relationEntry) return [];
-  if (relation === "synonym" && relationEntry.senseId !== target.senseId) return [];
+  // OEWN senseId identifies a lexical sense, not a shared synset: different
+  // synonymous lemmas have different IDs. Compare the explicit member sets,
+  // POS and definition instead; identical Korean glosses are not evidence.
+  if (relation === "synonym" && !shareDefinitionSynset(target, relationEntry)) return [];
   if (
     relation === "antonym" &&
     !target.antonyms.map(normalized).includes(key) &&
     !relationEntry.antonyms.map(normalized).includes(normalized(target.headword))
   ) return [];
 
-  return [...new Set(
+  const meanings = [...new Set(
     (itemIdsByHeadword.get(key) ?? [])
       .map((itemId) => VOCAB_BY_ID.get(itemId)?.k_short.trim())
       .filter((meaning): meaning is string => Boolean(meaning)),
   )];
+  // Different original Korean meanings need review, not an automatically joined
+  // gloss on a sense-specific synonym chip.
+  return meanings.length === 1 ? meanings : [];
+}
+
+export function shareDefinitionSynset(left: DefinitionQuizEntry, right: DefinitionQuizEntry): boolean {
+  const leftMembers = [...new Set(left.synsetMembers.map(normalized))].sort();
+  const rightMembers = [...new Set(right.synsetMembers.map(normalized))].sort();
+  return left.partOfSpeech === right.partOfSpeech && left.definition === right.definition
+    && leftMembers.includes(normalized(right.headword)) && rightMembers.includes(normalized(left.headword))
+    && JSON.stringify(leftMembers) === JSON.stringify(rightMembers);
 }
 
 /**

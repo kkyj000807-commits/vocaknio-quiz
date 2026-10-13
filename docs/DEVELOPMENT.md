@@ -14,6 +14,7 @@
 
 - 저장 snapshot의 유효성은 `parseStoredQuizSession`, 현재 출제/채점은 `parseQuizSession`으로 분리한다. stale 세션을 손상으로 오인하거나 자동 재채점하지 않는다. `vocaknio_problem_session_archive_v1`은 원문 보관용 additive 키로 기존 backup에서만 생략 가능하다. `tests/session-content-lifecycle.test.ts`가 stale/원문보관/탭경합/캡처 시점 회귀를 다룬다.
 - 대량 누락 측정: 격리 worktree에서 `node scripts/measure-content-throughput.mjs --output analysis/qa/content-throughput-<checkpoint>.json --batch-index 0`. 입력 해시가 같으면 NO_CHANGE. 100후보의 구조 검사는 예문 보강/의미 검수 완료가 아니다. `canonical-backfill-contract`와 `content-throughput` 테스트를 먼저 실행한다.
+- 전체 관계어·용례 재사용 경로: 위 명령에 `--runtime-relations`를 추가하면 설치된 tsx로 **실제 definition-quiz/semantic-cluster 코드**를 재사용해 전 범위 개별 한국어 뜻을 감사한다. lexical sense ID와 synset을 혼동하지 않는다. 섹션별 행/표제어/정의/예문 집계, 고유 클러스터, 중복 없는 관계어 검토 큐와 전체 미완료 큐를 private JSON에 저장한다. 후보/사전 참고 연결은 새 의미 검수나 Production 정답 승격이 아니다.
 - 진입은 AGENTS/짧은 현행 WORKING_CONTEXT이며 과거 본문은 `docs/history/WORKING_CONTEXT-through-2026-10-13.md`에 보존했다. 관련 skill과 필요한 참조만 읽는다.
 
 확인한 설치 버전: Expo 54.0.29 / Expo Router 6.0.19 / React 19.1.0 / React Native 0.81.5 / TypeScript 5.9.3 / Vitest 2.1.9. 잠금파일은 pnpm-lock.yaml, 패키지 관리자는 pnpm 9.12.0.
@@ -33,7 +34,7 @@
 | 검수 해설 원본 | data/vocab-learning/, idiom-corrections.json, expression-composition.json, reasoning-lessons.json | scripts/build-vocab-learning-v1.4.mjs → 인덱스와 public/data/vocab-learning/<버전>/ |
 | 전 어휘 OEWN 정의 층 | assets/vocab-definitions-oewn-2025.json, public/data/vocab-definitions/oewn-2025/ | scripts/build-vocab-definitions-oewn.py → lib/vocab-definitions.ts → LearningDetails |
 | Light/Paper/Dark·앱 테마 | lib/theme-provider.tsx, lib/theme-preference.ts, lib/web-theme.ts, theme.config.js | app/+html.tsx 초기 paint/모든 화면/저장 큐. v2 light→v3 paper, 신규light |
-| 웹 공간·반응형 | lib/layout.ts, components/screen-container.tsx | 탭52px, 끝padding48, 웹max-width880, native inset 보존 |
+| 웹 공간·반응형 | lib/layout.ts, lib/web-viewport.ts, components/screen-container.tsx | 웹 탭52px+실제 bottom inset 한 번, 끝padding48, 웹max-width880, visualViewport/기존 native inset 보존 |
 | 버전·배포 시각 | release.config.json, lib/release-info.ts | app.config.ts, 설정 화면, Production 빌더 |
 
 2026.10.13부터 release.config의 displayVersion은 사용자 표시용 1.0으로 고정한다. 기존 version=1.29는 학습 데이터 파티션이다. build-production-web → scripts/lib/release-metadata.mjs는 공개 version1.0과 learningDataVersion1.29를 구분하고 KST 초 단위 시각으로 target을 만든다. audit-production-output은 표시 버전이 아니라 learningDataVersion 디렉터리/파일 header를 확인한다. lib/vocab-learning의 no-cache는 기존 URL을 재검증하며 페이지 내부 groupCache는 유지한다. 공개 확인 전에는 새1.0을 배포 완료로 기록하지 않는다.

@@ -1,9 +1,11 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-
-import { useColors } from "@/hooks/use-colors";
+import { Text, View } from "react-native";
 import { getSynonymDetails, getSynonymSourceGroups, type VocabItem } from "@/lib/vocab";
 import { WordSectionLabel } from "@/components/word-section-label";
+import { RelationChips } from "@/components/relation-chips";
+import { getDefinitionQuizEntry, getDefinitionRelationMeanings } from "@/lib/definition-quiz";
+import { normalizeWord } from "@/lib/vocab";
+import { useColors } from "@/hooks/use-colors";
 
 interface SynonymDetailsProps {
   item: VocabItem;
@@ -12,60 +14,22 @@ interface SynonymDetailsProps {
 }
 
 export function SynonymDetails({ item, limit, compact = false }: SynonymDetailsProps) {
-  const colors = useColors();
   const details = getSynonymDetails(item);
-  const visible = limit ? details.slice(0, limit) : details;
-  if (visible.length === 0) return null;
+  const colors = useColors();
+  const reference = getDefinitionQuizEntry(item.id);
+  const meanings = new Map((reference ? getDefinitionRelationMeanings(reference, item.k_short) : [])
+    .filter(value => value.source === "same-sense-vocab")
+    .map(value => [normalizeWord(value.word), value.meaning]));
+  if (details.length === 0) return null;
 
   return (
-    <View style={[styles.list, compact && styles.compactList]}>
-      {visible.map((detail) => (
-        <View
-          key={`${detail.conceptId}:${detail.word}`}
-          style={[styles.row, { borderColor: colors.border, backgroundColor: colors.card }]}
-        >
-          <View style={styles.content}>
-            <Text style={[styles.word, { color: colors.primary }]}>{detail.word}</Text>
-            <Text style={[styles.meaning, { color: colors.muted }]} numberOfLines={compact ? 1 : 3}>
-              {detail.meaning}
-            </Text>
-          </View>
-          <WordSectionLabel groups={getSynonymSourceGroups(item, detail.word)} />
-        </View>
-      ))}
+    <View>
+      <Text style={{ color: colors.dim, fontSize: 11 }}>원자료 동의어 · 개별 뜻 미대조 항목은 영어만 표시</Text>
+      <RelationChips terms={details.map(detail => ({ word: detail.word,
+        meaningKo: meanings.get(normalizeWord(detail.word)) ?? detail.meaning,
+        glossEligible: meanings.has(normalizeWord(detail.word)) }))}
+        limit={limit ?? 5} showNotes={!compact}
+        renderSource={word => <WordSectionLabel groups={getSynonymSourceGroups(item, word)} />} />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  list: {
-    gap: 6,
-  },
-  compactList: {
-    gap: 4,
-  },
-  row: {
-    maxWidth: "100%",
-    gap: 2,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    borderWidth: 1,
-    borderRadius: 6,
-  },
-  content: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 8,
-  },
-  word: {
-    width: 104,
-    fontSize: 13,
-    fontWeight: "700",
-  },
-  meaning: {
-    flex: 1,
-    minWidth: 0,
-    fontSize: 12,
-    lineHeight: 17,
-  },
-});

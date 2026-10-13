@@ -3,6 +3,7 @@ import path from "node:path";
 import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { performance } from "node:perf_hooks";
+import { createRequire } from "node:module";
 import { canonicalMissingFields } from "./lib/canonical-content-contract.mjs";
 
 const normalize = value => String(value ?? "").trim().toLowerCase().replace(/\s+/g, " ");
@@ -134,6 +135,52 @@ export function measureContent(inputs, batchIndex = 0) {
     };
   });
   const batch = selectContentBatch(headwords, batchIndex);
+  // Full occurrence audit, not just the 100-item stratified sample. Reuse exact
+  // existing dictionary pointers; no word-level sense inference or content writes.
+  const sections = new Map();
+  const referenceRows = [];
+  const wordbookBefore = new Set();
+  const wordbookAfter = new Set();
+  const relationClusters = new Map();
+  for (const row of vocab) {
+    const section = sections.get(row.group) ?? { sourceRows: 0, headwords: new Set(), definitionRows: 0,
+      legacySynonymRows: 0, reviewedRelationRows: 0, englishExampleRows: 0, bilingualExampleRows: 0,
+      reusableDictionaryExampleRows: 0, reusableDictionaryRelationRows: 0, relationRowsWithShortKoreanGloss: 0 };
+    section.sourceRows++;
+    section.headwords.add(normalize(row.w));
+    const dictionary = dictionaryByRow.get(row.id);
+    if (dictionary?.senses?.length) section.definitionRows++;
+    if (row.s?.length) section.legacySynonymRows++;
+    const active = activeByRow.get(row.id) ?? [];
+    const learning = learningByRow.get(row.id) ?? [];
+    const questions = senseByRow.get(row.id) ?? [];
+    if (active.some(entry => entry.exactSynonyms?.length || entry.nearSynonyms?.length) || questions.some(entry => entry.relation)) section.reviewedRelationRows++;
+    const examples = [...active.flatMap(entry => entry.exampleSentences ?? []), ...learning.map(entry => entry.example),
+      ...questions.map(entry => ({ en: entry.contextEn, ko: entry.contextKo }))].filter(Boolean);
+    const reference = definitionQuiz.entries[definitionQuiz.items[row.id]];
+    const matched = reference && dictionary?.senses?.some(sense => sense.senseId === reference.senseId);
+    const hasReferenceExample = Boolean(matched && reference.examples?.some(present));
+    const hasReferenceRelation = Boolean(matched && (reference.synsetMembers?.some(word => normalize(word) !== normalize(row.w)) || reference.antonyms?.length));
+    const relationGlosses = matched && inputs.relationLookup ? inputs.relationLookup(row) : undefined;
+    if (relationGlosses && !relationClusters.has(reference.senseId)) relationClusters.set(reference.senseId, {
+      headword: reference.headword, senseId: reference.senseId, partOfSpeech: reference.partOfSpeech, relations: relationGlosses,
+    });
+    if (relationGlosses?.some(relation => relation.shortGloss)) section.relationRowsWithShortKoreanGloss++;
+    const oldExamples = active.length ? active.flatMap(entry => entry.exampleSentences ?? []) : learning.map(entry => entry.example);
+    if (oldExamples.some(example => present(example?.en))) wordbookBefore.add(row.id);
+    if (examples.some(example => present(example?.en)) || hasReferenceExample) wordbookAfter.add(row.id);
+    if (examples.some(example => present(example.en)) || hasReferenceExample) section.englishExampleRows++;
+    if (examples.some(example => present(example.en) && present(example.ko))) section.bilingualExampleRows++;
+    if (hasReferenceExample) section.reusableDictionaryExampleRows++;
+    if (hasReferenceRelation) section.reusableDictionaryRelationRows++;
+    if (hasReferenceExample || hasReferenceRelation) referenceRows.push({ itemId: row.id, headword: row.w, group: row.group,
+      senseId: reference.senseId, partOfSpeech: reference.partOfSpeech,
+      examples: hasReferenceExample, relations: hasReferenceRelation,
+      source: "assets/vocab-definition-quiz-oewn-2025.json", license: "CC BY 4.0",
+      disposition: "dictionary-reference-only", semanticPromotion: false,
+      ...(relationGlosses ? { relationClusterKey: reference.senseId } : {}) });
+    sections.set(row.group, section);
+  }
   return {
     coverage: {
       normalizedHeadwords: headwords.length,
@@ -148,7 +195,30 @@ export function measureContent(inputs, batchIndex = 0) {
       headwordsMissingAnyOriginalKoreanMeaning: headwords.filter(entry => entry.missingFields.includes("originalKoreanMeaning")).length,
       unknownMappingHeadwordsRemainInDenominator: true,
       scope: "any-existing-example-is-not-every-sense-complete-or-semantically-reviewed",
+      dictionarySenseIds: new Set([...dictionaryByRow.values()].flatMap(entry => entry.senses?.map(sense => sense.senseId) ?? [])).size,
+      canonicalSenseIds: new Set(canonical.map(entry => entry.senseId)).size,
+      bySection: Object.fromEntries([...sections].map(([group, value]) => [group, { ...value, headwords: value.headwords.size }])),
     },
+    dictionaryReuse: { rows: referenceRows.length, uniqueHeadwords: new Set(referenceRows.map(row => normalize(row.headword))).size,
+      exampleRows: referenceRows.filter(row => row.examples).length,
+      exampleHeadwords: new Set(referenceRows.filter(row => row.examples).map(row => normalize(row.headword))).size,
+      relationRows: referenceRows.filter(row => row.relations).length,
+      shortGlossRows: referenceRows.filter(row => relationClusters.get(row.senseId)?.relations.some(relation => relation.shortGloss)).length,
+      shortGlossRelations: [...relationClusters.values()].reduce((count, cluster) => count + cluster.relations.filter(relation => relation.shortGloss).length, 0),
+      glossAudit: inputs.relationLookup ? "runtime-data-linkage-audited-not-new-semantic-review" : "NOT_VERIFIED",
+      clusters: [...relationClusters.values()],
+      pendingGlossQueue: [...relationClusters.values()].flatMap(cluster => cluster.relations.filter(relation => !relation.shortGloss)
+        .map(relation => ({ headword: cluster.headword, senseId: cluster.senseId, partOfSpeech: cluster.partOfSpeech,
+          relation: relation.word, reason: relation.source === "shared-sense-core" ? "individual-gloss-missing-or-conflicting" : "sense-or-Korean-gloss-needs-review",
+          resumeKey: digest(`${cluster.senseId}\0${relation.word}`), disposition: "needs-review" }))),
+      manifest: referenceRows, runtimeDelivery: "NOT_VERIFIED", newSemanticReviewPass: 0 },
+    wordbookDelivery: { beforeExampleRows: wordbookBefore.size, afterReachableExampleRows: wordbookAfter.size,
+      beforeExampleHeadwords: new Set(vocab.filter(row => wordbookBefore.has(row.id)).map(row => normalize(row.w))).size,
+      afterReachableExampleHeadwords: new Set(vocab.filter(row => wordbookAfter.has(row.id)).map(row => normalize(row.w))).size,
+      note: "Code-path reachability only; not browser/device verification or new semantic review. Original content unchanged." },
+    fullHeldQueue: headwords.filter(entry => entry.missingFields.length || entry.canonicalMissing.some(sense => sense.fields.length))
+      .map(entry => ({ headword: entry.headword, occurrenceIds: entry.occurrenceIds, stratum: entry.stratum,
+        reasons: entry.missingFields, canonicalMissing: entry.canonicalMissing, disposition: "needs-review", resumeKey: digest(entry.headword) })),
     batch: {
       requestedHeadwords: 100,
       selectedHeadwords: batch.length,
@@ -164,7 +234,7 @@ export function measureContent(inputs, batchIndex = 0) {
   };
 }
 
-export function runContentMeasurement(root, outputArgument, batchIndex = 0) {
+export function runContentMeasurement(root, outputArgument, batchIndex = 0, { runtimeRelations = false } = {}) {
   if (!fs.statSync(path.join(root, ".git")).isFile()) throw new Error("Run only in an isolated Git worktree");
   const output = privateMeasurementOutput(root, outputArgument);
   if (!Number.isInteger(batchIndex) || batchIndex < 0) throw new Error("Invalid batch index");
@@ -179,14 +249,35 @@ export function runContentMeasurement(root, outputArgument, batchIndex = 0) {
   const files = ["release.config.json", "assets/vocab-v1.4.json", "assets/vocab-learning-index-v1.4.json",
     "assets/vocab-definitions-oewn-2025.json", "assets/vocab-definition-quiz-oewn-2025.json", "assets/canonical-sense-content.json",
     "data/active-recall-senses.json", "data/sense-questions.json", "scripts/measure-content-throughput.mjs", "scripts/lib/canonical-content-contract.mjs",
-    "components/learning-details.tsx", "components/active-recall-card.tsx", "lib/vocab-learning.ts", "lib/quiz-engine.ts",
-    "lib/active-recall.ts", "lib/sense-questions.ts", "lib/vocab-definitions.ts",
+    "components/learning-details.tsx", "components/active-recall-card.tsx", "components/relation-chips.tsx", "lib/semantic-cluster.ts", "lib/vocab-learning.ts", "lib/quiz-engine.ts",
+    "lib/active-recall.ts", "lib/sense-questions.ts", "lib/vocab-definitions.ts", "lib/definition-quiz.ts",
     ...definitionPaths, ...learningPaths].sort();
   const inputHashes = Object.fromEntries(files.map(file => [file, digest(fs.readFileSync(path.join(root, file)))]));
-  const inputHash = digest(JSON.stringify(inputHashes));
+  const inputHash = digest(JSON.stringify({ inputHashes, runtimeRelations }));
   const previous = fs.existsSync(output) ? JSON.parse(fs.readFileSync(output, "utf8")) : null;
   if (checkpointUnchanged(previous, inputHash, batchIndex)) return { status: "NO_CHANGE", inputHash, batchIndex, checkpoint: path.relative(root, output), newSemanticReviewPass: 0 };
-  const profile = measureContent({ vocab: read("assets/vocab-v1.4.json"), definitionGroups: definitionPaths.map(read),
+  let relationLookup;
+  if (runtimeRelations) {
+    // Use the actual app linkage code, not an audit's reimplementation. Existing
+    // tsx dependency only; no install, learner storage, answer changes or promotion.
+    const require = createRequire(import.meta.url);
+    require("tsx/cjs");
+    const api = require(path.join(root, "lib/definition-quiz.ts"));
+    const presentation = require(path.join(root, "lib/semantic-cluster.ts"));
+    const cache = new Map();
+    relationLookup = row => {
+      const entry = api.getDefinitionQuizEntry(row.id);
+      if (!entry) return [];
+      if (!cache.has(entry.headword)) cache.set(entry.headword, api.getDefinitionRelationMeanings(entry, "").map(relation => ({
+        word: relation.word, source: relation.source,
+        shortGloss: relation.source === "same-sense-vocab" || relation.source === "linked-antonym-vocab"
+          ? presentation.shortRelationGloss(relation.meaning) ?? null : null,
+        status: "existing-source-link-not-new-editorial-review",
+      })));
+      return cache.get(entry.headword);
+    };
+  }
+  const profile = measureContent({ relationLookup, vocab: read("assets/vocab-v1.4.json"), definitionGroups: definitionPaths.map(read),
     definitionQuiz: read("assets/vocab-definition-quiz-oewn-2025.json"), canonical: read("assets/canonical-sense-content.json").entries,
     activeRecall: read("data/active-recall-senses.json").entries, senseQuestions: read("data/sense-questions.json").entries,
     learningIndexItems: index.items,
@@ -208,6 +299,8 @@ export function runContentMeasurement(root, outputArgument, batchIndex = 0) {
   fs.writeFileSync(temporary, `${JSON.stringify(report, null, 2)}\n`, { encoding: "utf8", flag: "wx" });
   fs.renameSync(temporary, output);
   return { status: report.status, inputHash, batchIndex, checkpoint: path.relative(root, output), coverage: report.coverage,
+    dictionaryReuse: { ...report.dictionaryReuse, manifest: undefined, clusters: undefined, pendingGlossQueue: undefined,
+      pendingGlossRelations: report.dictionaryReuse.pendingGlossQueue.length }, wordbookDelivery: report.wordbookDelivery, heldHeadwords: report.fullHeldQueue.length,
     batch: { selectedHeadwords: report.batch.selectedHeadwords, structuralPass: report.batch.structuralPass,
       structuralHeld: report.batch.structuralHeld, newSemanticReviewPass: 0 }, throughput: report.throughput };
 }
@@ -217,7 +310,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const outputIndex = args.indexOf("--output");
   const batchIndex = args.indexOf("--batch-index");
   try {
-    const result = runContentMeasurement(process.cwd(), outputIndex < 0 ? undefined : args[outputIndex + 1], batchIndex < 0 ? 0 : Number(args[batchIndex + 1]));
+    const result = runContentMeasurement(process.cwd(), outputIndex < 0 ? undefined : args[outputIndex + 1], batchIndex < 0 ? 0 : Number(args[batchIndex + 1]), { runtimeRelations: args.includes("--runtime-relations") });
     console.log(JSON.stringify(result, null, 2));
   } catch {
     // Do not echo malformed file content, learner values or local exception text.

@@ -21,7 +21,10 @@ vi.mock("@/components/pronunciation-button", () => ({ PronunciationButton: ({ te
 vi.mock("@/hooks/use-colors", () => ({ useColors: () => ({ foreground: "#222", muted: "#666", primary: "#5046e5", success: "#187", error: "#c33", surface: "#fff", card: "#eee", border: "#ccc" }) }));
 
 const entry = ACTIVE_RECALL_SENSES.find(sense => sense.senseId === "take-into-account:consider-factor")!;
-const render = (element: React.ReactElement) => renderToStaticMarkup(element).replaceAll("&#x27;", "'").replaceAll("&quot;", '"').replaceAll("&amp;", "&");
+// Existing meaning-preservation assertions inspect the expanded relation notes.
+// The separate closed-state assertions below verify the concise default UI.
+const render = (element: React.ReactElement) => renderToStaticMarkup(element.type === ActiveRecallAnswer
+  ? React.cloneElement(element, { showRelationNotes: true } as object) : element).replaceAll("&#x27;", "'").replaceAll("&quot;", '"').replaceAll("&amp;", "&");
 const occurrences = (text: string, value: string) => text.split(value).length - 1;
 
 describe("reviewed learning evidence and explanation boundaries", () => {
@@ -518,8 +521,28 @@ describe("reviewed learning evidence and explanation boundaries", () => {
     expect(defaultHtml).toContain("핵심 정의");
     expect(deduplicated).not.toContain("상세 문맥 설명");
     expect(deduplicated).not.toContain("핵심 정의");
-    expect(deduplicated).toContain("sample ≒ equivalent");
+    expect(deduplicated).toContain("equivalent");
     expect(deduplicated).toContain("개별 동의어 뜻");
     expect(deduplicated).toContain("개별 반의어 뜻");
+  });
+
+  it("does not invent individual synonym meanings from the headword definition", () => {
+    const html = render(<SemanticRelationCluster headword="capricious" coreMeaningKo="필요나 이성보다 변덕에 따라 좌우되는" showDefinitionBridge={false} exactSynonyms={["unpredictable"]} nearSynonyms={["mercurial"]} />);
+    expect(html).toContain("unpredictable");
+    expect(html).toContain("mercurial");
+    expect(html).not.toContain("필요나 이성보다");
+    expect(html).not.toContain("이 문맥에서는");
+  });
+
+  it("keeps long reviewed meanings behind details in the default answer, without deleting them", () => {
+    const sense = ACTIVE_RECALL_SENSES.find(entry => entry.senseId === "without-fail:every-time-no-exception")!;
+    const closed = renderToStaticMarkup(<ActiveRecallAnswer recall={sense} />);
+    const opened = render(<ActiveRecallAnswer recall={sense} />);
+    expect(closed).toContain("관계어 뜻·차이 보기");
+    for (const meaning of Object.values(sense.relationMeaningsKo!)) {
+      expect(closed).not.toContain(meaning);
+      expect(opened).toContain(meaning);
+    }
+    expect(closed).toContain(sense.exampleSentences[0].ko);
   });
 });
