@@ -1,5 +1,17 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-15 01:17 KST — 검증 완료, Pages 게시 처리 대기
+
+01:18 KST 게시 1차 실패: GitHub deploy가 updating_pages에서10분 timeout으로취소됐다. 빌드/artifact 업로드는 성공했고 공개708d7bc 유지. 코드/산출물 변경 없이 `gh run rerun 38595311982 --failed` 1회만 요청(exit0); 재시도 결과 확인 전 배포완료로 표시하지 않는다.
+
+소스8cc9c0c85fad154cda2f3adc9e37bf1018a1ebbc를 현행 finetune-exam-stable-1-0에 normal push했다. 전체547PASS·1기존SKIP/타입·데이터·관련lint·Git보안 PASS, 새 Production dist-qa-usability-20261015-0100 exit0/출력감사 PASS. 표시1.0/내부1.29/수정2026.10.15 00:58:57 KST/sourceDirty=false. 빌드 samplepeak2456MiB. 아래의 이전 자원보류/미검증 문단은 작업 이력이며 이 체크포인트가 최신이다.
+
+격리 localhost IAB에서 SC 오답→새로고침 동일문항·선지·답안 유지→통계0/1→정확유형 복습정답→재접속1/2/논리오답1개 보존을 확인했다. 390x844에서 긴 해설 아래 footer bottom836/scroll bottom777,320폭 가로이탈없음,1024태블릿 탭접근 확인. light/paper/dark 펼침 화면 확인. 백업 다운로드→같은 파일 검사: 동일9묶음/충돌0/추가0, 복원 버튼 비활성, 취소 후 기존 기록 유지. 실제 Safari/Samsung/가상키보드·회전은 NOT_VERIFIED. 공개 사용자 기록은 조작하지 않았다.
+
+출력만 반영한 Pages1f6c85a7b8347113f826bc91ad8b44dc12c99cf2는 기존0ef945b의 새 자식 commit으로 normal push했다. GitHub run38595311982의 artifact 업로드 성공, 최종 Deploy 단계 진행 중이며 일반 공개 release는 아직708d7bc/2026.10.14 02:09:37이다. 공개 성공으로 승격하지 않는다. 새 공개 release·JS SHA·화면 확인 후 영수증 갱신. 실패 시 이전 정상 Pages0ef945b tree를 새 자식 commit으로 복원하며 force/reset/기록초기화 없음.
+
+이번 신규 예문/번역/의미검수0. 검증된 짧은 관계뜻 표시와 기존 영어관계 누락 방지만 수정했다. boast의 개별뜻 미검수 상태를 임의로 채우지 않았다. 전체13,347표제어/38,163출현행 중 정의11,611(86.99%), 영어용례8,122(60.85%), 영한+단서155(1.16%). 예문없는5,225표제어·뜻대기8,267관계와 실제 iPhone 저장 보호 원인은 잔여 과제다. 구조집계 hash 불변 재실행 NO_CHANGE, 완료batch 재생성 없음.
+
 ## 2026-10-15 — 세션 보관 자동화·문풀 하단·개별 동의어 뜻 (배포 대기)
 
 최종 입력 재검증: 자원 회복3290MiB 확인 후 verify exit0, **547PASS·1기존SKIP/62suitePASS·1SKIP**, 전체 타입·데이터PASS(97.95초). 이전 자원보류/중간 기대값 실패는 아래 이력으로 보존한다. 이 결과만으로 새 공개 배포를 뜻하지 않는다.
