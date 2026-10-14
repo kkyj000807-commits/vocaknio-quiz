@@ -1,5 +1,15 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-14 02:18 KST — 사전 예문 확장·40개 영한 예문 공개 완료
+
+공개1.0 / 2026.10.14 02:09:37 KST / source708d7bcc591d0780a35bceb087c45a7c8a334f51 / sourceDirty=false / Pages0ef945b53cb14617bf8e465d7c0087c1dcfec3fd. GitHub Pages built, 일반 공개 release 일치, 새 entry-115177cf6018929b93e1bb58683f2799.js HTTP200+빌드SHA일치, 사전8섹션 HTTP200+Pages blob SHA일치+빌드JSON의미동일. 로컬 JSON 마지막CRLF가 Git에서LF로 정규화된1byte차이는 내용 불일치가 아님을8파일 모두 확인했다. 공개 IAB에서 abdicate 영어 예문→한국어 펼침/문맥단서와 새번들 로딩 확인. 공개 사용자 답변/학습기록 변경 없음.
+
+전체537PASS·1기존SKIP/타입·데이터·관련lint·Git보안·새Production/출력감사PASS. 빌드samplepeak2064MiB. 격리localhost27815에서 실제 SC오답→새로고침 동일문항/선지/답안0/1→통계0/1→정확유형복습정답→결과1/1→재접속통계1/2·논리오답노트1개 보존. 새세션 정답위치3→4로재셔플. IAB실측390x844/scrollWidth390/하단탭bottom842에서 긴예문·KO펼침과 탭 접근 확인. 실제iPhone/Samsung·키보드·회전은NOT_VERIFIED, 기존사용자iPhone저장문제 원인미확정.
+
+사전용례8056표제어/18999lexical sense/26230출현행, 모든층용례8122/13347표제어. 신규도달6057표제어, 기존객체용례만있던24개보류. 신규영한40표제어·40sense(AI대조검수, 독립사람검수아님). 원본38163행/정답·ID·저장키 불변. 영어용례없는5225표제어와 전체미번역/의미미검수는남음. 원본/사전참고/편집번역을구분한 content-pipeline·reasoning·release 스킬 적용; 사전참고확대를깊이해설완료로계산하지않는다.
+
+다음: analysis/qa/examples-delivery-20261014.json 입력해시/held큐와 data/vocab-learning/reviewed-examples-20261014.json을기준으로 섹션별누락예문→번역→심층해설 재개. 완료batch재생성/문서만변경재배포금지. 복구는이전정상Pages4ca05ff의tree를새자식commit으로normalpush하며force/reset/학습기록초기화없음. 상세영수증: 외부2026-10-14-example-delivery-release.json/A-latest.json. 이문단은배포후문서기록으로공개sourceSHA와구분한다.
+
 ## 2026-10-14 — 전체 사전 용례 연결·40개 영한 예문 배치
 
 배포 전 최종 verify exit0: 537PASS·1기존SKIP/62suitePASS·1SKIP, 타입·데이터 PASS, 95.22초/samplepeak2381MiB. 관련 ESLint exit0, Git 보안761tracked+1untracked/0findings, diff check PASS. 최초 검사에서 발견한 신규 예문 필드와 옛 fixture 불일치는 fixture 보완 및 잘못된 번역 연결 거부 검사 추가 후 해소했다. 아직 새 공개 배포를 뜻하지 않으며 최종 manifest·브라우저·Pages 결과는 후속 체크포인트로 남긴다.
