@@ -1,5 +1,17 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-15 08:16 KST — 게시 정체 복구 완료·번역/관계뜻 배치 검증 중
+
+08:18 KST 배치 통합 검사 완료: 전체verify exit0, 타입PASS/549PASS·1기존SKIP(62suitePASS·1SKIP,104.75초,회귀samplepeak2745MiB), 관련ESLint exit0/보안762tracked0findings/diffcheckPASS. 정본·definition quiz·sense questions·active recall·canonical JSON 의미 동일 확인(행말 CRLF 차이는 의미 변경 아님). 아래 ‘현재 검사 중’은 중간 체크포인트이며 이제 source 커밋→새 Production 출력→격리UI·공개 확인 단계다.
+
+기존 Pages38595311982는 첫 deploy updating_pages timeout 뒤 재시도가 약7시간 queued/jobs0이었다. cancel은 completed라며 거절되어 취소됐다고 처리하지 않았다. legacy/gh-pages 설정과 동일 검증SHA1f6c85a를 확인하고 공식 Pages builds POST를 1회 요청했다. 새 run38652097608은23:07:11~23:07:38Z(27초) SUCCESS. 공개 release source8cc9c0c/표시1.0/내부1.29/수정00:58:57/sourceDirty=false와 실제15912394바이트 JS SHA25629abcfe45acef6c04d78139c515f5832991f1f38509a82c3adbdb7fc901d338c 일치. IAB 홈·설정에서 새 시각과 실제 녹음 기본값 확인. GitHub 내부 원인은 미확정이나 앱 빌드·RAM 실패가 아닌 게시 작업 정체였고 재게시로 복구했다. 이전 ‘공개708d7bc 대기’ 문단은 이제 이력이다.
+
+신규 배치: 기존 OEWN CC BY4.0 예문40개를 무변형 재사용해 자체 한국어 번역·문맥 단서 추가(기존40→80). 검수된11개 synset의 관계뜻43개 추가(capricious,boast,vie,callow 등). 의미·품사·원본 한국어 뜻을 AI 편집 검토했으며 독립 사람 검수/새 정답 승인 아님. blue-sky/ashamed/brunt 3개는 의미 충돌로 held에 추가(기존5→8). 정본38163행/13347표제어, ID/저장키/정답/quiz asset 불변. 깊이 해설112sense는 늘리지 않았으며 이 배치를 심층 해설 신규40개로 세지 않는다.
+
+새 source→public 연결 회귀는 생성 전2FAIL29PASS → 생성 후35PASS/3files(exit0,9.88초). OEWN 기존 생성기3.46초/학습 생성기 exit0. 전체 coverage JSON analysis/qa/content-recovery-20261015.json 해시 f162f0c8f8a4b6db8784e5f51edab682707099c0ecae278eec6179df80309337: 영한+단서155→194표제어(1.45%), 영어용례8122/정의11611는 불변, 깨진 연결0. 40개 중1개는 다른 레이어에도 번역이 있어 고유 증가39. 사전층 뜻대기8267관계는 별도이며 심층층43개 추가를 그 수치에서 임의 차감하지 않는다. 전수 의미검수 완료 아님.
+
+현재 전체verify 직렬 실행 중. 새 배치 Production은 아직 미배포이며 관련lint/security/전체회귀/커밋/새 빈 빌드/격리UI/Pages·공개 일치 확인 후에만 승격한다. 로컬잠금session32523/PID18576. 사용자 앱 종료/OS설정 변경 없음. RAM의 일시 감소 이후 기존 admission 물리3933MiB/commit41398MiB 허용을 확인하고 전체 검사 시작. 실제 iPhone 저장경고와 Safari/Samsung 실기기는 여전히 NOT_VERIFIED.
+
 ## 2026-10-15 01:17 KST — 검증 완료, Pages 게시 처리 대기
 
 01:18 KST 게시 1차 실패: GitHub deploy가 updating_pages에서10분 timeout으로취소됐다. 빌드/artifact 업로드는 성공했고 공개708d7bc 유지. 코드/산출물 변경 없이 `gh run rerun 38595311982 --failed` 1회만 요청(exit0); 재시도 결과 확인 전 배포완료로 표시하지 않는다.

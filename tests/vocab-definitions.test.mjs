@@ -22,6 +22,29 @@ function recordsForHeadword(headword) {
 }
 
 describe("OEWN definition aliases", () => {
+  it("delivers all 80 reviewed translations to their exact source senses without changing answer eligibility", () => {
+    const source = JSON.parse(fs.readFileSync(path.join(root, "data/vocab-learning/reviewed-examples-20261014.json"), "utf8"));
+    expect(source.entries).toHaveLength(80);
+    expect(new Set(source.entries.map(e => `${e.senseId}|${e.en}`)).size).toBe(80);
+    expect(meta.coverage.reviewedExampleTranslations).toBe(80);
+    for (const entry of source.entries) {
+      const records = recordsForHeadword(entry.headword);
+      expect(records.length).toBeGreaterThan(0);
+      for (const record of records) {
+        const sense = record.senses.find(s => s.senseId === entry.senseId);
+        expect(sense.synsetId).toBe(entry.synsetId);
+        expect(sense.partOfSpeech).toBe(entry.pos);
+        expect(sense.definition).toBe(entry.matchEvidence.sourceDefinition);
+        expect(sense.reviewedExamples).toContainEqual({ en: entry.en, ko: entry.ko, cueKo: entry.cueKo });
+        for (const other of record.senses.filter(s => s.senseId !== entry.senseId)) {
+          expect(other.reviewedExamples).not.toContainEqual({ en: entry.en, ko: entry.ko, cueKo: entry.cueKo });
+        }
+      }
+    }
+    expect(meta.quizEligibility.dictionary_primary_unreviewed).toBe(false);
+    expect(meta.quizEligibility.dictionary_alias_unreviewed).toBe(false);
+    expect(source.held.length).toBeGreaterThan(0);
+  });
   it("delivers licensed sense-specific examples independently of quiz eligibility", () => {
     const unique = new Map(files.flatMap(file => Object.entries(file.headwords)));
     const withExamples = [...unique.values()].filter(entry => entry.senses.some(sense => sense.examples?.length));

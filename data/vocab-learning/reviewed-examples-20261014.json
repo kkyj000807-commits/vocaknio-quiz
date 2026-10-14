@@ -14,7 +14,7 @@
   },
   "review": {
     "status": "ai-reviewed-example-translation",
-    "scope": "40개 단일 lexical sense의 목표표현 포함 완전문장을 원본 한국어 뜻과 대조하고 번역·문맥 단서를 편집함",
+    "scope": "80개 단일 lexical sense의 목표표현 포함 예문을 원본 한국어 뜻과 대조하고 번역·문맥 단서를 편집함. 필드 검사와 의미 편집 검토는 구별하며 독립 사람 검수는 아님.",
     "notClaimed": [
       "독립 사람 검수",
       "새 정답 문항 승인",
@@ -982,9 +982,981 @@
         "checkedAt": "2026-10-14",
         "independentHumanReview": false
       }
+    },
+    {
+      "headword": "accountable",
+      "senseId": "accountable%5:00:00:responsible:00",
+      "synsetId": "02003975-s",
+      "pos": "adjective",
+      "en": "governments must be accountable to someone beside themselves",
+      "ko": "정부는 자기 자신이 아닌 다른 누군가에게 책임을 져야 한다.",
+      "cueKo": "accountable to는 누구에게 설명하고 책임져야 하는지를 나타낸다. 해명할 수 있다는 뜻이 아니라 정부의 책임성을 말한다.",
+      "sourceRowIds": [
+        "JBKROW014808"
+      ],
+      "sourceMeaningKo": "책임을 지는; 해명 가능한",
+      "matchEvidence": {
+        "sourceDefinition": "liable to account for one's actions",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "acquired",
+      "senseId": "acquired%5:00:00:noninheritable:00",
+      "synsetId": "01318624-s",
+      "pos": "adjective",
+      "en": "acquired characteristics (such as a suntan or a broken nose) cannot be passed on",
+      "ko": "햇볕에 그을린 피부나 부러진 코 같은 후천적 특징은 유전되지 않는다.",
+      "cueKo": "suntan과 broken nose가 환경·경험으로 얻은 특징의 예다. passed on은 여기서 다음 세대로 유전됨을 뜻한다.",
+      "sourceRowIds": [
+        "JBKROW011245"
+      ],
+      "sourceMeaningKo": "후천적인; 습득한",
+      "matchEvidence": {
+        "sourceDefinition": "gotten through environmental forces",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "acronym",
+      "senseId": "acronym%1:10:00::",
+      "synsetId": "07106330-n",
+      "pos": "noun",
+      "en": "the word ‘scuba’ is an acronym for s(elf)-c(ontained) u(nderwater) b(reathing) a(pparatus)",
+      "ko": "scuba는 self-contained underwater breathing apparatus의 각 단어 첫 글자를 따서 하나의 단어처럼 발음하는 두음문자어다.",
+      "cueKo": "첫 글자를 모으는 것뿐 아니라 하나의 단어처럼 발음한다는 점이 acronym의 정의에 포함된다.",
+      "sourceRowIds": [
+        "JBKROW004725"
+      ],
+      "sourceMeaningKo": "두음(頭音)문자",
+      "matchEvidence": {
+        "sourceDefinition": "a word formed from the initial letters of the several words in the name and pronounced as one word",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "adipose",
+      "senseId": "adipose%5:00:00:fatty:00",
+      "synsetId": "00995483-s",
+      "pos": "adjective",
+      "en": "adipose tissue constitutes the fat of meat",
+      "ko": "지방 조직은 고기의 지방 부분을 이룬다.",
+      "cueKo": "tissue와 fat이 같은 물질을 가리킨다. adipose는 이 문맥에서 성격이 아니라 지방 조직의 성질을 나타낸다.",
+      "sourceRowIds": [
+        "JBKROW015388"
+      ],
+      "sourceMeaningKo": "지방(脂肪)질의; 살찐",
+      "matchEvidence": {
+        "sourceDefinition": "composed of animal fat",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "adroit",
+      "senseId": "adroit%3:00:00::",
+      "synsetId": "00061521-a",
+      "pos": "adjective",
+      "en": "his adroit replies to hecklers won him many followers",
+      "ko": "야유하는 사람들에게 능숙하게 응수한 덕분에 그는 많은 지지자를 얻었다.",
+      "cueKo": "replies와 won him many followers가 말로 상황에 잘 대처했다는 단서다. 신체 동작뿐 아니라 응답·판단에도 adroit를 쓴다.",
+      "sourceRowIds": [
+        "JBKROW001943"
+      ],
+      "sourceMeaningKo": "능숙한",
+      "matchEvidence": {
+        "sourceDefinition": "quick or skillful or adept in action or thought",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "allegedly",
+      "senseId": "allegedly%4:02:00::",
+      "synsetId": "00155440-r",
+      "pos": "adverb",
+      "en": "he was on trial for allegedly murdering his wife",
+      "ko": "그는 아내를 살해한 혐의로 재판을 받고 있었다.",
+      "cueKo": "on trial과 allegedly는 재판 중인 혐의를 나타낸다. 살인이 확정됐다고 단정하는 문장으로 옮기지 않는다.",
+      "sourceRowIds": [
+        "JBKROW004503"
+      ],
+      "sourceMeaningKo": "전언(傳言)에 따르면",
+      "matchEvidence": {
+        "sourceDefinition": "according to what has been alleged",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "anesthetize",
+      "senseId": "anesthetize%2:29:00::",
+      "synsetId": "00021058-v",
+      "pos": "verb",
+      "en": "The patient must be anesthetized before the operation",
+      "ko": "수술 전에 환자에게 마취를 해야 한다.",
+      "cueKo": "before the operation이 마취의 목적과 순서를 보여 준다. 수동태 be anesthetized에서 환자는 마취를 받는 대상이다.",
+      "sourceRowIds": [
+        "JBKROW005834"
+      ],
+      "sourceMeaningKo": "마취시키다",
+      "matchEvidence": {
+        "sourceDefinition": "administer an anesthetic drug to",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "apocope",
+      "senseId": "apocope%1:10:00::",
+      "synsetId": "07105947-n",
+      "pos": "noun",
+      "en": "the British get ‘pud’ from ‘pudding’ by apocope",
+      "ko": "영국에서는 pudding의 끝소리를 생략해 pud라고 한다.",
+      "cueKo": "pudding에서 끝부분이 떨어져 나가는 예다. 첫소리 생략이나 새로운 접미사 추가와 구별한다.",
+      "sourceRowIds": [
+        "JBKROW026731"
+      ],
+      "sourceMeaningKo": "(발음에서) 어미음 탈락",
+      "matchEvidence": {
+        "sourceDefinition": "abbreviation of a word by omitting the final sound or sounds",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "as a matter of fact",
+      "senseId": "as_a_matter_of_fact%4:02:00::",
+      "synsetId": "00149927-r",
+      "pos": "adverb",
+      "en": "as a matter of fact, he is several inches taller than his father",
+      "ko": "사실 그는 아버지보다 키가 몇 인치 더 크다.",
+      "cueKo": "실제 사실을 제시하는 도입 표현이다. 뒤의 비교급 taller than은 아버지보다 크다는 방향을 유지한다.",
+      "sourceRowIds": [
+        "APPROW00168"
+      ],
+      "sourceMeaningKo": "사실은",
+      "matchEvidence": {
+        "sourceDefinition": "in reality or actuality",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "assuming",
+      "senseId": "assuming%5:00:00:forward:02",
+      "synsetId": "00207288-s",
+      "pos": "adjective",
+      "en": "on a subject like this it would be too assuming for me to decide",
+      "ko": "이런 주제에 관해 내가 결정하는 것은 너무 주제넘은 일일 것이다.",
+      "cueKo": "too assuming은 형용사로 주제넘다는 평가다. 가정한다는 뜻의 assuming that 구문과 구별한다.",
+      "sourceRowIds": [
+        "APPROW00188"
+      ],
+      "sourceMeaningKo": "주제넘은, 건방진, 거만한 (arrogant, haughty) cf) assuming attitude 건방진(거만한) 태도",
+      "matchEvidence": {
+        "sourceDefinition": "excessively forward",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "avenge",
+      "senseId": "avenge%2:33:00::",
+      "synsetId": "01155952-v",
+      "pos": "verb",
+      "en": "He wants to avenge the murder of his brother",
+      "ko": "그는 형제의 살해에 대해 복수하고 싶어 한다.",
+      "cueKo": "avenge의 목적어는 여기서 murder라는 피해 사건이다. 피해자 자신에게 보복한다는 뜻으로 읽지 않는다.",
+      "sourceRowIds": [
+        "JBKROW005875"
+      ],
+      "sourceMeaningKo": "복수하다",
+      "matchEvidence": {
+        "sourceDefinition": "take revenge for a perceived wrong",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "behead",
+      "senseId": "behead%2:35:00::",
+      "synsetId": "01574185-v",
+      "pos": "verb",
+      "en": "the French King was beheaded during the Revolution",
+      "ko": "그 프랑스 왕은 혁명 중에 참수되었다.",
+      "cueKo": "was beheaded는 왕이 처형의 대상이라는 수동태다. 단순히 직위에서 물러났다는 뜻이 아니다.",
+      "sourceRowIds": [
+        "JBKROW017851"
+      ],
+      "sourceMeaningKo": "참수(斬首)하다",
+      "matchEvidence": {
+        "sourceDefinition": "cut the head of",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "belle",
+      "senseId": "belle%1:18:00::",
+      "synsetId": "09868420-n",
+      "pos": "noun",
+      "en": "she was the belle of the ball",
+      "ko": "그녀는 그 무도회에서 가장 돋보이는 미인이었다.",
+      "cueKo": "the belle of the ball은 무도회에서 특히 아름답고 매력적으로 주목받는 여성을 가리킨다.",
+      "sourceRowIds": [
+        "APPROW00261"
+      ],
+      "sourceMeaningKo": "미인 (beautiful woman)",
+      "matchEvidence": {
+        "sourceDefinition": "a young woman who is the most charming and beautiful of several rivals",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "bequeath",
+      "senseId": "bequeath%2:40:00::",
+      "synsetId": "02233837-v",
+      "pos": "verb",
+      "en": "My aunt bequeathed me all her jewelry",
+      "ko": "이모는 유언으로 자신의 보석을 모두 내게 남겼다.",
+      "cueKo": "bequeathed me는 유언에 따른 사후 이전을 뜻한다. 생전에 잠시 빌려준 것으로 바꾸면 의미가 달라진다.",
+      "sourceRowIds": [
+        "JBKROW013658"
+      ],
+      "sourceMeaningKo": "물려주다",
+      "matchEvidence": {
+        "sourceDefinition": "leave or give by will after one's death",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "beverage",
+      "senseId": "beverage%1:13:00::",
+      "synsetId": "07897775-n",
+      "pos": "noun",
+      "en": "may I take your beverage order?",
+      "ko": "마실 것은 무엇으로 주문하시겠어요?",
+      "cueKo": "take your order라는 주문 상황에서 beverage는 음료를 뜻한다. 특정 종류의 술로 한정하지 않는다.",
+      "sourceRowIds": [
+        "APPROW00274"
+      ],
+      "sourceMeaningKo": "음료수 (drinks) / 마실 것, 음료 (drink)",
+      "matchEvidence": {
+        "sourceDefinition": "any liquid suitable for drinking",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "bloodbath",
+      "senseId": "bloodbath%1:04:00::",
+      "synsetId": "00225127-n",
+      "pos": "noun",
+      "en": "a bloodbath took place when the leaders of the plot surrendered",
+      "ko": "음모의 주도자들이 항복했을 때 대학살이 벌어졌다.",
+      "cueKo": "took place와 surrendered가 사건의 시점을 제시한다. 항복했으므로 안전해졌다는 결론을 덧붙이지 않는다.",
+      "sourceRowIds": [
+        "JBKROW017945"
+      ],
+      "sourceMeaningKo": "숙청, 대학살",
+      "matchEvidence": {
+        "sourceDefinition": "indiscriminate slaughter",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "blue-chip",
+      "senseId": "blue-chip%5:00:00:valuable:00",
+      "synsetId": "02511196-s",
+      "pos": "adjective",
+      "en": "Rembrandt is considered a blue-chip artist",
+      "ko": "렘브란트는 작품 가치가 매우 높은 화가로 평가된다.",
+      "cueKo": "artist를 수식하므로 여기서는 투자 대상인 주식 자체가 아니라 높은 가치를 인정받는 작가를 뜻한다.",
+      "sourceRowIds": [
+        "JBKROW017950"
+      ],
+      "sourceMeaningKo": "우량한, 탁월한",
+      "matchEvidence": {
+        "sourceDefinition": "extremely valuable",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "blurb",
+      "senseId": "blurb%1:10:00::",
+      "synsetId": "07262728-n",
+      "pos": "noun",
+      "en": "the author got all his friends to write blurbs for his book",
+      "ko": "그 작가는 친구들을 모두 동원해 자신의 책에 대한 짤막한 추천글을 쓰게 했다.",
+      "cueKo": "for his book과 write가 책을 소개·홍보하는 짧은 글이라는 뜻을 좁혀 준다.",
+      "sourceRowIds": [
+        "APPROW00308"
+      ],
+      "sourceMeaningKo": "(책, 신상품에 대한 짤막한) 안내문, 광고문, 추천하는 글",
+      "matchEvidence": {
+        "sourceDefinition": "a promotional statement (as found on the dust jackets of books)",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "blurry",
+      "senseId": "blurry%5:00:00:indistinct:00",
+      "synsetId": "00785203-s",
+      "pos": "adjective",
+      "en": "the trees were just blurry shapes",
+      "ko": "나무들은 그저 윤곽이 흐릿한 형체로 보였다.",
+      "cueKo": "shapes가 뚜렷하지 않다는 시각 묘사다. 나무의 크기가 작다는 뜻이 아니다.",
+      "sourceRowIds": [
+        "JBKROW014801"
+      ],
+      "sourceMeaningKo": "경계가 희미한",
+      "matchEvidence": {
+        "sourceDefinition": "indistinct or hazy in outline",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "burgeon",
+      "senseId": "burgeon%2:30:01::",
+      "synsetId": "00358508-v",
+      "pos": "verb",
+      "en": "a militant party burgeons in India",
+      "ko": "인도에서 한 강경 정당이 급성장하고 있다.",
+      "cueKo": "정당의 성장·세력 확대를 식물의 번성에 빗댄 용법이다. 특정 정책의 성공까지 말하는 것은 아니다.",
+      "sourceRowIds": [
+        "JBKROW009994"
+      ],
+      "sourceMeaningKo": "급증하다",
+      "matchEvidence": {
+        "sourceDefinition": "grow and flourish",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "cadaver",
+      "senseId": "cadaver%1:08:00::",
+      "synsetId": "05225393-n",
+      "pos": "noun",
+      "en": "the cadaver was intended for dissection",
+      "ko": "그 시체는 해부용으로 쓰일 예정이었다.",
+      "cueKo": "for dissection이 시체를 해부 대상으로 다루는 문맥을 만든다. 살아 있는 환자를 가리키지 않는다.",
+      "sourceRowIds": [
+        "JBKROW034787"
+      ],
+      "sourceMeaningKo": "사체",
+      "matchEvidence": {
+        "sourceDefinition": "the dead body of a human being",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "categorize",
+      "senseId": "categorize%2:31:00::",
+      "synsetId": "00658931-v",
+      "pos": "verb",
+      "en": "Children learn early on to categorize",
+      "ko": "아이들은 어릴 때부터 분류하는 법을 배운다.",
+      "cueKo": "learn to 뒤의 categorize는 대상을 범주에 넣는 활동이다. 분류의 정확성이나 기준이 선천적이라는 말은 없다.",
+      "sourceRowIds": [
+        "APPROW00372"
+      ],
+      "sourceMeaningKo": "분류하다 (classify)",
+      "matchEvidence": {
+        "sourceDefinition": "place into or assign to a category",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "circumspect",
+      "senseId": "circumspect%5:00:00:prudent:00",
+      "synsetId": "01904557-s",
+      "pos": "adjective",
+      "en": "physicians are now more circumspect about recommending its use",
+      "ko": "의사들은 이제 그것의 사용을 권할 때 더 신중하다.",
+      "cueKo": "more와 now는 이전보다 조심스럽다는 비교를 나타낸다. 사용을 전면 금지했다는 뜻은 아니다.",
+      "sourceRowIds": [
+        "JBKROW000131"
+      ],
+      "sourceMeaningKo": "조심성 있는",
+      "matchEvidence": {
+        "sourceDefinition": "heedful of potential consequences",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "commensurate",
+      "senseId": "commensurate%3:00:00::",
+      "synsetId": "00483212-a",
+      "pos": "adjective",
+      "en": "pay should be commensurate with the time worked",
+      "ko": "보수는 일한 시간에 상응해야 한다.",
+      "cueKo": "commensurate with는 보수와 근무 시간의 비례·상응 관계를 나타낸다. 두 값이 숫자로 같아야 한다는 뜻은 아니다.",
+      "sourceRowIds": [
+        "JBKROW004980"
+      ],
+      "sourceMeaningKo": "상응하는",
+      "matchEvidence": {
+        "sourceDefinition": "corresponding in size or degree or extent",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "complacent",
+      "senseId": "complacent%5:00:00:contented:00",
+      "synsetId": "00591760-s",
+      "pos": "adjective",
+      "en": "he had become complacent after years of success",
+      "ko": "그는 여러 해 성공을 거듭한 뒤 자만하며 안주하게 되었다.",
+      "cueKo": "after years of success가 자기만족에 빠진 배경이다. 타인에게 잘 맞춰 주는 complaisant와 구별한다.",
+      "sourceRowIds": [
+        "JBKROW005324"
+      ],
+      "sourceMeaningKo": "방심하는; 자기만족의",
+      "matchEvidence": {
+        "sourceDefinition": "contented to a fault with oneself or one's actions",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "complexity",
+      "senseId": "complexity%1:07:00::",
+      "synsetId": "04773530-n",
+      "pos": "noun",
+      "en": "he enjoyed the complexity of modern computers",
+      "ko": "그는 현대 컴퓨터의 복잡성을 즐겼다.",
+      "cueKo": "enjoyed는 복잡함을 흥미롭게 여겼다는 뜻이다. complexity 자체가 반드시 부정적 평가인 것은 아니다.",
+      "sourceRowIds": [
+        "APPROW00469"
+      ],
+      "sourceMeaningKo": "복잡성 (complication)",
+      "matchEvidence": {
+        "sourceDefinition": "the quality of being intricate and compounded",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "composure",
+      "senseId": "composure%1:07:00::",
+      "synsetId": "04910990-n",
+      "pos": "noun",
+      "en": "he accepted their problems with composure and she with equanimity",
+      "ko": "그는 그들의 문제를 침착하게 받아들였고, 그녀도 평정심을 유지하며 받아들였다.",
+      "cueKo": "composure와 equanimity가 문제 앞에서 동요하지 않는 태도를 나란히 설명한다.",
+      "sourceRowIds": [
+        "JBKROW004538"
+      ],
+      "sourceMeaningKo": "침착함",
+      "matchEvidence": {
+        "sourceDefinition": "steadiness of mind under stress",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "compulsively",
+      "senseId": "compulsively%4:02:00::",
+      "synsetId": "00245067-r",
+      "pos": "adverb",
+      "en": "he cleaned his shoes compulsively after every walk",
+      "ko": "그는 산책을 할 때마다 강박적으로 신발을 닦았다.",
+      "cueKo": "after every walk가 반복을 보여 주며 compulsively는 그 행동을 억제하기 어려운 양상을 나타낸다. 외부 규정에 따른 의무와는 다르다.",
+      "sourceRowIds": [
+        "APPROW00473"
+      ],
+      "sourceMeaningKo": "강박적으로, 상습적으로 (irresistibly)",
+      "matchEvidence": {
+        "sourceDefinition": "in a compulsive manner",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "compulsory",
+      "senseId": "compulsory%5:00:00:obligatory:00",
+      "synsetId": "00851890-s",
+      "pos": "adjective",
+      "en": "in most schools physical education is compulsory",
+      "ko": "대부분의 학교에서 체육은 필수다.",
+      "cueKo": "in most schools는 대부분이지 모든 학교가 아니다. compulsory는 선택 과목이 아니라 규정상 의무라는 뜻이다.",
+      "sourceRowIds": [
+        "JBKROW023685"
+      ],
+      "sourceMeaningKo": "강제적인; 의무적인",
+      "matchEvidence": {
+        "sourceDefinition": "required by rule",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "concurrently",
+      "senseId": "concurrently%4:02:00::",
+      "synsetId": "00121107-r",
+      "pos": "adverb",
+      "en": "concurrently with the conference an exhibition of things associated with Rutherford was held",
+      "ko": "학회가 열리는 동안 러더퍼드와 관련된 물품 전시회도 함께 열렸다.",
+      "cueKo": "concurrently with는 두 행사의 기간이 겹친다는 뜻이다. 두 행사의 시작과 종료 시각이 완전히 같다는 주장까지 포함하지 않는다.",
+      "sourceRowIds": [
+        "APPROW00487"
+      ],
+      "sourceMeaningKo": "동시에 (simultaneously)",
+      "matchEvidence": {
+        "sourceDefinition": "overlapping in duration",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "conducive",
+      "senseId": "conducive%5:00:00:causative:00",
+      "synsetId": "00324324-s",
+      "pos": "adjective",
+      "en": "working conditions are not conducive to productivity",
+      "ko": "근무 여건이 생산성 향상에 도움이 되지 않는다.",
+      "cueKo": "not conducive to에서 not의 부정을 보존한다. 도움이 되지 않는다는 것과 생산성이 반드시 하락한다는 것은 다르다.",
+      "sourceRowIds": [
+        "APPROW00488"
+      ],
+      "sourceMeaningKo": "~에 좋은, 도움이 되는, 공헌하는 (contributive) (to)",
+      "matchEvidence": {
+        "sourceDefinition": "tending to bring about; being partly responsible for",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "consciously",
+      "senseId": "consciously%4:02:00::",
+      "synsetId": "00244122-r",
+      "pos": "adverb",
+      "en": "she consciously played with the idea of inviting them",
+      "ko": "그녀는 그들을 초대할까 하는 생각을 의식적으로 해 보았다.",
+      "cueKo": "played with the idea는 생각을 해 보았다는 뜻이다. 실제 초대까지 끝냈다고 해석하지 않는다.",
+      "sourceRowIds": [
+        "APPROW00502"
+      ],
+      "sourceMeaningKo": "의식적으로, 의도적으로",
+      "matchEvidence": {
+        "sourceDefinition": "with awareness",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "consensus",
+      "senseId": "consensus%1:26:00::",
+      "synsetId": "13995348-n",
+      "pos": "noun",
+      "en": "the lack of consensus reflected differences in theoretical positions",
+      "ko": "합의가 이루어지지 않은 것은 이론적 입장의 차이를 반영했다.",
+      "cueKo": "lack of consensus가 합의 부재를 명시한다. differences는 의견이 갈린 배경이며 합의 자체가 아니다.",
+      "sourceRowIds": [
+        "JBKROW013764"
+      ],
+      "sourceMeaningKo": "의견의 일치, 합의",
+      "matchEvidence": {
+        "sourceDefinition": "agreement in the judgment or opinion reached by a group as a whole",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "considerably",
+      "senseId": "considerably%4:02:01::",
+      "synsetId": "00014747-r",
+      "pos": "adverb",
+      "en": "painting the room white made it seem considerably (or substantially) larger",
+      "ko": "방을 흰색으로 칠하자 훨씬 더 넓어 보였다.",
+      "cueKo": "seem과 larger는 실제 면적 증가가 아니라 외관상의 비교를 나타낸다. considerably는 그 정도가 상당함을 강조한다.",
+      "sourceRowIds": [
+        "APPROW00510"
+      ],
+      "sourceMeaningKo": "상당히, 매우 (greatly)",
+      "matchEvidence": {
+        "sourceDefinition": "to a great extent or degree",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "contretemps",
+      "senseId": "contretemps%1:04:00::",
+      "synsetId": "00961756-n",
+      "pos": "noun",
+      "en": "he tried to smooth over his contretemps with the policeman",
+      "ko": "그는 경찰관과 벌인 난처한 마찰을 무마하려 했다.",
+      "cueKo": "smooth over는 어색한 다툼을 수습하려는 행동이다. tried는 시도이므로 실제 해결됐다고 단정하지 않는다.",
+      "sourceRowIds": [
+        "JBKROW018345"
+      ],
+      "sourceMeaningKo": "사소한 언쟁 [단복수 동형]",
+      "matchEvidence": {
+        "sourceDefinition": "an awkward clash",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "controversial",
+      "senseId": "controversial%3:00:00::",
+      "synsetId": "00604427-a",
+      "pos": "adjective",
+      "en": "the issue of the death penalty is highly controversial",
+      "ko": "사형제 문제는 논란이 매우 크다.",
+      "cueKo": "issue와 highly가 의견 대립을 불러일으키는 쟁점이라는 뜻을 드러낸다. 논란이 있다는 사실만으로 옳고 그름이 정해지지는 않는다.",
+      "sourceRowIds": [
+        "JBKROW009077"
+      ],
+      "sourceMeaningKo": "논란이 많은",
+      "matchEvidence": {
+        "sourceDefinition": "marked by or capable of arousing controversy",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "convince",
+      "senseId": "convince%2:32:00::",
+      "synsetId": "00771598-v",
+      "pos": "verb",
+      "en": "He had finally convinced several customers of the advantages of his product",
+      "ko": "그는 마침내 몇몇 고객에게 자신의 제품이 지닌 장점을 납득시켰다.",
+      "cueKo": "convince someone of something은 어떤 사실·가치를 믿도록 납득시키는 구문이다. several은 모든 고객이 아니다.",
+      "sourceRowIds": [
+        "APPROW00535"
+      ],
+      "sourceMeaningKo": "확신(납득)시키다 (persuade)",
+      "matchEvidence": {
+        "sourceDefinition": "make (someone) agree, understand, or realize the truth or validity of something",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "corpse",
+      "senseId": "corpse%1:08:00::",
+      "synsetId": "05225393-n",
+      "pos": "noun",
+      "en": "the end of the police search was the discovery of a corpse",
+      "ko": "경찰의 수색은 시체 한 구를 발견하는 것으로 끝났다.",
+      "cueKo": "discovery of a corpse는 사망한 사람의 몸을 발견했다는 뜻이다. 체포나 생존자 구조로 해석하지 않는다.",
+      "sourceRowIds": [
+        "APPROW00540"
+      ],
+      "sourceMeaningKo": "시체 (cadaver)",
+      "matchEvidence": {
+        "sourceDefinition": "the dead body of a human being",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "corrugated",
+      "senseId": "corrugated%5:00:00:furrowed:00",
+      "synsetId": "02251942-s",
+      "pos": "adjective",
+      "en": "the surface of the ocean was rippled and corrugated",
+      "ko": "바다 표면에는 잔물결이 일며 이랑처럼 굴곡이 져 있었다.",
+      "cueKo": "rippled와 corrugated가 번갈아 솟고 들어간 표면을 설명한다. 재료가 골판지라는 뜻으로 한정하지 않는다.",
+      "sourceRowIds": [
+        "JBKROW035021"
+      ],
+      "sourceMeaningKo": "물결무늬의, 주름진",
+      "matchEvidence": {
+        "sourceDefinition": "shaped into alternating parallel grooves and ridges",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "crank out",
+      "senseId": "crank_out%2:36:00::",
+      "synsetId": "01757080-v",
+      "pos": "verb",
+      "en": "We have to crank out publications in order to receive funding",
+      "ko": "우리는 연구비를 받으려면 출판물을 계속 쏟아내야 한다.",
+      "cueKo": "in order to receive funding이 생산의 목적이다. crank out은 반복적으로 많은 양을 만들어 내는 느낌이며, 모든 결과물이 반드시 저질이라는 단정은 피한다.",
+      "sourceRowIds": [
+        "APPROW00561"
+      ],
+      "sourceMeaningKo": "(특히 질 낮은 물건들을) 빠르게 만들어 내다 (쏟아 내다)",
+      "matchEvidence": {
+        "sourceDefinition": "produce in a routine or monotonous manner",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
     }
   ],
   "held": [
+    {
+      "headword": "blue-sky",
+      "reason": "원본의 비현실적인과 OEWN의 당장 상업적 가치가 없는 연구는 범위가 다름. 원본 뜻 변경 없이 번역 연결 보류."
+    },
+    {
+      "headword": "ashamed",
+      "reason": "원본의 수줍어하는과 거짓말을 부끄러워한다는 예문의 수치심이 다름. 해당 행의 예문 번역 연결 보류."
+    },
+    {
+      "headword": "brunt",
+      "reason": "원본의 공격 선봉과 bear the brunt of의 공격을 가장 크게 받는다는 의미가 다름. 원본 수정 없이 연결 보류."
+    },
     {
       "headword": "annuity",
       "reason": "원문 한국어 연간 배당금과 OEWN의 정기 지급 연금 의미 범위 불일치 가능성. 원본 수정·행 매핑 보류."

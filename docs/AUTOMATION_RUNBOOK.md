@@ -43,6 +43,14 @@ P0, 검사 실패, 인증, 네트워크, 사용량 또는 기기 부재가 있�
 
 ## 종료 기록
 
+### GitHub Pages 게시 대기 복구 (2026-10-15 실증)
+
+- 빌드/업로드 성공과 Pages 게시 성공을 구분한다. `updating_pages` 시간 초과 후 `--failed` 재시도가 장시간 queued이고 jobs가 0개이면 같은 상태를 계속 조회하는 것으로 끝내지 않는다.
+- 현재 run/jobs, Pages 설정·latest build, gh-pages SHA, 공개 release를 읽기 전용으로 대조한다. 코드·RAM 문제라는 추측이나 GitHub 내부 장애 원인 확정은 금지한다.
+- 동일 검증 산출물이고 이 Pages 배포가 승인된 경우, 기존 run 취소 가능 여부를 확인한 뒤 공식 `POST repos/<owner>/<repo>/pages/builds`로 재게시를 원인별 1회 요청할 수 있다. cancel이 완료된 run이라며 거절되면 취소됐다고 기록하지 않는다. Pages가 legacy branch source인지 먼저 확인하며 다른 배포 방식에 무조건 적용하지 않는다.
+- 새 run ID로 build/deploy 성공과 실제 공개 release·번들 해시·화면까지 확인한다. 또 막히면 새 요청을 쌓지 않고 구체적인 실패 지점과 다음 조건을 기록한다. 같은 산출물을 다시 로컬 빌드하거나 force push하지 않는다.
+- 2026-10-15 사례: 38595311982의 timeout→queued/jobs0와 cancel 불일치 후 Pages API 재게시 38652097608 성공(27초), source8cc9c0c/JS 해시 일치 확인. 정확한 GitHub 내부 원인은 확인 불가. 검증된 복구 경로이지 모든 대기의 원인을 단정하는 규칙은 아니다.
+
 - WORKING_CONTEXT와 외부 최신 보고서에 수정 파일, 영향 검사, 통합 회귀, 빌드/배포, 남은 P0, 다음 재개 조건을 저장한다.
 - 앱·PC 종료, 절전, 네트워크, 사용량 제한 뒤 자동 복구는 실제 관찰 전까지 보장하지 않는다.
 - 과거 매시간·고정 소규모 운영 원문은 `docs/history/superseded-work-rules.md`에 비활성 이력으로 보존한다.

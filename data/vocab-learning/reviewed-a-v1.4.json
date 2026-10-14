@@ -72,6 +72,22 @@
       "sourcePage": "https://commons.wikimedia.org/wiki/File:En-us-capricious.oga",
       "license": "CC BY-SA 4.0",
       "attribution": "Paul2520"
+    },
+    "exactSynonyms": [
+      "impulsive",
+      "whimsical"
+    ],
+    "relationMeaningsKo": {
+      "impulsive": "충동적인",
+      "whimsical": "변덕스러운"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "00722886-s",
+      "sourceDefinitionSha256": "c0bd67d7d79da821dfc2ae4332e83c60588b064115d2dff81d7686477f1da3c5",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
     }
   },
   {
@@ -218,6 +234,22 @@
       "sourcePage": "https://commons.wikimedia.org/wiki/File:En-us-vie.oga",
       "license": "CC BY-SA 4.0",
       "attribution": "Paul2520"
+    },
+    "exactSynonyms": [
+      "compete",
+      "contend"
+    ],
+    "relationMeaningsKo": {
+      "compete": "경쟁하다",
+      "contend": "겨루다"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "01074673-v",
+      "sourceDefinitionSha256": "153322adbbe25fe4f28f2ccf914d79e6990e2918f69aa0a78a741ba4e63d8cc5",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
     }
   },
   {
@@ -292,6 +324,22 @@
       "sourcePage": "https://commons.wikimedia.org/wiki/File:LL-Q1860_(eng)-Naomi_Persephone_Amethyst_(NaomiAmethyst)-callow.wav",
       "license": "CC BY-SA 4.0",
       "attribution": "Speaker: Naomi Persephone Amethyst Recorder: NaomiAmethyst"
+    },
+    "exactSynonyms": [
+      "fledgling",
+      "unfledged"
+    ],
+    "relationMeaningsKo": {
+      "fledgling": "풋내기의",
+      "unfledged": "경험이 부족한"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "00940267-s",
+      "sourceDefinitionSha256": "47958141b0185b1f1c3d01eb56e404fa15d80514e3662c0d76914abfb42842fb",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
     }
   },
   {
@@ -366,6 +414,31 @@
       "sourcePage": "https://commons.wikimedia.org/wiki/File:En-us-boast.ogg",
       "license": "CC BY-SA 3.0",
       "attribution": "Neskaya"
+    },
+    "exactSynonyms": [
+      "tout",
+      "swash",
+      "shoot a line",
+      "brag",
+      "gas",
+      "blow",
+      "bluster",
+      "vaunt",
+      "gasconade"
+    ],
+    "relationMeaningsKo": {
+      "brag": "자랑하다",
+      "vaunt": "자랑하다",
+      "bluster": "허풍떨다",
+      "tout": "과시하다"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "00884747-v",
+      "sourceDefinitionSha256": "a2aeafe15226a34b56b441d71ec7e5278953348b7137ec3cd8b7542dc3ca9b2c",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
     }
   },
   {
@@ -431,6 +504,27 @@
           "contentSha256": "4193e57a6544fc251d6ebca33724a424bfbeb3a1f7b926ec4d1e6f445b68b154"
         }
       ]
+    },
+    "exactSynonyms": [
+      "acquit",
+      "assoil",
+      "clear",
+      "discharge",
+      "exonerate"
+    ],
+    "relationMeaningsKo": {
+      "acquit": "무죄를 선고하다",
+      "clear": "혐의를 벗기다",
+      "discharge": "석방하다",
+      "exonerate": "혐의를 벗기다"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "00905999-v",
+      "sourceDefinitionSha256": "0d3b6f7e5e6ec22c5aa9c3f540108f8ef25bfef28d0c5e8ee39df81ebee06888",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
     }
   },
   {
@@ -496,6 +590,22 @@
           "contentSha256": "b505558c27ffa46c4ffcae92bdbd934c2a5f54488b3fe572801e6d338ab634a7"
         }
       ]
+    },
+    "exactSynonyms": [
+      "frowsy",
+      "frowzy"
+    ],
+    "relationMeaningsKo": {
+      "frowsy": "지저분한",
+      "frowzy": "지저분한"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "02434522-s",
+      "sourceDefinitionSha256": "897da3d5217d7dfaf4b60fb7eb82fefcbf8e143b50068a1a4b0c2781d613a6ab",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
     }
   },
   {
@@ -569,6 +679,24 @@
       "sourcePage": "https://commons.wikimedia.org/wiki/File:En-us-serene.ogg",
       "license": "CC BY-SA 3.0",
       "attribution": "Dvortygirl"
+    },
+    "exactSynonyms": [
+      "calm",
+      "unagitated",
+      "tranquil"
+    ],
+    "relationMeaningsKo": {
+      "calm": "침착한",
+      "unagitated": "동요하지 않는",
+      "tranquil": "평온한"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "00531862-s",
+      "sourceDefinitionSha256": "9bc8828225093808ccead5e8fbb0949724b211b5eb0a336a083a885bb2a3c502",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
     }
   },
   {
@@ -709,6 +837,38 @@
           "contentSha256": "65412448ad5826a3c773105f9fe3fd9ecd05822c69717a7a74ff0dc363577c33"
         }
       ]
+    },
+    "exactSynonyms": [
+      "commonplace",
+      "hackneyed",
+      "old-hat",
+      "shopworn",
+      "stock",
+      "threadbare",
+      "timeworn",
+      "tired",
+      "trite",
+      "well-worn"
+    ],
+    "relationMeaningsKo": {
+      "commonplace": "진부한",
+      "hackneyed": "진부한",
+      "old-hat": "구식의",
+      "shopworn": "진부한",
+      "stock": "상투적인",
+      "threadbare": "진부한",
+      "timeworn": "낡아 빠진",
+      "tired": "진부한",
+      "trite": "진부한",
+      "well-worn": "상투적인"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "01693210-s",
+      "sourceDefinitionSha256": "1bc8f4debfef9130d1ead11db828741a84c1874934d13c76c2bb3e34d28d498d",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
     }
   },
   {
@@ -774,6 +934,37 @@
           "contentSha256": "6c56850de0fcf6ca4c50a4561f5f5b0843c0e98cc5a699b6d44a413616f8591b"
         }
       ]
+    },
+    "exactSynonyms": [
+      "capture",
+      "enamour",
+      "trance",
+      "catch",
+      "becharm",
+      "enamor",
+      "beguile",
+      "charm",
+      "fascinate",
+      "bewitch",
+      "entrance",
+      "enchant"
+    ],
+    "relationMeaningsKo": {
+      "charm": "매혹하다",
+      "fascinate": "매료시키다",
+      "bewitch": "홀리다",
+      "enchant": "매혹하다",
+      "entrance": "매료시키다",
+      "capture": "마음을 사로잡다",
+      "catch": "마음을 끌다"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "01810472-v",
+      "sourceDefinitionSha256": "c217341adacff9d11ee8f8ac1be030717fb6233a403312e9d25f88b94d4c56d6",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
     }
   },
   {
@@ -913,6 +1104,24 @@
           "contentSha256": "aa9b5144fc7a16c77964be4131283d71250af685d5a2fc9b7d16f874c8428dcb"
         }
       ]
+    },
+    "exactSynonyms": [
+      "repugnance",
+      "repulsion",
+      "horror"
+    ],
+    "relationMeaningsKo": {
+      "repugnance": "혐오감",
+      "repulsion": "혐오감",
+      "horror": "진저리"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "07519226-n",
+      "sourceDefinitionSha256": "541c0e1c1dd689e4b2c0a7efef5bd6b26ebb3d0c6fc8ff34573e7450975caa32",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
     }
   },
   {
@@ -1069,6 +1278,28 @@
       "sourcePage": "https://commons.wikimedia.org/wiki/File:En-us-cajole.ogg",
       "license": "Public domain",
       "attribution": "Dvortygirl"
+    },
+    "exactSynonyms": [
+      "wheedle",
+      "palaver",
+      "blarney",
+      "coax",
+      "sweet-talk",
+      "inveigle"
+    ],
+    "relationMeaningsKo": {
+      "wheedle": "감언으로 꾀다",
+      "coax": "구슬리다",
+      "sweet-talk": "감언으로 설득하다",
+      "inveigle": "감언으로 꾀다"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "00770823-v",
+      "sourceDefinitionSha256": "820d04b8c23faf2a3ae58cc5b89a9ff5aa296969b70e78948b5d95923a686c3b",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
     }
   },
   {
