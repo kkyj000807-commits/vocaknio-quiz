@@ -6,6 +6,7 @@ import { ActiveRecallAnswer, ActiveRecallPrompt } from "@/components/active-reca
 import { ActiveRecallStudyDetails, LearningDetails, SenseDetails } from "@/components/learning-details";
 import reviewedBatch from "@/data/vocab-learning/reviewed-batch-20261014.json";
 import type { LearningEntry } from "@/lib/vocab-learning";
+import { shortRelationGloss } from "@/lib/semantic-cluster";
 import { LearningEvidence } from "@/components/learning-evidence";
 import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
 import { ACTIVE_RECALL_SENSES } from "@/lib/active-recall";
@@ -571,7 +572,7 @@ describe("reviewed learning evidence and explanation boundaries", () => {
     const opened = render(<ActiveRecallAnswer recall={sense} />);
     expect(closed).toContain("관계어 뜻·차이 보기");
     for (const meaning of Object.values(sense.relationMeaningsKo!)) {
-      expect(closed).not.toContain(meaning);
+      if (!shortRelationGloss(meaning)) expect(closed).not.toContain(meaning);
       expect(opened).toContain(meaning);
     }
     expect(closed).toContain(sense.exampleSentences[0].en);

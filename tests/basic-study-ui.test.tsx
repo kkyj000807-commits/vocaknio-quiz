@@ -19,16 +19,27 @@ vi.mock("@/hooks/use-colors", () => ({ useColors: () => ({ foreground: "#222", d
 
 const request = { mode: "definition-choice" as const, choiceLang: "korean" as const, rangeId: "v501", rangeStart: 18000, rangeEnd: 19000, count: 10 };
 
-it("holds an outdated session until an explicit archive/start or backup action", () => {
+it("keeps problem navigation outside long scrolling explanations and uses automatic archival", () => {
+  const source = fs.readFileSync(path.resolve("app/quiz.tsx"), "utf8");
+  expect(source.indexOf("style={s.questionNavRow}")).toBeGreaterThan(source.lastIndexOf("</ScrollView>"));
+  expect(source).toContain("loadQuizSessionForStudy(requestKey)");
+  expect(source).not.toContain("acknowledgedStaleSession");
+  expect(source).not.toContain("이번 진행은 복원되지 않을 수 있어요.\");\n      const");
+});
+
+it("offers retry, backup and a way back only for failed session preparation", () => {
   native.buttons.length = 0;
-  const onStart = vi.fn(); const onBackup = vi.fn();
-  const html = renderToStaticMarkup(<QuizSessionHold onStart={onStart} onBackup={onBackup} />);
+  const onStart = vi.fn(); const onBackup = vi.fn(); const onSettings = vi.fn();
+  const html = renderToStaticMarkup(<QuizSessionHold onStart={onStart} onBackup={onBackup} onSettings={onSettings} />);
   expect(html).toContain("다시 채점하거나 삭제하지 않습니다");
   expect(onStart).not.toHaveBeenCalled(); expect(onBackup).not.toHaveBeenCalled();
   native.buttons.find(button => button.label === "학습 기록 백업 설정 열기")!.press();
   expect(onBackup).toHaveBeenCalledOnce(); expect(onStart).not.toHaveBeenCalled();
-  native.buttons.find(button => button.label === "이전 원본 보관 후 새 문제 시작")!.press();
+  expect(html).not.toContain("이전 문제는 다시 검토 중입니다");
+  native.buttons.find(button => button.label === "저장 확인 후 다시 시도")!.press();
   expect(onStart).toHaveBeenCalledOnce();
+  native.buttons.find(button => button.label === "문제 풀이 설정으로 돌아가기")!.press();
+  expect(onSettings).toHaveBeenCalledOnce();
 });
 
 describe("explicit basic-meaning study from an empty ordinary session", () => {

@@ -58,6 +58,33 @@ it("reads a historical snapshot but refuses current play without poisoning other
   await expect(store.recordOneAnswer(false, 1, undefined, s)).rejects.toThrow();
   expect((await store.loadStats()).totalAnswered).toBe(1);
 });
+it("automatically archives an outdated session before continuing without regrading or deleting it", async () => {
+  const old = session(); const raw = JSON.stringify(old, null, 2);
+  fixture.disk.set(parser.QUIZ_SESSION_KEY, raw); fixture.current = false;
+  const before = await store.loadStats();
+  expect(await store.loadQuizSessionForStudy(old.requestKey)).toEqual({ session: null, archived: true });
+  expect(fixture.disk.get(parser.QUIZ_SESSION_KEY)).toBe(raw);
+  expect(JSON.parse(fixture.disk.get(parser.QUIZ_SESSION_ARCHIVE_KEY)!).sessions).toEqual([raw]);
+  await store.loadQuizSessionForStudy(old.requestKey);
+  expect(JSON.parse(fixture.disk.get(parser.QUIZ_SESSION_ARCHIVE_KEY)!).sessions).toEqual([raw]);
+  expect(await store.loadStats()).toEqual(before);
+});
+it("restores current sessions unchanged and does not reuse a different request", async () => {
+  const old = session(); fixture.disk.set(parser.QUIZ_SESSION_KEY, JSON.stringify(old));
+  expect(await store.loadQuizSessionForStudy(old.requestKey)).toEqual({ session: old, archived: false });
+  expect(await store.loadQuizSessionForStudy("different")).toEqual({ session: null, archived: false });
+  expect(fixture.disk.has(parser.QUIZ_SESSION_ARCHIVE_KEY)).toBe(false);
+});
+it("does not report automatic recovery success when archiving fails, and safely retries", async () => {
+  const raw = JSON.stringify(session()); fixture.disk.set(parser.QUIZ_SESSION_KEY, raw);
+  fixture.current = false; fixture.failAfter = 0;
+  await expect(store.loadQuizSessionForStudy("v101/kor-choice")).rejects.toThrow();
+  expect(fixture.disk.get(parser.QUIZ_SESSION_KEY)).toBe(raw);
+  fixture.failAfter = -1;
+  await store.retryLearningStorage();
+  expect(await store.loadQuizSessionForStudy("v101/kor-choice")).toEqual({ session: null, archived: true });
+  expect(JSON.parse(fixture.disk.get(parser.QUIZ_SESSION_ARCHIVE_KEY)!).sessions).toEqual([raw]);
+});
 it("preserves exact historical bytes in backup and a recoverable archive before replacement", async () => {
   const old = session(); old.questions[0].item.k_short = "過去の記録";
   const raw = JSON.stringify(old, null, 2); fixture.disk.set(parser.QUIZ_SESSION_KEY, raw);

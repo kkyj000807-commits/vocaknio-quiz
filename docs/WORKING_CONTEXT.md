@@ -1,5 +1,21 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-15 — 세션 보관 자동화·문풀 하단·개별 동의어 뜻 (배포 대기)
+
+최종 입력 재검증: 자원 회복3290MiB 확인 후 verify exit0, **547PASS·1기존SKIP/62suitePASS·1SKIP**, 전체 타입·데이터PASS(97.95초). 이전 자원보류/중간 기대값 실패는 아래 이력으로 보존한다. 이 결과만으로 새 공개 배포를 뜻하지 않는다.
+
+기준 branch `finetune-exam-stable-1-0`, HEAD5a58599, 로컬 잠금42617/PID6028. 예문만 바뀌어도 definition entry 전체 JSON 비교가 기존 세션을 막는 원인을 재현했다(수정 전 focused4FAIL23PASS). 예문은 채점 계약 비교에서만 제외하며 sense/정의/품사/관계어는 엄격 비교한다. 실제 구문항은 원본 raw를 기존 보관 키에 내구 저장한 후 최신 학습으로 이어진다. 저장 실패/깨진 원본은 그대로 보호하고 재시도·백업·설정 경로를 제공한다. 저장 실패 때 필터가 빠진 미저장 대체 문제를 만들던 catch도 제거했다. 과거 답안/선지/통계 재채점·삭제 없음.
+
+문풀 이전/다음/결과 버튼을 긴 해설 ScrollView 밖의 일반 flex footer로 이동했다(absolute overlay/큰 임의 padding 없음). 공통 RelationChips에서 검증된 짧은 뜻은 영어 바로 옆 `(뜻)`으로 표시하고 긴/미검수 뜻은 펼침에 유지한다. 한국어 연결이 없다는 이유로 원자료 영어 동의어가 사라지던 경로를 보존형으로 수정하고 일반 정답 후 UI도 SynonymDetails를 재사용한다. 의미·정답/ID/저장키/사용자 기록 불변.
+
+발음은 기존17개 녹음/라이선스·저작자 메타데이터와 공유 재생기를 유지한다. 저장 설정이 없을 때만 녹음 우선; 명시적 합성음 선택false는 보존. 녹음 실패→미국영어 합성음, 지연된 음성목록/수동 선택/취소 후 콜백 회귀를 확인했다. boast Commons 원문 CC BY-SA3.0/Neskaya 재확인; capricious 원문 도구 접근 실패, 전17원문 재검증/실기기 청취 완료를 주장하지 않는다.
+
+전수 측정 `analysis/qa/usability-coverage-20261015.json` 입력SHA891fb948…aad: 13,347표제어/38,163출현행, 사전32,382sense/canonical125sense, 원본한국어뜻 누락0·깨진학습포인터0. 영어예문·용례8,122표제어(60.85%), 영한+단서155(1.16%), 예문없는5,225. 기존 사전관계 짧은뜻437건/1,281행, 뜻대기8,267관계. single3857/polysemous7053/idiom1877/unresolved560 구분. 1,594ms는 구조집계 시간이지 의미검수 생산성 아님. 신규 의미 콘텐츠/번역/검수 승격0. 기존 batch 재생성 없음; 전체 완성 아님.
+
+검증: 발음 기본값 변경 전 전체 verify exit0/545PASS1SKIP·타입·데이터PASS(samplepeak2613MiB). 최종 발음 변경 뒤 focused15PASS, 관련 ESLint exit0, Git보안762tracked/0finding exit0, diffcheckPASS. 중간 기존 '합성음 기본' 테스트1FAIL은 최신 녹음우선 요구와 맞지 않는 기대값으로, 녹음기본/명시적합성음보존을 분리해15PASS 확인. 최종 verify는 데이터감사PASS 후 타입 진입에서 물리2987MiB<3072MiB로BLOCKED(exit1), 최종 전체PASS로 승격하지 않음. 공개1.0/2026.10.14 02:09:37/source708d7bc 유지. 새 Production 빌드·현재UI 브라우저·실기기·배포는 아직 NOT_VERIFIED. 가용 물리/commit 각각3GiB 회복 시 최종 verify→소유파일 커밋→새빌드/감사→격리브라우저→Pages 순서 재개. 사용자 iPhone 읽기보호 실제 원인은 여전히 미확정.
+
+2026-10-14 23:37 KST 예약 A: **NO_CHANGE**. 로컬/원격 HEAD5a585994a8d2f4665e53569fdb69bd5bec77a50c, 시작 dirty0. 공개source708d7bc 이후 변경은 이 문서의 배포후 영수증뿐이며 앱·데이터 입력 변경 없음. 공개 release1.0/02:09:37/source708d7bc/sourceDirty=false와 JS HTTP200·Pages0ef945b blob SHA일치 재확인(exit0). 기존537PASS1SKIP를 새 검사 결과로 재계산하지 않고 전체 검사·생성·빌드·재배포 생략. 실제iPhone저장원인/실기기·5225표제어예문누락은 미완료 그대로. 잠금86913/PID34756, 백업/해제 결과는 외부 A-latest.json에 기록. 다음은 새 콘텐츠batch 또는 안전한iPhone오류코드 근거가 있을 때 해당범위 재개; 기록문서만으로 재배포하지 않는다.
+
 ## 2026-10-14 02:18 KST — 사전 예문 확장·40개 영한 예문 공개 완료
 
 공개1.0 / 2026.10.14 02:09:37 KST / source708d7bcc591d0780a35bceb087c45a7c8a334f51 / sourceDirty=false / Pages0ef945b53cb14617bf8e465d7c0087c1dcfec3fd. GitHub Pages built, 일반 공개 release 일치, 새 entry-115177cf6018929b93e1bb58683f2799.js HTTP200+빌드SHA일치, 사전8섹션 HTTP200+Pages blob SHA일치+빌드JSON의미동일. 로컬 JSON 마지막CRLF가 Git에서LF로 정규화된1byte차이는 내용 불일치가 아님을8파일 모두 확인했다. 공개 IAB에서 abdicate 영어 예문→한국어 펼침/문맥단서와 새번들 로딩 확인. 공개 사용자 답변/학습기록 변경 없음.

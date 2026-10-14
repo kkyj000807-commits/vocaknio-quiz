@@ -41,6 +41,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { FlipCard } from "@/components/flip-card";
 import { PronunciationButton } from "@/components/pronunciation-button";
 import { LearningDetails } from "@/components/learning-details";
+import { SynonymDetails } from "@/components/synonym-details";
 import { QuizEmptyState, QuizSessionHold } from "@/components/quiz-empty-state";
 import { SentenceCompletionAnswer, SentenceCompletionPrompt } from "@/components/sentence-completion-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -59,7 +60,9 @@ import {
   loadSenseLearningState,
   loadLearningSnapshot,
   markLearningTargetMastered,
-  loadQuizSession,
+  loadQuizSessionForStudy,
+  retryLearningStorage,
+  getLearningStorageIssue,
   saveQuizSession,
   prepareAdaptiveQuizSession,
   recordOneAnswer,
@@ -85,8 +88,6 @@ import { selectAdaptiveItemNums } from "@/lib/adaptive-quiz";
 import { ADAPTIVE_POLICY } from "@/lib/learning-analytics";
 import {
   createEmptyQuestionViewState,
-  isQuizSessionContentCurrent,
-  resumableQuizSession,
   summarizeQuizSession,
   type QuizQuestionViewState,
   type QuizSession,
@@ -132,8 +133,7 @@ export default function QuizScreen() {
   const questionTimer = useQuestionTimer();
   const [restartToken, setRestartToken] = useState(0);
   const [sessionNotice, setSessionNotice] = useState("");
-  const [staleSessionId, setStaleSessionId] = useState<string | null>(null);
-  const acknowledgedStaleSession = useRef<string | null>(null);
+  const [sessionRecoveryFailed, setSessionRecoveryFailed] = useState(false);
   const params = useLocalSearchParams<{
     mode: QuizMode;
     rangeStart: string;
@@ -227,15 +227,10 @@ export default function QuizScreen() {
       isMovingRef.current = false;
       sessionCompletedRef.current = false;
       setSessionNotice("");
-      const stored = await loadQuizSession();
+      setSessionRecoveryFailed(false);
+      const { session: saved, archived } = await loadQuizSessionForStudy(requestKey);
       if (cancelled) return;
-      if (stored && !isQuizSessionContentCurrent(stored) && acknowledgedStaleSession.current !== stored.sessionId) {
-        setStaleSessionId(stored.sessionId);
-        setQuestionsReady(true);
-        return;
-      }
-      setStaleSessionId(null);
-      const saved = resumableQuizSession(stored, requestKey);
+      if (archived) setSessionNotice("이전 답안은 보관했습니다. 최신 문제로 새 학습을 시작합니다.");
       if (saved) {
         sessionIdRef.current = saved.sessionId;
         questionViewStatesRef.current = new Map(saved.states.map((state, i) => [i, state]));
@@ -326,33 +321,16 @@ export default function QuizScreen() {
         schema: 1, requestKey, sessionId, questions: nextQuestions,
         states: nextQuestions.map(() => createEmptyQuestionViewState()), currentIndex: 0, completed: false,
       });
+      if (getLearningStorageIssue()) throw new Error("New session is not safely saved");
       if (cancelled) return;
       setQuestions(nextQuestions);
       setQuestionsReady(true);
     };
 
-    prepareQuestions().catch(async () => {
+    prepareQuestions().catch(() => {
       if (cancelled) return;
-      setSessionNotice("이어 풀기 기록을 준비하지 못했습니다. 이번 진행은 복원되지 않을 수 있어요.");
-      const [loadedMastered, learningState] = await Promise.all([
-        loadMastered(),
-        loadSenseLearningState(),
-      ]);
-      if (cancelled) return;
-      setQuestions(
-        buildQuizQuestions({
-          mode,
-          rangeStart,
-          rangeEnd,
-          count,
-          rangeId,
-          choiceLang,
-          masteredNums: loadedMastered,
-          masteredTargetKeys: [...masteredTargetKeys(learningState)],
-          itemNums: itemNums.length > 0 ? itemNums : undefined,
-          allowMeaningFallback: false,
-        }),
-      );
+      // Do not start an unsaved fallback or drop exact review filters on failure.
+      setSessionRecoveryFailed(true);
       setQuestionsReady(true);
     });
     return () => {
@@ -907,9 +885,10 @@ export default function QuizScreen() {
   if (!q) {
     return (
       <ScreenContainer containerClassName="bg-background">
-        {staleSessionId ? <QuizSessionHold
+        {sessionRecoveryFailed ? <QuizSessionHold
           onBackup={() => router.push("/(tabs)/settings")}
-          onStart={() => { acknowledgedStaleSession.current = staleSessionId; setStaleSessionId(null); setRestartToken(value => value + 1); }} /> : <QuizEmptyState ready={questionsReady}
+          onSettings={() => router.replace("/")}
+          onStart={() => { setSessionRecoveryFailed(false); setQuestionsReady(false); void retryLearningStorage().catch(() => undefined).finally(() => setRestartToken(value => value + 1)); }} /> : <QuizEmptyState ready={questionsReady}
           request={{ mode, choiceLang, rangeId, rangeStart, rangeEnd, count,
             reviewKeys: params.reviewKeys, bookmarkNums: params.bookmarkNums }}
           onSettings={() => router.replace("/")}
@@ -972,7 +951,7 @@ export default function QuizScreen() {
               { flex: 1 },
               Platform.OS === "web" && ({ touchAction: "pan-y" } as any),
             ]}
-            contentContainerStyle={{ paddingBottom: 32 }}
+            contentContainerStyle={{ paddingBottom: 16 }}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
             onTouchStart={handleWebTouchStart}
@@ -1320,20 +1299,17 @@ export default function QuizScreen() {
                     {q.item.k_short}
                   </Text>
                   {q.item.s.length > 0 && (
-                    <View style={s.synTagRow}>
-                      {q.item.s.slice(0, 5).map((syn, i) => (
-                        <View key={i} style={s.synTag}>
-                          <Text style={s.synTagText}>{syn}</Text>
-                        </View>
-                      ))}
-                    </View>
+                    <SynonymDetails item={q.item} limit={5} />
                   )}
                 </View>
               )}
 
               {answered && !q.sentenceCompletion && !q.recall && !q.definitionRecall && <LearningDetails itemId={q.item.id} />}
 
-              {/* 문제 이동 */}
+            </Animated.View>
+          </ScrollView>
+        </NativeSwipeBoundary>
+              {/* Normal flex footer, outside the scrolling explanation; no overlay/inset duplication. */}
               {(currentIdx > 0 || answered) && (
                 <View style={s.questionNavRow}>
                   {currentIdx > 0 && (
@@ -1367,9 +1343,6 @@ export default function QuizScreen() {
                   )}
                 </View>
               )}
-            </Animated.View>
-          </ScrollView>
-        </NativeSwipeBoundary>
       </KeyboardAvoidingView>
     </ScreenContainer>
   );
@@ -1814,7 +1787,12 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     questionNavRow: {
       flexDirection: "row",
       gap: 10,
-      marginTop: 14,
+      flexShrink: 0,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+      backgroundColor: colors.background,
     },
     previousBtn: {
       flex: 1,

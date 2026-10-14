@@ -7,6 +7,7 @@ import {
   getDefinitionQuizDistractors,
   getDefinitionQuizEntry,
   getDefinitionRelationMeanings,
+  isCurrentDefinitionQuizEntry,
 } from "@/lib/definition-quiz";
 import {
   buildQuizQuestions,
@@ -16,6 +17,18 @@ import {
 import { VOCAB } from "@/lib/vocab";
 
 describe("영영 정의 → 정확한 표제어", () => {
+  it("keeps an example-only update resumable but rejects changed answer semantics", () => {
+    const item = VOCAB.find(candidate => candidate.w === "abase")!;
+    const current = getDefinitionQuizEntry(item.id)!;
+    expect(isCurrentDefinitionQuizEntry({ ...current, examples: [] }, item)).toBe(true);
+    for (const changed of [
+      { ...current, definition: "a different meaning" },
+      { ...current, senseId: "different-sense" },
+      { ...current, partOfSpeech: "noun" },
+      { ...current, synsetMembers: ["unrelated"] },
+      { ...current, antonyms: ["unrelated"] },
+    ]) expect(isCurrentDefinitionQuizEntry(changed, item)).toBe(false);
+  });
   it("검증 가능한 OEWN 단일-sense 정의를 별도 출제 자산으로 제공한다", () => {
     expect(getDefinitionQuizCoverage()).toEqual({
       eligibleHeadwords: 4114,

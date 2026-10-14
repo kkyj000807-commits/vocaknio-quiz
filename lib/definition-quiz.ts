@@ -228,7 +228,9 @@ export function isCurrentDefinitionQuizEntry(
   return Boolean(
     current &&
       normalized(current.headword) === normalized(item.w) &&
-      JSON.stringify(current) === JSON.stringify(entry),
+      // Examples are answer-side reference material, not the grading contract.
+      // Keep all other fields strict (including sense, definition and relations).
+      JSON.stringify({ ...current, examples: [] }) === JSON.stringify({ ...entry, examples: [] }),
   );
 }
 

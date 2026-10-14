@@ -114,10 +114,13 @@ export const relationLayoutCases = [
     const { RelationChips } = load('components/relation-chips.tsx');
     const terms = [{ word: 'brag', meaningKo: '자랑하다' }, { word: 'flaunt', meaningKo: '과시하다' }, { word: 'vaunt', meaningKo: '자랑하다' }, { word: 'near', meaningKo: '긴 문맥 설명이다. 교체 조건과 다른 의미의 차이를 보존한다.' }];
     const closed = render(React.createElement(RelationChips, { terms }));
-    assert.match(closed, /brag/); assert.doesNotMatch(closed, /자랑하다|과시하다/);
+    assert.match(closed, /brag/); assert.match(closed, /자랑하다/); assert.match(closed, /과시하다/);
+    assert.equal((closed.match(/자랑하다/g) ?? []).length, 2);
     assert.doesNotMatch(closed, /긴 문맥 설명이다/); assert.match(closed, /관계어 뜻·차이/);
     const details = render(React.createElement(RelationChips, { terms, showNotes: true }));
     assert.match(details, /긴 문맥 설명이다. 교체 조건과 다른 의미의 차이를 보존한다./);
+    const unverified = render(React.createElement(RelationChips, { terms: [{ word: 'unknown', meaningKo: '자랑하다', glossEligible: false }] }));
+    assert.doesNotMatch(unverified, /자랑하다/);
   }],
   ['extra synonyms remain available through more instead of being cut at source', () => {
     const { RelationChips } = load('components/relation-chips.tsx');

@@ -15,6 +15,9 @@ interface SynonymDetailsProps {
 
 export function SynonymDetails({ item, limit }: SynonymDetailsProps) {
   const details = getSynonymDetails(item);
+  // A missing Korean gloss must not erase an existing English source relation.
+  const sourceTerms = item.s.map(word => ({ word,
+    meaning: details.find(detail => normalizeWord(detail.word) === normalizeWord(word))?.meaning }));
   const colors = useColors();
   const [sourceOpen, setSourceOpen] = useState(false);
   const reference = getDefinitionQuizEntry(item.id);
@@ -24,9 +27,9 @@ export function SynonymDetails({ item, limit }: SynonymDetailsProps) {
   const dictionaryWords = reference ? getDefinitionAnswerRelations(reference).synonyms : [];
   const primary = dictionaryWords.length ? dictionaryWords.map(word => ({ word,
     meaningKo: meanings.get(normalizeWord(word)), glossEligible: meanings.has(normalizeWord(word)) }))
-    : details.map(detail => ({ word: detail.word, meaningKo: detail.meaning, glossEligible: false }));
+    : sourceTerms.map(detail => ({ word: detail.word, meaningKo: detail.meaning, glossEligible: false }));
   const dictionaryKeys = new Set(dictionaryWords.map(normalizeWord));
-  const additional = dictionaryWords.length ? details.filter(detail => !dictionaryKeys.has(normalizeWord(detail.word))) : [];
+  const additional = dictionaryWords.length ? sourceTerms.filter(detail => !dictionaryKeys.has(normalizeWord(detail.word))) : [];
   if (primary.length === 0) return null;
   const sourceLabel = (word: string) => {
     const groups = getSynonymSourceGroups(item, word);

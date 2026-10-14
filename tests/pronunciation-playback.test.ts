@@ -61,9 +61,15 @@ describe("shared pronunciation playback", () => {
     error(); f.reject(); await Promise.resolve();
     expect(f.synthesis.speak).toHaveBeenCalledTimes(2);
   });
-  it("default synthesized speech does not fetch a licensed recording", () => {
+  it("defaults to a licensed recording when one is available", () => {
     const f = fixture(); f.start({ recordingUrl: "https://example.test/licensed.ogg" });
+    expect(f.audios).toHaveLength(1);
+    expect(f.synthesis.speak).not.toHaveBeenCalled();
+  });
+  it("explicit synthesized speech preference does not fetch a licensed recording", () => {
+    const f = fixture(); f.start({ recordingUrl: "https://example.test/licensed.ogg", preference: { ...DEFAULT_PRONUNCIATION, preferRecording: false } });
     expect(f.audios).toHaveLength(0);
+    expect(f.synthesis.speak).toHaveBeenCalledOnce();
   });
   it("unmount cleanup cancels synthesis and prevents callbacks", () => {
     const f = fixture(); const request = f.start();

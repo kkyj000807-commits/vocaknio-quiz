@@ -40,17 +40,19 @@ export function buildExplicitMeaningStudyRoute(request: MeaningStudyRequest) {
 
 type MeaningStudyRoute = NonNullable<ReturnType<typeof buildExplicitMeaningStudyRoute>>;
 
-export function QuizSessionHold({ onStart, onBackup }: { onStart: () => void; onBackup: () => void }) {
+export function QuizSessionHold({ onStart, onBackup, onSettings }: { onStart: () => void; onBackup: () => void; onSettings: () => void }) {
   const s = styles(useColors());
   return <ScrollView contentContainerStyle={s.container}>
-    <Text style={s.title}>이전 문제는 다시 검토 중입니다</Text>
-    <Text style={s.note}>내용이 갱신되었거나 출제가 보류된 문항이 있어 그대로 이어 풀 수 없습니다. 기존 답안·선지·학습 결과를 다시 채점하거나 삭제하지 않습니다.</Text>
-    <Text style={s.note}>새로 시작하면 이전 세션 원본을 기기에 별도 보관합니다. 설정의 학습 기록 백업에도 포함됩니다.</Text>
-    <Pressable accessibilityRole="button" accessibilityLabel="이전 원본 보관 후 새 문제 시작" style={s.button} onPress={onStart}>
-      <Text style={s.buttonText}>원본 보관 후 새 문제 시작</Text>
+    <Text style={s.title}>학습을 준비하지 못했습니다</Text>
+    <Text style={s.note}>이전 기록은 다시 채점하거나 삭제하지 않습니다. 저장 상태를 확인하고 다시 시도해 주세요.</Text>
+    <Pressable accessibilityRole="button" accessibilityLabel="저장 확인 후 다시 시도" style={s.button} onPress={onStart}>
+      <Text style={s.buttonText}>다시 시도</Text>
     </Pressable>
     <Pressable accessibilityRole="button" accessibilityLabel="학습 기록 백업 설정 열기" style={s.settingsButton} onPress={onBackup}>
-      <Text style={s.settingsText}>먼저 백업하기</Text>
+      <Text style={s.settingsText}>기록 백업·저장 상태 확인</Text>
+    </Pressable>
+    <Pressable accessibilityRole="button" accessibilityLabel="문제 풀이 설정으로 돌아가기" style={s.settingsButton} onPress={onSettings}>
+      <Text style={s.settingsText}>문제 풀이 설정으로 돌아가기</Text>
     </Pressable>
   </ScrollView>;
 }

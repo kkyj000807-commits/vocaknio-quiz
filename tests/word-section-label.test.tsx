@@ -96,6 +96,15 @@ describe("existing wordbook section provenance", () => {
     expect(html.match(/data-testid="word-section-label"/g)).toHaveLength(1);
   });
 
+  it("does not drop an existing English relation when its Korean source lookup is missing", () => {
+    const item = { ...VOCAB[0], id: "unmapped-source-row", s: ["unlinked-source-expression"] };
+    expect(getSynonymDetails(item)).toEqual([]);
+    const html = render(<SynonymDetails item={item} />);
+    expect(html).toContain("unlinked-source-expression");
+    expect(html).toContain("원자료 관계");
+    expect(html).not.toContain(item.k_short);
+  });
+
   it("all 38,163 original rows and their existing synonym links retain known source groups", () => {
     expect(VOCAB).toHaveLength(38163);
     const known = new Set(SECTION_RANGES.map(range => range.group));

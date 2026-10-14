@@ -1,8 +1,15 @@
 import { describe, expect, it } from "vitest";
 
 import { scoreAmericanVoice, selectAmericanVoice } from "@/lib/us-pronunciation";
+import { normalizePronunciationPreference } from "@/lib/pronunciation-preference";
 
 describe("미국 영어 음성 선택", () => {
+  it("설정이 없으면 허가된 녹음을 우선하되 사용자가 고른 합성음 설정은 보존한다", () => {
+    expect(normalizePronunciationPreference(undefined).preferRecording).toBe(true);
+    expect(normalizePronunciationPreference({ voiceURI: "samantha" }).preferRecording).toBe(true);
+    expect(normalizePronunciationPreference({ voiceURI: "samantha", preferRecording: false }))
+      .toEqual({ voiceURI: "samantha", preferRecording: false });
+  });
   it("자동 선택은 남성 Natural보다 알려진 여성 미국 영어 음성을 우선한다", () => {
     expect(selectAmericanVoice([
       { lang: "en-US", name: "Microsoft Guy Natural" },

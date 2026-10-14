@@ -17,12 +17,14 @@ export function RelationChips({ terms, limit = 5, showNotes = false, renderSourc
   const [allOpen, setAllOpen] = useState(false);
   const count = Number.isFinite(limit) ? Math.max(1, Math.floor(limit)) : 5;
   const visible = allOpen ? terms : terms.slice(0, count);
-  const notes = visible.filter(term => term.meaningKo);
+  const gloss = (term: ChipTerm) => term.glossEligible !== false ? shortRelationGloss(term.meaningKo) : undefined;
+  const notes = visible.filter(term => term.meaningKo && !gloss(term));
   return <View style={s.body}>
     <View style={s.chips}>
       {visible.map(term => <View key={`${term.kind ?? "source"}:${term.word}`} style={[s.chip, { backgroundColor: colors.background }]}>
         <Text style={[s.word, { color: colors.foreground }]}>
           {term.kind === "near" ? "≈ " : ""}{term.word}
+          {gloss(term) ? <Text style={[s.gloss, { color: colors.muted }]}> ({gloss(term)})</Text> : null}
         </Text>
         {renderSource?.(term.word)}
       </View>)}

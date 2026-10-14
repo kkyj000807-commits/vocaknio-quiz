@@ -56,6 +56,22 @@ function session(mode: QuizMode = "kor-choice"): QuizSession {
 }
 
 describe("문제 풀이 중단 복원", () => {
+  it("restores original choices, answer and position after example-only enrichment", async () => {
+    const original = session("definition-choice");
+    for (const q of original.questions) {
+      if (q.definitionRecall) q.definitionRecall = { ...q.definitionRecall, examples: [] };
+    }
+    original.currentIndex = 1;
+    original.states[0] = { ...original.states[0], answered: true, selectedChoice: 0 };
+    disk.values.set(QUIZ_SESSION_KEY, JSON.stringify(original));
+    expect(await store.loadQuizSessionForStudy(original.requestKey)).toEqual({ session: original, archived: false });
+    expect(disk.values.get(QUIZ_SESSION_KEY)).toBe(JSON.stringify(original));
+  });
+  it("blocks an unreadable original rather than silently creating a new study session", async () => {
+    disk.values.set(QUIZ_SESSION_KEY, "not valid JSON");
+    await expect(store.loadQuizSessionForStudy("v101/kor-choice")).rejects.toThrow();
+    expect(disk.values.get(QUIZ_SESSION_KEY)).toBe("not valid JSON");
+  });
   it.each<QuizMode>([
     "definition-choice",
     "kor-choice",

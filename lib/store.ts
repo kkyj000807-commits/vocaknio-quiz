@@ -31,7 +31,7 @@ import {
   type SenseLearningState,
 } from "@/lib/learning-state";
 import { learningDay } from "@/lib/learning-analytics";
-import { QUIZ_SESSION_KEY, QUIZ_SESSION_ARCHIVE_KEY, parseQuizSession, parseStoredQuizSession, parseQuizSessionArchive, mergeQuizSessionProgress, type QuizSession } from "@/lib/quiz-session";
+import { QUIZ_SESSION_KEY, QUIZ_SESSION_ARCHIVE_KEY, parseQuizSession, parseStoredQuizSession, parseQuizSessionArchive, mergeQuizSessionProgress, isQuizSessionContentCurrent, resumableQuizSession, type QuizSession } from "@/lib/quiz-session";
 import { THEME_KEY, LEGACY_THEME_KEY, isThemeMode, resolveThemePreference, type ThemeMode } from "@/lib/theme-preference";
 
 export interface StatsData {
@@ -727,6 +727,26 @@ async function readQuizSessionUnsafe(): Promise<QuizSession | null> {
 
 export function loadQuizSession(): Promise<QuizSession | null> {
   return enqueueLearningStorageTask(readQuizSessionUnsafe);
+}
+
+/** Archive obsolete content durably before allowing a fresh study session.
+ * Never clear the original resume slot, silently regrade, or accept pending-only writes.
+ */
+export function loadQuizSessionForStudy(requestKey: string): Promise<{ session: QuizSession | null; archived: boolean }> {
+  return enqueueLearningStorageTask(async () => {
+    const raw = await readLearningItem(QUIZ_SESSION_KEY);
+    if (getLearningStorageIssue()) throw new Error("Session storage recovery is incomplete");
+    const stored = raw ? parseStoredQuizSession(JSON.parse(raw)) : null;
+    if (raw && !stored) throw new Error("Historical session is unreadable");
+    if (stored && raw && !isQuizSessionContentCurrent(stored)) {
+      const entry = await archiveSessionEntryUnsafe(raw);
+      await persistLearningEntries([entry]);
+      if (pendingLearningWrites.size || getLearningStorageIssue())
+        throw new Error("Historical session archive is not yet durable");
+      return { session: null, archived: true };
+    }
+    return { session: resumableQuizSession(stored, requestKey), archived: false };
+  });
 }
 
 async function archiveSessionEntryUnsafe(raw: string): Promise<[string, string]> {
