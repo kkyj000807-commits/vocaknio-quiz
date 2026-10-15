@@ -1,5 +1,27 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-16 00:00 KST — 저장 안정화 통합 검사 완료 / 비공개 후보 빌드
+
+기준 source5988fae. 웹12기존키 IndexedDB 원자적 이관(legacy 원문+별도원본copy 보존)/CAS/commit완료확인, 기존 native AsyncStorage 유지. 부분journal 복구·검증, stale migration backup의 최신목록 덮기 차단(22PASS), 독립북마크손상 분리, 실패코드/3회자동재시도/백업경로, lock취득전 응답보관과 순서drain, 다중탭 지연응답의 최신날짜·MASTER·마지막시각 역행 차단. 원시응답·누적횟수 보존. PR4 구현 재사용·보호검사 강화, workers_dev/preview_urls=false; 실제 Cloudflare 로그인과 Access설정 아직 필요. 기존 Pages와 브라우저기록은 변경하지 않음.
+
+검증: pnpm verify 최종680PASS/1기존SKIP, 전체타입/데이터PASS; 앞선675PASS뒤 시간역행 추가수정으로 재검사. 중간실패는 Platform mock누락/응답보존 기대변경/1970년fixture 시각오류였으며 assertions삭제 없이 수정. 가용물리2316MiB시 exit75로 보류후 lint종료·3844MiB회복 확인하고 직렬재실행. 관련ESLint exit0/7warning(0error), security:audit exit0/0finding, diffcheckPASS. 실제Chromium IDB harness7PASS+20실제문서reload+중단journalreload+두실탭CAS PASS; store모듈20재접속도통과. 실기기iOS/Samsung·이후 전체앱Production 흐름·새배포는 별도미검증.
+
+소유변경만 source커밋후 새 빈Production출력/감사/격리UI를 진행한다. IPA근사발음5891고유표제어/19021행과 기존미커밋UI·기본값 포함, 불확실발음보류/정답전힌트숨김. 이번저장작업의 신규콘텐츠생성0. 최종build/UI/backup/lock해제 및 후보SHA는 외부 A-latest.storageStabilizationCheckpoint 영수증. 공개배포는 Cloudflare 인증·본인1명Access·익명직접파일차단·실제Safari기록이관 확인 전 금지. 공개Pages source5988fae/표시1.0 그대로 유지, lastPassedCommit 승격하지 않음.
+
+## 2026-10-15 23:42 KST — 저장 P0 수정·IndexedDB 실제 브라우저 검증 중 / 비공개 배포 전환
+
+최신 요청으로 저장안정성 최우선. source5988fae/공개Pagesfb7ee76 일치 재확인. 현재 미커밋 발음·문풀 기본값·고밀도 UI 전부 보존, 잠금56340/PID27656 연속소유. 새 공개Pages 배포는 하지 않으며 PR4 security/private-safari-access의 Cloudflare Workers+Access 보호 목적지로 전환 중. PR4 fetch/연결 완료, 기존Pages 종료/저장소Private변경/실사용기록변경 없음. Cloudflare 대시보드는 로그아웃 상태로 사용자의 기존계정 로그인 필요. 인증 전 공개주소 활성화 금지.
+
+수정 전 재현: 독립 북마크손상이 정답통계저장까지차단 + 조용한쓰기누락을저널성공처리 2FAIL27PASS → 수정후29PASS. migration 목록쓰기실패뒤완료marker만남음 등4FAIL6PASS →18PASS, stale migration backup이새탭목록덮음4FAIL18PASS→수정중. 웹12개기존키를 IndexedDB 한트랜잭션으로복사(원본localStorage불변/원본copy별도),CAS+commit완료대기, native기존AsyncStorage, 백업일관snapshot/원본3종복구출처 추가. 잠금5초취득상한/미실행응답보관/3회일시오류자동재시도, 충돌·형식오류무한재시도차단, 문풀오류단계분리. 사용자iPhone실제원인은미확정.
+
+격리localhost26733 실제Chromium IndexedDB: legacy복사/CAS경합/중간quota·abort rollback/partialjournal/legacy충돌/권한거부 7PASS, 실제문서20회reload원문유지PASS. 가짜트랜잭션단위검사와구분. 실제iOS/Samsung·전체앱20회·새Production/배포는NOT_VERIFIED. 신규발음/설정/복구UI영향81PASS, 저장추가65PASS(중복합산하지않음). 타입검사초기test URL타입2오류→node:url명시수정, 최종검사대기. 전체검사3GiB자원게이트유지. 다음: 중단쓰기/두실탭검증→최종영향/전체verify/lint/security→소유source커밋→새Production/보호배포준비→Cloudflare인증/Access확인. 현행공개버전1.0유지.
+
+## 2026-10-15 23:09 KST — 예문 배포 확인 / 한글 발음·문풀 기본값 구현 중
+
+예문 배치 source5988fae / Pagesfb7ee76 / run38746789458 SUCCESS. 공개 release1.0/22:48:22KST/sourceDirty=false, JS SHA25696e7f9e7466b1e96f1ac072fcf03ccab529c4e1428fef9c218604867990054ad 로컬 일치. 현행·보존 판본 포함417개 공개 JSON/JS 대조PASS, skittish 신규영문·한국어·단서 실제공개표시 확인. 격리390x844 SC오답→reload→통계→동일유형복습정답→재접속1/2 유지. 실제모바일기기검증은아님.
+
+새 요청: IPA 옆 작은 회색 한글 근사발음(철자추측금지/불확실보류/정답전숨김), 문풀 영어동의어→영영정의→논리 순/영어동의어 기본/전체 범위 기본/핵심·전체탭 제거. 사용자저장키·기록·정답·원본IPA불변. 잠금56340/PID27656 연속보유. 초기helper47PASS, 홈테스트1PASS1FAIL은 유지한 V101명칭의 '핵심'까지 금지한 과범위assertion으로 탭버튼만 검사하도록 수정. 새기능 생성·통합·빌드게이트는 아직 진행중이며 위예문 배포통과와 구분한다.
+
 ## 2026-10-15 — 신규 예문·번역·관계뜻 통합 중
 
 22:47 KST 통합게이트 완료: 신규 창작129표제어/129sense/456동일뜻행, 번역72개, 관계뜻37개. 독립AI검수130초안 중129통과/1보류(perplexity),유전방향·번역강도 등3교정. 기존번역72개도 독립AI대조 후3표현교정. 신규예문held누적4,번역held누적11,관계held11. 사람검수/정답승격아님. 전수집계 EN8122→8251/13347,영한+단서194→394/13347;정의11611,원본38163행,심층112sense/111표제어불변. metadata와8섹션포인터검사/깨진연결0. 체크포인트analysis/qa/content-expansion-20261015.json/inputHash2129a13f5fc71d4e7030831cabe4977729139168f57f05dd5c31226d855f4683.

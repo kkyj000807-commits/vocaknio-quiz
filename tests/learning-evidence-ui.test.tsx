@@ -18,7 +18,7 @@ vi.mock("react-native", () => {
     if (props.accessibilityRole === "link") native.links.push({ label: String(props.accessibilityLabel), press: props.onPress as () => void });
     return React.createElement(tag, { "aria-label": props.accessibilityLabel, role: props.accessibilityRole }, children);
   };
-  return { View: component("div"), Text: component("span"), Pressable: component("button"), ActivityIndicator: component("span"), StyleSheet: { create: <T,>(styles: T) => styles }, Linking: { openURL: native.openURL } };
+  return { Platform: { OS: "web" }, View: component("div"), Text: component("span"), Pressable: component("button"), ActivityIndicator: component("span"), StyleSheet: { create: <T,>(styles: T) => styles }, Linking: { openURL: native.openURL } };
 });
 vi.mock("@/components/reasoning-practice", () => ({ ReasoningPractice: () => null, LazyReasoningPractice: () => null }));
 // These tests check full content preservation. Real disclosure defaults and

@@ -1,4 +1,4 @@
-import { SCROLL_END_PADDING } from "@/lib/layout";
+import { MIN_TOUCH_TARGET, SCROLL_END_PADDING, STUDY_CARD_PADDING, STUDY_PAGE_GUTTER } from "@/lib/layout";
 import { useState, useCallback, useMemo, useEffect } from "react";
 import {
   View,
@@ -23,6 +23,7 @@ import { useRouter } from "expo-router";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { PronunciationButton } from "@/components/pronunciation-button";
+import { WordPronunciation } from "@/components/word-pronunciation";
 import { LearningDetails } from "@/components/learning-details";
 import { ProblemSenseContext } from "@/components/problem-sense-context";
 import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
@@ -144,14 +145,11 @@ function WordCard({
   return (
     <View style={s.card}>
       <View style={s.topRow}>
-        <View style={s.numBadge}>
-          <Text style={s.numText}>{item.num}</Text>
-        </View>
         <View style={s.wordArea}>
           <Text style={s.wordText}>{item.w}</Text>
-          {item.p ? <Text style={s.ipaText}>{item.p}</Text> : null}
+          <WordPronunciation item={item} context="study" ipaStyle={s.ipaText} />
         </View>
-        <PronunciationButton itemId={item.id} text={item.w} compact style={{ marginRight: 2 }} />
+        <PronunciationButton itemId={item.id} text={item.w} compact style={{ width: MIN_TOUCH_TARGET, height: MIN_TOUCH_TARGET }} />
         <TouchableOpacity
           accessibilityRole="button"
           accessibilityLabel={`${item.w} ${isBookmarked ? "북마크 해제" : "북마크 추가"}`}
@@ -162,17 +160,6 @@ function WordCard({
           <Text style={{ fontSize: 18 }}>{isBookmarked ? "🔖" : "🏷️"}</Text>
         </TouchableOpacity>
       </View>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={learningStatus === "MASTERED" ? `${item.w} 다시 학습` : `${item.w} 마스터`}
-        onPress={() => onLearningStatusPress(item)}
-        style={({ pressed }) => [s.learningStateButton, pressed && { opacity: 0.65 }]}
-      >
-        <Text style={[s.learningStateText, { color: learningStatus === "MASTERED" ? colors.warning : colors.muted }]}>
-          {learningStatus === "MASTERED" ? "↻ 다시 학습" : learningStatus === "RELEARNING" ? "재학습 중" : "✓ 마스터"}
-        </Text>
-      </Pressable>
-
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={`${item.w} 한글 뜻 ${meaningHidden ? "보기" : "가리기"}`}
@@ -199,7 +186,22 @@ function WordCard({
         </Animated.View>
       </Pressable>
 
-      <WordSectionLabel groups={[item.group]} />
+      <View style={s.metadataRow}>
+        <View style={s.sourceMetadata}>
+          <Text style={s.numText}>#{item.num}</Text>
+          <WordSectionLabel groups={[item.group]} />
+        </View>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={learningStatus === "MASTERED" ? `${item.w} 다시 학습` : `${item.w} 마스터`}
+          onPress={() => onLearningStatusPress(item)}
+          style={({ pressed }) => [s.learningStateButton, pressed && { opacity: 0.65 }]}
+        >
+          <Text style={[s.learningStateText, { color: learningStatus === "MASTERED" ? colors.warning : colors.muted }]}>
+            {learningStatus === "MASTERED" ? "↻ 다시 학습" : learningStatus === "RELEARNING" ? "재학습 중" : "✓ 마스터"}
+          </Text>
+        </Pressable>
+      </View>
       {!meaningHidden && expanded && !hasReviewedMapping && <SynonymDetails item={item} compact />}
       {!meaningHidden && (hasReviewedMapping || item.s.length > 0 || hasDictionarySynonyms) && (
         <Pressable
@@ -243,33 +245,25 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       borderWidth: 1,
       borderColor: colors.border,
       borderRadius: 14,
-      padding: 14,
-      marginHorizontal: 16,
-      marginBottom: 10,
+      padding: STUDY_CARD_PADDING,
+      marginHorizontal: STUDY_PAGE_GUTTER,
+      marginBottom: 8,
     },
     topRow: {
       flexDirection: "row",
       alignItems: "center",
-      gap: 10,
-      marginBottom: 8,
+      gap: 6,
+      marginBottom: 2,
     },
-    numBadge: {
-      minWidth: 40,
-      backgroundColor: colors.primary + "22",
-      borderRadius: 8,
-      paddingHorizontal: 6,
-      paddingVertical: 3,
-      alignItems: "center",
-      justifyContent: "center",
-      flexShrink: 0,
-    },
+    metadataRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8 },
+    sourceMetadata: { flex: 1, minWidth: 0, flexDirection: "row", alignItems: "baseline", gap: 6, flexWrap: "wrap" },
     numText: {
       fontSize: 11,
-      fontWeight: "700",
-      color: colors.primary,
+      fontWeight: "400",
+      color: colors.metadata,
       fontVariant: ["tabular-nums"],
     },
-    wordArea: { flex: 1 },
+    wordArea: { flex: 1, minWidth: 0 },
     wordText: {
       fontSize: 18,
       fontWeight: "800",
@@ -284,19 +278,17 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       letterSpacing: 0.3,
     },
     bookmarkBtn: {
-      width: 44,
-      height: 44,
+      width: MIN_TOUCH_TARGET,
+      height: MIN_TOUCH_TARGET,
       alignItems: "center",
       justifyContent: "center",
       flexShrink: 0,
     },
     learningStateButton: {
-      alignSelf: "flex-end",
-      minHeight: 36,
+      minHeight: MIN_TOUCH_TARGET,
       justifyContent: "center",
       paddingHorizontal: 8,
-      marginTop: -4,
-      marginBottom: 4,
+      flexShrink: 0,
     },
     learningStateText: { fontSize: 12, fontWeight: "700" },
     korText: {
@@ -305,7 +297,7 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       lineHeight: 19,
     },
     meaningTouch: {
-      minHeight: 48,
+      minHeight: MIN_TOUCH_TARGET,
       borderRadius: 9,
       justifyContent: "center",
       overflow: "hidden",
@@ -314,14 +306,14 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       opacity: 0.78,
     },
     meaningFace: {
-      minHeight: 48,
+      minHeight: MIN_TOUCH_TARGET,
       justifyContent: "center",
       paddingHorizontal: 2,
-      paddingVertical: 5,
+      paddingVertical: 3,
     },
     // 마스크 박스 — 뜻을 가리는 영역
     maskBox: {
-      minHeight: 48,
+      minHeight: MIN_TOUCH_TARGET,
       borderRadius: 8,
       backgroundColor: colors.border,
       alignItems: "center",
@@ -563,12 +555,12 @@ export default function WordbookScreen() {
     <>
       {/* 헤더 */}
       <View style={styles.header}>
-        <View>
+        <View style={styles.headerCopy}>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>
             단어장
           </Text>
           <Text style={[styles.headerSub, { color: colors.muted }]}>
-            고유 표제어 {VOCAB_HEADWORD_COUNT.toLocaleString()}개 · 수록 {VOCAB.length.toLocaleString()}행
+            {VOCAB_HEADWORD_COUNT.toLocaleString()} 표제어 · {VOCAB.length.toLocaleString()} 수록행
           </Text>
         </View>
         {/* 버튼 그룹 */}
@@ -597,7 +589,7 @@ export default function WordbookScreen() {
                 { color: maskMode ? colors.warning : colors.muted },
               ]}
             >
-              {maskMode ? "카드 학습 ON" : "전체 뜻 가리기"}
+              {maskMode ? "뜻 보기" : "뜻 가리기"}
             </Text>
           </TouchableOpacity>
           {/* 셔플 버튼 */}
@@ -610,6 +602,9 @@ export default function WordbookScreen() {
               },
             ]}
             onPress={handleShuffle}
+            accessibilityRole="button"
+            accessibilityLabel={isShuffled ? "원래 단어 순서로 보기" : "단어 무작위로 보기"}
+            accessibilityState={{ selected: isShuffled }}
           >
             <Text
               style={[
@@ -673,6 +668,9 @@ export default function WordbookScreen() {
             },
           ]}
           onPress={() => setShowOnlyBookmarks((v) => !v)}
+          accessibilityRole="button"
+          accessibilityLabel={showOnlyBookmarks ? "북마크 필터 해제" : "북마크한 단어만 보기"}
+          accessibilityState={{ selected: showOnlyBookmarks }}
         >
           <Text style={{ fontSize: 16 }}>🔖</Text>
         </TouchableOpacity>
@@ -690,7 +688,7 @@ export default function WordbookScreen() {
           accessibilityState={{ selected: showMastered }}
         >
           <Text style={[styles.masteredFilterText, { color: showMastered ? colors.warning : colors.muted }]}>
-            {showMastered ? "외운 단어 숨기기" : "외운 단어 보기"}
+            {showMastered ? "외운 단어 ✓" : "외운 단어"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -815,29 +813,31 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 12,
+    gap: 8,
+    paddingHorizontal: STUDY_PAGE_GUTTER,
+    paddingTop: 10,
+    paddingBottom: 8,
   },
+  headerCopy: { flex: 1, minWidth: 0 },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: "800",
     letterSpacing: -0.5,
   },
   headerSub: {
-    fontSize: 12,
+    fontSize: 10,
     marginTop: 2,
   },
   headerBtns: {
     flexDirection: "row",
-    gap: 8,
+    gap: 4,
     alignItems: "center",
   },
   headerBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
-    paddingHorizontal: 11,
+    paddingHorizontal: 8,
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
@@ -850,7 +850,7 @@ const styles = StyleSheet.create({
   },
   // 마스크 모드 안내 배너
   maskBanner: {
-    marginHorizontal: 16,
+    marginHorizontal: STUDY_PAGE_GUTTER,
     marginBottom: 8,
     borderRadius: 10,
     borderWidth: 1,
@@ -865,24 +865,27 @@ const styles = StyleSheet.create({
   searchRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
-    gap: 8,
-    marginBottom: 10,
+    paddingHorizontal: STUDY_PAGE_GUTTER,
+    gap: 6,
+    marginBottom: 6,
   },
   searchBox: {
     flex: 1,
+    minWidth: 0,
+    minHeight: MIN_TOUCH_TARGET,
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
     borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: Platform.OS === "ios" ? 10 : 6,
-    gap: 8,
+    paddingHorizontal: 9,
+    paddingVertical: 6,
+    gap: 6,
   },
   searchIcon: { fontSize: 15 },
   searchInput: {
     flex: 1,
-    fontSize: 14,
+    minWidth: 0,
+    fontSize: 16,
     padding: 0,
   },
   iconBtn: {
@@ -899,7 +902,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
   },
   masteredFilterText: { fontSize: 11, fontWeight: "700" },
   // ★ 핵심 수정: 구간 필터를 독립 View로 감싸서 높이를 명시적으로 확보
@@ -908,13 +911,13 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   rangeContent: {
-    paddingHorizontal: 16,
+    paddingHorizontal: STUDY_PAGE_GUTTER,
     gap: 6,
     alignItems: "center",
     height: 46,
   },
   rangeChip: {
-    paddingHorizontal: 14,
+    paddingHorizontal: 12,
     paddingVertical: 7,
     minHeight: 44,
     justifyContent: "center",
@@ -925,14 +928,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   resultRow: {
-    minHeight: 52,
+    minHeight: MIN_TOUCH_TARGET + 4,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     gap: 10,
-    paddingHorizontal: 20,
-    paddingTop: 6,
-    paddingBottom: 6,
+    paddingHorizontal: STUDY_PAGE_GUTTER,
+    paddingTop: 2,
+    paddingBottom: 2,
   },
   resultText: { fontSize: 11, flex: 1 },
   directProblemButton: {

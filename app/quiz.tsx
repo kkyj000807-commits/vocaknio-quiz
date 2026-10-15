@@ -13,6 +13,7 @@ import {
   useRef,
   useEffect,
   useMemo,
+  useSyncExternalStore,
   type ReactElement,
 } from "react";
 import {
@@ -38,11 +39,13 @@ import Animated, {
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 import { ScreenContainer } from "@/components/screen-container";
+import { QUIZ_CONTENT_MAX_WIDTH, STUDY_PAGE_GUTTER, STUDY_CARD_PADDING } from "@/lib/layout";
 import { FlipCard } from "@/components/flip-card";
 import { PronunciationButton } from "@/components/pronunciation-button";
 import { LearningDetails } from "@/components/learning-details";
+import { WordPronunciation } from "@/components/word-pronunciation";
 import { SynonymDetails } from "@/components/synonym-details";
-import { QuizEmptyState, QuizSessionHold } from "@/components/quiz-empty-state";
+import { QuizEmptyState, QuizSessionHold, type QuizPreparationFailure } from "@/components/quiz-empty-state";
 import { SentenceCompletionAnswer, SentenceCompletionPrompt } from "@/components/sentence-completion-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { getVocabItem, type QuizMode, type VocabItem } from "@/lib/vocab";
@@ -62,7 +65,9 @@ import {
   markLearningTargetMastered,
   loadQuizSessionForStudy,
   retryLearningStorage,
-  getLearningStorageIssue,
+  getQuizStorageIssue,
+  getLearningStorageRecovery,
+  subscribeLearningStorage,
   saveQuizSession,
   prepareAdaptiveQuizSession,
   recordOneAnswer,
@@ -134,6 +139,11 @@ export default function QuizScreen() {
   const [restartToken, setRestartToken] = useState(0);
   const [sessionNotice, setSessionNotice] = useState("");
   const [sessionRecoveryFailed, setSessionRecoveryFailed] = useState(false);
+  const [preparationFailure, setPreparationFailure] = useState<QuizPreparationFailure>("SESSION_READ");
+  const [recoveryBusy, setRecoveryBusy] = useState(false);
+  const recoveryBusyRef = useRef(false);
+  const quizStorageIssue = useSyncExternalStore(subscribeLearningStorage, getQuizStorageIssue, () => null);
+  const canRetryStorage = useSyncExternalStore(subscribeLearningStorage, () => getLearningStorageRecovery().canRetry, () => false);
   const params = useLocalSearchParams<{
     mode: QuizMode;
     rangeStart: string;
@@ -219,8 +229,9 @@ export default function QuizScreen() {
     let cancelled = false;
     loadBookmarks().then((loaded) => {
       if (!cancelled) setBookmarks(loaded);
-    });
+    }).catch(() => undefined);
 
+    let failureStage: QuizPreparationFailure = "SESSION_READ";
     const prepareQuestions = async () => {
       setQuestionsReady(false);
       setQuestions([]);
@@ -245,6 +256,7 @@ export default function QuizScreen() {
         setQuestionsReady(true);
         return;
       }
+      failureStage = "LEARNING_READ";
       const [loadedMastered, learningState] = await Promise.all([
         loadMastered(),
         loadSenseLearningState(),
@@ -270,11 +282,13 @@ export default function QuizScreen() {
         learningTargetKeys: reviewKeys.length ? reviewKeys : undefined,
         allowMeaningFallback: false,
       } as const;
+      failureStage = "CONTENT_PREPARE";
       const candidates = getQuizCandidateItems(baseOptions);
       const sessionId = `problem-${Date.now().toString(36)}-${Math.random()
         .toString(36)
         .slice(2, 10)}`;
       sessionIdRef.current = sessionId;
+      failureStage = "SESSION_SAVE";
       const selectedNums = await prepareAdaptiveQuizSession({
         sessionId,
         rangeId: rangeId || "custom",
@@ -298,6 +312,7 @@ export default function QuizScreen() {
       });
       if (cancelled) return;
 
+      failureStage = "CONTENT_PREPARE";
       const nextQuestions = buildQuizQuestions({
         ...baseOptions,
         itemNums: selectedNums,
@@ -317,11 +332,12 @@ export default function QuizScreen() {
       setTypeResult(null);
       setHintLevel(0);
       setMasteredOnCard(false);
+      failureStage = "SESSION_SAVE";
       if (nextQuestions.length) await saveQuizSession({
         schema: 1, requestKey, sessionId, questions: nextQuestions,
         states: nextQuestions.map(() => createEmptyQuestionViewState()), currentIndex: 0, completed: false,
       });
-      if (getLearningStorageIssue()) throw new Error("New session is not safely saved");
+      if (getQuizStorageIssue()) throw new Error("New session is not safely saved");
       if (cancelled) return;
       setQuestions(nextQuestions);
       setQuestionsReady(true);
@@ -330,6 +346,7 @@ export default function QuizScreen() {
     prepareQuestions().catch(() => {
       if (cancelled) return;
       // Do not start an unsaved fallback or drop exact review filters on failure.
+      setPreparationFailure(getQuizStorageIssue() ? "STORAGE_RECOVERY" : failureStage);
       setSessionRecoveryFailed(true);
       setQuestionsReady(true);
     });
@@ -337,6 +354,28 @@ export default function QuizScreen() {
       cancelled = true;
     };
   }, [choiceLang, count, itemNums, mode, rangeEnd, rangeId, rangeStart, reviewKeys, requestKey, restartToken, restoreQuestionViewState]);
+
+  const retryPreparation = async () => {
+    if (recoveryBusyRef.current) return;
+    if (getQuizStorageIssue() && !getLearningStorageRecovery().canRetry) return;
+    recoveryBusyRef.current = true;
+    setRecoveryBusy(true);
+    try {
+      if (getQuizStorageIssue()) await retryLearningStorage();
+      if (getQuizStorageIssue()) {
+        setPreparationFailure("STORAGE_RECOVERY");
+        return;
+      }
+      setSessionRecoveryFailed(false);
+      setQuestionsReady(false);
+      setRestartToken(value => value + 1);
+    } catch {
+      setPreparationFailure("STORAGE_RECOVERY");
+    } finally {
+      recoveryBusyRef.current = false;
+      setRecoveryBusy(false);
+    }
+  };
 
   const haptic = useCallback(
     (type: "light" | "success" | "error" = "light") => {
@@ -886,9 +925,11 @@ export default function QuizScreen() {
     return (
       <ScreenContainer containerClassName="bg-background">
         {sessionRecoveryFailed ? <QuizSessionHold
+          failure={preparationFailure} issue={quizStorageIssue}
+          canRetry={!quizStorageIssue || canRetryStorage} busy={recoveryBusy}
           onBackup={() => router.push("/(tabs)/settings")}
           onSettings={() => router.replace("/")}
-          onStart={() => { setSessionRecoveryFailed(false); setQuestionsReady(false); void retryLearningStorage().catch(() => undefined).finally(() => setRestartToken(value => value + 1)); }} /> : <QuizEmptyState ready={questionsReady}
+          onStart={() => { void retryPreparation(); }} /> : <QuizEmptyState ready={questionsReady}
           request={{ mode, choiceLang, rangeId, rangeStart, rangeEnd, count,
             reviewKeys: params.reviewKeys, bookmarkNums: params.bookmarkNums }}
           onSettings={() => router.replace("/")}
@@ -939,16 +980,16 @@ export default function QuizScreen() {
   };
 
   return (
-    <ScreenContainer containerClassName="bg-background">
+    <ScreenContainer containerClassName="bg-background" edges={["top", "left", "right", "bottom"]} contentMaxWidth={QUIZ_CONTENT_MAX_WIDTH}>
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={{ flex: 1, minHeight: 0 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <NativeSwipeBoundary gesture={swipeGesture}>
           <ScrollView
             ref={scrollRef}
             style={[
-              { flex: 1 },
+              { flex: 1, minHeight: 0 },
               Platform.OS === "web" && ({ touchAction: "pan-y" } as any),
             ]}
             contentContainerStyle={{ paddingBottom: 16 }}
@@ -980,25 +1021,8 @@ export default function QuizScreen() {
                   size={20}
                   color={colors.foreground}
                 />
-                <Text style={s.backBtnText}>문제 풀이 설정</Text>
+                <Text style={s.backBtnText}>풀이 설정</Text>
               </Pressable>
-            </View>
-
-            {sessionNotice ? <Text accessibilityLiveRegion="polite" style={{ color: colors.foreground, paddingHorizontal: 20, paddingBottom: 12, fontSize: 13, lineHeight: 20 }}>{sessionNotice}</Text> : null}
-            {/* Stats Row */}
-            <View style={s.statsRow}>
-              <View style={[s.statBox, s.statOk]}>
-                <Text style={[s.statNum, { color: colors.success }]}>
-                  {correctCount}
-                </Text>
-                <Text style={s.statLabel}>정답</Text>
-              </View>
-              <View style={[s.statBox, s.statErr]}>
-                <Text style={[s.statNum, { color: colors.error }]}>
-                  {wrongCount}
-                </Text>
-                <Text style={s.statLabel}>오답</Text>
-              </View>
               <Pressable accessibilityRole="button" accessibilityLabel="같은 범위에서 새 문제 시작" style={{ minHeight: 44, justifyContent: "center", marginLeft: "auto", paddingHorizontal: 8 }} onPress={async () => {
                 if (isMovingRef.current) return;
                 isMovingRef.current = true;
@@ -1009,15 +1033,17 @@ export default function QuizScreen() {
               </Pressable>
             </View>
 
+            {sessionNotice ? <Text accessibilityLiveRegion="polite" style={{ color: colors.foreground, paddingHorizontal: STUDY_PAGE_GUTTER, paddingBottom: 8, fontSize: 13, lineHeight: 20 }}>{sessionNotice}</Text> : null}
+
             {/* Progress Bar */}
             <View style={s.progressContainer}>
               <View style={s.progressInfo}>
                 <Text style={s.progressText}>
                   {currentIdx + 1} / {questions.length}
                 </Text>
-                <Text style={s.progressText}>{pct}%</Text>
+                <Text style={s.progressText}>정답 {correctCount} · 오답 {wrongCount}</Text>
               </View>
-              <View style={s.progressBar}>
+              <View style={s.progressBar} accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: 100, now: pct }} accessibilityLabel="문제 풀이 진행률">
                 <View style={[s.progressFill, { width: `${pct}%` as any }]} />
               </View>
             </View>
@@ -1028,7 +1054,7 @@ export default function QuizScreen() {
                 <Text style={s.questionNum}>
                   문제 {currentIdx + 1} · {getModeLabel()}
                 </Text>
-                <Pressable onPress={handleBookmark} style={s.bookmarkBtn}>
+                <Pressable accessibilityRole="button" accessibilityLabel={`${q.item.w} ${isBookmarked ? "북마크 해제" : "북마크 추가"}`} onPress={handleBookmark} style={s.bookmarkBtn}>
                   <Text style={{ fontSize: 20 }}>
                     {isBookmarked ? "🔖" : "🏷️"}
                   </Text>
@@ -1036,7 +1062,7 @@ export default function QuizScreen() {
               </View>
 
               {!q.sentenceCompletion && ((!q.recall && !q.definitionRecall) || answered) ? <View style={s.wordPronunciationRow}>
-                <View style={{ flex: 1 }}>
+                <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={s.wordText}>{q.item.w}</Text>
                   {q.item.p ? <Text style={s.ipaText}>{q.item.p}</Text> : null}
                 </View>
@@ -1087,6 +1113,7 @@ export default function QuizScreen() {
                       return (
                         <Pressable
                           key={choice.id}
+                          accessibilityRole="button"
                           style={choiceStyle}
                           onPress={() => handleChoiceSelect(idx)}
                           disabled={answered}
@@ -1291,9 +1318,7 @@ export default function QuizScreen() {
                   <Text style={s.explHeader}>해설</Text>
                   <View style={s.explWordRow}>
                     <Text style={s.explWord}>{q.item.w}</Text>
-                    {q.item.p ? (
-                      <Text style={s.explIpa}>{q.item.p}</Text>
-                    ) : null}
+                    <WordPronunciation item={q.item} context="answer" ipaStyle={s.explIpa} />
                   </View>
                   <Text style={s.explKor} numberOfLines={3}>
                     {q.item.k_short}
@@ -1375,9 +1400,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       marginBottom: 8,
     },
     navigationRow: {
-      minHeight: 52,
-      paddingHorizontal: 16,
-      paddingTop: 6,
+      minHeight: 44,
+      paddingHorizontal: STUDY_PAGE_GUTTER,
+      paddingTop: 0,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
@@ -1425,8 +1450,8 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       marginTop: 0,
     },
     progressContainer: {
-      paddingHorizontal: 16,
-      marginBottom: 16,
+      paddingHorizontal: STUDY_PAGE_GUTTER,
+      marginBottom: 10,
     },
     progressInfo: {
       flexDirection: "row",
@@ -1434,8 +1459,9 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       marginBottom: 6,
     },
     progressText: {
-      fontSize: 11,
-      color: colors.dim,
+      fontSize: 12,
+      color: colors.metadata,
+      fontVariant: ["tabular-nums"],
     },
     progressBar: {
       height: 3,
@@ -1449,24 +1475,26 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       borderRadius: 2,
     },
     questionCard: {
-      marginHorizontal: 16,
+      marginHorizontal: STUDY_PAGE_GUTTER,
       backgroundColor: colors.surface,
       borderWidth: 1,
       borderColor: colors.border,
-      borderRadius: 20,
-      padding: 16,
+      borderRadius: 14,
+      padding: STUDY_CARD_PADDING,
+      minWidth: 0,
     },
     questionHeader: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      marginBottom: 14,
+      marginBottom: 4,
     },
     questionNum: {
-      fontSize: 11,
-      color: colors.dim,
-      letterSpacing: 1,
-      textTransform: "uppercase",
+      fontSize: 12,
+      lineHeight: 18,
+      color: colors.metadata,
+      flex: 1,
+      minWidth: 0,
     },
     bookmarkBtn: {
       width: 44,
@@ -1480,7 +1508,8 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       gap: 12,
     },
     wordText: {
-      fontSize: 30,
+      fontSize: 26,
+      lineHeight: 34,
       fontWeight: "800",
       color: colors.foreground,
       letterSpacing: -1,
@@ -1488,25 +1517,26 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     ipaText: {
       fontSize: 13,
-      color: colors.primary2 as string,
+      color: colors.primary as string,
       fontFamily: Platform.OS === "ios" ? "Courier" : "monospace",
       letterSpacing: 0.5,
-      marginBottom: 16,
+      marginBottom: 10,
     },
     hintText: {
-      fontSize: 12,
-      color: colors.dim,
-      marginBottom: 14,
+      fontSize: 13,
+      lineHeight: 19,
+      color: colors.metadata,
+      marginBottom: 10,
     },
     choicesContainer: {
-      gap: 10,
+      gap: 8,
     },
     choiceBtn: {
       backgroundColor: colors.card,
       borderWidth: 2,
       borderColor: colors.border,
       borderRadius: 12,
-      padding: 14,
+      padding: 12,
       flexDirection: "row",
       alignItems: "center",
       gap: 12,
@@ -1535,10 +1565,11 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.dim,
     },
     choiceText: {
-      fontSize: 14,
+      fontSize: 16,
       color: colors.foreground,
       flex: 1,
-      lineHeight: 20,
+      lineHeight: 24,
+      minWidth: 0,
     },
     skipBtn: {
       marginTop: 12,

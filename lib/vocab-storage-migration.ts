@@ -51,14 +51,17 @@ async function storageOperation<T>(operation: () => Promise<T>, read: boolean): 
 export interface VocabStorageAdapter {
   getItem(key: string): Promise<string | null>;
   setItem(key: string, value: string): Promise<void>;
-  setItems(entries: Array<[string, string]>): Promise<void>;
+  setItems(entries: [string, string][]): Promise<void>;
+  /** Resolves only after an atomic comparison/write transaction commits. */
+  compareAndSet?(changes: { key: string; before: string | null; after: string | null }[]): Promise<void>;
 }
 
 function parseNumberList(raw: string | null, key: string): number[] {
   if (raw === null) return [];
   const parsed: unknown = JSON.parse(raw);
-  if (!Array.isArray(parsed)) throw new Error(`${key} is not a number array`);
-  return parsed.filter((value): value is number => typeof value === "number");
+  if (!Array.isArray(parsed) || !parsed.every(value => Number.isInteger(value) && value > 0))
+    throw new Error(`${key} is not a number array`);
+  return parsed;
 }
 
 function parseBackup(raw: string): VocabMigrationResult {
@@ -72,7 +75,10 @@ function parseBackup(raw: string): VocabMigrationResult {
     !original ||
     !Array.isArray(original.bookmarks) ||
     !Array.isArray(original.wrongWords) ||
-    !Array.isArray(original.mastered)
+    !Array.isArray(original.mastered) ||
+    ![original.bookmarks, original.wrongWords, original.mastered].every(
+      list => list.every(value => Number.isInteger(value) && value > 0),
+    )
   ) {
     throw new Error("Invalid vocabulary migration backup lists");
   }
@@ -96,6 +102,14 @@ export async function migrateVocabStorage(
     getItem: key => storageOperation(() => storage.getItem(key), true),
     setItem: (key, value) => storageOperation(() => storage.setItem(key, value), false),
     setItems: entries => storageOperation(() => storage.setItems(entries), false),
+    ...(storage.compareAndSet ? { compareAndSet: async (changes: { key: string; before: string | null; after: string | null }[]) => {
+      try { await storage.compareAndSet!(changes); }
+      catch (error) {
+        if (error && typeof error === "object" && "name" in error && error.name === "LearningStorageConflictError")
+          throw new VocabStorageError("recovery-conflict");
+        await storageOperation(async () => { throw error; }, false);
+      }
+    } } : {}),
   };
   try { return await migrateVocabStorageUnsafe(guarded); }
   catch (error) {
@@ -109,30 +123,64 @@ async function migrateVocabStorageUnsafe(storage: VocabStorageAdapter): Promise<
   if (currentVersion === VOCAB_STORAGE_VERSION) return null;
 
   const storedBackup = await storage.getItem(VOCAB_STORAGE_BACKUP_KEY);
+  const listKeys = Object.values(VOCAB_LIST_STORAGE_KEYS);
+  const originals = await Promise.all(listKeys.map(key => storage.getItem(key)));
   let backup: VocabMigrationResult;
 
   if (storedBackup !== null) {
     backup = parseBackup(storedBackup);
+    // A current value is not automatically a safe CAS baseline: a legacy tab
+    // may have edited it since this backup was captured. Resume only values
+    // attributable to this migration, without merging or normalizing records.
+    for (const [index, name] of (Object.keys(VOCAB_LIST_STORAGE_KEYS) as (keyof LegacyVocabLists)[]).entries()) {
+      const raw = originals[index];
+      const original = backup.original[name];
+      if (raw === null) {
+        // An absent originally-empty key may not have been written yet. A
+        // nonempty original mapped to [] does NOT explain a missing key.
+        if (original.length !== 0) throw new VocabStorageError("recovery-conflict");
+        continue;
+      }
+      const current = parseNumberList(raw, listKeys[index]);
+      const matches = (expected: number[]) => current.length === expected.length && current.every((value, position) => value === expected[position]);
+      if (!matches(original) && !matches(backup.lists[name].mapped)) throw new VocabStorageError("recovery-conflict");
+    }
   } else {
-    const [bookmarks, wrongWords, mastered] = await Promise.all([
-      storage.getItem(VOCAB_LIST_STORAGE_KEYS.bookmarks),
-      storage.getItem(VOCAB_LIST_STORAGE_KEYS.wrongWords),
-      storage.getItem(VOCAB_LIST_STORAGE_KEYS.mastered),
-    ]);
+    const [bookmarks, wrongWords, mastered] = originals;
     backup = buildVocabMigrationBackup({
       bookmarks: parseNumberList(bookmarks, VOCAB_LIST_STORAGE_KEYS.bookmarks),
       wrongWords: parseNumberList(wrongWords, VOCAB_LIST_STORAGE_KEYS.wrongWords),
       mastered: parseNumberList(mastered, VOCAB_LIST_STORAGE_KEYS.mastered),
     });
-    await storage.setItem(VOCAB_STORAGE_BACKUP_KEY, JSON.stringify(backup));
   }
 
-  await storage.setItems([
+  const backupRaw = storedBackup ?? JSON.stringify(backup);
+  const entries: [string, string][] = [
     [VOCAB_LIST_STORAGE_KEYS.bookmarks, JSON.stringify(backup.lists.bookmarks.mapped)],
     [VOCAB_LIST_STORAGE_KEYS.wrongWords, JSON.stringify(backup.lists.wrongWords.mapped)],
     [VOCAB_LIST_STORAGE_KEYS.mastered, JSON.stringify(backup.lists.mastered.mapped)],
-    [VOCAB_STORAGE_VERSION_KEY, VOCAB_STORAGE_VERSION],
-  ]);
+  ];
+  if (storage.compareAndSet) {
+    await storage.compareAndSet([
+      ...entries.map(([key, after], index) => ({ key, before: originals[index], after })),
+      { key: VOCAB_STORAGE_BACKUP_KEY, before: storedBackup, after: backupRaw },
+      { key: VOCAB_STORAGE_VERSION_KEY, before: currentVersion, after: VOCAB_STORAGE_VERSION },
+    ]);
+  } else {
+    // Legacy backends can partially succeed. Preserve originals first and never
+    // place the version marker in a non-atomic multiSet with the learner lists.
+    if (storedBackup === null) await storage.setItem(VOCAB_STORAGE_BACKUP_KEY, backupRaw);
+    if (await storage.getItem(VOCAB_STORAGE_BACKUP_KEY) !== backupRaw) throw new VocabStorageError("write-failed");
+    await storage.setItems(entries);
+    for (const [key, expected] of entries) {
+      if (await storage.getItem(key) !== expected) throw new VocabStorageError("write-failed");
+    }
+    await storage.setItem(VOCAB_STORAGE_VERSION_KEY, VOCAB_STORAGE_VERSION);
+  }
+  // Adapter acknowledgement is not proof of persisted data on every backend.
+  for (const [key, expected] of [...entries, [VOCAB_STORAGE_BACKUP_KEY, backupRaw], [VOCAB_STORAGE_VERSION_KEY, VOCAB_STORAGE_VERSION]]) {
+    if (await storage.getItem(key) !== expected) throw new VocabStorageError("write-failed");
+  }
 
   return backup;
 }

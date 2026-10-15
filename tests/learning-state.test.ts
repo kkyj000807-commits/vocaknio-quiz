@@ -14,6 +14,25 @@ import { getVocabItem } from "@/lib/vocab";
 import { buildQuizQuestions, getQuizCandidateItems } from "@/lib/quiz-engine";
 
 describe("canonical sense learning state", () => {
+  it("counts delayed responses without rolling back newer mastery or its evidence", () => {
+    const key = "sense:late-response";
+    let state = applyLearningEvent(createEmptySenseLearningState(), { targetKey: key, type: "mastered", occurredAt: 3000, responseMs: 400, questionType: "syn-choice" });
+    const latest = getLearningTargetState(state, key);
+    state = applyLearningEvent(state, { targetKey: key, type: "wrong", occurredAt: 1000, responseMs: 900, questionType: "flashcard" });
+    expect(getLearningTargetState(state, key)).toMatchObject({
+      attempts: 1, wrong: 1, status: "MASTERED", correctStreak: latest.correctStreak,
+      lastEvent: "mastered", lastStudiedAt: 3000, lastResponseMs: 400, lastQuestionType: "syn-choice",
+    });
+  });
+
+  it("does not promote a current weak sense using delayed correct or mastery events", () => {
+    const key = "sense:late-mastery";
+    let state = applyLearningEvent(createEmptySenseLearningState(), { targetKey: key, type: "wrong", occurredAt: 3000 });
+    for (const type of ["correct", "correct", "mastered"] as const)
+      state = applyLearningEvent(state, { targetKey: key, type, occurredAt: 1000 });
+    expect(getLearningTargetState(state, key)).toMatchObject({ attempts: 3, correct: 2, wrong: 1,
+      status: "WEAK", correctStreak: 0, lastEvent: "wrong", lastStudiedAt: 3000 });
+  });
   it("shares one target across duplicate chapter occurrences", () => {
     const first = getVocabItem(18434)!;
     const duplicate = getVocabItem(22498)!;

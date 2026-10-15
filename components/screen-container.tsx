@@ -1,10 +1,12 @@
-import { Platform, View, type ViewProps } from "react-native";
+import { View, type ViewProps } from "react-native";
 import { WEB_CONTENT_MAX_WIDTH } from "@/lib/layout";
 import { SafeAreaView, type Edge } from "react-native-safe-area-context";
 
 import { cn } from "@/lib/utils";
 
 export interface ScreenContainerProps extends ViewProps {
+  /** Reading-focused screens can cap line length without duplicating a container. */
+  contentMaxWidth?: number;
   /**
    * SafeArea edges to apply. Defaults to ["top", "left", "right"].
    * Bottom is typically handled by Tab Bar.
@@ -46,6 +48,7 @@ export function ScreenContainer({
   containerClassName,
   safeAreaClassName,
   style,
+  contentMaxWidth = WEB_CONTENT_MAX_WIDTH,
   ...props
 }: ScreenContainerProps) {
   return (
@@ -55,17 +58,17 @@ export function ScreenContainer({
         "bg-background",
         containerClassName
       )}
-      style={{ minHeight: 0 }}
+      style={{ minHeight: 0, minWidth: 0 }}
       {...props}
     >
       <SafeAreaView
         edges={edges}
         className={cn("flex-1", safeAreaClassName)}
-        style={[{ minHeight: 0 }, style]}
+        style={[{ minHeight: 0, minWidth: 0 }, style]}
       >
         <View
           className={cn("flex-1", className)}
-          style={Platform.OS === "web" ? { width: "100%", maxWidth: WEB_CONTENT_MAX_WIDTH, alignSelf: "center", minHeight: 0 } : undefined}
+          style={{ width: "100%", maxWidth: contentMaxWidth, alignSelf: "center", minHeight: 0, minWidth: 0 }}
         >{children}</View>
       </SafeAreaView>
     </View>

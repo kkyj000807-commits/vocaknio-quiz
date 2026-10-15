@@ -664,9 +664,14 @@ export function recordAdaptiveAnswer(
   if (next.processedAnswerKeys.includes(processedKey) || next.events?.some(e => e.id === processedKey)) return next;
 
   const stats = getOrCreateStats(next, mode, itemNum);
+  const answeredAt = nonNegativeInteger(input.answeredAt ?? Date.now());
+  const delayed = answeredAt < stats.lastAnsweredAt;
+  const previousWrongStreak = stats.wrongStreak;
   stats.attempts += 1;
-  stats.lastOutcome = input.outcome;
-  stats.lastAnsweredAt = nonNegativeInteger(input.answeredAt ?? Date.now());
+  if (!delayed) {
+    stats.lastOutcome = input.outcome;
+    stats.lastAnsweredAt = answeredAt;
+  }
   if (input.outcome === "correct") {
     stats.correct += 1;
     stats.wrongStreak = 0;
@@ -683,6 +688,7 @@ export function recordAdaptiveAnswer(
     stats.wrongStreak += 1;
     addConfusion(stats, input.responseKey ?? "");
   }
+  if (delayed) stats.wrongStreak = previousWrongStreak;
 
   const previous = stats.evidence ?? emptyEvidence();
   const baseline = responseBaseline(next.events ?? [], mode);
@@ -690,15 +696,15 @@ export function recordAdaptiveAnswer(
   const success = input.outcome === "correct" || input.outcome === "mastered";
   const masterCheck = input.statusBefore === "MASTERED";
   stats.evidence = { ...previous,
-    targetKey: input.targetKey || previous.targetKey,
-    sourceId: input.sourceId || previous.sourceId,
-    groupId: input.groupId || previous.groupId,
-    correctStreak: success ? previous.correctStreak + 1 : 0,
-    spacedSuccesses: previous.spacedSuccesses + (success && !input.hintUsed && previous.lastSuccessAt > 0 && stats.lastAnsweredAt - previous.lastSuccessAt >= ADAPTIVE_POLICY.spacedSuccessGapMs ? 1 : 0),
-    lastSuccessAt: success ? stats.lastAnsweredAt : previous.lastSuccessAt,
-    lastFailureAt: success ? previous.lastFailureAt : stats.lastAnsweredAt,
-    lastResponseMs: time,
-    lastHintUsed: input.hintUsed === true,
+    targetKey: delayed ? previous.targetKey || input.targetKey || "" : input.targetKey || previous.targetKey,
+    sourceId: delayed ? previous.sourceId || input.sourceId || "" : input.sourceId || previous.sourceId,
+    groupId: delayed ? previous.groupId || input.groupId || "" : input.groupId || previous.groupId,
+    correctStreak: delayed ? previous.correctStreak : success ? previous.correctStreak + 1 : 0,
+    spacedSuccesses: previous.spacedSuccesses + (!delayed && success && !input.hintUsed && previous.lastSuccessAt > 0 && answeredAt - previous.lastSuccessAt >= ADAPTIVE_POLICY.spacedSuccessGapMs ? 1 : 0),
+    lastSuccessAt: success ? Math.max(answeredAt, previous.lastSuccessAt) : previous.lastSuccessAt,
+    lastFailureAt: success ? previous.lastFailureAt : Math.max(answeredAt, previous.lastFailureAt),
+    lastResponseMs: delayed ? previous.lastResponseMs : time,
+    lastHintUsed: delayed ? previous.lastHintUsed : input.hintUsed === true,
     newAttempts: (previous.newAttempts ?? 0) + (input.statusBefore === "NEW" ? 1 : 0),
     classifiedAttempts: (previous.classifiedAttempts ?? 0) + (input.statusBefore ? 1 : 0),
     responseCount: previous.responseCount + (time === null ? 0 : 1),
@@ -708,16 +714,17 @@ export function recordAdaptiveAnswer(
     lapses: previous.lapses + (masterCheck && !success ? 1 : 0),
     masterChecks: previous.masterChecks + (masterCheck ? 1 : 0),
     masterRetained: previous.masterRetained + (masterCheck && success ? 1 : 0),
-    recent: [...previous.recent, { at: stats.lastAnsweredAt, outcome: input.outcome, responseMs: time }].slice(-ADAPTIVE_POLICY.itemRecentLimit),
+    recent: [...previous.recent, { at: answeredAt, outcome: input.outcome, responseMs: time }]
+      .sort((a, b) => a.at - b.at).slice(-ADAPTIVE_POLICY.itemRecentLimit),
   };
   const event: LearningAnswerEvent = {
     id: processedKey, sessionId, itemNum, mode, outcome: input.outcome,
     sourceId: input.sourceId ?? "", targetKey: input.targetKey ?? "", groupId: input.groupId ?? "unrecorded",
-    presentedAt: typeof input.presentedAt === "number" && input.presentedAt <= stats.lastAnsweredAt ? input.presentedAt : null,
-    answeredAt: stats.lastAnsweredAt, responseMs: time,
+    presentedAt: typeof input.presentedAt === "number" && input.presentedAt <= answeredAt ? input.presentedAt : null,
+    answeredAt, responseMs: time,
     statusBefore: input.statusBefore ?? null, statusAfter: input.statusAfter ?? null, hintUsed: input.hintUsed === true,
   };
-  next.events = [...(next.events ?? []), event].slice(-ADAPTIVE_POLICY.recentEventLimit);
+  next.events = [...(next.events ?? []), event].sort((a, b) => a.answeredAt - b.answeredAt).slice(-ADAPTIVE_POLICY.recentEventLimit);
   const day = learningDay(event.answeredAt);
   const dayKey = `${day}\u0000${event.groupId}\u0000${mode}`;
   const daily = { ...(next.daily ?? {}) };

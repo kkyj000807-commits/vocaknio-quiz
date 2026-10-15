@@ -1,6 +1,10 @@
 /** The tab bar occupies layout space, so only add breathing room at scroll end. */
 export const SCROLL_END_PADDING = 48;
 export const WEB_CONTENT_MAX_WIDTH = 880;
+export const QUIZ_CONTENT_MAX_WIDTH = 720;
+export const STUDY_PAGE_GUTTER = 12;
+export const STUDY_CARD_PADDING = 12;
+export const MIN_TOUCH_TARGET = 44;
 
 export function getTabMetrics(web: boolean, bottomInset: number) {
   const safeBottom = Number.isFinite(bottomInset) ? Math.max(0, bottomInset) : 0;

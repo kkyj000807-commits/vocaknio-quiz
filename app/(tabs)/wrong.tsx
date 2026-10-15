@@ -1,4 +1,5 @@
 import { SCROLL_END_PADDING } from "@/lib/layout";
+import { WordPronunciation } from "@/components/word-pronunciation";
 import { useState, useCallback } from "react";
 import {
   View,
@@ -159,7 +160,7 @@ export default function WrongScreen() {
         <View style={s.wordCardHeader}>
           <View style={s.wordInfo}>
             <Text style={s.wordText}>{item.w}</Text>
-            {item.p ? <Text style={s.ipaText}>{item.p}</Text> : null}
+            <WordPronunciation item={item} context="study" ipaStyle={s.ipaText} />
           </View>
           <Pressable
             style={s.masterBtn}

@@ -20,7 +20,7 @@ import type { EdgeInsets, Metrics, Rect } from "react-native-safe-area-context";
 import { trpc, createTRPCClient } from "@/lib/trpc";
 import { initManusRuntime, subscribeSafeAreaInsets } from "@/lib/_core/manus-runtime";
 import { useStudyTimer } from "@/hooks/use-study-timer";
-import { migrateStoredVocabLists } from "@/lib/store";
+import { migrateStoredVocabLists, startLearningStorageRecovery } from "@/lib/store";
 import { LearningStorageNotice } from "@/components/learning-storage-notice";
 import { subscribeWebViewport } from "@/lib/web-viewport";
 import { getVocabStorageFailureMessage } from "@/lib/vocab-storage-migration";
@@ -49,6 +49,9 @@ function RootContents() {
   const [parentMetrics, setParentMetrics] = useState<Metrics | null>(null);
   const [migrationStatus, setMigrationStatus] = useState<"loading" | "ready" | "error">("loading");
   const [migrationIssue, setMigrationIssue] = useState("");
+
+  // Recovery must also run while the startup protection screen is visible.
+  useEffect(() => startLearningStorageRecovery(), []);
 
   const runStorageMigration = useCallback(() => {
     setMigrationStatus("loading");

@@ -14,6 +14,7 @@ import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { WordSectionLabel } from "@/components/word-section-label";
+import { WordPronunciation } from "@/components/word-pronunciation";
 import { VOCAB, getSynonymSourceGroups, type VocabItem } from "@/lib/vocab";
 import { loadBookmarks, toggleBookmark } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
@@ -68,7 +69,7 @@ export default function BookmarksScreen() {
       <View style={s.wordCardHeader}>
         <View style={s.wordInfo}>
           <Text style={s.wordText}>{item.w}</Text>
-          {item.p ? <Text style={s.ipaText}>{item.p}</Text> : null}
+          <WordPronunciation item={item} context="study" ipaStyle={s.ipaText} />
         </View>
         <Pressable
           style={s.removeBtn}

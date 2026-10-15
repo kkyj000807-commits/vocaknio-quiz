@@ -13,6 +13,7 @@ import {
   type AdaptiveHistory,
   type AdaptiveItemStats,
 } from "@/lib/adaptive-quiz";
+import { ADAPTIVE_POLICY } from "@/lib/learning-analytics";
 
 const MODE = "syn-choice";
 
@@ -70,6 +71,25 @@ function putStats(
 }
 
 describe("adaptive quiz history", () => {
+  it("retains late response counts and raw time without replacing the latest answer evidence", () => {
+    let history = recordAdaptiveAnswer(createEmptyAdaptiveHistory(), { sessionId: "newer", mode: MODE, itemNum: 1, outcome: "correct", answeredAt: 3000, responseMs: 400 });
+    history = recordAdaptiveAnswer(history, { sessionId: "older", mode: MODE, itemNum: 1, outcome: "wrong", answeredAt: 1000, responseMs: 900, hintUsed: true });
+    const stats = itemStats(history, MODE, 1)!;
+    expect(stats).toMatchObject({ attempts: 2, correct: 1, wrong: 1, lastOutcome: "correct", lastAnsweredAt: 3000, wrongStreak: 0 });
+    expect(stats.evidence).toMatchObject({ correctStreak: 1, lastSuccessAt: 3000, lastFailureAt: 1000, lastResponseMs: 400, lastHintUsed: false, responseCount: 2, responseTotalMs: 1300 });
+    expect(stats.evidence!.recent.map(event => event.at)).toEqual([1000, 3000]);
+    expect(history.events!.map(event => [event.sessionId, event.answeredAt])).toEqual([["older", 1000], ["newer", 3000]]);
+    expect(recordAdaptiveAnswer(history, { sessionId: "older", mode: MODE, itemNum: 1, outcome: "wrong", answeredAt: 1000 }).revision).toBe(history.revision);
+  });
+
+  it("does not invent spaced successes by moving last success backward on retry", () => {
+    const latest = ADAPTIVE_POLICY.spacedSuccessGapMs * 3;
+    let history = recordAdaptiveAnswer(createEmptyAdaptiveHistory(), { sessionId: "latest", mode: MODE, itemNum: 1, outcome: "correct", answeredAt: latest });
+    history = recordAdaptiveAnswer(history, { sessionId: "delayed", mode: MODE, itemNum: 1, outcome: "correct", answeredAt: 1 });
+    expect(itemStats(history, MODE, 1)!.evidence).toMatchObject({ lastSuccessAt: latest, spacedSuccesses: 0, correctStreak: 1 });
+    history = recordAdaptiveAnswer(history, { sessionId: "next", mode: MODE, itemNum: 1, outcome: "correct", answeredAt: latest + ADAPTIVE_POLICY.spacedSuccessGapMs / 2 });
+    expect(itemStats(history, MODE, 1)!.evidence!.spacedSuccesses).toBe(0);
+  });
   it("creates schema v1 and recovers safely from corrupt or unsupported state", () => {
     expect(createEmptyAdaptiveHistory()).toEqual({
       schemaVersion: ADAPTIVE_HISTORY_SCHEMA_VERSION,

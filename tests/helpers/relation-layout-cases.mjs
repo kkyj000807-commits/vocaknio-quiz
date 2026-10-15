@@ -45,6 +45,7 @@ function load(relative) {
     '@/hooks/use-colors': { useColors: () => colors },
     '@/components/reasoning-practice': { ReasoningPractice: () => null, LazyReasoningPractice: () => null },
     '@/components/pronunciation-button': { PronunciationButton: ({ text }) => React.createElement('button', null, text) },
+    '@/lib/korean-pronunciation-data': { getKoreanPronunciation: () => null },
     '@/components/learning-evidence': { LearningEvidence: () => null },
     '@/lib/learning-detail-loader': { loadLearningDetailParts: async () => {} },
     '@/lib/active-recall': { getActiveRecallSenses: () => [] },

@@ -1,4 +1,4 @@
-import { SCROLL_END_PADDING } from "@/lib/layout";
+import { MIN_TOUCH_TARGET, SCROLL_END_PADDING, STUDY_CARD_PADDING, STUDY_PAGE_GUTTER } from "@/lib/layout";
 import { useState, useEffect, useCallback } from "react";
 import {
   View,
@@ -16,11 +16,9 @@ import Animated, { FadeIn } from "react-native-reanimated";
 
 import { ScreenContainer } from "@/components/screen-container";
 import {
-  CORE_RANGES,
   COUNTS,
   QUIZ_MODES,
   RANGES,
-  SECTION_RANGES,
   type QuizMode,
 } from "@/lib/vocab";
 import { useColors } from "@/hooks/use-colors";
@@ -32,16 +30,16 @@ import {
   type ChoiceLang,
 } from "@/lib/store";
 
-const DEFAULT_RANGE_ID = CORE_RANGES[0]?.id ?? SECTION_RANGES[0]?.id ?? "all";
+const DEFAULT_RANGE_ID = "all";
+const SETUP_RANGES = [...RANGES.filter(range => range.id === DEFAULT_RANGE_ID), ...RANGES.filter(range => range.id !== DEFAULT_RANGE_ID)];
 
 export default function HomeScreen() {
   const colors = useColors();
   const router = useRouter();
-  const [selectedMode, setSelectedMode] = useState<QuizMode>("definition-choice");
+  const [selectedMode, setSelectedMode] = useState<QuizMode>("syn-choice");
   const [selectedRange, setSelectedRange] = useState(DEFAULT_RANGE_ID);
   const [selectedCount, setSelectedCount] = useState(10);
   const [choiceLang, setChoiceLang] = useState<ChoiceLang>("korean");
-  const [rangeTab, setRangeTab] = useState<"core" | "all">("core");
   const [showAuxiliary, setShowAuxiliary] = useState(false);
 
   useEffect(() => {
@@ -87,7 +85,6 @@ export default function HomeScreen() {
   }, [selectedMode, selectedRange, selectedCount, choiceLang, router]);
 
   const isChoiceLangRelevant = selectedMode === "kor-choice";
-  const currentRanges = rangeTab === "core" ? CORE_RANGES : RANGES;
   const s = styles(colors);
   const completionCount = selectedMode === "sentence-completion" ? getQuizCandidateItems({ mode: selectedMode, rangeId: selectedRange, count: 200 }).length : 0;
 
@@ -116,6 +113,8 @@ export default function HomeScreen() {
               return (
                 <Pressable
                   key={mode.id}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: active }}
                   style={({ pressed }) => [
                     s.modeCard,
                     active && s.modeCardActive,
@@ -130,10 +129,12 @@ export default function HomeScreen() {
                   <View style={s.modeIconWrap}>
                     <Text style={s.modeIcon}>{mode.icon}</Text>
                   </View>
-                  <Text style={[s.modeTitle, active && s.modeTitleActive]}>
-                    {mode.title}
-                  </Text>
-                  <Text style={s.modeDesc}>{mode.desc}</Text>
+                  <View style={s.modeCopy}>
+                    <Text style={[s.modeTitle, active && s.modeTitleActive]}>
+                      {mode.title}
+                    </Text>
+                    <Text style={s.modeDesc}>{mode.desc}</Text>
+                  </View>
                   {active && <View style={s.modeActiveDot} />}
                 </Pressable>
               );
@@ -148,7 +149,7 @@ export default function HomeScreen() {
             accessibilityLabel="보조 학습 설정"
             accessibilityState={{ expanded: showAuxiliary }}
             onPress={() => {
-              if (showAuxiliary && ["flashcard", "syn-type"].includes(selectedMode)) setSelectedMode("definition-choice");
+              if (showAuxiliary && ["flashcard", "syn-type"].includes(selectedMode)) setSelectedMode("syn-choice");
               setShowAuxiliary(value => !value);
             }}
             style={{ minHeight: 44, justifyContent: "center", marginTop: 8 }}
@@ -186,51 +187,16 @@ export default function HomeScreen() {
         <View style={s.section}>
           <View style={s.sectionTitleRow}>
             <Text style={s.sectionTitle}>단어 범위</Text>
-            {/* 핵심 / 전체 구간 탭 */}
-            <View style={s.rangeTabRow}>
-              <Pressable
-                style={[s.rangeTab, rangeTab === "core" && s.rangeTabActive]}
-                onPress={() => {
-                  haptic();
-                  setRangeTab("core");
-                  setSelectedRange(DEFAULT_RANGE_ID);
-                }}
-              >
-                <Text
-                  style={[
-                    s.rangeTabText,
-                    rangeTab === "core" && s.rangeTabTextActive,
-                  ]}
-                >
-                  핵심
-                </Text>
-              </Pressable>
-              <Pressable
-                style={[s.rangeTab, rangeTab === "all" && s.rangeTabActive]}
-                onPress={() => {
-                  haptic();
-                  setRangeTab("all");
-                  setSelectedRange(SECTION_RANGES[0]?.id ?? "all");
-                }}
-              >
-                <Text
-                  style={[
-                    s.rangeTabText,
-                    rangeTab === "all" && s.rangeTabTextActive,
-                  ]}
-                >
-                  전체 구간
-                </Text>
-              </Pressable>
-            </View>
           </View>
 
           <View style={s.rangeGrid}>
-            {currentRanges.map((r) => {
+            {SETUP_RANGES.map((r) => {
               const active = selectedRange === r.id;
               return (
                 <Pressable
                   key={r.id}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: active }}
                   style={[s.rangeCard, active && s.rangeCardActive]}
                   onPress={() => {
                     haptic();
@@ -307,22 +273,22 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",
-      gap: 14,
-      paddingTop: 20,
-      paddingBottom: 20,
-      paddingHorizontal: 20,
+      gap: 10,
+      paddingTop: 10,
+      paddingBottom: 12,
+      paddingHorizontal: STUDY_PAGE_GUTTER,
     },
-    brandIcon: { width: 56, height: 56, borderRadius: 14 },
+    brandIcon: { width: 40, height: 40, borderRadius: 10 },
     brandText: { flexShrink: 1 },
     headerTitle: {
-      fontSize: 28,
+      fontSize: 24,
       fontWeight: "900",
       color: colors.foreground as string,
       letterSpacing: -1,
-      marginBottom: 6,
+      marginBottom: 2,
     },
     headerSub: {
-      fontSize: 13,
+      fontSize: 11,
       color: colors.muted as string,
       letterSpacing: 0.3,
     },
@@ -353,44 +319,51 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     // ── 섹션
     section: {
-      marginHorizontal: 16,
-      marginBottom: 14,
+      marginHorizontal: STUDY_PAGE_GUTTER,
+      marginBottom: 10,
       backgroundColor: colors.surface as string,
-      borderRadius: 18,
+      borderRadius: 14,
       borderWidth: 1,
       borderColor: colors.border as string,
-      padding: 18,
+      padding: STUDY_CARD_PADDING,
     },
     sectionTitleRow: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      marginBottom: 14,
+      marginBottom: 0,
     },
     sectionTitle: {
       fontSize: 10,
       fontWeight: "700",
-      color: colors.muted as string,
-      letterSpacing: 2,
+      color: colors.metadata as string,
+      letterSpacing: 1,
       textTransform: "uppercase",
-      marginBottom: 14,
+      marginBottom: 10,
     },
     // ── 모드 카드
     modeGrid: {
       flexDirection: "row",
       flexWrap: "wrap",
-      gap: 10,
+      gap: 8,
     },
     modeCard: {
-      width: "47.5%",
+      flexBasis: "47%",
+      flexGrow: 1,
+      minWidth: 0,
+      minHeight: 64,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
       backgroundColor: colors.card as string,
       borderWidth: 1.5,
       borderColor: colors.border as string,
-      borderRadius: 14,
-      padding: 14,
+      borderRadius: 10,
+      padding: 10,
       overflow: "hidden",
       position: "relative",
     },
+    modeCopy: { flex: 1, minWidth: 0 },
     modeCardActive: {
       borderColor: (colors.primary as string) + "80",
       backgroundColor: (colors.primary as string) + "12",
@@ -405,16 +378,16 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       backgroundColor: (colors.primary as string) + "20",
     },
     modeIconWrap: {
-      width: 36,
-      height: 36,
-      borderRadius: 10,
+      width: 26,
+      height: 26,
+      borderRadius: 7,
+      flexShrink: 0,
       backgroundColor: (colors.primary as string) + "20",
       alignItems: "center",
       justifyContent: "center",
-      marginBottom: 8,
     },
     modeIcon: {
-      fontSize: 18,
+      fontSize: 15,
     },
     modeTitle: {
       fontSize: 13,
@@ -427,7 +400,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     modeDesc: {
       fontSize: 10,
-      color: colors.muted as string,
+      color: colors.metadata as string,
       lineHeight: 14,
     },
     modeActiveDot: {
@@ -460,7 +433,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     langBtn: {
       flex: 1,
-      minHeight: 44,
+      minHeight: MIN_TOUCH_TARGET,
       backgroundColor: colors.card as string,
       borderWidth: 1.5,
       borderColor: colors.border as string,
@@ -480,35 +453,6 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     langBtnTextActive: {
       color: colors.primary as string,
     },
-    // ── 범위 탭
-    rangeTabRow: {
-      flexDirection: "row",
-      gap: 6,
-      marginBottom: 0,
-    },
-    rangeTab: {
-      minHeight: 44,
-      paddingHorizontal: 10,
-      paddingVertical: 5,
-      borderRadius: 8,
-      backgroundColor: colors.card as string,
-      borderWidth: 1,
-      borderColor: colors.border as string,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    rangeTabActive: {
-      backgroundColor: (colors.primary as string) + "20",
-      borderColor: (colors.primary as string) + "60",
-    },
-    rangeTabText: {
-      fontSize: 11,
-      fontWeight: "600",
-      color: colors.muted as string,
-    },
-    rangeTabTextActive: {
-      color: colors.primary as string,
-    },
     // ── 범위 그리드
     rangeGrid: {
       flexDirection: "row",
@@ -517,7 +461,7 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     rangeCard: {
       minWidth: 80,
-      minHeight: 44,
+      minHeight: MIN_TOUCH_TARGET,
       backgroundColor: colors.card as string,
       borderWidth: 1.5,
       borderColor: colors.border as string,
@@ -570,7 +514,8 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       borderWidth: 1.5,
       borderColor: colors.border as string,
       borderRadius: 12,
-      paddingVertical: 14,
+      minHeight: MIN_TOUCH_TARGET,
+      paddingVertical: 8,
       alignItems: "center",
       position: "relative",
       overflow: "hidden",
@@ -606,13 +551,14 @@ const styles = (colors: ReturnType<typeof useColors>) =>
     },
     // ── 시작 버튼
     startWrap: {
-      paddingHorizontal: 16,
+      paddingHorizontal: STUDY_PAGE_GUTTER,
       marginTop: 4,
     },
     startBtn: {
       backgroundColor: colors.primary as string,
-      borderRadius: 16,
-      paddingVertical: 18,
+      borderRadius: 12,
+      minHeight: MIN_TOUCH_TARGET,
+      paddingVertical: 12,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "center",

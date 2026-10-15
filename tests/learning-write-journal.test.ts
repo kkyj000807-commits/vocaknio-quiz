@@ -17,6 +17,13 @@ it("does not touch learner values when a journal cannot be persisted", async () 
   await expect(writeLearningJournal(storage, [["list", "[1,2]"]], new Map([["list", "[1]"]]))).rejects.toThrow();
   expect(storage.values.get("list")).toBe("[1]");
 });
+
+it("does not acknowledge or discard the journal when a backend silently drops a write", async () => {
+  const storage = fixture();
+  storage.multiSet = async () => {};
+  await expect(writeLearningJournal(storage, [["list", "[1]"]], new Map([["list", null]]))).rejects.toThrow();
+  expect(storage.values.has(KEY)).toBe(true);
+});
 it("recovery after journal cleanup failure preserves exact bytes and never replays events", async () => {
   const storage = fixture(); const remove = storage.removeItem;
   storage.removeItem = async () => { throw new Error("cleanup failed"); };
@@ -49,7 +56,21 @@ it("uses one cooperative cross-tab lock around read and mutation", async () => {
     const previous = count; await Promise.resolve(); count = previous + 1;
   })));
   expect(count).toBe(3);
-  expect(request).toHaveBeenCalledWith("vocaknio_learning_storage_v1", { mode: "exclusive" }, expect.any(Function));
+  expect(request).toHaveBeenCalledWith("vocaknio_learning_storage_v1", expect.objectContaining({ mode: "exclusive", signal: expect.any(AbortSignal) }), expect.any(Function));
+});
+
+it("bounds lock acquisition without bypassing a busy tab's lock or running a mutation twice", async () => {
+  vi.useFakeTimers();
+  try {
+    vi.stubGlobal("navigator", { locks: { request: (_name: string, { signal }: { signal: AbortSignal }) =>
+      new Promise((_resolve, reject) => signal.addEventListener("abort", () => reject(new Error("aborted")))) } });
+    const task = vi.fn(async () => 1);
+    const result = withLearningStorageLock(task);
+    const assertion = expect(result).rejects.toMatchObject({ name: "LearningStorageBusyError" });
+    await vi.advanceTimersByTimeAsync(5000);
+    await assertion;
+    expect(task).not.toHaveBeenCalled();
+  } finally { vi.useRealTimers(); }
 });
 it("still works without Web Locks without claiming cross-tab atomicity", async () => {
   vi.stubGlobal("navigator", {});

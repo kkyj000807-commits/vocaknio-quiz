@@ -171,13 +171,14 @@ describe("학습 기록의 공통 저장 경로", () => {
   it("실제 sense의 오답·힌트·응답시간을 저장하고 마스터 실패는 재학습으로 되돌린다", async () => {
     const key = "sense:jury-foreman%3Aleader-of-jury";
     await store.markLearningTargetMastered(key, 18434);
+    const masteredAt = (await store.loadSenseLearningState()).targets[key].lastStudiedAt;
     await store.recordOneAnswer(false, 18434, {
       sessionId: "sense-event-session",
       itemNum: 18434,
       mode: "syn-choice",
       outcome: "wrong",
       responseKey: "trial judge",
-      answeredAt: 1000,
+      answeredAt: masteredAt + 1000,
       responseMs: 4200,
       learningTargetKey: key,
       hintUsed: true,
@@ -253,10 +254,14 @@ describe("학습 기록의 공통 저장 경로", () => {
       );
       await store.retryLearningStorage();
       expect(store.getLearningStorageIssue()).toBeNull();
+      // The original response was retained while the record was unreadable.
+      expect(await store.loadStats()).toMatchObject({ totalAnswered: 101, totalCorrect: 81 });
+      await store.retryLearningStorage();
+      expect(await store.loadStats()).toMatchObject({ totalAnswered: 101, totalCorrect: 81 });
       await store.recordOneAnswer(true);
       expect(await store.loadStats()).toMatchObject({
-        totalAnswered: 101,
-        totalCorrect: 81,
+        totalAnswered: 102,
+        totalCorrect: 82,
       });
     },
   );

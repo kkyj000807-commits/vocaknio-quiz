@@ -175,6 +175,16 @@ export function applyLearningEvent(
   if (typeof input.responseMs === "number" && Number.isFinite(input.responseMs))
     target.lastResponseMs = Math.max(0, Math.floor(input.responseMs));
   if (input.questionType) target.lastQuestionType = input.questionType;
+  if (target.lastStudiedAt < previous.lastStudiedAt) {
+    // A delayed tab contributes its counts, not a new latest state. Without a
+    // complete event history we must not infer a mastery/streak transition.
+    target.status = previous.status;
+    target.correctStreak = previous.correctStreak;
+    target.lastEvent = previous.lastEvent;
+    target.lastStudiedAt = previous.lastStudiedAt;
+    target.lastResponseMs = previous.lastResponseMs;
+    target.lastQuestionType = previous.lastQuestionType;
+  }
   return {
     ...state,
     revision: state.revision + 1,

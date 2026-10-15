@@ -36,6 +36,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { ScreenContainer } from "@/components/screen-container";
 import { PronunciationButton } from "@/components/pronunciation-button";
 import { LearningDetails } from "@/components/learning-details";
+import { WordPronunciation } from "@/components/word-pronunciation";
 import { type VocabItem } from "@/lib/vocab";
 import {
   buildReviewQuestions,
@@ -585,7 +586,7 @@ export default function WrongQuizScreen() {
                 <Text style={s.explHeader}>해설</Text>
                 <View style={s.explWordRow}>
                   <Text style={s.explWord}>{q.item.w}</Text>
-                  {q.item.p ? <Text style={s.explIpa}>{q.item.p}</Text> : null}
+                  <WordPronunciation item={q.item} context="answer" ipaStyle={s.explIpa} />
                 </View>
                 <Text style={s.explKor} numberOfLines={3}>
                   {q.item.k_short}

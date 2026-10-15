@@ -1,4 +1,6 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// The common key/value boundary uses atomic IndexedDB on web and preserves
+// AsyncStorage on native; callers and existing learner key names do not change.
+import AsyncStorage from "@/lib/learning-storage";
 import { LEARNING_WRITE_JOURNAL_KEY, recoverLearningJournal, writeLearningJournal, withLearningStorageLock, type JournalStatus } from "@/lib/learning-write-journal";
 import { LEARNING_BACKUP_FORMAT, parseLearningBackup, previewLearningBackup, type LearningBackup, type LearningBackupPreview } from "@/lib/learning-backup";
 import { DEFAULT_PRONUNCIATION, normalizePronunciationPreference, type PronunciationPreference } from "@/lib/pronunciation-preference";
@@ -57,6 +59,10 @@ let journalStatus: JournalStatus = "clear";
 
 let learningStorageQueue: Promise<void> = Promise.resolve();
 const pendingLearningWrites = new Map<string, string>();
+const pendingAnswerJobs = new Map<number, () => Promise<void>>();
+const pendingAnswerInputs = new Map<number, string>();
+let answerJobSequence = 0;
+let answerJobFailed = false;
 const lastLearningValues = new Map<string, string>();
 // Keep disk snapshots separate from optimistic UI values. A failed write must
 // not erase the baseline used to detect another tab's changes on retry.
@@ -67,7 +73,63 @@ const unreadableLearningKeys = new Set<string>();
 const corruptLearningKeys = new Set<string>();
 let pendingThemePreference: ThemeMode | null = null;
 let learningWriteFailed = false;
+let storageFailureCode: string | null = null;
+let recoveryTimer: ReturnType<typeof setTimeout> | undefined;
+let recoveryAttempts = 0;
+let recoveryMounted = false;
+let recoveryRunning = false;
 const learningStorageListeners = new Set<() => void>();
+
+function noteStorageFailure(error: unknown) {
+  const name = error instanceof Error ? error.name : "";
+  const code = error && typeof error === "object" && "code" in error ? error.code : "";
+  storageFailureCode = name === "QuotaExceededError" || code === "quota" ? "STORAGE_FULL"
+    : name === "SecurityError" || name === "NotAllowedError" || code === "permission" ? "STORAGE_BLOCKED"
+    : name === "LearningStorageConflictError" ? "STORAGE_CONFLICT"
+    : name === "LearningStorageBusyError" ? "STORAGE_BUSY" : "STORAGE_TEMPORARY";
+}
+
+export function getLearningStorageRecovery(): { canRetry: boolean; code: string | null; pending: boolean } {
+  const code = journalStatus === "conflict" || conflictingLearningKeys.size ? "STORAGE_CONFLICT"
+    : journalStatus === "unreadable" || corruptLearningKeys.size ? "RECORD_FORMAT"
+    : getLearningStorageIssue() ? storageFailureCode ?? "STORAGE_TEMPORARY" : null;
+  return { canRetry: code !== "STORAGE_CONFLICT" && code !== "RECORD_FORMAT", code, pending: pendingLearningWrites.size > 0 || pendingAnswerJobs.size > 0 };
+}
+
+function scheduleStorageRecovery() {
+  if (!recoveryMounted || recoveryRunning || recoveryTimer || recoveryAttempts >= 3) return;
+  const { code } = getLearningStorageRecovery();
+  if (code !== "STORAGE_TEMPORARY" && code !== "STORAGE_BUSY") return;
+  recoveryTimer = setTimeout(async () => {
+    recoveryTimer = undefined; recoveryAttempts++; recoveryRunning = true;
+    try { await retryLearningStorage(); } catch (error) { noteStorageFailure(error); }
+    finally { recoveryRunning = false; notifyLearningStorage(); }
+  }, [750, 2500, 8000][recoveryAttempts]);
+}
+
+/** One mounted owner; bounded retries only. No unload-time promise is claimed
+ * to be durable: committed transactions are the persistence boundary. */
+export function startLearningStorageRecovery(): () => void {
+  if (typeof window === "undefined") return () => {};
+  recoveryMounted = true;
+  const resume = () => {
+    if (document.visibilityState === "hidden") return;
+    recoveryAttempts = 0; scheduleStorageRecovery();
+  };
+  const leave = (event: BeforeUnloadEvent) => {
+    if (pendingLearningWrites.size || pendingAnswerJobs.size) { event.preventDefault(); event.returnValue = ""; }
+  };
+  window.addEventListener("pageshow", resume);
+  document.addEventListener("visibilitychange", resume);
+  window.addEventListener("beforeunload", leave);
+  scheduleStorageRecovery();
+  return () => {
+    recoveryMounted = false; clearTimeout(recoveryTimer); recoveryTimer = undefined;
+    window.removeEventListener("pageshow", resume);
+    document.removeEventListener("visibilitychange", resume);
+    window.removeEventListener("beforeunload", leave);
+  };
+}
 
 function validateLearningValue(key: string, raw: string): void {
   if (key === THEME_KEY) {
@@ -117,21 +179,42 @@ function validateLearningValue(key: string, raw: string): void {
   if (!valid) throw new Error(`Unreadable learning record: ${key}`);
 }
 
-export function getLearningStorageIssue(): string | null {
+export function getLearningStorageIssue(keys: readonly string[] = LEARNING_RECORD_KEYS): string | null {
+  const has = (set: Set<string> | Map<string, string>) => keys.some(key => set.has(key));
   if (journalStatus === "conflict" || journalStatus === "unreadable")
     return "다른 창의 변경 또는 복구 기록 충돌로 저장을 보류했습니다. 현재 기록과 미저장 기록을 백업한 뒤 확인해 주세요.";
+  if (journalStatus === "failed" && storageFailureCode === "STORAGE_FULL")
+    return "브라우저의 저장 공간이 부족합니다. 기존 기록을 삭제하지 말고 설정에서 백업해 주세요. (STORAGE_FULL)";
+  if (journalStatus === "failed" && storageFailureCode === "STORAGE_BLOCKED")
+    return "브라우저가 저장소 접근을 거부했습니다. 저장을 확인할 수 없습니다. (STORAGE_BLOCKED)";
+  if (journalStatus === "failed" && storageFailureCode === "STORAGE_BUSY")
+    return "다른 창이 저장 작업을 마치지 않아 기다리고 있습니다. 이 창의 미저장 응답은 보관 중입니다. (STORAGE_BUSY)";
   if (journalStatus === "failed")
     return "학습 기록의 저장·복구를 완료하지 못했습니다. 저장 상태를 다시 확인하거나 백업해 주세요.";
-  if (conflictingLearningKeys.size)
+  if (has(conflictingLearningKeys))
     return "다른 창에서 학습 기록이 변경되어 덮어쓰기를 막았습니다. 이 창의 미저장 기록도 보존 중입니다. 백업 후 충돌을 확인해 주세요.";
-  if (unreadableLearningKeys.size)
+  if (has(corruptLearningKeys))
+    return "일부 학습 기록의 형식을 읽을 수 없습니다. 원본을 보존했습니다. 설정에서 복구용 백업을 보관해 주세요. (RECORD_FORMAT)";
+  if ((has(unreadableLearningKeys) || has(pendingLearningWrites)) && storageFailureCode === "STORAGE_FULL")
+    return "기기의 사이트 저장 공간이 부족합니다. 기존 기록을 삭제하지 말고 설정에서 백업해 주세요. (STORAGE_FULL)";
+  if (has(unreadableLearningKeys) && storageFailureCode === "STORAGE_BLOCKED")
+    return "브라우저가 저장소 접근을 거부했습니다. 기록을 보존했으며 저장을 확인할 수 없습니다. (STORAGE_BLOCKED)";
+  if (has(unreadableLearningKeys))
     return "기존 학습 기록을 읽지 못해 덮어쓰기를 막았습니다. 이번 응답은 저장되지 않을 수 있어요.";
-  if (pendingLearningWrites.size && learningWriteFailed)
+  if (has(pendingLearningWrites) && learningWriteFailed)
     return "아직 이 기기에 저장되지 않은 학습 기록이 있습니다. 저장될 때까지 이 창을 닫지 마세요.";
+  if (pendingAnswerJobs.size && answerJobFailed)
+    return "응답을 저장할 차례를 기다리고 있습니다. 이 창의 응답은 아직 기기에 저장되지 않았습니다. (STORAGE_BUSY)";
   return null;
 }
+export function getQuizStorageIssue(): string | null {
+  return getLearningStorageIssue([STATS_KEY, WRONG_WORDS_KEY, MASTERED_KEY, ADAPTIVE_QUIZ_HISTORY_KEY,
+    SENSE_LEARNING_STATE_KEY, QUIZ_SESSION_KEY, QUIZ_SESSION_ARCHIVE_KEY]);
+}
 function notifyLearningStorage() {
+  if (!getLearningStorageIssue()) { storageFailureCode = null; recoveryAttempts = 0; }
   learningStorageListeners.forEach((listener) => listener());
+  scheduleStorageRecovery();
 }
 export function subscribeLearningStorage(listener: () => void) {
   learningStorageListeners.add(listener);
@@ -149,6 +232,17 @@ export async function retryLearningStorage(): Promise<void> {
       try { await writeThemePreferenceUnsafe(pendingThemePreference); } catch {}
     }
   });
+  // A lock failure before a task began has no aggregate snapshot to flush.
+  // Retain and retry its captured event, not an invented empty state.
+  await drainPendingAnswers();
+}
+
+async function drainPendingAnswers(): Promise<void> {
+  for (const [id, job] of [...pendingAnswerJobs]) {
+    await job();
+    // A failed predecessor must not be applied after a newer response.
+    if (pendingAnswerJobs.has(id)) break;
+  }
 }
 
 async function readLearningItem(key: string): Promise<string | null> {
@@ -174,11 +268,12 @@ async function readLearningItem(key: string): Promise<string | null> {
     if (value === null) lastLearningValues.delete(key);
     else lastLearningValues.set(key, value);
     return value;
-  } catch {
+  } catch (error) {
     // An earlier successful read does not make its cache current. Another tab
     // may have written since then. Keep the cache for display only and block
     // read-modify-write until a fresh read succeeds.
     unreadableLearningKeys.add(key);
+    noteStorageFailure(error);
     notifyLearningStorage();
     return lastLearningValues.get(key) ?? null;
   }
@@ -188,11 +283,11 @@ async function persistLearningEntries(
   entries: [string, string][],
 ): Promise<void> {
   // Never replace unreadable prior records with a new empty baseline.
-  if (unreadableLearningKeys.size && entries.length) {
+  if (entries.some(([key]) => unreadableLearningKeys.has(key))) {
     // A previously validated baseline can support pending work in this tab.
     // It cannot authorize a disk write: retry must reread and compare every key.
     // Never build pending aggregates from corrupt or never-read prior values.
-    if (!corruptLearningKeys.size && entries.every(([key]) => learningDiskBaselines.has(key))) {
+    if (!entries.some(([key]) => corruptLearningKeys.has(key)) && entries.every(([key]) => learningDiskBaselines.has(key))) {
       for (const [key, value] of entries) {
         validateLearningValue(key, value);
         pendingLearningWrites.set(key, value);
@@ -233,7 +328,7 @@ async function persistLearningEntries(
         learningDiskBaselines.set(key, current);
       }
     }
-    if (unreadableLearningKeys.size || conflictingLearningKeys.size) {
+    if (pending.some(([key]) => unreadableLearningKeys.has(key) || conflictingLearningKeys.has(key))) {
       learningWriteFailed = true;
       notifyLearningStorage();
       return;
@@ -247,9 +342,10 @@ async function persistLearningEntries(
       if (pendingLearningWrites.get(key) === value)
         pendingLearningWrites.delete(key);
     }
-  } catch {
+  } catch (error) {
     // Keep answers and sessions in this tab and retry them on the next mutation.
     learningWriteFailed = true;
+    noteStorageFailure(error);
   }
   notifyLearningStorage();
 }
@@ -261,15 +357,21 @@ async function persistLearningEntries(
  * deliberately swallowed only by the queue tail so later tasks can continue;
  * the original caller still receives the rejection.
  */
-function enqueueLearningStorageTask<T>(task: () => Promise<T>, recover = true): Promise<T> {
-  const guarded = () => withLearningStorageLock(async () => {
+function enqueueLearningStorageTask<T>(task: () => Promise<T>, recover = true, lock = true): Promise<T> {
+  const run = async () => {
     if (recover) {
-      journalStatus = await recoverLearningJournal(AsyncStorage, LEARNING_RECORD_KEYS, validateLearningValue);
+      journalStatus = await recoverLearningJournal(AsyncStorage, LEARNING_RECORD_KEYS, validateLearningValue, noteStorageFailure);
       notifyLearningStorage();
     }
     return task();
+  };
+  const guarded = () => lock ? withLearningStorageLock(run) : run();
+  const result = learningStorageQueue.then(guarded, guarded).catch(error => {
+    noteStorageFailure(error);
+    if (error instanceof Error && error.name === "LearningStorageBusyError") journalStatus = "failed";
+    notifyLearningStorage();
+    throw error;
   });
-  const result = learningStorageQueue.then(guarded, guarded);
   learningStorageQueue = result.then(
     () => undefined,
     () => undefined,
@@ -284,29 +386,41 @@ export function exportLearningBackup(): Promise<LearningBackup> {
   return enqueueLearningStorageTask(async () => {
     const records: LearningBackup["records"] = {};
     const unreadableKeys: string[] = [];
+    const allKeys = [...BACKUP_RECORD_KEYS, "vocaknio_vocab_storage_version", LEARNING_WRITE_JOURNAL_KEY, VOCAB_STORAGE_BACKUP_KEY];
+    let snapshot: Record<string, string | null> | undefined;
+    try { snapshot = await AsyncStorage.readSnapshot(allKeys); }
+    catch { unreadableKeys.push("atomic-snapshot-unavailable"); }
     for (const key of BACKUP_RECORD_KEYS) {
-      try { records[key] = await AsyncStorage.getItem(key); }
+      try { records[key] = snapshot ? snapshot[key] : await AsyncStorage.getItem(key); }
       catch { records[key] = null; unreadableKeys.push(key); }
     }
     let vocabStorageVersion: string | null = null;
     let recoveryJournal: string | null = null;
     let migrationBackup: string | null = null;
-    try { vocabStorageVersion = await AsyncStorage.getItem("vocaknio_vocab_storage_version"); }
+    try { vocabStorageVersion = snapshot ? snapshot.vocaknio_vocab_storage_version : await AsyncStorage.getItem("vocaknio_vocab_storage_version"); }
     catch { unreadableKeys.push("vocabStorageVersion"); }
-    try { recoveryJournal = await AsyncStorage.getItem(LEARNING_WRITE_JOURNAL_KEY); }
+    try { recoveryJournal = snapshot ? snapshot[LEARNING_WRITE_JOURNAL_KEY] : await AsyncStorage.getItem(LEARNING_WRITE_JOURNAL_KEY); }
     catch { unreadableKeys.push("recoveryJournal"); }
-    try { migrationBackup = await AsyncStorage.getItem(VOCAB_STORAGE_BACKUP_KEY); }
+    try { migrationBackup = snapshot ? snapshot[VOCAB_STORAGE_BACKUP_KEY] : await AsyncStorage.getItem(VOCAB_STORAGE_BACKUP_KEY); }
     catch { unreadableKeys.push("migrationBackup"); }
+    const recoverySources: LearningBackup["recoverySources"] = {};
+    if (pendingAnswerInputs.size) unreadableKeys.push("pending-response-events");
+    if (unreadableKeys.length) {
+      try { recoverySources.legacy = (await AsyncStorage.exportLegacyLearningBackup()).records; } catch { /* marked incomplete above */ }
+      try { recoverySources.migrationOriginal = await AsyncStorage.exportMigrationOriginalBackup() ?? undefined; } catch { /* preserve other sources */ }
+      try { recoverySources.indexedCurrent = await AsyncStorage.exportCurrentIndexedBackup() ?? undefined; } catch { /* never label a failed export complete */ }
+    }
     return { format: LEARNING_BACKUP_FORMAT, createdAt: new Date().toISOString(), vocabStorageVersion,
-      records, pending: Object.fromEntries([...pendingLearningWrites].filter(([key]) => BACKUP_RECORD_KEYS.includes(key))), recoveryJournal, migrationBackup, unreadableKeys };
-  }, false);
+      records, pending: Object.fromEntries([...pendingLearningWrites].filter(([key]) => BACKUP_RECORD_KEYS.includes(key))), recoveryJournal, migrationBackup, unreadableKeys,
+      ...(pendingAnswerInputs.size ? { pendingResponses: [...pendingAnswerInputs.values()] } : {}),
+      ...(Object.keys(recoverySources).length ? { recoverySources } : {}) };
+  }, false, false); // readSnapshot is atomic; a busy other tab must not lock out emergency export.
 }
 
 export function inspectLearningBackup(text: string): Promise<LearningBackupPreview> {
   return enqueueLearningStorageTask(async () => {
     const backup = parseLearningBackup(text, BACKUP_RECORD_KEYS, validateLearningValue, [QUIZ_SESSION_ARCHIVE_KEY]);
-    const current: Record<string, string | null> = {};
-    for (const key of BACKUP_RECORD_KEYS) current[key] = await AsyncStorage.getItem(key);
+    const current = await AsyncStorage.readSnapshot(BACKUP_RECORD_KEYS);
     const preview = previewLearningBackup(backup, current, isEmptyLearningRecord);
     if (pendingLearningWrites.size || await AsyncStorage.getItem(LEARNING_WRITE_JOURNAL_KEY) !== null) preview.conflicts.push("current-pending");
     return preview;
@@ -339,15 +453,31 @@ export function restoreLearningBackup(preview: LearningBackupPreview): Promise<v
   const captured = JSON.parse(JSON.stringify(preview)) as LearningBackupPreview;
   return enqueueLearningStorageTask(async () => {
     const backup = parseLearningBackup(JSON.stringify(captured.backup), BACKUP_RECORD_KEYS, validateLearningValue, [QUIZ_SESSION_ARCHIVE_KEY]);
-    const current: Record<string, string | null> = {};
+    const current = await AsyncStorage.readSnapshot(BACKUP_RECORD_KEYS);
     for (const key of BACKUP_RECORD_KEYS) {
-      current[key] = await AsyncStorage.getItem(key);
       if (current[key] !== captured.current[key]) throw new Error("Backup preview is stale");
     }
     const checked = previewLearningBackup(backup, current, isEmptyLearningRecord);
     if (checked.conflicts.length || pendingLearningWrites.size || await AsyncStorage.getItem(LEARNING_WRITE_JOURNAL_KEY) !== null)
       throw new Error("Backup conflict; current records preserved");
     if (!checked.entries.length) return;
+    if (AsyncStorage.compareAndSet) {
+      const version = await AsyncStorage.getItem("vocaknio_vocab_storage_version");
+      // Protect every previewed key, including empty/unchanged ones, so another
+      // tab cannot create a mixed snapshot while restore is being confirmed.
+      const restored = new Map(checked.entries);
+      await AsyncStorage.compareAndSet([
+        ...BACKUP_RECORD_KEYS.map(key => ({ key, before: current[key], after: restored.get(key) ?? current[key] })),
+        { key: LEARNING_WRITE_JOURNAL_KEY, before: null, after: null },
+        { key: "vocaknio_vocab_storage_version", before: version, after: backup.vocabStorageVersion },
+      ]);
+      for (const [key, value] of checked.entries) {
+        learningDiskBaselines.set(key, value); lastLearningValues.set(key, value);
+        unreadableLearningKeys.delete(key); corruptLearningKeys.delete(key); conflictingLearningKeys.delete(key);
+      }
+      notifyLearningStorage();
+      return;
+    }
     for (const [key, value] of Object.entries(current)) learningDiskBaselines.set(key, value);
     // Persist the ID schema before restoring numeric lists. No number remap.
     await AsyncStorage.setItem("vocaknio_vocab_storage_version", backup.vocabStorageVersion!);
@@ -427,6 +557,16 @@ async function readWrongWordsUnsafe(): Promise<number[]> {
 
 export async function migrateStoredVocabLists() {
   return enqueueLearningStorageTask(async () => {
+    // An unrelated failed journal does not invalidate an already committed ID
+    // migration or prevent read-only vocabulary/settings/backup navigation.
+    try {
+      if (await AsyncStorage.getItem("vocaknio_vocab_storage_version") === "v1.4") return null;
+    } catch (error) {
+      noteStorageFailure(error);
+      throw new VocabStorageError(storageFailureCode === "STORAGE_FULL" ? "storage-full"
+        : storageFailureCode === "STORAGE_BLOCKED" ? "read-blocked"
+        : storageFailureCode === "STORAGE_CONFLICT" ? "recovery-conflict" : "read-failed");
+    }
     if (journalStatus === "conflict") throw new VocabStorageError("recovery-conflict");
     if (journalStatus === "unreadable") throw new VocabStorageError("recovery-unreadable");
     if (journalStatus === "failed") throw new VocabStorageError("recovery-failed");
@@ -434,6 +574,7 @@ export async function migrateStoredVocabLists() {
     getItem: (key) => AsyncStorage.getItem(key),
     setItem: (key, value) => AsyncStorage.setItem(key, value),
     setItems: (entries) => AsyncStorage.multiSet(entries),
+    compareAndSet: AsyncStorage.compareAndSet,
     });
   });
 }
@@ -735,13 +876,13 @@ export function loadQuizSession(): Promise<QuizSession | null> {
 export function loadQuizSessionForStudy(requestKey: string): Promise<{ session: QuizSession | null; archived: boolean }> {
   return enqueueLearningStorageTask(async () => {
     const raw = await readLearningItem(QUIZ_SESSION_KEY);
-    if (getLearningStorageIssue()) throw new Error("Session storage recovery is incomplete");
+    if (getQuizStorageIssue()) throw new Error("Session storage recovery is incomplete");
     const stored = raw ? parseStoredQuizSession(JSON.parse(raw)) : null;
     if (raw && !stored) throw new Error("Historical session is unreadable");
     if (stored && raw && !isQuizSessionContentCurrent(stored)) {
       const entry = await archiveSessionEntryUnsafe(raw);
       await persistLearningEntries([entry]);
-      if (pendingLearningWrites.size || getLearningStorageIssue())
+      if (pendingLearningWrites.has(QUIZ_SESSION_ARCHIVE_KEY) || getQuizStorageIssue())
         throw new Error("Historical session archive is not yet durable");
       return { session: null, archived: true };
     }
@@ -796,13 +937,16 @@ export async function recordOneAnswer(
   context?: AdaptiveAnswerContext,
   session?: QuizSession,
 ): Promise<void> {
+  context = context ? JSON.parse(JSON.stringify(context)) : undefined;
+  const answeredAt = context?.answeredAt ?? Date.now();
+  if (context) context.answeredAt = answeredAt;
   const answerCorrect = context ? context.outcome === "correct" || context.outcome === "mastered" : isCorrect;
   const sessionRaw = session ? JSON.stringify(session) : null;
   const snapshot: QuizSession | null = sessionRaw ? JSON.parse(sessionRaw) : null;
   if (sessionRaw) validateLearningValue(QUIZ_SESSION_KEY, sessionRaw);
   if (snapshot && !parseQuizSession(snapshot)) throw new Error("Outdated or held questions cannot create new grades");
-  try {
-    await enqueueLearningStorageTask(async () => {
+  const jobId = ++answerJobSequence;
+  const task = async () => {
       if (sessionRaw) await readQuizSessionUnsafe();
       const history = context ? await readAdaptiveHistoryUnsafe() : null;
       const currentLearning = context?.learningTargetKey
@@ -845,22 +989,22 @@ export async function recordOneAnswer(
       if (history && nextHistory && nextHistory.revision === history.revision)
         return;
       const stats = await readStatsUnsafe();
-      const today = learningDay(context?.answeredAt ?? Date.now());
+      const today = learningDay(answeredAt);
 
-      if (stats.todayDate !== today) {
+      if (stats.todayDate < today) {
         stats.todayAnswered = 0;
         stats.todayDate = today;
       }
 
-      const yesterday = learningDay((context?.answeredAt ?? Date.now()) - 86400000);
-      if (stats.lastStudyDate === yesterday) {
-        stats.streak += 1;
-      } else if (stats.lastStudyDate !== today) {
-        stats.streak = 1;
+      const yesterday = learningDay(answeredAt - 86400000);
+      if (stats.lastStudyDate < today) {
+        stats.streak = stats.lastStudyDate === yesterday ? stats.streak + 1 : 1;
+        stats.lastStudyDate = today;
       }
-      stats.lastStudyDate = today;
       stats.totalAnswered += 1;
-      stats.todayAnswered += 1;
+      // A delayed response from another tab belongs to its original day, not
+      // the newer day's counter. Detailed daily totals live in adaptive events.
+      if (stats.todayDate === today) stats.todayAnswered += 1;
       if (answerCorrect) stats.totalCorrect += 1;
 
       const entries: [string, string][] = [[STATS_KEY, JSON.stringify(stats)]];
@@ -903,11 +1047,36 @@ export async function recordOneAnswer(
       }
 
       await persistLearningEntries(entries);
-    });
-  } catch {
-    // A persistence failure must not freeze quiz interaction. The queue tail is
-    // already recovered by enqueueLearningStorageTask, so later answers retry.
-  }
+      if (entries.some(([key]) => unreadableLearningKeys.has(key) && !pendingLearningWrites.has(key))) {
+        // An unknown/corrupt starting value cannot produce a valid aggregate.
+        // Keep the captured response rather than silently dropping it or
+        // counting it against an invented empty history.
+        throw new Error("Response awaits readable learning records");
+      }
+    };
+  let runningJob: Promise<void> | undefined;
+  const executeJob = async () => {
+    try {
+      await enqueueLearningStorageTask(task);
+      pendingAnswerJobs.delete(jobId);
+      pendingAnswerInputs.delete(jobId);
+      answerJobFailed = pendingAnswerJobs.size > 0;
+    } catch (error) {
+      // Keep the event even if the shared lock failed before task() started.
+      // No success indicator is emitted; retries use the same answer identity.
+      answerJobFailed = true; noteStorageFailure(error);
+    }
+    notifyLearningStorage();
+  };
+  const job = (): Promise<void> => {
+    if (runningJob) return runningJob;
+    if (!pendingAnswerJobs.has(jobId)) return Promise.resolve();
+    runningJob = executeJob().finally(() => { runningJob = undefined; });
+    return runningJob;
+  };
+  pendingAnswerJobs.set(jobId, job);
+  pendingAnswerInputs.set(jobId, JSON.stringify({ isCorrect, wrongNum, answeredAt, context, session: snapshot }));
+  await drainPendingAnswers();
 }
 
 // ─── Mastered Words (플래시카드 마스터 제외) ─────────────────────────────────────

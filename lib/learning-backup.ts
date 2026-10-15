@@ -6,9 +6,17 @@ export interface LearningBackup {
   vocabStorageVersion: string | null;
   records: Record<string, string | null>;
   pending: Record<string, string>;
+  /** Uncommitted response intents for manual recovery; never regrade on import. */
+  pendingResponses?: string[];
   recoveryJournal: string | null;
   /** Raw legacy originals for manual recovery only; never automatically applied. */
   migrationBackup?: string | null;
+  /** Emergency raw sources only. Never used by automatic restore/merge. */
+  recoverySources?: {
+    legacy?: Record<string, string | null>;
+    migrationOriginal?: Record<string, string | null>;
+    indexedCurrent?: Record<string, string | null>;
+  };
   unreadableKeys: string[];
 }
 export interface LearningBackupPreview {
@@ -33,6 +41,7 @@ export function parseLearningBackup(text: string, allowed: readonly string[], va
     if (!(key in data.records)) data.records[key] = null;
   }
   if (!(data.migrationBackup === undefined || data.migrationBackup === null || typeof data.migrationBackup === "string")) throw new Error("Unsupported migration backup");
+  if (data.pendingResponses !== undefined && (!Array.isArray(data.pendingResponses) || data.pendingResponses.length)) throw new Error("Uncommitted responses require recovery");
   if (Object.keys(data.records).length !== allowed.length || allowed.some(key => !(key in data.records))) throw new Error("Incomplete backup");
   for (const [key, raw] of Object.entries(data.records)) {
     if (!allowed.includes(key) || !(raw === null || typeof raw === "string")) throw new Error("Unsupported record");

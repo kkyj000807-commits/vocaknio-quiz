@@ -26,6 +26,7 @@ const dataVersion = JSON.parse(fs.readFileSync("assets/vocab-meta-v1.4.json", "u
 await runTask("sense audit", ["--import", "tsx", "scripts/audit-sense-questions.ts"]);
 await runTask("learning build", ["scripts/build-vocab-learning-v1.4.mjs"]);
 await runTask("definition audit", ["scripts/audit-vocab-definitions.mjs"]);
+await runTask("Korean pronunciation evidence", ["--import", "tsx", "scripts/build-korean-pronunciation.ts"]);
 
 const releaseConfig = JSON.parse(
   fs.readFileSync(path.join(process.cwd(), "release.config.json"), "utf8"),

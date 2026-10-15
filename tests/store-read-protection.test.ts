@@ -1,4 +1,4 @@
-import { beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 // Focused I/O fault injection. Real store/queue; content dependencies are mocked
 // to avoid loading the 38K corpus. Full integration tests remain required.
 vi.mock("@/lib/vocab", () => ({ getVocabItem: () => undefined }));
@@ -36,6 +36,7 @@ vi.mock("@react-native-async-storage/async-storage", () => ({ default: {
   removeItem: async (key: string) => { disk.values.delete(key); },
 } }));
 beforeEach(() => { vi.resetModules(); disk.values.clear(); disk.failRead = false; disk.failWrite = false; disk.failKey = null; disk.partialAfter = -1; disk.writes = 0; });
+afterEach(() => { vi.unstubAllGlobals(); vi.useRealTimers(); });
 
 it("voice and choice-language changes merge in the existing queue without dropping legacy fields", async () => {
   const store = await import("@/lib/store");
@@ -300,4 +301,81 @@ it("a fresh app's initialized empty sense state does not block restoring genuine
   expect(preview.conflicts).toEqual([]);
   await store.restoreLearningBackup(preview);
   expect(await store.loadWrongWords()).toEqual([7]);
+});
+
+it("a damaged bookmark list does not block independent answer totals or erase the list", async () => {
+  const store = await import("@/lib/store");
+  disk.values.set("vocaknio_bookmarks", "broken-json");
+  await store.loadBookmarks();
+  await store.recordOneAnswer(true);
+  expect(JSON.parse(disk.values.get("vocaknio_stats")!).totalAnswered).toBe(1);
+  expect(disk.values.get("vocaknio_bookmarks")).toBe("broken-json");
+  expect(store.getLearningStorageIssue()).not.toBeNull();
+});
+
+it("20 reloads retain totals, bookmarks, MASTER and wrong notes without rewriting answers", async () => {
+  let store = await import("@/lib/store");
+  await store.recordOneAnswer(false, 7);
+  await store.toggleBookmark(9);
+  await store.addMastered(3);
+  const original = new Map(disk.values);
+  for (let reload = 0; reload < 20; reload++) {
+    vi.resetModules(); store = await import("@/lib/store");
+    expect((await store.loadStats()).totalAnswered).toBe(1);
+    expect(await store.loadBookmarks()).toEqual([9]);
+    expect(await store.loadMastered()).toEqual([3]);
+    expect(await store.loadWrongWords()).toEqual([7]);
+    expect(store.getLearningStorageIssue()).toBeNull();
+  }
+  expect(disk.values).toEqual(original);
+});
+
+it("a response blocked before lock acquisition stays in recovery backup and retries only once", async () => {
+  const store = await import("@/lib/store");
+  vi.useFakeTimers();
+  vi.stubGlobal("navigator", { locks: { request: (_name: string, { signal }: { signal: AbortSignal }) =>
+    new Promise((_resolve, reject) => signal.addEventListener("abort", () => reject(new Error("busy")))) } });
+  const answer = store.recordOneAnswer(false, 7);
+  await vi.advanceTimersByTimeAsync(5001);
+  await answer;
+  expect(disk.values.size).toBe(0);
+  const backup = await store.exportLearningBackup();
+  expect(backup.pendingResponses).toHaveLength(1);
+  expect(backup.unreadableKeys).toContain("pending-response-events");
+  expect(store.getLearningStorageIssue()).not.toBeNull();
+  vi.stubGlobal("navigator", {});
+  await Promise.all([store.retryLearningStorage(), store.retryLearningStorage()]);
+  expect((await store.loadStats()).totalAnswered).toBe(1);
+  expect(await store.loadWrongWords()).toEqual([7]);
+  expect((await store.exportLearningBackup()).pendingResponses).toBeUndefined();
+  expect(store.getLearningStorageIssue()).toBeNull();
+});
+
+it("a later response drains older pending responses before crossing the study-day boundary", async () => {
+  const store = await import("@/lib/store");
+  vi.useFakeTimers();
+  vi.stubGlobal("navigator", { locks: { request: (_name: string, { signal }: { signal: AbortSignal }) =>
+    new Promise((_resolve, reject) => signal.addEventListener("abort", () => reject(new Error("busy")))) } });
+  const first = { sessionId: "day-a", itemNum: 7, mode: "kor-choice" as const,
+    outcome: "wrong" as const, answeredAt: Date.parse("2026-10-15T14:59:59Z") };
+  const second = { ...first, sessionId: "day-b", itemNum: 8, answeredAt: Date.parse("2026-10-16T15:00:01Z") };
+  const blocked = store.recordOneAnswer(false, 7, first);
+  await vi.advanceTimersByTimeAsync(5001); await blocked;
+  vi.stubGlobal("navigator", {});
+  await store.recordOneAnswer(false, 8, second);
+  await store.retryLearningStorage();
+  expect((await store.loadAdaptiveQuizHistory()).events?.map(event => event.itemNum)).toEqual([7, 8]);
+  expect(await store.loadStats()).toMatchObject({ totalAnswered: 2, todayAnswered: 1, todayDate: "2026-10-17" });
+  expect((await store.exportLearningBackup()).pendingResponses).toBeUndefined();
+});
+
+it("an older response from another tab adds lifetime totals without resetting the newest study day", async () => {
+  const store = await import("@/lib/store");
+  const latest = { sessionId: "new-tab", itemNum: 7, mode: "kor-choice" as const,
+    outcome: "correct" as const, answeredAt: Date.parse("2026-10-16T15:00:01Z") };
+  await store.recordOneAnswer(true, 7, latest);
+  await store.recordOneAnswer(false, 8, { ...latest, sessionId: "delayed-tab", itemNum: 8,
+    outcome: "wrong", answeredAt: Date.parse("2026-10-15T14:59:59Z") });
+  expect(await store.loadStats()).toMatchObject({ totalAnswered: 2, totalCorrect: 1,
+    todayDate: "2026-10-17", todayAnswered: 1, lastStudyDate: "2026-10-17", streak: 1 });
 });

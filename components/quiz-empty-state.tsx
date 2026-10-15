@@ -40,14 +40,29 @@ export function buildExplicitMeaningStudyRoute(request: MeaningStudyRequest) {
 
 type MeaningStudyRoute = NonNullable<ReturnType<typeof buildExplicitMeaningStudyRoute>>;
 
-export function QuizSessionHold({ onStart, onBackup, onSettings }: { onStart: () => void; onBackup: () => void; onSettings: () => void }) {
+export type QuizPreparationFailure = "SESSION_READ" | "LEARNING_READ" | "CONTENT_PREPARE" | "SESSION_SAVE" | "STORAGE_RECOVERY";
+
+const PREPARATION_MESSAGES: Record<QuizPreparationFailure, string> = {
+  SESSION_READ: "이전 학습 세션을 확인하지 못했습니다. 원본을 유지하고 복구 상태를 확인해 주세요.",
+  LEARNING_READ: "학습 상태를 확인하지 못했습니다. 기존 기록을 유지하고 다시 확인해 주세요.",
+  CONTENT_PREPARE: "선택한 범위의 문제를 구성하지 못했습니다. 문제 풀이 설정으로 돌아가 범위와 유형을 확인해 주세요.",
+  SESSION_SAVE: "새 학습 세션의 저장을 완료하지 못했습니다. 저장 상태를 확인한 뒤 시작할 수 있습니다.",
+  STORAGE_RECOVERY: "저장·복구 상태를 확인해야 합니다. 해결되지 않은 기록은 덮어쓰지 않습니다.",
+};
+
+export function QuizSessionHold({ onStart, onBackup, onSettings, failure = "SESSION_READ", issue, canRetry = true, busy = false }: {
+  onStart: () => void; onBackup: () => void; onSettings: () => void;
+  failure?: QuizPreparationFailure; issue?: string | null; canRetry?: boolean; busy?: boolean;
+}) {
   const s = styles(useColors());
   return <ScrollView contentContainerStyle={s.container}>
     <Text style={s.title}>학습을 준비하지 못했습니다</Text>
-    <Text style={s.note}>이전 기록은 다시 채점하거나 삭제하지 않습니다. 저장 상태를 확인하고 다시 시도해 주세요.</Text>
-    <Pressable accessibilityRole="button" accessibilityLabel="저장 확인 후 다시 시도" style={s.button} onPress={onStart}>
-      <Text style={s.buttonText}>다시 시도</Text>
-    </Pressable>
+    <Text accessibilityLiveRegion="polite" style={s.note}>{issue || PREPARATION_MESSAGES[failure]} ({failure})</Text>
+    <Text style={s.note}>이전 기록은 다시 채점하거나 삭제하지 않습니다.</Text>
+    {canRetry && <Pressable accessibilityRole="button" accessibilityLabel="저장 확인 후 다시 시도"
+      accessibilityState={{ disabled: busy, busy }} disabled={busy} style={s.button} onPress={onStart}>
+      <Text style={s.buttonText}>{busy ? "저장 상태 확인 중…" : "다시 시도"}</Text>
+    </Pressable>}
     <Pressable accessibilityRole="button" accessibilityLabel="학습 기록 백업 설정 열기" style={s.settingsButton} onPress={onBackup}>
       <Text style={s.settingsText}>기록 백업·저장 상태 확인</Text>
     </Pressable>

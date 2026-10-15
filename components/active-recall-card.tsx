@@ -6,6 +6,7 @@ import type { ActiveRecallSense } from "@/lib/active-recall";
 import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
 import { LearningEvidence } from "@/components/learning-evidence";
 import { PronunciationButton } from "@/components/pronunciation-button";
+import { WordPronunciation } from "@/components/word-pronunciation";
 import { KoreanReveal } from "@/components/korean-reveal";
 import { LazyReasoningPractice } from "@/components/reasoning-practice";
 import { type VocabItem } from "@/lib/vocab";
@@ -57,6 +58,7 @@ export function DefinitionRecallPrompt({ definition }: { definition: string }) {
 export function DefinitionRecallAnswer({
   recall,
   koreanMeaning,
+  item,
 }: {
   recall: DefinitionQuizEntry;
   koreanMeaning: string;
@@ -71,6 +73,7 @@ export function DefinitionRecallAnswer({
   return (
     <View style={[styles.answer, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <Text style={[styles.answerWord, { color: colors.foreground }]}>{recall.headword}</Text>
+      {item && <WordPronunciation item={item} context="answer" />}
       <Text style={[styles.detailText, { color: colors.foreground }]}>{koreanMeaning}</Text>
       <SemanticRelationCluster
         headword={recall.headword}
@@ -103,6 +106,7 @@ export function SynonymRecallAnswer({
   recall,
   koreanMeaning,
   choices,
+  item,
 }: {
   recall: DefinitionQuizEntry;
   koreanMeaning: string;
@@ -122,6 +126,7 @@ export function SynonymRecallAnswer({
       <Text style={[styles.answerWord, { color: colors.foreground }]}>
         {recall.headword} ≒ {correct?.word ?? relations.synonyms[0]}
       </Text>
+      {item && <WordPronunciation item={item} context="answer" />}
       <Text style={[styles.detailText, { color: colors.foreground }]}>{koreanMeaning}</Text>
       <SemanticRelationCluster
         headword={recall.headword}
@@ -171,6 +176,7 @@ export function ActiveRecallAnswer({ recall, choices, item, showRelationNotes = 
   return (
     <View style={[styles.answer, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <Text style={[styles.answerWord, { color: colors.foreground }]}>{recall.headword}</Text>
+      {item && <WordPronunciation item={item} context="answer" />}
       <Text style={[styles.detailText, { color: colors.foreground }]}>{recall.koreanMeaning}</Text>
       <SemanticRelationCluster
         headword={recall.headword}

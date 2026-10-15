@@ -32,7 +32,7 @@ it("keeps original editorial examples row-scoped, labeled and Korean optional wi
 // Component contract only: no 38K corpus, device audio, browser or learner disk.
 vi.mock("react-native", () => {
   const element = (tag: string) => function MockNative({ children }: { children?: React.ReactNode }) { return React.createElement(tag, {}, children); };
-  return { View: element("div"), Text: element("span"), Pressable: element("button"), ActivityIndicator: element("span"), Linking: { openURL: vi.fn() }, StyleSheet: { create: <T,>(value: T) => value } };
+  return { Platform: { OS: "web" }, View: element("div"), Text: element("span"), Pressable: element("button"), ActivityIndicator: element("span"), Linking: { openURL: vi.fn() }, StyleSheet: { create: <T,>(value: T) => value } };
 });
 vi.mock("@/hooks/use-colors", () => ({ useColors: () => ({ foreground: "#222", muted: "#666", primary: "#536", card: "#fff", surface: "#eee", border: "#ccc", error: "#c00" }) }));
 vi.mock("@/lib/vocab", () => ({ getSynonymDetails: () => [] }));

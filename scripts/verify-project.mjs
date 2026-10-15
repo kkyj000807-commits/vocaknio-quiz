@@ -4,6 +4,7 @@ import { runMonitoredNode } from "./lib/monitored-process.mjs";
 const root = fileURLToPath(new URL("../", import.meta.url));
 // Build data before tests: tests must inspect what the next export will ship.
 const steps = [
+  ["한글 발음 출처·증분 연결", "--import", "tsx", "scripts/build-korean-pronunciation.ts"],
   ["기출 원본 보존·검증 경계 감사", "--import", "tsx", "scripts/audit-exam-questions.ts"],
   ["Sentence Completion 등록·정답·근거 계약", "--import", "tsx", "scripts/audit-sentence-completion.ts"],
   ["학습 데이터 연결·검증", "scripts/build-vocab-learning-v1.4.mjs"],
