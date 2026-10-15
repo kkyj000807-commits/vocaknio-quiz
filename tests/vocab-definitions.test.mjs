@@ -22,11 +22,39 @@ function recordsForHeadword(headword) {
 }
 
 describe("OEWN definition aliases", () => {
-  it("delivers all 80 reviewed translations to their exact source senses without changing answer eligibility", () => {
+  it("exports original editorial examples only on approved rows and never adds them to dictionary or quiz quotations", () => {
+    const source = JSON.parse(fs.readFileSync(path.join(root, "data/vocab-learning/editorial-examples-20261015.json"), "utf8"));
+    const vocab = JSON.parse(fs.readFileSync(path.join(root, "assets/vocab-v1.4.json"), "utf8"));
+    const quiz = JSON.parse(fs.readFileSync(path.join(root, "assets/vocab-definition-quiz-oewn-2025.json"), "utf8"));
+    expect(source.entries.length).toBeGreaterThan(0);
+    expect(meta.coverage.editorialExampleSenses).toBe(source.entries.length);
+    for (const entry of source.entries) {
+      const records = recordsForHeadword(entry.headword);
+      expect(records.length).toBeGreaterThan(0);
+      for (const record of records) {
+        const sense = record.senses.find(s => s.senseId === entry.senseId);
+        expect(sense.synsetId).toBe(entry.synsetId);
+        expect(sense.partOfSpeech).toBe(entry.pos);
+        expect(sense.definition).toBe(entry.matchEvidence.sourceDefinition);
+        expect(sense.editorialExamples).toContainEqual({ en: entry.en, ko: entry.ko, cueKo: entry.cueKo,
+          sourceRowIds: entry.sourceRowIds, provenance: "FINETUNE original", reviewStatus: "ai-reviewed-editorial-example" });
+        expect(sense.examples).not.toContain(entry.en);
+        expect(sense.reviewedExamples.some(example => example.en === entry.en)).toBe(false);
+        expect(record.senses.filter(s => s.senseId !== entry.senseId).every(s => !s.editorialExamples?.some(example => example.en === entry.en))).toBe(true);
+      }
+      for (const id of entry.sourceRowIds) {
+        const row = vocab.find(row => row.id === id);
+        expect(row.w.toLowerCase().trim()).toBe(entry.headword.toLowerCase().trim());
+        expect(row.k).toBe(entry.sourceMeaningKo);
+        expect(quiz.entries[quiz.items[id]]?.examples ?? []).not.toContain(entry.en);
+      }
+    }
+  });
+  it("delivers all 152 reviewed translations to their exact source senses without changing answer eligibility", () => {
     const source = JSON.parse(fs.readFileSync(path.join(root, "data/vocab-learning/reviewed-examples-20261014.json"), "utf8"));
-    expect(source.entries).toHaveLength(80);
-    expect(new Set(source.entries.map(e => `${e.senseId}|${e.en}`)).size).toBe(80);
-    expect(meta.coverage.reviewedExampleTranslations).toBe(80);
+    expect(source.entries).toHaveLength(152);
+    expect(new Set(source.entries.map(e => `${e.senseId}|${e.en}`)).size).toBe(152);
+    expect(meta.coverage.reviewedExampleTranslations).toBe(152);
     for (const entry of source.entries) {
       const records = recordsForHeadword(entry.headword);
       expect(records.length).toBeGreaterThan(0);

@@ -1,7 +1,7 @@
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, it, vi } from "vitest";
-import { ActiveRecallStudyDetails, DictionaryExamples } from "@/components/learning-details";
+import { ActiveRecallStudyDetails, DictionaryExamples, EditorialExamples } from "@/components/learning-details";
 import { ActiveRecallPrompt, DefinitionRecallPrompt } from "@/components/active-recall-card";
 import { ACTIVE_RECALL_SENSES } from "@/lib/active-recall";
 const disclosure = vi.hoisted(() => ({ open: false }));
@@ -9,6 +9,24 @@ vi.mock("@/components/korean-reveal", async importOriginal => {
   const original = await importOriginal<typeof import("@/components/korean-reveal")>();
   return { KoreanReveal: (props: React.ComponentProps<typeof original.KoreanReveal>) =>
     <original.KoreanReveal {...props} defaultOpen={disclosure.open} /> };
+});
+
+it("keeps original editorial examples row-scoped, labeled and Korean optional without changing dictionary quotations", () => {
+  const sense = { senseId: "fixture", partOfSpeech: "noun", definition: "Distinct meaning", examples: [],
+    editorialExamples: [{ en: "The fixture explains this particular meaning.", ko: "이 예시는 해당 뜻을 설명한다.", cueKo: "특정 뜻",
+      sourceRowIds: ["matched-row"], provenance: "FINETUNE original" as const, reviewStatus: "ai-reviewed-editorial-example" as const }] };
+  disclosure.open = false;
+  const html = renderToStaticMarkup(<EditorialExamples sense={sense} itemId="matched-row" />);
+  expect(html).toContain(sense.editorialExamples[0].en);
+  expect(html).toContain("FINETUNE 자체 작성");
+  expect(html).not.toContain("CC BY 4.0");
+  expect(html).not.toContain(sense.editorialExamples[0].ko);
+  expect(html).toContain("data-example-speech");
+  disclosure.open = true;
+  expect(renderToStaticMarkup(<EditorialExamples sense={sense} itemId="matched-row" />)).toContain(sense.editorialExamples[0].ko);
+  expect(renderToStaticMarkup(<EditorialExamples sense={sense} itemId="different-meaning-row" />)).toBe("");
+  expect(renderToStaticMarkup(<DictionaryExamples sense={sense} />)).toBe("");
+  disclosure.open = false;
 });
 
 // Component contract only: no 38K corpus, device audio, browser or learner disk.
@@ -70,5 +88,41 @@ it("does not borrow a translation from a different example or synthesize missing
     reviewedExamples: [{ en: "Not this example", ko: "다른 뜻의 번역", cueKo: "다른 문맥" }] };
   expect(renderToStaticMarkup(<DictionaryExamples sense={sense} />)).not.toContain("다른 뜻의 번역");
   expect(renderToStaticMarkup(<DictionaryExamples sense={{ ...sense, examples: [] }} />)).toBe("");
+  disclosure.open = false;
+});
+
+it("surfaces an existing same-sense translated example without requiring all examples first", () => {
+  // Actual OEWN adroit ordering: its reviewed sentence follows two unreviewed examples.
+  const reviewed = "his adroit replies to hecklers won him many followers";
+  const sense = { senseId: "adroit%3:00:00::", partOfSpeech: "adjective", definition: "quick or skillful or adept in action or thought",
+    examples: ["an exceptionally adroit pianist", "an adroit technician", reviewed, "an adroit negotiator"],
+    reviewedExamples: [{ en: reviewed, ko: "야유하는 사람들에게 능숙하게 응수한 덕분에 그는 많은 지지자를 얻었다.", cueKo: "replies와 won him many followers가 말로 상황에 잘 대처했다는 단서다. 신체 동작뿐 아니라 응답·판단에도 adroit를 쓴다." }] };
+  const original = [...sense.examples];
+  disclosure.open = false;
+  const closed = renderToStaticMarkup(<DictionaryExamples sense={sense} />);
+  expect(closed).toContain(reviewed);
+  expect(closed.indexOf(reviewed)).toBeLessThan(closed.indexOf(original[0]));
+  expect(closed).not.toContain(sense.reviewedExamples[0].ko);
+  expect(closed.match(/data-example-speech=/g)).toHaveLength(2);
+  expect(closed).toContain("용례 4개");
+  disclosure.open = true;
+  const expanded = renderToStaticMarkup(<DictionaryExamples sense={sense} />);
+  expect(expanded).toContain(sense.reviewedExamples[0].ko);
+  expect(expanded).toContain(sense.reviewedExamples[0].cueKo);
+  expect(sense.examples).toEqual(original);
+  disclosure.open = false;
+});
+
+it("retains source order when no matching translation exists and supports the same-sense fallback", () => {
+  const sense = { senseId: "fixture", partOfSpeech: "noun", definition: "A distinct meaning.",
+    reviewedExamples: [{ en: "Outside this sense's example list", ko: "무관한 번역", cueKo: "다른 문맥" }] };
+  const fallback = ["First source example", "Second source example", "Third source example"];
+  disclosure.open = true;
+  const html = renderToStaticMarkup(<DictionaryExamples sense={sense} fallback={fallback} />);
+  expect(html.indexOf(fallback[0])).toBeLessThan(html.indexOf(fallback[1]));
+  expect(html).not.toContain("Outside this sense");
+  expect(html).not.toContain("무관한 번역");
+  expect(html).toContain("용례 3개");
+  expect(renderToStaticMarkup(<DictionaryExamples sense={{ ...sense, examples: [] }} fallback={fallback} />)).toBe("");
   disclosure.open = false;
 });

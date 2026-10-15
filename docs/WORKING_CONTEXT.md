@@ -1,5 +1,17 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-15 — 신규 예문·번역·관계뜻 통합 중
+
+22:47 KST 통합게이트 완료: 신규 창작129표제어/129sense/456동일뜻행, 번역72개, 관계뜻37개. 독립AI검수130초안 중129통과/1보류(perplexity),유전방향·번역강도 등3교정. 기존번역72개도 독립AI대조 후3표현교정. 신규예문held누적4,번역held누적11,관계held11. 사람검수/정답승격아님. 전수집계 EN8122→8251/13347,영한+단서194→394/13347;정의11611,원본38163행,심층112sense/111표제어불변. metadata와8섹션포인터검사/깨진연결0. 체크포인트analysis/qa/content-expansion-20261015.json/inputHash2129a13f5fc71d4e7030831cabe4977729139168f57f05dd5c31226d855f4683.
+
+node scripts/verify-project.mjs exit0/타입·데이터PASS/554PASS1기존SKIP(93.96초,회귀samplepeak2714MiB),관련ESLint·pnpm security:audit exit0/0finding,diffcheckPASS. 정본·definition quiz·canonical·sense questions·active recall git diff0. 아래 중간검사 상태는 이력이며 현재 소유source커밋→새빌드→격리UI→공개배포 단계. 실제Safari/Samsung및사용자iPhone오류원인미검증을해결로보고하지않음.
+
+기준27f8bf7/초기dirty0. 이전 자체잠금session32523 정상 Enter→exit0/LOCK_RELEASED 확인, 다른 프로세스·잠금파일 삭제 없음. 새 공통잠금56340/PID27656 보유. 이전 잠금제어 BLOCKED는 해소됐다.
+
+원문 사전예문 번역·단서72개 추가(80→152), 기존 licensed 관계뜻37개 추가(43→80/27sense,11관계는 근거별held). 영어예문 없는 표제어의 자체작성 배치를 기존 사전 sense의 별도 editorialExamples 참고층으로 연결 중이며 원본 사전 인용·정답 승인과 구분한다. sourceRowIds에 포함된 동일뜻 행에만 표시하고 한국어는 펼침으로 유지한다. 기존 번역이 용례3번째 이후에 있어 숨던 adroit/as a matter of fact는 동일sense의 번역있는 원문을 먼저 표시한다.
+
+생성 전 영향검사44PASS3FAIL(미반영 산출물), 생성 후47PASS/4files exit0. 신규 창작예문 독립 AI 의미검수 결과를 반영 중이며 최종 개수·전체검사·새 Production/공개 확인은 아직 미확정이다. 독립 사람 검수/전체완성/새 정답 승격 아님. 정본·학습 기록·저장키 불변. 다음: 의미검수 보류분 제외→생성·전수coverage→전체verify/lint/security→소유source커밋→새빌드/격리UI/공개배포. 상세상태 외부 A-latest.json currentManualCheckpoint.
+
 ## 2026-10-15 16:00 KST — 배포 정체 복구·예문 번역/동의어 뜻 공개 완료
 
 공개 source `b817db503c74450ce531d6dc42b5503cf614a92a`, Pages `05efb7bcbaa3dffa8c01d363cfc49636f219050b`, 표시1.0/내부1.29/sourceDirty=false/빌드시각08:18:01 KST. 게시 run38695547128 SUCCESS(15:57 KST), 일반 공개 release 일치, entry-84f749a JS HTTP200/SHA256 `31e0fb94b29472d61b344ead753f0e237055ef329c95a1c2befafd658584f4fc` 빌드와 일치. 사전8/학습8 JSON 모두 HTTP200·의미동일(사전 파일의 Git 줄바꿈 정규화는 원시 해시 차이로 별도 구분). 첫 수동 공개대조 명령은 사전 경로를 1.29로 잘못 지정해 exit1; 실제 oewn-2025 경로 확인 후 재검사 exit0. 배포/앱 실패가 아니며 숨기지 않는다.

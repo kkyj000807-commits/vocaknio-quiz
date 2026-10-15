@@ -207,7 +207,14 @@ export function DictionaryExamples({ sense, fallback = [] }: { sense: VocabDicti
   const colors = useColors();
   const s = styles(colors);
   const [allOpen, setAllOpen] = useState(false);
-  const examples = [...new Set(sense.examples ?? fallback)];
+  const sourceExamples = [...new Set(sense.examples ?? fallback)];
+  // Keep the same sense's translated examples reachable in the initial preview.
+  // Only reorder existing source text; never import an unrelated review entry.
+  const translated = new Set(sense.reviewedExamples?.map(example => example.en) ?? []);
+  const examples = [
+    ...sourceExamples.filter(en => translated.has(en)),
+    ...sourceExamples.filter(en => !translated.has(en)),
+  ];
   if (!examples.length) return null;
   return <View style={s.exampleBox}>
     <Text style={s.label}>사전 용례 · OEWN 2025 · CC BY 4.0</Text>
@@ -279,6 +286,7 @@ export function DictionaryDefinition({ entry, itemId }: { entry: VocabDefinition
                   .map(({ word, meaning }) => ({ word, meaning }))} />
             </>}
             <Text style={s.english}>{sense.definition}</Text>
+            <EditorialExamples sense={sense} itemId={itemId} />
             <DictionaryExamples key={sense.senseId} sense={sense}
               fallback={reference?.senseId === sense.senseId ? reference.examples : []} />
           </View>
@@ -311,6 +319,27 @@ export function DictionaryDefinition({ entry, itemId }: { entry: VocabDefinition
       <Text style={s.note}>{VOCAB_DEFINITION_SOURCE.attribution}</Text>
     </View>
   );
+}
+
+export function EditorialExamples({ sense, itemId }: { sense: VocabDictionarySense; itemId: string }) {
+  const colors = useColors();
+  const s = styles(colors);
+  const examples = sense.editorialExamples?.filter(example =>
+    example.provenance === "FINETUNE original" && example.reviewStatus === "ai-reviewed-editorial-example"
+    && example.sourceRowIds.includes(itemId)) ?? [];
+  if (!examples.length) return null;
+  return <View style={s.exampleBox}>
+    <Text style={s.label}>학습 예문 · FINETUNE 자체 작성</Text>
+    {examples.map(example => <View key={example.en} style={s.section}>
+      <Text style={s.english}>{example.en}</Text>
+      <PronunciationButton text={example.en} compact />
+      <KoreanReveal>
+        <Text style={s.text}>{example.ko}</Text>
+        <Text style={s.note}>문맥 단서: {example.cueKo}</Text>
+      </KoreanReveal>
+    </View>)}
+    <Text style={s.note}>사전 원문이 아닌 AI 편집 예문입니다. 연결된 뜻의 학습 참고용이며 정답 판정에는 사용하지 않습니다.</Text>
+  </View>;
 }
 
 export function SenseDetails({ entry, index, count }: { entry: LearningEntry; index: number; count: number }) {

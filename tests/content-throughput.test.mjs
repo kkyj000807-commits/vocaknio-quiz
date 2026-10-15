@@ -5,6 +5,23 @@ import { checkpointUnchanged, contentStratum, measureContent, privateMeasurement
 const dictionarySense = id => ({ senseId: id, definition: "Fixture definition", partOfSpeech: "n" });
 
 describe("bounded private content measurement", () => {
+  it("counts editorial delivery only for the exact linked row without promoting semantic review", () => {
+    const input = {
+      vocab: [{ id: "r1", w: "fixture", k: "뜻1", group: "V101" }, { id: "r2", w: "fixture", k: "뜻2", group: "V601" }],
+      definitionGroups: [{ items: { r1: "fixture", r2: "fixture" }, headwords: { fixture: { status: "single_sense",
+        senses: [{ ...dictionarySense("one"), editorialExamples: [{ en: "A new example.", ko: "새 예문", cueKo: "단서",
+          sourceRowIds: ["r1"], provenance: "FINETUNE original", reviewStatus: "ai-reviewed-editorial-example" }] }] } } }],
+      definitionQuiz: { items: {}, entries: {} }, canonical: [], activeRecall: [], learningEntries: [], learningIndexItems: {},
+    };
+    const result = measureContent(input);
+    expect(result.coverage.headwordsWithAnyEnglishExample).toBe(1);
+    expect(result.coverage.headwordsWithAnyBilingualCueTuple).toBe(1);
+    expect(result.coverage.bySection.V101.englishExampleRows).toBe(1);
+    expect(result.coverage.bySection.V601.englishExampleRows).toBe(0);
+    expect(result.batch.newSemanticReviewPass).toBe(0);
+    input.definitionGroups[0].headwords.fixture.senses[0].editorialExamples[0].reviewStatus = "candidate";
+    expect(measureContent(input).coverage.headwordsWithAnyEnglishExample).toBe(0);
+  });
   it("keeps source occurrences separate from normalized headwords and unresolved mappings", () => {
     const row = (id, w, group) => ({ id, w, k: "원자료 뜻", group });
     const canonical = { senseId: "phrase:one", itemIds: ["r4"], definitionStatus: "COMPLETE", englishDefinition: "Fixture definition",

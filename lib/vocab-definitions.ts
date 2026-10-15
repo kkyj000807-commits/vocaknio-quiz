@@ -15,6 +15,8 @@ export interface VocabDictionarySense {
   matchedHeadword?: string;
   examples?: string[];
   reviewedExamples?: { en: string; ko: string; cueKo: string }[];
+  editorialExamples?: { en: string; ko: string; cueKo: string; sourceRowIds: string[];
+    provenance: "FINETUNE original"; reviewStatus: "ai-reviewed-editorial-example" }[];
 }
 
 export interface VocabDefinitionEntry {

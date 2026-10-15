@@ -14,7 +14,7 @@
   },
   "review": {
     "status": "ai-reviewed-example-translation",
-    "scope": "80개 단일 lexical sense의 목표표현 포함 예문을 원본 한국어 뜻과 대조하고 번역·문맥 단서를 편집함. 필드 검사와 의미 편집 검토는 구별하며 독립 사람 검수는 아님.",
+    "scope": "152개 단일 lexical sense의 목표표현 포함 예문을 원본 한국어 뜻과 대조하고 번역·문맥 단서를 편집함. 필드 검사와 의미 편집 검토는 구별하며 독립 사람 검수는 아님.",
     "notClaimed": [
       "독립 사람 검수",
       "새 정답 문항 승인",
@@ -23,6 +23,1734 @@
     "masterDbStatus": "sync_required"
   },
   "entries": [
+    {
+      "headword": "crash course",
+      "senseId": "crash_course%1:10:00::",
+      "synsetId": "06689454-n",
+      "pos": "noun",
+      "en": "he took a crash course in Italian on his way to Italy",
+      "sourceRowIds": [
+        "JBKROW018408"
+      ],
+      "sourceMeaningKo": "집중훈련",
+      "matchEvidence": {
+        "sourceDefinition": "a rapid and intense course of training or research (usually undertaken in an emergency)",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그는 이탈리아로 가는 길에 이탈리아어 속성 과정을 들었다.",
+      "cueKo": "이탈리아로 가는 중이라는 시간 제약이 단기간 집중 학습이라는 의미를 뒷받침한다. crash는 여기서 충돌이 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "creditable",
+      "senseId": "creditable%5:00:00:worthy:00",
+      "synsetId": "02596339-s",
+      "pos": "adjective",
+      "en": "the student's effort on the essay — though not outstanding — was creditable",
+      "sourceRowIds": [
+        "JBKROW014549"
+      ],
+      "sourceMeaningKo": "칭찬할 만한",
+      "matchEvidence": {
+        "sourceDefinition": "worthy of often limited commendation",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그 학생이 에세이에 들인 노력은 뛰어나지는 않았지만 칭찬할 만했다.",
+      "cueKo": "though not outstanding이 칭찬의 정도를 제한한다. creditable은 완벽하다는 뜻이 아니라 인정할 만하다는 평가다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "crocodile tears",
+      "senseId": "crocodile_tears%1:10:00::",
+      "synsetId": "06772960-n",
+      "pos": "noun",
+      "en": "the secretaries wept crocodile tears over the manager's dilemma",
+      "sourceRowIds": [
+        "APPROW00570"
+      ],
+      "sourceMeaningKo": "거짓 눈물",
+      "matchEvidence": {
+        "sourceDefinition": "a hypocritical display of sorrow; false or insincere weeping",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "비서들은 관리자의 곤란한 처지를 두고 거짓 눈물을 흘렸다.",
+      "cueKo": "crocodile tears는 슬픔을 가장하는 표현이다. 눈물을 흘렸다는 행동만으로 진심으로 슬퍼했다고 해석하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "currently",
+      "senseId": "currently%4:02:00::",
+      "synsetId": "00048806-r",
+      "pos": "adverb",
+      "en": "currently they live in Connecticut",
+      "sourceRowIds": [
+        "APPROW00588"
+      ],
+      "sourceMeaningKo": "현재, 지금 (now)",
+      "matchEvidence": {
+        "sourceDefinition": "at this time or period; now",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "현재 그들은 코네티컷에 산다.",
+      "cueKo": "거주 시점을 지금으로 한정한다. 과거에도 그랬거나 앞으로도 계속 살 것이라는 정보는 없다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "cursory",
+      "senseId": "cursory%5:00:00:careless:00",
+      "synsetId": "00313032-s",
+      "pos": "adjective",
+      "en": "a casual (or cursory) inspection failed to reveal the house's structural flaws",
+      "sourceRowIds": [
+        "JBKROW001912"
+      ],
+      "sourceMeaningKo": "조잡한, 엉성한",
+      "matchEvidence": {
+        "sourceDefinition": "hasty and without attention to detail; not thorough",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "대충 훑어본 검사는 그 집의 구조적 결함을 발견하지 못했다.",
+      "cueKo": "failed to reveal과 structural flaws가 검사가 철저하지 않았음을 드러낸다. cursory는 여기서 꼼꼼하지 않은 피상적 검사를 뜻한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "customarily",
+      "senseId": "customarily%4:02:00::",
+      "synsetId": "00212370-r",
+      "pos": "adverb",
+      "en": "children are customarily expected to be seen but not heard",
+      "sourceRowIds": [
+        "APPROW00591"
+      ],
+      "sourceMeaningKo": "습관적으로, 관례상 (traditionally)",
+      "matchEvidence": {
+        "sourceDefinition": "by custom; according to common practice",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "관례상 아이들은 모습을 드러내되 소리를 내지 않아야 한다고 여겨진다.",
+      "cueKo": "expected가 사회적 기대임을 보여 준다. 관행을 설명한 문장이지 그런 관행이 옳다는 주장이나 실제 모든 아이가 조용하다는 뜻은 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "cut corners",
+      "senseId": "cut_corners%2:36:00::",
+      "synsetId": "01716413-v",
+      "pos": "verb",
+      "en": "Cut corners to make a cheaper product",
+      "sourceRowIds": [
+        "JBKROW018376"
+      ],
+      "sourceMeaningKo": "비용을 아끼다",
+      "matchEvidence": {
+        "sourceDefinition": "do something the cheapest or easiest way",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "더 싼 제품을 만들기 위해 필요한 절차를 줄여라.",
+      "cueKo": "cheaper가 비용 절감 목적을 드러낸다. cut corners는 단순한 절약뿐 아니라 필요한 과정이나 기준을 생략하는 함의를 가질 수 있다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "de rigueur",
+      "senseId": "de_rigueur%5:00:00:obligatory:00",
+      "synsetId": "00852103-s",
+      "pos": "adjective",
+      "en": "instruction as to when and where a silk hat is de rigueur",
+      "sourceRowIds": [
+        "JBKROW023686"
+      ],
+      "sourceMeaningKo": "예의상 필요한",
+      "matchEvidence": {
+        "sourceDefinition": "required by etiquette or usage or fashion",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "언제 어디서 실크 모자를 써야 예의에 맞는지에 관한 안내",
+      "cueKo": "when and where가 상황에 따른 관례를 가리킨다. 법적 의무가 아니라 예절·유행상 요구되는 경우다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "debrief",
+      "senseId": "debrief%2:32:00::",
+      "synsetId": "00833137-v",
+      "pos": "verb",
+      "en": "The released hostages were debriefed",
+      "sourceRowIds": [
+        "JBKROW000763"
+      ],
+      "sourceMeaningKo": "보고받다",
+      "matchEvidence": {
+        "sourceDefinition": "put someone through a debriefing and make them report",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "풀려난 인질들은 겪은 일을 보고하도록 질문을 받았다.",
+      "cueKo": "released hostages가 사건 이후 정보를 듣는 대상이다. debrief는 일을 시작하기 전에 지시하는 brief와 구별한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "debunk",
+      "senseId": "debunk%2:32:00::",
+      "synsetId": "00854877-v",
+      "pos": "verb",
+      "en": "The physicist debunked the psychic's claims",
+      "sourceRowIds": [
+        "JBKROW004979"
+      ],
+      "sourceMeaningKo": "틀렸음을 드러내다",
+      "matchEvidence": {
+        "sourceDefinition": "expose while ridiculing; especially of pretentious or false claims and ideas",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그 물리학자는 그 심령술사의 주장이 허황됨을 폭로했다.",
+      "cueKo": "목적어가 claims이므로 주장에 담긴 거짓이나 과장을 드러내는 행위다. 단순히 믿지 않는다는 태도보다 적극적이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "decant",
+      "senseId": "decant%2:38:00::",
+      "synsetId": "02074224-v",
+      "pos": "verb",
+      "en": "the sommelier decanted the wines",
+      "sourceRowIds": [
+        "JBKROW035090"
+      ],
+      "sourceMeaningKo": "액체를 붓다",
+      "matchEvidence": {
+        "sourceDefinition": "pour out gradually, so as to separate out sediment",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "소믈리에는 와인을 조심스럽게 다른 용기에 따라 옮겼다.",
+      "cueKo": "소믈리에와 와인이라는 문맥에서 침전물을 남기며 천천히 옮겨 붓는 의미다. 단순히 쏟아 버리는 행동과 구별한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "decentralize",
+      "senseId": "decentralize%2:30:00::",
+      "synsetId": "00406465-v",
+      "pos": "verb",
+      "en": "After the revolution, food distribution was decentralized",
+      "sourceRowIds": [
+        "JBKROW018453"
+      ],
+      "sourceMeaningKo": "분산시키다; 지방분권화하다",
+      "matchEvidence": {
+        "sourceDefinition": "make less central",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "혁명 이후 식량 배급 체계가 분산되었다.",
+      "cueKo": "food distribution이 덜 중앙집중적인 방식으로 바뀌었다. 배급량 자체가 줄었다거나 식량이 없어졌다는 뜻은 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "decommission",
+      "senseId": "decommission%2:40:00::",
+      "synsetId": "02317722-v",
+      "pos": "verb",
+      "en": "The warship was decommissioned in 1998",
+      "sourceRowIds": [
+        "JBKROW000184"
+      ],
+      "sourceMeaningKo": "퇴역시키다; 폐쇄하다",
+      "matchEvidence": {
+        "sourceDefinition": "withdraw from active service",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그 군함은 1998년에 퇴역했다.",
+      "cueKo": "warship과 수동태가 현역 운용에서 물러남을 나타낸다. 반드시 그해 해체되거나 파괴되었다는 뜻은 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "decontaminate",
+      "senseId": "decontaminate%2:30:00::",
+      "synsetId": "00493988-v",
+      "pos": "verb",
+      "en": "The soil around the housing development had to be decontaminated by the city",
+      "sourceRowIds": [
+        "JBKROW035100"
+      ],
+      "sourceMeaningKo": "오염을 제거하다",
+      "matchEvidence": {
+        "sourceDefinition": "rid of contamination",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "시는 주택 개발지 주변 토양의 오염을 제거해야 했다.",
+      "cueKo": "soil이 처리 대상이며 had to는 필요성을 나타낸다. 오염 제거가 이미 완료되었다는 사실까지 단정하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "decorative",
+      "senseId": "decorative%5:00:00:nonfunctional:00",
+      "synsetId": "01094927-s",
+      "pos": "adjective",
+      "en": "the buildings were utilitarian rather than decorative",
+      "sourceRowIds": [
+        "JBKROW028429"
+      ],
+      "sourceMeaningKo": "장식의",
+      "matchEvidence": {
+        "sourceDefinition": "serving an esthetic rather than a useful purpose",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그 건물들은 장식적이기보다 실용적이었다.",
+      "cueKo": "rather than이 실용성과 장식성을 대조한다. decorative는 아름답게 꾸미는 목적에 초점이 있다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "decorously",
+      "senseId": "decorously%4:02:00::",
+      "synsetId": "00306378-r",
+      "pos": "adverb",
+      "en": "he pretended to be pleased and applauded decorously",
+      "sourceRowIds": [
+        "APPROW00623"
+      ],
+      "sourceMeaningKo": "예의 바르게, 단정하게 (modestly)",
+      "matchEvidence": {
+        "sourceDefinition": "in a proper and decorous manner",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그는 기쁜 척하며 예의 바르게 박수를 쳤다.",
+      "cueKo": "pretended가 겉으로 보이는 태도와 실제 감정의 차이를 드러낸다. decorously는 행동 방식이 예의에 맞다는 뜻이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "defame",
+      "senseId": "defame%2:32:00::",
+      "synsetId": "00848188-v",
+      "pos": "verb",
+      "en": "The journalists have defamed me!",
+      "sourceRowIds": [
+        "JBKROW025199"
+      ],
+      "sourceMeaningKo": "비방하다, 중상하다",
+      "matchEvidence": {
+        "sourceDefinition": "charge falsely or with malicious intent; attack the good name and reputation of someone",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그 기자들은 내 명예를 훼손했다!",
+      "cueKo": "화자는 기자들이 자신의 평판을 공격했다고 말한다. 이 문장만으로 실제 법적 판단이 내려졌다고 볼 수는 없다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "defiant",
+      "senseId": "defiant%3:00:00::",
+      "synsetId": "00698972-a",
+      "pos": "adjective",
+      "en": "brought up to be aggressive and defiant",
+      "sourceRowIds": [
+        "JBKROW004509"
+      ],
+      "sourceMeaningKo": "반항하는",
+      "matchEvidence": {
+        "sourceDefinition": "boldly resisting authority or an opposing force",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "공격적이고 권위에 반항하도록 길러진",
+      "cueKo": "defiant는 권위나 대항 세력에 맞서는 태도다. 단순히 자신감이 있다는 뜻으로 약화하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "deft",
+      "senseId": "deft%5:00:02:adroit:00",
+      "synsetId": "00062626-s",
+      "pos": "adjective",
+      "en": "deft fingers massaged her face",
+      "sourceRowIds": [
+        "JBKROW004726"
+      ],
+      "sourceMeaningKo": "능숙한",
+      "matchEvidence": {
+        "sourceDefinition": "skillful in physical movements; especially of the hands",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "능숙한 손가락이 그녀의 얼굴을 마사지했다.",
+      "cueKo": "fingers와 massaged가 손의 능숙한 움직임이라는 의미를 고정한다. 재빠르다는 속도만을 말하는 것은 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "degenerative",
+      "senseId": "degenerative%5:00:00:chronic:00",
+      "synsetId": "00045576-s",
+      "pos": "adjective",
+      "en": "degenerative diseases of old age",
+      "sourceRowIds": [
+        "JBKROW004553"
+      ],
+      "sourceMeaningKo": "퇴행성의",
+      "matchEvidence": {
+        "sourceDefinition": "(of illness) marked by gradual deterioration of organs and cells along with loss of function",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "노년기의 퇴행성 질환들",
+      "cueKo": "질환이 장기·세포의 기능을 점진적으로 떨어뜨리는 성격임을 나타낸다. 노년기의 모든 질환이 퇴행성이라는 뜻은 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "dejected",
+      "senseId": "dejected%3:00:00::",
+      "synsetId": "00706554-a",
+      "pos": "adjective",
+      "en": "is dejected but trying to look cheerful",
+      "sourceRowIds": [
+        "JBKROW000669"
+      ],
+      "sourceMeaningKo": "낙심한",
+      "matchEvidence": {
+        "sourceDefinition": "affected or marked by low spirits",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "낙심했지만 명랑해 보이려고 애쓰는",
+      "cueKo": "but가 실제 낙심한 상태와 밝게 보이려는 노력의 대조를 만든다. 겉모습을 실제 기분과 혼동하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "dejectedly",
+      "senseId": "dejectedly%4:02:00::",
+      "synsetId": "00300415-r",
+      "pos": "adverb",
+      "en": "when she came back Sophie and Esther were sitting dejectedly in the kitchen",
+      "sourceRowIds": [
+        "APPROW00640"
+      ],
+      "sourceMeaningKo": "낙담(낙심)하여, 기가 죽어 (sadly)",
+      "matchEvidence": {
+        "sourceDefinition": "in a dejected manner",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그녀가 돌아왔을 때 소피와 에스터는 풀이 죽은 채 부엌에 앉아 있었다.",
+      "cueKo": "sitting을 수식하여 앉아 있는 두 사람의 낙담한 태도를 설명한다. 돌아온 사람의 감정으로 옮기지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "delusive",
+      "senseId": "delusive%5:00:00:unrealistic:00",
+      "synsetId": "01949124-s",
+      "pos": "adjective",
+      "en": "delusive faith in a wonder drug",
+      "sourceRowIds": [
+        "JBKROW004619"
+      ],
+      "sourceMeaningKo": "기만(欺瞞)하는",
+      "matchEvidence": {
+        "sourceDefinition": "inappropriate to reality or facts",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "기적의 약에 대한 그릇된 믿음",
+      "cueKo": "faith가 현실이나 사실에 맞지 않는 기대임을 나타낸다. 약효가 입증되었다는 뜻이 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "demanding",
+      "senseId": "demanding%3:00:01::",
+      "synsetId": "00713705-a",
+      "pos": "adjective",
+      "en": "found the job very demanding",
+      "sourceRowIds": [
+        "JBKROW004424"
+      ],
+      "sourceMeaningKo": "엄격한; 힘든",
+      "matchEvidence": {
+        "sourceDefinition": "requiring more than usually expected or thought due; especially great patience and effort and skill",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그 일이 매우 힘들다고 느꼈다.",
+      "cueKo": "job이 보통 이상의 노력이나 능력을 요구하는 일이라는 평가다. 요구하는 사람이 엄격하다는 뜻과 구별한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "demote",
+      "senseId": "demote%2:41:00::",
+      "synsetId": "02404473-v",
+      "pos": "verb",
+      "en": "She was demoted because she always speaks up",
+      "sourceRowIds": [
+        "APPROW00650"
+      ],
+      "sourceMeaningKo": "좌천, 강등시키다 (to lower in rank, degrade)",
+      "matchEvidence": {
+        "sourceDefinition": "assign to a lower position; reduce in rank",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그녀는 늘 자신의 의견을 분명히 말한다는 이유로 강등되었다.",
+      "cueKo": "because가 문장에 제시된 강등 이유다. demote는 해고가 아니라 더 낮은 직급이나 지위로 내리는 것이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "demystify",
+      "senseId": "demystify%2:30:00::",
+      "synsetId": "00519932-v",
+      "pos": "verb",
+      "en": "let's demystify the event by explaining what it is all about",
+      "sourceRowIds": [
+        "JBKROW023566"
+      ],
+      "sourceMeaningKo": "이해하기 쉽게 해주다",
+      "matchEvidence": {
+        "sourceDefinition": "make less mysterious or remove the mystery from",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그 사건이 무엇에 관한 것인지 설명해서 이해하기 쉽게 해 보자.",
+      "cueKo": "by explaining이 이해하기 쉽게 만드는 방법이다. 신비로워 보이는 것을 풀어 설명하는 뜻이지 사건 자체를 없애는 것이 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "denationalize",
+      "senseId": "denationalize%2:30:00::",
+      "synsetId": "00412717-v",
+      "pos": "verb",
+      "en": "The steel industry was denationalized",
+      "sourceRowIds": [
+        "APPROW00652"
+      ],
+      "sourceMeaningKo": "(국영기업, 산업을) 민영화하다 (privatize)",
+      "matchEvidence": {
+        "sourceDefinition": "put under private control or ownership",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "철강 산업이 민영화되었다.",
+      "cueKo": "공적 소유나 통제에서 민간으로 옮기는 방향이다. 국유화하는 nationalize와 방향이 반대다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "deploy",
+      "senseId": "deploy%2:35:00::",
+      "synsetId": "01382265-v",
+      "pos": "verb",
+      "en": "The U.S. deploys its weapons in the Middle East",
+      "sourceRowIds": [
+        "JBKROW000674"
+      ],
+      "sourceMeaningKo": "배치하다",
+      "matchEvidence": {
+        "sourceDefinition": "to distribute systematically or strategically",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "미국은 중동에 무기를 배치한다.",
+      "cueKo": "weapons와 지역 표현이 전략적 배치를 나타낸다. 무기를 실제로 발사했다는 의미까지 포함하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "deride",
+      "senseId": "deride%2:32:00::",
+      "synsetId": "00854604-v",
+      "pos": "verb",
+      "en": "He derided his student's attempt to solve the biggest problem in mathematics",
+      "sourceRowIds": [
+        "JBKROW005176"
+      ],
+      "sourceMeaningKo": "조롱하다",
+      "matchEvidence": {
+        "sourceDefinition": "treat or speak of with contempt",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그는 수학의 가장 큰 문제를 풀려는 제자의 시도를 조롱했다.",
+      "cueKo": "목적어가 학생의 attempt다. 답이 틀렸다고 논증하는 것과 시도 자체를 비웃는 것을 구분한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "desecrated",
+      "senseId": "desecrated%3:00:00::",
+      "synsetId": "00576056-a",
+      "pos": "adjective",
+      "en": "many desecrated shrines and cemeteries",
+      "sourceRowIds": [
+        "JBKROW004333"
+      ],
+      "sourceMeaningKo": "신성모독의",
+      "matchEvidence": {
+        "sourceDefinition": "treated with disrespect and contempt",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "신성함이 훼손된 많은 성소와 묘지",
+      "cueKo": "shrines와 cemeteries가 존중받아야 할 장소임을 보여 준다. 단순한 물리적 손상보다 신성함에 대한 모독에 초점이 있다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "despicable",
+      "senseId": "despicable%5:00:00:evil:00",
+      "synsetId": "01136517-s",
+      "pos": "adjective",
+      "en": "would do something as despicable as murder",
+      "sourceRowIds": [
+        "JBKROW000237"
+      ],
+      "sourceMeaningKo": "비열한",
+      "matchEvidence": {
+        "sourceDefinition": "morally reprehensible",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "살인처럼 비열한 일을 할 법한",
+      "cueKo": "as murder가 도덕적으로 비난할 만한 행위의 예다. 무섭거나 위험하다는 감정만을 뜻하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "despise",
+      "senseId": "despise%2:37:00::",
+      "synsetId": "01778720-v",
+      "pos": "verb",
+      "en": "He despises the people he has to work for",
+      "sourceRowIds": [
+        "JBKROW006073"
+      ],
+      "sourceMeaningKo": "경멸하다",
+      "matchEvidence": {
+        "sourceDefinition": "look down on with disdain",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그는 자신이 밑에서 일해야 하는 사람들을 경멸한다.",
+      "cueKo": "목적어는 그가 고용한 사람들이 아니라 그가 위해 일하는 사람들이다. despise는 상대를 낮춰 보며 멸시하는 태도다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "despond",
+      "senseId": "despond%2:37:00::",
+      "synsetId": "01815139-v",
+      "pos": "verb",
+      "en": "The supporters of the Presidential candidate desponded when they learned the early results of the election",
+      "sourceRowIds": [
+        "JBKROW024886"
+      ],
+      "sourceMeaningKo": "실망하다",
+      "matchEvidence": {
+        "sourceDefinition": "lose confidence or hope; become dejected",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그 대통령 후보의 지지자들은 선거 초반 결과를 알고 낙담했다.",
+      "cueKo": "when절이 낙담하게 된 시점을 보여 준다. 초반 결과만으로 최종 당락까지 확정하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "desultory",
+      "senseId": "desultory%5:00:00:purposeless:00",
+      "synsetId": "01917200-s",
+      "pos": "adjective",
+      "en": "the desultory conversation characteristic of cocktail parties",
+      "sourceRowIds": [
+        "JBKROW005328"
+      ],
+      "sourceMeaningKo": "산만한",
+      "matchEvidence": {
+        "sourceDefinition": "marked by lack of definite plan or regularity or purpose; jumping from one thing to another",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "칵테일 파티에서 흔히 볼 수 있는 두서없는 대화",
+      "cueKo": "conversation이 일정한 계획이나 흐름 없이 이 주제 저 주제로 옮겨 가는 의미다. 대화가 없었다는 뜻이 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "detect",
+      "senseId": "detect%2:39:00::",
+      "synsetId": "02158938-v",
+      "pos": "verb",
+      "en": "She detected high levels of lead in her drinking water",
+      "sourceRowIds": [
+        "APPROW00673"
+      ],
+      "sourceMeaningKo": "발견하다, 탐지하다 (perceive)",
+      "matchEvidence": {
+        "sourceDefinition": "discover or determine the existence, presence, or fact of by perception with the eyes",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그녀는 자신이 마시는 물에서 높은 수준의 납을 검출했다.",
+      "cueKo": "lead는 여기서 물에 들어 있는 금속 납이다. detect는 그 존재를 찾아냈다는 뜻이며 제거했다는 뜻은 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "dethrone",
+      "senseId": "dethrone%2:41:00::",
+      "synsetId": "02396595-v",
+      "pos": "verb",
+      "en": "If the King does not abdicate, he will have to be dethroned",
+      "sourceRowIds": [
+        "JBKROW029115"
+      ],
+      "sourceMeaningKo": "왕위(throne)를 박탈하다",
+      "matchEvidence": {
+        "sourceDefinition": "remove a monarch from the throne",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "왕이 스스로 퇴위하지 않으면 왕위에서 끌어내려야 할 것이다.",
+      "cueKo": "abdicate와 dethrone을 대조한다. 전자는 왕이 물러나는 것, 후자는 다른 주체가 왕위를 박탈하는 것이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "dexterous",
+      "senseId": "dexterous%5:00:00:adroit:00",
+      "synsetId": "00062626-s",
+      "pos": "adjective",
+      "en": "dexterous of hand and inventive of mind",
+      "sourceRowIds": [
+        "JBKROW009787"
+      ],
+      "sourceMeaningKo": "손재주가 비상한",
+      "matchEvidence": {
+        "sourceDefinition": "skillful in physical movements; especially of the hands",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "손재주가 뛰어나고 생각이 창의적인",
+      "cueKo": "of hand가 신체적 솜씨를, of mind가 창의성을 각각 한정한다. dexterous의 초점은 능숙한 손놀림이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "dialect",
+      "senseId": "dialect%1:10:00::",
+      "synsetId": "07170369-n",
+      "pos": "noun",
+      "en": "the immigrants spoke an odd dialect of English",
+      "sourceRowIds": [
+        "JBKROW005006"
+      ],
+      "sourceMeaningKo": "방언",
+      "matchEvidence": {
+        "sourceDefinition": "the usage or vocabulary that is characteristic of a specific group of people",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그 이민자들은 영어의 낯선 방언을 썼다.",
+      "cueKo": "of English가 영어 안의 특정 집단 언어라는 점을 나타낸다. 영어와 완전히 별개의 언어라는 뜻은 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "diametrically",
+      "senseId": "diametrically%4:02:00::",
+      "synsetId": "00312450-r",
+      "pos": "adverb",
+      "en": "when two honest witnesses give accounts of the same event that differ diametrically, how can anyone prove that the evidence you gave was deliberately false?",
+      "sourceRowIds": [
+        "JBKROW018518"
+      ],
+      "sourceMeaningKo": "정반대로, 전혀",
+      "matchEvidence": {
+        "sourceDefinition": "as from opposite ends of a diameter",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "정직한 두 증인이 같은 사건을 정반대로 진술한다면, 당신의 증언이 고의로 거짓이었다는 것을 누가 입증할 수 있겠는가?",
+      "cueKo": "differ diametrically는 진술 내용이 극단적으로 다름을 뜻한다. 불일치만으로 고의적 거짓말이 입증된다는 결론은 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "diaphanous",
+      "senseId": "diaphanous%5:00:00:thin:01",
+      "synsetId": "02422186-s",
+      "pos": "adjective",
+      "en": "a hat with a diaphanous veil",
+      "sourceRowIds": [
+        "JBKROW006093"
+      ],
+      "sourceMeaningKo": "아주 얇은",
+      "matchEvidence": {
+        "sourceDefinition": "so thin as to transmit light",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "빛이 비칠 만큼 얇은 베일이 달린 모자",
+      "cueKo": "veil이 빛을 통과시킬 만큼 얇다는 뜻이다. 단순히 작거나 가볍다는 뜻과 구별한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "dichotomy",
+      "senseId": "dichotomy%1:14:00::",
+      "synsetId": "07956120-n",
+      "pos": "noun",
+      "en": "the dichotomy between eastern and western culture",
+      "sourceRowIds": [
+        "JBKROW018519"
+      ],
+      "sourceMeaningKo": "이분법",
+      "matchEvidence": {
+        "sourceDefinition": "being twofold; a classification into two opposed parts or subclasses",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "동양 문화와 서양 문화 사이의 이분 구도",
+      "cueKo": "between이 대립되는 두 범주로 나누는 구도를 드러낸다. 두 문화 내부의 모든 차이가 없다는 뜻은 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "didacticism",
+      "senseId": "didacticism%1:10:00::",
+      "synsetId": "06612774-n",
+      "pos": "noun",
+      "en": "the didacticism expected in books for the young",
+      "sourceRowIds": [
+        "JBKROW035191"
+      ],
+      "sourceMeaningKo": "남을 가르치려 하는 태도",
+      "matchEvidence": {
+        "sourceDefinition": "communication that is suitable for or intended to be instructive",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "청소년용 책에서 기대되는 교훈적 성격",
+      "cueKo": "books for the young가 독자에게 무언가를 가르치려는 성격이라는 의미를 고정한다. 문장 자체가 그런 책을 비난하는 것은 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "die-hard",
+      "senseId": "die-hard%5:00:00:inflexible:02",
+      "synsetId": "01028827-s",
+      "pos": "adjective",
+      "en": "an inflexible (or die-hard) conservative",
+      "sourceRowIds": [
+        "JBKROW000682"
+      ],
+      "sourceMeaningKo": "끝까지 버티는",
+      "matchEvidence": {
+        "sourceDefinition": "tradition-bound and obstinately opinionated",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "완고하게 신념을 고수하는 보수주의자",
+      "cueKo": "inflexible이 기존 입장을 굽히지 않는 성향을 설명한다. 실제 죽음이나 신체적 인내를 뜻하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "disbar",
+      "senseId": "disbar%2:41:00::",
+      "synsetId": "02486177-v",
+      "pos": "verb",
+      "en": "The corrupt lawyer was disbarred",
+      "sourceRowIds": [
+        "JBKROW029110"
+      ],
+      "sourceMeaningKo": "변호사 자격을 박탈하다",
+      "matchEvidence": {
+        "sourceDefinition": "remove from the bar; expel from the practice of law by official action",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그 부패한 변호사는 변호사 자격을 박탈당했다.",
+      "cueKo": "lawyer와 수동태가 공식적으로 법률 업무를 할 자격을 잃는 상황이다. 단순 해고와 구별한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "discrete",
+      "senseId": "discrete%5:00:00:separate:00",
+      "synsetId": "02118058-s",
+      "pos": "adjective",
+      "en": "a government with three discrete divisions",
+      "sourceRowIds": [
+        "JBKROW000624"
+      ],
+      "sourceMeaningKo": "따로따로의",
+      "matchEvidence": {
+        "sourceDefinition": "constituting a separate entity or part",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "서로 구분되는 세 부문으로 이루어진 정부",
+      "cueKo": "three divisions가 각기 별개의 부분임을 보여 준다. 신중하다는 뜻의 discreet와 철자를 구별한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "disembark",
+      "senseId": "disembark%2:38:00::",
+      "synsetId": "01983255-v",
+      "pos": "verb",
+      "en": "The passengers disembarked at Southampton",
+      "sourceRowIds": [
+        "APPROW00698"
+      ],
+      "sourceMeaningKo": "(배, 비행기) 내리다",
+      "matchEvidence": {
+        "sourceDefinition": "go ashore",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "승객들은 사우샘프턴에서 배에서 내렸다.",
+      "cueKo": "passengers와 항구 지명이 하선하는 장면을 만든다. 탑승하는 embark와 방향이 반대다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "disfigure",
+      "senseId": "disfigure%2:35:00::",
+      "synsetId": "01552687-v",
+      "pos": "verb",
+      "en": "The vandals disfigured the statue",
+      "sourceRowIds": [
+        "JBKROW035220"
+      ],
+      "sourceMeaningKo": "손상하다 (deface, deform, mar)",
+      "matchEvidence": {
+        "sourceDefinition": "mar or spoil the appearance of",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "기물 파손자들은 조각상의 외관을 훼손했다.",
+      "cueKo": "statue의 형태나 외관을 망가뜨린 행위다. 반드시 조각상을 완전히 없앴다는 뜻은 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "disgruntle",
+      "senseId": "disgruntle%2:37:00::",
+      "synsetId": "01834542-v",
+      "pos": "verb",
+      "en": "The employees were disgruntled by their bad working conditions",
+      "sourceRowIds": [
+        "JBKROW000163"
+      ],
+      "sourceMeaningKo": "불만을 품게 하다",
+      "matchEvidence": {
+        "sourceDefinition": "put into a bad mood or into bad humour",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "직원들은 열악한 근무 조건 때문에 불만을 품었다.",
+      "cueKo": "by their bad working conditions가 불만의 원인이다. 불만을 느꼈다는 것과 실제 파업했다는 것을 구분한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "disheartened",
+      "senseId": "disheartened%5:00:00:pessimistic:00",
+      "synsetId": "01669359-s",
+      "pos": "adjective",
+      "en": "the disheartened instructor tried vainly to arouse their interest",
+      "sourceRowIds": [
+        "JBKROW009729"
+      ],
+      "sourceMeaningKo": "낙심한",
+      "matchEvidence": {
+        "sourceDefinition": "made less hopeful or enthusiastic",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "낙심한 강사는 그들의 관심을 끌려고 애썼지만 소용이 없었다.",
+      "cueKo": "vainly가 시도가 효과를 내지 못했음을 나타낸다. disheartened는 의욕이나 희망이 꺾인 상태다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "dismal",
+      "senseId": "dismal%5:00:00:depressing:00",
+      "synsetId": "00365961-s",
+      "pos": "adjective",
+      "en": "the first dismal dispiriting days of November",
+      "sourceRowIds": [
+        "JBKROW018540"
+      ],
+      "sourceMeaningKo": "비참한, 음산한",
+      "matchEvidence": {
+        "sourceDefinition": "causing dejection",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "우울하고 기운을 꺾는 11월 초의 날들",
+      "cueKo": "dispiriting이 dismal의 침울한 분위기를 보충한다. 구체적인 기상 상태는 문장에 명시되어 있지 않다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "disobey",
+      "senseId": "disobey%2:41:00::",
+      "synsetId": "02548878-v",
+      "pos": "verb",
+      "en": "He disobeyed his supervisor and was fired",
+      "sourceRowIds": [
+        "JBKROW008945"
+      ],
+      "sourceMeaningKo": "불복종하다",
+      "matchEvidence": {
+        "sourceDefinition": "refuse to go along with; refuse to follow; be disobedient",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그는 상사의 지시에 불복종하여 해고되었다.",
+      "cueKo": "supervisor는 권한을 가진 상대다. 불복종한 뒤 해고된 일이 이어지며 인과관계는 문맥상 시사된다. 지시에 따르지 않은 것을 단순한 의견 차이로 약화하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "disparage",
+      "senseId": "disparage%2:32:00::",
+      "synsetId": "00847588-v",
+      "pos": "verb",
+      "en": "She disparaged her student's efforts",
+      "sourceRowIds": [
+        "JBKROW000695"
+      ],
+      "sourceMeaningKo": "얕보다",
+      "matchEvidence": {
+        "sourceDefinition": "express a negative opinion of",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그녀는 제자의 노력을 폄하했다.",
+      "cueKo": "efforts에 낮은 평가를 내리는 행동이다. 노력의 존재를 부정하는 것이 아니라 가치를 깎아내리는 것이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "disparaging",
+      "senseId": "disparaging%5:00:00:uncomplimentary:00",
+      "synsetId": "00910254-s",
+      "pos": "adjective",
+      "en": "disparaging remarks about the new house",
+      "sourceRowIds": [
+        "APPROW00707"
+      ],
+      "sourceMeaningKo": "얕보는, 깔보는 (belittling, negative)",
+      "matchEvidence": {
+        "sourceDefinition": "expressive of low opinion",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "새 집을 깎아내리는 발언들",
+      "cueKo": "remarks가 낮은 평가를 표현한다. 객관적 결함을 입증한 보고서라는 뜻까지 포함하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "dispassionate",
+      "senseId": "dispassionate%5:00:00:impartial:00",
+      "synsetId": "01727865-s",
+      "pos": "adjective",
+      "en": "a journalist should be a dispassionate reporter of fact",
+      "sourceRowIds": [
+        "JBKROW005882"
+      ],
+      "sourceMeaningKo": "냉정한",
+      "matchEvidence": {
+        "sourceDefinition": "unaffected by strong emotion or prejudice",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "기자는 감정이나 편견에 치우치지 않고 사실을 보도해야 한다.",
+      "cueKo": "should는 기자에게 요구되는 태도다. 모든 기자가 실제로 공정하다는 사실 진술이 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "dispensable",
+      "senseId": "dispensable%3:00:00::",
+      "synsetId": "00906671-a",
+      "pos": "adjective",
+      "en": "dispensable items of personal property",
+      "sourceRowIds": [
+        "JBKROW026814"
+      ],
+      "sourceMeaningKo": "없어도 좋은, 중요치 않은",
+      "matchEvidence": {
+        "sourceDefinition": "capable of being dispensed with or done without",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "없어도 지낼 수 있는 개인 소지품들",
+      "cueKo": "done without라는 정의에 따라 필수적이지 않은 물건들이다. 모든 개인 소지품이 쓸모없다는 뜻은 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "disprove",
+      "senseId": "disprove%2:31:00::",
+      "synsetId": "00669342-v",
+      "pos": "verb",
+      "en": "The physicist disproved his colleagues' theories",
+      "sourceRowIds": [
+        "JBKROW008423"
+      ],
+      "sourceMeaningKo": "틀렸음을 입증하다",
+      "matchEvidence": {
+        "sourceDefinition": "prove to be false",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그 물리학자는 동료들의 이론이 틀렸음을 입증했다.",
+      "cueKo": "disprove는 의심하거나 반대하는 데 그치지 않고 거짓임을 증명하는 것이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "disquieting",
+      "senseId": "disquieting%5:00:00:uncomfortable:01",
+      "synsetId": "00482743-s",
+      "pos": "adjective",
+      "en": "the disquieting sounds of nearby gunfire",
+      "sourceRowIds": [
+        "APPROW00716"
+      ],
+      "sourceMeaningKo": "불안하게 하는 (uneasy)",
+      "matchEvidence": {
+        "sourceDefinition": "causing mental discomfort",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "근처에서 들려오는 불안을 자아내는 총소리",
+      "cueKo": "gunfire가 마음을 불편하게 만드는 자극이다. 소리가 조용하다는 뜻으로 quiet만 보고 해석하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "disrepute",
+      "senseId": "disrepute%1:26:00::",
+      "synsetId": "14463211-n",
+      "pos": "noun",
+      "en": "because of the scandal, the school has fallen into disrepute",
+      "sourceRowIds": [
+        "APPROW00718"
+      ],
+      "sourceMeaningKo": "나쁜 평판, 악평, 불명예 (disgrace)",
+      "matchEvidence": {
+        "sourceDefinition": "the state of being held in low esteem",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그 추문 때문에 학교의 평판이 나빠졌다.",
+      "cueKo": "because of가 추문과 평판 악화의 연결을 명시한다. 학교가 문을 닫았다는 뜻은 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "dissuade",
+      "senseId": "dissuade%2:32:00::",
+      "synsetId": "00772186-v",
+      "pos": "verb",
+      "en": "Negative campaigning will only dissuade people",
+      "sourceRowIds": [
+        "APPROW00721"
+      ],
+      "sourceMeaningKo": "(설득하여) 그만두게 하다, 단념시키다 (deter)",
+      "matchEvidence": {
+        "sourceDefinition": "turn away from by persuasion",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "상대를 비방하는 선거 운동은 사람들의 마음을 돌려놓을 뿐이다.",
+      "cueKo": "will은 화자의 예측이다. dissuade는 설득으로 마음을 단념시키는 방향이며 구체적으로 무엇을 단념하는지는 문맥 보충이 필요하다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "doddering",
+      "senseId": "doddering%5:00:00:old:02",
+      "synsetId": "01649738-s",
+      "pos": "adjective",
+      "en": "his mother was doddering and frail",
+      "sourceRowIds": [
+        "JBKROW024988"
+      ],
+      "sourceMeaningKo": "(중풍이나 노령으로) 떠는",
+      "matchEvidence": {
+        "sourceDefinition": "mentally or physically infirm with age",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그의 어머니는 노쇠해 몸을 가누기 어렵고 허약했다.",
+      "cueKo": "frail이 나이로 인한 신체적 쇠약을 보충한다. 특정 질환이 진단됐다고 단정하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "doggerel",
+      "senseId": "doggerel%1:10:00::",
+      "synsetId": "06390876-n",
+      "pos": "noun",
+      "en": "he had heard some silly doggerel that kept running through his mind",
+      "sourceRowIds": [
+        "JBKROW027205"
+      ],
+      "sourceMeaningKo": "서툴게 쓴 시",
+      "matchEvidence": {
+        "sourceDefinition": "a comic verse of irregular measure",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그는 머릿속을 계속 맴도는 우스꽝스러운 졸시를 들은 적이 있었다.",
+      "cueKo": "silly가 시의 우스꽝스럽고 서투른 성격을 뒷받침한다. doggerel을 개와 관련된 말로 해석하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "donate",
+      "senseId": "donate%2:40:00::",
+      "synsetId": "02267835-v",
+      "pos": "verb",
+      "en": "I donated blood to the Red Cross for the victims of the earthquake",
+      "sourceRowIds": [
+        "APPROW00739"
+      ],
+      "sourceMeaningKo": "기부(기증)하다 (endow)",
+      "matchEvidence": {
+        "sourceDefinition": "give to a charity or good cause",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "나는 지진 피해자들을 위해 적십자에 헌혈했다.",
+      "cueKo": "blood가 기부한 대상, Red Cross가 수령 기관이다. 돈을 기부했다고 바꾸지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "doorway",
+      "senseId": "doorway%1:06:00::",
+      "synsetId": "03228735-n",
+      "pos": "noun",
+      "en": "he stuck his head in the doorway",
+      "sourceRowIds": [
+        "JBKROW035273"
+      ],
+      "sourceMeaningKo": "출입구, 문간",
+      "matchEvidence": {
+        "sourceDefinition": "the entrance (the space in a wall) through which you enter or leave a room or building; the space that a door can close",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그는 문간으로 고개를 들이밀었다.",
+      "cueKo": "stuck his head in은 몸 전체가 아니라 머리를 들이민 행동이다. doorway는 문짝이 아니라 드나드는 공간이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "down-to-earth",
+      "senseId": "down-to-earth%5:00:00:realistic:00",
+      "synsetId": "01947089-s",
+      "pos": "adjective",
+      "en": "has a straightforward down-to-earth approach to a problem",
+      "sourceRowIds": [
+        "JBKROW000294"
+      ],
+      "sourceMeaningKo": "현실적인, 세속적인",
+      "matchEvidence": {
+        "sourceDefinition": "sensible and practical",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "문제에 대해 간단명료하고 현실적인 접근 방식을 가진",
+      "cueKo": "approach to a problem이 실제로 쓸 수 있는 합리적인 태도를 나타낸다. 땅 위의 위치를 뜻하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "downside",
+      "senseId": "downside%1:09:00::",
+      "synsetId": "05861384-n",
+      "pos": "noun",
+      "en": "there is a downside even to motherhood",
+      "sourceRowIds": [
+        "JBKROW018606"
+      ],
+      "sourceMeaningKo": "부정적 측면",
+      "matchEvidence": {
+        "sourceDefinition": "a negative aspect of something that is generally positive",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "어머니가 되는 일에도 부정적인 측면은 있다.",
+      "cueKo": "even이 일반적으로 긍정적으로 보는 일에도 단점이 있음을 강조한다. 전체가 나쁘다는 평가로 확대하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "downturn",
+      "senseId": "downturn%1:04:00::",
+      "synsetId": "00267245-n",
+      "pos": "noun",
+      "en": "the market took a downturn",
+      "sourceRowIds": [
+        "JBKROW018609"
+      ],
+      "sourceMeaningKo": "경기하강",
+      "matchEvidence": {
+        "sourceDefinition": "a worsening of business or economic activity",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "시장이 하락세로 돌아섰다.",
+      "cueKo": "market이 경제 활동의 악화라는 뜻을 고정한다. 하락 폭이나 지속 기간은 제시되지 않았다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "draw the line",
+      "senseId": "draw_the_line%2:30:00::",
+      "synsetId": "00235237-v",
+      "pos": "verb",
+      "en": "I draw the line when it comes to lending money to friends!",
+      "sourceRowIds": [
+        "APPROW00753"
+      ],
+      "sourceMeaningKo": "(비유적으로) 선을 긋다, 거부의 의사(뜻)을 분명히 하다; 구분(구별)하다",
+      "matchEvidence": {
+        "sourceDefinition": "reasonably object (to) or set a limit (on)",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "친구에게 돈을 빌려주는 일만큼은 하지 않겠다!",
+      "cueKo": "when it comes to가 거절의 경계를 특정한다. 모든 친구 관계를 끊겠다는 뜻은 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "drawback",
+      "senseId": "drawback%1:07:00::",
+      "synsetId": "05172048-n",
+      "pos": "noun",
+      "en": "he pointed out all the drawbacks to my plan",
+      "sourceRowIds": [
+        "JBKROW000736"
+      ],
+      "sourceMeaningKo": "결점",
+      "matchEvidence": {
+        "sourceDefinition": "the quality of being a hindrance",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그는 내 계획의 단점들을 모두 지적했다.",
+      "cueKo": "pointed out가 문제점을 드러낸 행위다. 단점을 해결했다거나 계획 전체를 취소했다는 뜻은 아니다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "droll",
+      "senseId": "droll%5:00:00:humorous:00",
+      "synsetId": "01269048-s",
+      "pos": "adjective",
+      "en": "a droll little man with a quiet tongue-in-cheek kind of humor",
+      "sourceRowIds": [
+        "JBKROW028480"
+      ],
+      "sourceMeaningKo": "우스운, 익살스러운",
+      "matchEvidence": {
+        "sourceDefinition": "comical in an odd or whimsical manner",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "조용히 능청스러운 농담을 하는 익살스러운 작은 남자",
+      "cueKo": "tongue-in-cheek humor가 특유의 묘하고 익살스러운 분위기를 설명한다. droll은 지루하다는 뜻의 dull과 다르다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "durability",
+      "senseId": "durability%1:07:00::",
+      "synsetId": "05060839-n",
+      "pos": "noun",
+      "en": "they advertised the durability of their products",
+      "sourceRowIds": [
+        "APPROW00776"
+      ],
+      "sourceMeaningKo": "내구성 (endurance), 견고함, 질김",
+      "matchEvidence": {
+        "sourceDefinition": "permanence by virtue of the power to resist stress or force",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그들은 자사 제품의 내구성을 광고했다.",
+      "cueKo": "products가 압력이나 마모를 견디는 성질의 대상이다. 광고했다는 사실만으로 내구성이 독립 검증됐다고 보지는 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "dysphemism",
+      "senseId": "dysphemism%1:10:00::",
+      "synsetId": "06617749-n",
+      "pos": "noun",
+      "en": "his favorite dysphemism was to ask for axle grease when he wanted butter",
+      "sourceRowIds": [
+        "APPROW00782"
+      ],
+      "sourceMeaningKo": "위악어법 (일부러 불쾌한 표현을 쓰는 일) cf) euphemism 완곡어법",
+      "matchEvidence": {
+        "sourceDefinition": "an offensive or disparaging expression that is substituted for an inoffensive one",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "그가 즐겨 쓰는 비하 표현은 버터가 필요할 때 차축용 윤활유를 달라고 하는 것이었다.",
+      "cueKo": "버터를 불쾌한 표현으로 바꾸어 부르는 사례다. 부드럽게 돌려 말하는 euphemism과 방향이 반대다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "earthly",
+      "senseId": "earthly%3:00:00::",
+      "synsetId": "01184239-a",
+      "pos": "adjective",
+      "en": "believed that our earthly life is all that matters",
+      "sourceRowIds": [
+        "JBKROW026838"
+      ],
+      "sourceMeaningKo": "세속적인",
+      "matchEvidence": {
+        "sourceDefinition": "of or belonging to or characteristic of this earth as distinguished from heaven",
+        "scope": "이 lexical sense의 예문만 번역·검토함. 다른 sense 및 전체 반복행의 뜻을 일괄 확정하지 않음."
+      },
+      "ko": "우리의 현세의 삶만이 중요하다고 믿었다.",
+      "cueKo": "earthly는 천국이나 내세와 대비되는 이 세상의 삶을 뜻한다. 그 믿음을 사실이나 보편적 결론으로 단정하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false
+      }
+    },
     {
       "headword": "abdicate",
       "senseId": "abdicate%2:41:00::",
@@ -1945,6 +3673,18 @@
     }
   ],
   "held": [
+    {
+      "headword": "defraud",
+      "reason": "원본의 횡령하다와 사기로 재산을 빼앗는 OEWN 예문의 의미 범위 차이. 원본을 변경하지 않고 연결 보류."
+    },
+    {
+      "headword": "detract",
+      "reason": "원본의 주의를 딴 데로 돌리다와 가치를 떨어뜨리는 OEWN 예문 사이 의미 불일치. 연결 보류."
+    },
+    {
+      "headword": "divers",
+      "reason": "원본의 몇 개 또는 두서너 개와 여러 종류의 많은 것을 가리키는 OEWN 정의의 범위 차이. 연결 보류."
+    },
     {
       "headword": "blue-sky",
       "reason": "원본의 비현실적인과 OEWN의 당장 상업적 가치가 없는 연구는 범위가 다름. 원본 뜻 변경 없이 번역 연결 보류."

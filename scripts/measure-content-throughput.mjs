@@ -59,6 +59,12 @@ function indexByRows(entries, ids = entry => entry.itemIds ?? []) {
   return map;
 }
 
+function editorialForRow(dictionary, id) {
+  return dictionary?.senses?.flatMap(sense => sense.editorialExamples?.filter(example =>
+    example.provenance === "FINETUNE original" && example.reviewStatus === "ai-reviewed-editorial-example"
+    && example.sourceRowIds?.includes(id)) ?? []) ?? [];
+}
+
 // Mirror the lightweight JSON gate in lib/vocab-learning.ts. This does not
 // replace its runtime tests or certify the inherited semantic-review claim.
 function learningEntryAccepted(entry) {
@@ -100,7 +106,8 @@ export function measureContent(inputs, batchIndex = 0) {
     const learning = rows.flatMap(row => learningByRow.get(row.id) ?? []);
     const questions = rows.flatMap(row => senseByRow.get(row.id) ?? []);
     const oewnQuiz = rows.map(row => definitionQuiz.entries[definitionQuiz.items[row.id]]).filter(Boolean);
-    const examples = [...active.flatMap(entry => entry.exampleSentences ?? []), ...learning.map(entry => entry.example).filter(Boolean),
+    const examples = [...rows.flatMap(row => editorialForRow(dictionaryByRow.get(row.id), row.id)),
+      ...active.flatMap(entry => entry.exampleSentences ?? []), ...learning.map(entry => entry.example).filter(Boolean),
       ...questions.map(entry => ({ en: entry.contextEn, ko: entry.contextKo, cueKo: entry.evidence }))];
     const hasEnglishExample = examples.some(example => present(example.en)) || oewnQuiz.some(entry => entry.examples?.some(present))
       || dictionary.some(entry => entry?.senses?.some(sense => sense.examples?.some(present)));
@@ -158,7 +165,7 @@ export function measureContent(inputs, batchIndex = 0) {
     const learning = learningByRow.get(row.id) ?? [];
     const questions = senseByRow.get(row.id) ?? [];
     if (active.some(entry => entry.exactSynonyms?.length || entry.nearSynonyms?.length) || questions.some(entry => entry.relation)) section.reviewedRelationRows++;
-    const examples = [...active.flatMap(entry => entry.exampleSentences ?? []), ...learning.map(entry => entry.example),
+    const examples = [...editorialForRow(dictionary, row.id), ...active.flatMap(entry => entry.exampleSentences ?? []), ...learning.map(entry => entry.example),
       ...questions.map(entry => ({ en: entry.contextEn, ko: entry.contextKo }))].filter(Boolean);
     const reference = definitionQuiz.entries[definitionQuiz.items[row.id]];
     const matched = reference && dictionary?.senses?.some(sense => sense.senseId === reference.senseId);

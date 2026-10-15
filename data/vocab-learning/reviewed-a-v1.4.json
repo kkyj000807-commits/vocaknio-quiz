@@ -430,7 +430,8 @@
       "brag": "자랑하다",
       "vaunt": "자랑하다",
       "bluster": "허풍떨다",
-      "tout": "과시하다"
+      "tout": "과시하다",
+      "shoot a line": "허풍떨다"
     },
     "relationGlossReview": {
       "status": "ai-reviewed-sense-gloss",
@@ -438,7 +439,25 @@
       "sourceSynsetId": "00884747-v",
       "sourceDefinitionSha256": "a2aeafe15226a34b56b441d71ec7e5278953348b7137ec3cd8b7542dc3ca9b2c",
       "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
-      "independentHumanReview": false
+      "independentHumanReview": false,
+      "heldRelations": [
+        {
+          "word": "swash",
+          "reasonKo": "해당 synset의 드물거나 문맥 의존적인 용법은 추가 용례 대조 전까지 한국어 뜻을 보류함. 영어 관계는 보존."
+        },
+        {
+          "word": "gas",
+          "reasonKo": "해당 synset의 드물거나 문맥 의존적인 용법은 추가 용례 대조 전까지 한국어 뜻을 보류함. 영어 관계는 보존."
+        },
+        {
+          "word": "blow",
+          "reasonKo": "해당 synset의 드물거나 문맥 의존적인 용법은 추가 용례 대조 전까지 한국어 뜻을 보류함. 영어 관계는 보존."
+        },
+        {
+          "word": "gasconade",
+          "reasonKo": "해당 synset의 드물거나 문맥 의존적인 용법은 추가 용례 대조 전까지 한국어 뜻을 보류함. 영어 관계는 보존."
+        }
+      ]
     }
   },
   {
@@ -524,7 +543,13 @@
       "sourceSynsetId": "00905999-v",
       "sourceDefinitionSha256": "0d3b6f7e5e6ec22c5aa9c3f540108f8ef25bfef28d0c5e8ee39df81ebee06888",
       "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
-      "independentHumanReview": false
+      "independentHumanReview": false,
+      "heldRelations": [
+        {
+          "word": "assoil",
+          "reasonKo": "해당 synset의 드물거나 문맥 의존적인 용법은 추가 용례 대조 전까지 한국어 뜻을 보류함. 영어 관계는 보존."
+        }
+      ]
     }
   },
   {
@@ -956,7 +981,10 @@
       "enchant": "매혹하다",
       "entrance": "매료시키다",
       "capture": "마음을 사로잡다",
-      "catch": "마음을 끌다"
+      "catch": "마음을 끌다",
+      "enamour": "매혹하다",
+      "enamor": "매혹하다",
+      "beguile": "매혹하다"
     },
     "relationGlossReview": {
       "status": "ai-reviewed-sense-gloss",
@@ -964,7 +992,17 @@
       "sourceSynsetId": "01810472-v",
       "sourceDefinitionSha256": "c217341adacff9d11ee8f8ac1be030717fb6233a403312e9d25f88b94d4c56d6",
       "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
-      "independentHumanReview": false
+      "independentHumanReview": false,
+      "heldRelations": [
+        {
+          "word": "trance",
+          "reasonKo": "해당 synset의 드물거나 문맥 의존적인 용법은 추가 용례 대조 전까지 한국어 뜻을 보류함. 영어 관계는 보존."
+        },
+        {
+          "word": "becharm",
+          "reasonKo": "해당 synset의 드물거나 문맥 의존적인 용법은 추가 용례 대조 전까지 한국어 뜻을 보류함. 영어 관계는 보존."
+        }
+      ]
     }
   },
   {
@@ -1144,6 +1182,20 @@
     ],
     "definitionEn": "having an unpleasant sound",
     "definitionKo": "불쾌한 소리를 내는",
+    "exactSynonyms": [
+      "cacophonic"
+    ],
+    "relationMeaningsKo": {
+      "cacophonic": "불협화음의"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "00299633-a",
+      "sourceDefinitionSha256": "e9df302efdce526f59c7fb04d7518d24b7f465841f6d2b921a2a87b0eb836eb2",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
+    },
     "memoryKo": "서로 어울리지 않는 소리들이 부딪혀 귀를 괴롭히는 장면을 떠올리세요.",
     "usageKo": "여러 소리가 뒤섞여 거칠고 듣기 불편한 상태를 묘사할 때 씁니다.",
     "examTrapKo": "단순히 loud한 것이 아니라 소리의 결합이 거칠고 불쾌하다는 뜻입니다.",
@@ -1299,7 +1351,17 @@
       "sourceSynsetId": "00770823-v",
       "sourceDefinitionSha256": "820d04b8c23faf2a3ae58cc5b89a9ff5aa296969b70e78948b5d95923a686c3b",
       "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
-      "independentHumanReview": false
+      "independentHumanReview": false,
+      "heldRelations": [
+        {
+          "word": "palaver",
+          "reasonKo": "해당 synset의 드물거나 문맥 의존적인 용법은 추가 용례 대조 전까지 한국어 뜻을 보류함. 영어 관계는 보존."
+        },
+        {
+          "word": "blarney",
+          "reasonKo": "해당 synset의 드물거나 문맥 의존적인 용법은 추가 용례 대조 전까지 한국어 뜻을 보류함. 영어 관계는 보존."
+        }
+      ]
     }
   },
   {

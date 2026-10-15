@@ -80,6 +80,20 @@
     ],
     "definitionEn": "temporary cessation or suspension",
     "definitionKo": "일시적인 중단 또는 보류 상태.",
+    "exactSynonyms": [
+      "suspension"
+    ],
+    "relationMeaningsKo": {
+      "suspension": "일시 중단"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "14034107-n",
+      "sourceDefinitionSha256": "c29b73624622e033c748a9ceb85561f9166311a5a7fd78fbb0b0bd9420b1c20d",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
+    },
     "memoryKo": "끝난 것이 아니라 잠시 잠들어 있는 상태다.",
     "usageKo": "계획, 권리, 결정 등이 당분간 효력을 내지 않거나 실행되지 않는 상태를 나타낸다.",
     "examTrapKo": "영구 폐지가 아니라 다시 시행될 수 있는 일시적 보류라는 점을 확인한다.",
@@ -317,6 +331,22 @@
     ],
     "definitionEn": "difficult to penetrate; incomprehensible to one of ordinary understanding or knowledge",
     "definitionKo": "보통 수준의 이해나 지식으로는 파악하기 어려운, 난해한.",
+    "exactSynonyms": [
+      "deep",
+      "recondite"
+    ],
+    "relationMeaningsKo": {
+      "deep": "난해한",
+      "recondite": "난해한"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "00902519-s",
+      "sourceDefinitionSha256": "89d5be00904e492ed20b3fd38723863cac1e789a73f6d9b07c92fc8c1faf4d8f",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
+    },
     "memoryKo": "내용이 깊숙이 숨어 쉽게 뚫고 들어가기 어렵다는 느낌이다.",
     "usageKo": "이론, 논의, 강의처럼 내용이 지나치게 전문적이거나 복잡해 이해하기 어려울 때 쓴다.",
     "examTrapKo": "ambiguous는 뜻이 여러 갈래라 모호한 것이고, abstruse는 내용 자체가 어려운 것이다.",
@@ -382,6 +412,24 @@
     ],
     "definitionEn": "be sufficient; be adequate, either in quality or quantity",
     "definitionKo": "질이나 양에서 충분하거나 적절하다.",
+    "exactSynonyms": [
+      "do",
+      "answer",
+      "serve"
+    ],
+    "relationMeaningsKo": {
+      "do": "충분하다",
+      "answer": "용도에 맞다",
+      "serve": "쓸 만하다"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "02675578-v",
+      "sourceDefinitionSha256": "e6ba2e478a454b53a9c7434c63388efb1da49e4fb143755d94eb65a227fcd5a2",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
+    },
     "memoryKo": "요구선을 딱 넘길 만큼이면 suffice다.",
     "usageKo": "필요한 기준을 충족할 만큼 충분하다는 뜻으로, 주어가 필요한 역할을 해낼 때 쓴다.",
     "examTrapKo": "감정적 만족을 주는 satisfy보다, 필요량이나 기준을 충족한다는 뜻에 초점을 둔다.",
@@ -511,6 +559,22 @@
     ],
     "definitionEn": "teach and impress by frequent repetitions or admonitions",
     "definitionKo": "반복적인 가르침이나 훈계를 통해 가르치고 마음에 깊이 새기다.",
+    "exactSynonyms": [
+      "instill",
+      "infuse"
+    ],
+    "relationMeaningsKo": {
+      "instill": "심어 주다",
+      "infuse": "주입하다"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "00607995-v",
+      "sourceDefinitionSha256": "82ed678bc1055b24ac13047f8771be4193ecacdd954c3ce277f3c93bd81f0be0",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
+    },
     "memoryKo": "한 번 말하는 것이 아니라 반복해 가치관을 박아 넣는다.",
     "usageKo": "가치, 태도, 원칙 등을 반복 교육하여 습관이나 신념으로 자리 잡게 할 때 쓴다.",
     "examTrapKo": "정보를 한 번 알려 주는 inform보다 반복과 내면화가 강하게 드러난다.",
@@ -576,6 +640,20 @@
     ],
     "definitionEn": "a pseudoscience claiming divination by the positions of the planets and sun and moon",
     "definitionKo": "행성·태양·달의 위치로 인간사나 미래를 점칠 수 있다고 주장하는 유사과학.",
+    "exactSynonyms": [
+      "star divination"
+    ],
+    "relationMeaningsKo": {
+      "star divination": "점성술"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "05786128-n",
+      "sourceDefinitionSha256": "b72c095318d379ac87cf424cac223bccf7b4e6b0e0702488c084163932b7105a",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
+    },
     "memoryKo": "별을 관측하는 과학이 아니라 별자리로 점치는 체계다.",
     "usageKo": "천체의 위치를 사람의 성격이나 사건과 연결해 해석하는 점성 체계를 가리킨다.",
     "examTrapKo": "천체를 과학적으로 연구하는 astronomy와 철자가 비슷하므로 구분한다.",
@@ -641,6 +719,22 @@
     ],
     "definitionEn": "a deliberately invalid argument displaying ingenuity in reasoning in the hope of deceiving someone",
     "definitionKo": "남을 속이려는 목적으로 교묘하게 꾸민, 의도적으로 타당하지 않은 논증.",
+    "exactSynonyms": [
+      "sophistry",
+      "sophistication"
+    ],
+    "relationMeaningsKo": {
+      "sophistry": "궤변",
+      "sophistication": "궤변"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "05903745-n",
+      "sourceDefinitionSha256": "0a68435e51ed293277d06090d8b34269b7240079c7bebfc0f6c3f536b68bb7d3",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
+    },
     "memoryKo": "겉은 논리처럼 보이지만 속에는 속임수가 있는 주장이다.",
     "usageKo": "그럴듯한 형식을 갖췄지만 실제로는 오류가 있으며 상대를 현혹하려는 논증을 가리킨다.",
     "examTrapKo": "단순한 실수보다 의도적인 기만성이 강조되는 뜻으로 출제될 수 있다.",
@@ -705,6 +799,26 @@
     ],
     "definitionEn": "cause to feel shame; hurt the pride of",
     "definitionKo": "수치심을 느끼게 하거나 자존심을 상하게 하다.",
+    "exactSynonyms": [
+      "humiliate",
+      "mortify",
+      "chagrin",
+      "humble"
+    ],
+    "relationMeaningsKo": {
+      "humiliate": "굴욕을 주다",
+      "mortify": "굴욕감을 주다",
+      "chagrin": "분하게 만들다",
+      "humble": "자존심을 꺾다"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "01803805-v",
+      "sourceDefinitionSha256": "2d1dd1e82ad74c63ecf4ace3c3d3381d0d2a8bcf8e563410905d5b893b38d362",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
+    },
     "memoryKo": "사람의 자존감이나 지위를 아래로 낮춘다.",
     "usageKo": "사람을 모욕하거나 비하해 위신과 자존심을 떨어뜨리는 상황에서 쓴다.",
     "examTrapKo": "debase는 가치나 품질을 떨어뜨리는 데 널리 쓰이고, abase는 사람을 낮추고 모욕하는 뜻이 중심이다.",
@@ -777,6 +891,20 @@
     ],
     "definitionEn": "cause to be embarrassed; cause to feel self-conscious",
     "definitionKo": "당황하게 하거나 자의식을 느끼게 하다.",
+    "exactSynonyms": [
+      "embarrass"
+    ],
+    "relationMeaningsKo": {
+      "embarrass": "당황하게 하다"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "01796126-v",
+      "sourceDefinitionSha256": "7ff5a0478a093f3b3e664f69d9264d30d8c9946bdf4e291e9abe60800f16f9a0",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
+    },
     "memoryKo": "갑자기 얼굴이 붉어지고 몸 둘 바를 모르게 만든다.",
     "usageKo": "실수나 열등감 등을 의식하게 만들어 순간적으로 부끄럽고 당황하게 할 때 쓴다.",
     "examTrapKo": "강한 공개적 모욕을 뜻하는 humiliate보다, 당황하여 평정심을 잃는 느낌에 가깝다.",
@@ -849,6 +977,20 @@
     ],
     "definitionEn": "give up, such as power, as of monarchs and emperors, or duties and obligations",
     "definitionKo": "군주가 권력을 내려놓듯, 권한·직위·의무나 책임을 포기하다.",
+    "exactSynonyms": [
+      "renounce"
+    ],
+    "relationMeaningsKo": {
+      "renounce": "포기하다"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "02384340-v",
+      "sourceDefinitionSha256": "f60c70230a99534e7b183f9582234f60b03b77d8cba4524efad312bb4e572930",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
+    },
     "memoryKo": "왕좌에서 스스로 내려오는 장면이 중심 이미지다.",
     "usageKo": "왕위나 높은 직위를 공식적으로 내려놓거나, 비유적으로 책임을 저버릴 때 쓴다.",
     "examTrapKo": "일반 직장을 그만두는 resign보다 군주권·고위 권력 또는 중대한 책임의 포기가 두드러진다.",
@@ -916,6 +1058,33 @@
     ],
     "definitionEn": "an upward slope or grade (as in a road)",
     "definitionKo": "도로 등에서 위로 올라가는 경사 또는 오르막.",
+    "exactSynonyms": [
+      "ascent",
+      "rise",
+      "raise",
+      "climb",
+      "upgrade"
+    ],
+    "relationMeaningsKo": {
+      "ascent": "오르막",
+      "rise": "오르막",
+      "climb": "오르막",
+      "upgrade": "오르막"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "09229873-n",
+      "sourceDefinitionSha256": "f9af32fedf8cc606eec40a9e9006e3f613b9d8a5afb51b54402488a51e35d37b",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false,
+      "heldRelations": [
+        {
+          "word": "raise",
+          "reasonKo": "오르막을 가리키는 드문 명사 용법의 추가 용례 대조 필요. 일반적인 인상·증가 뜻을 전파하지 않음."
+        }
+      ]
+    },
     "memoryKo": "올라가는 경사에는 acclivity, 내려가는 경사에는 declivity다.",
     "usageKo": "지형이나 도로가 위쪽으로 기울어진 경사를 가리키는 명사다.",
     "examTrapKo": "반대 방향의 내리막을 뜻하는 declivity와 방향을 바꾸어 출제하기 쉽다.",
@@ -980,6 +1149,20 @@
     ],
     "definitionEn": "provide with military equipment",
     "definitionKo": "군사 장비를 지급하거나 갖추게 하다.",
+    "exactSynonyms": [
+      "accoutre"
+    ],
+    "relationMeaningsKo": {
+      "accoutre": "군장을 갖추게 하다"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "02347012-v",
+      "sourceDefinitionSha256": "1b267c38da015c38771263eb95b89226fc0345c45eadca025f06865efa79666e",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
+    },
     "memoryKo": "군인을 전투 장비로 차려 입히는 장면을 떠올린다.",
     "usageKo": "특히 군인이나 부대에 복장과 장비를 갖추어 줄 때 쓰는 동사다.",
     "examTrapKo": "일반적인 equip보다 군복·무기 등 군사 장비의 맥락이 뚜렷하다.",
@@ -1044,6 +1227,22 @@
     ],
     "definitionEn": "feeling or caused to feel ill at ease or self-conscious or ashamed",
     "definitionKo": "마음이 불편하거나 자의식이 생겨 당황하거나 부끄러워진.",
+    "exactSynonyms": [
+      "chagrined",
+      "embarrassed"
+    ],
+    "relationMeaningsKo": {
+      "chagrined": "분하고 창피한",
+      "embarrassed": "당황한"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "00533833-s",
+      "sourceDefinitionSha256": "8f37711f538e20c55ee225e4a40360a2a24f47272f5fde9635ed0f33960539a4",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
+    },
     "memoryKo": "칭찬이나 실수 앞에서 얼굴이 붉어져 몸 둘 바를 모르는 상태다.",
     "usageKo": "자신의 행동이나 타인의 시선을 의식해 당황하고 수줍어하는 상태를 나타낸다.",
     "examTrapKo": "도덕적 잘못에 대한 깊은 죄책감만을 뜻하지 않고, 어색한 칭찬 때문에도 abashed할 수 있다.",
@@ -1116,6 +1315,20 @@
     ],
     "definitionEn": "one who helps or encourages or incites another",
     "definitionKo": "다른 사람을 돕거나 격려하거나 부추기는 사람.",
+    "exactSynonyms": [
+      "abetter"
+    ],
+    "relationMeaningsKo": {
+      "abetter": "방조자"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "09775380-n",
+      "sourceDefinitionSha256": "4ee3324b16533502c0c3c7baae8b03b82d38a55e25d2c2269343a363946541a7",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
+    },
     "memoryKo": "abet하는 사람을 나타내는 -or형 명사다.",
     "usageKo": "특히 범죄나 잘못을 돕거나 선동한 사람을 법률적·비판적 맥락에서 가리킬 수 있다.",
     "examTrapKo": "직접 범행하지 않았더라도 실행을 돕거나 부추긴 사람일 수 있다.",
@@ -1180,6 +1393,35 @@
     ],
     "definitionEn": "quickly and without warning",
     "definitionKo": "빠르게, 그리고 사전 경고 없이 갑자기.",
+    "exactSynonyms": [
+      "suddenly",
+      "all of a sudden",
+      "on the spur of the moment",
+      "of a sudden",
+      "dead",
+      "short"
+    ],
+    "relationMeaningsKo": {
+      "suddenly": "갑자기",
+      "all of a sudden": "갑자기",
+      "of a sudden": "갑자기",
+      "dead": "갑자기",
+      "short": "갑자기"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "81484980-r",
+      "sourceDefinitionSha256": "560f2d9abfa731068de6f5153780a4d0c416f4706fc08ef69fcc0344c99ea2b4",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false,
+      "heldRelations": [
+        {
+          "word": "on the spur of the moment",
+          "reasonKo": "충동적으로·즉흥적으로 결정한다는 뜻과 예고 없이 갑작스럽다는 뜻의 적용 범위 차이 추가 대조 필요."
+        }
+      ]
+    },
     "memoryKo": "예고 없이 장면이 뚝 끊겨 바뀌는 느낌이다.",
     "usageKo": "행동, 말, 변화가 갑작스럽게 일어나거나 매끄럽지 않게 끝날 때 쓰는 부사다.",
     "examTrapKo": "속도만 빠른 rapidly와 달리 예고 없음과 갑작스러운 단절이 핵심이다.",
@@ -1316,6 +1558,22 @@
     ],
     "definitionEn": "responsibility to someone or for some activity",
     "definitionKo": "누군가 또는 어떤 활동에 대해 설명하고 책임져야 하는 상태.",
+    "exactSynonyms": [
+      "answerability",
+      "answerableness"
+    ],
+    "relationMeaningsKo": {
+      "answerability": "설명할 책임",
+      "answerableness": "설명할 책임"
+    },
+    "relationGlossReview": {
+      "status": "ai-reviewed-sense-gloss",
+      "checkedAt": "2026-10-15",
+      "sourceSynsetId": "04677185-n",
+      "sourceDefinitionSha256": "b7fdb725ec7f356747f4cc7d5e1ba428b19c725d1e293231a5f1aee7b29314e8",
+      "scope": "기존 검수 synset 안의 관계어만 해당 뜻으로 자체 번역. 다른 뜻·품사에 전파하지 않으며 기존 관계·정답 승격 상태는 변경하지 않음.",
+      "independentHumanReview": false
+    },
     "memoryKo": "결과를 설명하고 그에 따른 책임까지 지는 것이다.",
     "usageKo": "결정이나 행동의 결과를 공개적으로 설명하고 평가와 결과를 받아들여야 하는 책임을 말한다.",
     "examTrapKo": "responsibility가 맡은 의무 자체라면, accountability는 그 수행 결과에 답하고 책임지는 측면이 두드러진다.",

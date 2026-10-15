@@ -286,19 +286,43 @@ describe("깊이 학습 인덱스", () => {
     expect(VOCAB).toHaveLength(38163);
   });
 
-  it("검수된 11개 sense의 짧은 한국어 관계뜻 43개가 공개 학습 데이터에 연결된다", () => {
-    const source = JSON.parse(fs.readFileSync(path.join(process.cwd(), "data/vocab-learning/reviewed-a-v1.4.json"), "utf8")) as {
+  it("기존 licensed 40개 sense의 관계뜻 80개와 보류 11개를 구분하고 공개 데이터에 연결한다", () => {
+    const source = ["reviewed-a-v1.4.json", "reviewed-b-v1.4.json"].flatMap(file =>
+      JSON.parse(fs.readFileSync(path.join(process.cwd(), "data/vocab-learning", file), "utf8")),
+    ) as {
       id: string; headword: string; relationMeaningsKo?: Record<string, string>;
+      exactSynonyms?: string[];
+      relationGlossReview?: {
+        status: string; sourceSynsetId: string; sourceDefinitionSha256: string;
+        independentHumanReview: boolean; heldRelations?: { word: string; reasonKo: string }[];
+      };
     }[];
     const enriched = source.filter(entry => entry.relationMeaningsKo);
-    expect(enriched).toHaveLength(11);
-    expect(enriched.reduce((n, e) => n + Object.keys(e.relationMeaningsKo ?? {}).length, 0)).toBe(43);
+    expect(source).toHaveLength(40);
+    expect(enriched).toHaveLength(27);
+    expect(enriched.reduce((n, e) => n + Object.keys(e.relationMeaningsKo ?? {}).length, 0)).toBe(80);
+    expect(enriched.reduce((n, e) => n + (e.relationGlossReview?.heldRelations?.length ?? 0), 0)).toBe(11);
     const entries = ["v101", "v201", "v301", "v401", "v501", "v502", "v601", "appendix"].flatMap(group =>
       JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/data/vocab-learning", release.version, `${group}.json`), "utf8")).entries,
     );
     for (const entry of enriched) {
       const published = entries.find(candidate => candidate.id === entry.id);
+      const manifest = oewnManifest.definitions[entry.id as keyof typeof oewnManifest.definitions];
+      const expectedRelations = manifest.members.filter(word => word.toLowerCase() !== entry.headword.toLowerCase());
+      // Materializing an already-published manifest list must not add or reorder answer relations.
+      expect(entry.exactSynonyms).toEqual(expectedRelations);
+      expect(published.exactSynonyms).toEqual(expectedRelations);
       expect(published.relationMeaningsKo).toEqual(entry.relationMeaningsKo);
+      expect(entry.relationGlossReview).toMatchObject({
+        status: "ai-reviewed-sense-gloss", sourceSynsetId: manifest.synsetId,
+        sourceDefinitionSha256: manifest.sha256, independentHumanReview: false,
+      });
+      const held = entry.relationGlossReview?.heldRelations ?? [];
+      expect([...Object.keys(entry.relationMeaningsKo ?? {}), ...held.map(item => item.word)].sort()).toEqual([...expectedRelations].sort());
+      for (const item of held) {
+        expect(item.reasonKo.length).toBeGreaterThan(0);
+        expect(entry.relationMeaningsKo).not.toHaveProperty(item.word);
+      }
       for (const [word, meaning] of Object.entries(entry.relationMeaningsKo ?? {})) {
         expect(published.exactSynonyms).toContain(word);
         expect(meaning.length).toBeLessThanOrEqual(12);
@@ -306,6 +330,11 @@ describe("깊이 학습 인덱스", () => {
       }
     }
     expect(enriched.find(e => e.headword === "boast")?.relationMeaningsKo?.brag).toBe("자랑하다");
+    expect(enriched.find(e => e.headword === "suffice")?.relationMeaningsKo?.answer).toBe("용도에 맞다");
+    expect(enriched.find(e => e.headword === "sophism")?.relationMeaningsKo?.sophistication).toBe("궤변");
+    expect(enriched.find(e => e.headword === "abruptly")?.relationMeaningsKo?.dead).toBe("갑자기");
+    expect(enriched.find(e => e.headword === "acclivity")?.relationMeaningsKo).not.toHaveProperty("raise");
+    expect(enriched.find(e => e.headword === "abruptly")?.relationMeaningsKo).not.toHaveProperty("on the spur of the moment");
   });
 
   it("Open English WordNet의 같은 synset 동의어만 공개 데이터에 전달한다", () => {

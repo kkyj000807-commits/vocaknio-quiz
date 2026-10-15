@@ -1,0 +1,3654 @@
+{
+  "schema": 1,
+  "source": {
+    "name": "FINETUNE original editorial examples",
+    "edition": "2026-10-15",
+    "englishProvenance": "AI-authored original learning sentences; not dictionary quotations",
+    "englishModified": false,
+    "koreanAuthorship": "FINETUNE AI 편집 해석·문맥 단서; 사전 공식 번역 아님",
+    "license": "FINETUNE original editorial content; OEWN definitions used for sense alignment remain CC BY 4.0",
+    "archiveSha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51",
+    "sourceVocabularySha256": "7eba20f388d04e9d7fb10edec635beac5dc7a6c726ef6e25d7daba4ce57908dd",
+    "coverageCheckpoint": {
+      "path": "analysis/qa/content-recovery-20261015.json",
+      "sha256": "f2b2d7d503220f7d97751396c509ad351a2cd9d92010c81629446edc6285e0fb",
+      "inputHash": "f162f0c8f8a4b6db8784e5f51edab682707099c0ecae278eec6179df80309337"
+    },
+    "senseReference": {
+      "name": "Open English WordNet",
+      "edition": "2025",
+      "url": "https://en-word.net/downloads/english-wordnet-2025-json.zip",
+      "license": "CC BY 4.0",
+      "attribution": "Princeton WordNet; Open English WordNet Team"
+    }
+  },
+  "review": {
+    "status": "ai-reviewed-editorial-example",
+    "scope": "기존 전체 학습층에 영어 예문이 없는 표제어 중 129개를 선정. OEWN 단일 lexical sense, 품사, 원본 한국어 뜻과 대조해 창작 예문·해석·문맥 단서를 AI 편집 검토함. 같은 원본뜻의 반복행 456개만 연결하며 독립 사람 검수 또는 새로운 출제 승인이 아님.",
+    "notClaimed": [
+      "독립 사람 검수",
+      "외부 전문가 인증",
+      "정답 문항 승인",
+      "전체 어휘 보강 완료"
+    ],
+    "masterDbStatus": "sync_required",
+    "displayPolicy": "reference-only; show only when sourceRowIds includes the current item ID; never append to OEWN source examples or use as answer evidence",
+    "independentAiReview": {
+      "reviewedEntries": 130,
+      "acceptedAfterCorrections": 129,
+      "heldAfterReview": 1,
+      "status": "second-agent-semantic-review",
+      "independentHumanReview": false,
+      "corrections": [
+        "congenital 유전 방향 단서 교정",
+        "infidelity 번역 강도 완화",
+        "unscathed 단서 명료화",
+        "perplexity 원본뜻-예문 불일치 보류"
+      ]
+    }
+  },
+  "entries": [
+    {
+      "headword": "skittish",
+      "senseId": "skittish%5:00:00:excitable:00",
+      "synsetId": "00922269-s",
+      "pos": "adjective",
+      "en": "The skittish horse jumped sideways when a plastic bag blew across the path.",
+      "ko": "비닐봉지가 길을 가로질러 날아오자 겁 많은 말이 옆으로 펄쩍 뛰었다.",
+      "cueKo": "작은 자극에도 갑자기 놀라는 말의 반응이 단서다.",
+      "sourceRowIds": [
+        "JBKROW000510",
+        "JBKROW003738"
+      ],
+      "sourceMeaningKo": "까불대는; 겁이 많은",
+      "matchEvidence": {
+        "sourceDefinition": "unpredictably excitable (especially of horses)",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "ebullient",
+      "senseId": "ebullient%5:00:00:spirited:00",
+      "synsetId": "02287457-s",
+      "pos": "adjective",
+      "en": "The ebullient graduates cheered and embraced one another as their names were announced.",
+      "ko": "이름이 호명되자 기쁨에 넘친 졸업생들이 환호하며 서로 껴안았다.",
+      "cueKo": "환호와 포옹이 억누르지 않는 즐거움과 활기를 보여 준다.",
+      "sourceRowIds": [
+        "JBKROW000795",
+        "JBKROW002561"
+      ],
+      "sourceMeaningKo": "원기가 왕성한",
+      "matchEvidence": {
+        "sourceDefinition": "joyously unrestrained",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "exhume",
+      "senseId": "exhume%2:41:00::",
+      "synsetId": "02462490-v",
+      "pos": "verb",
+      "en": "Investigators obtained permission to exhume the body so that its cause of death could be examined.",
+      "ko": "수사관들은 사망 원인을 조사하기 위해 시신을 파낼 허가를 받았다.",
+      "cueKo": "묻힌 시신을 조사 목적으로 다시 꺼내는 뜻이다.",
+      "sourceRowIds": [
+        "JBKROW001540",
+        "JBKROW002671",
+        "JBKROW004332",
+        "JBKROW006883",
+        "JBKROW014531",
+        "JBKROW016300"
+      ],
+      "sourceMeaningKo": "발굴하다",
+      "matchEvidence": {
+        "sourceDefinition": "dig up for reburial or for medical investigation; of dead bodies",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "enthrall",
+      "senseId": "enthrall%2:37:00::",
+      "synsetId": "01821281-v",
+      "pos": "verb",
+      "en": "The storyteller could enthrall a noisy room, making every listener fall silent until the tale ended.",
+      "ko": "그 이야기꾼은 시끄러운 방의 사람들을 사로잡아 이야기가 끝날 때까지 모두 조용히 듣게 할 수 있었다.",
+      "cueKo": "모두가 이야기에 몰입해 조용해졌다는 결과가 단서다.",
+      "sourceRowIds": [
+        "JBKROW001754",
+        "JBKROW002622"
+      ],
+      "sourceMeaningKo": "매혹시키다; 노예로 만들다",
+      "matchEvidence": {
+        "sourceDefinition": "hold spellbound",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "lugubrious",
+      "senseId": "lugubrious%5:00:00:sorrowful:00",
+      "synsetId": "01368978-s",
+      "pos": "adjective",
+      "en": "His lugubrious account of a minor setback made it sound like an irreversible tragedy.",
+      "ko": "작은 차질에 대한 그의 지나치게 침울한 이야기는 그것을 돌이킬 수 없는 비극처럼 들리게 했다.",
+      "cueKo": "사소한 차질과 비극 같은 표현의 대비가 과도한 슬픔을 드러낸다.",
+      "sourceRowIds": [
+        "JBKROW001855",
+        "JBKROW003171",
+        "JBKROW005246",
+        "JBKROW007355",
+        "JBKROW009123",
+        "JBKROW009130",
+        "JBKROW012537"
+      ],
+      "sourceMeaningKo": "침울한",
+      "matchEvidence": {
+        "sourceDefinition": "excessively mournful",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "serendipity",
+      "senseId": "serendipity%1:19:00::",
+      "synsetId": "11484294-n",
+      "pos": "noun",
+      "en": "Finding the missing manuscript while looking for an unrelated letter was pure serendipity.",
+      "ko": "관련 없는 편지를 찾다가 잃어버린 원고를 발견한 것은 순전히 뜻밖의 행운이었다.",
+      "cueKo": "계획하지 않은 탐색에서 가치 있는 것을 발견했다는 점이 핵심이다.",
+      "sourceRowIds": [
+        "JBKROW002018",
+        "JBKROW003715",
+        "JBKROW004193",
+        "JBKROW007822",
+        "JBKROW010990",
+        "JBKROW013082"
+      ],
+      "sourceMeaningKo": "운 좋은 발견; 뜻밖의 재미",
+      "matchEvidence": {
+        "sourceDefinition": "good luck in making unexpected and fortunate discoveries",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "indigent",
+      "senseId": "indigent%5:00:00:poor:00",
+      "synsetId": "02030681-s",
+      "pos": "adjective",
+      "en": "The clinic offered free treatment to indigent patients who could not afford basic care.",
+      "ko": "그 진료소는 기본적인 치료비도 감당할 수 없는 가난한 환자들에게 무료 진료를 제공했다.",
+      "cueKo": "치료비를 감당하지 못해 도움이 필요하다는 조건이 뜻을 좁힌다.",
+      "sourceRowIds": [
+        "JBKROW005069",
+        "JBKROW007223",
+        "JBKROW014796",
+        "JBKROW019088",
+        "JBKROW021538"
+      ],
+      "sourceMeaningKo": "가난한",
+      "matchEvidence": {
+        "sourceDefinition": "poor enough to need help from others",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "cease-fire",
+      "senseId": "cease-fire%1:26:00::",
+      "synsetId": "13994359-n",
+      "pos": "noun",
+      "en": "The two sides agreed to a cease-fire so negotiators could meet without further fighting.",
+      "ko": "양측은 협상가들이 추가 전투 없이 만날 수 있도록 휴전에 합의했다.",
+      "cueKo": "협상을 위해 전투를 멈추는 합의이지 영구적 평화의 확정은 아니다.",
+      "sourceRowIds": [
+        "JBKROW000074",
+        "JBKROW002265"
+      ],
+      "sourceMeaningKo": "휴전(하다)",
+      "matchEvidence": {
+        "sourceDefinition": "a state of peace agreed to between opponents so they can discuss peace terms",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "congenital",
+      "senseId": "congenital%5:00:00:noninheritable:00",
+      "synsetId": "01318798-s",
+      "pos": "adjective",
+      "en": "The specialist explained that the defect was congenital because it had been present at birth.",
+      "ko": "전문의는 그 결함이 출생 때부터 있었으므로 선천적인 것이라고 설명했다.",
+      "cueKo": "출생 때부터 존재했다는 뜻이며 부모에게서 물려받았다고 단정하지 않는다.",
+      "sourceRowIds": [
+        "JBKROW000202",
+        "JBKROW002329",
+        "JBKROW004928",
+        "JBKROW006553",
+        "JBKROW011237",
+        "JBKROW011644",
+        "JBKROW014666",
+        "JBKROW015987"
+      ],
+      "sourceMeaningKo": "선천적인",
+      "matchEvidence": {
+        "sourceDefinition": "present at birth but not necessarily hereditary; acquired during fetal development",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "eschew",
+      "senseId": "eschew%2:32:00::",
+      "synsetId": "00813811-v",
+      "pos": "verb",
+      "en": "The researcher chose to eschew sensational claims and report only what the evidence supported.",
+      "ko": "그 연구자는 자극적인 주장을 삼가고 증거가 뒷받침하는 내용만 보고하기로 했다.",
+      "cueKo": "선택적으로 피하고 증거에 한정한다는 대조가 단서다.",
+      "sourceRowIds": [
+        "JBKROW000841",
+        "JBKROW002643",
+        "JBKROW005615",
+        "JBKROW006854",
+        "JBKROW008262",
+        "JBKROW011991",
+        "JBKROW014194",
+        "JBKROW016262",
+        "JBKROW029517",
+        "JBKROW031351"
+      ],
+      "sourceMeaningKo": "삼가다",
+      "matchEvidence": {
+        "sourceDefinition": "avoid and stay away from deliberately; stay clear of",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "disinterested",
+      "senseId": "disinterested%5:00:00:impartial:00",
+      "synsetId": "01727760-s",
+      "pos": "adjective",
+      "en": "A disinterested mediator with no financial stake in the outcome helped both sides reach an agreement.",
+      "ko": "결과에 금전적 이해관계가 없는 공정한 중재자가 양측의 합의를 도왔다.",
+      "cueKo": "이해관계가 없다는 뜻이지 협상에 관심이 없다는 뜻은 아니다.",
+      "sourceRowIds": [
+        "JBKROW000940",
+        "JBKROW002518",
+        "JBKROW011050",
+        "JBKROW011856"
+      ],
+      "sourceMeaningKo": "사심이 없는",
+      "matchEvidence": {
+        "sourceDefinition": "unaffected by self-interest",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "finesse",
+      "senseId": "finesse%1:07:00::",
+      "synsetId": "04849260-n",
+      "pos": "noun",
+      "en": "She handled the dispute with finesse, correcting the error without humiliating either colleague.",
+      "ko": "그녀는 어느 동료도 모욕하지 않으면서 오류를 바로잡는 능숙한 솜씨로 분쟁을 처리했다.",
+      "cueKo": "문제를 해결하면서도 상대의 체면을 지키는 섬세한 처리 방식이 핵심이다.",
+      "sourceRowIds": [
+        "JBKROW001052",
+        "JBKROW002728"
+      ],
+      "sourceMeaningKo": "기교",
+      "matchEvidence": {
+        "sourceDefinition": "subtly skillful handling of a situation",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "gaffe",
+      "senseId": "gaffe%1:04:00::",
+      "synsetId": "00077016-n",
+      "pos": "noun",
+      "en": "Calling the guest by her rival's name was an embarrassing gaffe at the formal dinner.",
+      "ko": "공식 만찬에서 손님을 경쟁자의 이름으로 부른 것은 당혹스러운 실수였다.",
+      "cueKo": "사교 상황에서 상대를 난처하게 하는 부적절한 말이 단서다.",
+      "sourceRowIds": [
+        "JBKROW001244",
+        "JBKROW002798",
+        "JBKROW014548",
+        "JBKROW016414"
+      ],
+      "sourceMeaningKo": "실수",
+      "matchEvidence": {
+        "sourceDefinition": "a socially awkward or tactless act",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "chicanery",
+      "senseId": "chicanery%1:04:00::",
+      "synsetId": "00754297-n",
+      "pos": "noun",
+      "en": "The audit exposed financial chicanery: managers had disguised personal expenses as research costs.",
+      "ko": "감사에서 관리자들이 개인 지출을 연구비로 위장한 금융상의 속임수가 드러났다.",
+      "cueKo": "비용을 다른 항목으로 위장했다는 구체적 행동이 기만을 나타낸다.",
+      "sourceRowIds": [
+        "JBKROW001364",
+        "JBKROW002272"
+      ],
+      "sourceMeaningKo": "거짓",
+      "matchEvidence": {
+        "sourceDefinition": "the use of tricks to deceive someone (usually to extract money from them)",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "ennui",
+      "senseId": "ennui%1:12:00::",
+      "synsetId": "07555178-n",
+      "pos": "noun",
+      "en": "Months of identical meetings filled her with ennui, and even familiar jokes no longer amused her.",
+      "ko": "몇 달간 똑같은 회의가 이어지자 그녀는 권태에 빠졌고 익숙한 농담조차 더는 재미있지 않았다.",
+      "cueKo": "반복되는 일과 흥미 상실이 지루함의 원인과 결과로 연결된다.",
+      "sourceRowIds": [
+        "JBKROW001416",
+        "JBKROW002619"
+      ],
+      "sourceMeaningKo": "권태(倦怠)",
+      "matchEvidence": {
+        "sourceDefinition": "the feeling of being bored by something tedious",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "hubris",
+      "senseId": "hubris%1:07:00::",
+      "synsetId": "04895898-n",
+      "pos": "noun",
+      "en": "Convinced that he could never be wrong, the director dismissed every warning out of hubris.",
+      "ko": "자신은 결코 틀릴 수 없다고 확신한 그 책임자는 오만 때문에 모든 경고를 일축했다.",
+      "cueKo": "자신의 무오류를 확신하고 경고를 무시하는 태도가 단서다.",
+      "sourceRowIds": [
+        "JBKROW001589",
+        "JBKROW002949"
+      ],
+      "sourceMeaningKo": "오만",
+      "matchEvidence": {
+        "sourceDefinition": "overbearing pride or presumption",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "fatuous",
+      "senseId": "fatuous%5:00:00:stupid:00",
+      "synsetId": "00442050-s",
+      "pos": "adjective",
+      "en": "His fatuous proposal to solve the shortage by simply declaring supplies unlimited drew puzzled looks.",
+      "ko": "물자가 무한하다고 선언해서 부족 문제를 해결하자는 그의 어리석은 제안에 사람들이 의아해했다.",
+      "cueKo": "말로 선언하는 것과 실제 공급량의 차이를 무시한 제안이다.",
+      "sourceRowIds": [
+        "JBKROW001684",
+        "JBKROW002710"
+      ],
+      "sourceMeaningKo": "얼빠진; 실체가 없는, 환영(幻影)의",
+      "matchEvidence": {
+        "sourceDefinition": "extremely silly or stupid",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "bogus",
+      "senseId": "bogus%5:00:00:counterfeit:00",
+      "synsetId": "01121219-s",
+      "pos": "adjective",
+      "en": "The supposed inspector carried a bogus identification card that the agency had never issued.",
+      "ko": "조사관을 자처한 사람은 해당 기관이 발급한 적 없는 가짜 신분증을 지니고 있었다.",
+      "cueKo": "기관이 발급하지 않았다는 사실이 외관상의 신분을 부정한다.",
+      "sourceRowIds": [
+        "JBKROW001755",
+        "JBKROW002210",
+        "JBKROW006129",
+        "JBKROW006410",
+        "JBKROW008553",
+        "JBKROW011494",
+        "JBKROW014897",
+        "JBKROW015834"
+      ],
+      "sourceMeaningKo": "가짜의",
+      "matchEvidence": {
+        "sourceDefinition": "fraudulent; having a misleading appearance",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "euphoria",
+      "senseId": "euphoria%1:12:00::",
+      "synsetId": "07544484-n",
+      "pos": "noun",
+      "en": "The team's euphoria after winning the final lasted well into the night.",
+      "ko": "결승전에서 이긴 뒤 팀이 느낀 큰 행복감은 밤늦게까지 이어졌다.",
+      "cueKo": "승리 직후의 고양된 기쁨을 뜻하며 차분한 만족보다 강한 감정이다.",
+      "sourceRowIds": [
+        "JBKROW005511",
+        "JBKROW006865",
+        "JBKROW010963",
+        "JBKROW012004",
+        "JBKROW029614",
+        "JBKROW031361"
+      ],
+      "sourceMeaningKo": "행복감",
+      "matchEvidence": {
+        "sourceDefinition": "a feeling of great (usually exaggerated) elation",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "diatribe",
+      "senseId": "diatribe%1:10:00::",
+      "synsetId": "07247964-n",
+      "pos": "noun",
+      "en": "Instead of discussing the evidence, he launched into a diatribe against everyone who questioned him.",
+      "ko": "그는 증거를 논의하는 대신 자신에게 의문을 제기한 모든 사람에게 통렬한 비난을 쏟아냈다.",
+      "cueKo": "증거 토론과 사람들을 향한 거센 언어적 공격이 대비된다.",
+      "sourceRowIds": [
+        "JBKROW000519",
+        "JBKROW002484"
+      ],
+      "sourceMeaningKo": "비방",
+      "matchEvidence": {
+        "sourceDefinition": "thunderous verbal attack",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "manumit",
+      "senseId": "manumit%2:41:00::",
+      "synsetId": "02502147-v",
+      "pos": "verb",
+      "en": "The document promised to manumit the enslaved workers and recognize them as free people.",
+      "ko": "그 문서는 노예 노동자들을 해방하고 자유인으로 인정하겠다고 약속했다.",
+      "cueKo": "노예 신분에서 자유인으로 바꾸는 행위로 뜻을 한정한다.",
+      "sourceRowIds": [
+        "JBKROW000979",
+        "JBKROW003207",
+        "JBKROW006057",
+        "JBKROW007372",
+        "JBKROW010524",
+        "JBKROW012562"
+      ],
+      "sourceMeaningKo": "(노예·농노를) 해방하다",
+      "matchEvidence": {
+        "sourceDefinition": "free from slavery or servitude",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "melee",
+      "senseId": "melee%1:04:00::",
+      "synsetId": "00555237-n",
+      "pos": "noun",
+      "en": "A disagreement at the crowded exit turned into a melee as several people began pushing and fighting.",
+      "ko": "붐비는 출구에서 일어난 의견 충돌은 여러 사람이 밀치고 싸우기 시작하면서 난투극이 되었다.",
+      "cueKo": "여러 사람이 뒤엉켜 싸우는 소란스러운 상황이다.",
+      "sourceRowIds": [
+        "JBKROW001287",
+        "JBKROW003223"
+      ],
+      "sourceMeaningKo": "난투극",
+      "matchEvidence": {
+        "sourceDefinition": "a noisy riotous fight",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "invective",
+      "senseId": "invective%1:10:00::",
+      "synsetId": "06734353-n",
+      "pos": "noun",
+      "en": "The debate deteriorated into invective, with insults replacing arguments about the policy.",
+      "ko": "토론은 정책에 관한 논증 대신 모욕이 오가면서 욕설전으로 변질되었다.",
+      "cueKo": "논증이 모욕적 언어로 대체되었다는 변화가 단서다.",
+      "sourceRowIds": [
+        "JBKROW001583",
+        "JBKROW003050"
+      ],
+      "sourceMeaningKo": "비난, 욕설",
+      "matchEvidence": {
+        "sourceDefinition": "abusive or venomous language used to express blame or censure or bitter deep-seated ill will",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "ingratiate",
+      "senseId": "ingratiate%2:37:00::",
+      "synsetId": "01808562-v",
+      "pos": "verb",
+      "en": "He tried to ingratiate himself with the supervisor by praising even her most routine decisions.",
+      "ko": "그는 상사의 가장 일상적인 결정까지 칭찬하며 환심을 사려 했다.",
+      "cueKo": "ingratiate oneself with의 재귀 구문과 이익을 위한 칭찬에 주목한다.",
+      "sourceRowIds": [
+        "JBKROW001650",
+        "JBKROW003016"
+      ],
+      "sourceMeaningKo": "환심을 사다, 영합하다",
+      "matchEvidence": {
+        "sourceDefinition": "gain favor with somebody by deliberate efforts",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "adulate",
+      "senseId": "adulate%2:32:00::",
+      "synsetId": "00882039-v",
+      "pos": "verb",
+      "en": "The court poet would adulate the ruler, describing every ordinary act as a triumph.",
+      "ko": "궁정 시인은 통치자의 평범한 행동 하나하나를 위업으로 묘사하며 아첨하곤 했다.",
+      "cueKo": "평범한 행동을 과도하게 높여 말하는 비굴한 찬사가 단서다.",
+      "sourceRowIds": [
+        "JBKROW004615",
+        "JBKROW006193"
+      ],
+      "sourceMeaningKo": "아첨하다",
+      "matchEvidence": {
+        "sourceDefinition": "flatter in an obsequious manner",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "reprisal",
+      "senseId": "reprisal%1:04:00::",
+      "synsetId": "01238511-n",
+      "pos": "noun",
+      "en": "The commander threatened a reprisal against the enemy if another patrol was attacked.",
+      "ko": "지휘관은 순찰대가 다시 공격받으면 적에게 보복하겠다고 위협했다.",
+      "cueKo": "전시의 공격에 대한 되갚음이며 실제 보복이 일어났다고 말하지 않는다.",
+      "sourceRowIds": [
+        "JBKROW005449",
+        "JBKROW007736",
+        "JBKROW019781",
+        "JBKROW019834",
+        "JBKROW022048"
+      ],
+      "sourceMeaningKo": "보복",
+      "matchEvidence": {
+        "sourceDefinition": "a retaliatory action against an enemy in wartime",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "tirade",
+      "senseId": "tirade%1:10:00::",
+      "synsetId": "07248075-n",
+      "pos": "noun",
+      "en": "After discovering the repeated delays, the manager delivered a tirade condemning the entire department.",
+      "ko": "반복된 지연을 발견한 관리자는 부서 전체를 비난하는 긴 질책을 쏟아냈다.",
+      "cueKo": "단순히 긴 말이 아니라 강한 비난이 담긴 발언이다.",
+      "sourceRowIds": [
+        "JBKROW005514",
+        "JBKROW008005",
+        "JBKROW008174",
+        "JBKROW008305",
+        "JBKROW013308",
+        "JBKROW013554",
+        "JBKROW034006"
+      ],
+      "sourceMeaningKo": "장광설, 길게 늘어놓는 말; 꾸짖는 말",
+      "matchEvidence": {
+        "sourceDefinition": "a speech of violent denunciation",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "chasm",
+      "senseId": "chasm%1:17:00::",
+      "synsetId": "09265295-n",
+      "pos": "noun",
+      "en": "A narrow bridge crossed the chasm, with the river visible far below.",
+      "ko": "좁은 다리가 깊게 갈라진 틈 위를 가로질렀고 강물이 저 아래 보였다.",
+      "cueKo": "다리와 훨씬 아래의 강물이 지면의 깊은 틈을 드러낸다.",
+      "sourceRowIds": [
+        "JBKROW005711",
+        "JBKROW006477",
+        "JBKROW009012",
+        "JBKROW010893",
+        "JBKROW011575"
+      ],
+      "sourceMeaningKo": "아주 깊은 틈",
+      "matchEvidence": {
+        "sourceDefinition": "a deep opening in the earth's surface",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "jocose",
+      "senseId": "jocose%5:00:00:humorous:00",
+      "synsetId": "01270186-s",
+      "pos": "adjective",
+      "en": "His jocose remarks about the team's muddy shoes made the exhausted hikers laugh.",
+      "ko": "팀의 진흙투성이 신발에 대한 그의 익살스러운 말에 지친 등산객들이 웃었다.",
+      "cueKo": "웃음을 유발한 가벼운 농담이라는 문맥이다.",
+      "sourceRowIds": [
+        "JBKROW005842",
+        "JBKROW007295",
+        "JBKROW009113",
+        "JBKROW012467"
+      ],
+      "sourceMeaningKo": "익살스러운",
+      "matchEvidence": {
+        "sourceDefinition": "characterized by jokes and good humor",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "lachrymose",
+      "senseId": "lachrymose%5:00:00:sorrowful:00",
+      "synsetId": "01368155-s",
+      "pos": "adjective",
+      "en": "The lachrymose farewell speech was repeatedly interrupted as the speaker wiped away tears.",
+      "ko": "슬픔에 잠긴 작별 연설은 연사가 눈물을 닦느라 여러 차례 중단되었다.",
+      "cueKo": "눈물을 닦는 행동과 작별 상황이 슬픔을 보여 준다.",
+      "sourceRowIds": [
+        "JBKROW006050",
+        "JBKROW007308",
+        "JBKROW012487"
+      ],
+      "sourceMeaningKo": "잘 우는, 애절한",
+      "matchEvidence": {
+        "sourceDefinition": "showing sorrow",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "truce",
+      "senseId": "truce%1:26:00::",
+      "synsetId": "13994359-n",
+      "pos": "noun",
+      "en": "A temporary truce allowed both armies to collect their wounded before negotiations resumed.",
+      "ko": "일시적인 휴전 덕분에 협상이 재개되기 전에 양측 군대가 부상자들을 수습할 수 있었다.",
+      "cueKo": "적대 행위를 잠시 멈춘 상태이며 분쟁의 최종 해결은 아니다.",
+      "sourceRowIds": [
+        "JBKROW000154",
+        "JBKROW003912",
+        "JBKROW005609",
+        "JBKROW008040",
+        "JBKROW010656",
+        "JBKROW013349"
+      ],
+      "sourceMeaningKo": "휴전",
+      "matchEvidence": {
+        "sourceDefinition": "a state of peace agreed to between opponents so they can discuss peace terms",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "indignity",
+      "senseId": "indignity%1:04:00::",
+      "synsetId": "01227788-n",
+      "pos": "noun",
+      "en": "Being forced to apologize for a mistake she had not made was an indignity she found hard to bear.",
+      "ko": "자신이 하지 않은 실수에 대해 억지로 사과해야 하는 것은 그녀가 견디기 힘든 수모였다.",
+      "cueKo": "부당한 사과 강요가 개인의 존엄을 훼손한다.",
+      "sourceRowIds": [
+        "JBKROW000539",
+        "JBKROW003002"
+      ],
+      "sourceMeaningKo": "불명예",
+      "matchEvidence": {
+        "sourceDefinition": "an affront to one's dignity or self-esteem",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "infuriate",
+      "senseId": "infuriate%2:37:00::",
+      "synsetId": "01790725-v",
+      "pos": "verb",
+      "en": "The decision to reward the official who had concealed the losses was certain to infuriate the investors.",
+      "ko": "손실을 숨긴 담당자에게 보상하기로 한 결정은 투자자들을 격분하게 할 것이 분명했다.",
+      "cueKo": "잘못을 저지른 사람에게 보상한다는 부당함이 강한 분노의 원인이다.",
+      "sourceRowIds": [
+        "JBKROW000543",
+        "JBKROW003013"
+      ],
+      "sourceMeaningKo": "분노하게 하다",
+      "matchEvidence": {
+        "sourceDefinition": "make furious",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "crux",
+      "senseId": "crux%1:10:00::",
+      "synsetId": "06619047-n",
+      "pos": "noun",
+      "en": "The crux of the dispute was not the price but who would bear the risk if the project failed.",
+      "ko": "분쟁의 핵심은 가격이 아니라 사업이 실패할 경우 누가 위험을 부담하느냐였다.",
+      "cueKo": "not A but B가 논쟁의 핵심을 가격에서 위험 부담으로 좁힌다.",
+      "sourceRowIds": [
+        "JBKROW000554",
+        "JBKROW002396"
+      ],
+      "sourceMeaningKo": "급소; 핵심",
+      "matchEvidence": {
+        "sourceDefinition": "the most important point",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "trait",
+      "senseId": "trait%1:07:00::",
+      "synsetId": "04623416-n",
+      "pos": "noun",
+      "en": "Patience was the trait that distinguished her from colleagues who abandoned difficult tasks quickly.",
+      "ko": "인내심은 어려운 일을 쉽게 포기하는 동료들과 그녀를 구별하는 특징이었다.",
+      "cueKo": "사람을 구별하는 지속적인 성격상의 특징을 가리킨다.",
+      "sourceRowIds": [
+        "JBKROW000566",
+        "JBKROW003898",
+        "JBKROW005239",
+        "JBKROW008014"
+      ],
+      "sourceMeaningKo": "특징",
+      "matchEvidence": {
+        "sourceDefinition": "a distinguishing feature of your personal nature",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "self-possession",
+      "senseId": "self-possession%1:07:00::",
+      "synsetId": "04869236-n",
+      "pos": "noun",
+      "en": "Even when the equipment failed during her presentation, she maintained her self-possession and continued calmly.",
+      "ko": "발표 중 장비가 고장 났을 때에도 그녀는 침착함을 유지하며 차분히 계속했다.",
+      "cueKo": "갑작스러운 문제에도 행동과 감정을 통제했다는 점이 단서다.",
+      "sourceRowIds": [
+        "JBKROW000570",
+        "JBKROW003708",
+        "JBKROW004838",
+        "JBKROW007811",
+        "JBKROW010125",
+        "JBKROW013072"
+      ],
+      "sourceMeaningKo": "냉정, 침착, 자제(自制)",
+      "matchEvidence": {
+        "sourceDefinition": "the trait of resolutely controlling your own behavior",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "pandemonium",
+      "senseId": "pandemonium%1:26:00::",
+      "synsetId": "13999769-n",
+      "pos": "noun",
+      "en": "When two conflicting evacuation orders were announced, pandemonium broke out in the crowded hall.",
+      "ko": "서로 모순되는 두 대피 지시가 발표되자 붐비는 홀에 대혼란이 벌어졌다.",
+      "cueKo": "상충하는 지시와 군중의 무질서가 연결된다.",
+      "sourceRowIds": [
+        "JBKROW000765",
+        "JBKROW003431"
+      ],
+      "sourceMeaningKo": "복마전, 대혼란",
+      "matchEvidence": {
+        "sourceDefinition": "a state of extreme confusion and disorder",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "unscathed",
+      "senseId": "unscathed%5:00:00:uninjured:00",
+      "synsetId": "01322654-s",
+      "pos": "adjective",
+      "en": "Although the bicycle was badly damaged, its rider emerged unscathed without a single scratch.",
+      "ko": "자전거는 심하게 망가졌지만 탄 사람은 긁힌 상처 하나 없이 무사했다.",
+      "cueKo": "물건의 손상과 사람이 다치지 않음이 대조된다.",
+      "sourceRowIds": [
+        "JBKROW001128",
+        "JBKROW003953",
+        "JBKROW010272",
+        "JBKROW013417"
+      ],
+      "sourceMeaningKo": "다치지 않은",
+      "matchEvidence": {
+        "sourceDefinition": "not injured or harmed",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "encomium",
+      "senseId": "encomium%1:10:00::",
+      "synsetId": "06706894-n",
+      "pos": "noun",
+      "en": "The award ceremony ended with an encomium praising the scientist's lifelong service to the community.",
+      "ko": "시상식은 과학자가 평생 지역사회에 봉사한 일을 칭송하는 찬사로 끝났다.",
+      "cueKo": "공식 행사에서 업적을 높이 평가하는 발언이다.",
+      "sourceRowIds": [
+        "JBKROW004294",
+        "JBKROW006814",
+        "JBKROW008287",
+        "JBKROW011948",
+        "JBKROW029272"
+      ],
+      "sourceMeaningKo": "칭찬",
+      "matchEvidence": {
+        "sourceDefinition": "a formal expression of praise",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "aphorism",
+      "senseId": "aphorism%1:10:00::",
+      "synsetId": "07167838-n",
+      "pos": "noun",
+      "en": "The teacher began with a brief aphorism about patience, then illustrated its lesson with a story.",
+      "ko": "교사는 인내에 관한 짧은 격언으로 시작한 뒤 이야기로 그 교훈을 설명했다.",
+      "cueKo": "짧은 말에 일반적인 교훈이 담겨 있다는 점이 핵심이다.",
+      "sourceRowIds": [
+        "JBKROW004675",
+        "JBKROW006276",
+        "JBKROW008161",
+        "JBKROW013900",
+        "JBKROW015705",
+        "JBKROW024021",
+        "JBKROW030224",
+        "JBKROW034399"
+      ],
+      "sourceMeaningKo": "금언, 격언",
+      "matchEvidence": {
+        "sourceDefinition": "a short pithy instructive saying",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "inane",
+      "senseId": "inane%5:00:00:stupid:00",
+      "synsetId": "00442050-s",
+      "pos": "adjective",
+      "en": "The inane suggestion that a broken clock would fix itself if ignored helped nobody.",
+      "ko": "고장 난 시계를 무시하면 저절로 고쳐질 것이라는 어리석은 제안은 누구에게도 도움이 되지 않았다.",
+      "cueKo": "문제의 원인과 무관한 해결책의 어리석음을 드러낸다.",
+      "sourceRowIds": [
+        "JBKROW005601",
+        "JBKROW007197",
+        "JBKROW009777",
+        "JBKROW012327",
+        "JBKROW025987",
+        "JBKROW031986"
+      ],
+      "sourceMeaningKo": "어리석은; 무의미한",
+      "matchEvidence": {
+        "sourceDefinition": "extremely silly or stupid",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "impecunious",
+      "senseId": "impecunious%5:00:00:poor:00",
+      "synsetId": "02030912-s",
+      "pos": "adjective",
+      "en": "The impecunious student borrowed textbooks because she could not afford to buy them.",
+      "ko": "돈이 없는 학생은 교과서를 살 형편이 되지 않아 빌렸다.",
+      "cueKo": "필요한 책을 살 돈이 부족하다는 구체적 상황이다.",
+      "sourceRowIds": [
+        "JBKROW005604",
+        "JBKROW007160",
+        "JBKROW009924",
+        "JBKROW012299",
+        "JBKROW024530",
+        "JBKROW031939"
+      ],
+      "sourceMeaningKo": "무일푼의",
+      "matchEvidence": {
+        "sourceDefinition": "not having enough money to pay for necessities",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "impugn",
+      "senseId": "impugn%2:32:00::",
+      "synsetId": "00869673-v",
+      "pos": "verb",
+      "en": "The lawyer sought to impugn the witness's honesty by pointing to contradictory statements.",
+      "ko": "변호사는 모순되는 진술을 지적해 증인의 정직성에 의문을 제기하려 했다.",
+      "cueKo": "진술의 불일치를 근거로 신뢰성을 공격한다.",
+      "sourceRowIds": [
+        "JBKROW006004",
+        "JBKROW007182"
+      ],
+      "sourceMeaningKo": "의문을 제기하다; 비난하다",
+      "matchEvidence": {
+        "sourceDefinition": "attack as false or wrong",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "lithe",
+      "senseId": "lithe%5:00:00:graceful:00",
+      "synsetId": "01143790-s",
+      "pos": "adjective",
+      "en": "The lithe dancer bent and turned with an ease that made the difficult sequence look effortless.",
+      "ko": "유연한 무용수는 자연스럽게 몸을 굽히고 돌아 어려운 동작이 힘들이지 않은 것처럼 보이게 했다.",
+      "cueKo": "몸의 가볍고 유연한 움직임을 묘사한다.",
+      "sourceRowIds": [
+        "JBKROW006006",
+        "JBKROW007344",
+        "JBKROW008991",
+        "JBKROW012526"
+      ],
+      "sourceMeaningKo": "나긋나긋한",
+      "matchEvidence": {
+        "sourceDefinition": "gracefully thin and bending and moving with ease",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "taciturn",
+      "senseId": "taciturn%3:00:00::",
+      "synsetId": "02391948-a",
+      "pos": "adjective",
+      "en": "The taciturn caretaker rarely spoke, answering most questions with a nod.",
+      "ko": "말수가 적은 관리인은 거의 말하지 않고 대부분의 질문에 고개를 끄덕여 답했다.",
+      "cueKo": "평소 말이 적다는 습관적 성향을 나타낸다.",
+      "sourceRowIds": [
+        "JBKROW006065",
+        "JBKROW007963",
+        "JBKROW009979",
+        "JBKROW013261"
+      ],
+      "sourceMeaningKo": "(성격이) 뚱한; 말수가 적은",
+      "matchEvidence": {
+        "sourceDefinition": "habitually reserved and uncommunicative",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "animosity",
+      "senseId": "animosity%1:12:00::",
+      "synsetId": "07563566-n",
+      "pos": "noun",
+      "en": "Years of unfair treatment had created animosity between the workers and the owners.",
+      "ko": "오랜 부당 대우로 노동자들과 소유주들 사이에 적대감이 생겼다.",
+      "cueKo": "지속된 부당함이 상대에 대한 악감정으로 이어진다.",
+      "sourceRowIds": [
+        "JBKROW008398",
+        "JBKROW011345",
+        "JBKROW027545",
+        "JBKROW030207"
+      ],
+      "sourceMeaningKo": "적대감",
+      "matchEvidence": {
+        "sourceDefinition": "a feeling of ill will arousing active hostility",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "resentment",
+      "senseId": "resentment%1:12:00::",
+      "synsetId": "07564444-n",
+      "pos": "noun",
+      "en": "Her resentment grew when colleagues repeatedly received credit for work she had done.",
+      "ko": "동료들이 그녀가 한 일의 공을 반복해서 인정받자 그녀의 분노가 커졌다.",
+      "cueKo": "자신의 공이 부당하게 남에게 돌아가 생기는 원망이다.",
+      "sourceRowIds": [
+        "JBKROW009228",
+        "JBKROW012976"
+      ],
+      "sourceMeaningKo": "분함",
+      "matchEvidence": {
+        "sourceDefinition": "a feeling of deep and bitter anger and ill-will",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "deign",
+      "senseId": "deign%2:41:00::",
+      "synsetId": "02597468-v",
+      "pos": "verb",
+      "en": "The arrogant official would not deign to answer questions from ordinary residents.",
+      "ko": "그 오만한 공무원은 평범한 주민들의 질문에 답해 줄 생각조차 하지 않았다.",
+      "cueKo": "답변을 자신의 격에 맞지 않는 일처럼 여기는 태도다.",
+      "sourceRowIds": [
+        "JBKROW000258"
+      ],
+      "sourceMeaningKo": "황송하게도 ~하다; 일부러 ~해 주다",
+      "matchEvidence": {
+        "sourceDefinition": "do something that one considers to be below one's dignity",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "dishearten",
+      "senseId": "dishearten%2:37:00::",
+      "synsetId": "01823354-v",
+      "pos": "verb",
+      "en": "The first rejection did not dishearten her; she revised the proposal and submitted it again.",
+      "ko": "첫 거절은 그녀를 낙담시키지 못했다. 그녀는 제안서를 고쳐 다시 제출했다.",
+      "cueKo": "낙담의 원인이 될 수 있는 거절에도 의욕을 잃지 않았다는 부정 문맥이다.",
+      "sourceRowIds": [
+        "JBKROW001400",
+        "JBKROW002514",
+        "JBKROW024887",
+        "JBKROW031104"
+      ],
+      "sourceMeaningKo": "낙담시키다",
+      "matchEvidence": {
+        "sourceDefinition": "take away the enthusiasm of",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "mirth",
+      "senseId": "mirth%1:12:00::",
+      "synsetId": "07544765-n",
+      "pos": "noun",
+      "en": "The unexpected joke filled the room with mirth, and the audience kept laughing long after it ended.",
+      "ko": "뜻밖의 농담으로 방 안에 즐거움이 가득했고 청중은 농담이 끝난 뒤에도 한참 웃었다.",
+      "cueKo": "계속되는 웃음이 유쾌한 즐거움을 보여 준다.",
+      "sourceRowIds": [
+        "JBKROW001696",
+        "JBKROW003244"
+      ],
+      "sourceMeaningKo": "환희",
+      "matchEvidence": {
+        "sourceDefinition": "great merriment",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "lissome",
+      "senseId": "lissome%5:00:00:graceful:00",
+      "synsetId": "01143790-s",
+      "pos": "adjective",
+      "en": "The lissome gymnast moved through the narrow space with smooth, flexible movements.",
+      "ko": "몸이 유연한 체조 선수는 좁은 공간을 부드럽고 유연한 동작으로 지나갔다.",
+      "cueKo": "몸을 쉽게 굽히고 움직이는 신체적 유연함이다.",
+      "sourceRowIds": [
+        "JBKROW001897",
+        "JBKROW003151",
+        "JBKROW005448",
+        "JBKROW007342"
+      ],
+      "sourceMeaningKo": "유연한",
+      "matchEvidence": {
+        "sourceDefinition": "gracefully thin and bending and moving with ease",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "destitution",
+      "senseId": "destitution%1:26:01::",
+      "synsetId": "14517197-n",
+      "pos": "noun",
+      "en": "After losing both her income and her home, she faced destitution and depended on emergency aid.",
+      "ko": "수입과 집을 모두 잃은 뒤 그녀는 극심한 빈곤에 처해 긴급 지원에 의존했다.",
+      "cueKo": "생활 기반을 잃고 외부 도움이 필요한 궁핍 상태다.",
+      "sourceRowIds": [
+        "JBKROW004510",
+        "JBKROW006685",
+        "JBKROW009946",
+        "JBKROW011796",
+        "JBKROW024516",
+        "JBKROW031031",
+        "JBKROW034408"
+      ],
+      "sourceMeaningKo": "빈곤",
+      "matchEvidence": {
+        "sourceDefinition": "a state without friends or money or prospects",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "stentorian",
+      "senseId": "stentorian%5:00:00:full:01",
+      "synsetId": "01459756-s",
+      "pos": "adjective",
+      "en": "The coach's stentorian voice carried across the field without a microphone.",
+      "ko": "코치의 우렁찬 목소리는 마이크 없이도 운동장 건너편까지 들렸다.",
+      "cueKo": "멀리까지 울리는 크고 깊은 목소리가 단서다.",
+      "sourceRowIds": [
+        "JBKROW005262",
+        "JBKROW007893",
+        "JBKROW010176",
+        "JBKROW013195"
+      ],
+      "sourceMeaningKo": "(목소리가) 우렁찬",
+      "matchEvidence": {
+        "sourceDefinition": "(used of the voice or sound) deep and resonant",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "bemuse",
+      "senseId": "bemuse%2:37:00::",
+      "synsetId": "01795261-v",
+      "pos": "verb",
+      "en": "The contradictory directions seemed to bemuse the visitors, who stood still and looked at one another.",
+      "ko": "서로 모순되는 안내는 방문객들을 어리둥절하게 만든 듯했고, 그들은 멈춰 서서 서로를 바라보았다.",
+      "cueKo": "방향을 정하지 못한 반응이 혼란을 나타내며 즐겁게 한다는 뜻은 아니다.",
+      "sourceRowIds": [
+        "JBKROW005314",
+        "JBKROW006392",
+        "JBKROW010257",
+        "JBKROW011453"
+      ],
+      "sourceMeaningKo": "멍하게 만들다",
+      "matchEvidence": {
+        "sourceDefinition": "cause to be confused emotionally",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "incise",
+      "senseId": "incise%2:35:00::",
+      "synsetId": "01558524-v",
+      "pos": "verb",
+      "en": "The craft worker used a sharp tool to incise a pattern into the wooden panel.",
+      "ko": "장인은 날카로운 도구로 나무판을 파서 무늬를 새겼다.",
+      "cueKo": "표면을 잘라 안쪽으로 선을 내는 행위다.",
+      "sourceRowIds": [
+        "JBKROW005375",
+        "JBKROW007207"
+      ],
+      "sourceMeaningKo": "절개하다",
+      "matchEvidence": {
+        "sourceDefinition": "make an incision into by carving or cutting",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "armistice",
+      "senseId": "armistice%1:26:00::",
+      "synsetId": "13994359-n",
+      "pos": "noun",
+      "en": "An armistice stopped the fighting while representatives discussed the terms of a longer peace.",
+      "ko": "대표들이 더 지속적인 평화의 조건을 논의하는 동안 휴전 협정으로 전투가 중단되었다.",
+      "cueKo": "전투 중단과 영구적 평화 협정은 구분된다.",
+      "sourceRowIds": [
+        "JBKROW005466",
+        "JBKROW006302",
+        "JBKROW017738"
+      ],
+      "sourceMeaningKo": "휴전",
+      "matchEvidence": {
+        "sourceDefinition": "a state of peace agreed to between opponents so they can discuss peace terms",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "anhydrous",
+      "senseId": "anhydrous%3:00:00::",
+      "synsetId": "02566320-a",
+      "pos": "adjective",
+      "en": "The laboratory stored the anhydrous compound in a sealed container to keep moisture out.",
+      "ko": "실험실은 수분이 들어가지 않도록 무수 화합물을 밀봉 용기에 보관했다.",
+      "cueKo": "물이 없는 상태를 유지하기 위해 습기를 막는다는 문맥이다.",
+      "sourceRowIds": [
+        "JBKROW005484",
+        "JBKROW006264",
+        "JBKROW010573",
+        "JBKROW011343",
+        "JBKROW014386",
+        "JBKROW015691"
+      ],
+      "sourceMeaningKo": "무수(無水)의",
+      "matchEvidence": {
+        "sourceDefinition": "without water; especially without water of crystallization",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "innuendo",
+      "senseId": "innuendo%1:10:00::",
+      "synsetId": "07253115-n",
+      "pos": "noun",
+      "en": "Without making a direct accusation, she used innuendo to suggest that the funds had been misused.",
+      "ko": "그녀는 직접 고발하지 않고 자금이 오용되었다는 식으로 빗대어 비난했다.",
+      "cueKo": "명시적 비난 대신 부정적 의심을 간접적으로 암시한다.",
+      "sourceRowIds": [
+        "JBKROW005676",
+        "JBKROW007250"
+      ],
+      "sourceMeaningKo": "비꼼",
+      "matchEvidence": {
+        "sourceDefinition": "an indirect (and usually malicious) implication",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "compunction",
+      "senseId": "compunction%1:12:00::",
+      "synsetId": "07551462-n",
+      "pos": "noun",
+      "en": "He felt compunction after blaming a colleague for his own error and went back to apologize.",
+      "ko": "그는 자신의 잘못을 동료 탓으로 돌린 뒤 양심의 가책을 느껴 돌아가 사과했다.",
+      "cueKo": "잘못된 행동에 대한 후회가 사과로 이어진다.",
+      "sourceRowIds": [
+        "JBKROW005796",
+        "JBKROW006535",
+        "JBKROW019936",
+        "JBKROW021054",
+        "JBKROW029865",
+        "JBKROW030718"
+      ],
+      "sourceMeaningKo": "양심의 가책",
+      "matchEvidence": {
+        "sourceDefinition": "a feeling of deep regret (usually for some misdeed)",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "sycophant",
+      "senseId": "sycophant%1:18:00::",
+      "synsetId": "10704310-n",
+      "pos": "noun",
+      "en": "The director surrounded herself with sycophants who praised every decision in hopes of promotion.",
+      "ko": "그 책임자는 승진을 바라며 모든 결정을 칭찬하는 아첨꾼들로 주변을 채웠다.",
+      "cueKo": "칭찬의 목적이 개인적 이익이라는 점이 핵심이다.",
+      "sourceRowIds": [
+        "JBKROW006019",
+        "JBKROW007956"
+      ],
+      "sourceMeaningKo": "알랑쇠; 아첨꾼",
+      "matchEvidence": {
+        "sourceDefinition": "a person who tries to please someone in order to gain a personal advantage",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "flatter",
+      "senseId": "flatter%2:32:00::",
+      "synsetId": "00881748-v",
+      "pos": "verb",
+      "en": "He tried to flatter the editor by calling an ordinary article a masterpiece.",
+      "ko": "그는 평범한 기사를 걸작이라고 부르며 편집자에게 아첨하려 했다.",
+      "cueKo": "실제 평가보다 과장된 칭찬을 의도적으로 한다.",
+      "sourceRowIds": [
+        "JBKROW008354",
+        "JBKROW009616",
+        "JBKROW012115",
+        "JBKROW027529",
+        "JBKROW031530"
+      ],
+      "sourceMeaningKo": "아첨하다",
+      "matchEvidence": {
+        "sourceDefinition": "praise somewhat dishonestly",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "machination",
+      "senseId": "machination%1:09:00::",
+      "synsetId": "05917114-n",
+      "pos": "noun",
+      "en": "The investigation uncovered a machination to remove the rival by planting false evidence.",
+      "ko": "조사에서 거짓 증거를 심어 경쟁자를 제거하려는 교묘한 음모가 드러났다.",
+      "cueKo": "여러 행동을 계획해 상대에게 해를 끼치려는 책략이다.",
+      "sourceRowIds": [
+        "JBKROW008596",
+        "JBKROW012545"
+      ],
+      "sourceMeaningKo": "교묘한 책략",
+      "matchEvidence": {
+        "sourceDefinition": "a crafty and involved plot to achieve your (usually sinister) ends",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "equivocate",
+      "senseId": "equivocate%2:32:00::",
+      "synsetId": "00837185-v",
+      "pos": "verb",
+      "en": "Asked whether he had approved the payment, the official began to equivocate rather than say yes or no.",
+      "ko": "지급을 승인했느냐는 질문에 공무원은 그렇다거나 아니라고 답하는 대신 얼버무리기 시작했다.",
+      "cueKo": "명확한 답을 의도적으로 피하는 말하기 방식이다.",
+      "sourceRowIds": [
+        "JBKROW008626",
+        "JBKROW011985"
+      ],
+      "sourceMeaningKo": "모호하게 말하다",
+      "matchEvidence": {
+        "sourceDefinition": "be deliberately ambiguous or unclear in order to mislead or withhold information",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "spindly",
+      "senseId": "spindly%5:00:00:thin:03",
+      "synsetId": "00992786-s",
+      "pos": "adjective",
+      "en": "The spindly sapling had a long, thin trunk that bent under the weight of its few branches.",
+      "ko": "가늘고 긴 어린나무는 몇 안 되는 가지의 무게에도 줄기가 휘어졌다.",
+      "cueKo": "길이에 비해 가늘고 약해 보이는 형태가 단서다.",
+      "sourceRowIds": [
+        "JBKROW008804",
+        "JBKROW013159"
+      ],
+      "sourceMeaningKo": "가냘픈",
+      "matchEvidence": {
+        "sourceDefinition": "long and lean",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "faze",
+      "senseId": "faze%2:37:00::",
+      "synsetId": "01787700-v",
+      "pos": "verb",
+      "en": "The unexpected interruption did not faze the speaker, who calmly resumed her explanation.",
+      "ko": "뜻밖의 방해도 연사를 당황하게 하지 못했고 그녀는 침착하게 설명을 이어 갔다.",
+      "cueKo": "평정심을 흔들 수 있는 사건에도 차분함을 유지한 부정 문맥이다.",
+      "sourceRowIds": [
+        "JBKROW010148",
+        "JBKROW010262",
+        "JBKROW012085"
+      ],
+      "sourceMeaningKo": "당황시키다",
+      "matchEvidence": {
+        "sourceDefinition": "disturb the composure of",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "bombast",
+      "senseId": "bombast%1:10:00::",
+      "synsetId": "07101969-n",
+      "pos": "noun",
+      "en": "The speech was full of bombast, promising unprecedented glory without offering a practical plan.",
+      "ko": "그 연설은 실행 가능한 계획 없이 전례 없는 영광을 약속하는 과장된 말로 가득했다.",
+      "cueKo": "거창한 표현과 구체적 내용의 부재가 대비된다.",
+      "sourceRowIds": [
+        "JBKROW010781",
+        "JBKROW011500",
+        "JBKROW018003",
+        "JBKROW020875",
+        "JBKROW024316"
+      ],
+      "sourceMeaningKo": "호언장담",
+      "matchEvidence": {
+        "sourceDefinition": "pompous or pretentious talk or writing",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "hyperbole",
+      "senseId": "hyperbole%1:10:00::",
+      "synsetId": "07121187-n",
+      "pos": "noun",
+      "en": "Calling a short delay an eternity was hyperbole, not a literal description of time.",
+      "ko": "짧은 지연을 영원이라고 부른 것은 시간의 문자 그대로의 묘사가 아니라 과장법이었다.",
+      "cueKo": "실제 시간보다 터무니없이 크게 표현했다.",
+      "sourceRowIds": [
+        "JBKROW010783",
+        "JBKROW012269",
+        "JBKROW014937",
+        "JBKROW016518"
+      ],
+      "sourceMeaningKo": "과장법",
+      "matchEvidence": {
+        "sourceDefinition": "extravagant exaggeration",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "debris",
+      "senseId": "debris%1:27:00::",
+      "synsetId": "14882048-n",
+      "pos": "noun",
+      "en": "After the storm, crews cleared broken branches and other debris from the roads.",
+      "ko": "폭풍 뒤 작업반은 부러진 나뭇가지와 다른 잔해를 도로에서 치웠다.",
+      "cueKo": "파손된 물체의 남은 조각들이 예시로 제시된다.",
+      "sourceRowIds": [
+        "JBKROW000143",
+        "JBKROW002427"
+      ],
+      "sourceMeaningKo": "잔해, 파편",
+      "matchEvidence": {
+        "sourceDefinition": "the remains of something that has been destroyed or broken up",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "setback",
+      "senseId": "setback%1:11:01::",
+      "synsetId": "07491010-n",
+      "pos": "noun",
+      "en": "The failed trial was a setback, but it did not end the research program.",
+      "ko": "실험 실패는 차질이었지만 연구 사업을 끝내지는 않았다.",
+      "cueKo": "진행을 방해한 사건이지 반드시 최종 실패는 아니다.",
+      "sourceRowIds": [
+        "JBKROW000310",
+        "JBKROW003717",
+        "JBKROW004067",
+        "JBKROW015276",
+        "JBKROW017242",
+        "JBKROW017584"
+      ],
+      "sourceMeaningKo": "실패; 후퇴; 차질",
+      "matchEvidence": {
+        "sourceDefinition": "an unfortunate happening that hinders or impedes; something that is thwarting or frustrating",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "capitulate",
+      "senseId": "capitulate%2:33:00::",
+      "synsetId": "01120230-v",
+      "pos": "verb",
+      "en": "With supplies exhausted, the defenders agreed to capitulate under the negotiated terms.",
+      "ko": "보급품이 바닥나자 방어군은 협상된 조건에 따라 항복하기로 했다.",
+      "cueKo": "합의된 조건을 받아들여 저항을 끝내는 상황이다.",
+      "sourceRowIds": [
+        "JBKROW000347",
+        "JBKROW002256"
+      ],
+      "sourceMeaningKo": "항복하다",
+      "matchEvidence": {
+        "sourceDefinition": "surrender under agreed conditions",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "cronyism",
+      "senseId": "cronyism%1:04:00::",
+      "synsetId": "01156974-n",
+      "pos": "noun",
+      "en": "The appointment prompted accusations of cronyism because the successful applicant was the director's unqualified friend.",
+      "ko": "임명된 지원자가 책임자의 자격 없는 친구였기 때문에 그 인사는 측근 편애라는 비판을 불렀다.",
+      "cueKo": "능력보다 개인적 친분으로 자리를 주었다는 문제다.",
+      "sourceRowIds": [
+        "JBKROW000386",
+        "JBKROW002387"
+      ],
+      "sourceMeaningKo": "연고주의(緣故主義)",
+      "matchEvidence": {
+        "sourceDefinition": "favoritism shown to friends and associates (as by appointing them to positions without regard for their qualifications)",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "rectitude",
+      "senseId": "rectitude%1:07:00::",
+      "synsetId": "04833854-n",
+      "pos": "noun",
+      "en": "Her reputation for rectitude rested on refusing bribes even when accepting them would have been profitable.",
+      "ko": "그녀의 청렴하다는 평판은 이익이 되더라도 뇌물을 거절하는 데서 나왔다.",
+      "cueKo": "이익보다 정직을 택하는 행동이 도덕적 올바름을 보여 준다.",
+      "sourceRowIds": [
+        "JBKROW000467",
+        "JBKROW003594",
+        "JBKROW008577",
+        "JBKROW012937"
+      ],
+      "sourceMeaningKo": "청렴",
+      "matchEvidence": {
+        "sourceDefinition": "righteousness as a consequence of being honorable and honest",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "disabuse",
+      "senseId": "disabuse%2:32:00::",
+      "synsetId": "00993609-v",
+      "pos": "verb",
+      "en": "The failed experiment helped disabuse the team of the belief that more pressure always improved the result.",
+      "ko": "실패한 실험은 압력을 높이면 언제나 결과가 좋아진다는 팀의 잘못된 믿음을 바로잡는 데 도움이 되었다.",
+      "cueKo": "disabuse A of B는 A에게서 잘못된 믿음 B를 없애 준다는 구문이다.",
+      "sourceRowIds": [
+        "JBKROW000728",
+        "JBKROW002496"
+      ],
+      "sourceMeaningKo": "어리석음을 깨우치다",
+      "matchEvidence": {
+        "sourceDefinition": "free somebody (from an erroneous belief)",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "euphemism",
+      "senseId": "euphemism%1:10:00::",
+      "synsetId": "06617399-n",
+      "pos": "noun",
+      "en": "Calling a dismissal a career transition is a euphemism that softens an unpleasant event.",
+      "ko": "해고를 경력 전환이라고 부르는 것은 불쾌한 사건을 완곡하게 표현하는 말이다.",
+      "cueKo": "거친 인상을 줄이는 대체 표현이며 사건 자체가 달라지는 것은 아니다.",
+      "sourceRowIds": [
+        "JBKROW000734",
+        "JBKROW002650",
+        "JBKROW018656",
+        "JBKROW021285",
+        "JBKROW025375",
+        "JBKROW031360"
+      ],
+      "sourceMeaningKo": "완곡어법",
+      "matchEvidence": {
+        "sourceDefinition": "an inoffensive or indirect expression that is substituted for one that is considered offensive or too harsh",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "fortress",
+      "senseId": "fortress%1:06:00::",
+      "synsetId": "03390857-n",
+      "pos": "noun",
+      "en": "The stone fortress stood above the valley, its thick walls built to resist attack.",
+      "ko": "돌로 된 요새는 공격을 견디도록 쌓은 두꺼운 성벽과 함께 계곡 위에 서 있었다.",
+      "cueKo": "공격에 대비한 방어용 건축물이다.",
+      "sourceRowIds": [
+        "JBKROW001209",
+        "JBKROW002770",
+        "JBKROW018222",
+        "JBKROW021361",
+        "JBKROW026834",
+        "JBKROW031599"
+      ],
+      "sourceMeaningKo": "요새",
+      "matchEvidence": {
+        "sourceDefinition": "a fortified defensive structure",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "untenable",
+      "senseId": "untenable%5:00:00:unreasonable:00",
+      "synsetId": "01951627-s",
+      "pos": "adjective",
+      "en": "Once the original records contradicted his account, his explanation became untenable.",
+      "ko": "원본 기록이 그의 진술과 모순되자 그의 설명은 더는 옹호할 수 없게 되었다.",
+      "cueKo": "반대 증거 때문에 주장을 정당화할 수 없다는 뜻이다.",
+      "sourceRowIds": [
+        "JBKROW001331",
+        "JBKROW003955"
+      ],
+      "sourceMeaningKo": "유지할 수 없는",
+      "matchEvidence": {
+        "sourceDefinition": "(of theories etc.) incapable of being defended or justified",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "deity",
+      "senseId": "deity%1:18:00::",
+      "synsetId": "09528550-n",
+      "pos": "noun",
+      "en": "The villagers offered gifts to a deity they believed controlled the seasonal rains.",
+      "ko": "주민들은 계절의 비를 다스린다고 믿는 신에게 제물을 바쳤다.",
+      "cueKo": "초자연적 존재에 대한 주민들의 믿음이며 서술자가 사실로 확정하는 것은 아니다.",
+      "sourceRowIds": [
+        "JBKROW001396",
+        "JBKROW002448",
+        "JBKROW005823",
+        "JBKROW006646"
+      ],
+      "sourceMeaningKo": "신(神)",
+      "matchEvidence": {
+        "sourceDefinition": "any supernatural being worshipped as controlling some part of the world or some aspect of life or who is the personification of a force",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "infidelity",
+      "senseId": "infidelity%1:07:00::",
+      "synsetId": "04886056-n",
+      "pos": "noun",
+      "en": "The novel portrays a marriage damaged by infidelity when one partner begins a secret affair.",
+      "ko": "그 소설은 배우자 한 명이 몰래 다른 사람과 관계를 맺으면서 불륜으로 상처 입은 결혼 생활을 그린다.",
+      "cueKo": "배우자에 대한 성적 불성실이라는 문맥으로 한정한다.",
+      "sourceRowIds": [
+        "JBKROW001541",
+        "JBKROW003011"
+      ],
+      "sourceMeaningKo": "부정, 불륜(不倫)",
+      "matchEvidence": {
+        "sourceDefinition": "the quality of being unfaithful",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "impunity",
+      "senseId": "impunity%1:26:00::",
+      "synsetId": "14553126-n",
+      "pos": "noun",
+      "en": "Officials must not be allowed to misuse public funds with impunity while others face penalties.",
+      "ko": "다른 사람들이 처벌받는 동안 공무원들이 처벌 없이 공금을 오용하도록 허용해서는 안 된다.",
+      "cueKo": "with impunity는 처벌을 받지 않고라는 뜻이다.",
+      "sourceRowIds": [
+        "JBKROW001606",
+        "JBKROW002975",
+        "JBKROW004639",
+        "JBKROW007184"
+      ],
+      "sourceMeaningKo": "처벌받지 않음",
+      "matchEvidence": {
+        "sourceDefinition": "exemption from punishment or loss",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "trepidation",
+      "senseId": "trepidation%1:12:00::",
+      "synsetId": "07537282-n",
+      "pos": "noun",
+      "en": "She approached the unfamiliar examination with trepidation, worried that she would misunderstand the instructions.",
+      "ko": "그녀는 지시를 잘못 이해할까 걱정하며 낯선 시험을 두려운 마음으로 맞았다.",
+      "cueKo": "앞으로 닥칠 상황에 대한 불안과 두려움이다.",
+      "sourceRowIds": [
+        "JBKROW001705",
+        "JBKROW003909"
+      ],
+      "sourceMeaningKo": "공포, 전율",
+      "matchEvidence": {
+        "sourceDefinition": "a feeling of alarm or dread",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "prescient",
+      "senseId": "prescient%5:00:00:discerning:00",
+      "synsetId": "00775696-s",
+      "pos": "adjective",
+      "en": "Her warning proved prescient when the shortage she had predicted occurred six months later.",
+      "ko": "그녀가 예측한 부족 사태가 6개월 뒤 발생하면서 그 경고에 선견지명이 있었음이 드러났다.",
+      "cueKo": "미리 예측한 사건이 나중에 실현되었다는 시간 관계가 단서다.",
+      "sourceRowIds": [
+        "JBKROW001741",
+        "JBKROW003520",
+        "JBKROW009760",
+        "JBKROW012829",
+        "JBKROW019614",
+        "JBKROW021911"
+      ],
+      "sourceMeaningKo": "선견지명이 있는",
+      "matchEvidence": {
+        "sourceDefinition": "perceiving the significance of events before they occur",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "pariah",
+      "senseId": "pariah%1:18:00::",
+      "synsetId": "10406011-n",
+      "pos": "noun",
+      "en": "After betraying the group, he became a pariah whom former friends refused to invite.",
+      "ko": "집단을 배신한 뒤 그는 옛 친구들도 초대하지 않는 버림받은 사람이 되었다.",
+      "cueKo": "주변 사람들이 교류를 거부하는 사회적 배척을 나타낸다.",
+      "sourceRowIds": [
+        "JBKROW001840",
+        "JBKROW003434"
+      ],
+      "sourceMeaningKo": "추방된 자",
+      "matchEvidence": {
+        "sourceDefinition": "a person who is rejected (from society or home)",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "rapport",
+      "senseId": "rapport%1:24:00::",
+      "synsetId": "13833952-n",
+      "pos": "noun",
+      "en": "By listening without interrupting, the counselor gradually built rapport with the anxious student.",
+      "ko": "상담사는 말을 끊지 않고 들어 줌으로써 불안해하는 학생과 점차 신뢰 관계를 쌓았다.",
+      "cueKo": "서로 이해하고 믿는 관계를 형성하는 과정이다.",
+      "sourceRowIds": [
+        "JBKROW001863",
+        "JBKROW003576"
+      ],
+      "sourceMeaningKo": "조화로운 관계; 신뢰 관계",
+      "matchEvidence": {
+        "sourceDefinition": "a relationship of mutual understanding or trust and agreement between people",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "plaintive",
+      "senseId": "plaintive%5:00:00:sorrowful:00",
+      "synsetId": "01369073-s",
+      "pos": "adjective",
+      "en": "A plaintive melody drifted from the room, giving the quiet evening a feeling of sorrow.",
+      "ko": "방에서 애처로운 선율이 흘러나와 조용한 저녁에 슬픔을 더했다.",
+      "cueKo": "음악이 슬픔을 표현한다는 뜻이다.",
+      "sourceRowIds": [
+        "JBKROW002000",
+        "JBKROW003492",
+        "JBKROW009121",
+        "JBKROW012789"
+      ],
+      "sourceMeaningKo": "애처로운",
+      "matchEvidence": {
+        "sourceDefinition": "expressing sorrow",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "tyro",
+      "senseId": "tyro%1:18:00::",
+      "synsetId": "10383612-n",
+      "pos": "noun",
+      "en": "As a tyro in the laboratory, he needed guidance on even the most basic procedures.",
+      "ko": "실험실의 초보자로서 그는 가장 기본적인 절차에도 지도가 필요했다.",
+      "cueKo": "경험이 적어 기초부터 배우는 사람이다.",
+      "sourceRowIds": [
+        "JBKROW002011",
+        "JBKROW003923"
+      ],
+      "sourceMeaningKo": "초보",
+      "matchEvidence": {
+        "sourceDefinition": "someone new to a field or activity",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "aspire",
+      "senseId": "aspire%2:31:00::",
+      "synsetId": "00707283-v",
+      "pos": "verb",
+      "en": "Many students aspire to become researchers who can explain problems that still puzzle experts.",
+      "ko": "많은 학생이 아직 전문가들도 풀지 못하는 문제를 설명할 연구자가 되기를 열망한다.",
+      "cueKo": "aspire to become이 장래의 높은 목표를 나타낸다.",
+      "sourceRowIds": [
+        "JBKROW004316",
+        "JBKROW006314",
+        "JBKROW008872",
+        "JBKROW011390",
+        "JBKROW027814",
+        "JBKROW030291"
+      ],
+      "sourceMeaningKo": "열망하다",
+      "matchEvidence": {
+        "sourceDefinition": "have an ambitious plan or a lofty goal",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "deferential",
+      "senseId": "deferential%5:00:00:respectful:00",
+      "synsetId": "02001280-s",
+      "pos": "adjective",
+      "en": "Although she disagreed, she used a deferential tone when addressing the senior scholar.",
+      "ko": "그녀는 동의하지 않았지만 원로 학자에게 말할 때는 공손한 어조를 사용했다.",
+      "cueKo": "의견 불일치와 상대에 대한 존중은 함께 존재할 수 있다.",
+      "sourceRowIds": [
+        "JBKROW004354",
+        "JBKROW006635"
+      ],
+      "sourceMeaningKo": "존경의",
+      "matchEvidence": {
+        "sourceDefinition": "showing deference",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "authenticate",
+      "senseId": "authenticate%2:31:00::",
+      "synsetId": "00666194-v",
+      "pos": "verb",
+      "en": "The museum asked a specialist to authenticate the painting before displaying it as an original.",
+      "ko": "박물관은 그림을 원작으로 전시하기 전에 전문가에게 진품 여부를 입증해 달라고 요청했다.",
+      "cueKo": "단순한 평가가 아니라 진짜 작품인지 확인하는 일이다.",
+      "sourceRowIds": [
+        "JBKROW004432",
+        "JBKROW006339"
+      ],
+      "sourceMeaningKo": "입증하다",
+      "matchEvidence": {
+        "sourceDefinition": "establish the authenticity of something",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "propriety",
+      "senseId": "propriety%1:07:00::",
+      "synsetId": "04905614-n",
+      "pos": "noun",
+      "en": "He questioned the propriety of accepting an expensive gift from a firm seeking public funding.",
+      "ko": "그는 공적 지원을 구하는 기업으로부터 비싼 선물을 받는 것이 적절한지 의문을 제기했다.",
+      "cueKo": "행동이 상황에 맞고 윤리적으로 타당한지를 따진다.",
+      "sourceRowIds": [
+        "JBKROW004450",
+        "JBKROW007652"
+      ],
+      "sourceMeaningKo": "적절성",
+      "matchEvidence": {
+        "sourceDefinition": "correct or appropriate behavior",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "pseudonym",
+      "senseId": "pseudonym%1:10:00::",
+      "synsetId": "06349648-n",
+      "pos": "noun",
+      "en": "The novelist published under a pseudonym to keep her writing separate from her public career.",
+      "ko": "그 소설가는 글쓰기 활동을 공적 경력과 분리하기 위해 필명으로 출간했다.",
+      "cueKo": "실명 대신 작품 발표에 사용하는 이름이다.",
+      "sourceRowIds": [
+        "JBKROW004948",
+        "JBKROW007662",
+        "JBKROW025763",
+        "JBKROW033089"
+      ],
+      "sourceMeaningKo": "가명",
+      "matchEvidence": {
+        "sourceDefinition": "a fictitious name used when the person performs a particular social role",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "contemptuous",
+      "senseId": "contemptuous%5:00:00:disrespectful:00",
+      "synsetId": "02002388-s",
+      "pos": "adjective",
+      "en": "His contemptuous smile suggested that he considered the proposal beneath serious discussion.",
+      "ko": "그의 경멸적인 미소는 그가 그 제안을 진지하게 논의할 가치도 없다고 여김을 시사했다.",
+      "cueKo": "상대를 낮춰 보는 태도를 드러낸다.",
+      "sourceRowIds": [
+        "JBKROW005005",
+        "JBKROW006574",
+        "JBKROW008511",
+        "JBKROW011665",
+        "JBKROW024082",
+        "JBKROW030776"
+      ],
+      "sourceMeaningKo": "경멸적인",
+      "matchEvidence": {
+        "sourceDefinition": "expressing extreme contempt",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "enrage",
+      "senseId": "enrage%2:37:00::",
+      "synsetId": "01799899-v",
+      "pos": "verb",
+      "en": "The deliberate destruction of donated supplies was enough to enrage the volunteers.",
+      "ko": "기부된 물품을 일부러 파괴한 일은 자원봉사자들을 격분하게 하기에 충분했다.",
+      "cueKo": "고의적인 해악이 매우 강한 분노의 원인이 된다.",
+      "sourceRowIds": [
+        "JBKROW005183",
+        "JBKROW006833",
+        "JBKROW009187",
+        "JBKROW011969"
+      ],
+      "sourceMeaningKo": "격분하게 만들다",
+      "matchEvidence": {
+        "sourceDefinition": "put into a rage; make violently angry",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "abhorrence",
+      "senseId": "abhorrence%1:12:00::",
+      "synsetId": "07518669-n",
+      "pos": "noun",
+      "en": "She expressed abhorrence of cruelty and refused to support any practice that caused needless suffering.",
+      "ko": "그녀는 잔혹함에 대한 혐오를 드러내며 불필요한 고통을 주는 어떠한 관행도 지지하지 않았다.",
+      "cueKo": "단순한 비선호보다 강한 증오와 역겨움이 담긴 감정이다.",
+      "sourceRowIds": [
+        "JBKROW005221",
+        "JBKROW006150",
+        "JBKROW026508",
+        "JBKROW027352",
+        "JBKROW029676",
+        "JBKROW030054"
+      ],
+      "sourceMeaningKo": "혐오",
+      "matchEvidence": {
+        "sourceDefinition": "hate coupled with disgust",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "enmesh",
+      "senseId": "enmesh%2:35:00::",
+      "synsetId": "01465969-v",
+      "pos": "verb",
+      "en": "A series of misleading promises could enmesh investors in obligations they had never intended to accept.",
+      "ko": "잇따른 오도하는 약속은 투자자들을 받아들일 의도가 전혀 없던 의무에 얽매이게 할 수 있었다.",
+      "cueKo": "원하지 않은 관계나 의무에 얽혀 벗어나기 어려워지는 비유적 용법이다.",
+      "sourceRowIds": [
+        "JBKROW005264",
+        "JBKROW006829",
+        "JBKROW009296",
+        "JBKROW011966"
+      ],
+      "sourceMeaningKo": "(곤경에) 얽어 넣다",
+      "matchEvidence": {
+        "sourceDefinition": "entangle or catch in (or as if in) a mesh",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "fealty",
+      "senseId": "fealty%1:07:00::",
+      "synsetId": "04885133-n",
+      "pos": "noun",
+      "en": "The ceremony required subjects to swear fealty to the new sovereign.",
+      "ko": "그 의식에서 신민들은 새 군주에게 충성을 맹세해야 했다.",
+      "cueKo": "군주와 신민의 관계에서 요구되는 충성이라는 뜻이다.",
+      "sourceRowIds": [
+        "JBKROW005342",
+        "JBKROW006943"
+      ],
+      "sourceMeaningKo": "충성심",
+      "matchEvidence": {
+        "sourceDefinition": "the loyalty that citizens owe to their country (or subjects to their sovereign)",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "exordium",
+      "senseId": "exordium%1:10:00::",
+      "synsetId": "06408814-n",
+      "pos": "noun",
+      "en": "In the exordium of her speech, she introduced the question that the remaining sections would address.",
+      "ko": "그녀는 연설의 도입부에서 나머지 부분이 다룰 질문을 소개했다.",
+      "cueKo": "본론에 앞서 주제를 소개하는 서두다.",
+      "sourceRowIds": [
+        "JBKROW005586",
+        "JBKROW006891"
+      ],
+      "sourceMeaningKo": "(논문이나 연설의) 도입부",
+      "matchEvidence": {
+        "sourceDefinition": "(rhetoric) the introductory section of an oration or discourse",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "proponent",
+      "senseId": "proponent%1:18:00::",
+      "synsetId": "09794206-n",
+      "pos": "noun",
+      "en": "As a proponent of the plan, he explained its advantages while acknowledging its costs.",
+      "ko": "그 계획의 지지자로서 그는 비용을 인정하면서도 장점을 설명했다.",
+      "cueKo": "어떤 생각이나 방안을 옹호하는 사람이며 단점을 부정해야만 하는 것은 아니다.",
+      "sourceRowIds": [
+        "JBKROW005706",
+        "JBKROW007649"
+      ],
+      "sourceMeaningKo": "찬성론자",
+      "matchEvidence": {
+        "sourceDefinition": "a person who pleads for a cause or propounds an idea",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "connoisseur",
+      "senseId": "connoisseur%1:18:00::",
+      "synsetId": "09975866-n",
+      "pos": "noun",
+      "en": "A connoisseur of ceramics noticed subtle differences in the glaze that ordinary visitors missed.",
+      "ko": "도자기 전문 감식가는 일반 관람객들이 놓친 유약의 미세한 차이를 알아보았다.",
+      "cueKo": "세부 차이를 식별하고 가치를 이해하는 전문적 안목이 단서다.",
+      "sourceRowIds": [
+        "JBKROW006055",
+        "JBKROW006557",
+        "JBKROW011126",
+        "JBKROW011647",
+        "JBKROW028535",
+        "JBKROW030747"
+      ],
+      "sourceMeaningKo": "(미술품 감정) 전문가",
+      "matchEvidence": {
+        "sourceDefinition": "an expert able to appreciate a field; especially in the fine arts",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "prevaricate",
+      "senseId": "prevaricate%2:32:00::",
+      "synsetId": "00837185-v",
+      "pos": "verb",
+      "en": "The spokesperson continued to prevaricate, answering direct questions with carefully vague statements.",
+      "ko": "대변인은 직접적인 질문에 의도적으로 모호한 말로 답하며 계속 얼버무렸다.",
+      "cueKo": "정보를 밝히지 않으려고 명확한 답을 회피한다.",
+      "sourceRowIds": [
+        "JBKROW008627",
+        "JBKROW012831"
+      ],
+      "sourceMeaningKo": "얼버무리다",
+      "matchEvidence": {
+        "sourceDefinition": "be deliberately ambiguous or unclear in order to mislead or withhold information",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "rapprochement",
+      "senseId": "rapprochement%1:04:00::",
+      "synsetId": "01208317-n",
+      "pos": "noun",
+      "en": "The exchange of ambassadors marked a rapprochement after years of hostile relations.",
+      "ko": "대사를 교환한 것은 오랜 적대 관계 이후의 화해를 나타냈다.",
+      "cueKo": "끊어졌거나 악화된 우호 관계를 다시 회복하는 흐름이다.",
+      "sourceRowIds": [
+        "JBKROW009001",
+        "JBKROW012912"
+      ],
+      "sourceMeaningKo": "화해",
+      "matchEvidence": {
+        "sourceDefinition": "the reestablishing of cordial relations",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "reprehend",
+      "senseId": "reprehend%2:32:00::",
+      "synsetId": "00827862-v",
+      "pos": "verb",
+      "en": "The teacher chose to reprehend the deliberate deception, not the student's accidental mistake.",
+      "ko": "교사는 학생의 우발적인 실수가 아니라 고의적인 속임수를 꾸짖기로 했다.",
+      "cueKo": "not A but B의 의미처럼 비난 대상이 의도적인 기만으로 한정된다.",
+      "sourceRowIds": [
+        "JBKROW008297",
+        "JBKROW012962",
+        "JBKROW024828",
+        "JBKROW033279"
+      ],
+      "sourceMeaningKo": "꾸짖다",
+      "matchEvidence": {
+        "sourceDefinition": "to rebuke or reprimand",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "propitiate",
+      "senseId": "propitiate%2:32:00::",
+      "synsetId": "00767258-v",
+      "pos": "verb",
+      "en": "He offered a sincere apology to propitiate the offended host and restore friendly relations.",
+      "ko": "그는 기분이 상한 주인을 달래고 우호 관계를 회복하려고 진심으로 사과했다.",
+      "cueKo": "상대의 노여움을 가라앉혀 관계를 평화롭게 만드는 목적이다.",
+      "sourceRowIds": [
+        "JBKROW008388",
+        "JBKROW009135",
+        "JBKROW009182",
+        "JBKROW012863",
+        "JBKROW025119",
+        "JBKROW033054"
+      ],
+      "sourceMeaningKo": "비위를 맞추다; 회유하다",
+      "matchEvidence": {
+        "sourceDefinition": "make peace with",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "fracas",
+      "senseId": "fracas%1:10:00::",
+      "synsetId": "07199205-n",
+      "pos": "noun",
+      "en": "A loud fracas over the disputed result interrupted the meeting until the chair restored order.",
+      "ko": "논란이 된 결과를 둘러싼 시끄러운 말다툼으로 회의가 중단되었다가 의장이 질서를 회복했다.",
+      "cueKo": "결과를 두고 벌어진 소란스러운 다툼이다.",
+      "sourceRowIds": [
+        "JBKROW009050",
+        "JBKROW012141"
+      ],
+      "sourceMeaningKo": "싸움",
+      "matchEvidence": {
+        "sourceDefinition": "noisy quarrel",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "tiff",
+      "senseId": "tiff%1:10:00::",
+      "synsetId": "07199395-n",
+      "pos": "noun",
+      "en": "Their tiff over whose turn it was to wash the cups ended with laughter.",
+      "ko": "누가 컵을 씻을 차례인지를 두고 벌인 그들의 사소한 말다툼은 웃음으로 끝났다.",
+      "cueKo": "작은 문제를 둘러싼 가벼운 다툼이며 중대한 갈등과 구별된다.",
+      "sourceRowIds": [
+        "JBKROW009055",
+        "JBKROW013303"
+      ],
+      "sourceMeaningKo": "말다툼",
+      "matchEvidence": {
+        "sourceDefinition": "a quarrel about petty points",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "dilemma",
+      "senseId": "dilemma%1:09:00::",
+      "synsetId": "05693891-n",
+      "pos": "noun",
+      "en": "She faced a dilemma: reveal the secret and betray a friend, or remain silent and allow an injustice.",
+      "ko": "그녀는 비밀을 밝혀 친구를 배신할지, 침묵해 부당한 일을 허용할지 진퇴양난에 빠졌다.",
+      "cueKo": "두 선택지 모두 원하지 않는 결과를 낳는다는 점이 핵심이다.",
+      "sourceRowIds": [
+        "JBKROW009277",
+        "JBKROW011815"
+      ],
+      "sourceMeaningKo": "진퇴양난; 난국",
+      "matchEvidence": {
+        "sourceDefinition": "state of uncertainty or perplexity especially as requiring a choice between equally unfavorable options",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "pusillanimous",
+      "senseId": "pusillanimous%5:00:00:cowardly:00",
+      "synsetId": "00267286-s",
+      "pos": "adjective",
+      "en": "The editorial called the officials pusillanimous for abandoning a necessary reform at the first hint of opposition.",
+      "ko": "그 사설은 반대 기미가 보이자마자 필요한 개혁을 포기한 관리들을 소심하다고 비판했다.",
+      "cueKo": "어려움 앞에서 결단과 용기가 부족하다는 비판적 표현이다.",
+      "sourceRowIds": [
+        "JBKROW009725",
+        "JBKROW012884",
+        "JBKROW023913",
+        "JBKROW033108"
+      ],
+      "sourceMeaningKo": "겁 많은",
+      "matchEvidence": {
+        "sourceDefinition": "lacking in courage and manly strength and resolution; contemptibly fearful",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "scarcity",
+      "senseId": "scarcity%1:07:00::",
+      "synsetId": "05124253-n",
+      "pos": "noun",
+      "en": "The scarcity of clean water forced residents to queue for hours at the only functioning well.",
+      "ko": "깨끗한 물의 부족으로 주민들은 유일하게 작동하는 우물에서 몇 시간씩 줄을 서야 했다.",
+      "cueKo": "필요량보다 적은 공급이 긴 대기를 초래한다.",
+      "sourceRowIds": [
+        "JBKROW009952",
+        "JBKROW013038"
+      ],
+      "sourceMeaningKo": "부족; 결핍",
+      "matchEvidence": {
+        "sourceDefinition": "a small and inadequate amount",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "variegated",
+      "senseId": "variegated%5:00:00:varied:00",
+      "synsetId": "02517382-s",
+      "pos": "adjective",
+      "en": "The plant's variegated leaves displayed patches of green, cream, and pale yellow.",
+      "ko": "그 식물의 알록달록한 잎에는 초록색, 크림색, 연노란색 무늬가 나타났다.",
+      "cueKo": "서로 다른 색의 반점이 있는 시각적 특징이다.",
+      "sourceRowIds": [
+        "JBKROW010104",
+        "JBKROW013458"
+      ],
+      "sourceMeaningKo": "얼룩덜룩한",
+      "matchEvidence": {
+        "sourceDefinition": "having a variety of colors",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "rancorous",
+      "senseId": "rancorous%5:00:00:resentful:00",
+      "synsetId": "00117751-s",
+      "pos": "adjective",
+      "en": "The rancorous exchange revived old grievances instead of resolving the current disagreement.",
+      "ko": "원한에 찬 언쟁은 현재의 의견 차이를 해결하기는커녕 오래된 불만을 되살렸다.",
+      "cueKo": "과거의 원망이 말에 배어 있으며 단순한 일시적 반대가 아니다.",
+      "sourceRowIds": [
+        "JBKROW010613",
+        "JBKROW012908"
+      ],
+      "sourceMeaningKo": "원한이 있는",
+      "matchEvidence": {
+        "sourceDefinition": "showing deep-seated resentment",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "understate",
+      "senseId": "understate%2:32:00::",
+      "synsetId": "00842804-v",
+      "pos": "verb",
+      "en": "To call the loss a minor inconvenience would understate the damage to families who lost their homes.",
+      "ko": "그 손실을 사소한 불편이라고 부르면 집을 잃은 가족들의 피해를 축소해서 말하는 셈이다.",
+      "cueKo": "실제 큰 피해를 지나치게 작게 표현하는 대비다.",
+      "sourceRowIds": [
+        "JBKROW010798",
+        "JBKROW013385"
+      ],
+      "sourceMeaningKo": "(실제보다) 축소해서 말하다",
+      "matchEvidence": {
+        "sourceDefinition": "represent as less significant or important",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "expostulate",
+      "senseId": "expostulate%2:32:00::",
+      "synsetId": "00775330-v",
+      "pos": "verb",
+      "en": "She tried to expostulate with him, explaining why abandoning the project immediately would waste years of work.",
+      "ko": "그녀는 사업을 당장 포기하면 수년간의 작업이 낭비되는 이유를 설명하며 그를 만류하려 했다.",
+      "cueKo": "이유를 제시해 상대가 특정 행동을 하지 않도록 설득한다.",
+      "sourceRowIds": [
+        "JBKROW014347"
+      ],
+      "sourceMeaningKo": "(-하지 말라고) 충고하다; 간언하다",
+      "matchEvidence": {
+        "sourceDefinition": "reason with (somebody) for the purpose of dissuasion",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "chorale",
+      "senseId": "chorale%1:10:00::",
+      "synsetId": "07050074-n",
+      "pos": "noun",
+      "en": "The congregation sang a chorale whose solemn melody filled the small Protestant church.",
+      "ko": "회중은 엄숙한 선율이 작은 개신교 교회에 울려 퍼지는 찬송가를 불렀다.",
+      "cueKo": "개신교 예배에서 부르는 장중한 찬송가 선율이라는 문맥이다.",
+      "sourceRowIds": [
+        "JBKROW015370",
+        "JBKROW016499",
+        "JBKROW017586",
+        "JBKROW027203",
+        "JBKROW030640"
+      ],
+      "sourceMeaningKo": "찬가",
+      "matchEvidence": {
+        "sourceDefinition": "a stately Protestant (especially Lutheran) hymn tune",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "quisling",
+      "senseId": "quisling%1:18:00::",
+      "synsetId": "09955251-n",
+      "pos": "noun",
+      "en": "The resistance condemned the official as a quisling for helping the occupying army govern his country.",
+      "ko": "저항 세력은 점령군이 자기 나라를 통치하도록 도운 관리를 매국노라고 비난했다.",
+      "cueKo": "적의 점령 세력에 협력한다는 구체적 의미이며 일반적 배신보다 좁다.",
+      "sourceRowIds": [
+        "JBKROW017918"
+      ],
+      "sourceMeaningKo": "배신자",
+      "matchEvidence": {
+        "sourceDefinition": "someone who collaborates with an enemy occupying force",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "red tape",
+      "senseId": "red_tape%1:04:00::",
+      "synsetId": "01027505-n",
+      "pos": "noun",
+      "en": "The repair was delayed by red tape: four offices demanded copies of the same form.",
+      "ko": "네 기관이 같은 서류의 사본을 요구하는 불필요한 행정 절차 때문에 수리가 지연되었다.",
+      "cueKo": "중복 서류와 시간 낭비가 관료적 번거로움을 보여 준다.",
+      "sourceRowIds": [
+        "JBKROW000263",
+        "JBKROW003595",
+        "JBKROW019759"
+      ],
+      "sourceMeaningKo": "관료주의",
+      "matchEvidence": {
+        "sourceDefinition": "needlessly time-consuming procedure",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "feasible",
+      "senseId": "feasible%5:00:00:possible:00",
+      "synsetId": "01828067-s",
+      "pos": "adjective",
+      "en": "With the existing staff and budget, a smaller pilot project was feasible even though a national rollout was not.",
+      "ko": "기존 인력과 예산으로 전국 시행은 불가능했지만 더 작은 시범 사업은 실행 가능했다.",
+      "cueKo": "현재 가진 자원과 조건 안에서 실현할 수 있다는 뜻이다.",
+      "sourceRowIds": [
+        "JBKROW000527",
+        "JBKROW002711"
+      ],
+      "sourceMeaningKo": "실행 가능한",
+      "matchEvidence": {
+        "sourceDefinition": "capable of being done with means at hand and circumstances as they are",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "plagiarize",
+      "senseId": "plagiarize%2:40:00::",
+      "synsetId": "02282906-v",
+      "pos": "verb",
+      "en": "Students must not plagiarize a published essay by presenting its sentences as their own work.",
+      "ko": "학생들은 출판된 에세이의 문장을 자기 글인 것처럼 제시해 표절해서는 안 된다.",
+      "cueKo": "남의 문장을 출처 없이 자기 것으로 제시하는 행위다.",
+      "sourceRowIds": [
+        "JBKROW000697",
+        "JBKROW003489",
+        "JBKROW028167",
+        "JBKROW029881",
+        "JBKROW032903"
+      ],
+      "sourceMeaningKo": "표절하다",
+      "matchEvidence": {
+        "sourceDefinition": "take without referencing from someone else's writing or speech; of intellectual property",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "somniferous",
+      "senseId": "somniferous%5:00:00:depressant:00",
+      "synsetId": "02316867-s",
+      "pos": "adjective",
+      "en": "The somniferous lecture left several listeners struggling to keep their eyes open.",
+      "ko": "잠이 오게 하는 강의 때문에 몇몇 청중은 눈을 뜨고 있으려고 애썼다.",
+      "cueKo": "청중에게 졸음을 일으키는 효과를 묘사한다.",
+      "sourceRowIds": [
+        "JBKROW000909",
+        "JBKROW003762"
+      ],
+      "sourceMeaningKo": "졸리는",
+      "matchEvidence": {
+        "sourceDefinition": "sleep inducing",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "nepotism",
+      "senseId": "nepotism%1:04:00::",
+      "synsetId": "01157387-n",
+      "pos": "noun",
+      "en": "The hiring process was criticized for nepotism after the director's relatives received jobs without interviews.",
+      "ko": "책임자의 친척들이 면접 없이 일자리를 얻자 채용 과정은 족벌주의라는 비판을 받았다.",
+      "cueKo": "권한 있는 사람의 친족에게 채용상 특혜를 준 상황이다.",
+      "sourceRowIds": [
+        "JBKROW000999",
+        "JBKROW003298",
+        "JBKROW005441",
+        "JBKROW007449",
+        "JBKROW008173"
+      ],
+      "sourceMeaningKo": "족벌(族閥)정치",
+      "matchEvidence": {
+        "sourceDefinition": "favoritism shown to relatives or close friends by those in power (as by giving them jobs)",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "microcosm",
+      "senseId": "microcosm%1:09:00::",
+      "synsetId": "05947032-n",
+      "pos": "noun",
+      "en": "The diverse classroom was a microcosm of the city, reflecting its many languages and traditions.",
+      "ko": "다양한 학생들로 이루어진 교실은 여러 언어와 전통을 반영하는 도시의 축소판이었다.",
+      "cueKo": "작은 집단이 더 큰 전체의 특징을 담고 있다.",
+      "sourceRowIds": [
+        "JBKROW001392",
+        "JBKROW003236",
+        "JBKROW005767",
+        "JBKROW007408"
+      ],
+      "sourceMeaningKo": "축소판",
+      "matchEvidence": {
+        "sourceDefinition": "a miniature model of something",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "imposter",
+      "senseId": "imposter%1:18:00::",
+      "synsetId": "10221154-n",
+      "pos": "noun",
+      "en": "The imposter claimed to be a licensed architect, but the registry contained no record of his qualification.",
+      "ko": "그 사기꾼은 자격을 갖춘 건축가라고 주장했지만 등록부에는 그의 자격 기록이 없었다.",
+      "cueKo": "거짓 신분을 내세워 남을 속이는 사람이다.",
+      "sourceRowIds": [
+        "JBKROW004172",
+        "JBKROW007171"
+      ],
+      "sourceMeaningKo": "사기꾼",
+      "matchEvidence": {
+        "sourceDefinition": "a person who makes deceitful pretenses",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "lexicographer",
+      "senseId": "lexicographer%1:18:00::",
+      "synsetId": "10275777-n",
+      "pos": "noun",
+      "en": "The lexicographer compared thousands of recorded uses before deciding how to define the word.",
+      "ko": "사전 편찬자는 그 단어를 어떻게 정의할지 결정하기 전에 수천 건의 기록된 용례를 비교했다.",
+      "cueKo": "실제 용례를 조사해 사전의 뜻풀이를 작성하는 역할이다.",
+      "sourceRowIds": [
+        "JBKROW004748",
+        "JBKROW007336"
+      ],
+      "sourceMeaningKo": "사전 편찬자",
+      "matchEvidence": {
+        "sourceDefinition": "a compiler or writer of a dictionary; a student of the lexical component of language",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "flippant",
+      "senseId": "flippant%5:00:00:frivolous:00",
+      "synsetId": "02128570-s",
+      "pos": "adjective",
+      "en": "Her flippant joke about the serious accident offended those who expected a thoughtful response.",
+      "ko": "그녀가 심각한 사고를 두고 한 경솔한 농담은 신중한 반응을 기대한 사람들의 기분을 상하게 했다.",
+      "cueKo": "진지해야 할 상황에 부적절하게 가벼운 태도를 보였다.",
+      "sourceRowIds": [
+        "JBKROW004982",
+        "JBKROW006991",
+        "JBKROW024113"
+      ],
+      "sourceMeaningKo": "경박한",
+      "matchEvidence": {
+        "sourceDefinition": "showing inappropriate levity",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "temerity",
+      "senseId": "temerity%1:07:00::",
+      "synsetId": "04866680-n",
+      "pos": "noun",
+      "en": "Ignoring the safety warnings, he had the temerity to cross the unstable bridge alone.",
+      "ko": "그는 안전 경고를 무시하고 흔들리는 다리를 혼자 건너는 만용을 부렸다.",
+      "cueKo": "위험을 무시한 대담함을 비판하는 문맥이다.",
+      "sourceRowIds": [
+        "JBKROW005242",
+        "JBKROW007989"
+      ],
+      "sourceMeaningKo": "만용(蠻勇)",
+      "matchEvidence": {
+        "sourceDefinition": "fearless daring",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "teetotalism",
+      "senseId": "teetotalism%1:04:00::",
+      "synsetId": "01071791-n",
+      "pos": "noun",
+      "en": "Her commitment to teetotalism meant that she declined all alcoholic drinks, not merely strong spirits.",
+      "ko": "그녀는 절대 금주를 지켰으므로 독주뿐 아니라 모든 술을 사양했다.",
+      "cueKo": "음주량을 줄이는 것이 아니라 술을 전혀 마시지 않는다는 뜻이다.",
+      "sourceRowIds": [
+        "JBKROW005745",
+        "JBKROW007987",
+        "JBKROW009659",
+        "JBKROW013282"
+      ],
+      "sourceMeaningKo": "절대 금주주의",
+      "matchEvidence": {
+        "sourceDefinition": "abstaining from alcohol",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "introspective",
+      "senseId": "introspective%3:00:00::",
+      "synsetId": "01353522-a",
+      "pos": "adjective",
+      "en": "In an introspective journal, he examined how fear had shaped his own choices.",
+      "ko": "그는 자기 성찰적인 일기에서 두려움이 자신의 선택을 어떻게 좌우했는지 살폈다.",
+      "cueKo": "외부 사건만 나열하지 않고 자신의 내적 경험과 동기를 검토한다.",
+      "sourceRowIds": [
+        "JBKROW006079",
+        "JBKROW007277"
+      ],
+      "sourceMeaningKo": "내적성찰의",
+      "matchEvidence": {
+        "sourceDefinition": "given to examining own sensory and perceptual experiences",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "charlatan",
+      "senseId": "charlatan%1:18:00::",
+      "synsetId": "10354495-n",
+      "pos": "noun",
+      "en": "The charlatan attracted customers with spectacular promises but had none of the expertise he advertised.",
+      "ko": "그 사기꾼은 화려한 약속으로 고객을 끌어들였지만 광고한 전문 지식은 전혀 없었다.",
+      "cueKo": "전문가인 척하며 과장된 약속으로 사람을 속이는 인물이다.",
+      "sourceRowIds": [
+        "JBKROW006130",
+        "JBKROW006475"
+      ],
+      "sourceMeaningKo": "협잡꾼",
+      "matchEvidence": {
+        "sourceDefinition": "a flamboyant deceiver; one who attracts customers with tricks or jokes",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "malinger",
+      "senseId": "malinger%2:41:00::",
+      "synsetId": "02469555-v",
+      "pos": "verb",
+      "en": "He chose to malinger, pretending to have a fever so that he could avoid the assigned work.",
+      "ko": "그는 맡은 일을 피하려고 열이 있는 척 꾀병을 부리기로 했다.",
+      "cueKo": "의무를 피하려고 아픈 척하는 의도적 행동이다.",
+      "sourceRowIds": [
+        "JBKROW008275",
+        "JBKROW012558",
+        "JBKROW029519",
+        "JBKROW032387"
+      ],
+      "sourceMeaningKo": "꾀병을 부리다; 피하다",
+      "matchEvidence": {
+        "sourceDefinition": "avoid responsibilities and duties, e.g., by pretending to be ill",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "nitpick",
+      "senseId": "nitpick%2:32:00::",
+      "synsetId": "00847897-v",
+      "pos": "verb",
+      "en": "Rather than address the central argument, the reviewer chose to nitpick over a few harmless wording choices.",
+      "ko": "서평자는 핵심 논증을 다루는 대신 문제가 없는 몇몇 표현을 두고 사소한 트집을 잡았다.",
+      "cueKo": "핵심을 제쳐 두고 중요하지 않은 세부에 지나치게 비판적이다.",
+      "sourceRowIds": [
+        "JBKROW008350",
+        "JBKROW012638",
+        "JBKROW024840",
+        "JBKROW032602"
+      ],
+      "sourceMeaningKo": "별것 아닌 트집을 잡다",
+      "matchEvidence": {
+        "sourceDefinition": "be overly critical; criticize minor details",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    },
+    {
+      "headword": "veracity",
+      "senseId": "veracity%1:07:00::",
+      "synsetId": "04879609-n",
+      "pos": "noun",
+      "en": "Her reputation for veracity made colleagues trust her account, even when the news was unwelcome.",
+      "ko": "그녀가 정직하다는 평판 덕분에 동료들은 달갑지 않은 소식일 때도 그녀의 설명을 믿었다.",
+      "cueKo": "여기서는 사람의 거짓말하지 않는 성향을 뜻한다.",
+      "sourceRowIds": [
+        "JBKROW008583",
+        "JBKROW013463"
+      ],
+      "sourceMeaningKo": "진실성",
+      "matchEvidence": {
+        "sourceDefinition": "unwillingness to tell lies",
+        "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+      },
+      "reviewStatus": "ai-reviewed-editorial-example",
+      "provenance": {
+        "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+        "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+        "checkedAt": "2026-10-15",
+        "independentHumanReview": false,
+        "answerEligibility": "not-promoted"
+      }
+    }
+  ],
+  "held": [
+    {
+      "headword": "effeminate",
+      "reason": "원본에 동사·나약함이 혼합되고 사전 정의에 규범적 성별 평가가 있어 이번 자동 참고층에 연결하지 않음",
+      "disposition": "needs-semantic-review"
+    },
+    {
+      "headword": "discomfit",
+      "reason": "원본은 계획 좌절 뜻이나 연결된 단일 OEWN sense는 평정심을 잃게 하다는 뜻이라 예문 자동 확정 보류",
+      "disposition": "needs-semantic-review"
+    },
+    {
+      "headword": "politically correct",
+      "reason": "원본 진보적인 성향과 사전의 정치적 올바름은 동일 뜻으로 단정할 수 없어 보류",
+      "disposition": "needs-semantic-review"
+    },
+    {
+      "headword": "perplexity",
+      "reason": "독립 AI 검토에서 원본 뜻 난국과 초안의 내적 당혹감이 불일치함을 확인. 원본 뜻은 변경하지 않고 표시 대상에서 제외.",
+      "disposition": "needs-semantic-review",
+      "candidate": {
+        "headword": "perplexity",
+        "senseId": "perplexity%1:09:00::",
+        "synsetId": "05693168-n",
+        "pos": "noun",
+        "en": "Her perplexity was evident as she compared three incompatible explanations of the same event.",
+        "ko": "같은 사건에 대한 서로 양립할 수 없는 세 설명을 비교할 때 그녀의 당혹감이 뚜렷했다.",
+        "cueKo": "복잡하고 모순되는 정보 때문에 이해하기 어려워진 상태다.",
+        "sourceRowIds": [
+          "JBKROW005214",
+          "JBKROW007560",
+          "JBKROW024260",
+          "JBKROW032838"
+        ],
+        "sourceMeaningKo": "난국",
+        "matchEvidence": {
+          "sourceDefinition": "trouble or confusion resulting from complexity",
+          "scope": "원본 한국어 뜻과 일치하는 이 lexical sense의 편집 예문. 다른 의미의 수록행에는 연결하지 않음."
+        },
+        "reviewStatus": "ai-reviewed-editorial-example",
+        "provenance": {
+          "english": "FINETUNE original AI-authored learning example; not an OEWN source example",
+          "korean": "FINETUNE 자체 한국어 해석·학습 단서",
+          "checkedAt": "2026-10-15",
+          "independentHumanReview": false,
+          "answerEligibility": "not-promoted"
+        }
+      }
+    }
+  ]
+}

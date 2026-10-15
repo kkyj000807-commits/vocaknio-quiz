@@ -303,6 +303,11 @@ def main() -> int:
     if translation_batch["source"]["archiveSha256"] != actual_hash or translation_batch["source"]["sourceVocabularySha256"] != archive_hash(VOCAB_PATH):
         raise ValueError("Translation source edition does not match the current inputs")
     translations = translation_batch["entries"]
+    editorial_path = ROOT / "data/vocab-learning/editorial-examples-20261015.json"
+    editorial_batch = json.loads(editorial_path.read_text(encoding="utf-8"))
+    if editorial_batch["source"]["archiveSha256"] != actual_hash or editorial_batch["source"]["sourceVocabularySha256"] != archive_hash(VOCAB_PATH):
+        raise ValueError("Editorial source edition does not match the current inputs")
+    editorial_examples = editorial_batch["entries"]
 
     wanted = {normalize_headword(str(item["w"])) for item in vocab}
     aliases_by_key = {key: safe_alias_candidates(key) for key in wanted}
@@ -571,6 +576,40 @@ def main() -> int:
             raise ValueError("Reviewed translation source word/meaning/status mismatch")
         translation_keys.add(signature)
 
+    # Original editorial sentences are NOT dictionary quotations or quiz evidence.
+    # Validate row meaning, lexical sense, POS and definition before exporting them.
+    editorial_by_sense: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
+    editorial_keys: set[tuple[str, str]] = set()
+    for example in editorial_examples:
+        key = normalize_headword(example["headword"])
+        signature = (key, example["senseId"])
+        sense = next((value for value in definitions_by_key.get(key, []) if value["senseId"] == example["senseId"]), None)
+        if signature in editorial_keys or not sense:
+            raise ValueError("Duplicate or unlinked editorial example")
+        if not all(isinstance(example.get(field), str) and example[field].strip() for field in ("en", "ko", "cueKo")):
+            raise ValueError("Incomplete editorial example")
+        if (example.get("reviewStatus") != "ai-reviewed-editorial-example"
+                or sense["synsetId"] != example.get("synsetId")
+                or sense["partOfSpeech"] != example.get("pos")
+                or sense["definition"] != example.get("matchEvidence", {}).get("sourceDefinition")):
+            raise ValueError("Editorial sense/POS/definition/status mismatch")
+        ids = example.get("sourceRowIds", [])
+        if not ids or len(set(ids)) != len(ids) or any(
+                row_id not in source_by_id
+                or normalize_headword(source_by_id[row_id]["w"]) != key
+                or source_by_id[row_id]["k"] != example.get("sourceMeaningKo") for row_id in ids):
+            raise ValueError("Editorial source row/meaning mismatch")
+        editorial_keys.add(signature)
+        editorial_by_sense[signature].append({
+            **{field: example[field] for field in ("en", "ko", "cueKo", "sourceRowIds")},
+            "provenance": "FINETUNE original", "reviewStatus": "ai-reviewed-editorial-example",
+        })
+
+    translations_by_sense: dict[tuple[str, str], list[dict[str, str]]] = defaultdict(list)
+    for translation in translations:
+        translations_by_sense[(normalize_headword(translation["headword"]), translation["senseId"])].append(
+            {field: translation[field] for field in ("en", "ko", "cueKo")})
+
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     for group in GROUPS:
         headwords: dict[str, Any] = {}
@@ -601,13 +640,9 @@ def main() -> int:
                         **{field: sense[field] for field in (
                             "senseId", "synsetId", "partOfSpeech", "definition", "matchedHeadword", "examples"
                         ) if field in sense},
-                        "reviewedExamples": [
-                            {field: translation[field] for field in ("en", "ko", "cueKo")}
-                            for translation in translations
-                            if translation["senseId"] == sense["senseId"]
-                            and normalize_headword(translation["headword"]) == key
-                            and translation["en"] in sense["examples"]
-                        ],
+                        "reviewedExamples": translations_by_sense.get((key, sense["senseId"]), []),
+                        **({"editorialExamples": editorial_by_sense[(key, sense["senseId"])]}
+                           if (key, sense["senseId"]) in editorial_by_sense else {}),
                     }
                     for sense in senses
                 ],
@@ -637,6 +672,9 @@ def main() -> int:
             "referenceExampleSenses": len({sense["senseId"] for senses in definitions_by_key.values() for sense in senses if sense["examples"]}),
             "referenceExampleRows": sum(any(sense["examples"] for sense in definitions_by_key[normalize_headword(str(item["w"]))]) for item in vocab),
             "reviewedExampleTranslations": len(translations),
+            "editorialExampleHeadwords": len({normalize_headword(example["headword"]) for example in editorial_examples}),
+            "editorialExampleSenses": len(editorial_examples),
+            "editorialExampleRows": len({row_id for example in editorial_examples for row_id in example["sourceRowIds"]}),
             "totalRows": total_rows,
             "totalUniqueHeadwords": total_unique,
             "matchedRows": matched_rows,
