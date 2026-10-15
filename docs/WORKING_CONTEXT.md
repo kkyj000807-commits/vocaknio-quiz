@@ -1,5 +1,17 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-15 16:00 KST — 배포 정체 복구·예문 번역/동의어 뜻 공개 완료
+
+공개 source `b817db503c74450ce531d6dc42b5503cf614a92a`, Pages `05efb7bcbaa3dffa8c01d363cfc49636f219050b`, 표시1.0/내부1.29/sourceDirty=false/빌드시각08:18:01 KST. 게시 run38695547128 SUCCESS(15:57 KST), 일반 공개 release 일치, entry-84f749a JS HTTP200/SHA256 `31e0fb94b29472d61b344ead753f0e237055ef329c95a1c2befafd658584f4fc` 빌드와 일치. 사전8/학습8 JSON 모두 HTTP200·의미동일(사전 파일의 Git 줄바꿈 정규화는 원시 해시 차이로 별도 구분). 첫 수동 공개대조 명령은 사전 경로를 1.29로 잘못 지정해 exit1; 실제 oewn-2025 경로 확인 후 재검사 exit0. 배포/앱 실패가 아니며 숨기지 않는다.
+
+기존40→80개 OEWN 영한 예문(+40번역/+40문맥단서), 검수된11sense 관계뜻+43개. 고유 표제어13,347 중 영한+단서155→194(1.45%), 영어용례8,122(60.85%)/정의11,611(86.99%)는 불변. 신규 영어 예문40개나 심층해설40개가 아니라 기존 영어자료 번역·연결 보강이다. 심층112sense/111표제어 불변. AI 의미·품사 대조이며 독립 사람 검수 아님; 신규 출제 승인 없음. 새 held3/누적8, 영어예문 없는5,225표제어·사전 관계뜻대기8,267관계는 남는다.
+
+전체549PASS·1기존SKIP/타입·데이터·관련ESLint·보안 PASS, 새 Production 빌드 exit0(1worker/samplepeak2133MiB), 출력감사 PASS. 동일 b817 입력으로 앞서 완료한 게이트 재사용, 반복 생성/빌드 없음. 격리localhost26731 IAB: SC오답0/1→새로고침 문항/선지/답안 유지→통계0/1→동일유형복습 정답1/1→재접속 통계1/2·논리오답1개 유지. 공개 IAB boast의 brag(자랑하다)/tout(과시하다), commensurate 원문→한국어 해석/단서 펼침 확인. 공개 사용자 답안/기록은 조작하지 않았다. 실기기 Safari/Samsung 및 실제 iPhone 저장 오류 원인은 NOT_VERIFIED.
+
+기존 게시 정체는38595311982의 upload성공→updating_pages timeout→queued/jobs0였다. 동일 검증 SHA를 공식 Pages builds API로 한 번 재게시해38652097608 27초SUCCESS로 복구했다. GitHub 내부 원인은 미확정; 재빌드/RAM문제로 오인하지 않는다. 새 b817 배포는 정상 push만으로 성공, 추가 재게시 요청 없음. 복구는 이전 정상 Pages1f6c85a tree를 새 자식 commit으로 normal push하며 force/reset/학습기록초기화 없음.
+
+상세 영수증: 외부 `2026-10-15-pages-recovery-content.json`, `A-latest.json`. 다음은 기존 섹션별 후보/held·입력해시에서 미처리 번역·개별관계뜻 배치를 이어간다. 완료80예문을 재생성하지 않는다. 아래 ‘빌드/배포 대기’는 이력이며 현행 상태가 아니다. 종료 백업·잠금해제 결과는 외부 영수증에 기록한다.
+
 ## 2026-10-15 08:16 KST — 게시 정체 복구 완료·번역/관계뜻 배치 검증 중
 
 08:18 KST 배치 통합 검사 완료: 전체verify exit0, 타입PASS/549PASS·1기존SKIP(62suitePASS·1SKIP,104.75초,회귀samplepeak2745MiB), 관련ESLint exit0/보안762tracked0findings/diffcheckPASS. 정본·definition quiz·sense questions·active recall·canonical JSON 의미 동일 확인(행말 CRLF 차이는 의미 변경 아님). 아래 ‘현재 검사 중’은 중간 체크포인트이며 이제 source 커밋→새 Production 출력→격리UI·공개 확인 단계다.
