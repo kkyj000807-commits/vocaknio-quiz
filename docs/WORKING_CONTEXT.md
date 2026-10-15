@@ -1,5 +1,13 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-16 00:08 KST — 저장 후보 빌드·실제 앱 20회 새로고침·복원 통과 (미배포)
+
+후보 source `2a5eccd650d279021e05ae8997cf182b8217ef95`, clean입력 Production `output/private-storage-production-20261016` exit0/출력감사PASS. 표시1.0/내부1.29/00:01:06KST/sourceDirty=false. private 준비 `output/finetune-private-deploy` exit0/PREPARED_NOT_DEPLOYED, workers_dev/preview false. 새 원격push/Pages배포/Cloudflareroute활성화 없음.
+
+실제Chromium Production localhost26734: SC오답+북마크→정상새로고침20회(같은문항·선지·응답·오답1·북마크유지)→다음정답→통계1/2→재접속유지. 백업v1파일다운로드→별도빈origin26735에서6추가/3동일/충돌0 검사→복원→reload통계1/2→동일논리유형복습정답→결과→재접속2/3 확인. 오류/무한준비화면없음. 실제 사용자기록은 사용하지 않음. 테스트백업은 Downloads에서 `analysis/qa/synthetic-learning-storage-20261016.json`으로 보관.
+
+393x852 Chromium에서 긴해설끝/다음버튼844px≤852px·가로이탈없음;1024x768탭bottom766/height47·가로이탈없음. 증거 `analysis/qa/storage-production-20261016-mobile.jpg`. 실제iOS Safari/Samsung·실기기키보드/브라우저chrome변동·사용자기존오류원인은 NOT_VERIFIED. IndexedDB도브라우저데이터삭제/eviction에대한클라우드백업이아님. 현재배포BLOCKED는 Cloudflare사용자로그인/Access본인1명정책·익명파일차단 및 실제Safari이관검증 미완료 때문. 기존Pages종료·Private전환 금지유지. 다음은 후보재생성없이 이 빌드로 인증/보호배포/실기기검증. 백업·정상잠금해제는 외부A-latest 영수증참조.
+
 ## 2026-10-16 00:00 KST — 저장 안정화 통합 검사 완료 / 비공개 후보 빌드
 
 기준 source5988fae. 웹12기존키 IndexedDB 원자적 이관(legacy 원문+별도원본copy 보존)/CAS/commit완료확인, 기존 native AsyncStorage 유지. 부분journal 복구·검증, stale migration backup의 최신목록 덮기 차단(22PASS), 독립북마크손상 분리, 실패코드/3회자동재시도/백업경로, lock취득전 응답보관과 순서drain, 다중탭 지연응답의 최신날짜·MASTER·마지막시각 역행 차단. 원시응답·누적횟수 보존. PR4 구현 재사용·보호검사 강화, workers_dev/preview_urls=false; 실제 Cloudflare 로그인과 Access설정 아직 필요. 기존 Pages와 브라우저기록은 변경하지 않음.
