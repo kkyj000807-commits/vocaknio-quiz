@@ -1,0 +1,12 @@
+{
+  // FINETUNE private Safari hosting. No public route until Access is configured.
+  // Preserve /vocaknio-quiz/ so existing Expo asset references continue to resolve.
+  "name": "finetune-private",
+  "compatibility_date": "2026-10-15",
+  "workers_dev": false,
+  "assets": {
+    "directory": "./output/finetune-private-deploy",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}
