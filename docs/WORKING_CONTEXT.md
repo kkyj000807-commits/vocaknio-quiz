@@ -1,5 +1,9 @@
 # FINETUNE 현행 스냅샷
 
+22:23 KST 로그인중 보강 최종: source128d8a5a14484b24237868c9bdd7a35f4e1239bb clean Production output/login-content-production-20261016 exit0/peak2162MiB(report1792156777932-17404-build.json),22:19:25KST/1.0/1.29/sourceDirtyfalse. 출력감사exit0/securityIssues0/missingReferences0(report1792156911732-17404-test.json). prepare-private-deploy exit0/PREPARED_NOT_DEPLOYED,고정 output/finetune-private-deploy 최신후보로준비. workers_dev=false/preview_urls=false 유지; 공개활성화없음. 이전2a5eccd private산출물은 output/finetune-private-deploy-storage-2a5eccd-preserved 에 그대로 보존,ddc9a60빌드도유지.
+
+새Chromium localhost26748 실제UI: gaffe의 gaucherie(눈치없는실수) 표시, abundance의원문 an age of abundance→해석펼침 풍요의시대/문맥단서 확인. 증거 analysis/qa/login-content-translation-20261016.png. 첫search fill은 브라우저clipboard target mismatch로미입력→AX상태재확인후setValue정상; 앱결함으로확정안함. 실제사용자기록/공개답안변경없음. 이전689PASS/전체type/20reload는 unchanged런타임에만재사용, 이번44PASS는 새데이터전수연결·editorial전수표시검사. 새전체회귀·실기기Safari·비공개배포완료라고보고안함. 최신사용자지시상 동일전체검사반복생략 명시. Cloudflare로그인은사용자진행,Access계정1명/HTML·JS·CSS·JSON익명차단 확인 후 이빌드로배포. 백업/잠금해제는 외부A-latest.loginContent20261016 최종영수증.
+
 ## 2026-10-16 22:19 KST — 로그인 중 콘텐츠 증분 +51번역/+9관계뜻
 
 사용자 지시로 이미 통과한 전체689/type/저장·엔진 회귀는 재실행하지 않고 unchanged 코드의 근거로만 재사용. 기존 ddc9a60 clean빌드 보존. 새 변경은 reviewed-examples247→298: 실제OEWN원문51sense의 번역·문맥단서 및 원뜻일치145행, authorAI검토/독립AI·사람검수아님. 부정·가능성·수동·품사 대조, 불일치12표제어 보류. editorial 관계뜻307→316:9개를 OEWN동일synset+실제Wiktionary 별도사전정의 대조 후 참고뜻으로 추가, sourceEvidence에URL/검토일/독립reviewer아님 명시. 예전보류이력은보존하고 새batch9개의해소근거기록, resonance/anonym/gall/taradiddle은추가보류. 원본어휘/정답/앱코드/ID/저장키불변(diffexit0).
