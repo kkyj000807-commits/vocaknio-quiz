@@ -1,4 +1,5 @@
-import { View, type ViewProps } from "react-native";
+import { Text, View, type ViewProps } from "react-native";
+import { useColors } from "@/hooks/use-colors";
 import { WEB_CONTENT_MAX_WIDTH } from "@/lib/layout";
 import { SafeAreaView, type Edge } from "react-native-safe-area-context";
 
@@ -51,6 +52,7 @@ export function ScreenContainer({
   contentMaxWidth = WEB_CONTENT_MAX_WIDTH,
   ...props
 }: ScreenContainerProps) {
+  const colors = useColors();
   return (
     <View
       className={cn(
@@ -70,6 +72,12 @@ export function ScreenContainer({
           className={cn("flex-1", className)}
           style={{ width: "100%", maxWidth: contentMaxWidth, alignSelf: "center", minHeight: 0, minWidth: 0 }}
         >{children}</View>
+        {/* In normal flow, never over a question, scroll area, or navigation button. */}
+        <View pointerEvents="none" style={{ flexShrink: 0, alignItems: "center", paddingHorizontal: 8, paddingVertical: 2 }}>
+          <Text testID="content-watermark" numberOfLines={1} style={{ color: colors.muted, fontSize: 10, lineHeight: 14, textAlign: "center" }}>
+            FINETUNE · 개인 학습용 · 무단 복제·재배포 금지
+          </Text>
+        </View>
       </SafeAreaView>
     </View>
   );

@@ -10,6 +10,8 @@ export default function RootHtml({ children }: PropsWithChildren) {
       <head>
         <meta charSet="utf-8" />
         <title>{PRODUCT_NAME}</title>
+        {/* Exposure reduction only: this public host still has no authentication. */}
+        <meta name="robots" content="noindex, nofollow, nosnippet, noimageindex, max-image-preview:none" />
         <meta name="description" content={PRODUCT_PHILOSOPHY} />
         <meta property="og:title" content={PRODUCT_NAME} />
         <meta property="og:description" content={PRODUCT_PHILOSOPHY} />

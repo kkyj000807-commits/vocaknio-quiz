@@ -49,7 +49,8 @@ describe("고정 표시 버전과 배포 시각", () => {
         fs.writeFileSync(destination, value);
       };
       write("release.json", JSON.stringify(createReleaseMetadata({ version: "1.29", displayVersion: "1.0" }, source)));
-      write("index.html", '<script src="/vocaknio-quiz/_expo/static/js/web/entry-abcdef.js"></script>');
+      const html = '<meta name="robots" content="noindex, nofollow, nosnippet, noimageindex"><script src="/vocaknio-quiz/_expo/static/js/web/entry-abcdef.js"></script>';
+      write("index.html", html);
       write("_expo/static/js/web/entry-abcdef.js", '["vocab-learning","vocab-definitions","speechSynthesis","voiceURI","preferRecording"]');
       for (const group of ["v101", "v201", "v301", "v401", "v501", "v502", "v601", "appendix"]) {
         write(`data/vocab-learning/1.29/${group}.json`, '{"version":"1.29","entries":[]}');
@@ -60,6 +61,12 @@ describe("고정 표시 버전과 배포 시각", () => {
       expect(missingMarker.status).toBe(1);
       expect(JSON.parse(missingMarker.stdout).pagesStaticServing).toBe(false);
       write(".nojekyll", "");
+      expect(audit().status).toBe(0);
+      write("quiz.html", "<title>unrestricted route fixture</title>");
+      const unrestricted = audit();
+      expect(unrestricted.status).toBe(1);
+      expect(JSON.parse(unrestricted.stdout).searchExposureRestricted).toBe(false);
+      write("quiz.html", html);
       expect(audit().status).toBe(0);
       write("data/vocab-learning/1.29/v101.json", '{"version":"1.0","entries":[]}');
       expect(audit().status).toBe(1);

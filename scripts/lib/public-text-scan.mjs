@@ -48,7 +48,7 @@ function advancePrivateHeader(state, text, start = 0) {
 // Finite-state continuations handle arbitrarily long tokens/header names without
 // truncating evidence or buffering a whole line/minified JS bundle.
 export function scanPublicTextFile(file, { chunkBytes = 64 * 1024, needles = [] } = {}) {
-  const result = { secretPattern: false, serverConfiguration: false, rootExpoReferences: 0, rootAssetReferences: 0, authDiagnostics: false, found: Object.fromEntries(needles.map(n => [n, false])), bytesRead: fs.statSync(file).size };
+  const result = { secretPattern: false, serverConfiguration: false, sourceMapReference: false, rootExpoReferences: 0, rootAssetReferences: 0, authDiagnostics: false, found: Object.fromEntries(needles.map(n => [n, false])), bytesRead: fs.statSync(file).size };
   let tail = ''; let processedChars = 0;
   const tokens = new Map(); const headers = new Map();
   for (const chunk of textChunks(file, chunkBytes)) {
@@ -86,6 +86,7 @@ export function scanPublicTextFile(file, { chunkBytes = 64 * 1024, needles = [] 
       if (result.secretPattern) { tokens.clear(); headers.clear(); }
     }
     result.serverConfiguration ||= /JWT_SECRET|DATABASE_URL|BUILT_IN_FORGE_API_KEY|OPENAI_API_KEY/.test(window);
+    result.sourceMapReference ||= /[#@]\s*sourceMappingURL\s*=/.test(window);
     result.authDiagnostics ||= /\[API\] Full URL:|\[API\] Response headers:|\[Auth\] Setting session token|\[OAuth\] Params received:/.test(window);
     for (const [regex, field] of [[/["'=]\/_expo\//g, 'rootExpoReferences'], [/["'=]\/assets\//g, 'rootAssetReferences']]) {
       for (const match of window.matchAll(regex)) if (match.index + match[0].length > tail.length) result[field]++;

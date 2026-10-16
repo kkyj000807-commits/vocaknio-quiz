@@ -1,5 +1,15 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-16 — Cloudflare 본인 인증 전환 재개, 워터마크·검색 노출·산출물 보안 보강
+
+계정 로그인은 최종 IAB에서 확인됐고 Zero Trust Free 선택 후 카드·청구지·약관·한도초과 청구동의 활성화 단계가 실제 차단점이다. 사용자가 비용 우려로 중단→기존주소와 무료 조치 유지→명시선택 'Cloudflare 본인 인증 전환'으로 변경했다. 카드 입력/약관/초과과금/활성화는 사용자 직접 수행; 새 공개주소/Access정책/배포는 아직 없음. 기존 Pages 종료·저장소Private는 Safari 기록 이전 성공과 별도 승인 조건 유지. 결제정보·주소를 소스/로그에 저장하지 않는다.
+
+소유 수정: 공통 ScreenContainer에 18px 정상흐름의 작은 개인학습용 워터마크(포인터통과,본문/버튼오버레이없음),RootHtml noindex/nofollow/nosnippet/noimageindex,모든HTML의 지시누락을 막는 출력감사,원본TS/Python·백업압축·외부/인라인소스맵 참조 차단 강화. 제3자 공개라이선스는 보존하며 인증·완전복제방지로 과장하지 않는다. 새기능/저장키/어휘/정답 수정없음. 영향9개 중 처음 watermark SSR은 test의 classic JSX React global누락1FAIL→test환경 명시 후1PASS; 나머지8PASS,관련ESLint exit0/security0finding. 공유컨테이너/빌드감사 변경이므로 현재 입력의 전체verify 직렬 실행,통과한 이전동일검사 반복으로 주장하지 않음. 최종게이트/후보SHA/새출력/브라우저/백업/정상잠금해제는 외부 A-latest의 watermarkOwnerTransition20261016 영수증에 남긴다.
+
+직전 31dc724 clean Production output/owner-ampm-production-20261016은 22:33:41KST 빌드·출력감사 성공 및 private포장 PREPARED_NOT_DEPLOYED로 보존됨. 오전오후표시·321번역(영한단서654고유표제어) 포함. 이번 보안 소스 입력이 바뀌었으므로 이 과거 산출물을 새보안후보로 배포하지 않는다. 잠금43013/PID13856 연속소유; 직전QA서버87557만 CtrlC정리.
+
+최종verify exit0: 전체type PASS(1792158152428-17068-type.json),691PASS/1기존SKIP(1792158168989-17068-test.json,peak3402MiB),데이터감사 PASS. 수정 입력의 검증이며 과거 결과 재보고 아님. 새후보 소유파일 명시커밋→빈출력빌드·감사·격리UI 확인 진행. 사용자 활성화 대기 동안 공개주소/저장소상태를 변경하지 않는다.
+
 ## 2026-10-16 22:33 KST — 오전/오후 표시 및 번역23개 추가, Cloudflare 인증 세션 미연결
 
 사용자 로그인완료·본인보호배포 지시 후 실제사용가능 IAB와Chrome4/Chrome3 대시보드를 열었으나 세곳 모두 /login·빈Email/Password 화면. 기존로그인을 부정하지 않고 연결된프로필에서 인증세션확인안됨으로 기록. 브라우저/프로필/대시보드탭 요청 비동기답변 'dd'만 도착,계정식별불가. 인증없는새주소/Access설정/배포 없음. 연결가능탭을 사용자handoff하고 설정·배포 재개 필요.

@@ -26,3 +26,12 @@ it("allows only normal public learning artifacts in the clean fixture", () => {
   fs.writeFileSync(path.join(folder, "learning.json"), '{"definition":"public learning content"}');
   expect(productionSecurityIssues(folder)).toEqual([]);
 });
+it("rejects original source, backups and source-map references even without a local map", () => {
+  const folder = fixture();
+  for (const name of ["learning-backup.zip", "history.bak", "original.tsx", "source.py"]) fs.writeFileSync(path.join(folder, name), "fixture");
+  fs.writeFileSync(path.join(folder, "entry.js"), "//# sourceMappingURL=https://example.invalid/source.map");
+  fs.writeFileSync(path.join(folder, "style.css"), "/*# sourceMappingURL=data:application/json;base64,e30= */");
+  const findings = productionSecurityIssues(folder);
+  expect(findings.filter((row) => row.kind === "private artifact")).toHaveLength(4);
+  expect(findings.filter((row) => row.kind === "source map reference")).toHaveLength(2);
+});

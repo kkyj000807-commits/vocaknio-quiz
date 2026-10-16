@@ -21,6 +21,12 @@ const collect = (directory) => {
 collect(outputRoot);
 
 const htmlFiles = files.filter((file) => file.endsWith(".html"));
+const searchExposureRestricted = htmlFiles.length > 0 && htmlFiles.every((file) => {
+  const html = fs.readFileSync(file, "utf8");
+  const tag = html.match(/<meta\b[^>]*\bname=["']robots["'][^>]*>/i)?.[0] ?? "";
+  const directives = (tag.match(/\bcontent=["']([^"']*)["']/i)?.[1] ?? "").toLowerCase().split(",").map((value) => value.trim());
+  return ["noindex", "nofollow", "nosnippet", "noimageindex"].every((value) => directives.includes(value));
+});
 const textFiles = files.filter((file) => /\.(?:html|js|css|json)$/.test(file));
 const missing = new Set();
 let rootExpoReferences = 0;
@@ -80,7 +86,7 @@ const pagesStaticServing = fs.existsSync(path.join(outputRoot, ".nojekyll")) &&
 const authDiagnosticsInCurrentBundle = bundleScan.authDiagnostics;
 const result = {
   status:
-    pagesStaticServing && missing.size === 0 &&
+    pagesStaticServing && searchExposureRestricted && missing.size === 0 &&
     securityIssues.length === 0 && !authDiagnosticsInCurrentBundle &&
     releaseMetadataValid &&
     rootExpoReferences === 0 &&
@@ -96,6 +102,7 @@ const result = {
   release,
   releaseMetadataValid,
   pagesStaticServing,
+  searchExposureRestricted,
   securityIssues,
   authDiagnosticsInCurrentBundle,
   htmlFiles: htmlFiles.length,
