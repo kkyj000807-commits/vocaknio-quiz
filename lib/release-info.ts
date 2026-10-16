@@ -18,4 +18,12 @@ export const RELEASE_INFO = {
   channel: productionRelease.channel ?? "development",
 } as const;
 
-export const RELEASE_LABEL = `버전 ${RELEASE_INFO.version} · 최근 수정 ${RELEASE_INFO.modifiedAtKst} · Production 기준`;
+export function formatReleaseDisplayTime(value: string): string {
+  return value.replace(/^(\d{4}\.\d{2}\.\d{2}) (\d{2}):([0-5]\d)(:[0-5]\d)? KST$/, (original, date: string, hour: string, minute: string, second: string | undefined) => {
+    const hours = Number(hour);
+    if (hours > 23) return original;
+    return `${date} ${hours < 12 ? "오전" : "오후"} ${hours % 12 || 12}:${minute}${second ?? ""} KST`;
+  });
+}
+
+export const RELEASE_LABEL = `버전 ${RELEASE_INFO.version} · 최근 수정 ${formatReleaseDisplayTime(RELEASE_INFO.modifiedAtKst)} · Production 기준`;

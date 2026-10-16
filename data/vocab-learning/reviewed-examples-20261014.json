@@ -14,7 +14,7 @@
   },
   "review": {
     "status": "ai-reviewed-example-translation",
-    "scope": "298개 lexical sense의 예문·구절 번역과 문맥 단서. 추가51개는 명시145행의 한국어 뜻·품사·원문을 작성 AI가 대조했으며 독립 AI/사람 검수·정답 승격은 아니다. 공개 export와 렌더 검사 뒤에만 제공률로 센다.",
+    "scope": "321개 lexical sense의 예문·구절 번역과 문맥 단서. 배치별 명시한 한국어 뜻·품사·원문을 작성 AI가 대조했으며 독립 AI/사람 검수·정답 승격은 아니다. 공개 export와 렌더 검사 뒤에만 제공률로 센다.",
     "notClaimed": [
       "독립 사람 검수",
       "새 정답 문항 승인",
@@ -22,6 +22,7 @@
     ],
     "masterDbStatus": "sync_required",
     "batches": [
+      {"id":"20261016-owner-login-continuation","acceptedSourceTranslations":23,"sourceRows":66,"review":"author-AI source sense/POS/negation/modality comparison","independentAiReview":false,"independentHumanReview":false,"exportStatus":"export-and-impact-tests-passed-not-deployed","heldHeadwords":["bog down","boon","brag","break out","browse","brutalize","bull's eye","burrow","bust","byzantine","champion","clarification"],"heldReason":"원뜻·품사·문맥 불일치 또는 범위 불확실"},
       {"id":"20261016-login-content","acceptedSourceTranslations":51,"sourceRows":145,"review":"author-ai exact source sense/POS/English and Korean meaning comparison","independentAiReview":false,"independentHumanReview":false,"exportStatus":"export-and-related-44-tests-passed-not-deployed","heldHeadwords":["about","abrasive","accede","acrid","addiction","anathema","apprentice","arcane","at stake","ally","bloom","blue-ribbon"],"heldReason":"원본 한국어 뜻과 후보 뜻·품사 불일치 또는 기존 고위험 보류 유지"},
       {
         "id": "20261016-korean-continuation",
@@ -60,6 +61,624 @@
     ]
   },
   "entries": [
+    {
+      "headword": "bolster",
+      "senseId": "bolster%2:30:01::",
+      "synsetId": "00223800-v",
+      "pos": "verb",
+      "en": "bolster morale",
+      "sourceRowIds": [
+        "JBKROW008821",
+        "JBKROW011498",
+        "JBKROW029967"
+      ],
+      "sourceMeaningKo": "강화하다",
+      "matchEvidence": {
+        "sourceDefinition": "support and strengthen",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "사기를 북돋우다",
+      "cueKo": "morale를 목적어로 하여 정신적 힘이나 자신감을 강화한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "brainwash",
+      "senseId": "brainwash%2:32:00::",
+      "synsetId": "00772034-v",
+      "pos": "verb",
+      "en": "The propaganda brainwashed many people",
+      "sourceRowIds": [
+        "JBKROW000339",
+        "JBKROW002218"
+      ],
+      "sourceMeaningKo": "세뇌하다",
+      "matchEvidence": {
+        "sourceDefinition": "persuade completely, often through coercion",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "그 선전은 많은 사람을 세뇌했다.",
+      "cueKo": "propaganda가 생각과 믿음을 강하게 바꾸도록 설득하는 수단이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "brazen",
+      "senseId": "brazen%5:00:00:unashamed:00",
+      "synsetId": "00156411-s",
+      "pos": "adjective",
+      "en": "brazen arrogance",
+      "sourceRowIds": [
+        "JBKROW001816",
+        "JBKROW002219"
+      ],
+      "sourceMeaningKo": "뻔뻔한",
+      "matchEvidence": {
+        "sourceDefinition": "unrestrained by convention or propriety",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "뻔뻔한 오만",
+      "cueKo": "arrogance와 함께 부끄러움이나 예의에 얽매이지 않는 태도를 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "brisk",
+      "senseId": "brisk%5:00:00:energetic:00",
+      "synsetId": "00877534-s",
+      "pos": "adjective",
+      "en": "a brisk walk in the park",
+      "sourceRowIds": [
+        "JBKROW000162",
+        "JBKROW002221"
+      ],
+      "sourceMeaningKo": "활기찬",
+      "matchEvidence": {
+        "sourceDefinition": "quick and energetic",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "공원에서 활기차게 걷기",
+      "cueKo": "walk를 수식하여 움직임이 빠르고 활력 있음을 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "brittle",
+      "senseId": "brittle%5:00:00:breakable:00",
+      "synsetId": "00711942-s",
+      "pos": "adjective",
+      "en": "brittle bones",
+      "sourceRowIds": [
+        "JBKROW001277",
+        "JBKROW002222",
+        "JBKROW005575",
+        "JBKROW006425",
+        "JBKROW027699",
+        "JBKROW030525"
+      ],
+      "sourceMeaningKo": "부서지기 쉬운",
+      "matchEvidence": {
+        "sourceDefinition": "having little elasticity; hence easily cracked or fractured or snapped",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "쉽게 부러지는 뼈",
+      "cueKo": "bones의 탄성이 부족해 잘 부러지는 성질을 말한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "bucolic",
+      "senseId": "bucolic%5:00:01:rural:00",
+      "synsetId": "02058608-s",
+      "pos": "adjective",
+      "en": "a pleasant bucolic scene",
+      "sourceRowIds": [
+        "JBKROW001920",
+        "JBKROW002227"
+      ],
+      "sourceMeaningKo": "목가적인",
+      "matchEvidence": {
+        "sourceDefinition": "(used with regard to idealized country life) idyllically rustic",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "정겨운 전원 풍경",
+      "cueKo": "scene을 수식하며 이상화된 시골의 평화로운 분위기를 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "budding",
+      "senseId": "budding%5:00:00:undeveloped:00",
+      "synsetId": "00746232-s",
+      "pos": "adjective",
+      "en": "a budding genius",
+      "sourceRowIds": [
+        "JBKROW001736",
+        "JBKROW002228"
+      ],
+      "sourceMeaningKo": "싹트는",
+      "matchEvidence": {
+        "sourceDefinition": "beginning to develop",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "재능이 막 꽃피기 시작한 천재",
+      "cueKo": "beginning to develop라는 뜻으로 아직 발달 초기인 재능을 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "bulge",
+      "senseId": "bulge%1:25:00::",
+      "synsetId": "13917127-n",
+      "pos": "noun",
+      "en": "the gun in his pocket made an obvious bulge",
+      "sourceRowIds": [
+        "JBKROW010399",
+        "JBKROW010802",
+        "JBKROW011527"
+      ],
+      "sourceMeaningKo": "불룩하다; 돌출; 급증",
+      "matchEvidence": {
+        "sourceDefinition": "something that bulges out or is protuberant or projects from its surroundings",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "주머니 속 총 때문에 눈에 띄게 불룩한 부분이 생겼다.",
+      "cueKo": "an obvious bulge는 주변보다 튀어나온 부분을 가리키는 명사다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "buttress",
+      "senseId": "buttress%2:30:01::",
+      "synsetId": "00223287-v",
+      "pos": "verb",
+      "en": "Buttress the church",
+      "sourceRowIds": [
+        "JBKROW029015"
+      ],
+      "sourceMeaningKo": "지지하다, 보강하다",
+      "matchEvidence": {
+        "sourceDefinition": "reinforce with a buttress",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "그 교회를 버팀벽으로 보강하라.",
+      "cueKo": "이 용례는 건물을 물리적으로 받쳐 보강하는 뜻이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "call off",
+      "senseId": "call_off%2:41:00::",
+      "synsetId": "02483178-v",
+      "pos": "verb",
+      "en": "Call off the engagement",
+      "sourceRowIds": [
+        "JBKROW000735",
+        "JBKROW002247",
+        "JBKROW014444",
+        "JBKROW015866"
+      ],
+      "sourceMeaningKo": "취소하다",
+      "matchEvidence": {
+        "sourceDefinition": "postpone indefinitely or annul something that was scheduled",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "그 약혼을 취소하라.",
+      "cueKo": "예정되었던 일을 진행하지 않도록 취소하는 표현이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "callous",
+      "senseId": "callous%5:00:00:insensitive:02",
+      "synsetId": "02114442-s",
+      "pos": "adjective",
+      "en": "a callous indifference to suffering",
+      "sourceRowIds": [
+        "JBKROW000515",
+        "JBKROW002249",
+        "JBKROW014088"
+      ],
+      "sourceMeaningKo": "냉담한",
+      "matchEvidence": {
+        "sourceDefinition": "emotionally hardened",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "고통에 대한 냉담한 무관심",
+      "cueKo": "suffering에 무심한 감정적 태도로 굳은살이라는 신체적 의미와 구별한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "candid",
+      "senseId": "candid%5:00:00:direct:02",
+      "synsetId": "00768027-s",
+      "pos": "adjective",
+      "en": "I gave them my candid opinion",
+      "sourceRowIds": [
+        "JBKROW001819",
+        "JBKROW002252",
+        "JBKROW005041",
+        "JBKROW006444"
+      ],
+      "sourceMeaningKo": "솔직한",
+      "matchEvidence": {
+        "sourceDefinition": "characterized by directness in manner or speech; without subtlety or evasion",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "나는 그들에게 내 솔직한 의견을 말했다.",
+      "cueKo": "opinion을 숨기거나 에둘러 말하지 않고 직접 표현했음을 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "capricious",
+      "senseId": "capricious%5:00:00:unpredictable:00",
+      "synsetId": "01848219-s",
+      "pos": "adjective",
+      "en": "a capricious summer breeze",
+      "sourceRowIds": [
+        "JBKROW000003",
+        "JBKROW002257",
+        "JBKROW026187",
+        "JBKROW030584"
+      ],
+      "sourceMeaningKo": "변덕스러운",
+      "matchEvidence": {
+        "sourceDefinition": "changeable",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "변덕스러운 여름 산들바람",
+      "cueKo": "여기서는 사람이 아니라 바람의 방향이나 상태가 잘 바뀜을 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "cardinal",
+      "senseId": "cardinal%5:00:00:important:00",
+      "synsetId": "01280207-s",
+      "pos": "adjective",
+      "en": "a cardinal rule",
+      "sourceRowIds": [
+        "JBKROW010711",
+        "JBKROW011554"
+      ],
+      "sourceMeaningKo": "가장 중요한; 추기경",
+      "matchEvidence": {
+        "sourceDefinition": "serving as an essential component",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "가장 중요한 규칙",
+      "cueKo": "rule을 수식하므로 추기경이나 숫자 체계가 아니라 핵심적 중요성을 뜻한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "carnivorous",
+      "senseId": "carnivorous%3:01:00::",
+      "synsetId": "02691317-a",
+      "pos": "adjective",
+      "en": "the lion and other carnivorous animals",
+      "sourceRowIds": [
+        "JBKROW000746",
+        "JBKROW002261",
+        "JBKROW005936",
+        "JBKROW006452",
+        "JBKROW015322",
+        "JBKROW015879"
+      ],
+      "sourceMeaningKo": "육식성의",
+      "matchEvidence": {
+        "sourceDefinition": "relating to or characteristic of carnivores",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "사자와 그 밖의 육식 동물들",
+      "cueKo": "lion을 예로 들어 다른 동물을 먹는 식성을 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "catapult",
+      "senseId": "catapult%2:35:00::",
+      "synsetId": "01518198-v",
+      "pos": "verb",
+      "en": "the enemy catapulted rocks towards the fort",
+      "sourceRowIds": [
+        "JBKROW000228",
+        "JBKROW002262"
+      ],
+      "sourceMeaningKo": "투석기; 던지다",
+      "matchEvidence": {
+        "sourceDefinition": "shoot forth or launch, as if from a catapult",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "적은 요새를 향해 바위를 쏘아 보냈다.",
+      "cueKo": "rocks를 목적어로 하여 투석기처럼 멀리 발사하는 행위를 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "caustic",
+      "senseId": "caustic%5:00:00:unpleasant:00",
+      "synsetId": "01807340-s",
+      "pos": "adjective",
+      "en": "caustic jokes about political assassination, talk-show hosts and medical ethics",
+      "sourceRowIds": [
+        "JBKROW001602",
+        "JBKROW002264",
+        "JBKROW025553",
+        "JBKROW030604"
+      ],
+      "sourceMeaningKo": "신랄한",
+      "matchEvidence": {
+        "sourceDefinition": "harsh or corrosive in tone",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "정치적 암살과 토크쇼 진행자, 의료 윤리에 관한 신랄한 농담들",
+      "cueKo": "jokes를 수식하므로 물질을 부식시키는 성질보다 말투의 날카로움이 핵심이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "circular",
+      "senseId": "circular%5:00:00:cyclic:01",
+      "synsetId": "00679539-s",
+      "pos": "adjective",
+      "en": "the circular motion of the wheel",
+      "sourceRowIds": [
+        "JBKROW000057",
+        "JBKROW002273"
+      ],
+      "sourceMeaningKo": "원형의",
+      "matchEvidence": {
+        "sourceDefinition": "describing a circle; moving in a circle",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "바퀴의 원운동",
+      "cueKo": "wheel이 원을 그리며 움직이는 물리적 경로를 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "circumscribe",
+      "senseId": "circumscribe%2:35:00::",
+      "synsetId": "01586415-v",
+      "pos": "verb",
+      "en": "another circle is circumscribed about the square",
+      "sourceRowIds": [
+        "JBKROW010858",
+        "JBKROW011585"
+      ],
+      "sourceMeaningKo": "제한하다; 둘레에 선을 긋다",
+      "matchEvidence": {
+        "sourceDefinition": "draw a line around",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "그 정사각형에 외접하도록 또 다른 원이 그려져 있다.",
+      "cueKo": "about the square와 circle이 둘레에 선을 긋는 기하학적 의미를 좁힌다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "classify",
+      "senseId": "classify%2:31:00::",
+      "synsetId": "00656296-v",
+      "pos": "verb",
+      "en": "How would you classify these pottery shards — are they prehistoric?",
+      "sourceRowIds": [
+        "JBKROW001369",
+        "JBKROW002280",
+        "JBKROW024462",
+        "JBKROW030658"
+      ],
+      "sourceMeaningKo": "분류하다",
+      "matchEvidence": {
+        "sourceDefinition": "arrange or order by classes or categories",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "이 도기 조각들을 어떻게 분류하시겠습니까? 선사 시대의 것들인가요?",
+      "cueKo": "질문은 유물을 어떤 범주에 넣을지 묻고 있으며 선사 시대임을 확정하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "clear-cut",
+      "senseId": "clear-cut%5:00:00:clear:00",
+      "synsetId": "00430512-s",
+      "pos": "adjective",
+      "en": "clear-cut evidence of tampering",
+      "sourceRowIds": [
+        "JBKROW000319",
+        "JBKROW002281"
+      ],
+      "sourceMeaningKo": "선명한",
+      "matchEvidence": {
+        "sourceDefinition": "clearly or sharply defined to the mind",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "조작의 명백한 증거",
+      "cueKo": "evidence가 분명하게 드러나 있음을 나타내며 구체적 조작 방식은 명시하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "cleavage",
+      "senseId": "cleavage%1:26:00::",
+      "synsetId": "13943045-n",
+      "pos": "noun",
+      "en": "there was a cleavage between the liberal and conservative members",
+      "sourceRowIds": [
+        "JBKROW001826",
+        "JBKROW002282"
+      ],
+      "sourceMeaningKo": "분할, 분열",
+      "matchEvidence": {
+        "sourceDefinition": "the state of being split or cleft",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "진보 성향 구성원들과 보수 성향 구성원들 사이에 분열이 있었다.",
+      "cueKo": "between이 서로 갈라진 두 집단을 명시한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
+    {
+      "headword": "cling",
+      "senseId": "cling%2:35:00::",
+      "synsetId": "01223449-v",
+      "pos": "verb",
+      "en": "The dress clings to her body",
+      "sourceRowIds": [
+        "JBKROW013926",
+        "JBKROW015914"
+      ],
+      "sourceMeaningKo": "집착하다, 붙다",
+      "matchEvidence": {
+        "sourceDefinition": "come or be in close contact with; stick or hold together and resist separation",
+        "scope": "해당 한국어 원뜻·품사·문맥에 한정한 원문 대조; 정답 승격 제외."
+      },
+      "ko": "그 드레스는 그녀의 몸에 달라붙는다.",
+      "cueKo": "옷과 몸의 물리적 밀착을 말하며 심리적 집착이라는 뜻과 구별한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 무변형",
+        "korean": "FINETUNE 자체 번역·단서",
+        "checkedAt": "2026-10-16",
+        "independentAiReview": false,
+        "independentHumanReview": false
+      }
+    },
     {
       "headword": "abide by",
       "senseId": "abide_by%2:41:00::",

@@ -1,5 +1,11 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-16 22:33 KST — 오전/오후 표시 및 번역23개 추가, Cloudflare 인증 세션 미연결
+
+사용자 로그인완료·본인보호배포 지시 후 실제사용가능 IAB와Chrome4/Chrome3 대시보드를 열었으나 세곳 모두 /login·빈Email/Password 화면. 기존로그인을 부정하지 않고 연결된프로필에서 인증세션확인안됨으로 기록. 브라우저/프로필/대시보드탭 요청 비동기답변 'dd'만 도착,계정식별불가. 인증없는새주소/Access설정/배포 없음. 연결가능탭을 사용자handoff하고 설정·배포 재개 필요.
+
+추가지시 앱수정시각 오전오후: lib/release-info.ts의 RELEASE_LABEL 표시만 24시간KST→오전/오후12시간으로 변환,manifest/cache target과 실제builtAt 불변. 자정/정오/오후/미배포 경계assert4PASS,eslint exit0. 기존원전증분23sense/66원뜻행 번역·단서 추가(authorAI,독립AI·사람검수아님). 원뜻/품사 충돌12후보보류. 기존builder export321 exit0,coverage15c92478b6d1778ec104038a954e1a0872bb3384298c5aa106ee18754213e65e: 영어8350,영한단서632→654,관계뜻316/146변함없음. 영향49PASS/3files exit0 report1792157562266-33496-test.json. 기존전수689/type/저장·엔진 결과는 unchanged범위만 재사용,새전체검사반복안함. 잠금43013/PID13856. 소유소스커밋 후 새후보빌드준비; 완성산출물/실제배포/백업/해제는 외부A-latest.ownerAccessAttempt20261016 참조.
+
 22:23 KST 로그인중 보강 최종: source128d8a5a14484b24237868c9bdd7a35f4e1239bb clean Production output/login-content-production-20261016 exit0/peak2162MiB(report1792156777932-17404-build.json),22:19:25KST/1.0/1.29/sourceDirtyfalse. 출력감사exit0/securityIssues0/missingReferences0(report1792156911732-17404-test.json). prepare-private-deploy exit0/PREPARED_NOT_DEPLOYED,고정 output/finetune-private-deploy 최신후보로준비. workers_dev=false/preview_urls=false 유지; 공개활성화없음. 이전2a5eccd private산출물은 output/finetune-private-deploy-storage-2a5eccd-preserved 에 그대로 보존,ddc9a60빌드도유지.
 
 새Chromium localhost26748 실제UI: gaffe의 gaucherie(눈치없는실수) 표시, abundance의원문 an age of abundance→해석펼침 풍요의시대/문맥단서 확인. 증거 analysis/qa/login-content-translation-20261016.png. 첫search fill은 브라우저clipboard target mismatch로미입력→AX상태재확인후setValue정상; 앱결함으로확정안함. 실제사용자기록/공개답안변경없음. 이전689PASS/전체type/20reload는 unchanged런타임에만재사용, 이번44PASS는 새데이터전수연결·editorial전수표시검사. 새전체회귀·실기기Safari·비공개배포완료라고보고안함. 최신사용자지시상 동일전체검사반복생략 명시. Cloudflare로그인은사용자진행,Access계정1명/HTML·JS·CSS·JSON익명차단 확인 후 이빌드로배포. 백업/잠금해제는 외부A-latest.loginContent20261016 최종영수증.
