@@ -10,6 +10,10 @@
 
 최종verify exit0: 전체type PASS(1792158152428-17068-type.json),691PASS/1기존SKIP(1792158168989-17068-test.json,peak3402MiB),데이터감사 PASS. 수정 입력의 검증이며 과거 결과 재보고 아님. 새후보 소유파일 명시커밋→빈출력빌드·감사·격리UI 확인 진행. 사용자 활성화 대기 동안 공개주소/저장소상태를 변경하지 않는다.
 
+9954f2a 빌드 자체exit0/1727MiB였으나 새감사가 Expo의 assets/node_modules 아래 정상 해시폰트/아이콘19개를 오탐하여 첫출력감사FAIL,배포차단. 폰트/이미지 확장자+32자리fingerprint만 좁게 허용하고 packageJS/TS·무해시원본은 계속차단하는 회귀 추가,변경영향9PASS(1792158518697-15112-test.json);같은구출력 진단감사PASS이나 새소스후보의완성산출물로승격하지않음. 원본빌드입력재생성금지와무관한 배포감사코드 수정이며 새clean후보/새출력 필요. 직전private포장31dc724는 output/finetune-private-deploy-ampm-31dc724-preserved 에 보존,고정포장은첫감사실패때쓰기전중단되어 새후보 준비대기.
+
+사용자 직접 카드·약관 절차 후 실제 Cloudflare confirmation에서 Purchase complete/subscription active/Zero Trust Free/Due today $0month 확인,Continue to Zero Trust로진입. 이는 활성화 성공일뿐 초과과금없음·Access보호·배포성공증거아님. 본인인증전환 작업 계속.
+
 ## 2026-10-16 22:33 KST — 오전/오후 표시 및 번역23개 추가, Cloudflare 인증 세션 미연결
 
 사용자 로그인완료·본인보호배포 지시 후 실제사용가능 IAB와Chrome4/Chrome3 대시보드를 열었으나 세곳 모두 /login·빈Email/Password 화면. 기존로그인을 부정하지 않고 연결된프로필에서 인증세션확인안됨으로 기록. 브라우저/프로필/대시보드탭 요청 비동기답변 'dd'만 도착,계정식별불가. 인증없는새주소/Access설정/배포 없음. 연결가능탭을 사용자handoff하고 설정·배포 재개 필요.

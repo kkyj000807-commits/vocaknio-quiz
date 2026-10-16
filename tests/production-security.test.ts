@@ -35,3 +35,12 @@ it("rejects original source, backups and source-map references even without a lo
   expect(findings.filter((row) => row.kind === "private artifact")).toHaveLength(4);
   expect(findings.filter((row) => row.kind === "source map reference")).toHaveLength(2);
 });
+it("permits Expo fingerprinted vendor icons/fonts but not package source or unversioned files", () => {
+  const folder = fixture();
+  const directory = path.join(folder, "assets", "node_modules", "vendor", "Fonts");
+  fs.mkdirSync(directory, { recursive: true });
+  for (const name of ["icon." + "a".repeat(32) + "@2x.png", "font." + "b".repeat(32) + ".ttf"]) fs.writeFileSync(path.join(directory, name), "fixture");
+  expect(productionSecurityIssues(folder)).toEqual([]);
+  for (const name of ["index.js", "original.png", "source." + "a".repeat(32) + ".ts"]) fs.writeFileSync(path.join(directory, name), "fixture");
+  expect(productionSecurityIssues(folder).filter((row) => row.kind === "private artifact")).toHaveLength(3);
+});
