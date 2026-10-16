@@ -91,6 +91,7 @@ import { useColors } from "@/hooks/use-colors";
 import { useQuestionTimer } from "@/hooks/use-question-timer";
 import { selectAdaptiveItemNums } from "@/lib/adaptive-quiz";
 import { ADAPTIVE_POLICY } from "@/lib/learning-analytics";
+import { classifyQuizSwipe, getNextQuizIndex, canReorderQuizQuestion } from "@/lib/quiz-navigation";
 import {
   createEmptyQuestionViewState,
   summarizeQuizSession,
@@ -114,6 +115,7 @@ type WebSwipeTrace = {
   startY: number;
   lastX: number;
   lastY: number;
+  vertical: boolean;
 };
 
 function getTouchPoint(event: GestureResponderEvent, useChangedTouch = false) {
@@ -130,6 +132,8 @@ export default function QuizScreen() {
   const isMovingRef = useRef(false);
   const scrollRef = useRef<ScrollView>(null);
   const webSwipeTraceRef = useRef<WebSwipeTrace | null>(null);
+  const suppressTouchPressUntilRef = useRef(0);
+  const [scrollViewportHeight, setScrollViewportHeight] = useState(0);
   const questionViewStatesRef = useRef(
     new Map<number, QuizQuestionViewState>(),
   );
@@ -528,6 +532,7 @@ export default function QuizScreen() {
   const handleChoiceSelect = useCallback(
     (idx: number) => {
       if (
+        Date.now() < suppressTouchPressUntilRef.current ||
         answered ||
         isMovingRef.current ||
         questionViewStatesRef.current.get(currentIdx)?.answered
@@ -582,6 +587,7 @@ export default function QuizScreen() {
   // "모르겠다" 패스 — 오답 처리 + 오답 노트 저장
   const handleSkip = useCallback(() => {
     if (
+      Date.now() < suppressTouchPressUntilRef.current ||
       answered ||
       isMovingRef.current ||
       questionViewStatesRef.current.get(currentIdx)?.answered
@@ -613,6 +619,7 @@ export default function QuizScreen() {
   ]);
 
   const handleReveal = useCallback(() => {
+    if (Date.now() < suppressTouchPressUntilRef.current) return;
     haptic("light");
     setRevealed(true);
     captureQuestionViewState({ revealed: true });
@@ -621,6 +628,7 @@ export default function QuizScreen() {
   const handleFlashGrade = useCallback(
     (grade: "correct" | "wrong") => {
       if (
+        Date.now() < suppressTouchPressUntilRef.current ||
         answered ||
         isMovingRef.current ||
         questionViewStatesRef.current.get(currentIdx)?.answered
@@ -664,6 +672,7 @@ export default function QuizScreen() {
   // 플래시카드 마스터 처리 — 이 단어를 마스터 목록에 추가
   const handleFlashMaster = useCallback(async () => {
     if (
+      Date.now() < suppressTouchPressUntilRef.current ||
       !q ||
       answered ||
       isMovingRef.current ||
@@ -700,7 +709,8 @@ export default function QuizScreen() {
       makeSessionSnapshot(),
     );
     // 마스터 처리 후 자동으로 다음 문제로 이동
-    if (currentIdx + 1 >= questions.length) {
+    const targetIndex = getNextQuizIndex(currentIdx, makeSessionSnapshot().states);
+    if (targetIndex === null) {
       await finishSession();
       router.replace({
         pathname: "/result",
@@ -712,7 +722,6 @@ export default function QuizScreen() {
       });
       return;
     }
-    const targetIndex = currentIdx + 1;
     restoreQuestionViewState(targetIndex);
     setCurrentIdx(targetIndex);
     animateMoveCard("next");
@@ -738,6 +747,7 @@ export default function QuizScreen() {
 
   const handleTypeSubmit = useCallback(() => {
     if (
+      Date.now() < suppressTouchPressUntilRef.current ||
       answered ||
       isMovingRef.current ||
       questionViewStatesRef.current.get(currentIdx)?.answered ||
@@ -786,7 +796,13 @@ export default function QuizScreen() {
     isMovingRef.current = true;
     haptic("light");
     captureQuestionViewState();
-    if (currentIdx + 1 >= questions.length) {
+    const targetIndex = getNextQuizIndex(currentIdx, makeSessionSnapshot().states);
+    if (targetIndex === currentIdx) {
+      setSessionNotice("이 문제에 답하거나 ‘모르겠다’를 선택하면 결과를 볼 수 있어요.");
+      releaseMovingLock();
+      return;
+    }
+    if (targetIndex === null) {
       await finishSession();
       const finalWrongNums = wrongItems.map((w) => w.num);
       router.replace({
@@ -800,14 +816,14 @@ export default function QuizScreen() {
       });
       return;
     }
-    const targetIndex = currentIdx + 1;
-    if (!questionViewStatesRef.current.get(targetIndex)?.answered) {
+    if (targetIndex < currentIdx) setSessionNotice("아직 답하지 않은 문제로 돌아왔습니다. 이동만으로는 채점하지 않아요.");
+    if (answered && targetIndex > currentIdx && canReorderQuizQuestion(questionViewStatesRef.current.get(targetIndex))) {
       // The answer write is ahead of this snapshot in the shared queue. Re-rank
       // only unanswered positions; back navigation and saved grades stay intact.
       try {
         const snapshot = await loadLearningSnapshot();
         const remaining = questions.map((question, index) => ({ question, index }))
-          .filter(row => row.index >= targetIndex && !questionViewStatesRef.current.get(row.index)?.answered);
+          .filter(row => row.index >= targetIndex && canReorderQuizQuestion(questionViewStatesRef.current.get(row.index)));
         const [selectedNum] = selectAdaptiveItemNums({
           candidates: remaining.map(({ question }) => {
             const key = getQuestionLearningTargetKey(question);
@@ -834,6 +850,7 @@ export default function QuizScreen() {
     scrollRef.current?.scrollTo({ y: 0, animated: true });
     releaseMovingLock();
   }, [
+    answered,
     currentIdx,
     questions,
     mode,
@@ -871,20 +888,32 @@ export default function QuizScreen() {
 
   const handleWebTouchStart = useCallback((event: GestureResponderEvent) => {
     if (Platform.OS !== "web") return;
+    webSwipeTraceRef.current = null;
+    if (event.nativeEvent.touches.length !== 1) return;
+    // Text editing and sliders retain their own horizontal touch interactions.
+    const target = event.target as unknown as { closest?: (selector: string) => unknown };
+    if (target.closest?.('input,textarea,[contenteditable="true"],[role="slider"]')) return;
     const point = getTouchPoint(event);
     webSwipeTraceRef.current = {
       startX: point.x,
       startY: point.y,
       lastX: point.x,
       lastY: point.y,
+      vertical: false,
     };
   }, []);
 
   const handleWebTouchMove = useCallback((event: GestureResponderEvent) => {
     if (Platform.OS !== "web" || !webSwipeTraceRef.current) return;
+    if (event.nativeEvent.touches.length !== 1) { webSwipeTraceRef.current = null; return; }
     const point = getTouchPoint(event);
-    webSwipeTraceRef.current.lastX = point.x;
-    webSwipeTraceRef.current.lastY = point.y;
+    const trace = webSwipeTraceRef.current;
+    trace.lastX = point.x;
+    trace.lastY = point.y;
+    const dx = point.x - trace.startX;
+    const dy = point.y - trace.startY;
+    if (Math.abs(dy) > 18 && Math.abs(dy) >= Math.abs(dx)) trace.vertical = true;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) > 18) suppressTouchPressUntilRef.current = Date.now() + 350;
   }, []);
 
   const handleWebTouchEnd = useCallback(
@@ -892,19 +921,18 @@ export default function QuizScreen() {
       if (Platform.OS !== "web") return;
       const trace = webSwipeTraceRef.current;
       webSwipeTraceRef.current = null;
-      if (!trace) return;
+      if (!trace || trace.vertical) return;
 
       const point = getTouchPoint(event, true);
       const deltaX = point.x - trace.startX;
       const deltaY = point.y - trace.startY;
-      const isClearHorizontalSwipe =
-        Math.abs(deltaX) >= 56 && Math.abs(deltaX) > Math.abs(deltaY) * 1.35;
-
-      if (!isClearHorizontalSwipe) return;
-      if (deltaX < 0 && answered) handleNext();
-      else if (deltaX > 0 && currentIdx > 0) handlePrevious();
+      const direction = classifyQuizSwipe(deltaX, deltaY);
+      if (!direction) return;
+      suppressTouchPressUntilRef.current = Date.now() + 350;
+      if (direction === "next") void handleNext();
+      else if (currentIdx > 0) handlePrevious();
     },
-    [answered, currentIdx, handleNext, handlePrevious],
+    [currentIdx, handleNext, handlePrevious],
   );
 
   // 네이티브 제스처도 세로 스크롤보다 명확한 가로 이동에만 반응한다.
@@ -912,9 +940,9 @@ export default function QuizScreen() {
     .activeOffsetX([-24, 24])
     .failOffsetY([-18, 18])
     .onEnd((e) => {
-      if (answered && e.translationX < -50) {
+      if (e.translationX < -56) {
         runOnJS(handleNext)();
-      } else if (currentIdx > 0 && e.translationX > 50) {
+      } else if (currentIdx > 0 && e.translationX > 56) {
         runOnJS(handlePrevious)();
       }
     });
@@ -992,12 +1020,16 @@ export default function QuizScreen() {
               { flex: 1, minHeight: 0 },
               Platform.OS === "web" && ({ touchAction: "pan-y" } as any),
             ]}
-            contentContainerStyle={{ paddingBottom: 16 }}
+            onLayout={(event) => setScrollViewportHeight(event.nativeEvent.layout.height)}
+            contentContainerStyle={{ paddingBottom: 24, minHeight: scrollViewportHeight ? scrollViewportHeight + 44 : undefined }}
+            alwaysBounceVertical
+            overScrollMode="always"
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
             onTouchStart={handleWebTouchStart}
             onTouchMove={handleWebTouchMove}
             onTouchEnd={handleWebTouchEnd}
+            onTouchCancel={() => { webSwipeTraceRef.current = null; }}
             onScrollBeginDrag={() => {
               webSwipeTraceRef.current = null;
             }}
@@ -1335,7 +1367,7 @@ export default function QuizScreen() {
           </ScrollView>
         </NativeSwipeBoundary>
               {/* Normal flex footer, outside the scrolling explanation; no overlay/inset duplication. */}
-              {(currentIdx > 0 || answered) && (
+              {questions.length > 0 && (
                 <View style={s.questionNavRow}>
                   {currentIdx > 0 && (
                     <Pressable
@@ -1350,7 +1382,7 @@ export default function QuizScreen() {
                       <Text style={s.previousBtnText}>← 이전 문제</Text>
                     </Pressable>
                   )}
-                  {answered && (
+                  {(currentIdx + 1 < questions.length || answered || questions.length > 1) && (
                     <Pressable
                       accessibilityRole="button"
                       style={({ pressed }) => [
@@ -1361,7 +1393,7 @@ export default function QuizScreen() {
                     >
                       <Text style={s.nextBtnText}>
                         {currentIdx + 1 >= questions.length
-                          ? "결과 보기 →"
+                          ? makeSessionSnapshot().states.every(state => state.answered) ? "결과 보기 →" : "남은 문제 →"
                           : "다음 문제 →"}
                       </Text>
                     </Pressable>

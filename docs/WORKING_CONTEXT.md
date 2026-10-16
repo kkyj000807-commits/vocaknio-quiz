@@ -1,5 +1,11 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-16 — 미응답 터치 이동·짧은 화면 세로 여유 수정 중
+
+사용자 스크린샷/후속승인: 미응답 문제도 좌우 이동,세로로 약간 이동,이런 UX수정은 검증후바로배포. 기존 공개오류긴급배포후 새로 승인된 좁은 UI범위이며 비공개전환 요구는 유지한다. 잠금63507/PID5764. 소유변경 app/quiz.tsx,lib/quiz-navigation.ts,tests/quiz-navigation.test.ts. 미응답에서도 다음버튼/왼쪽swipe,마지막은미응답으로복귀하여 자동오답/완료금지. 입력초안·힌트질문은 adaptive재배열제외,MASTER자동진행도미응답보존. 실제viewport높이+44px로짧은카드에도세로여유,고정footer유지. 세로우세/멀티터치/입력편집은가로이동제외,움직임뒤잘못된채점tap억제.
+
+영향검사21PASS(기존세션17+navigation4),실제screen webcallback추가후6PASS;lint0error/security0finding. 최초RED는미구현helperimport,첫전체type은테스트반환타입오류로실패후명시callback타입수정. 현재전체verify 재실행중;빌드/로컬UI/공개검증완료 전배포완료 아님. 원자료·학습키·사용자기록불변,실기기Safari터치미검증. 최종영수증 외부 A-latest touchNavigationRelease20261016.
+
 ## 2026-10-16 — 사용자 명시 승인 긴급 Pages 저장 수정 배포 완료
 
 사용자가 '기존 주소에 긴급 수정 배포'를 명시 선택하여 비공개 전환 전 기존 Pages에 검증 후보2a5eccd를 반영했다. source원격bbd3504(문서후속만 차이), Pages87ba15764a220b6958747de34639868c9966fd38, run38831466282 SUCCESS. 재생성 없이 동일 clean 후보의680PASS/1SKIP·실제20reload·별도origin복원 결과 재사용; 이번 출력감사 exit0/보안0/누락0. 공개 release source2a5eccd/1.0/2026.10.16 00:01:06 KST 및 JS SHA256 c0bc8af5d35d2c2750b2e8f760e8efff402960e0b41dd5389c5ffdd87149fb8b 일치. 공개 Chromium 홈의새순서/전체범위,설정배포정보 확인; 공개시험답안 없음. 증거 analysis/qa/storage-emergency-public-20261016.jpg. 실제 사용자iPhone오류해소·실기기Safari는 여전히 확인 필요.
