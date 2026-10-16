@@ -57,11 +57,11 @@ describe("OEWN definition aliases", () => {
       }
     }
   });
-  it("delivers all 247 reviewed translations to their exact source senses without changing answer eligibility", () => {
+  it("delivers all 298 reviewed translations to their exact source senses without changing answer eligibility", () => {
     const source = JSON.parse(fs.readFileSync(path.join(root, "data/vocab-learning/reviewed-examples-20261014.json"), "utf8"));
-    expect(source.entries).toHaveLength(247);
-    expect(new Set(source.entries.map(e => `${e.senseId}|${e.en}`)).size).toBe(247);
-    expect(meta.coverage.reviewedExampleTranslations).toBe(247);
+    expect(source.entries).toHaveLength(298);
+    expect(new Set(source.entries.map(e => `${e.senseId}|${e.en}`)).size).toBe(298);
+    expect(meta.coverage.reviewedExampleTranslations).toBe(298);
     for (const entry of source.entries) {
       const records = recordsForHeadword(entry.headword);
       expect(records.length).toBeGreaterThan(0);

@@ -14,7 +14,7 @@
   },
   "review": {
     "status": "ai-reviewed-example-translation",
-    "scope": "247개 lexical sense의 목표표현 포함 예문·구절 번역과 문맥 단서. 기존217개와 추가30개를 구분한다. 추가30개는 작성 AI의 원문·품사·뜻 대조이며 독립 AI/사람 검수·정답승격 아님. 공개 export 및 렌더 검증 전에는 신규 제공률에 포함하지 않는다.",
+    "scope": "298개 lexical sense의 예문·구절 번역과 문맥 단서. 추가51개는 명시145행의 한국어 뜻·품사·원문을 작성 AI가 대조했으며 독립 AI/사람 검수·정답 승격은 아니다. 공개 export와 렌더 검사 뒤에만 제공률로 센다.",
     "notClaimed": [
       "독립 사람 검수",
       "새 정답 문항 승인",
@@ -22,6 +22,7 @@
     ],
     "masterDbStatus": "sync_required",
     "batches": [
+      {"id":"20261016-login-content","acceptedSourceTranslations":51,"sourceRows":145,"review":"author-ai exact source sense/POS/English and Korean meaning comparison","independentAiReview":false,"independentHumanReview":false,"exportStatus":"export-and-related-44-tests-passed-not-deployed","heldHeadwords":["about","abrasive","accede","acrid","addiction","anathema","apprentice","arcane","at stake","ally","bloom","blue-ribbon"],"heldReason":"원본 한국어 뜻과 후보 뜻·품사 불일치 또는 기존 고위험 보류 유지"},
       {
         "id": "20261016-korean-continuation",
         "acceptedSourceTranslations": 30,
@@ -59,6 +60,1375 @@
     ]
   },
   "entries": [
+    {
+      "headword": "abide by",
+      "senseId": "abide_by%2:41:00::",
+      "synsetId": "02547977-v",
+      "pos": "verb",
+      "en": "abide by the rules",
+      "sourceRowIds": [
+        "JBKROW000004",
+        "JBKROW002049"
+      ],
+      "sourceMeaningKo": "규칙·결정·약속을 따르고 지키다",
+      "matchEvidence": {
+        "sourceDefinition": "act in accordance with someone's rules, commands, or wishes",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "규칙을 따르다",
+      "cueKo": "rules가 따라야 할 기준임을 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "aboriginal",
+      "senseId": "aboriginal%3:00:00::",
+      "synsetId": "01040830-a",
+      "pos": "adjective",
+      "en": "the aboriginal peoples of Australia",
+      "sourceRowIds": [
+        "JBKROW000208",
+        "JBKROW002054"
+      ],
+      "sourceMeaningKo": "원주민의",
+      "matchEvidence": {
+        "sourceDefinition": "characteristic of or relating to people inhabiting a region from the beginning",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "오스트레일리아의 원주민들",
+      "cueKo": "peoples를 수식하여 그 지역에 처음부터 살아온 사람들을 가리킨다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "absolve",
+      "senseId": "absolve%2:32:02::",
+      "synsetId": "00905665-v",
+      "pos": "verb",
+      "en": "The priest absolved him and told him to say ten Hail Marys",
+      "sourceRowIds": [
+        "JBKROW000040"
+      ],
+      "sourceMeaningKo": "책임·죄를 면제하다; 용서하다",
+      "matchEvidence": {
+        "sourceDefinition": "grant remission of a sin to",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "사제는 그의 죄를 용서하고 성모송을 열 번 바치라고 말했다.",
+      "cueKo": "사제와 기도 지시가 종교적 죄의 용서라는 뜻을 좁힌다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "abstinent",
+      "senseId": "abstinent%5:00:00:abstemious:00",
+      "synsetId": "00009365-s",
+      "pos": "adjective",
+      "en": "not totally abstinent but abstemious",
+      "sourceRowIds": [
+        "JBKROW001319",
+        "JBKROW002059",
+        "JBKROW009652",
+        "JBKROW011269",
+        "JBKROW024589",
+        "JBKROW027127"
+      ],
+      "sourceMeaningKo": "금욕적인",
+      "matchEvidence": {
+        "sourceDefinition": "self-restraining; not indulging an appetite especially for food or drink",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "완전히 삼가는 것은 아니지만 절제하는",
+      "cueKo": "totally abstinent와 abstemious를 대조하여 완전한 금욕과 절제를 구별한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "abstract",
+      "senseId": "abstract%3:00:00::",
+      "synsetId": "00011776-a",
+      "pos": "adjective",
+      "en": "abstract words like ‘truth’ and ‘justice’",
+      "sourceRowIds": [
+        "JBKROW005701",
+        "JBKROW006163"
+      ],
+      "sourceMeaningKo": "추상적인",
+      "matchEvidence": {
+        "sourceDefinition": "existing only in the mind; separated from embodiment",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "‘진리’와 ‘정의’ 같은 추상적인 말",
+      "cueKo": "truth와 justice는 눈에 보이는 구체적 사물 대신 개념을 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "abundance",
+      "senseId": "abundance%1:07:00::",
+      "synsetId": "05122340-n",
+      "pos": "noun",
+      "en": "an age of abundance",
+      "sourceRowIds": [
+        "JBKROW000879",
+        "JBKROW002062"
+      ],
+      "sourceMeaningKo": "풍요",
+      "matchEvidence": {
+        "sourceDefinition": "the property of a more than adequate quantity or supply",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "풍요의 시대",
+      "cueKo": "충분한 정도를 넘는 양이나 공급이 있는 시대를 뜻한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "abysmal",
+      "senseId": "abysmal%5:00:00:immeasurable:00",
+      "synsetId": "01502652-s",
+      "pos": "adjective",
+      "en": "abysmal misery",
+      "sourceRowIds": [
+        "JBKROW001805",
+        "JBKROW002064"
+      ],
+      "sourceMeaningKo": "심연의; 헤아릴 수 없는",
+      "matchEvidence": {
+        "sourceDefinition": "very great; limitless",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "헤아릴 수 없이 큰 불행",
+      "cueKo": "misery를 수식하여 불행의 깊이나 정도가 매우 큼을 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "accord",
+      "senseId": "accord%1:10:00::",
+      "synsetId": "07191464-n",
+      "pos": "noun",
+      "en": "we are in accord with your proposal",
+      "sourceRowIds": [
+        "JBKROW001677",
+        "JBKROW002071"
+      ],
+      "sourceMeaningKo": "합의, 조화",
+      "matchEvidence": {
+        "sourceDefinition": "concurrence of opinion",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "우리는 당신의 제안에 동의합니다.",
+      "cueKo": "in accord with는 제안과 의견이 일치한다는 관계를 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "adamant",
+      "senseId": "adamant%5:00:00:inflexible:02",
+      "synsetId": "01028427-s",
+      "pos": "adjective",
+      "en": "he is adamant in his refusal to change his mind",
+      "sourceRowIds": [
+        "JBKROW000321",
+        "JBKROW002082",
+        "JBKROW004688",
+        "JBKROW006185"
+      ],
+      "sourceMeaningKo": "단호한",
+      "matchEvidence": {
+        "sourceDefinition": "impervious to pleas, persuasion, requests, reason",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "그는 생각을 바꾸지 않겠다는 입장이 확고하다.",
+      "cueKo": "refusal to change his mind가 설득에도 뜻을 굽히지 않는 태도를 드러낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "addict",
+      "senseId": "addict%1:18:01::",
+      "synsetId": "09788499-n",
+      "pos": "noun",
+      "en": "a golf addict",
+      "sourceRowIds": [
+        "JBKROW001794",
+        "JBKROW002083"
+      ],
+      "sourceMeaningKo": "중독되게 만들다; 중독자",
+      "matchEvidence": {
+        "sourceDefinition": "someone who is so ardently devoted to something that it resembles an addiction",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "골프에 푹 빠진 사람",
+      "cueKo": "golf에 대한 지나친 몰두를 비유적으로 나타내며 약물 중독으로 한정하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "address",
+      "senseId": "address%1:10:00::",
+      "synsetId": "07253354-n",
+      "pos": "noun",
+      "en": "he listened to an address on minor Roman poets",
+      "sourceRowIds": [
+        "JBKROW027799",
+        "JBKROW030111"
+      ],
+      "sourceMeaningKo": "(청중에의) 연설",
+      "matchEvidence": {
+        "sourceDefinition": "the act of delivering a formal spoken communication to an audience",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "그는 잘 알려지지 않은 로마 시인들에 관한 연설을 들었다.",
+      "cueKo": "listened to an address에서 address는 듣는 대상인 명사 ‘연설’이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "adept",
+      "senseId": "adept%5:00:00:skilled:00",
+      "synsetId": "02234002-s",
+      "pos": "adjective",
+      "en": "adept in handicrafts",
+      "sourceRowIds": [
+        "JBKROW001845",
+        "JBKROW002086"
+      ],
+      "sourceMeaningKo": "능숙한",
+      "matchEvidence": {
+        "sourceDefinition": "having or showing knowledge and skill and aptitude",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "수공예에 능숙한",
+      "cueKo": "adept in 뒤의 활동이 숙련된 분야를 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "adulterate",
+      "senseId": "adulterate%2:30:00::",
+      "synsetId": "00488684-v",
+      "pos": "verb",
+      "en": "adulterate liquor",
+      "sourceRowIds": [
+        "JBKROW001738",
+        "JBKROW002090",
+        "JBKROW005230",
+        "JBKROW006195",
+        "JBKROW010288",
+        "JBKROW011297"
+      ],
+      "sourceMeaningKo": "불순물을 섞다",
+      "matchEvidence": {
+        "sourceDefinition": "corrupt, debase, or make impure by adding a foreign or inferior substance; often by replacing valuable ingredients with inferior ones",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "술에 불순물을 섞다",
+      "cueKo": "가치가 낮거나 이질적인 물질을 섞어 순도를 떨어뜨리는 행위를 가리킨다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "adverse",
+      "senseId": "adverse%5:00:00:unfavorable:02",
+      "synsetId": "01000455-s",
+      "pos": "adjective",
+      "en": "adverse circumstances",
+      "sourceRowIds": [
+        "JBKROW013771"
+      ],
+      "sourceMeaningKo": "불리한; 반대의",
+      "matchEvidence": {
+        "sourceDefinition": "contrary to your interests or welfare",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "불리한 상황",
+      "cueKo": "이익이나 안녕에 도움이 되지 않는 상황을 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "advocate",
+      "senseId": "advocate%2:32:01::",
+      "synsetId": "00829391-v",
+      "pos": "verb",
+      "en": "The doctor advocated a smoking ban in the entire house",
+      "sourceRowIds": [
+        "JBKROW000119",
+        "JBKROW002093"
+      ],
+      "sourceMeaningKo": "옹호하다",
+      "matchEvidence": {
+        "sourceDefinition": "speak, plead, or argue in favor of",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "그 의사는 집 안 전체에서 흡연을 금지하자고 주장했다.",
+      "cueKo": "a smoking ban을 지지하며 시행을 주장하는 행동이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "afflict",
+      "senseId": "afflict%2:37:00::",
+      "synsetId": "01801741-v",
+      "pos": "verb",
+      "en": "she was afflicted by the death of her parents",
+      "sourceRowIds": [
+        "JBKROW000214",
+        "JBKROW002094",
+        "JBKROW024417",
+        "JBKROW030144"
+      ],
+      "sourceMeaningKo": "괴롭히다",
+      "matchEvidence": {
+        "sourceDefinition": "cause great unhappiness for; distress",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "그녀는 부모님의 죽음으로 괴로워했다.",
+      "cueKo": "부모의 죽음이 심한 정신적 고통의 원인이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "affluent",
+      "senseId": "affluent%5:00:00:rich:00",
+      "synsetId": "02029380-s",
+      "pos": "adjective",
+      "en": "an affluent banker",
+      "sourceRowIds": [
+        "JBKROW001686",
+        "JBKROW002095",
+        "JBKROW006041",
+        "JBKROW006208",
+        "JBKROW009895",
+        "JBKROW011306",
+        "JBKROW017619",
+        "JBKROW020655"
+      ],
+      "sourceMeaningKo": "부유한",
+      "matchEvidence": {
+        "sourceDefinition": "having an abundant supply of money or possessions of value",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "부유한 은행가",
+      "cueKo": "돈이나 가치 있는 재산을 풍부하게 가진 사람을 수식한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "afford",
+      "senseId": "afford%2:34:00::",
+      "synsetId": "01195161-v",
+      "pos": "verb",
+      "en": "I can't afford to spend two hours with this person",
+      "sourceRowIds": [
+        "JBKROW001258",
+        "JBKROW002096"
+      ],
+      "sourceMeaningKo": "형편이 되다, 여유가 되다",
+      "matchEvidence": {
+        "sourceDefinition": "be able to spare or give up",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "나는 이 사람과 두 시간을 보낼 여유가 없다.",
+      "cueKo": "여기서는 돈을 사는 능력보다 시간을 내어 줄 여유를 뜻한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "aggravate",
+      "senseId": "aggravate%2:30:00::",
+      "synsetId": "00208618-v",
+      "pos": "verb",
+      "en": "This drug aggravates the pain",
+      "sourceRowIds": [
+        "JBKROW000026",
+        "JBKROW002098",
+        "JBKROW004212",
+        "JBKROW006213",
+        "JBKROW024229",
+        "JBKROW027186"
+      ],
+      "sourceMeaningKo": "악화시키다",
+      "matchEvidence": {
+        "sourceDefinition": "make worse",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "이 약은 통증을 악화시킨다.",
+      "cueKo": "통증이 줄어드는 것이 아니라 더 심해지는 방향이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "albatross",
+      "senseId": "albatross%1:09:00::",
+      "synsetId": "05697450-n",
+      "pos": "noun",
+      "en": "she was an albatross around his neck",
+      "sourceRowIds": [
+        "JBKROW017638"
+      ],
+      "sourceMeaningKo": "큰 골칫거리; 신천옹(새)",
+      "matchEvidence": {
+        "sourceDefinition": "(figurative) something that hinders or handicaps",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "그녀는 그에게 벗어나기 힘든 짐 같은 존재였다.",
+      "cueKo": "around his neck가 새의 이름을 부담을 주는 존재로 비유한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "aloof",
+      "senseId": "aloof%5:00:00:reserved:01",
+      "synsetId": "01994728-s",
+      "pos": "adjective",
+      "en": "stood apart with aloof dignity",
+      "sourceRowIds": [
+        "JBKROW001328",
+        "JBKROW002107"
+      ],
+      "sourceMeaningKo": "무관심한, 초연한",
+      "matchEvidence": {
+        "sourceDefinition": "remote in manner",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "초연한 위엄을 지닌 채 떨어져 서 있었다.",
+      "cueKo": "stood apart와 함께 다른 사람들과 거리를 두는 태도를 보여 준다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "alter",
+      "senseId": "alter%2:30:01::",
+      "synsetId": "00126072-v",
+      "pos": "verb",
+      "en": "The advent of the automobile may have altered the growth pattern of the city",
+      "sourceRowIds": [
+        "JBKROW001642",
+        "JBKROW002109"
+      ],
+      "sourceMeaningKo": "변화시키다",
+      "matchEvidence": {
+        "sourceDefinition": "cause to change; make different; cause a transformation",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "자동차의 등장이 그 도시의 성장 양상을 바꾸었을지도 모른다.",
+      "cueKo": "may have는 변화의 가능성을 말하며 실제 원인으로 확정하지 않는다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "ambiguous",
+      "senseId": "ambiguous%3:00:04::",
+      "synsetId": "00898735-a",
+      "pos": "adjective",
+      "en": "the polling had a complex and equivocal (or ambiguous) message for potential female candidates",
+      "sourceRowIds": [
+        "JBKROW000151",
+        "JBKROW002113",
+        "JBKROW004719",
+        "JBKROW006242",
+        "JBKROW014416",
+        "JBKROW015680"
+      ],
+      "sourceMeaningKo": "모호한",
+      "matchEvidence": {
+        "sourceDefinition": "open to two or more interpretations; or of uncertain nature or significance; or (often) intended to mislead",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "그 여론조사는 여성 후보가 될 가능성이 있는 사람들에게 복잡하고 모호한 메시지를 주었다.",
+      "cueKo": "equivocal과 함께 한 가지로 분명하게 해석하기 어려움을 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "amiable",
+      "senseId": "amiable%5:00:00:friendly:01",
+      "synsetId": "01078866-s",
+      "pos": "adjective",
+      "en": "an amiable gathering",
+      "sourceRowIds": [
+        "JBKROW004623",
+        "JBKROW006248"
+      ],
+      "sourceMeaningKo": "상냥한",
+      "matchEvidence": {
+        "sourceDefinition": "diffusing warmth and friendliness",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "화기애애한 모임",
+      "cueKo": "gathering의 분위기가 따뜻하고 친근함을 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "amorphous",
+      "senseId": "amorphous%5:00:00:unformed:00",
+      "synsetId": "02159252-s",
+      "pos": "adjective",
+      "en": "amorphous clouds of insects",
+      "sourceRowIds": [
+        "JBKROW000619",
+        "JBKROW002120"
+      ],
+      "sourceMeaningKo": "형태가 없는",
+      "matchEvidence": {
+        "sourceDefinition": "having no definite form or distinct shape",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "뚜렷한 형태 없이 무리 지은 곤충 떼",
+      "cueKo": "clouds of insects의 윤곽이나 모양이 분명하게 정해져 있지 않다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "antediluvian",
+      "senseId": "antediluvian%3:01:00::",
+      "synsetId": "02857628-a",
+      "pos": "adjective",
+      "en": "antediluvian man",
+      "sourceRowIds": [
+        "JBKROW001946",
+        "JBKROW002129",
+        "JBKROW004095"
+      ],
+      "sourceMeaningKo": "대홍수 이전의; 구식의",
+      "matchEvidence": {
+        "sourceDefinition": "of or relating to the period before the biblical flood",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "성경 속 대홍수 이전의 인간",
+      "cueKo": "이 용례는 비유적인 ‘구식의’가 아니라 성경 속 홍수 이전이라는 시간 범위다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "apparent",
+      "senseId": "apparent%5:00:00:obvious:00",
+      "synsetId": "01622528-s",
+      "pos": "adjective",
+      "en": "the effects of the drought are apparent to anyone who sees the parched fields",
+      "sourceRowIds": [
+        "JBKROW001647",
+        "JBKROW002131",
+        "JBKROW004244",
+        "JBKROW006283"
+      ],
+      "sourceMeaningKo": "외견상의; 분명한",
+      "matchEvidence": {
+        "sourceDefinition": "clearly revealed to the mind or the senses or judgment",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "바싹 마른 들판을 보는 누구에게나 가뭄의 영향은 분명하다.",
+      "cueKo": "anyone who sees가 겉보기의 추측보다 관찰로 명백한 상태를 뒷받침한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "appraise",
+      "senseId": "appraise%2:31:01::",
+      "synsetId": "00683348-v",
+      "pos": "verb",
+      "en": "I will have the family jewels appraised by a professional",
+      "sourceRowIds": [
+        "JBKROW014248",
+        "JBKROW015712"
+      ],
+      "sourceMeaningKo": "가치를 평가하다; 감정하다",
+      "matchEvidence": {
+        "sourceDefinition": "evaluate or estimate the nature, quality, ability, extent, or significance of",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "나는 가문의 보석들을 전문가에게 감정받게 할 것이다.",
+      "cueKo": "have와 목적어 뒤의 appraised는 전문가에게 가치를 평가받는 구조다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "appreciate",
+      "senseId": "appreciate%2:31:00::",
+      "synsetId": "00593736-v",
+      "pos": "verb",
+      "en": "Do you appreciate the full meaning of this letter?",
+      "sourceRowIds": [
+        "JBKROW001137",
+        "JBKROW002134"
+      ],
+      "sourceMeaningKo": "이해하다; 감사하다",
+      "matchEvidence": {
+        "sourceDefinition": "be fully aware of; realize fully",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "당신은 이 편지가 뜻하는 바를 온전히 이해합니까?",
+      "cueKo": "the full meaning이 감사 표현이 아니라 충분한 이해라는 뜻을 좁힌다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "apprise",
+      "senseId": "apprise%2:32:01::",
+      "synsetId": "00832735-v",
+      "pos": "verb",
+      "en": "Have the students been apprised of the tuition hike?",
+      "sourceRowIds": [
+        "JBKROW005967",
+        "JBKROW006291",
+        "JBKROW017727",
+        "JBKROW020726"
+      ],
+      "sourceMeaningKo": "알리다, 통보하다",
+      "matchEvidence": {
+        "sourceDefinition": "make aware of",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "학생들에게 등록금 인상 사실이 통보되었습니까?",
+      "cueKo": "be apprised of에서 of 뒤는 전달받은 정보다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "appropriate",
+      "senseId": "appropriate%3:00:00::",
+      "synsetId": "00135772-a",
+      "pos": "adjective",
+      "en": "a book not appropriate for children",
+      "sourceRowIds": [
+        "JBKROW024383",
+        "JBKROW030249"
+      ],
+      "sourceMeaningKo": "-에 적합한",
+      "matchEvidence": {
+        "sourceDefinition": "suitable for a particular person or place or condition etc",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "어린이에게 적절하지 않은 책",
+      "cueKo": "not과 for children을 함께 읽어 적합하지 않은 대상이 어린이임을 확인한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "ascetic",
+      "senseId": "ascetic%3:01:00::",
+      "synsetId": "02654828-a",
+      "pos": "adjective",
+      "en": "ascetic practices",
+      "sourceRowIds": [
+        "JBKROW004826",
+        "JBKROW006310"
+      ],
+      "sourceMeaningKo": "금욕적인",
+      "matchEvidence": {
+        "sourceDefinition": "pertaining to or characteristic of an ascetic or the practice of rigorous self-discipline",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "금욕적인 수행",
+      "cueKo": "엄격한 자기 절제를 실천하는 활동을 수식한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "atrophy",
+      "senseId": "atrophy%2:29:00::",
+      "synsetId": "00093733-v",
+      "pos": "verb",
+      "en": "Muscles that are not used will atrophy",
+      "sourceRowIds": [
+        "JBKROW006039",
+        "JBKROW006329",
+        "JBKROW008838",
+        "JBKROW010001",
+        "JBKROW011398",
+        "JBKROW015355"
+      ],
+      "sourceMeaningKo": "위축되다",
+      "matchEvidence": {
+        "sourceDefinition": "undergo atrophy",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "사용하지 않는 근육은 위축될 것이다.",
+      "cueKo": "근육을 사용하지 않는 조건과 위축이라는 변화를 연결한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "attraction",
+      "senseId": "attraction%1:07:00::",
+      "synsetId": "04695595-n",
+      "pos": "noun",
+      "en": "her personality held a strange attraction for him",
+      "sourceRowIds": [
+        "JBKROW000029",
+        "JBKROW002153"
+      ],
+      "sourceMeaningKo": "관광명소; 매력",
+      "matchEvidence": {
+        "sourceDefinition": "the quality of arousing interest; being attractive or something that attracts",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "그녀의 성격에는 그를 끄는 묘한 매력이 있었다.",
+      "cueKo": "personality가 관광지가 아니라 사람의 관심을 끄는 성질임을 드러낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "augment",
+      "senseId": "augment%2:30:01::",
+      "synsetId": "00154196-v",
+      "pos": "verb",
+      "en": "The recent speech of the president augmented tensions in the Near East",
+      "sourceRowIds": [
+        "JBKROW010828",
+        "JBKROW011403"
+      ],
+      "sourceMeaningKo": "늘리다",
+      "matchEvidence": {
+        "sourceDefinition": "enlarge or increase",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "대통령의 최근 연설은 근동 지역의 긴장을 높였다.",
+      "cueKo": "tensions를 목적어로 하여 기존 긴장이 더 커지는 방향을 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "austere",
+      "senseId": "austere%5:00:00:nonindulgent:00",
+      "synsetId": "01303135-s",
+      "pos": "adjective",
+      "en": "an austere expression",
+      "sourceRowIds": [
+        "JBKROW001431",
+        "JBKROW002158",
+        "JBKROW009563",
+        "JBKROW011405"
+      ],
+      "sourceMeaningKo": "꾸밈없는; 근엄한; 금욕적인",
+      "matchEvidence": {
+        "sourceDefinition": "of a stern or strict bearing or demeanor; forbidding in aspect",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "근엄한 표정",
+      "cueKo": "expression을 수식하므로 장식이 적거나 긴축 재정이라는 뜻보다 엄격한 인상이 핵심이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "awry",
+      "senseId": "awry%4:02:00::",
+      "synsetId": "00273429-r",
+      "pos": "adverb",
+      "en": "something has gone awry in our plans",
+      "sourceRowIds": [
+        "JBKROW034652"
+      ],
+      "sourceMeaningKo": "비틀어진; 잘못된",
+      "matchEvidence": {
+        "sourceDefinition": "away from the correct or expected course",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "우리 계획에서 무언가가 잘못되었다.",
+      "cueKo": "gone awry는 기대했던 진행 방향에서 벗어났음을 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "backfire",
+      "senseId": "backfire%2:41:00::",
+      "synsetId": "02384041-v",
+      "pos": "verb",
+      "en": "Your comments may backfire and cause you a lot of trouble",
+      "sourceRowIds": [
+        "JBKROW000288",
+        "JBKROW002165"
+      ],
+      "sourceMeaningKo": "역효과가 나다",
+      "matchEvidence": {
+        "sourceDefinition": "come back to the originator of an action with an undesired effect",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "당신의 발언은 역효과를 내어 당신에게 많은 곤란을 초래할 수 있다.",
+      "cueKo": "may와 발언자에게 돌아오는 trouble을 함께 읽어 불리한 결과의 가능성을 확인한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "backlash",
+      "senseId": "backlash%1:04:00::",
+      "synsetId": "00203869-n",
+      "pos": "noun",
+      "en": "there was a backlash of intolerance",
+      "sourceRowIds": [
+        "JBKROW000090"
+      ],
+      "sourceMeaningKo": "강한 반발; 반동",
+      "matchEvidence": {
+        "sourceDefinition": "an adverse reaction to some political or social occurrence",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "불관용의 거센 반발이 일어났다.",
+      "cueKo": "어떤 일에 대한 적대적인 반작용을 나타내며 그 계기는 이 문장만으로 특정할 수 없다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "bandwagon",
+      "senseId": "bandwagon%1:09:00::",
+      "synsetId": "05759530-n",
+      "pos": "noun",
+      "en": "when they saw how things were going everybody jumped on the bandwagon",
+      "sourceRowIds": [
+        "JBKROW000224",
+        "JBKROW002170"
+      ],
+      "sourceMeaningKo": "유행",
+      "matchEvidence": {
+        "sourceDefinition": "a popular trend that attracts growing support",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "상황이 돌아가는 것을 보고 모두가 그 흐름에 편승했다.",
+      "cueKo": "jumped on the bandwagon은 지지가 늘어나는 유행이나 흐름에 합류하는 표현이다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "baron",
+      "senseId": "baron%1:18:01::",
+      "synsetId": "09859605-n",
+      "pos": "noun",
+      "en": "an oil baron",
+      "sourceRowIds": [
+        "JBKROW000121",
+        "JBKROW002172"
+      ],
+      "sourceMeaningKo": "거물급 인사; 남작(男爵)",
+      "matchEvidence": {
+        "sourceDefinition": "a very wealthy or powerful businessperson",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "석유업계의 거물",
+      "cueKo": "oil이 귀족 작위보다 산업에서 부와 영향력을 가진 인물이라는 뜻을 좁힌다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "befall",
+      "senseId": "befall%2:30:01::",
+      "synsetId": "00345654-v",
+      "pos": "verb",
+      "en": "He promised that no harm would befall her",
+      "sourceRowIds": [
+        "JBKROW000215",
+        "JBKROW002178"
+      ],
+      "sourceMeaningKo": "일어나다",
+      "matchEvidence": {
+        "sourceDefinition": "become of; happen to",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "그는 그녀에게 아무런 해도 닥치지 않을 것이라고 약속했다.",
+      "cueKo": "no harm의 부정 범위와 약속이라는 발화 내용을 함께 보존한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "belligerent",
+      "senseId": "belligerent%5:00:00:hostile:01",
+      "synsetId": "01247720-s",
+      "pos": "adjective",
+      "en": "a belligerent tone",
+      "sourceRowIds": [
+        "JBKROW004448",
+        "JBKROW006390",
+        "JBKROW013718",
+        "JBKROW015811",
+        "JBKROW017865",
+        "JBKROW020820",
+        "JBKROW027393"
+      ],
+      "sourceMeaningKo": "호전적인",
+      "matchEvidence": {
+        "sourceDefinition": "characteristic of an enemy or one eager to fight",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "호전적인 말투",
+      "cueKo": "tone을 수식하여 싸움을 걸 듯 적대적인 태도를 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "benign",
+      "senseId": "benign%3:00:00::",
+      "synsetId": "00228210-a",
+      "pos": "adjective",
+      "en": "a benign smile",
+      "sourceRowIds": [
+        "JBKROW010591",
+        "JBKROW011455"
+      ],
+      "sourceMeaningKo": "(사람이) 상냥한; (종양이) 양성의",
+      "matchEvidence": {
+        "sourceDefinition": "pleasant and beneficial in nature or influence",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "다정한 미소",
+      "cueKo": "smile이 사람의 온화한 인상을 나타내므로 종양의 양성 여부와 구별한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "bent",
+      "senseId": "bent%5:00:00:resolute:00",
+      "synsetId": "01997254-s",
+      "pos": "adjective",
+      "en": "bent on going to the theater",
+      "sourceRowIds": [
+        "JBKROW017906",
+        "JBKROW020831"
+      ],
+      "sourceMeaningKo": "열심인, 열중하는",
+      "matchEvidence": {
+        "sourceDefinition": "fixed in your purpose",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "극장에 가기로 작정한",
+      "cueKo": "bent on 뒤의 행동에 뜻이 확고히 향해 있음을 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "betray",
+      "senseId": "betray%2:32:01::",
+      "synsetId": "00938362-v",
+      "pos": "verb",
+      "en": "Her smile betrayed her true feelings",
+      "sourceRowIds": [
+        "JBKROW017911",
+        "JBKROW020836"
+      ],
+      "sourceMeaningKo": "무심코 드러내다; 배반하다",
+      "matchEvidence": {
+        "sourceDefinition": "reveal unintentionally",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "그녀의 미소는 진짜 감정을 무심코 드러냈다.",
+      "cueKo": "미소가 감정을 드러내는 단서이므로 사람을 배신하는 뜻과 구별한다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "bilateral",
+      "senseId": "bilateral%5:00:00:reciprocal:00",
+      "synsetId": "01952629-s",
+      "pos": "adjective",
+      "en": "a bilateral agreement between the United States and Japan",
+      "sourceRowIds": [
+        "JBKROW000123",
+        "JBKROW002197"
+      ],
+      "sourceMeaningKo": "양자 간의; 양면의",
+      "matchEvidence": {
+        "sourceDefinition": "affecting or undertaken by two parties",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "미국과 일본 사이의 양자 협정",
+      "cueKo": "두 나라가 명시되어 협정에 참여하는 당사자가 둘임을 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "blaspheme",
+      "senseId": "blaspheme%2:32:01::",
+      "synsetId": "00816120-v",
+      "pos": "verb",
+      "en": "blaspheme God",
+      "sourceRowIds": [
+        "JBKROW001803",
+        "JBKROW002200",
+        "JBKROW008497",
+        "JBKROW011477",
+        "JBKROW027305",
+        "JBKROW030441"
+      ],
+      "sourceMeaningKo": "신성 모독적인 발언을 하다",
+      "matchEvidence": {
+        "sourceDefinition": "speak of in an irreverent or impious manner",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "신을 모독하다",
+      "cueKo": "신성한 대상을 불경하게 말하는 동사다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "bleak",
+      "senseId": "bleak%5:00:00:hopeless:00",
+      "synsetId": "01232434-s",
+      "pos": "adjective",
+      "en": "prospects were bleak",
+      "sourceRowIds": [
+        "JBKROW000422",
+        "JBKROW002201",
+        "JBKROW005138",
+        "JBKROW006405"
+      ],
+      "sourceMeaningKo": "암울한",
+      "matchEvidence": {
+        "sourceDefinition": "offering little or no hope",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "전망은 암울했다.",
+      "cueKo": "prospects를 수식하여 미래에 대한 희망이 거의 없음을 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "blister",
+      "senseId": "blister%2:30:00::",
+      "synsetId": "00380445-v",
+      "pos": "verb",
+      "en": "Her feet blistered during the long hike",
+      "sourceRowIds": [
+        "JBKROW001707",
+        "JBKROW002202"
+      ],
+      "sourceMeaningKo": "물집이 잡히다",
+      "matchEvidence": {
+        "sourceDefinition": "get blistered",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "긴 도보 여행 중에 그녀의 발에 물집이 잡혔다.",
+      "cueKo": "feet가 주어인 자동사 용례로 물집이 생기는 변화를 나타낸다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
+    {
+      "headword": "blunt",
+      "senseId": "blunt%5:00:00:pointless:00",
+      "synsetId": "01816968-s",
+      "pos": "adjective",
+      "en": "thick marks made by a blunt pencil",
+      "sourceRowIds": [
+        "JBKROW000127",
+        "JBKROW002205"
+      ],
+      "sourceMeaningKo": "무딘",
+      "matchEvidence": {
+        "sourceDefinition": "having a broad or rounded end",
+        "scope": "명시한 원본 한국어 뜻과 이 lexical sense의 원문 예문·구절을 대조. 다른 뜻과 정답 승격 제외."
+      },
+      "ko": "끝이 뭉툭한 연필로 그은 굵은 자국",
+      "cueKo": "pencil의 끝이 날카롭지 않아 두꺼운 자국이 생기는 물리적 의미다.",
+      "reviewStatus": "ai-reviewed-example-translation",
+      "provenance": {
+        "english": "Open English WordNet 2025 원문 예문, 무변형",
+        "korean": "FINETUNE 자체 번역·학습 단서",
+        "checkedAt": "2026-10-16",
+        "independentHumanReview": false,
+        "independentAiReview": false
+      }
+    },
     {
       "headword": "abhorrent",
       "senseId": "abhorrent%5:00:00:offensive:01",

@@ -1,5 +1,11 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-16 22:19 KST — 로그인 중 콘텐츠 증분 +51번역/+9관계뜻
+
+사용자 지시로 이미 통과한 전체689/type/저장·엔진 회귀는 재실행하지 않고 unchanged 코드의 근거로만 재사용. 기존 ddc9a60 clean빌드 보존. 새 변경은 reviewed-examples247→298: 실제OEWN원문51sense의 번역·문맥단서 및 원뜻일치145행, authorAI검토/독립AI·사람검수아님. 부정·가능성·수동·품사 대조, 불일치12표제어 보류. editorial 관계뜻307→316:9개를 OEWN동일synset+실제Wiktionary 별도사전정의 대조 후 참고뜻으로 추가, sourceEvidence에URL/검토일/독립reviewer아님 명시. 예전보류이력은보존하고 새batch9개의해소근거기록, resonance/anonym/gall/taradiddle은추가보류. 원본어휘/정답/앱코드/ID/저장키불변(diffexit0).
+
+기존생성기 export exit0; measure-content-throughput --runtime-relations 새input72f0d1ef1d8a9c13713dfda218ef156ce49c6f6deb6c1a75797044152e384737: 영어8350동일, 영한+단서582→632(+50고유표제어), 관계뜻316/146표제어, 중복ID·끊긴학습연결0. 관련두파일44PASS exit0(1792156698909-19716-test.json),전체source sense/row/영문일치 및 실제해설renderer관계뜻 표시검사. 새전체검수완료로보고안함. 사용자 최신지시의 동일검사반복금지에 따라 새데이터 영향검사만 수행. 새후보 source커밋→새Production·출력감사는 배포입력변경에 필요한 작업으로 진행; Cloudflare로그인은사용자가진행. 잠금11940/PID8240. 공개업데이트·실기기확인아님. 최종후보/산출물/백업/해제는 외부A-latest.loginContent20261016 참조.
+
 ## 2026-10-16 21:15 KST — 자원 차단 해소, 새 Production·실제 브라우저 검사 통과 / 보호배포 인증 필요
 
 후보 ddc9a60e68a337888c70a74a8affc92220b1ea80의 clean입력으로 output/content-recovery-production-20261016 생성 exit0. 표시1.0/내부1.29/builtAt2026-10-16T12:08:50.299Z/sourceDirty=false. worker1 build 보고1792152543409-2944-build.json peak2247MiB; 내장출력감사1792152684228-2944-test.json exit0/securityIssues0/missingReferences0. JS entry-5a8bf38e91c788cf9939cf76b3b9b9da.js SHA2564af1816011dda2a9d24b6df5c046e11abf64957ce47f087b309d470ab5ec08e5. 전체689PASS/1기존SKIP·type·관련lint0warning·security0finding은 바로 아래 검사와 동일입력.

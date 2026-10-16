@@ -48,6 +48,84 @@
     },
     "batches": [
       {
+        "id": "20261016-login-glosses",
+        "addedRelationGlosses": 9,
+        "independentAiReview": false,
+        "independentHumanReview": false,
+        "review": "Author AI compared actual OEWN synset and independently published dictionary sense; not another reviewer",
+        "sourceEvidence": [
+          {
+            "headword": "indigent",
+            "relation": "necessitous",
+            "url": "https://en.wiktionary.org/wiki/necessitous",
+            "checkedAt": "2026-10-16",
+            "scope": "Definition consulted to verify own concise Korean gloss; no source text copied"
+          },
+          {
+            "headword": "gaffe",
+            "relation": "gaucherie",
+            "url": "https://en.wiktionary.org/wiki/gaucherie",
+            "checkedAt": "2026-10-16",
+            "scope": "Definition consulted to verify own concise Korean gloss; no source text copied"
+          },
+          {
+            "headword": "propriety",
+            "relation": "correctitude",
+            "url": "https://en.wiktionary.org/wiki/correctitude",
+            "checkedAt": "2026-10-16",
+            "scope": "Definition consulted to verify own concise Korean gloss; no source text copied"
+          },
+          {
+            "headword": "tirade",
+            "relation": "philippic",
+            "url": "https://en.wiktionary.org/wiki/philippic",
+            "checkedAt": "2026-10-16",
+            "scope": "Definition consulted to verify own concise Korean gloss; no source text copied"
+          },
+          {
+            "headword": "chicanery",
+            "relation": "chicane",
+            "url": "https://en.wiktionary.org/wiki/chicane",
+            "checkedAt": "2026-10-16",
+            "scope": "Definition consulted to verify own concise Korean gloss; no source text copied"
+          },
+          {
+            "headword": "alcove",
+            "relation": "bay",
+            "url": "https://en.wiktionary.org/wiki/bay",
+            "checkedAt": "2026-10-16",
+            "scope": "Definition consulted to verify own concise Korean gloss; no source text copied"
+          },
+          {
+            "headword": "baloney",
+            "relation": "tommyrot",
+            "url": "https://en.wiktionary.org/wiki/tommyrot",
+            "checkedAt": "2026-10-16",
+            "scope": "Definition consulted to verify own concise Korean gloss; no source text copied"
+          },
+          {
+            "headword": "abhorrence",
+            "relation": "odium",
+            "url": "https://en.wiktionary.org/wiki/odium",
+            "checkedAt": "2026-10-16",
+            "scope": "Definition consulted to verify own concise Korean gloss; no source text copied"
+          },
+          {
+            "headword": "imposter",
+            "relation": "shammer",
+            "url": "https://en.wiktionary.org/wiki/shammer",
+            "checkedAt": "2026-10-16",
+            "scope": "Definition consulted to verify own concise Korean gloss; no source text copied"
+          }
+        ],
+        "held": [
+          "resonance: emotional response does not establish mutual trust",
+          "anonym: page content unavailable",
+          "gall: English sense not independently verified",
+          "taradiddle: variant target not resolved"
+        ]
+      },
+      {
         "id": "20261016-content",
         "newExamples": 99,
         "existingUsageExplanations": 129,
@@ -703,7 +781,8 @@
         "destitute": "극도로 빈곤한",
         "impoverished": "가난해진",
         "needy": "생활이 궁핍한",
-        "poverty-stricken": "빈곤에 시달리는"
+        "poverty-stricken": "빈곤에 시달리는",
+        "necessitous": "궁핍한"
       },
       "usageKo": "생활에 필요한 자원이 부족해 도움이 필요한 상태를 나타낸다. needy의 다른 뜻인 ‘관심을 갈구하는’과 구별한다."
     },
@@ -905,7 +984,8 @@
       "relationMeaningsKo": {
         "faux pas": "실례되는 언행",
         "solecism": "예의에 어긋난 언행",
-        "slip": "실수"
+        "slip": "실수",
+        "gaucherie": "눈치 없는 실수"
       },
       "usageKo": "사회적 상황에서 눈치 없거나 무례하게 비치는 실수다. solecism은 여기서 문법 오류가 아니라 사회적 예법 위반을 가리킨다."
     },
@@ -938,7 +1018,8 @@
         "trickery": "속임수",
         "guile": "교활한 속임수",
         "wile": "간계",
-        "shenanigan": "수작"
+        "shenanigan": "수작",
+        "chicane": "기만술"
       },
       "usageKo": "사람을 속이기 위해 교묘한 수단을 쓰는 행위다. 단순한 재치나 정당한 협상 기술로 해석하지 않는다."
     },
@@ -1346,7 +1427,8 @@
         "answerEligibility": "not-promoted"
       },
       "relationMeaningsKo": {
-        "broadside": "거센 비난"
+        "broadside": "거센 비난",
+        "philippic": "격렬한 비난 연설"
       },
       "usageKo": "길게 쏟아 내는 격렬한 비난의 말이다. 길기만 한 중립적 연설과 구별하며, broadside는 여기서 언어적 공격이다."
     },
@@ -3328,7 +3410,8 @@
         "answerEligibility": "not-promoted"
       },
       "relationMeaningsKo": {
-        "properness": "적절함"
+        "properness": "적절함",
+        "correctitude": "올바른 처신"
       },
       "usageKo": "행동이 예의나 상황의 기준에 맞는다는 뜻이다. propriety와 재산을 뜻하는 property의 철자를 구별한다."
     },
@@ -3462,7 +3545,8 @@
       "relationMeaningsKo": {
         "abomination": "혐오감",
         "detestation": "강한 혐오",
-        "loathing": "몹시 싫어함"
+        "loathing": "몹시 싫어함",
+        "odium": "혐오"
       },
       "usageKo": "역겨움이 섞인 강한 미움을 뜻한다. abomination은 여기서는 혐오의 대상이 아니라 혐오감이라는 감정 sense다."
     },
@@ -4306,7 +4390,8 @@
         "fake": "가짜 행세를 하는 사람",
         "faker": "속이는 사람",
         "fraud": "사기꾼",
-        "sham": "가짜 행세를 하는 사람"
+        "sham": "가짜 행세를 하는 사람",
+        "shammer": "사칭하는 사람"
       },
       "usageKo": "실제와 다른 신분이나 능력을 가진 척하는 사람이다. fake·fraud·sham은 여기서 사물이나 행위가 아니라 사람을 가리키는 명사다."
     },
@@ -5157,6 +5242,9 @@
         "checkedAt": "2026-10-16",
         "independentHumanReview": false,
         "answerEligibility": "not-promoted"
+      },
+      "relationMeaningsKo": {
+        "bay": "벽면의 오목한 공간"
       }
     },
     {
@@ -7038,7 +7126,8 @@
         "bosh": "헛소리",
         "humbug": "허황된 말",
         "tosh": "허튼소리",
-        "twaddle": "시시한 헛소리"
+        "twaddle": "시시한 헛소리",
+        "tommyrot": "헛소리"
       }
     },
     {
