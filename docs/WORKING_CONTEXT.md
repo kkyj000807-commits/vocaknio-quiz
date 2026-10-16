@@ -1,10 +1,14 @@
 # FINETUNE 현행 스냅샷
 
-## 2026-10-16 — 미응답 터치 이동·짧은 화면 세로 여유 수정 중
+## 2026-10-16 — 미응답 터치 이동·짧은 화면 세로 여유 공개 배포 완료
+
+source c03d11bf514de9b72e2f37505cd34a42ff5f6724,Pages cba2126cc9c669e857524f7550731ec557d15f5a,run38832946648 SUCCESS. 최종verify686PASS/1기존SKIP·type/data/lint/security 통과,새worker1빌드 output/quiz-touch-production-20261016 exit0/peak2203MiB/출력감사0issues. 공개release1.0/09:58:34KST/sourceDirtyfalse와 JS SHA25631f22dc885ac1f6fb8e54a5fc257e321819bb68e0b84966b9560892c5ba7a643 일치,공개설정UI시각확인. 기존원본·학습키·공개기록시험답안 불변.
+
+격리Chromium실제앱: 미응답1→5/정답0오답0→남은문제로1복귀/원래선지유지,3번위치reload유지,정답1→다음/이전/reload통계1유지. 실제모바일viewport394x852에서 scrollHeight829/clientHeight785/scrollTop43.2,이전·다음각높이50/bottom844로조작가능,가로이탈없음. 초기뷰포트설정은새탭생성후1280으로확인돼모바일PASS로세지않고다시설정·실측했다. 스크린샷analysis/qa/quiz-touch-mobile-20261016.jpg. 실제webtouchcallback모의입력6PASS와브라우저스크롤/버튼검증을구분하며 실기기iOS손가락gesture는NOT_VERIFIED. 이번사용자명시즉시배포승인범위로게시;Cloudflare본인전용전환/기존사이트종료승인조건유지.
 
 사용자 스크린샷/후속승인: 미응답 문제도 좌우 이동,세로로 약간 이동,이런 UX수정은 검증후바로배포. 기존 공개오류긴급배포후 새로 승인된 좁은 UI범위이며 비공개전환 요구는 유지한다. 잠금63507/PID5764. 소유변경 app/quiz.tsx,lib/quiz-navigation.ts,tests/quiz-navigation.test.ts. 미응답에서도 다음버튼/왼쪽swipe,마지막은미응답으로복귀하여 자동오답/완료금지. 입력초안·힌트질문은 adaptive재배열제외,MASTER자동진행도미응답보존. 실제viewport높이+44px로짧은카드에도세로여유,고정footer유지. 세로우세/멀티터치/입력편집은가로이동제외,움직임뒤잘못된채점tap억제.
 
-영향검사21PASS(기존세션17+navigation4),실제screen webcallback추가후6PASS;lint0error/security0finding. 최초RED는미구현helperimport,첫전체type은테스트반환타입오류로실패후명시callback타입수정. 현재전체verify 재실행중;빌드/로컬UI/공개검증완료 전배포완료 아님. 원자료·학습키·사용자기록불변,실기기Safari터치미검증. 최종영수증 외부 A-latest touchNavigationRelease20261016.
+영향검사21PASS(기존세션17+navigation4),실제screen webcallback추가후6PASS;lint0error/security0finding. 최초RED는미구현helperimport,첫전체type은테스트반환타입오류로실패후명시callback타입수정. 최종전체검사/빌드/공개결과는위문단,잠금·백업은외부 A-latest touchNavigationRelease20261016.
 
 ## 2026-10-16 — 사용자 명시 승인 긴급 Pages 저장 수정 배포 완료
 
