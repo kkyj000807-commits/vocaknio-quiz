@@ -14,6 +14,12 @@
 
 사용자 직접 카드·약관 절차 후 실제 Cloudflare confirmation에서 Purchase complete/subscription active/Zero Trust Free/Due today $0month 확인,Continue to Zero Trust로진입. 이는 활성화 성공일뿐 초과과금없음·Access보호·배포성공증거아님. 본인인증전환 작업 계속.
 
+최종후보86e47096dea6e7cd095c94cb8ce2afc21055143d clean Production output/owner-watermark-release-20261016 exit0/peak1813MiB(report1792158589769-16872-build.json),22:49:36KST/1.0/1.29/sourceDirtyfalse. 출력감사1792158757110-16872-test.json exit0/22HTML색인제한true/security0/missing0;prepare-private-deploy exit0/PREPARED_NOT_DEPLOYED. 기존full691/type는 불변앱 입력에 재사용하고 감사수정 영향9PASS를 별도로 반영,새full692를 실행했다고보고하지않음. 9954f2a와86e4709의app/components/lib/public/assets/data diff없음.
+
+실제 Chromium 격리26750: 394x852 단어장검색→abide by 상세/해석/문맥펼침→워터마크 top784/bottom798,탭top802.8/bottom850,조작높이47.2/가로넘침없음. 320x720 및1024x768에서도폭이탈없고워터마크폭199.2. 문풀새세션→오답1+북마크→상세→다음2/10→reload 동일위치/선지/0정답1오답 유지,통계0/1·WEAK1 연결,오류콘솔0. 긴해설 다음버튼높이50/bottom826,워터마크top836/bottom850로비중첩. 설정 실제 '2026.10.16 오후 10:49:36 KST' 확인,Dark/Paper 색상각rgb152152184/rgb11110188 정상. 첫reload404는 단순Python서버의확장자없는경로미지원;기존 serve-audit-output.py로같은origin 교체후복원PASS,앱버그/Production실패로혼동하지않음. 증거 analysis/qa/watermark-wordbook-mobile-20261016.png 및 watermark-quiz-mobile-20261016.png. 실제Safari/Samsung NOT_VERIFIED;공개사용자기록불변.
+
+Cloudflare Workers 실제0프로젝트 목록에서 Verify your account 모달이 배포차단: 등록도메인 gamil.com 인증링크 필요. Gmail로추측수정/Resend/자격증명변경/정책생성/배포/새공개경로활성화 없음. 사용자에게 직접계정이메일수정·인증 요청, IAB3 handoff/analysis/qa/cloudflare-email-verification-required-20261016.png 보존. ZeroTrust는이미ACTIVE라 결제절차반복금지. 다음은 이메일인증완료→해당본인1계정+최장1개월 Alltraffic Access를 새콘텐츠노출전설정→동일86e4709산출물업로드→익명HTML/JS/CSS/JSON·Preview차단확인. 기존Pages종료·repoPrivate는Safari이관및별도승인후. 마지막백업/자기QA서버종료/뷰포트리셋/정상잠금해제는 외부A-latest 최종영수증.
+
 ## 2026-10-16 22:33 KST — 오전/오후 표시 및 번역23개 추가, Cloudflare 인증 세션 미연결
 
 사용자 로그인완료·본인보호배포 지시 후 실제사용가능 IAB와Chrome4/Chrome3 대시보드를 열었으나 세곳 모두 /login·빈Email/Password 화면. 기존로그인을 부정하지 않고 연결된프로필에서 인증세션확인안됨으로 기록. 브라우저/프로필/대시보드탭 요청 비동기답변 'dd'만 도착,계정식별불가. 인증없는새주소/Access설정/배포 없음. 연결가능탭을 사용자handoff하고 설정·배포 재개 필요.
