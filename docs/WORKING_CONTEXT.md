@@ -1,5 +1,13 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-16 21:15 KST — 자원 차단 해소, 새 Production·실제 브라우저 검사 통과 / 보호배포 인증 필요
+
+후보 ddc9a60e68a337888c70a74a8affc92220b1ea80의 clean입력으로 output/content-recovery-production-20261016 생성 exit0. 표시1.0/내부1.29/builtAt2026-10-16T12:08:50.299Z/sourceDirty=false. worker1 build 보고1792152543409-2944-build.json peak2247MiB; 내장출력감사1792152684228-2944-test.json exit0/securityIssues0/missingReferences0. JS entry-5a8bf38e91c788cf9939cf76b3b9b9da.js SHA2564af1816011dda2a9d24b6df5c046e11abf64957ce47f087b309d470ab5ec08e5. 전체689PASS/1기존SKIP·type·관련lint0warning·security0finding은 바로 아래 검사와 동일입력.
+
+새격리origin127.0.0.1:26746 Chromium실앱에서 skittish의 flighty(쉽게놀라는)/spooky(잘놀라는)/nervous(신경이예민한), 자체예문·번역·단서·용법 및 IPA옆 한글근사기호 실제표시 확인. evidence analysis/qa/content-recovery-mobile-20261016.png. 모바일실측394x852 가로넘침없음/탭bottom850; SC오답+북마크→reload동일선지·응답복원→다음정답→20연속 실제문서reload 위치2/10·정답1오답1 유지. 긴해설 이전/다음 높이50,bottom844. 논리오답복습→정답→결과100%→누적2/3→재접속유지. 태블릿1024x768 가로넘침없음. 테스트백업 Downloads/FINETUNE-learning-2026-10-16T12-13-37-685Z.json을 별도빈origin26747에서 추가6/동일3/충돌0 검사→복원→reload누적2/3 유지, 오류콘솔0. 실제사용자기록·공개사이트에 시험답안 없음. 이는 Chromium검사이며 iOS Safari/Samsung 실기기·사용자원래오류재현은 NOT_VERIFIED.
+
+승인된OneDrive PID18144만 종료했던 작업 완료: 원래실행파일을 Hidden으로재실행, 새PID31828/21:14:28KST/WS139MiB 확인. 파일·동기화설정·다른앱변경없음, 동기화완료/메모리누수근본해결은 주장안함. 실제공개release c03d11b/1.0/09:58:34KST 유지. 새source push/Pages배포/보호없는주소활성화 없음. Cloudflare 로그인 탭20 본인인증·Access정확한계정1명/직접파일익명차단 미완료라 BLOCKED_AUTH, 기존Pages종료/저장소Private승인조건유지. next: 새후보 재생성없이 ddc9a60 산출물로 본인인증→Access보호설정→보호배포→직접파일차단·Safari기록이관 확인. 잠금26992/PID34296 및백업/해제 영수증은 외부 A-latest.approvedOneDriveRecovery20261016 참조. lastPassedCommit 전체실기기/배포성공으로 승격금지.
+
 ## 2026-10-16 21:08 KST — 승인된 OneDrive 일회 종료 후 통합 검사 통과, 새 후보 빌드 시작
 
 사용자가 PID18144 OneDrive만 종료 후 재실행을 명시 승인. 이름/경로/시작시각 확인 후 해당 프로세스만 종료; 파일·동기화 설정·다른 앱 불변. 가용물리533→6534MiB/commit10701→43010MiB 회복. 종료 전 반드시 OneDrive 재실행 확인하며 재시작/백업/잠금해제 영수증은 외부 A-latest에 기록한다. 잠금26992/PID34296 유지.
