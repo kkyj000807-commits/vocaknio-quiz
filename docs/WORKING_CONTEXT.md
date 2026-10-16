@@ -1,5 +1,11 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-16 — 사용자 명시 승인 긴급 Pages 저장 수정 배포 완료
+
+사용자가 '기존 주소에 긴급 수정 배포'를 명시 선택하여 비공개 전환 전 기존 Pages에 검증 후보2a5eccd를 반영했다. source원격bbd3504(문서후속만 차이), Pages87ba15764a220b6958747de34639868c9966fd38, run38831466282 SUCCESS. 재생성 없이 동일 clean 후보의680PASS/1SKIP·실제20reload·별도origin복원 결과 재사용; 이번 출력감사 exit0/보안0/누락0. 공개 release source2a5eccd/1.0/2026.10.16 00:01:06 KST 및 JS SHA256 c0bc8af5d35d2c2750b2e8f760e8efff402960e0b41dd5389c5ffdd87149fb8b 일치. 공개 Chromium 홈의새순서/전체범위,설정배포정보 확인; 공개시험답안 없음. 증거 analysis/qa/storage-emergency-public-20261016.jpg. 실제 사용자iPhone오류해소·실기기Safari는 여전히 확인 필요.
+
+새 보안 요청: 본인 인증 후에만 내용 열람하도록 Cloudflare Access 전환을 우선한다. 현재 Pages와 GitHub저장소는 여전히 PUBLIC이며 인증차단완료 아님. Cloudflare tab9 실제로그인화면 확인,사용자로그인 필요. workers_dev=false/preview_urls=false 유지; 미보호 새주소 미활성. 본인전용Access·직접HTML/JS/CSS/JSON익명차단·Safari백업복원 후 별도승인으로 기존Pages종료/저장소Private전환. 이미공개된복사본회수 보장금지. 이번 공개긴급배포승인을 향후무제한공개배포승인으로 해석하지 않는다. 잠금33340/PID15132 정상해제와백업은 외부영수증.
+
 ## 2026-10-16 00:08 KST — 저장 후보 빌드·실제 앱 20회 새로고침·복원 통과 (미배포)
 
 후보 source `2a5eccd650d279021e05ae8997cf182b8217ef95`, clean입력 Production `output/private-storage-production-20261016` exit0/출력감사PASS. 표시1.0/내부1.29/00:01:06KST/sourceDirty=false. private 준비 `output/finetune-private-deploy` exit0/PREPARED_NOT_DEPLOYED, workers_dev/preview false. 새 원격push/Pages배포/Cloudflareroute활성화 없음.
