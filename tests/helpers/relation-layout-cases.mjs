@@ -50,7 +50,7 @@ function load(relative) {
     '@/lib/learning-detail-loader': { loadLearningDetailParts: async () => {} },
     '@/lib/active-recall': { getActiveRecallSenses: () => [] },
     '@/lib/vocab-learning': { loadLearningEntries: async () => [] },
-    '@/lib/vocab-definitions': { loadVocabDefinition: async () => null, VOCAB_DEFINITION_SOURCE: { name: 'Open English WordNet', edition: '2025', license: 'CC BY 4.0', attribution: 'Princeton WordNet; Open English WordNet Team' } },
+    '@/lib/vocab-definitions': { loadVocabDefinition: async () => null, getEditorialExamples: () => [], VOCAB_DEFINITION_SOURCE: { name: 'Open English WordNet', edition: '2025', license: 'CC BY 4.0', attribution: 'Princeton WordNet; Open English WordNet Team' } },
     '@/lib/definition-quiz': { getDefinitionQuizEntry: id => id === 'fixture-row' ? fixtureReference : undefined,
       getDefinitionRelationMeanings: () => [],
       getDefinitionAnswerRelations: reference => ({ synonyms: reference.synsetMembers.filter(word => word !== reference.headword), antonyms: reference.antonyms }) },

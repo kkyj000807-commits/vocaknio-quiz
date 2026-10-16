@@ -1,5 +1,63 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-16 21:08 KST — 승인된 OneDrive 일회 종료 후 통합 검사 통과, 새 후보 빌드 시작
+
+사용자가 PID18144 OneDrive만 종료 후 재실행을 명시 승인. 이름/경로/시작시각 확인 후 해당 프로세스만 종료; 파일·동기화 설정·다른 앱 불변. 가용물리533→6534MiB/commit10701→43010MiB 회복. 종료 전 반드시 OneDrive 재실행 확인하며 재시작/백업/잠금해제 영수증은 외부 A-latest에 기록한다. 잠금26992/PID34296 유지.
+
+기존 소유23dirty 보존·연속 통합, 신규 수정은 example-pronunciation test의 실제 getEditorialExamples 부분mock 반영 및 quiz-recovery import 위치 정리. 원본 어휘/정답 export/release설정 불변. OEWN 기존 생성기 --archive 로컬캐시 실행 exit0: 번역247·편집228sense/604행 반영. 제공률 inputHash f0109ea47fd56a784319f16af08f48b666a828d1880618a4fff3be9ffcff0b49: 영어8350/13347, 영한+단서557→582(+25고유표제어), 개별관계뜻307/145표제어·용법228, 끊긴학습연결0/중복ID0. 최신30번역은 작성AI검토만, 독립검수·새정답승격 아님. 한글발음5891/19021행 기존 그대로.
+
+검증: 콘텐츠/발음 영향51PASS(exit0). 첫전체688PASS/1FAIL/1SKIP은 누락된 테스트mock export로 실패; 실제함수 부분mock으로 수정. 최종 PYTHONUTF8=1/VITEST MAX·MIN FORKS·THREADS=1 node scripts/verify-project.mjs exit0: 전체타입·데이터감사 및689PASS/1기존SKIP. type 보고1792152353059-7132-type.json(peak1636MiB), 회귀1792152373483-7132-test.json(peak2580MiB). 관련ESLint exit0/0warning, pnpm security:audit exit0/0finding, diffcheck exit0. 새Production/실제화면/배포는 이 시점 NOT_VERIFIED. 소유24파일만 명시source커밋 후 새빈 output/content-recovery-production-20261016 빌드·출력감사·격리UI 진행. Cloudflare 로그인 탭20 사용자handoff; 본인Access 미완료라 새공개 활성화/Pages갱신 없음. lastPassedCommit 승격하지 않음.
+
+예약 2026-10-16 20:13 KST: HEAD1473750/소유23dirty 보존, 번역 sourceSHA d68f6ef7...e7cb4 불변. 물리996→검사 admission821MiB로 영향검사768조건 회복: PYTHONUTF8=1/VITEST MAX·MIN FORKS·THREADS=1 pnpm test tests/quiz-recovery-ui.test.tsx tests/word-pronunciation-ui.test.tsx exit0, 2파일8PASS. 직전 native만 확인했던 문풀 자동복구 5개와 한글발음UI 3개 통과; SSR/소스검사이지 실제 Safari 재현·배포아님. 보고서 analysis/qa/resource-runs/1792149263260-32964-test.json. 종료물리917/commit11664MiB라 전체3072기준 미달; 새247번역 export/전체type·회귀/새Production/보호배포 미실행. 공개release HTTP exit0 c03d11b/1.0/builtAt00:58:34.786Z/sourceDirtyfalse 불변. 신규승인·Cloudflare 인증증거없음. 다음은 위247원본 기존export→coverage→콘텐츠영향검사/전체게이트; 이미통과한8개는 동일입력만재사용. 잠금46014/PID30172, 백업·정상해제는 외부A-latest.latestHeartbeat20261016T111328 참조.
+
+## 2026-10-16 20:11 KST — 한글 보조 표기 유지·예문 번역 30개 추가 (원본 검사만 통과, 미배포)
+
+HEAD1473750/기존 소유23dirty와 문풀 자동복구 패치 보존. reviewed-examples 기존217→247개: 기존 OEWN 예문·구절30sense에 한국어 해석/문맥 단서 추가, 명시91행 연결. 완성 문장 추가30개로 세지 않음. amicable은 우호적인 행만, extenuate는 경감하다 행만, ambivalent는 상반된 태도를 지닌 행만 연결; 불일치 원본은 수정하지 않음. 추가5개(arcane/blue-ribbon/cookie-cutter/encompass/esoteric)는 batch 보류 사유 기록. 작성 AI 의미 검토이며 독립 AI/사람 검수 아님. 신규 정답 승격 없음. tests/vocab-definitions의 전수 기대247로 갱신하되 새 export가 미실행이라 이 통합검사는 아직 NOT_VERIFIED.
+
+한글 발음: 기존 5891고유표제어/19021행의 한글 형식과 정확한 ID·표제어·IPA 일치 검사 PASS. WordPronunciation은 IPA 옆 회색 근사기호 ≈, study/answer에만 한글 표시, question lookup 생략 그대로; 이번 발음 신규생성0. 원본IPA/음성/학습기록 불변. 이전 성공 결과를 새 UI/실기기 검사로 재사용하지 않음.
+
+정확한 신규 검사: PYTHONUTF8=1의 runMonitoredNode([--max-old-space-size=128,-e,<source contract assertions>],kind=native,focused=true), 보고서 analysis/qa/resource-runs/1792149030539-38060-native.json, exit0/PASS_SOURCE_CONTRACT_ONLY. 신규30개 원문/sense/POS/정의/91row 및 전체247중복 검사, 발음5891/19021연결 검사; 입력 source SHA256 d68f6ef7c466cbc9af7845e9e2e6e1a9b80d7afbb5203dbd379679c0c3ce7cb4. 이는 source구조검사이며 export/화면표시/독립의미검수 증거가 아님.
+
+물리308~498MiB(검사직전447)/commit11665MiB로 전체검사·빌드3072미달. 새 OEWN export/coverage/렌더/전체type/회귀/Production 실행안함; 기존 제공률8350/557은 직전 export 기준이며 +30을 합산하지 않음. 직전61PASS를 새입력으로 승격금지. 기존 공개 c03d11b/표시1.0/09:58:34KST는 마지막 확인값, 이번 배포없음. OneDrive 종료승인 미응답·Cloudflare 본인인증 미완료, 임의종료/공개범위확대 없음.
+
+다음: 새번역 재생성금지→가용자원 회복 후 기존 build-vocab-definitions-oewn.py --archive C:/Users/USER/.codex/automation-audits/finetune/cache/oewn-2025-source.zip 실행→measure-content-throughput --runtime-relations→관련247전수검사·한글발음UI·문풀복구 검사→전체verify/새Production/격리학습흐름/현재승인 보호배포. 30개 추가 번역 exportStatus는 실제 성공 뒤 갱신. 잠금76267/PID29396; 종료 백업/해제는 외부 A-latest.koreanContinuation20261016 참조.
+
+최신 예약 2026-10-16 18:04 KST: HEAD1473750/소유23dirty(21tracked+2untracked) 보존, 공개 c03d11b/표시1.0/09:58:34KST 불변(조회exit0). physical564MiB/commit13347MiB, 전체3072MiB·Vitest영향768MiB 미달. OneDrive 종료/재실행 허가 답변 및 Cloudflare 인증 신규증거 없음. 직전문풀복구 패치의 native1PASS만 유지, 전체/새빌드/배포 NOT_VERIFIED; 동일검사 반복안함. 다음은 승인·자원 회복 후 기존패치 통합검증이며 실제iPhone복구를 주장하지 않음. 잠금25037/PID23144, 백업/해제는 외부 latestHeartbeat20261016T090426 참조.
+
+## 2026-10-16 — 문풀 반복 차단: 자동 복구 후 오류 화면 잔류 수정 (미배포)
+
+사용자 재신고에 따라 engine/release 스킬 적용. 새 확인 결함: 저장소 background retry가 정상화해도 app/quiz의 sessionRecoveryFailed는 남아 오류화면에 머묾. app/quiz.tsx에 STORAGE_RECOVERY 오류·저장경고 해소·수동복구 비진행일 때 요청별 1회만 기존 prepare/restore 재진입하도록 추가. 미저장 모드/보호 우회/통계·키·원본 데이터 변경 없음. 실제 iPhone 원인으로 확정하지 않음. 현재 사용자 Chrome 기존 공개홈에서 요청 범위의 문제풀기 클릭→mercurial 동의어1/10 정상시작, 답안 미입력. 사용자iPhone오류는 여전히 NOT_VERIFIED.
+
+검사: 최초 pnpm test tests/quiz-recovery-ui.test.tsx는 child 미실행/admission75(외부pnpm exit1), physical419MiB<768. 기존 저메모리 monitored native 경로로 동일 assertion 공유: 실제screen useEffect AST/VM 검사 수정전 exit1/1FAIL(연결없음)→수정후 exit0/1PASS, physical499MiB; 충돌/콘텐츠오류/수동복구중/재시도반복 금지 확인. tests/quiz-recovery-ui.test.tsx가 tests/helpers/quiz-recovery-cases.mjs를 공유하고 scripts/tests/quiz-recovery.node-test.mjs는 얇은 실행기. git diff --check exit0. 전체type/회귀/lint/newProduction/실기기/새배포 NOT_VERIFIED; 기존보강19파일 보존.
+
+자원 원인 추가 실측: OneDrive PID18144 WorkingSet5460MiB/Private28275MiB, 전체가용물리419~872MiB. WS와private는 다른 수치이며 누수 원인확정 아님. 이 PID의 OneDrive만 종료 후 재실행 사용자승인 요청; 다른 앱/OS/파일 변경 없음. 승인 전 종료 금지. 다음: 승인 확인→정확프로세스 재확인/종료 및 재실행 범위준수→가용물리/commit3GiB 이상→전체verify와관련lint→소유후보source/새빌드/격리학습흐름→현재승인 보호배포. 신규공개배포 무제한 승인으로 해석하지 않음. 잠금3106/PID31012 및백업/해제 영수증은 외부A-latest.quizRecoveryResume20261016.
+
+예약 확인 2026-10-16 16:04 KST: HEAD1473750/소유19dirty와 공개release c03d11b/1.0/09:58:34KST 유지(조회 exit0). physical647MiB/commit16692MiB로 전체검사·빌드3072MiB 미달. 사용자 퀴즈 오류 단계/사진 및 Cloudflare 인증에 새로운 답변 없음; 원인해결·실기기복구로 승격하지 않음. 직전 격리 재현·보강 결과 보존, 중복검사·생성·배포 없음. 다음은 아래 오류상태 확인/재현 및 자원·인증조건 충족 후 기존배치 검증. 잠금82196/PID22252와 백업·해제는 외부 latestHeartbeat20261016T070424 참조.
+
+## 2026-10-16 — 사용자 퀴즈 재생 불가 신고: 증상 식별 대기
+
+현재 source1473750/기존 소유19dirty 보존. 실제 Pages release 조회 exit0: c03d11b/1.0/09:58:34KST. 사용자 Chrome 탭은 읽기만 수행하여 현재 홈·현행bundle확인, 시험답안/새로고침/기록변경 없음. 같은 검증배포 출력 `output/quiz-touch-production-20261016`을 새 격리origin127.0.0.1:26744에서 재현: 기본동의어10문항 시작→reload 동일roam/선지복원, V601영영30문항 시작→unremitting정답1→reload 동일문항/선지/정답1 유지. 오류콘솔 없음. 실제iPhone신고 원인·음성재생은 NOT_VERIFIED이며 복구완료 아님. 문제시작불가/음성불가 구분과 오류화면 요청. 추측패치·보호해제·기록초기화·새배포 없음. 가용physical413MiB/commit17998MiB로 새전체검사·빌드 미실행. 엔진/릴리스스킬에 따라 재현우선; 신규 테스트 PASS로 집계하지 않음. 잠금80464/PID26560·QA서버13213은 종료시 정상정리, 외부A-latest.quizIncident20261016 참조. 다음: 사용자 실제 오류문구/단계 확인→동일 조건 재현→실패회귀→최소패치/검증/승인대상배포.
+
+예약 재대조 2026-10-16 12:04 KST: HEAD1473750/기존 소유19파일 유지. 기존 coverage 입력40파일 SHA256 불일치0, 새 콘텐츠 생성·검사 반복 없음. 공개 release 재조회 exit0: source c03d11b/1.0/builtAt2026-10-16T00:58:34.786Z 그대로. 가용 physical1690→1259MiB/commit18940MiB로 전체검사·빌드 3072MiB 조건 미달(BLOCKED_RESOURCE). Cloudflare 본인 인증은 기존 요청 대기이며 이번 인증 재검증 없음. 전체검사·신규빌드·배포 NOT_VERIFIED, lastPassedCommit 불변. 잠금93973/PID32644 취득; 체크포인트 백업·정상 해제 결과는 외부 A-latest.latestScheduledReconciliation 참조. 다음 행동은 아래 최종배치 재사용·자원조건 충족 후 전체검사/새 빌드·보호배포이며 공개 배포 승인 확대 없음.
+
+## 2026-10-16 11:00 KST — 콘텐츠 배치 통합·영향61PASS / 새 릴리스 자원·인증 보류
+
+아래10시대작업의최종추가: 신규99표제어의52sense에 관계뜻104개를 독립AI검수(101그대로+3교정:postscript추가글/despot전제통치자/fuss사소한말다툼)후통합. 총 이번관계뜻307개/145표제어,용법228sense,신규영문99/번역·단서164개. 고유coverage영문8350(62.6%)/영한+단서557(4.2%)/13347;전체의미검수완료율아님. 관계62개보류(기존이번42+추가20),신규예문후보7+번역paradox1보류유지;단일member41개에관계어허구생성안함. AI참고층검수이고심화cross-agreed111표제어를늘렸다고계산하지않음.
+
+최종기존export+measure exit0/inputHash6fcd72df799e2991b938e235f9f0024ca36a58993c3bec170b6c13c22e27596c. worker1 영향4파일61PASS exit0/peak2185MiB,관련ESLint exit0/security0finding/diffcheck0. 원본vocab SHA7eba20...byte동일,quiz-export/release.config JSON HEAD동일(CRLF차이만). 전체verify admission exit75/physical2607MiB,후속2011MiB로3GiB미달;fulltype/fullregression/newProduction NOT_VERIFIED,검사실패를PASS로승격안함. 모든19tracked dirty는현재작업소유이며미커밋보존,source커밋·push·새배포없음.
+
+실제화면: 격리localhost26742에서기존검증된c03d11b앱bundle+새dictionaryJSON의데이터표시만검증. ablution 신규영문/KO/단서,outrun교정번역보임. 394x852/가로넘침없음;analysis/qa/content-data-preview-20261016.jpg. 이는새Production·새관계뜻/용법UI브라우저검증아님(해당UI는실제component228항목SSR전수통과). 실기기Safari/Samsung NOT_VERIFIED. 자신의미리보기server6016/tab18정리·viewportreset. 공개release재확인1.0/c03d11b/09:58:34KST 그대로. Cloudflare본인로그인비동기요청,미보호새주소미활성.
+
+다음정확한행동: 이배치재작성금지. 로컬현재19파일보존·잠금재취득→physical/commit각3GiB이상일때worker1전체verify→소유source명시커밋→새빈출력Production→출력감사→skittish관계뜻/신규noun용법/학습흐름실제검증→로그인된Cloudflare본인전용Access보호배포. 기존Pages종료/Private전환은실기기기록이관+별도승인전금지. 백업/최종LOCK_RELEASED는외부A-latest.contentExpansion20261016.finalReceipt참조.
+
+## 2026-10-16 — 예문·개별 관계어 뜻·용법 증분 보강 검증 중
+
+기준 finetune-exam-stable-1-0/147375001f190719bd4dcade5ad19d10054ce6f0, 시작 clean. 잠금81975/PID34268 소유. 기존편집129개에 개별관계뜻203개(93표제어)·용법129개, 신규99표제어/148동일뜻행에 자체영문·번역·단서·용법, 기존OEWN원문65개에번역·단서 추가. 독립AI교차검수: 신규99중7교정, 번역66중5교정/1paradox보류, 관계뜻203/용법129중3교정; 사람검수·출제정답승격아님. 신규후보7표제어와42관계 보류 유지. 기존sense·원뜻·row ID 범위만 연결; 원본vocab·quiz-export·학습키 불변.
+
+기존파이프라인 재사용결과: 영어예문8251→8350/13347, 영한+단서394→557/13347(중복표제어 제외), 편집참고예문228sense/604행·용법228, 개별관계뜻203. canonical125/118표제어와심화학습111표제어는승격하지않음. analysis/qa/content-expansion-20261016.json inputHash66fe0eb088e125cc7d3e4283c921a97d10ed37c1dcc184b4b24f6cdd81a1ce4e. 공개skittish화면은영문예문있으나flighty/spooky/nervous 한국어뜻없음 확인, before스크린샷보관.
+
+현재검사: OEWN증분export exit0, 실런타임coverage exit0, 관련52PASS(exit0; 228편집항목 실제해설renderer 전수), 관련ESLint exit0, security:audit exit0/0finding. 첫통합검사50PASS2FAIL은옛152고정기대와더보기닫힘을전수표시로가정한testfixture였고,217기대+테스트내더보기펼침으로검증수정. 전체verify/새Production/실제새UI·배포는아직NOT_VERIFIED. 가용물리940→2998MiB로전체검사3GiB미달구간이있어강행하지않음. 다음: 자원조건확인후직렬전체verify→새빌드→실제앱표시·학습흐름. Cloudflare로그인/Access본인차단미완료; 기존Pages무제한공개승인으로확대하지않음. 기존공개source c03d11b/Pages cba2126/표시1.0유지.
+
 ## 2026-10-16 — 미응답 터치 이동·짧은 화면 세로 여유 공개 배포 완료
 
 source c03d11bf514de9b72e2f37505cd34a42ff5f6724,Pages cba2126cc9c669e857524f7550731ec557d15f5a,run38832946648 SUCCESS. 최종verify686PASS/1기존SKIP·type/data/lint/security 통과,새worker1빌드 output/quiz-touch-production-20261016 exit0/peak2203MiB/출력감사0issues. 공개release1.0/09:58:34KST/sourceDirtyfalse와 JS SHA25631f22dc885ac1f6fb8e54a5fc257e321819bb68e0b84966b9560892c5ba7a643 일치,공개설정UI시각확인. 기존원본·학습키·공개기록시험답안 불변.

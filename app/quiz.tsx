@@ -146,6 +146,7 @@ export default function QuizScreen() {
   const [preparationFailure, setPreparationFailure] = useState<QuizPreparationFailure>("SESSION_READ");
   const [recoveryBusy, setRecoveryBusy] = useState(false);
   const recoveryBusyRef = useRef(false);
+  const automaticResumeRequestRef = useRef<string | null>(null);
   const quizStorageIssue = useSyncExternalStore(subscribeLearningStorage, getQuizStorageIssue, () => null);
   const canRetryStorage = useSyncExternalStore(subscribeLearningStorage, () => getLearningStorageRecovery().canRetry, () => false);
   const params = useLocalSearchParams<{
@@ -380,6 +381,18 @@ export default function QuizScreen() {
       setRecoveryBusy(false);
     }
   };
+
+  // A background retry can clear storage while the preparation error is visible.
+  // Re-enter the normal validated restore/start path once, never an unsaved mode.
+  useEffect(() => {
+    if (!sessionRecoveryFailed || preparationFailure !== "STORAGE_RECOVERY"
+      || quizStorageIssue || recoveryBusyRef.current
+      || automaticResumeRequestRef.current === requestKey) return;
+    automaticResumeRequestRef.current = requestKey;
+    setSessionRecoveryFailed(false);
+    setQuestionsReady(false);
+    setRestartToken(value => value + 1);
+  }, [sessionRecoveryFailed, preparationFailure, quizStorageIssue, requestKey, recoveryBusy]);
 
   const haptic = useCallback(
     (type: "light" | "success" | "error" = "light") => {

@@ -20,6 +20,7 @@ import {
 } from "@/lib/vocab-learning";
 import {
   loadVocabDefinition,
+  getEditorialExamples,
   VOCAB_DEFINITION_SOURCE,
   type VocabDefinitionEntry,
   type VocabDictionarySense,
@@ -274,23 +275,28 @@ export function DictionaryDefinition({ entry, itemId }: { entry: VocabDefinition
               ? "대표 영영 정의 후보 · sense 검수 전"
               : "영영 정의"}
         </Text>
-        {visibleSenses.map((sense, index) => (
+        {visibleSenses.map((sense, index) => {
+          const editorialMeanings = Object.assign({}, ...getEditorialExamples(sense, itemId)
+            .map(example => example.relationMeaningsKo ?? {})) as Record<string, string>;
+          const sameReference = reference?.senseId === sense.senseId ? reference : null;
+          return (
           <View key={`${sense.senseId}-${index}`} style={s.definitionCandidate}>
             <Text style={s.note}>{sense.partOfSpeech}</Text>
-            {reference?.senseId === sense.senseId && <>
+            {(sameReference || Object.keys(editorialMeanings).length > 0) && <>
               <SemanticRelationCluster headword={entry.headword} coreMeaningKo="" showDefinitionBridge={false}
-                exactSynonyms={getDefinitionAnswerRelations(reference).synonyms}
-                antonyms={getDefinitionAnswerRelations(reference).antonyms}
-                choiceMeanings={getDefinitionRelationMeanings(reference, "")
+                exactSynonyms={sameReference ? getDefinitionAnswerRelations(sameReference).synonyms : Object.keys(editorialMeanings)}
+                antonyms={sameReference ? getDefinitionAnswerRelations(sameReference).antonyms : []}
+                choiceMeanings={[...(sameReference ? getDefinitionRelationMeanings(sameReference, "")
                   .filter(value => value.source === "same-sense-vocab" || value.source === "linked-antonym-vocab")
-                  .map(({ word, meaning }) => ({ word, meaning }))} />
+                  .map(({ word, meaning }) => ({ word, meaning })) : []),
+                  ...Object.entries(editorialMeanings).map(([word, meaning]) => ({ word, meaning }))]} />
             </>}
             <Text style={s.english}>{sense.definition}</Text>
             <EditorialExamples sense={sense} itemId={itemId} />
             <DictionaryExamples key={sense.senseId} sense={sense}
               fallback={reference?.senseId === sense.senseId ? reference.examples : []} />
           </View>
-        ))}
+        ); })}
       </View>
       {entry.senses.length > 1 && (
         <Pressable
@@ -324,9 +330,7 @@ export function DictionaryDefinition({ entry, itemId }: { entry: VocabDefinition
 export function EditorialExamples({ sense, itemId }: { sense: VocabDictionarySense; itemId: string }) {
   const colors = useColors();
   const s = styles(colors);
-  const examples = sense.editorialExamples?.filter(example =>
-    example.provenance === "FINETUNE original" && example.reviewStatus === "ai-reviewed-editorial-example"
-    && example.sourceRowIds.includes(itemId)) ?? [];
+  const examples = getEditorialExamples(sense, itemId);
   if (!examples.length) return null;
   return <View style={s.exampleBox}>
     <Text style={s.label}>학습 예문 · FINETUNE 자체 작성</Text>
@@ -336,6 +340,7 @@ export function EditorialExamples({ sense, itemId }: { sense: VocabDictionarySen
       <KoreanReveal>
         <Text style={s.text}>{example.ko}</Text>
         <Text style={s.note}>문맥 단서: {example.cueKo}</Text>
+        {example.usageKo ? <Text style={s.note}>용법·주의: {example.usageKo}</Text> : null}
       </KoreanReveal>
     </View>)}
     <Text style={s.note}>사전 원문이 아닌 AI 편집 예문입니다. 연결된 뜻의 학습 참고용이며 정답 판정에는 사용하지 않습니다.</Text>

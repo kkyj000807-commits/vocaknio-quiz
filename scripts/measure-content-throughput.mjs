@@ -152,6 +152,7 @@ export function measureContent(inputs, batchIndex = 0) {
   const wordbookBefore = new Set();
   const wordbookAfter = new Set();
   const relationClusters = new Map();
+  const editorialSupport = new Map();
   for (const row of vocab) {
     const section = sections.get(row.group) ?? { sourceRows: 0, headwords: new Set(), definitionRows: 0,
       legacySynonymRows: 0, reviewedRelationRows: 0, englishExampleRows: 0, bilingualExampleRows: 0,
@@ -159,6 +160,16 @@ export function measureContent(inputs, batchIndex = 0) {
     section.sourceRows++;
     section.headwords.add(normalize(row.w));
     const dictionary = dictionaryByRow.get(row.id);
+    for (const sense of dictionary?.senses ?? []) {
+      for (const example of sense.editorialExamples ?? []) {
+        if (example.provenance !== "FINETUNE original" || example.reviewStatus !== "ai-reviewed-editorial-example"
+          || !example.sourceRowIds?.includes(row.id)) continue;
+        editorialSupport.set(`${normalize(row.w)}\0${sense.senseId}`, {
+          headword: normalize(row.w), senseId: sense.senseId,
+          relationGlosses: Object.keys(example.relationMeaningsKo ?? {}).length, usageExplanation: present(example.usageKo),
+        });
+      }
+    }
     if (dictionary?.senses?.length) section.definitionRows++;
     if (row.s?.length) section.legacySynonymRows++;
     const active = activeByRow.get(row.id) ?? [];
@@ -210,6 +221,13 @@ export function measureContent(inputs, batchIndex = 0) {
       scope: "any-existing-example-is-not-every-sense-complete-or-semantically-reviewed",
       dictionarySenseIds: new Set([...dictionaryByRow.values()].flatMap(entry => entry.senses?.map(sense => sense.senseId) ?? [])).size,
       canonicalSenseIds: new Set(canonical.map(entry => entry.senseId)).size,
+      editorialReference: {
+        senses: editorialSupport.size,
+        headwordsWithRelationGloss: new Set([...editorialSupport.values()].filter(e => e.relationGlosses).map(e => e.headword)).size,
+        individualRelationGlosses: [...editorialSupport.values()].reduce((n, e) => n + e.relationGlosses, 0),
+        sensesWithUsageExplanation: [...editorialSupport.values()].filter(e => e.usageExplanation).length,
+        status: "AI-editorial-reference-not-canonical-or-answer-promotion",
+      },
       bySection: Object.fromEntries([...sections].map(([group, value]) => [group, { ...value, headwords: value.headwords.size }])),
     },
     dictionaryReuse: { rows: referenceRows.length, uniqueHeadwords: new Set(referenceRows.map(row => normalize(row.headword))).size,

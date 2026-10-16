@@ -1,10 +1,14 @@
 import React from "react";
+import fs from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ActiveRecallAnswer, ActiveRecallPrompt } from "@/components/active-recall-card";
-import { ActiveRecallStudyDetails, LearningDetails, SenseDetails } from "@/components/learning-details";
+import { ActiveRecallStudyDetails, DictionaryDefinition, LearningDetails, SenseDetails } from "@/components/learning-details";
+import type { VocabDefinitionEntry } from "@/lib/vocab-definitions";
 import reviewedBatch from "@/data/vocab-learning/reviewed-batch-20261014.json";
+import editorialBatch from "@/data/vocab-learning/editorial-examples-20261015.json";
+import vocabulary from "@/assets/vocab-v1.4.json";
 import type { LearningEntry } from "@/lib/vocab-learning";
 import { shortRelationGloss } from "@/lib/semantic-cluster";
 import { LearningEvidence } from "@/components/learning-evidence";
@@ -12,7 +16,7 @@ import { SemanticRelationCluster } from "@/components/semantic-relation-cluster"
 import { ACTIVE_RECALL_SENSES } from "@/lib/active-recall";
 
 const native = vi.hoisted(() => ({ openURL: vi.fn(), links: [] as { label: string; press: () => void }[] }));
-const disclosure = vi.hoisted(() => ({ forceOpen: true }));
+const disclosure = vi.hoisted(() => ({ forceOpen: true, forceAllRelations: false }));
 vi.mock("react-native", () => {
   const component = (tag: string) => function MockComponent({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) {
     if (props.accessibilityRole === "link") native.links.push({ label: String(props.accessibilityLabel), press: props.onPress as () => void });
@@ -29,6 +33,12 @@ vi.mock("@/components/korean-reveal", async importOriginal => {
     <original.KoreanReveal {...props} defaultOpen={disclosure.forceOpen || props.defaultOpen} /> };
 });
 vi.mock("@/components/pronunciation-button", () => ({ PronunciationButton: ({ text }: { text: string }) => React.createElement("button", { "aria-label": "예문 읽기", "data-speech": text }) }));
+// Full-batch delivery checks expand the existing five-chip disclosure, not the product default.
+vi.mock("@/components/relation-chips", async importOriginal => {
+  const original = await importOriginal<typeof import("@/components/relation-chips")>();
+  return { RelationChips: (props: React.ComponentProps<typeof original.RelationChips>) =>
+    <original.RelationChips {...props} limit={disclosure.forceAllRelations ? 1000 : props.limit} /> };
+});
 vi.mock("@/hooks/use-colors", () => ({ useColors: () => ({ foreground: "#222", muted: "#666", primary: "#5046e5", success: "#187", error: "#c33", surface: "#fff", card: "#eee", border: "#ccc" }) }));
 
 const entry = ACTIVE_RECALL_SENSES.find(sense => sense.senseId === "take-into-account:consider-factor")!;
@@ -39,6 +49,50 @@ const render = (element: React.ReactElement) => renderToStaticMarkup(element.typ
 const occurrences = (text: string, value: string) => text.split(value).length - 1;
 
 describe("reviewed learning evidence and explanation boundaries", () => {
+  it("renders every shipped editorial example, usage note and individual gloss on its bound row", () => {
+    disclosure.forceAllRelations = true;
+    const groups = new Map<string, { headwords: Record<string, VocabDefinitionEntry> }>();
+    for (const source of editorialBatch.entries) {
+      const row = vocabulary.find(row => row.id === source.sourceRowIds[0])!;
+      const group = row.group.toLowerCase();
+      if (!groups.has(group)) groups.set(group, JSON.parse(fs.readFileSync(`public/data/vocab-definitions/oewn-2025/${group}.json`, "utf8")));
+      const definition = groups.get(group)!.headwords[source.headword];
+      expect(definition, source.headword).toBeDefined();
+      const html = render(<DictionaryDefinition entry={definition} itemId={row.id} />);
+      const text = html.replace(/<[^>]+>/g, "");
+      expect(text, source.headword).toContain(source.en);
+      expect(text, source.headword).toContain(source.ko);
+      expect(text, source.headword).toContain(source.cueKo);
+      expect(text, source.headword).toContain(source.usageKo);
+      if ("relationMeaningsKo" in source) for (const [word, meaning] of Object.entries(source.relationMeaningsKo!)) {
+        expect(text, `${source.headword}: ${word}`).toContain(`${word} (${meaning})`);
+      }
+    }
+  });
+  it("keeps editorial glosses on the approved row, before the definition, with usage behind Korean reveal", () => {
+    const dictionary: VocabDefinitionEntry = {
+      headword: "test reference", status: "single_sense", representativeSenseId: "test-sense",
+      senses: [{ senseId: "test-sense", partOfSpeech: "noun", definition: "an explicit test reference",
+        editorialExamples: [{ en: "An English test example.", ko: "한국어 예문", cueKo: "명시적 문맥 단서",
+          sourceRowIds: ["approved-test-row"], provenance: "FINETUNE original", reviewStatus: "ai-reviewed-editorial-example",
+          relationMeaningsKo: { equivalent: "동등한 것" }, usageKo: "이 뜻에 한정된 용법 설명" }] }],
+    };
+    disclosure.forceOpen = false;
+    const closed = render(<DictionaryDefinition entry={dictionary} itemId="approved-test-row" />);
+    expect(closed.replace(/<[^>]+>/g, "")).toContain("equivalent (동등한 것)");
+    expect(closed.indexOf("equivalent")).toBeLessThan(closed.indexOf("an explicit test reference"));
+    expect(closed).toContain("An English test example.");
+    expect(closed).not.toContain("한국어 예문");
+    expect(closed).not.toContain("이 뜻에 한정된 용법 설명");
+    disclosure.forceOpen = true;
+    const opened = render(<DictionaryDefinition entry={dictionary} itemId="approved-test-row" />);
+    expect(opened).toContain("한국어 예문");
+    expect(opened).toContain("이 뜻에 한정된 용법 설명");
+    const wrongRow = render(<DictionaryDefinition entry={dictionary} itemId="another-meaning-row" />);
+    expect(wrongRow).not.toContain("equivalent");
+    expect(wrongRow).not.toContain("An English test example.");
+    expect(wrongRow).not.toContain("이 뜻에 한정된 용법 설명");
+  });
   it("passes each reviewed batch relation gloss through the real deep-detail renderer", () => {
     for (const source of reviewedBatch) {
       const entry: LearningEntry = {
@@ -59,7 +113,7 @@ describe("reviewed learning evidence and explanation boundaries", () => {
       expect(html).not.toContain(entry.contrasts[0].noteKo);
     }
   });
-  beforeEach(() => { disclosure.forceOpen = true; native.links.length = 0; native.openURL.mockReset().mockResolvedValue(undefined); });
+  beforeEach(() => { disclosure.forceOpen = true; disclosure.forceAllRelations = false; native.links.length = 0; native.openURL.mockReset().mockResolvedValue(undefined); });
 
   it("fall short of는 정답 후 한국어 풀이·관계어 뜻을 열고 정답 전에는 감춘다", () => {
     const sense = ACTIVE_RECALL_SENSES.find(entry => entry.senseId === "fall-short-of:below-required-standard")!;

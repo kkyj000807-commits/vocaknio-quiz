@@ -16,7 +16,15 @@ export interface VocabDictionarySense {
   examples?: string[];
   reviewedExamples?: { en: string; ko: string; cueKo: string }[];
   editorialExamples?: { en: string; ko: string; cueKo: string; sourceRowIds: string[];
+    relationMeaningsKo?: Record<string, string>; usageKo?: string;
     provenance: "FINETUNE original"; reviewStatus: "ai-reviewed-editorial-example" }[];
+}
+
+/** Editorial support belongs to an explicit occurrence and sense, never a word-wide guess. */
+export function getEditorialExamples(sense: VocabDictionarySense, itemId: string) {
+  return sense.editorialExamples?.filter(example =>
+    example.provenance === "FINETUNE original" && example.reviewStatus === "ai-reviewed-editorial-example"
+    && example.sourceRowIds.includes(itemId)) ?? [];
 }
 
 export interface VocabDefinitionEntry {

@@ -600,8 +600,23 @@ def main() -> int:
                 or source_by_id[row_id]["k"] != example.get("sourceMeaningKo") for row_id in ids):
             raise ValueError("Editorial source row/meaning mismatch")
         editorial_keys.add(signature)
+        support = {}
+        if "relationMeaningsKo" in example:
+            meanings = example["relationMeaningsKo"]
+            if not isinstance(meanings, dict) or any(
+                word == key or word not in sense["synsetMembers"]
+                or not isinstance(meaning, str) or not meaning.strip() or len(meaning) > 16
+                for word, meaning in meanings.items()
+            ):
+                raise ValueError("Editorial individual gloss is not a short same-synset relation")
+            support["relationMeaningsKo"] = meanings
+        if "usageKo" in example:
+            if not isinstance(example["usageKo"], str) or not example["usageKo"].strip():
+                raise ValueError("Empty editorial usage explanation")
+            support["usageKo"] = example["usageKo"]
         editorial_by_sense[signature].append({
             **{field: example[field] for field in ("en", "ko", "cueKo", "sourceRowIds")},
+            **support,
             "provenance": "FINETUNE original", "reviewStatus": "ai-reviewed-editorial-example",
         })
 

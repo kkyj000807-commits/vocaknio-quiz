@@ -37,7 +37,14 @@ describe("OEWN definition aliases", () => {
         expect(sense.partOfSpeech).toBe(entry.pos);
         expect(sense.definition).toBe(entry.matchEvidence.sourceDefinition);
         expect(sense.editorialExamples).toContainEqual({ en: entry.en, ko: entry.ko, cueKo: entry.cueKo,
+          ...(entry.relationMeaningsKo ? { relationMeaningsKo: entry.relationMeaningsKo } : {}),
+          ...(entry.usageKo ? { usageKo: entry.usageKo } : {}),
           sourceRowIds: entry.sourceRowIds, provenance: "FINETUNE original", reviewStatus: "ai-reviewed-editorial-example" });
+        for (const [word, meaning] of Object.entries(entry.relationMeaningsKo ?? {})) {
+          expect(word).not.toBe(entry.headword);
+          expect(meaning.trim().length).toBeGreaterThan(0);
+          expect(meaning.length).toBeLessThanOrEqual(16);
+        }
         expect(sense.examples).not.toContain(entry.en);
         expect(sense.reviewedExamples.some(example => example.en === entry.en)).toBe(false);
         expect(record.senses.filter(s => s.senseId !== entry.senseId).every(s => !s.editorialExamples?.some(example => example.en === entry.en))).toBe(true);
@@ -50,11 +57,11 @@ describe("OEWN definition aliases", () => {
       }
     }
   });
-  it("delivers all 152 reviewed translations to their exact source senses without changing answer eligibility", () => {
+  it("delivers all 247 reviewed translations to their exact source senses without changing answer eligibility", () => {
     const source = JSON.parse(fs.readFileSync(path.join(root, "data/vocab-learning/reviewed-examples-20261014.json"), "utf8"));
-    expect(source.entries).toHaveLength(152);
-    expect(new Set(source.entries.map(e => `${e.senseId}|${e.en}`)).size).toBe(152);
-    expect(meta.coverage.reviewedExampleTranslations).toBe(152);
+    expect(source.entries).toHaveLength(247);
+    expect(new Set(source.entries.map(e => `${e.senseId}|${e.en}`)).size).toBe(247);
+    expect(meta.coverage.reviewedExampleTranslations).toBe(247);
     for (const entry of source.entries) {
       const records = recordsForHeadword(entry.headword);
       expect(records.length).toBeGreaterThan(0);

@@ -37,7 +37,10 @@ vi.mock("react-native", () => {
 vi.mock("@/hooks/use-colors", () => ({ useColors: () => ({ foreground: "#222", muted: "#666", primary: "#536", card: "#fff", surface: "#eee", border: "#ccc", error: "#c00" }) }));
 vi.mock("@/lib/vocab", () => ({ getSynonymDetails: () => [] }));
 vi.mock("@/lib/definition-quiz", () => ({ getDefinitionAnswerRelations: () => ({ synonyms: [], antonyms: [] }), getDefinitionRelationMeanings: () => [] }));
-vi.mock("@/lib/vocab-definitions", () => ({ loadVocabDefinition: vi.fn(), VOCAB_DEFINITION_SOURCE: {} }));
+vi.mock("@/lib/vocab-definitions", async importOriginal => {
+  const actual = await importOriginal<typeof import("@/lib/vocab-definitions")>();
+  return { ...actual, loadVocabDefinition: vi.fn(), VOCAB_DEFINITION_SOURCE: {} };
+});
 vi.mock("@/components/reasoning-practice", () => ({ ReasoningPractice: () => null, LazyReasoningPractice: () => null }));
 vi.mock("@/components/pronunciation-button", () => ({ PronunciationButton: ({ text, itemId }: { text: string; itemId?: string }) => React.createElement("button", { "data-example-speech": text, "data-word-id": itemId }) }));
 

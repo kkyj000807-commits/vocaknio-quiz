@@ -1,10 +1,12 @@
 import fs from "node:fs";
 import vm from "node:vm";
+import { URL } from "node:url";
 import ts from "typescript";
 import React from "react";
 import * as jsx from "react/jsx-runtime";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
+import { confirmedQuizRecoveryCase } from "./helpers/quiz-recovery-cases.mjs";
 
 function loadUi(file: string, store: Record<string, unknown> = {}) {
   const buttons: { text: string; disabled: boolean; press: () => void }[] = [];
@@ -93,4 +95,5 @@ describe("storage recovery controls preserve safe exits", () => {
     finish(); await Promise.resolve();
   });
 });
-import { URL } from "node:url";
+
+it("the real quiz screen resumes once after confirmed recovery without bypassing conflicts", confirmedQuizRecoveryCase);
