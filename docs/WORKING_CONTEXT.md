@@ -1,5 +1,13 @@
 # FINETUNE 현행 스냅샷
 
+## 2026-10-18 예약 A — 사용자 인증 완료 회신 이후에도 연결 계정 이메일 인증 차단 지속
+
+트리거2026-10-18T03:56:17.192Z,기준HEAD89c712ddc3725deeae02fa10e089d487ff3e5dd1/미커밋없음. 사용자 '어 했어' 회신 뒤 중단된 확인을 재개했다. 현재 사용가능 브라우저는 IAB뿐이고 이전탭0개여서 같은계정 Workers 페이지를 새탭으로 열고 1회새로고침. 로그인세션은유지되나 실제 Verify your account 모달이 여전히 gamil.com 도메인 주소의 메일링크인증을 요구하고 프로젝트0개/Access계정보호off로표시된다. 사용자 인증 완료를 부정하거나 gmail로추측수정하지 않으며, 다른계정에서인증했는지 또는연결계정에반영안됐는지 아직확정불가. 이메일/자격증명변경·인증우회·Resend·새Worker/정책생성·배포·새공개주소활성화없음.
+
+같은86e4709 clean private포장 manifest와 JS SHA2563c9f4e5acd634f5ef2420e5abdc1cf25d2e8a08a7c1100d172321bcf7db6b2ca 일치,후보대비app/components/lib/public/assets/data/scripts/tests/wrangler 입력diff exit0. 이전691/type·감사·워터마크UI 결과는 동일입력 범위에서만재사용; 전체검사/생성/빌드반복없음. 공개release GET은 c03d11bf514de9b72e2f37505cd34a42ff5f6724/1.0/builtAt2026-10-16T00:58:34.786Z/sourceDirtyfalse로 그대로다. 새콘텐츠·의미검수·실기기Safari검증 증가없음. BLOCKED_ACCOUNT_EMAIL_VERIFICATION이며 lastPassedCommit 승격없음.
+
+다음: 현재연결된 Cloudflare 계정의 실제이메일/인증링크완료 상태를 사용자직접확인→Workers 인증모달해제 확인→정확한본인1계정 Alltraffic Access를 먼저설정→같은86e4709 산출물배포·익명직접파일차단검증. 기존Pages종료/repoPrivate는 실제Safari기록이관과별도승인후. 잠금55813/PID16328 및백업/정상해제는 외부 A-latest.latestHeartbeat20261018T035617 참조.
+
 ## 2026-10-16 — Cloudflare 본인 인증 전환 재개, 워터마크·검색 노출·산출물 보안 보강
 
 계정 로그인은 최종 IAB에서 확인됐고 Zero Trust Free 선택 후 카드·청구지·약관·한도초과 청구동의 활성화 단계가 실제 차단점이다. 사용자가 비용 우려로 중단→기존주소와 무료 조치 유지→명시선택 'Cloudflare 본인 인증 전환'으로 변경했다. 카드 입력/약관/초과과금/활성화는 사용자 직접 수행; 새 공개주소/Access정책/배포는 아직 없음. 기존 Pages 종료·저장소Private는 Safari 기록 이전 성공과 별도 승인 조건 유지. 결제정보·주소를 소스/로그에 저장하지 않는다.
