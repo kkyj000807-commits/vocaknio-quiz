@@ -1249,7 +1249,7 @@ export default function QuizScreen() {
                     back={
                       <View style={s.flipBack}>
                         <View style={s.flashAnswer}>
-                          <Text style={s.flashKorText}>{q.item.k_short}</Text>
+                          <Text style={s.flashKorText}>{q.item.book?.gradingReview?.status === 'requires_editorial_policy_review' ? '원문 보존 뜻 (아래 교정 주석 필수): ' : ''}{q.item.k_short}</Text>
                           {q.item.s.length > 0 && (
                             <View style={s.synTagRow}>
                               {q.item.s.slice(0, 4).map((syn, i) => (

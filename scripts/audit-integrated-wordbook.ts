@@ -20,6 +20,7 @@ async function main() {
   for (const item of VOCAB) assert(retainedIds.has(item.id), 'Original ID missing');
   assert.equal(JSON.stringify(VOCAB), original);
   const display = arrangeWordbook(rows, () => '', true);
+  assert.equal(new Set(display.filter(item => item.book).map(item => item.book!.id)).size, edition.entries.length);
   const represented = new Set(display.flatMap(item => item.displaySourceIds!));
   assert(rows.every(item => represented.has(item.id)));
   registerStudyItems(rows);

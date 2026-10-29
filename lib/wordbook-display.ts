@@ -24,7 +24,7 @@ export function arrangeWordbook(
     // empty gloss merging, pronunciation loss or inferred synonym equivalence.
     const key = managed.has(item.group) && item.w.trim() && item.k.trim()
       ? JSON.stringify([item.w, item.k, item.p, item.type, item.referenceOnly ?? false,
-        item.conceptLabel, item.majorConceptLabel, item.s, item.book?.id ?? '', statePartition(item)])
+        item.conceptLabel, item.majorConceptLabel, item.s, item.localBook ? item.book?.id : '', statePartition(item)])
       : `unmerged:${item.id}`;
     const prior = groups.get(key);
     if (prior) {

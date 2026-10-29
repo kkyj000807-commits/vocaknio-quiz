@@ -55,6 +55,7 @@ function renderSetup(localContent = false) {
 describe("study setup starts with English synonyms and the entire vocabulary", () => {
   it('explains the device-book self-assessment boundary without changing the existing default mode', () => {
     const { html, buttons } = renderSetup(true);
+    expect(html).not.toContain('v1.5 단권화 전체 구성');
     expect(html).toContain('신규 뜻은 빠른 암기(자기평가)로 학습');
     expect(buttons.find(button => button.label.includes('같은 sense의 동의어 찾기'))?.selected).toBe(true);
   });

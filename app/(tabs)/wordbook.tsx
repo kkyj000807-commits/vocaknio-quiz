@@ -187,6 +187,7 @@ function WordCard({
             </View>
           ) : (
             <View>
+              {item.book?.gradingReview?.status === 'requires_editorial_policy_review' && <Text style={s.korText}>원문 보존 뜻 (아래 교정 주석 필수):</Text>}
               <Text style={s.korText}>
                 {item.k_short}
               </Text>

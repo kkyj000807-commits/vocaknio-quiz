@@ -15,7 +15,8 @@ import * as Haptics from "expo-haptics";
 import { ScreenContainer } from "@/components/screen-container";
 import { WordSectionLabel } from "@/components/word-section-label";
 import { WordPronunciation } from "@/components/word-pronunciation";
-import { VOCAB, getSynonymSourceGroups, type VocabItem } from "@/lib/vocab";
+import { VOCAB, getVocabItem, getSynonymSourceGroups, type VocabItem } from "@/lib/vocab";
+import { BookLearningDetails } from "@/components/book-learning-details";
 import { loadBookmarks, toggleBookmark } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
 
@@ -31,7 +32,7 @@ export default function BookmarksScreen() {
   );
 
   const bookmarkedItems = bookmarkNums
-    .map((num) => VOCAB.find((v) => v.num === num))
+    .map(getVocabItem)
     .filter(Boolean) as VocabItem[];
 
   const haptic = () => {
@@ -53,7 +54,7 @@ export default function BookmarksScreen() {
     router.push({
       pathname: "/quiz",
       params: {
-        mode: "syn-choice",
+        mode: bookmarkedItems.some(item => item.localBook) ? 'flashcard' : 'syn-choice',
         rangeStart: 0,
         rangeEnd: VOCAB.length - 1,
         count: Math.min(bookmarkedItems.length, 20),
@@ -91,7 +92,8 @@ export default function BookmarksScreen() {
           ))}
         </View>
       )}
-      <WordSectionLabel groups={[item.group]} />
+      <BookLearningDetails entry={item.book} />
+      {item.book ? <Text style={s.korText}>{item.book.section}</Text> : <WordSectionLabel groups={[item.group]} />}
     </View>
   );
 
@@ -102,6 +104,7 @@ export default function BookmarksScreen() {
         <View>
           <Text style={s.headerTitle}>북마크</Text>
           <Text style={s.headerSub}>{bookmarkedItems.length}개 단어 저장됨</Text>
+          {bookmarkNums.length > bookmarkedItems.length && <Text style={s.headerSub}>미연결 {bookmarkNums.length - bookmarkedItems.length}개 기록은 보존 중 · 교재 파일을 불러오세요</Text>}
         </View>
         {bookmarkedItems.length > 0 && (
           <Pressable

@@ -106,11 +106,6 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        <Pressable accessibilityRole="button" accessibilityLabel="v1.5 전체 목차·개념·숙어 열기" onPress={() => router.push('/wordbook')} style={{ marginHorizontal: 16, marginBottom: 16, padding: 18, backgroundColor: colors.surface, borderRadius: 16, borderColor: '#7555B2', borderWidth: 1 }}>
-          <Text style={{ color: colors.foreground, fontSize: 18, fontWeight: '700' }}>v1.5 단권화 전체 구성 →</Text>
-          <Text style={{ color: colors.muted, marginTop: 6 }}>101–601 · 301 개념 지도 · 502 확장 · 부록 · 보카바이블 B · 숙어 청크</Text>
-          <Text style={{ color: colors.muted, marginTop: 6 }}>기존 학습 기록과 문제 풀이 설정은 그대로 유지합니다.</Text>
-        </Pressable>
         {/* ── 문제 풀이 방식 ─────────────────────── */}
         <View style={s.section}>
           <Text style={s.sectionTitle}>문제 풀이 방식</Text>

@@ -74,6 +74,12 @@ describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
     const first = oldItem('1', 'same', '뜻'), second = oldItem('2', 'same', '뜻');
     expect(arrangeWordbook([first, second])).toHaveLength(1);
     expect(arrangeWordbook([first, second], item => item.id)).toHaveLength(2);
+    const entry = book('study-99', 'same', 1); entry.display!.meaning_display = '뜻';
+    const integrated = createIntegratedWordbook([first, second], edition([entry]));
+    const folded = arrangeWordbook(integrated, () => '', true);
+    expect(folded).toHaveLength(1);
+    expect(folded[0].book?.id).toBe(entry.id);
+    expect(folded[0].displaySourceIds).toEqual(['1', '2']);
   });
   it('has one ordinary WordCard path and collapsed content setup, not a second viewer', () => {
     const screen = fs.readFileSync('app/(tabs)/wordbook.tsx', 'utf8');
@@ -81,5 +87,11 @@ describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
     expect(screen).toContain('<WordCard');
     expect(screen).toContain('onLoaded={setEdition} collapsible');
     expect(fs.readFileSync('app/_layout.tsx', 'utf8').indexOf('activateLocalBook(data)')).toBeGreaterThan(0);
+    for (const path of ['app/(tabs)/wrong.tsx', 'app/(tabs)/bookmarks.tsx', 'app/result.tsx']) {
+      const source = fs.readFileSync(path, 'utf8');
+      expect(source).toContain('.map(getVocabItem)');
+      expect(source).not.toMatch(/VOCAB\.find/);
+      expect(source).toContain('BookLearningDetails');
+    }
   });
 });

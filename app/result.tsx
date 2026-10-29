@@ -11,7 +11,8 @@ import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { WordSectionLabel } from "@/components/word-section-label";
-import { VOCAB, QUIZ_MODES, getSynonymSourceGroups } from "@/lib/vocab";
+import { getVocabItem, QUIZ_MODES, getSynonymSourceGroups } from "@/lib/vocab";
+import { BookLearningDetails } from "@/components/book-learning-details";
 import { useColors } from "@/hooks/use-colors";
 import { getProductionSenseQuestions } from "@/lib/sense-questions";
 
@@ -34,7 +35,7 @@ export default function ResultScreen() {
     : [];
 
   const wrongItems = wrongNums
-    .map((num) => VOCAB.find((v) => v.num === num))
+    .map(getVocabItem)
     .filter(Boolean);
 
   const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
@@ -137,6 +138,10 @@ export default function ResultScreen() {
                   router.replace({ pathname: "/quiz", params: { mode: "sentence-completion", rangeId: "sentence-review", bookmarkNums: wrongNums.join(","), count: Math.min(wrongNums.length, 20) } });
                   return;
                 }
+                if (wrongItems.some(item => item?.localBook)) {
+                  router.replace({ pathname: '/quiz', params: { mode: 'flashcard', bookmarkNums: wrongNums.join(','), count: Math.min(wrongNums.length, 20) } });
+                  return;
+                }
                 router.replace({
                   pathname: "/wrong-quiz",
                   params: {
@@ -185,7 +190,8 @@ export default function ResultScreen() {
                     ))}
                   </View>
                 )}
-                <WordSectionLabel groups={[item!.group]} />
+                <BookLearningDetails entry={item!.book} />
+                {item!.book ? <Text style={s.wrongKor}>{item!.book.section}</Text> : <WordSectionLabel groups={[item!.group]} />}
               </View>
             ))}
           </View>
