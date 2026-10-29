@@ -1,4 +1,5 @@
 import learningIndexRaw from "@/assets/vocab-learning-index-v1.4.json";
+import sharedLinks from "@/assets/shared-sense-links.json";
 import type { ReasoningLesson } from "@/lib/reasoning-practice";
 
 export interface LearningSource {
@@ -19,6 +20,7 @@ export interface LearningAudio {
 }
 
 export interface LearningEntry {
+  sharedBookReferences?: { entryId: string; sourceSha256: string }[];
   id: string;
   senseId: string;
   itemIds: string[];
@@ -59,6 +61,63 @@ export interface LearningEntry {
   };
 }
 
+// One runtime contract for the app loader and the offline book export.
+// These links do not create a new sense or grant production eligibility.
+export const SHARED_LINK_SCHEMA = 2;
+export interface SharedSenseLink {
+  itemId: string;
+  senseId: string;
+  bookEntryId: string;
+  headword: string;
+  bookOriginalGloss: string;
+  definitionKo: string;
+  definitionEn: string;
+  partOfSpeech: string;
+  exampleEn: string;
+  exampleKo: string;
+}
+export interface SharedSenseLinks {
+  schema: number;
+  contentVersion: string;
+  sourceSha256: string;
+  review: string;
+  links: SharedSenseLink[];
+}
+export function isSharedSenseLinks(value: unknown): value is SharedSenseLinks {
+  if (!value || typeof value !== "object") return false;
+  const data = value as Partial<SharedSenseLinks>;
+  const fields: (keyof SharedSenseLink)[] = [
+    "itemId", "senseId", "bookEntryId", "headword", "bookOriginalGloss",
+    "definitionKo", "definitionEn", "partOfSpeech", "exampleEn", "exampleKo",
+  ];
+  if (data.schema !== SHARED_LINK_SCHEMA || typeof data.contentVersion !== "string" ||
+      !data.contentVersion || typeof data.sourceSha256 !== "string" ||
+      !/^[a-f0-9]{64}$/.test(data.sourceSha256) || typeof data.review !== "string" ||
+      !data.review.trim() || !Array.isArray(data.links)) return false;
+  const keys = new Set<string>();
+  return data.links.every(link => {
+    if (!link || typeof link !== "object" ||
+        fields.some(field => typeof link[field] !== "string" || !link[field].trim())) return false;
+    const identity = `${link.itemId}\0${link.senseId}\0${link.bookEntryId}`;
+    if (keys.has(identity)) return false;
+    keys.add(identity);
+    return true;
+  });
+}
+export function sharedLinkMatches(entry: LearningEntry, link: SharedSenseLink): boolean {
+  return entry.itemIds.includes(link.itemId) && entry.senseId === link.senseId &&
+    entry.headword === link.headword && entry.definitionKo === link.definitionKo &&
+    entry.definitionEn === link.definitionEn && entry.partOfSpeech === link.partOfSpeech &&
+    entry.example.en === link.exampleEn && entry.example.ko === link.exampleKo;
+}
+export function sharedBookReferences(
+  entry: LearningEntry, itemId: string, value: unknown = sharedLinks,
+): NonNullable<LearningEntry["sharedBookReferences"]> {
+  if (!isSharedSenseLinks(value) || value.contentVersion !== LEARNING_INDEX.version) return [];
+  return value.links.filter(link => link.itemId === itemId && sharedLinkMatches(entry, link))
+    .map(link => ({ entryId: link.bookEntryId, sourceSha256: value.sourceSha256 }));
+}
+
 interface LearningIndex {
   version: string;
   coverage: { senses: number; rows: number; checkedAtKst: string };
@@ -88,7 +147,7 @@ function getPublicBasePath(): string {
     : "";
 }
 
-function isLearningEntry(value: unknown): value is LearningEntry {
+export function isLearningEntry(value: unknown): value is LearningEntry {
   if (!value || typeof value !== "object") return false;
   const entry = value as Partial<LearningEntry>;
   return Boolean(
@@ -145,7 +204,10 @@ export async function loadLearningEntries(itemId: string): Promise<LearningEntry
   const allowed = new Set(pointer.entryIds);
   return group.entries.filter(
     (entry) => allowed.has(entry.id) && entry.itemIds.includes(itemId),
-  );
+  ).map(entry => {
+    const references = sharedBookReferences(entry, itemId);
+    return references.length ? { ...entry, sharedBookReferences: references } : entry;
+  });
 }
 
 export async function loadLearningAudio(itemId: string): Promise<LearningAudio | null> {

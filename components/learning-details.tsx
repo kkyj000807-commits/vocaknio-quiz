@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Linking, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useColors } from "@/hooks/use-colors";
+import { VOCAB_BY_ID } from "@/lib/vocab";
+import { getPersonalVocabReference } from "@/lib/personal-vocab";
 import { ReasoningPractice, LazyReasoningPractice } from "@/components/reasoning-practice";
 import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
 import { formatExampleRelation } from "@/lib/semantic-cluster";
@@ -37,6 +39,8 @@ export function LearningDetails({ itemId }: LearningDetailsProps) {
 function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
   const colors = useColors();
   const s = styles(colors);
+  const item = VOCAB_BY_ID.get(itemId);
+  const personal = item ? getPersonalVocabReference(item.w) : undefined;
   const [expanded, setExpanded] = useState(false);
   const [entries, setEntries] = useState<LearningEntry[] | null>(null);
   const [dictionary, setDictionary] = useState<VocabDefinitionEntry | null | undefined>(undefined);
@@ -80,6 +84,22 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
       </Pressable>
       {expanded && (
         <View style={s.body}>
+          {personal && <View style={s.memoryBox}>
+            <Text style={s.senseTitle}>개인 통합 단어장 · {personal.sources.length ? "보카바이블 B" : personal.sourceSection}</Text>
+            <Text style={s.note}>원문 참고·부분 검수 자료입니다. 기존 뜻·정답을 대체하지 않으며 문항 검수 완료를 뜻하지 않습니다.</Text>
+            {personal.studyHoldReason ? <Text style={s.note}>학습 보류: {personal.studyHoldReason}</Text> : null}
+            {personal.ipa ? <Text style={s.english}>원자료 발음 · {personal.ipa}</Text> : null}
+            {personal.koreanPronunciation ? <Text style={s.note}>읽기 보조 · {personal.koreanPronunciation} (IPA와 완전히 같은 소리는 아닙니다)</Text> : null}
+            <Text style={s.text}>{personal.gloss}</Text>
+            {personal.sources.map(source => <View key={source.id} style={s.section}>
+              <Text style={s.label}>보카바이블 B · PDF {source.page}쪽 · {source.locator}</Text>
+              <Text style={s.text}>{source.text}</Text>
+              {source.status.includes("partial") && <Text style={s.note}>일부 판독·검수 보류</Text>}
+            </View>)}
+            {personal.notes.map((text, index) => <Text key={`note-${index}`} style={s.note}>{text}</Text>)}
+            {personal.examples.map((text, index) => <Text key={`example-${index}`} style={s.english}>{text}</Text>)}
+            {personal.relationHints.length > 0 && <Text style={s.note}>원자료 관계어 참고(동의어 정답 인증 아님): {personal.relationHints.join(" · ")}</Text>}
+          </View>}
           {activeRecallSenses.map((entry, index) => (
             <ActiveRecallStudyDetails
               key={entry.senseId}
@@ -372,6 +392,7 @@ export function SenseDetails({ entry, index, count }: { entry: LearningEntry; in
       </Text>
 
       <Text style={s.text}>{entry.definitionKo}</Text>
+      {!!entry.sharedBookReferences?.length && <Text style={s.note}>제본·앱 공통 해설 연결 확인 · 원문 출현과 학습 기록은 별도 유지</Text>}
       <SemanticRelationCluster headword={entry.headword} coreMeaningKo={entry.definitionKo} showDefinitionBridge={false}
         exactSynonyms={entry.exactSynonyms} nearSynonyms={entry.nearSynonyms}
         choiceMeanings={Object.entries(entry.relationMeaningsKo ?? {}).map(([word, meaning]) => ({ word, meaning }))} />

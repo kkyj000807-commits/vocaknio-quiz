@@ -39,6 +39,7 @@ import Animated, {
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 import { ScreenContainer } from "@/components/screen-container";
+import { resultReviewParams } from '@/lib/result-review';
 import { QUIZ_CONTENT_MAX_WIDTH, STUDY_PAGE_GUTTER, STUDY_CARD_PADDING } from "@/lib/layout";
 import { FlipCard } from "@/components/flip-card";
 import { PronunciationButton } from "@/components/pronunciation-button";
@@ -731,6 +732,7 @@ export default function QuizScreen() {
           correct: nextCorrectCount,
           total: questions.length,
           wrongNums: wrongItems.map((w) => w.num).join(","),
+          ...resultReviewParams(makeSessionSnapshot(), mode, choiceLang),
         },
       });
       return;
@@ -748,6 +750,8 @@ export default function QuizScreen() {
     questions.length,
     correctCount,
     wrongItems,
+    mode,
+    choiceLang,
     router,
     captureQuestionViewState,
     restoreQuestionViewState,
@@ -824,7 +828,7 @@ export default function QuizScreen() {
           correct: correctCount,
           total: questions.length,
           wrongNums: finalWrongNums.join(","),
-          ...(mode === "sentence-completion" ? { reviewMode: mode } : {}),
+          ...resultReviewParams(makeSessionSnapshot(), mode, choiceLang),
         },
       });
       return;
@@ -869,6 +873,7 @@ export default function QuizScreen() {
     mode,
     correctCount,
     wrongItems,
+    choiceLang,
     haptic,
     router,
     captureQuestionViewState,

@@ -30,9 +30,12 @@ import { SemanticRelationCluster } from "@/components/semantic-relation-cluster"
 import { SynonymDetails } from "@/components/synonym-details";
 import { getDefinitionQuizEntry, getDefinitionAnswerRelations } from "@/lib/definition-quiz";
 import { WordSectionLabel } from "@/components/word-section-label";
+import { formatWordbookConcept } from "@/lib/wordbook-concepts";
+import { BookEditionBrowser } from "@/components/book-edition-browser";
+import { arrangeWordbook, type DisplayWord } from "@/lib/wordbook-display";
 import { getProductionSenseQuestions, hasSenseQuestionMapping, senseMatchesItem } from "@/lib/sense-questions";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { getRangeItems, WORDBOOK_RANGES, VOCAB, VOCAB_HEADWORD_COUNT, type VocabItem } from "@/lib/vocab";
+import { getWordbookRangeItems as getRangeItems, WORDBOOK_RANGES, WORDBOOK_VOCAB as VOCAB, WORDBOOK_HEADWORD_COUNT as VOCAB_HEADWORD_COUNT, type VocabItem } from "@/lib/vocab";
 import {
   loadBookmarks,
   loadQuizSettings,
@@ -51,6 +54,7 @@ import { useAudioPlayer, setAudioModeAsync } from "expo-audio";
 const RANGE_OPTIONS = WORDBOOK_RANGES;
 
 function getRangeChipLabel(range: (typeof RANGE_OPTIONS)[number]) {
+  if (range.group === "PERSONAL") return "개인 통합";
   if (range.group === "APPENDIX") return "부록";
   return range.group ?? range.label;
 }
@@ -76,7 +80,7 @@ function WordCard({
   learningStatus,
   onLearningStatusPress,
 }: {
-  item: VocabItem;
+  item: DisplayWord;
   bookmarks: Set<number>;
   onToggleBookmark: (num: number) => void;
   colors: ReturnType<typeof useColors>;
@@ -181,6 +185,11 @@ function WordCard({
               <Text style={s.korText}>
                 {item.k_short}
               </Text>
+              {(item.group === "V301" || item.group === "V502") && (
+                <Text testID="wordbook-original-concept" style={s.numText}>
+                  {formatWordbookConcept(item)}
+                </Text>
+              )}
             </View>
           )}
         </Animated.View>
@@ -188,8 +197,11 @@ function WordCard({
 
       <View style={s.metadataRow}>
         <View style={s.sourceMetadata}>
-          <Text style={s.numText}>#{item.num}</Text>
-          <WordSectionLabel groups={[item.group]} />
+          <Text style={s.numText}>{item.referenceOnly ? "개인 보강 · 출제 검수 대기" : `#${item.num}`}</Text>
+          <WordSectionLabel groups={item.displaySourceGroups ?? [item.group]} />
+          {(item.displaySourceIds?.length ?? 0) > 1 && (
+            <Text style={s.numText}>동일 내용 {item.displaySourceIds!.length}행 묶음 · 원기록 별도 보존</Text>
+          )}
         </View>
         <Pressable
           accessibilityRole="button"
@@ -360,11 +372,18 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
 
 // ─── 메인 화면 ────────────────────────────────────────────────────────────────
 export default function WordbookScreen() {
+  const [legacyQuery, setLegacyQuery] = useState<string | null>(null);
+  const colors = useColors();
+  if (legacyQuery === null) return <ScreenContainer containerClassName="bg-background"><BookEditionBrowser onLegacy={(word = '') => setLegacyQuery(word)} /></ScreenContainer>;
+  return <View style={{ flex: 1 }}><Pressable accessibilityRole="button" onPress={() => setLegacyQuery(null)} style={{ padding: 14, backgroundColor: colors.surface }}><Text style={{ color: colors.primary }}>← v1.5 전체 목차·개념·숙어 청크</Text></Pressable><LegacyWordbookScreen key={legacyQuery} initialQuery={legacyQuery} /></View>;
+}
+
+function LegacyWordbookScreen({ initialQuery = '' }: { initialQuery?: string }) {
   const colors = useColors();
   const router = useRouter();
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedRange, setSelectedRange] = useState(0);
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const [selectedRange, setSelectedRange] = useState(initialQuery ? Math.max(0, RANGE_OPTIONS.findIndex(range => range.id === 'all')) : 0);
   const [bookmarks, setBookmarks] = useState<Set<number>>(new Set());
   const [showOnlyBookmarks, setShowOnlyBookmarks] = useState(false);
   const [showMastered, setShowMastered] = useState(false);
@@ -441,6 +460,11 @@ export default function WordbookScreen() {
     if (showOnlyBookmarks) {
       list = list.filter((v) => bookmarks.has(v.num));
     }
+
+    list = arrangeWordbook(list, item => JSON.stringify([
+      bookmarks.has(item.num),
+      getItemLearningTargets(item).map(target => [target.key, learningState?.targets[target.key] ?? null]),
+    ]));
 
     if (searchQuery.trim()) {
       const q = searchQuery.trim().toLowerCase();

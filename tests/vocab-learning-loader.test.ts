@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import sharedLinks from "@/assets/shared-sense-links.json";
 vi.mock("@/assets/vocab-learning-index-v1.4.json", () => ({ default: { version: "test", items: { row: { group: "V101", entryIds: ["sense"] } }, coverage: {} } }));
 beforeEach(() => { vi.resetModules(); vi.stubGlobal("window", { document: {}, location: { pathname: "/" } }); });
 afterEach(() => { vi.unstubAllGlobals(); });
@@ -27,4 +28,25 @@ it("revalidates the preserved data URL while retaining the per-page request cach
   await loadLearningEntries("row");
   expect(fetchMock).toHaveBeenCalledTimes(1);
   expect(fetchMock).toHaveBeenCalledWith("/vocaknio-quiz/data/vocab-learning/test/v101.json", { cache: "no-cache" });
+});
+
+it('attaches only the reviewed occurrence and exact approved sense, not a changed meaning', async () => {
+  const link = { itemId: 'fixture-row', headword: 'test', senseId: 'fixture-sense', bookEntryId: 'fixture-book', bookOriginalGloss: 'fixture-original',
+    definitionKo: '뜻', definitionEn: 'Definition', partOfSpeech: 'noun', exampleEn: 'An example.', exampleKo: '예문.' };
+  const fixtureLinks = { schema: 2, contentVersion: 'test', sourceSha256: 'a'.repeat(64), review: 'isolated reviewed fixture', links: [link] };
+  vi.doMock('@/assets/shared-sense-links.json', () => ({ default: fixtureLinks }));
+  const version = fixtureLinks.contentVersion;
+  vi.doMock('@/assets/vocab-learning-index-v1.4.json', () => ({default:{version,items:{[link.itemId]:{group:'V101',entryIds:['sense']}},coverage:{}}}));
+  const source = {...entry(), itemIds:[link.itemId], headword:link.headword, senseId:link.senseId,
+    definitionKo:link.definitionKo, definitionEn:link.definitionEn, partOfSpeech:link.partOfSpeech,
+    example:{en:link.exampleEn,ko:link.exampleKo,kind:'editorial'}};
+  vi.stubGlobal('fetch',vi.fn().mockResolvedValue({ok:true,json:async()=>({version,entries:[source]})}));
+  const loader = await import('@/lib/vocab-learning');
+  expect((await loader.loadLearningEntries(link.itemId))[0].sharedBookReferences).toEqual([{entryId:link.bookEntryId,sourceSha256:fixtureLinks.sourceSha256}]);
+  vi.resetModules();
+  vi.stubGlobal('fetch',vi.fn().mockResolvedValue({ok:true,json:async()=>({version,entries:[{...source,definitionKo:'다른 뜻'}]})}));
+  const changed = await import('@/lib/vocab-learning');
+  expect((await changed.loadLearningEntries(link.itemId))[0].sharedBookReferences).toBeUndefined();
+  expect(changed.sharedBookReferences(source as never, link.itemId, { ...sharedLinks, schema: 999 })).toEqual([]);
+  expect(changed.sharedBookReferences(source as never, link.itemId, { ...sharedLinks, contentVersion: 'wrong' })).toEqual([]);
 });

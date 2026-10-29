@@ -9,6 +9,8 @@ import {
   type QuizSession,
 } from "@/lib/quiz-session";
 import type { QuizMode } from "@/lib/vocab";
+import { resultReviewParams } from '@/lib/result-review';
+import { getQuestionLearningTargetKey } from '@/lib/canonical-learning';
 
 const disk = vi.hoisted(() => ({
   values: new Map<string, string>(),
@@ -54,6 +56,16 @@ function session(mode: QuizMode = "kor-choice"): QuizSession {
     completed: false,
   };
 }
+
+it('retains the exact failed target, question mode and language for result review without mutating records', () => {
+  const saved = session();
+  saved.states[0] = { ...createEmptyQuestionViewState(), answered: true, skipped: true };
+  saved.states[1] = { ...createEmptyQuestionViewState(), answered: true, selectedChoice: saved.questions[1].choices.findIndex(c => c.isCorrect) };
+  const before = JSON.stringify(saved);
+  expect(resultReviewParams(saved, 'kor-choice', 'korean')).toEqual({ reviewMode: 'kor-choice', choiceLang: 'korean', reviewKeys: JSON.stringify([getQuestionLearningTargetKey(saved.questions[0])]) });
+  expect(JSON.stringify(saved)).toBe(before);
+  expect(resultReviewParams({ questions: saved.questions, states: saved.questions.map(() => createEmptyQuestionViewState()) }, 'kor-choice', 'korean').reviewKeys).toBe('[]');
+});
 
 describe("문제 풀이 중단 복원", () => {
   it("restores original choices, answer and position after example-only enrichment", async () => {

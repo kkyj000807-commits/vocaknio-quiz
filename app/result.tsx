@@ -11,7 +11,7 @@ import * as Haptics from "expo-haptics";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { WordSectionLabel } from "@/components/word-section-label";
-import { VOCAB, getSynonymSourceGroups } from "@/lib/vocab";
+import { VOCAB, QUIZ_MODES, getSynonymSourceGroups } from "@/lib/vocab";
 import { useColors } from "@/hooks/use-colors";
 import { getProductionSenseQuestions } from "@/lib/sense-questions";
 
@@ -23,6 +23,8 @@ export default function ResultScreen() {
     total: string;
     wrongNums: string;
     reviewMode?: string;
+    reviewKeys?: string;
+    choiceLang?: string;
   }>();
 
   const correct = parseInt(params.correct ?? "0");
@@ -126,6 +128,11 @@ export default function ResultScreen() {
               style={({ pressed }) => [s.btn, s.btnWrong, { width: "100%" }, pressed && { opacity: 0.85 }]}
               onPress={() => {
                 haptic();
+                if (params.reviewMode && QUIZ_MODES.some(option => option.id === params.reviewMode) && params.reviewKeys) {
+                  router.replace({ pathname: '/quiz', params: { mode: params.reviewMode, choiceLang: params.choiceLang === 'english' ? 'english' : 'korean',
+                    rangeId: 'exact-result-review', bookmarkNums: wrongNums.join(','), reviewKeys: params.reviewKeys, count: Math.min(wrongNums.length, 20) } });
+                  return;
+                }
                 if (params.reviewMode === "sentence-completion") {
                   router.replace({ pathname: "/quiz", params: { mode: "sentence-completion", rangeId: "sentence-review", bookmarkNums: wrongNums.join(","), count: Math.min(wrongNums.length, 20) } });
                   return;

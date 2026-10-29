@@ -1,5 +1,6 @@
 import vocabRaw from "@/assets/vocab-v1.4.json";
 import vocabMetaRaw from "@/assets/vocab-meta-v1.4.json";
+import { makePersonalStudyItems, makeRetiredPersonalReferenceItems } from "@/lib/personal-vocab";
 
 export type VocabGroup =
   | "V101"
@@ -9,7 +10,8 @@ export type VocabGroup =
   | "V501"
   | "V502"
   | "V601"
-  | "APPENDIX";
+  | "APPENDIX"
+  | "PERSONAL";
 
 interface RawVocabItem {
   num: number;
@@ -31,7 +33,7 @@ interface VocabMeta {
   sourceRows: number;
   sourceEntries: number;
   sourceSha256: string;
-  groupCounts: Record<VocabGroup, number>;
+  groupCounts: Record<Exclude<VocabGroup, "PERSONAL">, number>;
   sections: Array<{
     id: string;
     group: VocabGroup;
@@ -78,6 +80,7 @@ interface VocabMeta {
 }
 
 export interface VocabItem extends RawVocabItem {
+  referenceOnly?: boolean;
   k_short: string;
   category: string;
   type: "word" | "idiom" | "phrase";
@@ -118,9 +121,14 @@ export const VOCAB: VocabItem[] = (vocabRaw as RawVocabItem[]).map((item) => ({
   type: inferType(item.w),
 }));
 
-export const VOCAB_BY_NUM = new Map(VOCAB.map((item) => [item.num, item]));
+// Canonical quiz input stays untouched. The private book is an additive study layer.
+export const PERSONAL_STUDY_ITEMS: VocabItem[] = makePersonalStudyItems(VOCAB);
+export const WORDBOOK_VOCAB = [...VOCAB, ...PERSONAL_STUDY_ITEMS];
+export const WORDBOOK_HEADWORD_COUNT = new Set(WORDBOOK_VOCAB.map(item => item.w.trim().toLowerCase().replace(/\s+/g, " "))).size;
+const retiredPersonalReferences: VocabItem[] = makeRetiredPersonalReferenceItems();
+export const VOCAB_BY_NUM = new Map([...retiredPersonalReferences, ...WORDBOOK_VOCAB].map((item) => [item.num, item]));
 export const VOCAB_HEADWORD_COUNT = new Set(VOCAB.map(item => item.w.trim().toLowerCase().replace(/\s+/g, " "))).size;
-export const VOCAB_BY_ID = new Map(VOCAB.map((item) => [item.id, item]));
+export const VOCAB_BY_ID = new Map([...retiredPersonalReferences, ...WORDBOOK_VOCAB].map((item) => [item.id, item]));
 export const VOCAB_WITH_SYNONYMS = VOCAB.filter((item) => item.s.length > 0);
 export const VOCAB_IDIOMS = VOCAB.filter(
   (item) => item.type === "idiom" || item.type === "phrase",
@@ -162,14 +170,17 @@ export const SECTION_RANGES = RANGES.filter((range) => range.kind === "section")
 /** Display the existing wordbook groups, never infer a section from a number or spelling. */
 export function formatVocabSections(groups: readonly (string | undefined)[]): string {
   const selected = new Set(groups);
-  const labels = SECTION_RANGES.filter((range) => selected.has(range.group))
-    .map((range) => range.group === "APPENDIX" ? "부록" : range.group);
+  const labels: string[] = SECTION_RANGES.filter((range) => selected.has(range.group))
+    .flatMap((range) => range.group ? [range.group === "APPENDIX" ? "부록" : range.group] : []);
+  if (selected.has("PERSONAL")) labels.push("개인 통합");
   return labels.length > 0 ? `단어장 · ${labels.join(" · ")}` : "섹션 연결 없음";
 }
 export const WORDBOOK_RANGES = [
   ...RANGES.filter((range) => range.kind === "idioms"),
   ...RANGES.filter((range) => range.kind === "all"),
   ...SECTION_RANGES,
+  ...(PERSONAL_STUDY_ITEMS.length ? [{ id: "personal", label: "개인 통합 단어장", group: "PERSONAL" as const,
+    start: VOCAB.length, end: WORDBOOK_VOCAB.length - 1, count: PERSONAL_STUDY_ITEMS.length, kind: "section" as const }] : []),
 ];
 export const COUNTS = [5, 10, 20, 30];
 
@@ -275,6 +286,13 @@ export function getRangeItems(range: VocabRange): VocabItem[] {
   if (range.kind === "idioms") return VOCAB_IDIOMS;
   if (range.kind === "all") return VOCAB;
   return VOCAB.slice(range.start, range.end + 1);
+}
+
+export function getWordbookRangeItems(range: VocabRange): VocabItem[] {
+  if (range.id === "personal") return PERSONAL_STUDY_ITEMS;
+  if (range.kind === "all") return WORDBOOK_VOCAB;
+  if (range.kind === "idioms") return WORDBOOK_VOCAB.filter(item => item.type !== "word");
+  return getRangeItems(range);
 }
 
 export function getAcceptedSynonyms(item: VocabItem): string[] {

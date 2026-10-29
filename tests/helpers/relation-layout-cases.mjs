@@ -22,6 +22,11 @@ function load(relative) {
   if (cache.has(relative)) return cache.get(relative);
   const exports = {};
   const source = fs.readFileSync(new URL(`../../${relative}`, import.meta.url), 'utf8');
+  if (relative.endsWith('.json')) {
+    const data = JSON.parse(source);
+    cache.set(relative, data);
+    return data;
+  }
   const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText
     + (relative === 'app/(tabs)/wordbook.tsx' ? '\nexports.WordCardForTest = WordCard;\n' : '');
   const dependencies = {
@@ -59,6 +64,7 @@ function load(relative) {
     if (dependencies[name]) return dependencies[name];
     if (name.startsWith('@/')) {
       const filename = name.slice(2);
+      if (filename.endsWith('.json')) return load(filename);
       return load(`${filename}.${filename.startsWith('components/') ? 'tsx' : 'ts'}`);
     }
     throw new Error(`Unexpected dependency: ${name}`);

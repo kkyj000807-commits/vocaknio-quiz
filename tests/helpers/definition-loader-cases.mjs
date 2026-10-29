@@ -19,7 +19,11 @@ function loader(responses, pathname = '/vocaknio-quiz/quiz') {
     exports,
     require: name => {
       if (name === '@/assets/vocab-definitions-oewn-2025.json') return { default: { version: 'test', coverage: {}, source: {} } };
-      if (name === '@/lib/vocab') return { VOCAB_BY_ID: new Map([['row', { group: 'V101' }], ['other-row', { group: 'V101' }]]) };
+      if (name === '@/lib/vocab') return { VOCAB_BY_ID: new Map([
+        ['row', { group: 'V101' }], ['other-row', { group: 'V101' }],
+        ['personal-row', { group: 'PERSONAL', referenceOnly: true }],
+        ['retired-row', { group: 'PERSONAL', referenceOnly: true, retiredReferenceOnly: true }],
+      ]) };
       throw new Error(`Unexpected dependency: ${name}`);
     },
     window: { document: {}, location: { pathname } },
@@ -34,6 +38,14 @@ function loader(responses, pathname = '/vocaknio-quiz/quiz') {
 }
 
 export const definitionLoaderCases = [
+  ['private and retired source references do not request a nonexistent approved dictionary file', async () => {
+    const api = loader([]);
+    assert.equal(await api.load('personal-row'), null);
+    assert.equal(await api.load('retired-row'), null);
+    assert.equal(api.calls.length, 0);
+    assert.deepEqual(await api.load('row'), api.entry);
+    assert.equal(api.calls.length, 1);
+  }],
   ['a cached null pointer map cannot permanently poison subsequent retries', async () => {
     const api = loader([{ ok: true, json: async () => ({ version: 'test', group: 'V101', items: null, headwords: {} }) }]);
     await assert.rejects(api.load('row'));

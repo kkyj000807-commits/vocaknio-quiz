@@ -376,6 +376,7 @@ function makeQuestion(
   masteredTargetKeys: ReadonlySet<string> = new Set(),
   requestedKeys: ReadonlySet<string> = new Set(),
 ): QuizQuestion | null {
+  if (item.referenceOnly) return null;
   if (mode === "sentence-completion") {
     const completion = getSentenceCompletion(item.id);
     if (!completion || masteredTargetKeys.has(sentenceCompletionKey(completion)) ||

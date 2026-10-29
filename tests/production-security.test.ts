@@ -26,6 +26,14 @@ it("allows only normal public learning artifacts in the clean fixture", () => {
   fs.writeFileSync(path.join(folder, "learning.json"), '{"definition":"public learning content"}');
   expect(productionSecurityIssues(folder)).toEqual([]);
 });
+it("rejects personal source content from a public bundle unless explicitly marked owner-only", () => {
+  const folder = fixture();
+  fs.writeFileSync(path.join(folder, "entry.js"), 'const marker="FINETUNE_PERSONAL_CONTENT_PRIVATE_ONLY"');
+  expect(productionSecurityIssues(folder).some(row => row.kind === "personal content requires owner-only release")).toBe(true);
+  fs.writeFileSync(path.join(folder, "release.json"), JSON.stringify({ requiresAccess: true, distribution: "owner-only",
+    personalVocabulary: { studyOnly: true, sha256: "a".repeat(64) } }));
+  expect(productionSecurityIssues(folder)).toEqual([]);
+});
 it("rejects original source, backups and source-map references even without a local map", () => {
   const folder = fixture();
   for (const name of ["learning-backup.zip", "history.bak", "original.tsx", "source.py"]) fs.writeFileSync(path.join(folder, name), "fixture");

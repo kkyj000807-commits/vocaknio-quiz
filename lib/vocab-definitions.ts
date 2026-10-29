@@ -136,7 +136,9 @@ async function loadGroup(group: string): Promise<DefinitionGroupFile> {
 
 export async function loadVocabDefinition(itemId: string): Promise<VocabDefinitionEntry | null> {
   const vocabItem = VOCAB_BY_ID.get(itemId);
-  if (!vocabItem) return null;
+  // Private source references have no approved dictionary group/row pointer.
+  // This is intentional absence, not a failed request for personal.json.
+  if (!vocabItem || vocabItem.referenceOnly) return null;
   const group = await loadGroup(vocabItem.group);
   const key = group.items[itemId];
   const entry = key ? group.headwords[key] : null;

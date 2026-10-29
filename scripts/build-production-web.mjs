@@ -1,11 +1,16 @@
 import fs from "node:fs";
 import path from "node:path";
+import crypto from "node:crypto";
+import personalVocabTools from "./lib/personal-vocab.cjs";
 import { createPagesFallback, requireEmptyOutput } from "./lib/production-output.mjs";
 import { createReleaseMetadata } from "./lib/release-metadata.mjs";
 import { readSourceState } from "./lib/source-state.mjs";
 import { runMonitoredNode } from "./lib/monitored-process.mjs";
 
 const outputDir = process.argv[2];
+const personalPath = personalVocabTools.personalVocabPath(process.cwd());
+const personalBytes = fs.readFileSync(personalPath);
+const personalData = JSON.parse(personalBytes);
 
 if (!outputDir) {
   console.error("사용법: node scripts/build-production-web.mjs <빈 출력 폴더>");
@@ -36,6 +41,16 @@ const releaseManifest = createReleaseMetadata(releaseConfig, {
   // including new files that git diff --quiet does not see.
   ...readSourceState(), dataVersion, builtAt,
 });
+if (personalData.requiresAccess) {
+  releaseManifest.distribution = "owner-only";
+  releaseManifest.requiresAccess = true;
+  releaseManifest.personalVocabulary = {
+    sha256: crypto.createHash("sha256").update(personalBytes).digest("hex"),
+    sourceSha256: personalData.sourceSha256,
+    entries: personalData.entries.length,
+    studyOnly: true,
+  };
+}
 const releasedAtKst = releaseManifest.modifiedAtKst;
 const releaseTarget = releaseManifest.target;
 const expoCli = path.join(
