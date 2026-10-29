@@ -191,7 +191,7 @@ function WordCard({
               <Text style={s.korText}>
                 {item.k_short}
               </Text>
-              {(item.group === "V301" || item.group === "V502") && !item.book && (
+              {(item.group === "V301" || item.group === "V502") && !(item.book?.concept || item.book?.chunk) && (
                 <Text testID="wordbook-original-concept" style={s.numText}>
                   {formatWordbookConcept(item)}
                 </Text>
