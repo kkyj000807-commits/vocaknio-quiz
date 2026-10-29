@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BOOK_EDITION, bookMeanings, selectBookEntries } from '../lib/book-edition';
+import { BOOK_EDITION, bookMeanings, bookStudyDetails, bookNeedsEditorialReview, bookPronunciation, selectBookEntries, type BookEntry } from '../lib/book-edition';
 import { VOCAB_BY_ID } from '../lib/vocab';
 
 describe('v1.5 edition display adapter: never learner migration', () => {
@@ -31,5 +31,25 @@ describe('v1.5 edition display adapter: never learner migration', () => {
     const before = JSON.stringify(BOOK_EDITION);
     selectBookEntries('숙어', '', 'up');
     expect(JSON.stringify(BOOK_EDITION)).toBe(before);
+  });
+  it('keeps original meanings separate from labelled corrections and editorial examples', () => {
+    const entry: BookEntry = { id: 'fixture-only', order: 1, section: '숙어', word: 'fixture', appIds: [],
+      concept: '', chunk: '', chapter: null, automaticGrading: false,
+      display: { meaning_display: '원문 뜻', patterns: [],
+        annotations: [{ kind: '교정', text: '교정 설명', source: '검수 근거' }],
+        examples: [{ text: '학습 예문', source: '편집 예문' }] },
+      gradingReview: { status: 'requires_editorial_policy_review', original_answer_preserved: true } };
+    const before = JSON.stringify(entry);
+    expect(bookStudyDetails(entry)).toEqual([
+      { label: '교정', text: '교정 설명', source: '검수 근거' },
+      { label: '예문', text: '학습 예문', source: '편집 예문' },
+    ]);
+    expect(bookNeedsEditorialReview(entry)).toBe(true);
+    expect(entry.automaticGrading).toBe(false);
+    expect(JSON.stringify(entry)).toBe(before);
+    entry.pronunciation = { ipa: '', korean_pronunciation: '≈ 스플릿 더 신', pronunciation_status: null };
+    expect(bookPronunciation(entry)).toBe('IPA 미확인 · ≈ 스플릿 더 신');
+    entry.pronunciation.korean_pronunciation = '다설';
+    expect(bookPronunciation(entry)).toBe('IPA 미확인 · ≈ 다설');
   });
 });
