@@ -9,8 +9,10 @@ export type DisplayWord = VocabItem & { displaySourceIds?: string[]; displaySour
 export function arrangeWordbook(
   items: readonly VocabItem[],
   statePartition: (item: VocabItem) => string = () => "",
+  preserveOrder = false,
 ): DisplayWord[] {
   const sorted = items.map((item, index) => ({ item, index })).sort((a, b) => {
+    if (preserveOrder) return a.index - b.index;
     const ra = managed.has(a.item.group) ? ranks.get(a.item.w) : undefined;
     const rb = managed.has(b.item.group) ? ranks.get(b.item.w) : undefined;
     return (ra ?? Number.MAX_SAFE_INTEGER) - (rb ?? Number.MAX_SAFE_INTEGER) || a.index - b.index;
@@ -22,7 +24,7 @@ export function arrangeWordbook(
     // empty gloss merging, pronunciation loss or inferred synonym equivalence.
     const key = managed.has(item.group) && item.w.trim() && item.k.trim()
       ? JSON.stringify([item.w, item.k, item.p, item.type, item.referenceOnly ?? false,
-        item.conceptLabel, item.majorConceptLabel, item.s, statePartition(item)])
+        item.conceptLabel, item.majorConceptLabel, item.s, item.book?.id ?? '', statePartition(item)])
       : `unmerged:${item.id}`;
     const prior = groups.get(key);
     if (prior) {

@@ -12,7 +12,9 @@ import {
   loadLearningSnapshot,
   markLearningTargetMastered,
 } from "@/lib/store";
-import { VOCAB } from "@/lib/vocab";
+import { VOCAB, WORDBOOK_VOCAB, registerStudyItems } from "@/lib/vocab";
+import { createIntegratedWordbook } from "@/lib/integrated-wordbook";
+import { BOOK_EDITION } from "@/lib/book-edition";
 import { getItemLearningTargets, getQuestionLearningTargetKey, parseLearningReviewKeys } from "@/lib/canonical-learning";
 import { buildLearningStatistics, buildStatisticsReviewParams } from "@/lib/learning-statistics";
 import { buildQuizQuestions } from "@/lib/quiz-engine";
@@ -68,6 +70,43 @@ vi.mock("@react-native-async-storage/async-storage", () => ({
 describe("adaptive quiz storage", () => {
   beforeEach(() => {
     storageMock.reset();
+  });
+  it('keeps device-book responses separate, reloadable, idempotent and compatible with old MASTER/bookmarks', async () => {
+    const baseline = await loadLearningSnapshot();
+    const oldKey = getItemLearningTargets(VOCAB[0])[0].key;
+    await markLearningTargetMastered(oldKey, VOCAB[0].num);
+    storageMock.values.set('vocaknio_bookmarks', JSON.stringify([VOCAB[0].num]));
+    const originalBookmarks = storageMock.values.get('vocaknio_bookmarks');
+    const item = createIntegratedWordbook([], { ...BOOK_EDITION, privateContent: true, entries: [{
+      id: 'study-912346', order: 1, section: '보카바이블 B', word: 'device-book-store-fixture', appIds: [],
+      concept: '', chunk: '', chapter: null, automaticGrading: false,
+      display: { meaning_display: '시험용 원뜻', annotations: [], examples: [], patterns: [] },
+    }] })[0];
+    registerStudyItems([...VOCAB, item]);
+    try {
+      const key = getItemLearningTargets(item)[0].key;
+      const answer = { sessionId: 'book-fixture-session', itemNum: item.num, mode: 'flashcard',
+        outcome: 'wrong' as const, learningTargetKey: key, answeredAt: Date.now() };
+      await recordOneAnswer(false, item.num, answer);
+      await recordOneAnswer(false, item.num, answer);
+      const reopened = await loadLearningSnapshot();
+      expect(reopened.stats.totalAnswered).toBe(baseline.stats.totalAnswered + 1);
+      expect(reopened.history.events).toHaveLength((baseline.history.events?.length ?? 0) + 1);
+      expect(reopened.learning.targets[oldKey].status).toBe('MASTERED');
+      expect(reopened.learning.targets[key].status).not.toBe('MASTERED');
+      expect(await loadWrongWords()).toContain(item.num);
+      expect(storageMock.values.get('vocaknio_bookmarks')).toBe(originalBookmarks);
+      const before = storageMock.values.get('vocaknio_sense_learning_state_v1');
+      storageMock.failOneMultiSet();
+      await recordOneAnswer(false, item.num, { ...answer, sessionId: 'book-fixture-failed-write' });
+      expect(getLearningStorageIssue()).not.toBeNull();
+      expect(storageMock.values.get('vocaknio_sense_learning_state_v1')).toBe(before);
+      await retryLearningStorage();
+      const restored = await loadLearningSnapshot();
+      expect(restored.learning.targets[oldKey].status).toBe('MASTERED');
+      expect(restored.stats.totalAnswered).toBe(baseline.stats.totalAnswered + 2);
+      expect(storageMock.values.get('vocaknio_bookmarks')).toBe(originalBookmarks);
+    } finally { registerStudyItems(WORDBOOK_VOCAB); }
   });
   it("does not present corrupted evidence as healthy zero statistics", async () => {
     storageMock.values.set(ADAPTIVE_QUIZ_HISTORY_KEY, "{broken");
@@ -317,4 +356,5 @@ describe("adaptive quiz storage", () => {
       "v1.4",
     );
   });
+
 });

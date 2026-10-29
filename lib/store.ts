@@ -981,7 +981,7 @@ export async function recordOneAnswer(
         answeredAt: context.answeredAt ?? Date.now(),
         targetKey: context.targetKey ?? context.learningTargetKey,
         sourceId: item?.id,
-        groupId: item?.group,
+        groupId: item?.book?.section ?? item?.group,
         statusBefore: currentLearning && context.learningTargetKey ? getLearningTargetState(currentLearning, context.learningTargetKey).status : undefined,
         statusAfter: nextLearning && context.learningTargetKey ? getLearningTargetState(nextLearning, context.learningTargetKey).status : undefined,
       }) : null;

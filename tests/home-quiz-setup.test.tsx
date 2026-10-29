@@ -9,7 +9,7 @@ import { QUIZ_MODES, RANGES } from "@/lib/vocab";
 
 // Exercise the actual setup component without mounting native modules, loading
 // learner storage, or navigating a real session. The PNG is an inert fixture.
-function renderSetup() {
+function renderSetup(localContent = false) {
   const buttons: { label: string; selected?: boolean; press: () => void }[] = [];
   const push = vi.fn();
   const save = vi.fn();
@@ -33,6 +33,7 @@ function renderSetup() {
     "@/lib/layout": { SCROLL_END_PADDING: 16, STUDY_PAGE_GUTTER: 12, STUDY_CARD_PADDING: 12, MIN_TOUCH_TARGET: 44 },
     "@/lib/vocab": { QUIZ_MODES, RANGES, COUNTS: [5, 10, 20, 30] },
     "@/hooks/use-colors": { useColors: () => ({ primary: "#456", foreground: "#222", muted: "#666", card: "#fff", border: "#ddd" }) },
+    "@/hooks/use-study-vocab": { useStudyVocab: () => localContent ? [{ localBook: true }] : [] },
     "@/constants/brand": { PRODUCT_NAME: "FINETUNE", PRODUCT_PHILOSOPHY: "Study" },
     "@/lib/quiz-engine": { getQuizCandidateItems: () => [] },
     "@/lib/store": { loadQuizSettings: async () => ({ choiceLang: "korean" }), saveQuizSettings: save },
@@ -52,6 +53,11 @@ function renderSetup() {
 }
 
 describe("study setup starts with English synonyms and the entire vocabulary", () => {
+  it('explains the device-book self-assessment boundary without changing the existing default mode', () => {
+    const { html, buttons } = renderSetup(true);
+    expect(html).toContain('신규 뜻은 빠른 암기(자기평가)로 학습');
+    expect(buttons.find(button => button.label.includes('같은 sense의 동의어 찾기'))?.selected).toBe(true);
+  });
   it("orders primary modes as synonyms, definitions, logic while retaining all existing modes", () => {
     expect(QUIZ_MODES.slice(0, 3).map(mode => mode.id)).toEqual(["syn-choice", "definition-choice", "sentence-completion"]);
     expect(QUIZ_MODES.map(mode => mode.id).sort()).toEqual([

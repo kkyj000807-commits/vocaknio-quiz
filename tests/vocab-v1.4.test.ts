@@ -39,7 +39,7 @@ describe("final vocabulary v1.4", () => {
     expect(CORE_RANGES[0]).toMatchObject({ id: "idioms", core: true });
     expect(WORDBOOK_RANGES[0].id).toBe("idioms");
     expect(WORDBOOK_RANGES.map((range) => range.id)).toEqual([
-      "idioms", "all", ...SECTION_RANGES.map((range) => range.id),
+      "idioms", "all", ...SECTION_RANGES.map((range) => range.id), "book-b",
     ]);
     expect(new Set(WORDBOOK_RANGES.map((range) => range.id)).size).toBe(RANGES.length);
   });

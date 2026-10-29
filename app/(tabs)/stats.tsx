@@ -5,21 +5,27 @@ import { ScreenContainer } from "@/components/screen-container";
 import { AdaptiveStatistics } from "@/components/adaptive-statistics";
 import { SCROLL_END_PADDING } from "@/lib/layout";
 import { loadLearningSnapshot, loadStudyTime, formatStudyTime, type StudyTimeData } from "@/lib/store";
-import { VOCAB, RANGES } from "@/lib/vocab";
+import { getStudyVocab, getStudyRevision, RANGES } from "@/lib/vocab";
+import { useStudyVocab } from "@/hooks/use-study-vocab";
 import { getItemLearningTargets } from "@/lib/canonical-learning";
 import { buildLearningStatistics, buildStatisticsReviewParams, type LearningItemMeta, type WordPerformance } from "@/lib/learning-statistics";
 import { useColors } from "@/hooks/use-colors";
 import { sentenceCompletionMetadata } from "@/lib/sentence-completion";
 
 let itemMetadata: LearningItemMeta[] | null = null;
+let metadataRevision = -1;
 function statisticsItems() {
-  if (!itemMetadata) itemMetadata = VOCAB.flatMap(item => getItemLearningTargets(item).map(target => ({
-    num: item.num, word: item.w, groupId: item.group, sourceId: item.id,
+  if (!itemMetadata || metadataRevision !== getStudyRevision()) {
+    metadataRevision = getStudyRevision();
+    itemMetadata = getStudyVocab().flatMap(item => getItemLearningTargets(item).map(target => ({
+    num: item.num, word: item.w, groupId: item.localBook ? item.book!.section : item.group, sourceId: item.id,
     learningKey: target.key, conceptId: item.conceptId,
   }))).concat(sentenceCompletionMetadata());
+  }
   return itemMetadata;
 }
 export default function StatsScreen() {
+  const studyVocab = useStudyVocab();
   const colors = useColors();
   const router = useRouter();
   const [showStudyTime, setShowStudyTime] = useState(false);
@@ -35,13 +41,18 @@ export default function StatsScreen() {
     loadStudyTime().then(value => { if (active) setStudyTime(value); }).catch(() => {});
     return () => { active = false; };
   }, []));
-  const model = useMemo(() => snapshot ? buildLearningStatistics(snapshot.history, snapshot.learning, statisticsItems(), { groupId, mode, period, legacyWrongNums: snapshot.legacyWrongNums }) : null, [snapshot, groupId, mode, period]);
+  const model = useMemo(() => snapshot ? buildLearningStatistics(snapshot.history, snapshot.learning, statisticsItems(), { groupId, mode, period, legacyWrongNums: snapshot.legacyWrongNums }) : null, [snapshot, groupId, mode, period, studyVocab]);
   const review = (group = "", word?: WordPerformance) => {
     if (!model) return;
     const params = buildStatisticsReviewParams(model, group, word);
     if (params) router.push({ pathname: "/quiz", params });
   };
   const studyGroup = (group: string) => {
+    if (studyVocab.some(item => item.localBook && item.book?.section === group)) {
+      const nums = studyVocab.filter(item => item.localBook && item.book?.section === group).slice(0, 200).map(item => item.num);
+      router.push({ pathname: '/quiz', params: { mode: 'flashcard', bookmarkNums: nums.join(','), count: 10 } });
+      return;
+    }
     const range = RANGES.find(row => row.kind === "section" && row.group === group);
     if (range) router.push({ pathname: "/quiz", params: { mode: "definition-choice", rangeId: range.id, rangeStart: range.start, rangeEnd: range.end, count: 10 } });
   };

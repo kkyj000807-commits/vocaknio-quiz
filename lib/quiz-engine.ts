@@ -1,6 +1,7 @@
 import {
   RANGES,
   VOCAB,
+  getRangeItems,
   VOCAB_WITH_SYNONYMS,
   getRelatedWords,
   getSynonymDetails,
@@ -376,6 +377,7 @@ function makeQuestion(
   masteredTargetKeys: ReadonlySet<string> = new Set(),
   requestedKeys: ReadonlySet<string> = new Set(),
 ): QuizQuestion | null {
+  if (item.localBook && mode !== 'flashcard') return null;
   if (item.referenceOnly) return null;
   if (mode === "sentence-completion") {
     const completion = getSentenceCompletion(item.id);
@@ -489,6 +491,7 @@ function resolvePool(options: BuildQuizOptions): VocabItem[] {
   }
 
   const range = RANGES.find((candidate) => candidate.id === options.rangeId);
+  if (range && options.mode === 'flashcard') return getRangeItems(range).map(item => getVocabItem(item.num) ?? item);
   if (range?.kind === "idioms") {
     return VOCAB.filter(
       (item) => item.type === "idiom" || item.type === "phrase",
@@ -516,7 +519,7 @@ export function getQuizCandidateItems(options: BuildQuizOptions): VocabItem[] {
   const choiceLang = options.choiceLang ?? "korean";
   const mastered = new Set(options.masteredNums ?? []);
   const masteredTargets = new Set(options.masteredTargetKeys ?? []);
-  let pool = resolvePool(options).filter((item) => item.k.length > 0);
+  let pool = resolvePool(options).filter((item) => item.k.length > 0 && (!item.localBook || options.mode === 'flashcard'));
   if (options.mode === "sentence-completion") return pool.filter(item => {
     const question = getSentenceCompletion(item.id);
     return question && !masteredTargets.has(sentenceCompletionKey(question)) &&
@@ -602,7 +605,7 @@ export function buildReviewQuestions(
       .filter((item): item is VocabItem => Boolean(item)),
   );
   for (const item of items) {
-    const mode: QuizMode = getActiveRecallSenses(item.id).some((entry) =>
+    const mode: QuizMode = item.localBook ? 'flashcard' : getActiveRecallSenses(item.id).some((entry) =>
       entry.prompts.some((prompt) => prompt.kind === "definition-recall"),
     ) || getDefinitionQuizEntry(item.id)
       ? "definition-choice"
@@ -670,6 +673,8 @@ export function isTypedAnswerCorrect(
 }
 
 export function validateQuestion(question: QuizQuestion): boolean {
+  if (question.item.localBook && (question.mode !== 'flashcard' || question.answerKind !== 'self' ||
+    question.correct !== question.item.k || question.choices.length !== 0)) return false;
   if (question.mode === "sentence-completion" || question.sentenceCompletion || question.answerKind === "completion") {
     const completion = question.sentenceCompletion;
     if (!completion || question.id !== completion.id || question.mode !== "sentence-completion" || question.answerKind !== "completion" ||

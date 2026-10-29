@@ -122,7 +122,7 @@ export function buildStatisticsReviewParams(model: LearningStatistics, groupId =
   let words = word ? [word] : statisticsReviewCandidates(model, groupId).slice(0, 20);
   if (!words.length) return null;
   const mode: QuizMode = ["sentence-completion", "definition-choice", "syn-choice", "syn-kor-choice", "kor-choice", "syn-type", "flashcard"].includes(words[0].reviewMode) ? words[0].reviewMode as QuizMode : "kor-choice";
-  words = words.filter(row => row.reviewMode === mode || !["sentence-completion"].includes(row.reviewMode) && mode !== "sentence-completion");
+  words = words.filter(row => row.key.startsWith('book:v1.5:') ? mode === 'flashcard' : row.reviewMode === mode || !["sentence-completion"].includes(row.reviewMode) && mode !== "sentence-completion");
   return { mode, rangeId: "statistics-review", count: String(Math.min(10, words.length)),
     bookmarkNums: [...new Set(words.map(row => row.num))].join(","),
     reviewKeys: JSON.stringify([...new Set(words.map(row => row.key))]), choiceLang: "korean" };

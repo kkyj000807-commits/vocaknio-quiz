@@ -44,6 +44,7 @@ import { QUIZ_CONTENT_MAX_WIDTH, STUDY_PAGE_GUTTER, STUDY_CARD_PADDING } from "@
 import { FlipCard } from "@/components/flip-card";
 import { PronunciationButton } from "@/components/pronunciation-button";
 import { LearningDetails } from "@/components/learning-details";
+import { BookLearningDetails } from "@/components/book-learning-details";
 import { WordPronunciation } from "@/components/word-pronunciation";
 import { SynonymDetails } from "@/components/synonym-details";
 import { QuizEmptyState, QuizSessionHold, type QuizPreparationFailure } from "@/components/quiz-empty-state";
@@ -1262,6 +1263,7 @@ export default function QuizScreen() {
                       </View>
                     }
                   />
+                  {revealed && <BookLearningDetails entry={q.item.book} />}
                   {revealed && !answered && (
                     <View style={{ marginTop: 14, gap: 8 }}>
                       <View style={s.gradeRow}>

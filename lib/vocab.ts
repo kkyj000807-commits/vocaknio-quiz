@@ -1,6 +1,7 @@
 import vocabRaw from "@/assets/vocab-v1.4.json";
 import vocabMetaRaw from "@/assets/vocab-meta-v1.4.json";
 import { makePersonalStudyItems, makeRetiredPersonalReferenceItems } from "@/lib/personal-vocab";
+import type { BookEntry } from "@/lib/book-edition";
 
 export type VocabGroup =
   | "V101"
@@ -80,6 +81,9 @@ interface VocabMeta {
 }
 
 export interface VocabItem extends RawVocabItem {
+  /** Verified device-local content, never an automatic answer promotion. */
+  book?: BookEntry;
+  localBook?: boolean;
   referenceOnly?: boolean;
   k_short: string;
   category: string;
@@ -129,6 +133,24 @@ const retiredPersonalReferences: VocabItem[] = makeRetiredPersonalReferenceItems
 export const VOCAB_BY_NUM = new Map([...retiredPersonalReferences, ...WORDBOOK_VOCAB].map((item) => [item.num, item]));
 export const VOCAB_HEADWORD_COUNT = new Set(VOCAB.map(item => item.w.trim().toLowerCase().replace(/\s+/g, " "))).size;
 export const VOCAB_BY_ID = new Map([...retiredPersonalReferences, ...WORDBOOK_VOCAB].map((item) => [item.id, item]));
+let studyItems: VocabItem[] = WORDBOOK_VOCAB;
+let studyRevision = 0;
+const studyListeners = new Set<() => void>();
+export const getStudyVocab = () => studyItems;
+export const getStudyRevision = () => studyRevision;
+export function subscribeStudyVocab(listener: () => void) { studyListeners.add(listener); return () => { studyListeners.delete(listener); }; }
+export function registerStudyItems(items: VocabItem[]) {
+  // Validate the full update before changing maps. Original objects stay canonical
+  // for restored sessions and existing learning identities.
+  for (const item of items.filter(item => item.localBook)) {
+    const prior = VOCAB_BY_NUM.get(item.num);
+    if ((prior && prior.id !== item.id) || (VOCAB_BY_ID.has(item.id) && VOCAB_BY_ID.get(item.id)!.num !== item.num))
+      throw new Error('Study identity collision');
+  }
+  for (const item of items.filter(item => item.localBook)) { VOCAB_BY_NUM.set(item.num, item); VOCAB_BY_ID.set(item.id, item); }
+  studyItems = items; studyRevision++;
+  for (const listener of studyListeners) listener();
+}
 export const VOCAB_WITH_SYNONYMS = VOCAB.filter((item) => item.s.length > 0);
 export const VOCAB_IDIOMS = VOCAB.filter(
   (item) => item.type === "idiom" || item.type === "phrase",
@@ -143,6 +165,7 @@ export const RANGES: VocabRange[] = [
     kind: "section" as const,
     core: CORE_GROUPS.has(section.group),
   })),
+  { id: "book-b", label: "보카바이블 B", start: 0, end: -1, count: 0, kind: "section" },
   {
     id: "idioms",
     label: "숙어·표현",
@@ -166,7 +189,9 @@ export const CORE_RANGES = [
   ...RANGES.filter((range) => range.kind === "idioms"),
   ...RANGES.filter((range) => range.kind !== "idioms" && range.core),
 ];
-export const SECTION_RANGES = RANGES.filter((range) => range.kind === "section");
+// Canonical numeric slices keep their v1.4 contract. Device-only sections have
+// no numeric slice and are resolved by their verified content section instead.
+export const SECTION_RANGES = RANGES.filter((range) => range.kind === "section" && range.group);
 /** Display the existing wordbook groups, never infer a section from a number or spelling. */
 export function formatVocabSections(groups: readonly (string | undefined)[]): string {
   const selected = new Set(groups);
@@ -179,6 +204,7 @@ export const WORDBOOK_RANGES = [
   ...RANGES.filter((range) => range.kind === "idioms"),
   ...RANGES.filter((range) => range.kind === "all"),
   ...SECTION_RANGES,
+  ...RANGES.filter(range => range.kind === 'section' && !range.group),
   ...(PERSONAL_STUDY_ITEMS.length ? [{ id: "personal", label: "개인 통합 단어장", group: "PERSONAL" as const,
     start: VOCAB.length, end: WORDBOOK_VOCAB.length - 1, count: PERSONAL_STUDY_ITEMS.length, kind: "section" as const }] : []),
 ];
@@ -283,6 +309,12 @@ export function getVocabItem(num: number): VocabItem | undefined {
 }
 
 export function getRangeItems(range: VocabRange): VocabItem[] {
+  if (studyItems !== WORDBOOK_VOCAB) {
+    if (range.id === 'book-b') return studyItems.filter(item => item.book?.section === '보카바이블 B');
+    if (range.kind === 'all') return studyItems;
+    if (range.kind === 'idioms') return studyItems.filter(item => item.book?.section === '숙어' || item.type !== 'word');
+    return studyItems.filter(item => item.book ? item.book.section === (range.group === 'APPENDIX' ? '부록' : range.group) : item.group === range.group);
+  }
   if (range.kind === "idioms") return VOCAB_IDIOMS;
   if (range.kind === "all") return VOCAB;
   return VOCAB.slice(range.start, range.end + 1);

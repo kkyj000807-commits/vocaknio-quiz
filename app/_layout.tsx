@@ -25,6 +25,8 @@ import { LearningStorageNotice } from "@/components/learning-storage-notice";
 import { subscribeWebViewport } from "@/lib/web-viewport";
 import { getVocabStorageFailureMessage } from "@/lib/vocab-storage-migration";
 import { LearningBackupSettings } from "@/components/learning-backup-settings";
+import { loadLocalBook } from "@/lib/local-book-file";
+import { activateLocalBook } from "@/lib/integrated-wordbook";
 
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
 const DEFAULT_WEB_FRAME: Rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -56,7 +58,10 @@ function RootContents() {
   const runStorageMigration = useCallback(() => {
     setMigrationStatus("loading");
     setMigrationIssue("");
-    migrateStoredVocabLists()
+    // Content first: restored sessions/bookmarks must resolve stable IDs.
+    // A failed content read never clears learner records or blocks legacy access.
+    (Platform.OS === 'web' ? loadLocalBook().then(data => { if (data) activateLocalBook(data); }).catch(() => {}) : Promise.resolve())
+      .then(() => migrateStoredVocabLists())
       .then(() => setMigrationStatus("ready"))
       .catch((error) => {
         setMigrationIssue(getVocabStorageFailureMessage(error));

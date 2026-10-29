@@ -1,5 +1,6 @@
 import { SCROLL_END_PADDING } from "@/lib/layout";
 import { WordPronunciation } from "@/components/word-pronunciation";
+import { BookLearningDetails } from "@/components/book-learning-details";
 import { useState, useCallback } from "react";
 import {
   View,
@@ -16,7 +17,7 @@ import * as Haptics from "expo-haptics";
 import { ScreenContainer } from "@/components/screen-container";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { WordSectionLabel } from "@/components/word-section-label";
-import { VOCAB, getSynonymSourceGroups, type VocabItem } from "@/lib/vocab";
+import { getVocabItem, getSynonymSourceGroups, type VocabItem } from "@/lib/vocab";
 import {
   loadWrongWords,
   markLearningTargetMastered,
@@ -55,7 +56,7 @@ export default function WrongScreen() {
   );
 
   const wrongItems = wrongNums
-    .map((num) => VOCAB.find((v) => v.num === num))
+    .map(getVocabItem)
     .filter(Boolean) as VocabItem[];
 
   const haptic = () => {
@@ -107,6 +108,10 @@ export default function WrongScreen() {
   const handleStartQuiz = useCallback(() => {
     haptic();
     if (wrongItems.length === 0) return;
+    if (wrongItems.some(item => item.localBook)) {
+      router.push({ pathname: '/quiz', params: { mode: 'flashcard', bookmarkNums: wrongNums.join(','), count: Math.min(wrongItems.length, 20) } });
+      return;
+    }
     router.push({
       pathname: "/wrong-quiz",
       params: {
@@ -176,6 +181,7 @@ export default function WrongScreen() {
             <Text style={s.korText} numberOfLines={2}>
               {item.k_short}
             </Text>
+            <BookLearningDetails entry={item.book} />
             {item.s.length > 0 && (
               <View style={s.synTagRow}>
                 {item.s.slice(0, 4).map((syn, i) => (
@@ -208,6 +214,7 @@ export default function WrongScreen() {
               ? `${wrongItems.length}개 단어 · 논리 복습 ${logicWords.length}문항`
               : "아직 오답이 없어요"}
           </Text>
+          {wrongNums.length > wrongItems.length && <Text style={s.headerSub}>자료 미연결 {wrongNums.length - wrongItems.length}개 기록은 보존 중입니다. 단어장에서 교재 파일을 다시 불러오세요.</Text>}
         </View>
         {wrongItems.length > 0 && (
           <View style={s.headerBtns}>

@@ -8,7 +8,7 @@ import {
   type VocabItem,
 } from "@/lib/vocab";
 
-export type LearningTargetKind = "canonical-sense" | "legacy-equivalence";
+export type LearningTargetKind = "canonical-sense" | "legacy-equivalence" | "local-book";
 
 export interface LearningTargetRef {
   key: string;
@@ -65,6 +65,8 @@ export function legacyEquivalenceKey(
 }
 
 export function getItemLearningTargets(item: VocabItem): LearningTargetRef[] {
+  if (item.localBook) return [{ key: `book:v1.5:${item.book!.id}`, kind: 'local-book', senseId: null,
+    headword: item.w, meaning: item.k, occurrenceIds: [item.id] }];
   const reviewed = new Map<string, string>();
   for (const sense of getActiveRecallSenses(item.id)) {
     reviewed.set(sense.senseId, sense.koreanMeaning);
@@ -100,7 +102,7 @@ export function getLearningTargetKey(
   item: VocabItem,
   senseId?: string | null,
 ): string {
-  return senseId ? canonicalSenseKey(senseId) : legacyEquivalenceKey(item);
+  return item.localBook ? getItemLearningTargets(item)[0].key : senseId ? canonicalSenseKey(senseId) : legacyEquivalenceKey(item);
 }
 
 export function getQuestionLearningTargetKey(question: {

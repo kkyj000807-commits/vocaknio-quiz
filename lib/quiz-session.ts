@@ -67,6 +67,7 @@ const storedQuestionSchema = z
         "V502",
         "V601",
         "APPENDIX",
+        "PERSONAL",
       ]),
       conceptId: z.string(),
       conceptLabel: z.string(),
