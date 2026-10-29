@@ -79,13 +79,11 @@ export function FlipCard({
 
   return (
     <View style={[styles.container, style]}>
-      {/* 앞면 */}
-      <Animated.View style={[StyleSheet.absoluteFill, frontStyle]}>
-        {front}
-      </Animated.View>
-      {/* 뒷면 */}
-      <Animated.View style={[StyleSheet.absoluteFill, backStyle]}>
-        {back}
+      {/* Only the visible face is mounted: screen readers must not receive the
+          answer before reveal. Normal flow lets long imported meanings grow
+          instead of overlapping the grading controls below the card. */}
+      <Animated.View style={[{ minHeight: style?.minHeight }, flipped ? backStyle : frontStyle]}>
+        {flipped ? back : front}
       </Animated.View>
     </View>
   );
