@@ -14,6 +14,7 @@ type MeaningStudyRequest = {
   count: number;
   reviewKeys?: string;
   bookmarkNums?: string;
+  wordbookScope?: string;
 };
 
 /** A deliberate new mode, never a replacement answer in the original mode. */
@@ -21,7 +22,7 @@ export function buildExplicitMeaningStudyRoute(request: MeaningStudyRequest) {
   const isEnglishVocabularyMode = ["definition-choice", "syn-choice", "syn-kor-choice", "syn-type"].includes(request.mode)
     || (request.mode === "kor-choice" && request.choiceLang === "english");
   // Do not downgrade exact-sense reviews or older item-specific review links.
-  if (!isEnglishVocabularyMode || request.reviewKeys?.trim() || request.bookmarkNums?.trim()) return null;
+  if (!isEnglishVocabularyMode || request.reviewKeys?.trim() || request.bookmarkNums?.trim() || request.wordbookScope !== undefined) return null;
   if (!Number.isInteger(request.count) || request.count <= 0 || request.count > 200
     || !Number.isInteger(request.rangeStart) || request.rangeStart < 0
     || !Number.isInteger(request.rangeEnd) || request.rangeEnd < request.rangeStart) return null;

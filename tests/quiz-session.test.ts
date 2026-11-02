@@ -68,6 +68,23 @@ it('retains the exact failed target, question mode and language for result revie
 });
 
 describe("문제 풀이 중단 복원", () => {
+  it('restores scoped study without regrading and separates a changed concept', async () => {
+    const original = session();
+    const scope = { rangeId: 'v101', concept: 'selected', query: '', bookmarksOnly: true, includeMastered: false };
+    const request = { mode: 'kor-choice', rangeStart: 0, rangeEnd: 999, count: 3, rangeId: 'v101', choiceLang: 'korean', itemNums: [], wordbookScope: JSON.stringify(scope) };
+    original.requestKey = JSON.stringify(request);
+    original.currentIndex = 1;
+    original.states[0] = { ...original.states[0], answered: true, selectedChoice: original.questions[0].choices.findIndex(choice => choice.isCorrect) };
+    await store.saveQuizSession(original);
+    const before = new Map(disk.values);
+    vi.resetModules(); const reopened = await import('@/lib/store');
+    expect(await reopened.loadQuizSessionForStudy(original.requestKey)).toEqual({ session: original, archived: false });
+    expect(disk.values).toEqual(before);
+    const changed = JSON.stringify({ ...request, wordbookScope: JSON.stringify({ ...scope, concept: 'other' }) });
+    expect((await reopened.loadQuizSessionForStudy(changed)).session).toBeNull();
+    expect(disk.values.get('vocaknio_stats')).toBe(before.get('vocaknio_stats'));
+    expect(disk.values.get('vocaknio_bookmarks')).toBe(before.get('vocaknio_bookmarks'));
+  });
   it("restores original choices, answer and position after example-only enrichment", async () => {
     const original = session("definition-choice");
     for (const q of original.questions) {

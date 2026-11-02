@@ -7,6 +7,8 @@ import { getItemLearningTargets, getQuestionLearningTargetKey } from '../lib/can
 import { buildQuizQuestions, getQuizCandidateItems, validateQuestion } from '../lib/quiz-engine';
 import { createEmptyQuestionViewState, parseQuizSession, isQuizSessionContentCurrent } from '../lib/quiz-session';
 import type { BookEdition, BookEntry } from '../lib/book-edition';
+import { buildWordbookPracticeHref, getWordbookPracticeItems, parseWordbookPracticeScope, type WordbookPracticeScope } from '../lib/wordbook-practice';
+import { createEmptySenseLearningState, getLearningTargetState } from '../lib/learning-state';
 
 const oldItem = (id: string, w: string, k: string): VocabItem => ({
   id, num: Number(id), sourceIndex: Number(id), sourceNumber: id, w, k, k_short: k, group: 'V101',
@@ -21,6 +23,74 @@ const edition = (entries: BookEntry[]): BookEdition => ({ schema: 1, edition: '1
 afterEach(() => registerStudyItems(WORDBOOK_VOCAB));
 
 describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
+  const scope = (rangeId = 'all'): WordbookPracticeScope => ({ rangeId, concept: '', query: '', bookmarksOnly: false, includeMastered: false });
+  it('keeps private search/concept text out of HTTP requests while surviving reload', () => {
+    const selected = { ...scope(), concept: '개인 개념 & # 100%', query: '개인 검색 문구?' };
+    const url = new URL(buildWordbookPracticeHref(selected, 'kor-choice', 20), 'https://fixture.invalid');
+    expect(url.pathname).toBe('/quiz');
+    expect(url.searchParams.get('count')).toBe('20');
+    expect(decodeURIComponent(url.search)).not.toContain(selected.concept);
+    expect(decodeURIComponent(url.search)).not.toContain(selected.query);
+    const fragment = decodeURIComponent(url.hash.slice(1));
+    expect(fragment.startsWith('wordbook:')).toBe(true);
+    expect(parseWordbookPracticeScope(fragment.slice('wordbook:'.length))).toEqual(selected);
+  });
+  it('resolves every selected section and all 250 matching entries, not only the first 200', () => {
+    const entries = Array.from({ length: 250 }, (_, index) => book(`study-${10000 + index}`, `fixture-${index}`, index + 1, 'V301'));
+    entries.push(book('study-20000', 'different-section', 1, 'V502'));
+    const rows = createIntegratedWordbook([], edition(entries)); registerStudyItems(rows);
+    const rangeId = RANGES.find(range => range.group === 'V301')!.id;
+    const selected = getWordbookPracticeItems({ ...scope(rangeId), concept: '개념', query: 'fixture-' }, new Set(), null);
+    expect(selected).toHaveLength(250);
+    expect(selected.at(-1)?.w).toBe('fixture-249');
+    expect(selected.every(item => item.book?.section === 'V301')).toBe(true);
+    expect(getWordbookPracticeItems(scope(RANGES.find(range => range.group === 'V502')!.id), new Set(), null)).toHaveLength(1);
+  });
+  it('uses the same concept, text, bookmark, and mastered filters without changing input records', () => {
+    const rows = createIntegratedWordbook([], edition([book('study-22001', 'keep', 1, 'V301'), book('study-22002', 'other', 2, 'V301')]));
+    registerStudyItems(rows);
+    const state = createEmptySenseLearningState();
+    const target = getItemLearningTargets(rows[0])[0].key;
+    state.targets[target] = { ...getLearningTargetState(state, target), status: 'MASTERED', lastStudiedAt: Date.now() };
+    const selected = { ...scope(), query: 'KEEP', concept: '개념', bookmarksOnly: true };
+    const bookmarks = new Set([rows[0].num]); const before = JSON.stringify([rows, state, [...bookmarks]]);
+    expect(getWordbookPracticeItems(selected, bookmarks, state)).toEqual([]);
+    expect(getWordbookPracticeItems({ ...selected, includeMastered: true }, bookmarks, state).map(item => item.id)).toEqual([rows[0].id]);
+    expect(getWordbookPracticeItems({ ...selected, includeMastered: true }, new Set(), state)).toEqual([]);
+    expect(JSON.stringify([rows, state, [...bookmarks]])).toBe(before);
+  });
+  it('preserves B and idiom boundaries and keeps new book entries self-assessment only', () => {
+    const rows = createIntegratedWordbook([], edition([book('study-23001', 'B-word', 1, '보카바이블 B'), book('study-23002', 'idiom', 2, '숙어')]));
+    registerStudyItems(rows);
+    for (const [rangeId, expected] of [['book-b', rows[0]], ['idioms', rows[1]]] as const) {
+      const pool = getWordbookPracticeItems(scope(rangeId), new Set(), null);
+      expect(pool.map(item => item.id)).toEqual([expected.id]);
+      expect(buildQuizQuestions({ mode: 'kor-choice', itemNums: pool.map(item => item.num), count: 5 })).toEqual([]);
+      expect(buildQuizQuestions({ mode: 'flashcard', itemNums: pool.map(item => item.num), count: 5 })).toHaveLength(1);
+    }
+  });
+  it('does not widen empty selections or malformed scopes, including logic mode', () => {
+    expect(parseWordbookPracticeScope(JSON.stringify(scope()))).toEqual(scope());
+    for (const invalid of ['', 'null', '{}', JSON.stringify({ ...scope(), rangeId: 'missing' }), JSON.stringify({ ...scope(), bookmarksOnly: 'false' })]) {
+      expect(() => parseWordbookPracticeScope(invalid)).toThrow();
+    }
+    const empty = getWordbookPracticeItems({ ...scope(), query: 'never-match-unique-fixture-zzzzz' }, new Set(), null);
+    expect(empty).toEqual([]);
+    for (const mode of ['kor-choice', 'syn-choice', 'definition-choice', 'sentence-completion', 'flashcard'] as const) {
+      expect(buildQuizQuestions({ mode, rangeId: 'all', count: 10, itemNums: empty.map(item => item.num) })).toEqual([]);
+    }
+  });
+  it('carries scope through session identity and keeps empty scoped IDs explicit', () => {
+    const source = fs.readFileSync('app/quiz.tsx', 'utf8');
+    expect(source.indexOf('parseWordbookPracticeScope(wordbookScope)')).toBeLessThan(source.indexOf('await loadQuizSessionForStudy(requestKey)'));
+    expect(source).toContain('...(wordbookScope !== undefined ? { wordbookScope } : {})');
+    expect(source).toContain('itemNums: scopedNums ??');
+    expect(source).toContain('selectedScope?.includeMastered ? []');
+    const screen = fs.readFileSync('app/(tabs)/wordbook.tsx', 'utf8');
+    expect(screen).toContain('getWordbookPracticeItems(practiceScope, bookmarks, learningState)');
+    expect(screen).not.toContain('slice(0, 200)');
+    expect(screen).not.toContain('행 묶음');
+  });
   it('keeps every book row ordered and every distinct old meaning accessible, without changing inputs', () => {
     const original = [oldItem('1', 'second', '옛 뜻'), oldItem('2', 'first', '다른 뜻')];
     const source = edition([book('study-1', 'first', 1), book('study-2', 'new-word', 2), book('study-3', 'second', 3)]);

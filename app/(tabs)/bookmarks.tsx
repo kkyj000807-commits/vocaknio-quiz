@@ -104,7 +104,7 @@ export default function BookmarksScreen() {
         <View>
           <Text style={s.headerTitle}>북마크</Text>
           <Text style={s.headerSub}>{bookmarkedItems.length}개 단어 저장됨</Text>
-          {bookmarkNums.length > bookmarkedItems.length && <Text style={s.headerSub}>미연결 {bookmarkNums.length - bookmarkedItems.length}개 기록은 보존 중 · 교재 파일을 불러오세요</Text>}
+          {bookmarkNums.length > bookmarkedItems.length && <Text style={s.headerSub}>기록은 있지만 아직 표시할 수 없는 단어 {bookmarkNums.length - bookmarkedItems.length}개 · 단어장에서 내 교재를 불러오세요.</Text>}
         </View>
         {bookmarkedItems.length > 0 && (
           <Pressable
@@ -119,9 +119,9 @@ export default function BookmarksScreen() {
       {bookmarkedItems.length === 0 ? (
         <View style={s.emptyContainer}>
           <Text style={s.emptyEmoji}>🏷️</Text>
-          <Text style={s.emptyTitle}>북마크가 없어요</Text>
+          <Text style={s.emptyTitle}>{bookmarkNums.length ? '교재를 불러와 주세요' : '북마크가 없어요'}</Text>
           <Text style={s.emptyText}>
-            문제 풀이 중 단어 옆 🏷️ 버튼을 눌러{"\n"}북마크에 추가해 보세요
+            {bookmarkNums.length ? '북마크 기록은 있지만 단어를 아직 표시할 수 없습니다.' : '문제 풀이 중 단어 옆 🏷️ 버튼을 눌러 북마크에 추가해 보세요'}
           </Text>
         </View>
       ) : (

@@ -19,7 +19,7 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from "react-native-reanimated";
-import { useRouter, useFocusEffect } from "expo-router";
+import { useFocusEffect } from "expo-router";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { PronunciationButton } from "@/components/pronunciation-button";
@@ -33,23 +33,22 @@ import { getDefinitionQuizEntry, getDefinitionAnswerRelations } from "@/lib/defi
 import { WordSectionLabel } from "@/components/word-section-label";
 import { formatWordbookConcept } from "@/lib/wordbook-concepts";
 import { LocalBookImport } from "@/components/local-book-import";
-import { BOOK_EDITION, bookStudyDetails } from "@/lib/book-edition";
+import { WordbookPractice } from "@/components/wordbook-practice";
+import { getWordbookPracticeItems } from "@/lib/wordbook-practice";
+import { BOOK_EDITION } from "@/lib/book-edition";
 import { getActiveBookEdition } from "@/lib/integrated-wordbook";
 import { useStudyVocab } from "@/hooks/use-study-vocab";
 import { arrangeWordbook, type DisplayWord } from "@/lib/wordbook-display";
 import { getProductionSenseQuestions, hasSenseQuestionMapping, senseMatchesItem } from "@/lib/sense-questions";
-import { IconSymbol } from "@/components/ui/icon-symbol";
-import { WORDBOOK_RANGES, getVocabItem, getRangeItems, type VocabItem, type VocabRange } from "@/lib/vocab";
+import { WORDBOOK_RANGES, getVocabItem, type VocabItem, type VocabRange } from "@/lib/vocab";
 import {
   loadBookmarks,
-  loadQuizSettings,
   loadSenseLearningState,
   markLearningTargetMastered,
   startLearningTargetAgain,
   toggleBookmark,
-  type ChoiceLang,
 } from "@/lib/store";
-import { excludeFullyMasteredItems, getItemLearningTargets } from "@/lib/canonical-learning";
+import { getItemLearningTargets } from "@/lib/canonical-learning";
 import type { LearningStatus, SenseLearningState } from "@/lib/learning-state";
 import { useColors } from "@/hooks/use-colors";
 import * as Haptics from "expo-haptics";
@@ -187,7 +186,7 @@ function WordCard({
             </View>
           ) : (
             <View>
-              {item.book?.gradingReview?.status === 'requires_editorial_policy_review' && <Text style={s.korText}>원문 보존 뜻 (아래 교정 주석 필수):</Text>}
+              {item.book?.gradingReview?.status === 'requires_editorial_policy_review' && <Text style={s.korText}>뜻 확인 필요 · 아래 정정 참고</Text>}
               <Text style={s.korText}>
                 {item.k_short}
               </Text>
@@ -203,11 +202,8 @@ function WordCard({
 
       <View style={s.metadataRow}>
         <View style={s.sourceMetadata}>
-          <Text style={s.numText}>{item.localBook ? "교재 학습 · 자기평가" : item.referenceOnly ? "개인 보강 · 출제 검수 대기" : `#${item.num}`}</Text>
+          <Text style={s.numText}>{item.localBook ? "내 교재 · 빠른 암기" : item.referenceOnly ? "추가 단어 · 검수 중" : `#${item.num}`}</Text>
           {item.book ? <Text style={s.numText}>{item.book.section} · v1.5 #{item.book.order}</Text> : <WordSectionLabel groups={item.displaySourceGroups ?? [item.group]} />}
-          {(item.displaySourceIds?.length ?? 0) > 1 && (
-            <Text style={s.numText}>동일 내용 {item.displaySourceIds!.length}행 묶음 · 원기록 별도 보존</Text>
-          )}
         </View>
         <Pressable
           accessibilityRole="button"
@@ -380,7 +376,6 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
 // ─── 메인 화면 ────────────────────────────────────────────────────────────────
 export default function WordbookScreen() {
   const colors = useColors();
-  const router = useRouter();
 
   const [edition, setEdition] = useState(getActiveBookEdition() ?? BOOK_EDITION);
   const VOCAB = useStudyVocab();
@@ -393,7 +388,6 @@ export default function WordbookScreen() {
   const [showMastered, setShowMastered] = useState(false);
   const [isShuffled, setIsShuffled] = useState(false);
   const [maskMode, setMaskMode] = useState(false);
-  const [choiceLang, setChoiceLang] = useState<ChoiceLang>("korean");
   const [learningState, setLearningState] = useState<SenseLearningState | null>(null);
 
   // ─── 사운드 (개별/전체 가리기 피드백) ─────────────────────────────────────
@@ -426,7 +420,6 @@ export default function WordbookScreen() {
 
   useFocusEffect(useCallback(() => {
     loadBookmarks().then((arr) => setBookmarks(new Set(arr)));
-    loadQuizSettings().then((settings) => setChoiceLang(settings.choiceLang));
     loadSenseLearningState().then(setLearningState);
   }, []));
 
@@ -448,33 +441,16 @@ export default function WordbookScreen() {
     setBookmarks(new Set(updated));
   }, []);
 
+  const practiceScope = useMemo(() => ({ rangeId: RANGE_OPTIONS[selectedRange].id, concept, query: searchQuery,
+    bookmarksOnly: showOnlyBookmarks, includeMastered: showMastered }), [selectedRange, concept, searchQuery, showOnlyBookmarks, showMastered]);
   const filteredVocab = useMemo(() => {
-    const range = RANGE_OPTIONS[selectedRange];
-    let list: VocabItem[] = getRangeItems(range);
-    if (concept) list = list.filter(item => (item.book?.concept ?? item.conceptLabel) === concept);
-    const query = searchQuery.trim().toLowerCase();
-    if (query) list = list.filter(item => [item.w, item.k, item.conceptLabel, item.majorConceptLabel, item.book?.chunk ?? '',
-      ...item.s, ...(item.book ? bookStudyDetails(item.book).map(note => note.text) : [])].some(text => text.toLowerCase().includes(query)));
-
-    if (!showMastered && learningState) {
-      const masteredKeys = new Set(
-        Object.values(learningState.targets)
-          .filter((target) => target.status === "MASTERED")
-          .map((target) => target.key),
-      );
-      list = excludeFullyMasteredItems(list, masteredKeys);
-    }
-
-    if (showOnlyBookmarks) {
-      list = list.filter((v) => bookmarks.has(v.num));
-    }
-
+    const list = VOCAB.length ? getWordbookPracticeItems(practiceScope, bookmarks, learningState) : [];
     const rows = arrangeWordbook(list, item => JSON.stringify([
       bookmarks.has(item.num),
       getItemLearningTargets(item).map(target => [target.key, learningState?.targets[target.key] ?? null]),
     ]), edition.privateContent);
     return isShuffled ? shuffle(rows) : rows;
-  }, [searchQuery, selectedRange, bookmarks, showOnlyBookmarks, showMastered, isShuffled, learningState, edition, concept, VOCAB]);
+  }, [practiceScope, bookmarks, isShuffled, learningState, edition, VOCAB]);
 
   const renderRecord = useCallback(
     (item: DisplayWord) => (
@@ -514,29 +490,6 @@ export default function WordbookScreen() {
   const activeBookSection = activeRange.bookSection ?? (activeRange.group === 'APPENDIX' ? '부록' : activeRange.group);
   const concepts = useMemo(() => edition.privateContent && (activeBookSection === 'V301' || activeBookSection === 'V502')
     ? [...new Set(edition.entries.filter(entry => entry.section === activeBookSection).map(entry => entry.concept).filter(Boolean))] : [], [edition, activeBookSection]);
-  const directProblemCount = Math.min(10, filteredVocab.length);
-
-  const handleStartRangeProblems = useCallback(() => {
-    const range = RANGE_OPTIONS[selectedRange];
-    if (!range || !filteredVocab.length) return;
-    if (Platform.OS !== "web") {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    }
-    router.push({
-      pathname: "/quiz",
-      params: {
-        mode: edition.privateContent ? "flashcard" : "syn-choice",
-        rangeStart: range.start,
-        rangeEnd: range.end,
-        count: Math.min(10, filteredVocab.length),
-        // Normal range study uses the complete pool and existing coverage rotation.
-        // A narrow search/bookmark/concept selection uses the current filtered set.
-        ...(searchQuery || showOnlyBookmarks || concept ? { bookmarkNums: filteredVocab.slice(0, 200).map(item => item.num).join(',') } : {}),
-        rangeId: range.id,
-        choiceLang,
-      },
-    });
-  }, [choiceLang, router, selectedRange, edition.privateContent, filteredVocab, searchQuery, showOnlyBookmarks, concept]);
 
   const listHeader = (
     <>
@@ -547,7 +500,7 @@ export default function WordbookScreen() {
             단어장
           </Text>
           <Text style={[styles.headerSub, { color: colors.muted }]}>
-            {edition.privateContent ? `v1.5 배열 · ${edition.entries.length.toLocaleString()} 교재 항목 + 기존 추가 수록` : `${VOCAB_HEADWORD_COUNT.toLocaleString()} 표제어 · ${VOCAB.length.toLocaleString()} 수록행`}
+            {edition.privateContent ? `내 교재 ${edition.entries.length.toLocaleString()}개 · 기본 단어 포함` : `단어 ${VOCAB_HEADWORD_COUNT.toLocaleString()}개`}
           </Text>
         </View>
         {/* 버튼 그룹 */}
@@ -752,24 +705,9 @@ export default function WordbookScreen() {
           {isShuffled ? " · 랜덤 순서" : ""}
           {maskMode ? " · 플래시카드 모드" : ""}
         </Text>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={`${activeRange?.label ?? "선택 범위"}에서 ${directProblemCount}문제 풀기`}
-          disabled={directProblemCount === 0}
-          onPress={handleStartRangeProblems}
-          style={({ pressed }) => [
-            styles.directProblemButton,
-            { backgroundColor: colors.primary },
-            pressed && { opacity: 0.78, transform: [{ scale: 0.98 }] },
-            directProblemCount === 0 && { opacity: 0.45 },
-          ]}
-        >
-          <IconSymbol name="play.fill" size={15} color="#fff" />
-          <Text style={styles.directProblemButtonText}>
-            {edition.privateContent ? '빠른 암기' : '기존 문제'} {directProblemCount}개 학습
-          </Text>
-        </Pressable>
       </View>
+      <WordbookPractice scope={practiceScope} label={getRangeChipLabel(activeRange)} availableCount={filteredVocab.length}
+        hasLocalContent={filteredVocab.some(item => item.localBook)} />
     </>
   );
 

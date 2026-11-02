@@ -2,9 +2,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createHash, webcrypto } from 'node:crypto';
 import fs from 'node:fs';
 import { BOOK_EDITION, bookMeanings, selectBookEntries, type BookEdition } from '../lib/book-edition';
-import { inspectLocalBook, validateLocalBook, loadLocalBook, saveLocalBook } from '../lib/local-book-file';
+import { inspectLocalBook, validateLocalBook, loadLocalBook, saveLocalBook, localBookFailureMessage } from '../lib/local-book-file';
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
 function fixture() {
   const data: BookEdition = { ...BOOK_EDITION, privateContent: true, marker: 'local-fixture', sections: ['V101'], sourceCounts: { V101: 1 },
     entries: [{ id: 'fixture-study-only', order: 1, word: 'fixture', section: 'V101', appIds: [], concept: '', chunk: '', chapter: null,
@@ -53,6 +53,36 @@ function database(initial?: string, abortWrite = false) {
 }
 
 describe('local book content: no learner migration or upload', () => {
+  it.each(['QuotaExceededError', 'SecurityError'])('classifies %s without exposing browser details', async name => {
+    vi.stubGlobal('indexedDB', { open: () => { throw Object.assign(new Error('private-detail'), { name }); } });
+    const error = await loadLocalBook().catch(error => error);
+    expect(error.code).toBe(name === 'QuotaExceededError' ? 'quota' : 'blocked');
+    expect(localBookFailureMessage(error)).not.toContain('private-detail');
+    expect(localBookFailureMessage(error)).toContain('삭제·초기화하지는 않았습니다');
+  });
+  it('bounds a stalled open and closes a late connection without reading or overwriting', async () => {
+    vi.useFakeTimers();
+    const close = vi.fn(); const transaction = vi.fn();
+    const request: any = { result: { close, transaction } };
+    vi.stubGlobal('indexedDB', { open: () => request });
+    const pending = expect(loadLocalBook()).rejects.toThrow('timeout');
+    await vi.advanceTimersByTimeAsync(15_000);
+    await pending;
+    request.onsuccess();
+    expect(close).toHaveBeenCalledOnce(); expect(transaction).not.toHaveBeenCalled();
+  });
+  it('does not wait forever when a content read stops responding', async () => {
+    vi.useFakeTimers();
+    const abort = vi.fn(); const close = vi.fn();
+    const tx = { abort, objectStore: () => ({ get: () => ({}) }) };
+    vi.stubGlobal('indexedDB', { open: () => {
+      const request: any = { result: { close, transaction: () => tx } };
+      queueMicrotask(() => request.onsuccess()); return request;
+    } });
+    const pending = expect(loadLocalBook()).rejects.toThrow('timeout');
+    await vi.advanceTimersByTimeAsync(30_000); await pending;
+    expect(abort).toHaveBeenCalledOnce(); expect(close).toHaveBeenCalledOnce();
+  });
   it('pins exact file hash before parsing and does not mutate public data', async () => {
     const { raw, expected } = fixture();
     const before = JSON.stringify(BOOK_EDITION);

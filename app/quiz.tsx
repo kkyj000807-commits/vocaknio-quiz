@@ -50,7 +50,7 @@ import { SynonymDetails } from "@/components/synonym-details";
 import { QuizEmptyState, QuizSessionHold, type QuizPreparationFailure } from "@/components/quiz-empty-state";
 import { SentenceCompletionAnswer, SentenceCompletionPrompt } from "@/components/sentence-completion-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { getVocabItem, type QuizMode, type VocabItem } from "@/lib/vocab";
+import { DEFAULT_QUIZ_MODE, getVocabItem, type QuizMode, type VocabItem } from "@/lib/vocab";
 import {
   buildQuizQuestions,
   getQuizCandidateItems,
@@ -93,6 +93,7 @@ import { useColors } from "@/hooks/use-colors";
 import { useQuestionTimer } from "@/hooks/use-question-timer";
 import { selectAdaptiveItemNums } from "@/lib/adaptive-quiz";
 import { ADAPTIVE_POLICY } from "@/lib/learning-analytics";
+import { getWordbookPracticeItems, parseWordbookPracticeScope } from "@/lib/wordbook-practice";
 import { classifyQuizSwipe, getNextQuizIndex, canReorderQuizQuestion } from "@/lib/quiz-navigation";
 import {
   createEmptyQuestionViewState,
@@ -160,13 +161,15 @@ export default function QuizScreen() {
     choiceLang?: string;
     bookmarkNums?: string;
     reviewKeys?: string;
+    '#'?: string;
   }>();
 
-  const mode = params.mode ?? "definition-choice";
+  const mode = params.mode ?? DEFAULT_QUIZ_MODE;
   const rangeStart = parseInt(params.rangeStart ?? "0");
   const rangeEnd = parseInt(params.rangeEnd ?? "999");
   const count = parseInt(params.count ?? "20");
   const rangeId = params.rangeId ?? "";
+  const wordbookScope = params['#']?.startsWith('wordbook:') ? params['#'].slice('wordbook:'.length) : undefined;
   const choiceLang: ChoiceLang =
     params.choiceLang === "english" ? "english" : "korean";
   const itemNums = useMemo(
@@ -203,8 +206,8 @@ export default function QuizScreen() {
   const [hintLevel, setHintLevel] = useState(0);
   const [imageRevealed, setImageRevealed] = useState(false);
   const [masteredOnCard, setMasteredOnCard] = useState(false);
-  const requestKey = useMemo(() => JSON.stringify({ mode, rangeStart, rangeEnd, count, rangeId, choiceLang, itemNums, ...(reviewKeys.length ? { reviewKeys } : {}) }),
-    [mode, rangeStart, rangeEnd, count, rangeId, choiceLang, itemNums, reviewKeys]);
+  const requestKey = useMemo(() => JSON.stringify({ mode, rangeStart, rangeEnd, count, rangeId, choiceLang, itemNums, ...(reviewKeys.length ? { reviewKeys } : {}), ...(wordbookScope !== undefined ? { wordbookScope } : {}) }),
+    [mode, rangeStart, rangeEnd, count, rangeId, choiceLang, itemNums, reviewKeys, wordbookScope]);
 
   const restoreQuestionViewState = useCallback((index: number) => {
     const snapshot = questionViewStatesRef.current.get(index) ?? createEmptyQuestionViewState();
@@ -246,6 +249,9 @@ export default function QuizScreen() {
       sessionCompletedRef.current = false;
       setSessionNotice("");
       setSessionRecoveryFailed(false);
+      failureStage = "CONTENT_PREPARE";
+      const selectedScope = wordbookScope !== undefined ? parseWordbookPracticeScope(wordbookScope) : undefined;
+      failureStage = "SESSION_READ";
       const { session: saved, archived } = await loadQuizSessionForStudy(requestKey);
       if (cancelled) return;
       if (archived) setSessionNotice("이전 답안은 보관했습니다. 최신 문제로 새 학습을 시작합니다.");
@@ -271,10 +277,19 @@ export default function QuizScreen() {
       if (cancelled) return;
       // Fresh MASTER is protected for one day, not excluded forever. Older
       // MASTER rejoins the pool with a low, time-dependent sampling weight.
-      const masteredKeys = [...masteredTargetKeys(learningState)].filter(key => {
+      const masteredKeys = selectedScope?.includeMastered ? [] : [...masteredTargetKeys(learningState)].filter(key => {
         const state = getLearningTargetState(learningState, key);
         return state.lastStudiedAt > 0 && Date.now() - state.lastStudiedAt < ADAPTIVE_POLICY.masterProtectionMs;
       });
+
+      // Re-resolve the exact displayed section/filter without putting thousands
+      // of IDs in the URL or silently truncating the selected pool to 200 rows.
+      const scopedBookmarks = selectedScope?.bookmarksOnly ? await loadBookmarks() : [];
+      if (cancelled) return;
+      failureStage = "CONTENT_PREPARE";
+      const scopedNums = selectedScope
+        ? getWordbookPracticeItems(selectedScope, new Set(scopedBookmarks), learningState).map(item => item.num)
+        : undefined;
 
       const baseOptions = {
         mode,
@@ -285,7 +300,7 @@ export default function QuizScreen() {
         choiceLang,
         masteredNums: loadedMastered.filter(num => { const item = getVocabItem(num); return item && getItemLearningTargets(item).some(target => masteredKeys.includes(target.key)); }),
         masteredTargetKeys: masteredKeys,
-        itemNums: itemNums.length > 0 ? itemNums : undefined,
+        itemNums: scopedNums ?? (itemNums.length > 0 ? itemNums : undefined),
         learningTargetKeys: reviewKeys.length ? reviewKeys : undefined,
         allowMeaningFallback: false,
       } as const;
@@ -360,7 +375,7 @@ export default function QuizScreen() {
     return () => {
       cancelled = true;
     };
-  }, [choiceLang, count, itemNums, mode, rangeEnd, rangeId, rangeStart, reviewKeys, requestKey, restartToken, restoreQuestionViewState]);
+  }, [choiceLang, count, itemNums, mode, rangeEnd, rangeId, rangeStart, reviewKeys, wordbookScope, requestKey, restartToken, restoreQuestionViewState]);
 
   const retryPreparation = async () => {
     if (recoveryBusyRef.current) return;
@@ -978,8 +993,8 @@ export default function QuizScreen() {
           onSettings={() => router.replace("/")}
           onStart={() => { void retryPreparation(); }} /> : <QuizEmptyState ready={questionsReady}
           request={{ mode, choiceLang, rangeId, rangeStart, rangeEnd, count,
-            reviewKeys: params.reviewKeys, bookmarkNums: params.bookmarkNums }}
-          onSettings={() => router.replace("/")}
+            reviewKeys: params.reviewKeys, bookmarkNums: params.bookmarkNums, wordbookScope }}
+          onSettings={() => router.replace(wordbookScope !== undefined ? "/(tabs)/wordbook" : "/")}
           onMeaningStudy={(route) => router.replace(route)} />}
       </ScreenContainer>
     );
@@ -1249,7 +1264,7 @@ export default function QuizScreen() {
                     back={
                       <View style={s.flipBack}>
                         <View style={s.flashAnswer}>
-                          <Text style={s.flashKorText}>{q.item.book?.gradingReview?.status === 'requires_editorial_policy_review' ? '원문 보존 뜻 (아래 교정 주석 필수): ' : ''}{q.item.k_short}</Text>
+                          <Text style={s.flashKorText}>{q.item.book?.gradingReview?.status === 'requires_editorial_policy_review' ? '뜻 확인 필요 · 아래 정정 참고: ' : ''}{q.item.k_short}</Text>
                           {q.item.s.length > 0 && (
                             <View style={s.synTagRow}>
                               {q.item.s.slice(0, 4).map((syn, i) => (

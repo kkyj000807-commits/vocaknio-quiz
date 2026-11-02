@@ -1,5 +1,5 @@
 import { MIN_TOUCH_TARGET, SCROLL_END_PADDING, STUDY_CARD_PADDING, STUDY_PAGE_GUTTER } from "@/lib/layout";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -7,16 +7,15 @@ import {
   Pressable,
   StyleSheet,
   Platform,
-  Alert,
   Image,
 } from "react-native";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
-import Animated, { FadeIn } from "react-native-reanimated";
 
 import { ScreenContainer } from "@/components/screen-container";
 import {
   COUNTS,
+  DEFAULT_QUIZ_MODE,
   QUIZ_MODES,
   RANGES,
   type QuizMode,
@@ -25,11 +24,6 @@ import { useColors } from "@/hooks/use-colors";
 import { PRODUCT_NAME, PRODUCT_PHILOSOPHY } from "@/constants/brand";
 import { getQuizCandidateItems } from "@/lib/quiz-engine";
 import { useStudyVocab } from "@/hooks/use-study-vocab";
-import {
-  loadQuizSettings,
-  saveQuizSettings,
-  type ChoiceLang,
-} from "@/lib/store";
 
 const DEFAULT_RANGE_ID = "all";
 const SETUP_RANGES = [...RANGES.filter(range => range.id === DEFAULT_RANGE_ID), ...RANGES.filter(range => range.id !== DEFAULT_RANGE_ID)];
@@ -38,34 +32,17 @@ export default function HomeScreen() {
   const studyItems = useStudyVocab();
   const colors = useColors();
   const router = useRouter();
-  const [selectedMode, setSelectedMode] = useState<QuizMode>("syn-choice");
+  const [selectedMode, setSelectedMode] = useState<QuizMode>(DEFAULT_QUIZ_MODE);
   const [selectedRange, setSelectedRange] = useState(DEFAULT_RANGE_ID);
   const [selectedCount, setSelectedCount] = useState(10);
-  const [choiceLang, setChoiceLang] = useState<ChoiceLang>("korean");
   const [showAuxiliary, setShowAuxiliary] = useState(false);
 
-  useEffect(() => {
-    loadQuizSettings().then((s) => setChoiceLang(s.choiceLang));
-  }, []);
 
   const haptic = useCallback(() => {
     if (Platform.OS !== "web") {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
   }, []);
-
-  const handleChoiceLangToggle = useCallback(
-    async (lang: ChoiceLang) => {
-      haptic();
-      try {
-        await saveQuizSettings({ choiceLang: lang });
-        setChoiceLang(lang);
-      } catch {
-        Alert.alert("설정 저장 실패", "기존 설정을 유지했습니다. 저장소 접근 상태를 확인하고 다시 시도해 주세요.");
-      }
-    },
-    [haptic],
-  );
 
   const handleStart = useCallback(() => {
     if (Platform.OS !== "web") {
@@ -81,12 +58,11 @@ export default function HomeScreen() {
         rangeEnd: range.end,
         count: selectedCount,
         rangeId: selectedRange,
-        choiceLang,
+        choiceLang: "korean",
       },
     });
-  }, [selectedMode, selectedRange, selectedCount, choiceLang, router]);
+  }, [selectedMode, selectedRange, selectedCount, router]);
 
-  const isChoiceLangRelevant = selectedMode === "kor-choice";
   const s = styles(colors);
   const completionCount = selectedMode === "sentence-completion" ? getQuizCandidateItems({ mode: selectedMode, rangeId: selectedRange, count: 200 }).length : 0;
 
@@ -108,9 +84,19 @@ export default function HomeScreen() {
 
         {/* ── 문제 풀이 방식 ─────────────────────── */}
         <View style={s.section}>
-          <Text style={s.sectionTitle}>문제 풀이 방식</Text>
+          <Text style={s.sectionTitle}>학습 방식</Text>
+          {[true, false].map(primary => <View key={String(primary)}>
+          {!primary && <Pressable accessibilityRole="button" accessibilityLabel="그 외 학습 방식"
+            accessibilityState={{ expanded: showAuxiliary }}
+            onPress={() => {
+              if (showAuxiliary && !QUIZ_MODES.find(mode => mode.id === selectedMode)?.primary) setSelectedMode(DEFAULT_QUIZ_MODE);
+              setShowAuxiliary(value => !value);
+            }} style={{ minHeight: 44, justifyContent: "center", marginTop: 8 }}>
+            <Text style={{ color: colors.primary, fontSize: 13 }}>그 외 {showAuxiliary ? "접기 ▴" : "펼치기 ▾"}</Text>
+          </Pressable>}
+          {(primary || showAuxiliary) &&
           <View style={s.modeGrid}>
-            {QUIZ_MODES.filter(mode => showAuxiliary || !["flashcard", "syn-type"].includes(mode.id)).map((mode) => {
+            {QUIZ_MODES.filter(mode => Boolean(mode.primary) === primary).map((mode) => {
               const active = selectedMode === mode.id;
               return (
                 <Pressable
@@ -141,48 +127,12 @@ export default function HomeScreen() {
                 </Pressable>
               );
             })}
-          </View>
+          </View>}
+          </View>)}
 
           {selectedMode === "sentence-completion" ? <Text style={{ color: colors.muted, fontSize: 13, lineHeight: 21, marginTop: 10 }}>
             자체 창작 논리 문항 · 선택 범위 {completionCount}문제. 등록 수보다 많이 요청하면 등록된 문항만 출제합니다. 관련 단어의 암기 상태와 논리 성과는 구분됩니다.
           </Text> : null}
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="보조 학습 설정"
-            accessibilityState={{ expanded: showAuxiliary }}
-            onPress={() => {
-              if (showAuxiliary && ["flashcard", "syn-type"].includes(selectedMode)) setSelectedMode("syn-choice");
-              setShowAuxiliary(value => !value);
-            }}
-            style={{ minHeight: 44, justifyContent: "center", marginTop: 8 }}
-          >
-            <Text style={{ color: colors.primary, fontSize: 13 }}>보조 학습 · 플래시카드/직접 입력 {showAuxiliary ? "접기 ▴" : "펼치기 ▾"}</Text>
-          </Pressable>
-
-          {/* 선지 언어 토글 */}
-          {isChoiceLangRelevant && (
-            <Animated.View entering={FadeIn.duration(200)} style={s.langBox}>
-              <Text style={s.langLabel}>선지 언어</Text>
-              <View style={s.langRow}>
-                {(["korean", "english"] as ChoiceLang[]).map((lang) => (
-                  <Pressable
-                    key={lang}
-                    style={[s.langBtn, choiceLang === lang && s.langBtnActive]}
-                    onPress={() => handleChoiceLangToggle(lang)}
-                  >
-                    <Text
-                      style={[
-                        s.langBtnText,
-                        choiceLang === lang && s.langBtnTextActive,
-                      ]}
-                    >
-                      {lang === "korean" ? "🇰🇷 한글뜻" : "🔤 영어 동의어"}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            </Animated.View>
-          )}
         </View>
 
         {/* ── 단어 범위 ─────────────────────────── */}

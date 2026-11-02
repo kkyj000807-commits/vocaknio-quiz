@@ -4,6 +4,26 @@ import { VOCAB_BY_ID } from '@/lib/vocab';
 export const LOCAL_BOOK_MAX_BYTES = 96 * 1024 * 1024;
 const DB_NAME = 'finetune-personal-book-content';
 const STORE = 'verified-editions';
+export class LocalBookStorageError extends Error {
+  constructor(readonly code: 'timeout' | 'blocked' | 'unavailable' | 'quota' | 'failed') {
+    super(`Device storage ${code}`); this.name = 'LocalBookStorageError';
+  }
+}
+function storageFailure(error: unknown): LocalBookStorageError {
+  const name = error && typeof error === 'object' && 'name' in error ? error.name : '';
+  return new LocalBookStorageError(name === 'QuotaExceededError' ? 'quota'
+    : name === 'SecurityError' || name === 'NotAllowedError' ? 'blocked' : 'failed');
+}
+export function localBookFailureMessage(error: unknown): string {
+  const reason = error instanceof LocalBookStorageError ? {
+    timeout: '교재 저장소 응답이 지연되어 기다리기를 멈췄습니다. 다시 확인해 주세요.',
+    blocked: '교재 저장소 접근이 막혔습니다. 기존에 사용하던 브라우저의 일반 탭에서 다시 확인해 주세요.',
+    unavailable: '이 브라우저에서 교재 저장소를 사용할 수 없습니다.',
+    quota: '교재를 저장할 공간이 부족합니다. 사이트 데이터는 지우지 말고 기록부터 백업해 주세요.',
+    failed: '교재 저장소 작업을 완료하지 못했습니다. 다시 확인해 주세요.',
+  }[error.code] : '교재 파일의 판본·무결성 검증을 완료하지 못했습니다. 원본 파일을 보관해 주세요.';
+  return `${reason} 앱이 기존 교재나 학습 기록을 삭제·초기화하지는 않았습니다.`;
+}
 
 // This database stores book CONTENT only. Never touch learner keys, journal or MASTER.
 export function validateLocalBook(value: unknown, expected = BOOK_EDITION): BookEdition {
@@ -54,31 +74,54 @@ export async function inspectLocalBook(raw: string, expected = BOOK_EDITION): Pr
 }
 
 async function contentTransaction(mode: IDBTransactionMode, raw?: string, expected = BOOK_EDITION): Promise<string | undefined> {
-  if (typeof indexedDB === 'undefined') throw new Error('Device storage unavailable');
+  if (typeof indexedDB === 'undefined') throw new LocalBookStorageError('unavailable');
   const db = await new Promise<IDBDatabase>((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, 1);
-    let blocked = false;
-    request.onupgradeneeded = () => { request.result.createObjectStore(STORE); };
-    request.onblocked = () => { blocked = true; reject(new Error('Device storage blocked')); };
-    request.onerror = () => reject(new Error('Device storage unavailable'));
+    let finished = false;
+    const fail = (error: LocalBookStorageError) => {
+      if (finished) return;
+      finished = true; clearTimeout(timer); reject(error);
+    };
+    const timer = setTimeout(() => fail(new LocalBookStorageError('timeout')), 15_000);
+    let request: IDBOpenDBRequest;
+    try { request = indexedDB.open(DB_NAME, 1); }
+    catch (error) { fail(storageFailure(error)); return; }
+    request.onupgradeneeded = () => {
+      if (finished) { request.transaction?.abort(); return; }
+      request.result.createObjectStore(STORE);
+    };
+    request.onblocked = () => fail(new LocalBookStorageError('blocked'));
+    request.onerror = () => fail(storageFailure(request.error));
     request.onsuccess = () => {
-      if (blocked) { request.result.close(); return; }
+      if (finished) { request.result.close(); return; }
+      finished = true; clearTimeout(timer);
       request.result.onversionchange = () => request.result.close();
       resolve(request.result);
     };
   });
   return new Promise((resolve, reject) => {
     let value: string | undefined;
+    let settled = false;
+    let transaction: IDBTransaction | undefined;
+    const finish = (error?: LocalBookStorageError) => {
+      if (settled) return;
+      settled = true; clearTimeout(timer); db.close();
+      if (error) reject(error); else resolve(value);
+    };
+    const timer = setTimeout(() => {
+      // Ignore any later completion. Never retry a timed-out write automatically.
+      finish(new LocalBookStorageError('timeout'));
+      try { transaction?.abort(); } catch { /* already finished */ }
+    }, 30_000);
     try {
-      const transaction = db.transaction(STORE, mode);
+      transaction = db.transaction(STORE, mode);
+      transaction.oncomplete = () => finish();
+      transaction.onabort = transaction.onerror = () => finish(storageFailure(transaction?.error));
       const store = transaction.objectStore(STORE);
       const key = `${expected.edition}:${expected.datasetSha256}`;
       const request = mode === 'readwrite' ? store.put(raw, key) : store.get(key);
       request.onsuccess = () => { if (mode === 'readonly') value = request.result; };
       // A successful put request is NOT a committed transaction.
-      transaction.oncomplete = () => { db.close(); resolve(value); };
-      transaction.onabort = transaction.onerror = () => { db.close(); reject(new Error('Device storage failed')); };
-    } catch { db.close(); reject(new Error('Device storage failed')); }
+    } catch (error) { finish(storageFailure(error)); }
   });
 }
 export async function loadLocalBook(expected = BOOK_EDITION): Promise<BookEdition | undefined> {

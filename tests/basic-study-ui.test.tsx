@@ -69,6 +69,8 @@ describe("explicit basic-meaning study from an empty ordinary session", () => {
     { reviewKeys: '["sense:fixture"]' },
     { reviewKeys: "unknown-or-malformed-review-key" },
     { bookmarkNums: "18,19" },
+    { wordbookScope: '{"rangeId":"all","query":"selected"}' },
+    { wordbookScope: '' },
   ])("never downgrades targeted review requests: %j", target => {
     const targetedRequest = { ...request, ...target };
     expect(buildExplicitMeaningStudyRoute(targetedRequest)).toBeNull();

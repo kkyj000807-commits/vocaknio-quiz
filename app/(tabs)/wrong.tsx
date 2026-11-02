@@ -212,9 +212,9 @@ export default function WrongScreen() {
           <Text style={s.headerSub}>
             {wrongItems.length || logicWords.length
               ? `${wrongItems.length}개 단어 · 논리 복습 ${logicWords.length}문항`
-              : "아직 오답이 없어요"}
+              : wrongNums.length ? "교재를 불러와 오답을 확인하세요" : "아직 오답이 없어요"}
           </Text>
-          {wrongNums.length > wrongItems.length && <Text style={s.headerSub}>자료 미연결 {wrongNums.length - wrongItems.length}개 기록은 보존 중입니다. 단어장에서 교재 파일을 다시 불러오세요.</Text>}
+          {wrongNums.length > wrongItems.length && <Text style={s.headerSub}>기록은 있지만 아직 표시할 수 없는 단어 {wrongNums.length - wrongItems.length}개 · 단어장에서 내 교재를 불러오세요.</Text>}
         </View>
         {wrongItems.length > 0 && (
           <View style={s.headerBtns}>
@@ -251,9 +251,9 @@ export default function WrongScreen() {
       {wrongItems.length === 0 && logicWords.length === 0 ? (
         <View style={s.emptyContainer}>
           <Text style={s.emptyEmoji}>🎯</Text>
-          <Text style={s.emptyTitle}>오답 단어가 없어요</Text>
+          <Text style={s.emptyTitle}>{wrongNums.length ? '교재를 불러와 주세요' : '오답 단어가 없어요'}</Text>
           <Text style={s.emptyText}>
-            문제 풀이에서 틀린 단어가{"\n"}여기에 자동으로 쌓입니다
+            {wrongNums.length ? '오답 기록은 있지만 단어를 아직 표시할 수 없습니다.' : '문제 풀이에서 틀린 단어가 여기에 자동으로 쌓입니다'}
           </Text>
         </View>
       ) : (

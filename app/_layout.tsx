@@ -25,7 +25,7 @@ import { LearningStorageNotice } from "@/components/learning-storage-notice";
 import { subscribeWebViewport } from "@/lib/web-viewport";
 import { getVocabStorageFailureMessage } from "@/lib/vocab-storage-migration";
 import { LearningBackupSettings } from "@/components/learning-backup-settings";
-import { loadLocalBook } from "@/lib/local-book-file";
+import { loadLocalBook, localBookFailureMessage } from "@/lib/local-book-file";
 import { activateLocalBook } from "@/lib/integrated-wordbook";
 
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -51,6 +51,7 @@ function RootContents() {
   const [parentMetrics, setParentMetrics] = useState<Metrics | null>(null);
   const [migrationStatus, setMigrationStatus] = useState<"loading" | "ready" | "error">("loading");
   const [migrationIssue, setMigrationIssue] = useState("");
+  const [bookIssue, setBookIssue] = useState("");
 
   // Recovery must also run while the startup protection screen is visible.
   useEffect(() => startLearningStorageRecovery(), []);
@@ -58,9 +59,10 @@ function RootContents() {
   const runStorageMigration = useCallback(() => {
     setMigrationStatus("loading");
     setMigrationIssue("");
+    setBookIssue("");
     // Content first: restored sessions/bookmarks must resolve stable IDs.
     // A failed content read never clears learner records or blocks legacy access.
-    (Platform.OS === 'web' ? loadLocalBook().then(data => { if (data) activateLocalBook(data); }).catch(() => {}) : Promise.resolve())
+    (Platform.OS === 'web' ? loadLocalBook().then(data => { if (data) activateLocalBook(data); }).catch(error => setBookIssue(localBookFailureMessage(error))) : Promise.resolve())
       .then(() => migrateStoredVocabLists())
       .then(() => setMigrationStatus("ready"))
       .catch((error) => {
@@ -127,6 +129,12 @@ function RootContents() {
       <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
           <LearningStorageNotice />
+          {!!bookIssue && <View accessibilityLiveRegion="polite" style={{ padding: 10, backgroundColor: colors.surface }}>
+            <Text style={{ color: colors.foreground, lineHeight: 21 }}>{bookIssue}</Text>
+            <Pressable accessibilityRole="button" onPress={runStorageMigration} style={{ minHeight: 44, justifyContent: 'center' }}>
+              <Text style={{ color: colors.primary }}>교재·기록 다시 확인</Text>
+            </Pressable>
+          </View>}
           {/* Default to hiding native headers so raw route segments don't appear (e.g. "(tabs)", "products/[id]"). */}
           {/* If a screen needs the native header, explicitly enable it and set a human title via Stack.Screen options. */}
           {/* in order for ios apps tab switching to work properly, use presentation: "fullScreenModal" for login page, whenever you decide to use presentation: "modal*/}
