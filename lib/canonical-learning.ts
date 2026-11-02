@@ -44,7 +44,10 @@ export function parseLearningReviewKeys(raw: string, items: VocabItem[]): string
   try { values = raw.startsWith("[") ? JSON.parse(raw) : raw.split(","); }
   catch { return [raw]; }
   if (!Array.isArray(values) || values.some(value => typeof value !== "string")) return [raw];
-  const known = [...new Set(items.flatMap(item => [...getItemLearningTargets(item).map(target => target.key), ...(getSentenceCompletion(item.id) ? [sentenceCompletionKey(getSentenceCompletion(item.id)!)] : [])]))];
+  // Some synonym/meaning questions retain their original row key even when a
+  // dictionary definition also gives this item a separate sense target. Accept
+  // only that row's exact old key; never translate it into the dictionary sense.
+  const known = [...new Set(items.flatMap(item => [getLearningTargetKey(item), ...getItemLearningTargets(item).map(target => target.key), ...(getSentenceCompletion(item.id) ? [sentenceCompletionKey(getSentenceCompletion(item.id)!)] : [])]))];
   const decoded = (key: string) => { try { return decodeURIComponent(key); } catch { return key; } };
   return [...new Set((values as string[]).filter(Boolean).map(value => {
     if (known.includes(value)) return value;

@@ -10,7 +10,7 @@ import {
 } from "@/lib/quiz-session";
 import type { QuizMode } from "@/lib/vocab";
 import { resultReviewParams } from '@/lib/result-review';
-import { getQuestionLearningTargetKey } from '@/lib/canonical-learning';
+import { getQuestionLearningTargetKey, parseLearningReviewKeys } from '@/lib/canonical-learning';
 
 const disk = vi.hoisted(() => ({
   values: new Map<string, string>(),
@@ -65,6 +65,24 @@ it('retains the exact failed target, question mode and language for result revie
   expect(resultReviewParams(saved, 'kor-choice', 'korean')).toEqual({ reviewMode: 'kor-choice', choiceLang: 'korean', reviewKeys: JSON.stringify([getQuestionLearningTargetKey(saved.questions[0])]) });
   expect(JSON.stringify(saved)).toBe(before);
   expect(resultReviewParams({ questions: saved.questions, states: saved.questions.map(() => createEmptyQuestionViewState()) }, 'kor-choice', 'korean').reviewKeys).toBe('[]');
+});
+
+it('restores percent-decoded legacy synonym review keys without merging dictionary senses or records', () => {
+  const options = { mode: 'syn-choice' as const, itemNums: [8047, 10917], count: 2 };
+  const original = buildQuizQuestions(options);
+  expect(original).toHaveLength(2);
+  const exactKeys = original.map(getQuestionLearningTargetKey);
+  const items = original.map(question => question.item);
+  const before = JSON.stringify(original);
+  const parsed = parseLearningReviewKeys(decodeURIComponent(JSON.stringify(exactKeys)), items);
+  expect(parsed).toEqual(exactKeys);
+  const reviewed = buildQuizQuestions({ ...options, learningTargetKeys: parsed });
+  expect(reviewed).toHaveLength(2);
+  expect(new Set(reviewed.map(getQuestionLearningTargetKey))).toEqual(new Set(exactKeys));
+  expect(JSON.stringify(original)).toBe(before);
+  const unknown = 'legacy:v1:word:enthrall:다른 뜻';
+  expect(parseLearningReviewKeys(JSON.stringify([unknown]), items)).toEqual([unknown]);
+  expect(buildQuizQuestions({ ...options, learningTargetKeys: [unknown] })).toHaveLength(0);
 });
 
 describe("문제 풀이 중단 복원", () => {
