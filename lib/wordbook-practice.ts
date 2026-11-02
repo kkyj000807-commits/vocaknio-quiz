@@ -1,7 +1,7 @@
 import { bookStudyDetails } from '@/lib/book-edition';
 import { excludeFullyMasteredItems } from '@/lib/canonical-learning';
 import type { SenseLearningState } from '@/lib/learning-state';
-import { getRangeItems, WORDBOOK_RANGES, type QuizMode } from '@/lib/vocab';
+import { getRangeItems, QUIZ_MODES, WORDBOOK_RANGES, type QuizMode } from '@/lib/vocab';
 
 /** A filter, not another vocabulary/learning store or a truncated ID snapshot. */
 export type WordbookPracticeScope = {
@@ -15,7 +15,19 @@ export type WordbookPracticeScope = {
 export function buildWordbookPracticeHref(scope: WordbookPracticeScope, mode: QuizMode, count: number) {
   // Expo Router exposes the URL fragment as params['#']. Fragments remain on
   // the device: a reload must not send private search/concept text to Pages.
-  return `/quiz?mode=${encodeURIComponent(mode)}&count=${count}&rangeId=${encodeURIComponent(scope.rangeId)}&choiceLang=korean#${encodeURIComponent(`wordbook:${JSON.stringify(scope)}`)}`;
+  // Keep the entire request together: Expo can serialize a query after the hash
+  // on reload, corrupting a mixed query/fragment request.
+  return `/quiz#${encodeURIComponent(`wordbook:${JSON.stringify({ ...scope, mode, count })}`)}`;
+}
+
+export function parseWordbookPracticeRequest(encoded: string): WordbookPracticeScope & { mode: QuizMode; count: number } {
+  const scope = parseWordbookPracticeScope(encoded);
+  const value = JSON.parse(encoded);
+  if (!QUIZ_MODES.some(option => option.id === value.mode)
+    || !Number.isInteger(value.count) || value.count < 1 || value.count > 30) {
+    throw new Error('Invalid wordbook study options');
+  }
+  return { ...scope, mode: value.mode, count: value.count };
 }
 
 export function parseWordbookPracticeScope(encoded: string): WordbookPracticeScope {

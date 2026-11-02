@@ -93,7 +93,7 @@ import { useColors } from "@/hooks/use-colors";
 import { useQuestionTimer } from "@/hooks/use-question-timer";
 import { selectAdaptiveItemNums } from "@/lib/adaptive-quiz";
 import { ADAPTIVE_POLICY } from "@/lib/learning-analytics";
-import { getWordbookPracticeItems, parseWordbookPracticeScope } from "@/lib/wordbook-practice";
+import { getWordbookPracticeItems, parseWordbookPracticeRequest } from "@/lib/wordbook-practice";
 import { classifyQuizSwipe, getNextQuizIndex, canReorderQuizQuestion } from "@/lib/quiz-navigation";
 import {
   createEmptyQuestionViewState,
@@ -164,14 +164,18 @@ export default function QuizScreen() {
     '#'?: string;
   }>();
 
-  const mode = params.mode ?? DEFAULT_QUIZ_MODE;
+  const wordbookScope = params['#']?.startsWith('wordbook:') ? params['#'].slice('wordbook:'.length) : undefined;
+  const wordbookRequest = useMemo(() => {
+    if (wordbookScope === undefined) return undefined;
+    try { return parseWordbookPracticeRequest(wordbookScope); } catch { return undefined; }
+  }, [wordbookScope]);
+  const mode = wordbookRequest?.mode ?? params.mode ?? DEFAULT_QUIZ_MODE;
   const rangeStart = parseInt(params.rangeStart ?? "0");
   const rangeEnd = parseInt(params.rangeEnd ?? "999");
-  const count = parseInt(params.count ?? "20");
-  const rangeId = params.rangeId ?? "";
-  const wordbookScope = params['#']?.startsWith('wordbook:') ? params['#'].slice('wordbook:'.length) : undefined;
+  const count = wordbookRequest?.count ?? parseInt(params.count ?? "20");
+  const rangeId = wordbookRequest?.rangeId ?? params.rangeId ?? "";
   const choiceLang: ChoiceLang =
-    params.choiceLang === "english" ? "english" : "korean";
+    wordbookScope === undefined && params.choiceLang === "english" ? "english" : "korean";
   const itemNums = useMemo(
     () => [
       ...new Set(
@@ -250,7 +254,7 @@ export default function QuizScreen() {
       setSessionNotice("");
       setSessionRecoveryFailed(false);
       failureStage = "CONTENT_PREPARE";
-      const selectedScope = wordbookScope !== undefined ? parseWordbookPracticeScope(wordbookScope) : undefined;
+      const selectedScope = wordbookScope !== undefined ? parseWordbookPracticeRequest(wordbookScope) : undefined;
       failureStage = "SESSION_READ";
       const { session: saved, archived } = await loadQuizSessionForStudy(requestKey);
       if (cancelled) return;

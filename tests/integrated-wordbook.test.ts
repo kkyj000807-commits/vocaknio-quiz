@@ -7,7 +7,7 @@ import { getItemLearningTargets, getQuestionLearningTargetKey } from '../lib/can
 import { buildQuizQuestions, getQuizCandidateItems, validateQuestion } from '../lib/quiz-engine';
 import { createEmptyQuestionViewState, parseQuizSession, isQuizSessionContentCurrent } from '../lib/quiz-session';
 import type { BookEdition, BookEntry } from '../lib/book-edition';
-import { buildWordbookPracticeHref, getWordbookPracticeItems, parseWordbookPracticeScope, type WordbookPracticeScope } from '../lib/wordbook-practice';
+import { buildWordbookPracticeHref, getWordbookPracticeItems, parseWordbookPracticeRequest, parseWordbookPracticeScope, type WordbookPracticeScope } from '../lib/wordbook-practice';
 import { createEmptySenseLearningState, getLearningTargetState } from '../lib/learning-state';
 
 const oldItem = (id: string, w: string, k: string): VocabItem => ({
@@ -28,12 +28,26 @@ describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
     const selected = { ...scope(), concept: '개인 개념 & # 100%', query: '개인 검색 문구?' };
     const url = new URL(buildWordbookPracticeHref(selected, 'kor-choice', 20), 'https://fixture.invalid');
     expect(url.pathname).toBe('/quiz');
-    expect(url.searchParams.get('count')).toBe('20');
+    expect(url.search).toBe('');
     expect(decodeURIComponent(url.search)).not.toContain(selected.concept);
     expect(decodeURIComponent(url.search)).not.toContain(selected.query);
     const fragment = decodeURIComponent(url.hash.slice(1));
     expect(fragment.startsWith('wordbook:')).toBe(true);
     expect(parseWordbookPracticeScope(fragment.slice('wordbook:'.length))).toEqual(selected);
+    expect(parseWordbookPracticeRequest(fragment.slice('wordbook:'.length))).toEqual({ ...selected, mode: 'kor-choice', count: 20 });
+  });
+  it('retains mode/count with special private text through fragment-only URL serialization', () => {
+    const selected = { ...scope('v301'), query: '매혹 & # 100% ?mode=flashcard' };
+    for (const mode of ['kor-choice', 'syn-choice', 'definition-choice', 'flashcard'] as const) {
+      const href = buildWordbookPracticeHref(selected, mode, 5);
+      const reloaded = new URL(new URL(href, 'https://fixture.invalid').href);
+      expect(reloaded.search).toBe('');
+      expect(parseWordbookPracticeRequest(decodeURIComponent(reloaded.hash.slice(1)).slice('wordbook:'.length)))
+        .toEqual({ ...selected, mode, count: 5 });
+    }
+    for (const extra of [{ mode: 'unknown', count: 5 }, { mode: 'kor-choice', count: 0 }, { mode: 'kor-choice', count: 31 }, { mode: 'kor-choice', count: 1.5 }]) {
+      expect(() => parseWordbookPracticeRequest(JSON.stringify({ ...selected, ...extra }))).toThrow();
+    }
   });
   it('resolves every selected section and all 250 matching entries, not only the first 200', () => {
     const entries = Array.from({ length: 250 }, (_, index) => book(`study-${10000 + index}`, `fixture-${index}`, index + 1, 'V301'));
@@ -82,7 +96,7 @@ describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
   });
   it('carries scope through session identity and keeps empty scoped IDs explicit', () => {
     const source = fs.readFileSync('app/quiz.tsx', 'utf8');
-    expect(source.indexOf('parseWordbookPracticeScope(wordbookScope)')).toBeLessThan(source.indexOf('await loadQuizSessionForStudy(requestKey)'));
+    expect(source.indexOf('parseWordbookPracticeRequest(wordbookScope)')).toBeLessThan(source.indexOf('await loadQuizSessionForStudy(requestKey)'));
     expect(source).toContain('...(wordbookScope !== undefined ? { wordbookScope } : {})');
     expect(source).toContain('itemNums: scopedNums ??');
     expect(source).toContain('selectedScope?.includeMastered ? []');

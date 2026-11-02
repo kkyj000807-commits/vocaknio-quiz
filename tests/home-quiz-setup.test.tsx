@@ -149,7 +149,7 @@ describe('wordbook section practice setup', () => {
     const view = setup(); view.buttons[0].press(); view.render();
     view.buttons.find(button => button.label === `${count}개`)!.press(); view.render();
     view.buttons.find(button => button.label === `학습 시작 · ${count}문제`)!.press();
-    expect(new URL(view.push.mock.calls[0][0], 'https://fixture.invalid').searchParams.get('count')).toBe(String(count));
+    expect(JSON.parse(decodeURIComponent(new URL(view.push.mock.calls[0][0], 'https://fixture.invalid').hash.slice(1)).slice('wordbook:'.length)).count).toBe(count);
   });
   it.each(QUIZ_MODES.map(option => [option.id, option.title]))('starts explicit type %s without dropping section filters', (mode, title) => {
     const view = setup(); view.buttons[0].press(); view.render();
@@ -162,7 +162,7 @@ describe('wordbook section practice setup', () => {
   it('bounds a short selection and does not navigate an empty one', () => {
     const short = setup(2); short.buttons[0].press(); short.render();
     short.buttons.find(button => button.label === '학습 시작 · 2문제')!.press();
-    expect(new URL(short.push.mock.calls[0][0], 'https://fixture.invalid').searchParams.get('count')).toBe('2');
+    expect(JSON.parse(decodeURIComponent(new URL(short.push.mock.calls[0][0], 'https://fixture.invalid').hash.slice(1)).slice('wordbook:'.length)).count).toBe(2);
     const empty = setup(0); empty.buttons[0].press(); empty.render();
     empty.buttons.find(button => button.label === '학습할 단어가 없어요')!.press();
     expect(empty.push).not.toHaveBeenCalled();
