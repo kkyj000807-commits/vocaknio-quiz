@@ -232,7 +232,11 @@ describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
     const screen = fs.readFileSync('app/(tabs)/wordbook.tsx', 'utf8');
     expect(screen).not.toMatch(/IntegratedBookCard|BookEditionBrowser|LegacyWordbookScreen|renderRecord\(record\)/);
     expect(screen).toContain('<WordCard');
-    expect(screen).toContain('onLoaded={setEdition} collapsible');
+    expect(screen).not.toContain('<LocalBookImport');
+    expect(screen).toContain("router.push('/settings?book=1')");
+    expect(screen).not.toContain('setIncludeLegacy');
+    expect(screen).toContain('setEdition(getActiveBookEdition() ?? BOOK_EDITION)');
+    expect(fs.readFileSync('app/(tabs)/settings.tsx', 'utf8')).toContain('<LocalBookImport');
     expect(screen).toContain('!(item.book?.concept || item.book?.chunk)');
     expect(fs.readFileSync('app/_layout.tsx', 'utf8').indexOf('activateLocalBook(data)')).toBeGreaterThan(0);
     for (const path of ['app/(tabs)/wrong.tsx', 'app/(tabs)/bookmarks.tsx', 'app/result.tsx']) {

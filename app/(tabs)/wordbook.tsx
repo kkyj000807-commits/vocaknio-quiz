@@ -19,7 +19,7 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from "react-native-reanimated";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { PronunciationButton } from "@/components/pronunciation-button";
@@ -32,7 +32,6 @@ import { SynonymDetails } from "@/components/synonym-details";
 import { getDefinitionQuizEntry, getDefinitionAnswerRelations } from "@/lib/definition-quiz";
 import { WordSectionLabel } from "@/components/word-section-label";
 import { formatWordbookConcept } from "@/lib/wordbook-concepts";
-import { LocalBookImport } from "@/components/local-book-import";
 import { WordbookPractice } from "@/components/wordbook-practice";
 import { getWordbookPracticeItems } from "@/lib/wordbook-practice";
 import { BOOK_EDITION } from "@/lib/book-edition";
@@ -393,6 +392,7 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
 // ─── 메인 화면 ────────────────────────────────────────────────────────────────
 export default function WordbookScreen() {
   const colors = useColors();
+  const router = useRouter();
   const storageIssue = useSyncExternalStore(subscribeLearningStorage, getLearningStorageIssue, () => null);
 
   const [edition, setEdition] = useState(getActiveBookEdition() ?? BOOK_EDITION);
@@ -407,7 +407,8 @@ export default function WordbookScreen() {
   const [bookmarks, setBookmarks] = useState<Set<number>>(new Set());
   const [showOnlyBookmarks, setShowOnlyBookmarks] = useState(false);
   const [showMastered, setShowMastered] = useState(true);
-  const [includeLegacy, setIncludeLegacy] = useState(false);
+  // Additional old senses are searchable, not another setting on the study screen.
+  const includeLegacy = edition.privateContent && !!searchQuery.trim();
   const [isShuffled, setIsShuffled] = useState(false);
   const [maskMode, setMaskMode] = useState(false);
   const [learningState, setLearningState] = useState<SenseLearningState | null>(null);
@@ -441,6 +442,7 @@ export default function WordbookScreen() {
   }, [revealPlayer]);
 
   useFocusEffect(useCallback(() => {
+    setEdition(getActiveBookEdition() ?? BOOK_EDITION);
     loadBookmarks().then((arr) => setBookmarks(new Set(arr))).catch(() => undefined);
     loadSenseLearningState().then(setLearningState).catch(() => undefined);
   }, []));
@@ -585,7 +587,10 @@ export default function WordbookScreen() {
         </View>
       </View>
 
-      <View style={{ paddingHorizontal: STUDY_PAGE_GUTTER }}><LocalBookImport onLoaded={setEdition} collapsible /></View>
+      {!edition.privateContent && <Pressable accessibilityRole="button" accessibilityLabel="단권화 불러오기"
+        onPress={() => router.push('/settings?book=1')} style={{ minHeight: MIN_TOUCH_TARGET, paddingHorizontal: STUDY_PAGE_GUTTER, justifyContent: 'center' }}>
+        <Text style={{ color: colors.primary }}>단권화 불러오기</Text>
+      </Pressable>}
 
       {/* 마스크 모드 안내 배너 */}
       {maskMode && (
@@ -714,11 +719,6 @@ export default function WordbookScreen() {
           ))}
         </ScrollView>
       </View>
-
-      {edition.privateContent && <Pressable accessibilityRole="button" accessibilityLabel="기존 추가 뜻 포함" accessibilityState={{ selected: includeLegacy }}
-        onPress={() => setIncludeLegacy(value => !value)} style={{ minHeight: MIN_TOUCH_TARGET, paddingHorizontal: STUDY_PAGE_GUTTER, justifyContent: 'center' }}>
-        <Text style={{ color: colors.primary }}>{includeLegacy ? '기존 추가 뜻 포함 ✓' : '기존 추가 뜻 보기'}</Text>
-      </Pressable>}
 
       {concepts.length > 0 && <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.rangeContent}>
         {['', ...concepts].map(value => <Pressable key={value} accessibilityRole="button" accessibilityState={{ selected: value === concept }}

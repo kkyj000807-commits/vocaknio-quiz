@@ -57,7 +57,7 @@ export function LocalBookImport({ onLoaded, collapsible = false }: { onLoaded: (
       : <Text style={{ color: colors.foreground, fontWeight: '700' }}>내 교재</Text>}
     <Text accessibilityLiveRegion="polite" style={{ color: colors.foreground, lineHeight: 21 }}>{message}</Text>
     {readFailed && button('다시 불러오기', () => setReadAttempt(value => value + 1))}
-    {expanded && <>
+    {(!collapsible || expanded) && <>
     <Text style={{ color: colors.muted, lineHeight: 21 }}>교재는 이 브라우저에만 저장됩니다. 다른 기기에서는 같은 파일을 불러오세요. 학습 기록은 아래 ‘기록 백업·복원’으로 따로 옮깁니다.</Text>
     <Text style={{ color: colors.muted, lineHeight: 21 }}>사이트 데이터를 지우지 마세요. 비공개 모드·저장공간 정리에 대비해 교재 원본과 기록 백업을 보관하세요.</Text>
     {button('기록 백업·복원', () => router.push('/(tabs)/settings'))}
