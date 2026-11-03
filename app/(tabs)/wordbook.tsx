@@ -56,7 +56,8 @@ import { useColors } from "@/hooks/use-colors";
 import * as Haptics from "expo-haptics";
 import { useAudioPlayer, setAudioModeAsync } from "expo-audio";
 
-const RANGE_OPTIONS: (VocabRange & { bookSection?: string })[] = WORDBOOK_RANGES.map(range => range.id === 'book-b' ? { ...range, bookSection: '보카바이블 B' } : range);
+const RANGE_OPTIONS: (VocabRange & { bookSection?: string })[] = [...WORDBOOK_RANGES].sort((a, b) => Number(b.id === 'all') - Number(a.id === 'all'))
+  .map(range => range.id === 'book-b' ? { ...range, bookSection: '보카바이블 B' } : range);
 
 function getRangeChipLabel(range: (typeof RANGE_OPTIONS)[number]) {
   if (range.bookSection) return range.bookSection;
@@ -395,6 +396,9 @@ export default function WordbookScreen() {
   const storageIssue = useSyncExternalStore(subscribeLearningStorage, getLearningStorageIssue, () => null);
 
   const [edition, setEdition] = useState(getActiveBookEdition() ?? BOOK_EDITION);
+  const rangeOptions = useMemo(() => edition.privateContent ? [RANGE_OPTIONS.find(range => range.id === 'all')!,
+    ...edition.sections.map(section => RANGE_OPTIONS.find(range => section === '숙어' ? range.kind === 'idioms'
+      : section === '보카바이블 B' ? range.id === 'book-b' : (range.group === 'APPENDIX' ? '부록' : range.group) === section)!)] : RANGE_OPTIONS, [edition]);
   const VOCAB = useStudyVocab();
   const VOCAB_HEADWORD_COUNT = useMemo(() => new Set(VOCAB.map(item => item.w)).size, [VOCAB]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -402,7 +406,8 @@ export default function WordbookScreen() {
   const [concept, setConcept] = useState('');
   const [bookmarks, setBookmarks] = useState<Set<number>>(new Set());
   const [showOnlyBookmarks, setShowOnlyBookmarks] = useState(false);
-  const [showMastered, setShowMastered] = useState(false);
+  const [showMastered, setShowMastered] = useState(true);
+  const [includeLegacy, setIncludeLegacy] = useState(false);
   const [isShuffled, setIsShuffled] = useState(false);
   const [maskMode, setMaskMode] = useState(false);
   const [learningState, setLearningState] = useState<SenseLearningState | null>(null);
@@ -460,17 +465,18 @@ export default function WordbookScreen() {
     setBookmarks(new Set(updated));
   }, []);
 
-  const practiceScope = useMemo(() => ({ rangeId: RANGE_OPTIONS[selectedRange].id, concept, query: searchQuery,
-    bookmarksOnly: showOnlyBookmarks, includeMastered: showMastered }), [selectedRange, concept, searchQuery, showOnlyBookmarks, showMastered]);
+  const practiceScope = useMemo(() => ({ rangeId: rangeOptions[selectedRange]?.id ?? 'all', concept, query: searchQuery,
+    bookmarksOnly: showOnlyBookmarks, includeMastered: showMastered, includeLegacy }), [rangeOptions, selectedRange, concept, searchQuery, showOnlyBookmarks, showMastered, includeLegacy]);
   const practiceItems = useMemo(() => VOCAB.length ? getWordbookPracticeItems(practiceScope, bookmarks, learningState) : [],
     [practiceScope, bookmarks, learningState, VOCAB]);
   const filteredVocab = useMemo(() => {
+    if (edition.privateContent && !includeLegacy) return isShuffled ? shuffle(practiceItems) : practiceItems;
     const rows = arrangeWordbook(practiceItems, item => JSON.stringify([
       bookmarks.has(item.num),
       getItemLearningTargets(item).map(target => [item.localBook ? 'local' : target.key, learningState?.targets[target.key] ?? null]),
     ]), edition.privateContent);
     return isShuffled ? shuffle(rows) : rows;
-  }, [practiceItems, bookmarks, isShuffled, learningState, edition]);
+  }, [practiceItems, bookmarks, isShuffled, learningState, edition, includeLegacy]);
 
   const renderRecord = useCallback(
     (item: DisplayWord) => (
@@ -507,7 +513,7 @@ export default function WordbookScreen() {
     }
   }, []);
 
-  const activeRange = RANGE_OPTIONS[selectedRange];
+  const activeRange = rangeOptions[selectedRange] ?? rangeOptions[0];
   const activeBookSection = activeRange.bookSection ?? (activeRange.group === 'APPENDIX' ? '부록' : activeRange.group);
   const concepts = useMemo(() => edition.privateContent && (activeBookSection === 'V301' || activeBookSection === 'V502')
     ? [...new Set(edition.entries.filter(entry => entry.section === activeBookSection).map(entry => entry.concept).filter(Boolean))] : [], [edition, activeBookSection]);
@@ -521,7 +527,7 @@ export default function WordbookScreen() {
             단어장
           </Text>
           <Text style={[styles.headerSub, { color: colors.muted }]}>
-            {edition.privateContent ? `내 교재 ${edition.entries.length.toLocaleString()}개 · 기본 단어 포함` : `단어 ${VOCAB_HEADWORD_COUNT.toLocaleString()}개`}
+            {edition.privateContent ? `단권화 v${edition.edition} · ${edition.entries.length.toLocaleString()}개 · 책 순서` : `단어 ${VOCAB_HEADWORD_COUNT.toLocaleString()}개`}
           </Text>
         </View>
         {/* 버튼 그룹 */}
@@ -671,7 +677,7 @@ export default function WordbookScreen() {
           directionalLockEnabled
           nestedScrollEnabled
         >
-          {RANGE_OPTIONS.map((item, index) => (
+          {rangeOptions.map((item, index) => (
             <TouchableOpacity
               key={item.id}
               activeOpacity={0.7}
@@ -702,12 +708,17 @@ export default function WordbookScreen() {
                   },
                 ]}
               >
-                {getRangeChipLabel(item)}
+                {getRangeChipLabel(item)}{edition.privateContent && item.id !== 'all' ? ` ${edition.sourceCounts[item.bookSection ?? (item.kind === 'idioms' ? '숙어' : item.group === 'APPENDIX' ? '부록' : item.group ?? '')]?.toLocaleString() ?? ''}` : ''}
               </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
+
+      {edition.privateContent && <Pressable accessibilityRole="button" accessibilityLabel="기존 추가 뜻 포함" accessibilityState={{ selected: includeLegacy }}
+        onPress={() => setIncludeLegacy(value => !value)} style={{ minHeight: MIN_TOUCH_TARGET, paddingHorizontal: STUDY_PAGE_GUTTER, justifyContent: 'center' }}>
+        <Text style={{ color: colors.primary }}>{includeLegacy ? '기존 추가 뜻 포함 ✓' : '기존 추가 뜻 보기'}</Text>
+      </Pressable>}
 
       {concepts.length > 0 && <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.rangeContent}>
         {['', ...concepts].map(value => <Pressable key={value} accessibilityRole="button" accessibilityState={{ selected: value === concept }}

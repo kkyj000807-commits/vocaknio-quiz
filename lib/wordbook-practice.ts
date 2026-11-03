@@ -1,9 +1,10 @@
 import { bookStudyDetails } from '@/lib/book-edition';
+import { selectBookOrderedItems } from '@/lib/integrated-wordbook';
 import { excludeFullyMasteredItems, getQuizLearningTargets } from '@/lib/canonical-learning';
 import { getLearningTargetState, learningPriority, masteredTargetKeys, type SenseLearningState } from '@/lib/learning-state';
 import { ADAPTIVE_POLICY } from '@/lib/learning-analytics';
 import { inspectQuizQuestions, type BuildQuizOptions, type QuizQuestion } from '@/lib/quiz-engine';
-import { getRangeItems, QUIZ_MODES, WORDBOOK_RANGES, type QuizMode, type VocabItem } from '@/lib/vocab';
+import { getRangeItems, getStudyVocab, QUIZ_MODES, WORDBOOK_RANGES, type QuizMode, type VocabItem } from '@/lib/vocab';
 
 export function practiceMasteredKeys(state: SenseLearningState, includeMastered = false, now = Date.now()) {
   return includeMastered ? [] : [...masteredTargetKeys(state)].filter(key => {
@@ -52,6 +53,7 @@ export type WordbookPracticeScope = {
   query: string;
   bookmarksOnly: boolean;
   includeMastered: boolean;
+  includeLegacy?: boolean;
 };
 
 export function buildWordbookPracticeHref(scope: WordbookPracticeScope, mode: QuizMode, count: number) {
@@ -78,11 +80,13 @@ export function parseWordbookPracticeScope(encoded: string): WordbookPracticeSco
   const scope = value as Partial<WordbookPracticeScope>;
   if (typeof scope.rangeId !== 'string' || !WORDBOOK_RANGES.some(range => range.id === scope.rangeId)
     || typeof scope.concept !== 'string' || typeof scope.query !== 'string'
-    || typeof scope.bookmarksOnly !== 'boolean' || typeof scope.includeMastered !== 'boolean') {
+    || typeof scope.bookmarksOnly !== 'boolean' || typeof scope.includeMastered !== 'boolean'
+    || (scope.includeLegacy !== undefined && typeof scope.includeLegacy !== 'boolean')) {
     throw new Error('Invalid wordbook selection');
   }
   return { rangeId: scope.rangeId, concept: scope.concept, query: scope.query,
-    bookmarksOnly: scope.bookmarksOnly, includeMastered: scope.includeMastered };
+    bookmarksOnly: scope.bookmarksOnly, includeMastered: scope.includeMastered,
+    ...(scope.includeLegacy !== undefined ? { includeLegacy: scope.includeLegacy } : {}) };
 }
 
 /** Shared by the list and quiz. Empty/invalid selections must never become all. */
@@ -90,6 +94,9 @@ export function getWordbookPracticeItems(scope: WordbookPracticeScope, bookmarks
   const range = WORDBOOK_RANGES.find(range => range.id === scope.rangeId);
   if (!range) throw new Error('Unknown wordbook section');
   let items = getRangeItems(range);
+  const hasBook = getStudyVocab().some(item => item.book);
+  items = selectBookOrderedItems(items, scope.includeLegacy, hasBook);
+  if (hasBook && !scope.includeLegacy && range.kind === 'idioms') items = items.filter(item => item.book?.section === '숙어');
   if (scope.concept) items = items.filter(item => (item.book?.concept ?? item.conceptLabel) === scope.concept);
   const query = scope.query.trim().toLowerCase();
   if (query) items = items.filter(item => [item.w, item.k, item.conceptLabel, item.majorConceptLabel, item.book?.chunk ?? '',

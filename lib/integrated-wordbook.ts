@@ -73,6 +73,13 @@ export function createIntegratedWordbook(original: readonly VocabItem[], edition
 
 let activeEdition: BookEdition | null = null;
 export function getActiveBookEdition() { return activeEdition; }
+/** Book placements are the default list, not the larger additive learning registry.
+ * Extra original senses remain registered for old sessions/review and are opt-in here. */
+export function selectBookOrderedItems(items: readonly VocabItem[], includeLegacy = false, hasBook = items.some(item => item.book)): VocabItem[] {
+  if (!hasBook) return [...items];
+  const book = items.filter(item => item.book).sort((a, b) => a.book!.order - b.book!.order);
+  return includeLegacy ? [...book, ...items.filter(item => !item.book)] : book;
+}
 /** Only after complete pinned-file verification. No learner writes. */
 export function activateLocalBook(edition: BookEdition) {
   if (activeEdition === edition) return;

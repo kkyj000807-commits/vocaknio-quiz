@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import fs from 'node:fs';
-import { createIntegratedWordbook, localBookIdentity } from '../lib/integrated-wordbook';
+import { createIntegratedWordbook, localBookIdentity, selectBookOrderedItems } from '../lib/integrated-wordbook';
 import { arrangeWordbook } from '../lib/wordbook-display';
 import { VOCAB, VOCAB_BY_NUM, WORDBOOK_VOCAB, getVocabItem, getRangeItems, RANGES, registerStudyItems, type VocabItem } from '../lib/vocab';
 import { getItemLearningTargets, getQuestionLearningTargetKey } from '../lib/canonical-learning';
@@ -24,6 +24,25 @@ const edition = (entries: BookEntry[]): BookEdition => ({ schema: 1, edition: '1
 afterEach(() => { registerStudyItems(WORDBOOK_VOCAB); for (const num of [910001, 910002, 910003]) VOCAB_BY_NUM.delete(num); });
 
 describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
+  it('shows precisely the printed placements by default and retains extra old senses only on explicit inclusion', () => {
+    const entries = [book('study-950001', 'first-book', 1, 'V301'), book('study-950002', 'second-book', 2, 'V301'),
+      book('study-950003', 'book-phrase', 3, 'V301'), book('study-950004', 'book-idiom', 4, '숙어')];
+    entries[1].word = entries[0].word; entries[1].display = entries[0].display;
+    const old = [VOCAB[0]];
+    const rows = createIntegratedWordbook(old, edition(entries)); registerStudyItems(rows);
+    const before = JSON.stringify(rows);
+    const selected = { rangeId: 'all', concept: '', query: '', bookmarksOnly: false, includeMastered: true };
+    const exact = getWordbookPracticeItems(selected, new Set(), null);
+    expect(exact.map(item => item.book!.id)).toEqual(entries.map(entry => entry.id));
+    expect(exact).toHaveLength(4); // Printed repeat placements are not silently folded away.
+    expect(getWordbookPracticeItems({ ...selected, rangeId: 'idioms' }, new Set(), null).map(item => item.book!.section)).toEqual(['숙어']);
+    expect(getWordbookPracticeItems({ ...selected, includeLegacy: true }, new Set(), null).at(-1)?.id).toBe(old[0].id);
+    expect(selectBookOrderedItems([...rows].reverse()).map(item => item.book!.order)).toEqual([1, 2, 3, 4]);
+    expect(parseWordbookPracticeScope(JSON.stringify({ ...selected, includeLegacy: true })).includeLegacy).toBe(true);
+    expect(() => parseWordbookPracticeScope(JSON.stringify({ ...selected, includeLegacy: 'yes' }))).toThrow();
+    expect(getVocabItem(old[0].num)?.id).toBe(old[0].id);
+    expect(JSON.stringify(rows)).toBe(before);
+  });
   it('counts built questions and the same adaptive target once without promoting private or reference rows', async () => {
     const rows = [oldItem('910001', 'unique-fixture', '뜻'), oldItem('910002', 'unique-fixture', '뜻'),
       { ...oldItem('910003', 'reference-fixture', '참고 뜻'), referenceOnly: true },

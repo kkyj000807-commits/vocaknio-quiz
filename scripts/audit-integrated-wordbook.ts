@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import { inspectLocalBook } from '../lib/local-book-file';
-import { createIntegratedWordbook } from '../lib/integrated-wordbook';
+import { createIntegratedWordbook, selectBookOrderedItems } from '../lib/integrated-wordbook';
 import { VOCAB, WORDBOOK_VOCAB, getVocabItem, registerStudyItems } from '../lib/vocab';
 import { arrangeWordbook } from '../lib/wordbook-display';
 import { buildQuizQuestions } from '../lib/quiz-engine';
@@ -13,6 +13,11 @@ async function main() {
   const original = JSON.stringify(VOCAB);
   const rows = createIntegratedWordbook(WORDBOOK_VOCAB, edition);
   const bookRows = rows.filter(item => item.book);
+  const printed = selectBookOrderedItems(rows);
+  assert.equal(printed.length, edition.entries.length);
+  assert.deepEqual(printed.map(item => item.book!.id), edition.entries.map(entry => entry.id));
+  for (const section of edition.sections) assert.equal(printed.filter(item => item.book!.section === section).length, edition.sourceCounts[section]);
+  assert.equal(selectBookOrderedItems(rows, true).length, rows.length);
   assert.deepEqual(bookRows.map(item => item.book!.id), edition.entries.map(entry => entry.id));
   assert.equal(new Set(rows.map(item => item.id)).size, rows.length);
   assert.equal(new Set(rows.map(item => item.num)).size, rows.length);
@@ -20,7 +25,8 @@ async function main() {
   for (const item of VOCAB) assert(retainedIds.has(item.id), 'Original ID missing');
   assert.equal(JSON.stringify(VOCAB), original);
   const display = arrangeWordbook(rows, () => '', true);
-  assert.equal(new Set(display.filter(item => item.book).map(item => item.book!.id)).size, edition.entries.length);
+  const representedBookIds = new Set(display.flatMap(item => [item, ...(item.displayDuplicates ?? [])]).filter(item => item.book).map(item => item.book!.id));
+  assert.equal(representedBookIds.size, edition.entries.length);
   const represented = new Set(display.flatMap(item => item.displaySourceIds!));
   assert(rows.every(item => represented.has(item.id)));
   registerStudyItems(rows);
@@ -31,7 +37,7 @@ async function main() {
   }
   assert.equal(createHash('sha256').update(fs.readFileSync('assets/vocab-v1.4.json')).digest('hex'), edition.canonicalSha256);
   console.log(JSON.stringify({ status: 'PASS_SOURCE_ID_UI_LEARNING_CONTRACT', originalRows: VOCAB.length,
-    bookRows: bookRows.length, sections: edition.sourceCounts,
+    bookRows: bookRows.length, printedListRows: printed.length, printedOrderExact: true, sections: edition.sourceCounts,
     spellingLinked: edition.entries.filter(entry => entry.appIds.length).length,
     spellingUnlinked: edition.entries.filter(entry => !entry.appIds.length).length,
     newStableLearningItems: rows.filter(row => row.localBook).length,
