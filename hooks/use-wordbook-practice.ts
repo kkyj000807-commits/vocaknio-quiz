@@ -14,7 +14,10 @@ export function useWordbookPractice(open: boolean, items: readonly VocabItem[], 
     const run = async () => {
       const itemNums = items.map(item => item.num);
       const masteredTargetKeys = practiceMasteredKeys(state, includeMastered);
-      for (const mode of QUIZ_MODES) {
+      // Make the ordinary default and safe book-recall start ready first.
+      const modes = [...QUIZ_MODES].sort((a, b) =>
+        (a.id === 'kor-choice' ? 0 : a.id === 'flashcard' ? 1 : 2) - (b.id === 'kor-choice' ? 0 : b.id === 'flashcard' ? 1 : 2));
+      for (const mode of modes) {
         await new Promise<void>(resolve => setTimeout(resolve, 0));
         if (cancelled) return;
         const inspected = await inspectWordbookPractice({ mode: mode.id, count: 30, itemNums, masteredTargetKeys }, state, 30, () => cancelled);

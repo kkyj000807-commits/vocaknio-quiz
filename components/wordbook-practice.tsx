@@ -21,7 +21,13 @@ export function WordbookPractice({ scope, label, items, learningState, hasLocalC
   const selected = QUIZ_MODES.find(option => option.id === mode)!;
   const availability = useWordbookPractice(open, items, learningState, scope.includeMastered);
   const available = availability.counts[mode];
-  const actualCount = Math.min(count, available ?? 0);
+  // An explicit, labelled route into the existing self-assessment flow. Private
+  // content is NOT promoted to automatically graded meaning questions.
+  const recallCandidate = hasLocalContent && mode === DEFAULT_QUIZ_MODE && available === 0;
+  const recallPending = recallCandidate && availability.counts.flashcard === undefined;
+  const directRecall = recallCandidate && (availability.counts.flashcard ?? 0) > 0;
+  const startMode = directRecall ? 'flashcard' : mode;
+  const actualCount = Math.min(count, availability.counts[startMode] ?? 0);
   const chip = (active: boolean) => [styles.chip, { backgroundColor: active ? colors.primary : colors.surface, borderColor: active ? colors.primary : colors.border }];
   return <View style={styles.container}>
     <Pressable accessibilityRole="button" accessibilityLabel="이 범위 학습 설정" accessibilityState={{ expanded: open }}
@@ -54,13 +60,14 @@ export function WordbookPractice({ scope, label, items, learningState, hasLocalC
       </>}
       {hasLocalContent && <Text style={[styles.note, { color: colors.muted }]}>교재의 새 단어는 ‘빠른 암기’로 학습할 수 있어요. 자동채점은 검수된 단어만 사용합니다.</Text>}
       <Text accessibilityLiveRegion="polite" style={[styles.note, { color: colors.muted }]}>{availability.failed ? '문제 수를 확인하지 못했어요. 학습 설정을 닫았다 다시 열어 주세요.'
+        : directRecall ? '뜻을 확인한 뒤 알았어요·모르겠어요로 답합니다.' : recallPending ? '뜻 확인 학습 준비 중…'
         : available === undefined ? '출제 가능한 문제 확인 중…' : available === 0 ? '이 범위에는 해당 유형의 문제가 없어요. 다른 유형을 선택해 주세요.'
         : actualCount < count ? `이 범위에서는 ${actualCount}문제를 풀 수 있어요.` : `현재 범위에서 ${actualCount}문제를 풉니다.`}</Text>
-      <Pressable accessibilityRole="button" accessibilityLabel={`${selected.title} ${actualCount}문제 시작`}
+      <Pressable accessibilityRole="button" accessibilityLabel={`${directRecall ? '뜻 확인' : selected.title} ${actualCount}문제 시작`}
         accessibilityState={{ disabled: actualCount === 0 }} disabled={actualCount === 0}
-        onPress={() => { if (actualCount > 0) router.push(buildWordbookPracticeHref(scope, mode, actualCount) as Href); }}
+        onPress={() => { if (actualCount > 0) router.push(buildWordbookPracticeHref(scope, startMode, actualCount) as Href); }}
         style={[styles.start, { backgroundColor: colors.primary, opacity: actualCount ? 1 : 0.45 }]}>
-        <Text style={styles.startText}>{actualCount ? `학습 시작 · ${actualCount}문제` : available === undefined ? '확인 중…' : '이 유형의 문제가 없어요'}</Text>
+        <Text style={styles.startText}>{directRecall ? `뜻 확인 학습 · ${actualCount}개` : actualCount ? `학습 시작 · ${actualCount}문제` : available === undefined || recallPending ? '확인 중…' : '이 유형의 문제가 없어요'}</Text>
       </Pressable>
     </View>}
   </View>;

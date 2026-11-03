@@ -168,6 +168,29 @@ describe('wordbook section practice setup', () => {
     empty.buttons.find(button => button.label === '이 유형의 문제가 없어요')!.press();
     expect(empty.push).not.toHaveBeenCalled();
   });
+  it('lets new book words and idioms start existing self-assessment directly without automatic grading promotion', () => {
+    const view = renderSetup(true, { scope, label: '숙어', availableCount: 0, hasLocalContent: true,
+      counts: { 'kor-choice': 0, flashcard: 7 } });
+    view.buttons[0].press();
+    expect(view.render()).toContain('뜻 확인 학습');
+    view.buttons.find(button => button.label === '뜻 확인 학습 · 7개')!.press();
+    expect(view.push).toHaveBeenCalledWith(buildWordbookPracticeHref(scope, 'flashcard', 7));
+    expect(view.save).not.toHaveBeenCalled();
+  });
+  it('waits for validated recall counts and does not change ordinary empty meaning study', () => {
+    const pending = renderSetup(true, { scope, label: 'V301', availableCount: 0, hasLocalContent: true,
+      counts: { 'kor-choice': 0, flashcard: undefined } });
+    pending.buttons[0].press();
+    expect(pending.render()).toContain('뜻 확인 학습 준비 중');
+    pending.buttons.find(button => button.label === '확인 중…')!.press();
+    expect(pending.push).not.toHaveBeenCalled();
+    const ordinary = renderSetup(false, { scope, label: 'V101', availableCount: 0, hasLocalContent: false,
+      counts: { 'kor-choice': 0, flashcard: 7 } });
+    ordinary.buttons[0].press();
+    expect(ordinary.render()).not.toContain('뜻 확인 학습 ·');
+    ordinary.buttons.find(button => button.label === '이 유형의 문제가 없어요')!.press();
+    expect(ordinary.push).not.toHaveBeenCalled();
+  });
   it('uses verified mode counts instead of visible rows and blocks unavailable or pending modes', () => {
     const view = renderSetup(true, { scope, label: 'V301', availableCount: 250, hasLocalContent: true,
       counts: { 'kor-choice': 2, 'syn-choice': 0, 'definition-choice': undefined, flashcard: 30 } });
