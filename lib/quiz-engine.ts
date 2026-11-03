@@ -593,6 +593,13 @@ export function buildQuizQuestions(options: BuildQuizOptions): QuizQuestion[] {
   return questions;
 }
 
+/** The same answer/choice checks as a live session, with a yield for rejected rows too. */
+export function* inspectQuizQuestions(options: BuildQuizOptions): Generator<QuizQuestion | null> {
+  for (const item of getQuizCandidateItems(options)) {
+    yield makeQuestionWithFallback(item, options, options.choiceLang ?? 'korean');
+  }
+}
+
 export function buildReviewQuestions(
   itemNums: number[],
   count: number,

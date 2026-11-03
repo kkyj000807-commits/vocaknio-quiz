@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Platform, Pressable, Text, View } from "react-native";
 import { useColors } from "@/hooks/use-colors";
 import { exportLearningBackup, inspectLearningBackup, restoreLearningBackup } from "@/lib/store";
@@ -10,16 +10,19 @@ export function LearningBackupSettings({ exportOnly = false }: { exportOnly?: bo
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [preview, setPreview] = useState<LearningBackupPreview | null>(null);
+  const [download, setDownload] = useState<{ url: string; name: string } | null>(null);
+  useEffect(() => () => { if (download) URL.revokeObjectURL(download.url); }, [download]);
   if (Platform.OS !== "web") return null;
   const save = async () => {
     setBusy(true); setMessage("");
     try {
       const backup = await exportLearningBackup();
       const url = URL.createObjectURL(new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" }));
+      const name = `FINETUNE-learning-${backup.createdAt.replace(/[:.]/g, "-")}.json`;
+      setDownload({ url, name });
       const link = document.createElement("a");
-      link.href = url; link.download = `FINETUNE-learning-${backup.createdAt.replace(/[:.]/g, "-")}.json`;
+      link.href = url; link.download = name;
       document.body.appendChild(link); link.click(); link.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 30_000);
       setMessage(backup.unreadableKeys.length
         ? "읽지 못한 항목이 있어 불완전한 구조 백업입니다. 원본은 그대로 두었습니다. 다운로드 파일을 확인해 주세요."
         : "다운로드를 요청했습니다. 파일 저장을 확인해 주세요. 미저장·복구 기록은 별도 보존되며 자동 병합하지 않습니다.");
@@ -51,12 +54,16 @@ export function LearningBackupSettings({ exportOnly = false }: { exportOnly?: bo
       <Text style={{ color: c.foreground, fontWeight: "700", fontSize: 16 }}>{exportOnly ? "복구용 학습 기록 백업" : "학습 기록 백업·복원"} {expanded ? "−" : "+"}</Text>
     </Pressable>
     {expanded && <View style={{ gap: 8, padding: 14, backgroundColor: c.card, borderRadius: 12 }}>
-      <Text style={{ color: c.muted, lineHeight: 21 }}>이 기기의 통계·오답·북마크·MASTER·의미별 기록·중단 세션을 파일로 보관합니다. 로그인 정보는 포함하지 않습니다. 개인 학습 기록이므로 공개 업로드하지 마세요.</Text>
+      <Text style={{ color: c.muted, lineHeight: 21 }}>풀이·오답·북마크·MASTER와 이어 풀기를 보관합니다. 교재 파일은 별도로 옮겨 주세요. 로그인 정보는 포함하지 않습니다. 개인 학습 기록은 공개하지 마세요.</Text>
       {button("백업 파일 다운로드", () => { void save(); })}
+      {download && <View style={{ gap: 8 }}>
+        <Text style={{ color: c.foreground, lineHeight: 21 }}>파일이 내려받아지지 않으면 아래 ‘파일 직접 저장’을 눌러 주세요. 파일 앱에서 저장 여부를 확인하세요.</Text>
+        <a href={download.url} download={download.name} style={{ color: c.primary, minHeight: 44, display: 'flex', alignItems: 'center' }}>파일 직접 저장</a>
+      </View>}
       {!exportOnly && <><Text style={{ color: c.foreground }}>백업 파일 검사 (아직 저장하지 않음)</Text>
       <input type="file" accept="application/json,.json" aria-label="학습 백업 파일 선택" disabled={busy} onChange={event => { void select(event); }} style={{ maxWidth: "100%", color: c.foreground }} />
       {preview && <View style={{ gap: 8 }}>
-        <Text style={{ color: c.foreground, lineHeight: 21 }}>백업 시각: {preview.backup.createdAt}{"\n"}추가할 기록 묶음 {preview.entries.length} · 동일 {preview.unchanged} · 충돌 {preview.conflicts.length}</Text>
+        <Text style={{ color: c.foreground, lineHeight: 21 }}>백업 시각: {preview.backup.createdAt}{"\n"}기록 항목: 추가 {preview.entries.length} · 동일 {preview.unchanged} · 충돌 {preview.conflicts.length}</Text>
         {preview.conflicts.length > 0 ? <Text style={{ color: c.muted, lineHeight: 21 }}>기존 기록 또는 미저장 기록과 충돌합니다. 현재 기록을 유지하며 자동 병합·덮어쓰기는 하지 않습니다. 이 파일과 현재 기기의 백업을 함께 보관해 주세요.</Text>
           : button("확인한 백업을 빈 학습 저장소에 복원", () => { void apply(); }, !preview.entries.length)}
         {button("취소 · 현재 기록 유지", () => setPreview(null))}

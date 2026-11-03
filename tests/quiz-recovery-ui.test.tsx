@@ -10,6 +10,8 @@ import { confirmedQuizRecoveryCase } from "./helpers/quiz-recovery-cases.mjs";
 
 function loadUi(file: string, store: Record<string, unknown> = {}) {
   const buttons: { text: string; disabled: boolean; press: () => void }[] = [];
+  const states: unknown[] = [];
+  let stateCursor = 0;
   const push = vi.fn();
   const text = (children: React.ReactNode): string => React.Children.toArray(children).map(child =>
     React.isValidElement<{ children?: React.ReactNode }>(child) ? text(child.props.children) : String(child ?? "")).join("");
@@ -20,7 +22,12 @@ function loadUi(file: string, store: Record<string, unknown> = {}) {
     return React.createElement(tag, {}, children);
   };
   const dependencies: Record<string, unknown> = {
-    react: { ...React, useSyncExternalStore: (_subscribe: unknown, snapshot: () => unknown) => snapshot() },
+    react: { ...React, useSyncExternalStore: (_subscribe: unknown, snapshot: () => unknown) => snapshot(),
+      useState: (initial: unknown) => {
+        const index = stateCursor++;
+        if (!(index in states)) states[index] = initial;
+        return [states[index], (next: unknown) => { states[index] = typeof next === "function" ? next(states[index]) : next; }];
+      } },
     "react/jsx-runtime": jsx,
     "react-native": { View: host("div"), Text: host("span"), ScrollView: host("div"), Pressable: host("button"), StyleSheet: { create: (styles: unknown) => styles } },
     "expo-router": { useRouter: () => ({ push }) },
@@ -36,7 +43,7 @@ function loadUi(file: string, store: Record<string, unknown> = {}) {
     if (!(name in dependencies)) throw new Error(`Unexpected recovery UI dependency: ${name}`);
     return dependencies[name];
   } });
-  return { exports, buttons, push };
+  return { exports, buttons, push, nextRender: () => { stateCursor = 0; buttons.length = 0; } };
 }
 
 describe("storage recovery controls preserve safe exits", () => {
@@ -46,11 +53,17 @@ describe("storage recovery controls preserve safe exits", () => {
     const html = renderToStaticMarkup(React.createElement(ui.exports.QuizSessionHold, {
       failure: "STORAGE_RECOVERY", canRetry: false, onBackup: backup, onSettings: settings, onStart: start,
     }));
-    expect(html).toContain("STORAGE_RECOVERY");
+    expect(html).toContain("기록 확인이 필요해요");
+    expect(html).not.toContain("STORAGE_RECOVERY");
     expect(ui.buttons.some(button => button.text === "다시 시도")).toBe(false);
     ui.buttons.find(button => button.text === "기록 백업·저장 상태 확인")!.press();
     ui.buttons.find(button => button.text === "문제 풀이 설정으로 돌아가기")!.press();
     expect(backup).toHaveBeenCalledOnce(); expect(settings).toHaveBeenCalledOnce(); expect(start).not.toHaveBeenCalled();
+    ui.buttons.find(button => button.text === "오류 상세 보기")!.press();
+    ui.nextRender();
+    expect(renderToStaticMarkup(React.createElement(ui.exports.QuizSessionHold, {
+      failure: "STORAGE_RECOVERY", canRetry: false, onBackup: backup, onSettings: settings, onStart: start,
+    }))).toContain("STORAGE_RECOVERY");
   });
 
   it("distinguishes content construction failure and disables an in-flight retry", () => {
@@ -59,8 +72,14 @@ describe("storage recovery controls preserve safe exits", () => {
       failure: "CONTENT_PREPARE", busy: true, onBackup: vi.fn(), onSettings: vi.fn(), onStart: vi.fn(),
     }));
     expect(html).toContain("문제를 구성하지 못했습니다");
-    expect(html).toContain("CONTENT_PREPARE");
+    expect(html).not.toContain("기록 확인이 필요해요");
+    expect(html).not.toContain("CONTENT_PREPARE");
     expect(ui.buttons.find(button => button.text === "저장 상태 확인 중…")?.disabled).toBe(true);
+    ui.buttons.find(button => button.text === "오류 상세 보기")!.press();
+    ui.nextRender();
+    expect(renderToStaticMarkup(React.createElement(ui.exports.QuizSessionHold, {
+      failure: "CONTENT_PREPARE", busy: true, onBackup: vi.fn(), onSettings: vi.fn(), onStart: vi.fn(),
+    }))).toContain("CONTENT_PREPARE");
   });
 
   it("hides a healthy notice and routes conflict recovery to backup without retry", () => {

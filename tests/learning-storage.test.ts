@@ -11,6 +11,7 @@ const storage = vi.hoisted(() => ({
   values: new Map<string, string>(),
   failWrite: false,
   failRead: false,
+  holdWrite: null as null | (() => Promise<void>),
 }));
 vi.mock("@react-native-async-storage/async-storage", () => ({
   default: {
@@ -27,6 +28,7 @@ vi.mock("@react-native-async-storage/async-storage", () => ({
     },
     async multiSet(entries: [string, string][]) {
       await Promise.resolve();
+      if (storage.holdWrite) await storage.holdWrite();
       if (storage.failWrite) throw new Error("quota exceeded");
       for (const [key, value] of entries) storage.values.set(key, value);
     },
@@ -43,10 +45,36 @@ beforeEach(async () => {
   storage.values.clear();
   storage.failWrite = false;
   storage.failRead = false;
+  storage.holdWrite = null;
   store = await import("@/lib/store");
 });
 
 describe("학습 기록의 공통 저장 경로", () => {
+  it('exports raw recovery bytes without waiting behind a stalled write queue', async () => {
+    storage.values.set('vocaknio_bookmarks', '[9]');
+    await store.loadBookmarks();
+    let release!: () => void;
+    storage.holdWrite = () => new Promise<void>(resolve => { release = resolve; });
+    const writing = store.toggleBookmark(1);
+    await vi.waitFor(() => expect(release).toBeTypeOf('function'));
+    let backup: Awaited<ReturnType<typeof store.exportLearningBackup>> | undefined;
+    const exporting = store.exportLearningBackup().then(value => { backup = value; });
+    try {
+      await vi.waitFor(() => expect(backup).toBeDefined());
+      expect(backup!.records.vocaknio_bookmarks).toBe('[9]');
+      expect(backup!.pending.vocaknio_bookmarks).toBe('[9,1]');
+      expect(storage.values.get('vocaknio_bookmarks')).toBe('[9]');
+    } finally { storage.holdWrite = null; release(); await writing; await exporting; }
+  });
+  it('identifies the affected record type without exposing or altering unreadable content', async () => {
+    storage.values.set('vocaknio_stats', '{private broken sentinel');
+    await store.loadStats();
+    expect(store.getLearningStorageRecovery().code).toBe('RECORD_FORMAT');
+    expect(store.getUnreadableLearningRecordNames()).toEqual(['학습 통계']);
+    const backup = await store.exportLearningBackup();
+    expect(backup.records.vocaknio_stats).toBe('{private broken sentinel');
+    expect(storage.values.get('vocaknio_stats')).toBe('{private broken sentinel');
+  });
   it("시작 실패 복구용 백업은 이전 변환 원문을 포함하고 journal을 실행하거나 기록을 쓰지 않는다", async () => {
     storage.values.set("vocaknio_vocab_v1_4_migration_backup", "{unreadable-original-backup");
     storage.values.set("vocaknio_learning_write_journal_v1", "{unreadable-journal");

@@ -1,5 +1,5 @@
 import { MIN_TOUCH_TARGET, SCROLL_END_PADDING, STUDY_CARD_PADDING, STUDY_PAGE_GUTTER } from "@/lib/layout";
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, useSyncExternalStore } from "react";
 import {
   View,
   Text,
@@ -47,6 +47,8 @@ import {
   markLearningTargetMastered,
   startLearningTargetAgain,
   toggleBookmark,
+  getLearningStorageIssue,
+  subscribeLearningStorage,
 } from "@/lib/store";
 import { getItemLearningTargets } from "@/lib/canonical-learning";
 import type { LearningStatus, SenseLearningState } from "@/lib/learning-state";
@@ -83,6 +85,7 @@ function WordCard({
   onPlayReveal,
   learningStatus,
   onLearningStatusPress,
+  readOnly = false,
 }: {
   item: DisplayWord;
   bookmarks: Set<number>;
@@ -93,9 +96,11 @@ function WordCard({
   onPlayReveal: () => void;
   learningStatus: LearningStatus;
   onLearningStatusPress: (item: VocabItem) => void;
+  readOnly?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [relationDetailsOpen, setRelationDetailsOpen] = useState(false);
+  const [duplicatesOpen, setDuplicatesOpen] = useState(false);
   const [meaningHidden, setMeaningHidden] = useState(maskMode);
   const isBookmarked = bookmarks.has(item.num);
   const s = cardStyles(colors);
@@ -145,9 +150,10 @@ function WordCard({
   const handleBookmark = useCallback(
     (e: any) => {
       e.stopPropagation?.();
+      if (readOnly) return;
       onToggleBookmark(item.num);
     },
-    [item.num, onToggleBookmark],
+    [item.num, onToggleBookmark, readOnly],
   );
 
   return (
@@ -161,6 +167,7 @@ function WordCard({
         <TouchableOpacity
           accessibilityRole="button"
           accessibilityLabel={`${item.w} ${isBookmarked ? "북마크 해제" : "북마크 추가"}`}
+          disabled={readOnly} accessibilityState={{ disabled: readOnly }}
           onPress={handleBookmark}
           style={s.bookmarkBtn}
           hitSlop={4}
@@ -208,6 +215,7 @@ function WordCard({
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={learningStatus === "MASTERED" ? `${item.w} 다시 학습` : `${item.w} 마스터`}
+          disabled={readOnly} accessibilityState={{ disabled: readOnly }}
           onPress={() => onLearningStatusPress(getVocabItem(item.num) ?? item)}
           style={({ pressed }) => [s.learningStateButton, pressed && { opacity: 0.65 }]}
         >
@@ -249,6 +257,14 @@ function WordCard({
       </View>}
       {!meaningHidden && <BookLearningDetails entry={item.book} />}
       {!meaningHidden && <LearningDetails itemId={item.id} />}
+      {!!item.displayDuplicates?.length && <>
+        <Pressable accessibilityRole="button" accessibilityState={{ expanded: duplicatesOpen }} onPress={() => setDuplicatesOpen(value => !value)} style={s.expandButton}>
+          <Text style={s.expandHint}>같은 내용 {item.displayDuplicates.length + 1}개 · {duplicatesOpen ? '접기' : '각 기록 보기'}</Text>
+        </Pressable>
+        {duplicatesOpen && item.displayDuplicates.map(duplicate => <WordCard key={duplicate.id} item={duplicate} bookmarks={bookmarks}
+          onToggleBookmark={onToggleBookmark} colors={colors} maskMode={maskMode} onPlayHide={onPlayHide} onPlayReveal={onPlayReveal}
+          learningStatus={learningStatus} onLearningStatusPress={onLearningStatusPress} readOnly={readOnly} />)}
+      </>}
     </View>
   );
 }
@@ -376,6 +392,7 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
 // ─── 메인 화면 ────────────────────────────────────────────────────────────────
 export default function WordbookScreen() {
   const colors = useColors();
+  const storageIssue = useSyncExternalStore(subscribeLearningStorage, getLearningStorageIssue, () => null);
 
   const [edition, setEdition] = useState(getActiveBookEdition() ?? BOOK_EDITION);
   const VOCAB = useStudyVocab();
@@ -419,11 +436,12 @@ export default function WordbookScreen() {
   }, [revealPlayer]);
 
   useFocusEffect(useCallback(() => {
-    loadBookmarks().then((arr) => setBookmarks(new Set(arr)));
-    loadSenseLearningState().then(setLearningState);
+    loadBookmarks().then((arr) => setBookmarks(new Set(arr))).catch(() => undefined);
+    loadSenseLearningState().then(setLearningState).catch(() => undefined);
   }, []));
 
   const handleLearningStatusPress = useCallback(async (item: VocabItem) => {
+    if (getLearningStorageIssue()) return;
     const targets = getItemLearningTargets(item);
     if (targets.length !== 1) return;
     const current = learningState?.targets[targets[0].key]?.status ?? "NEW";
@@ -434,6 +452,7 @@ export default function WordbookScreen() {
   }, [learningState]);
 
   const handleToggleBookmark = useCallback(async (num: number) => {
+    if (getLearningStorageIssue()) return;
     if (Platform.OS !== "web") {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
@@ -443,14 +462,15 @@ export default function WordbookScreen() {
 
   const practiceScope = useMemo(() => ({ rangeId: RANGE_OPTIONS[selectedRange].id, concept, query: searchQuery,
     bookmarksOnly: showOnlyBookmarks, includeMastered: showMastered }), [selectedRange, concept, searchQuery, showOnlyBookmarks, showMastered]);
+  const practiceItems = useMemo(() => VOCAB.length ? getWordbookPracticeItems(practiceScope, bookmarks, learningState) : [],
+    [practiceScope, bookmarks, learningState, VOCAB]);
   const filteredVocab = useMemo(() => {
-    const list = VOCAB.length ? getWordbookPracticeItems(practiceScope, bookmarks, learningState) : [];
-    const rows = arrangeWordbook(list, item => JSON.stringify([
+    const rows = arrangeWordbook(practiceItems, item => JSON.stringify([
       bookmarks.has(item.num),
-      getItemLearningTargets(item).map(target => [target.key, learningState?.targets[target.key] ?? null]),
+      getItemLearningTargets(item).map(target => [item.localBook ? 'local' : target.key, learningState?.targets[target.key] ?? null]),
     ]), edition.privateContent);
     return isShuffled ? shuffle(rows) : rows;
-  }, [practiceScope, bookmarks, isShuffled, learningState, edition, VOCAB]);
+  }, [practiceItems, bookmarks, isShuffled, learningState, edition]);
 
   const renderRecord = useCallback(
     (item: DisplayWord) => (
@@ -464,9 +484,10 @@ export default function WordbookScreen() {
         onPlayReveal={playReveal}
         learningStatus={learningState?.targets[getItemLearningTargets(item)[0]?.key]?.status ?? "NEW"}
         onLearningStatusPress={handleLearningStatusPress}
+        readOnly={!!storageIssue}
       />
     ),
-    [bookmarks, handleLearningStatusPress, handleToggleBookmark, colors, learningState, maskMode, playHide, playReveal],
+    [bookmarks, handleLearningStatusPress, handleToggleBookmark, colors, learningState, maskMode, playHide, playReveal, storageIssue],
   );
 
   const renderItem = useCallback(({ item }: { item: DisplayWord }) => renderRecord(item), [renderRecord]);
@@ -706,8 +727,9 @@ export default function WordbookScreen() {
           {maskMode ? " · 플래시카드 모드" : ""}
         </Text>
       </View>
-      <WordbookPractice scope={practiceScope} label={getRangeChipLabel(activeRange)} availableCount={filteredVocab.length}
-        hasLocalContent={filteredVocab.some(item => item.localBook)} />
+      {storageIssue ? <Text style={{ color: colors.muted, paddingHorizontal: STUDY_PAGE_GUTTER, paddingBottom: 12 }}>단어장은 계속 볼 수 있어요. 기록 변경은 복구 후에 가능합니다.</Text>
+        : <WordbookPractice scope={practiceScope} label={getRangeChipLabel(activeRange)} items={practiceItems} learningState={learningState}
+          hasLocalContent={practiceItems.some(item => item.localBook)} />}
     </>
   );
 

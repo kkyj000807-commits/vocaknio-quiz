@@ -211,6 +211,17 @@ export function getQuizStorageIssue(): string | null {
   return getLearningStorageIssue([STATS_KEY, WRONG_WORDS_KEY, MASTERED_KEY, ADAPTIVE_QUIZ_HISTORY_KEY,
     SENSE_LEARNING_STATE_KEY, QUIZ_SESSION_KEY, QUIZ_SESSION_ARCHIVE_KEY]);
 }
+
+/** Names only: useful on a tablet screenshot, never raw answers or private text. */
+export function getUnreadableLearningRecordNames(): string[] {
+  const names: Record<string, string> = {
+    [STATS_KEY]: '학습 통계', [WRONG_WORDS_KEY]: '오답', [MASTERED_KEY]: 'MASTER',
+    [BOOKMARKS_KEY]: '북마크', [STUDY_TIME_KEY]: '학습 시간',
+    [ADAPTIVE_QUIZ_HISTORY_KEY]: '출제 기록', [SENSE_LEARNING_STATE_KEY]: '의미별 학습',
+    [QUIZ_SESSION_KEY]: '이어 풀기', [QUIZ_SESSION_ARCHIVE_KEY]: '이전 풀이 보관함',
+  };
+  return [...corruptLearningKeys].map(key => names[key] ?? '학습 기록');
+}
 function notifyLearningStorage() {
   if (!getLearningStorageIssue()) { storageFailureCode = null; recoveryAttempts = 0; }
   learningStorageListeners.forEach((listener) => listener());
@@ -382,8 +393,9 @@ function enqueueLearningStorageTask<T>(task: () => Promise<T>, recover = true, l
 /** User-requested local export only. Never enumerate storage/auth keys. Raw
  * unreadable values and pending writes are preserved separately for recovery.
  */
-export function exportLearningBackup(): Promise<LearningBackup> {
-  return enqueueLearningStorageTask(async () => {
+export async function exportLearningBackup(): Promise<LearningBackup> {
+  // A stalled write queue must not prevent emergency export. readSnapshot is
+  // atomic; pending intents remain separate and are never auto-restored.
     const records: LearningBackup["records"] = {};
     const unreadableKeys: string[] = [];
     const allKeys = [...BACKUP_RECORD_KEYS, "vocaknio_vocab_storage_version", LEARNING_WRITE_JOURNAL_KEY, VOCAB_STORAGE_BACKUP_KEY];
@@ -414,7 +426,6 @@ export function exportLearningBackup(): Promise<LearningBackup> {
       records, pending: Object.fromEntries([...pendingLearningWrites].filter(([key]) => BACKUP_RECORD_KEYS.includes(key))), recoveryJournal, migrationBackup, unreadableKeys,
       ...(pendingAnswerInputs.size ? { pendingResponses: [...pendingAnswerInputs.values()] } : {}),
       ...(Object.keys(recoverySources).length ? { recoverySources } : {}) };
-  }, false, false); // readSnapshot is atomic; a busy other tab must not lock out emergency export.
 }
 
 export function inspectLearningBackup(text: string): Promise<LearningBackupPreview> {

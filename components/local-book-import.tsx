@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Platform, Pressable, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useColors } from '@/hooks/use-colors';
 import { BOOK_EDITION, type BookEdition } from '@/lib/book-edition';
 import { inspectLocalBook, loadLocalBook, saveLocalBook, LOCAL_BOOK_MAX_BYTES, localBookFailureMessage } from '@/lib/local-book-file';
@@ -7,6 +8,7 @@ import { activateLocalBook, getActiveBookEdition } from '@/lib/integrated-wordbo
 
 export function LocalBookImport({ onLoaded, collapsible = false }: { onLoaded: (data: BookEdition) => void; collapsible?: boolean }) {
   const colors = useColors();
+  const router = useRouter();
   const [busy, setBusy] = useState(true);
   const [message, setMessage] = useState('저장된 교재 확인 중…');
   const [candidate, setCandidate] = useState<{ raw: string; data: BookEdition } | null>(null);
@@ -21,7 +23,7 @@ export function LocalBookImport({ onLoaded, collapsible = false }: { onLoaded: (
     void (!readAttempt && getActiveBookEdition() ? Promise.resolve(getActiveBookEdition()) : loadLocalBook()).then(data => {
       if (!active) return;
       if (data) { activateLocalBook(data); onLoaded(data); setMessage(`단어·숙어 ${data.entries.length.toLocaleString()}개 불러옴`); }
-      else setMessage('저장된 교재가 없습니다. 사용하던 브라우저를 확인하거나 교재 파일을 불러오세요.');
+      else setMessage('이 브라우저에 교재가 없어요. 교재 파일을 불러와 주세요. 학습 기록과는 별개입니다.');
     }).catch(error => { if (active) { setReadFailed(true); setMessage(localBookFailureMessage(error)); } })
       .finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
@@ -56,7 +58,9 @@ export function LocalBookImport({ onLoaded, collapsible = false }: { onLoaded: (
     <Text accessibilityLiveRegion="polite" style={{ color: colors.foreground, lineHeight: 21 }}>{message}</Text>
     {readFailed && button('다시 불러오기', () => setReadAttempt(value => value + 1))}
     {expanded && <>
-    <Text style={{ color: colors.muted, lineHeight: 21 }}>교재는 서버에 보내지 않고 이 브라우저에만 보관합니다. 학습 기록과는 따로 저장됩니다. 다른 기기·브라우저에서는 파일을 다시 불러오세요. 데이터 삭제·비공개 모드·저장공간 정리로 사라질 수 있으니 원본 파일과 학습 기록 백업을 보관하세요.</Text>
+    <Text style={{ color: colors.muted, lineHeight: 21 }}>교재는 이 브라우저에만 저장됩니다. 다른 기기에서는 같은 파일을 불러오세요. 학습 기록은 아래 ‘기록 백업·복원’으로 따로 옮깁니다.</Text>
+    <Text style={{ color: colors.muted, lineHeight: 21 }}>사이트 데이터를 지우지 마세요. 비공개 모드·저장공간 정리에 대비해 교재 원본과 기록 백업을 보관하세요.</Text>
+    {button('기록 백업·복원', () => router.push('/(tabs)/settings'))}
     <input type="file" accept="application/json,.json" aria-label="v1.5 개인 학습자료 파일 선택" disabled={busy}
       onChange={event => { void select(event); }} style={{ maxWidth: '100%', color: colors.foreground }} />
     {candidate && <View>

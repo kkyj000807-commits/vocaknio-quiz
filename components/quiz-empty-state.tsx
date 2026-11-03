@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { useColors } from "@/hooks/use-colors";
@@ -51,15 +51,23 @@ const PREPARATION_MESSAGES: Record<QuizPreparationFailure, string> = {
   STORAGE_RECOVERY: "저장·복구 상태를 확인해야 합니다. 해결되지 않은 기록은 덮어쓰지 않습니다.",
 };
 
-export function QuizSessionHold({ onStart, onBackup, onSettings, failure = "SESSION_READ", issue, canRetry = true, busy = false }: {
+export function QuizSessionHold({ onStart, onBackup, onSettings, onWordbook, failure = "SESSION_READ", issue, canRetry = true, busy = false }: {
   onStart: () => void; onBackup: () => void; onSettings: () => void;
+  onWordbook?: () => void;
   failure?: QuizPreparationFailure; issue?: string | null; canRetry?: boolean; busy?: boolean;
 }) {
   const s = styles(useColors());
+  const [details, setDetails] = useState(false);
+  const contentFailure = failure === "CONTENT_PREPARE" && !issue;
   return <ScrollView contentContainerStyle={s.container}>
-    <Text style={s.title}>학습을 준비하지 못했습니다</Text>
-    <Text accessibilityLiveRegion="polite" style={s.note}>{issue || PREPARATION_MESSAGES[failure]} ({failure})</Text>
+    <Text style={s.title}>{contentFailure ? "문제를 구성하지 못했습니다" : "기록 확인이 필요해요"}</Text>
+    <Text accessibilityLiveRegion="polite" style={s.note}>{contentFailure
+      ? "범위와 유형을 확인해 주세요. 단어장은 계속 볼 수 있습니다."
+      : "풀이 저장은 잠시 멈췄어요. 단어·뜻·예문은 단어장에서 계속 볼 수 있습니다."}</Text>
     <Text style={s.note}>이전 기록은 다시 채점하거나 삭제하지 않습니다.</Text>
+    {onWordbook && <Pressable accessibilityRole="button" accessibilityLabel="단어장으로 계속" style={s.button} onPress={onWordbook}>
+      <Text style={s.buttonText}>단어장으로 계속</Text>
+    </Pressable>}
     {canRetry && <Pressable accessibilityRole="button" accessibilityLabel="저장 확인 후 다시 시도"
       accessibilityState={{ disabled: busy, busy }} disabled={busy} style={s.button} onPress={onStart}>
       <Text style={s.buttonText}>{busy ? "저장 상태 확인 중…" : "다시 시도"}</Text>
@@ -70,6 +78,10 @@ export function QuizSessionHold({ onStart, onBackup, onSettings, failure = "SESS
     <Pressable accessibilityRole="button" accessibilityLabel="문제 풀이 설정으로 돌아가기" style={s.settingsButton} onPress={onSettings}>
       <Text style={s.settingsText}>문제 풀이 설정으로 돌아가기</Text>
     </Pressable>
+    <Pressable accessibilityRole="button" accessibilityState={{ expanded: details }} accessibilityLabel="준비 오류 상세" style={s.settingsButton} onPress={() => setDetails(value => !value)}>
+      <Text style={s.settingsText}>오류 상세 {details ? '접기' : '보기'}</Text>
+    </Pressable>
+    {details && <Text selectable style={s.note}>{issue || PREPARATION_MESSAGES[failure]} ({failure})</Text>}
   </ScrollView>;
 }
 

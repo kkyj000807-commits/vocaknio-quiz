@@ -3,14 +3,14 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, expect, it, vi } from "vitest";
 import { LearningBackupSettings } from "@/components/learning-backup-settings";
 
-const ui = vi.hoisted(() => ({ index: 0, expanded: true, preview: null as unknown, messages: [] as unknown[], buttons: [] as { label: string; disabled: boolean; press: () => void }[] }));
+const ui = vi.hoisted(() => ({ index: 0, expanded: true, preview: null as unknown, download: null as { url: string; name: string } | null, messages: [] as unknown[], buttons: [] as { label: string; disabled: boolean; press: () => void }[] }));
 const store = vi.hoisted(() => ({ restore: vi.fn(), inspect: vi.fn(), export: vi.fn() }));
 vi.mock("@/lib/store", () => ({ restoreLearningBackup: store.restore, inspectLearningBackup: store.inspect, exportLearningBackup: store.export }));
 vi.mock("react", async importOriginal => {
   const actual = await importOriginal<typeof import("react")>();
   return { ...actual, useState: () => {
     const index = ui.index++;
-    return [[ui.expanded, false, "", ui.preview][index], (value: unknown) => { if (index === 2) ui.messages.push(value); }];
+    return [[ui.expanded, false, "", ui.preview, ui.download][index], (value: unknown) => { if (index === 2) ui.messages.push(value); }];
   } };
 });
 vi.mock("react-native", () => {
@@ -21,8 +21,18 @@ vi.mock("react-native", () => {
   return { Platform: { OS: "web" }, View: element("div"), Text: element("span"), Pressable: element("button") };
 });
 vi.mock("@/hooks/use-colors", () => ({ useColors: () => ({ foreground: "#222", muted: "#666", primary: "#536", card: "#fff" }) }));
-beforeEach(() => { ui.index = 0; ui.expanded = true; ui.preview = null; ui.messages = []; ui.buttons = []; store.restore.mockReset(); store.inspect.mockReset(); store.export.mockReset(); });
+beforeEach(() => { ui.index = 0; ui.expanded = true; ui.preview = null; ui.download = null; ui.messages = []; ui.buttons = []; store.restore.mockReset(); store.inspect.mockReset(); store.export.mockReset(); });
 const preview = { backup: { createdAt: "2026-10-12T15:00:00Z" }, entries: [["fixture", "[]"]], conflicts: [], unchanged: 7 };
+
+it("keeps a real manual download link when a browser blocks the automatic download", () => {
+  ui.download = { url: "blob:synthetic-backup", name: "FINETUNE-learning-fixture.json" };
+  const html = renderToStaticMarkup(<LearningBackupSettings exportOnly />);
+  expect(html).toContain('href="blob:synthetic-backup"');
+  expect(html).toContain('download="FINETUNE-learning-fixture.json"');
+  expect(html).toContain("파일 직접 저장");
+  expect(store.restore).not.toHaveBeenCalled();
+  expect(store.export).not.toHaveBeenCalled();
+});
 
 it("makes startup export reachable without offering restore writes before migration is ready", () => {
   ui.preview = preview;

@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useRouter, type Href } from 'expo-router';
 import { useColors } from '@/hooks/use-colors';
-import { COUNTS, DEFAULT_QUIZ_MODE, QUIZ_MODES, type QuizMode } from '@/lib/vocab';
+import { COUNTS, DEFAULT_QUIZ_MODE, QUIZ_MODES, type QuizMode, type VocabItem } from '@/lib/vocab';
+import type { SenseLearningState } from '@/lib/learning-state';
+import { useWordbookPractice } from '@/hooks/use-wordbook-practice';
 import { buildWordbookPracticeHref, type WordbookPracticeScope } from '@/lib/wordbook-practice';
 import { MIN_TOUCH_TARGET, STUDY_PAGE_GUTTER } from '@/lib/layout';
 
-export function WordbookPractice({ scope, label, availableCount, hasLocalContent }: {
-  scope: WordbookPracticeScope; label: string; availableCount: number; hasLocalContent: boolean;
+export function WordbookPractice({ scope, label, items, learningState, hasLocalContent }: {
+  scope: WordbookPracticeScope; label: string; items: readonly VocabItem[]; learningState: SenseLearningState | null; hasLocalContent: boolean;
 }) {
   const colors = useColors();
   const router = useRouter();
@@ -17,7 +19,9 @@ export function WordbookPractice({ scope, label, availableCount, hasLocalContent
   const [count, setCount] = useState(10);
   const [mode, setMode] = useState<QuizMode>(DEFAULT_QUIZ_MODE);
   const selected = QUIZ_MODES.find(option => option.id === mode)!;
-  const actualCount = Math.min(count, availableCount);
+  const availability = useWordbookPractice(open, items, learningState, scope.includeMastered);
+  const available = availability.counts[mode];
+  const actualCount = Math.min(count, available ?? 0);
   const chip = (active: boolean) => [styles.chip, { backgroundColor: active ? colors.primary : colors.surface, borderColor: active ? colors.primary : colors.border }];
   return <View style={styles.container}>
     <Pressable accessibilityRole="button" accessibilityLabel="이 범위 학습 설정" accessibilityState={{ expanded: open }}
@@ -38,9 +42,10 @@ export function WordbookPractice({ scope, label, availableCount, hasLocalContent
       </Pressable>
       {typesOpen && <>
         <View style={styles.row}>{QUIZ_MODES.filter(option => option.primary || othersOpen).map(option => <Pressable key={option.id}
-          accessibilityRole="button" accessibilityLabel={`${option.title} 선택`} accessibilityState={{ selected: mode === option.id }}
-          onPress={() => setMode(option.id)} style={chip(mode === option.id)}>
-          <Text style={{ color: mode === option.id ? '#fff' : colors.foreground }}>{option.title}</Text>
+          accessibilityRole="button" accessibilityLabel={`${option.title} 선택`} accessibilityState={{ selected: mode === option.id, disabled: availability.counts[option.id] === 0 }}
+          disabled={availability.counts[option.id] === 0}
+          onPress={() => { if (availability.counts[option.id] !== 0) setMode(option.id); }} style={[chip(mode === option.id), { opacity: availability.counts[option.id] === 0 ? 0.45 : 1 }]}>
+          <Text style={{ color: mode === option.id ? '#fff' : colors.foreground }}>{option.title}{availability.counts[option.id] === 0 ? ' · 없음' : ''}</Text>
         </Pressable>)}</View>
         <Pressable accessibilityRole="button" accessibilityLabel="그 외 문제 유형" accessibilityState={{ expanded: othersOpen }}
           onPress={() => setOthersOpen(value => !value)} style={styles.toggle}>
@@ -48,12 +53,14 @@ export function WordbookPractice({ scope, label, availableCount, hasLocalContent
         </Pressable>
       </>}
       {hasLocalContent && <Text style={[styles.note, { color: colors.muted }]}>교재의 새 단어는 ‘빠른 암기’로 학습할 수 있어요. 자동채점은 검수된 단어만 사용합니다.</Text>}
-      <Text style={[styles.note, { color: colors.muted }]}>현재 필터를 적용합니다. 출제 가능한 문제가 적으면 그 수만큼 학습합니다.</Text>
+      <Text accessibilityLiveRegion="polite" style={[styles.note, { color: colors.muted }]}>{availability.failed ? '문제 수를 확인하지 못했어요. 학습 설정을 닫았다 다시 열어 주세요.'
+        : available === undefined ? '출제 가능한 문제 확인 중…' : available === 0 ? '이 범위에는 해당 유형의 문제가 없어요. 다른 유형을 선택해 주세요.'
+        : actualCount < count ? `이 범위에서는 ${actualCount}문제를 풀 수 있어요.` : `현재 범위에서 ${actualCount}문제를 풉니다.`}</Text>
       <Pressable accessibilityRole="button" accessibilityLabel={`${selected.title} ${actualCount}문제 시작`}
         accessibilityState={{ disabled: actualCount === 0 }} disabled={actualCount === 0}
         onPress={() => { if (actualCount > 0) router.push(buildWordbookPracticeHref(scope, mode, actualCount) as Href); }}
         style={[styles.start, { backgroundColor: colors.primary, opacity: actualCount ? 1 : 0.45 }]}>
-        <Text style={styles.startText}>{actualCount ? `학습 시작 · ${actualCount}문제` : '학습할 단어가 없어요'}</Text>
+        <Text style={styles.startText}>{actualCount ? `학습 시작 · ${actualCount}문제` : available === undefined ? '확인 중…' : '이 유형의 문제가 없어요'}</Text>
       </Pressable>
     </View>}
   </View>;

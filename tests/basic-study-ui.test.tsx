@@ -42,6 +42,15 @@ it("offers retry, backup and a way back only for failed session preparation", ()
   expect(onSettings).toHaveBeenCalledOnce();
 });
 
+it('keeps reading reachable during a record hold without grading or discarding records', () => {
+  native.buttons.length = 0;
+  const read = vi.fn(); const start = vi.fn();
+  const html = renderToStaticMarkup(<QuizSessionHold onStart={start} onBackup={vi.fn()} onSettings={vi.fn()} onWordbook={read} canRetry={false} issue="private diagnostic sentinel" />);
+  expect(html).toContain('단어·뜻·예문'); expect(html).not.toContain('private diagnostic sentinel');
+  native.buttons.find(button => button.label === '단어장으로 계속')!.press();
+  expect(read).toHaveBeenCalledOnce(); expect(start).not.toHaveBeenCalled();
+});
+
 describe("explicit basic-meaning study from an empty ordinary session", () => {
   beforeEach(() => { native.buttons.length = 0; });
 

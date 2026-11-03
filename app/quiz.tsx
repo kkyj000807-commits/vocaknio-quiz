@@ -79,21 +79,17 @@ import {
 } from "@/lib/store";
 import {
   getItemLearningTargets,
-  getQuizLearningTargets,
   getQuestionLearningTargetKey,
   parseLearningReviewKeys,
 } from "@/lib/canonical-learning";
 import {
   getLearningTargetState,
-  learningPriority,
-  masteredTargetKeys,
 } from "@/lib/learning-state";
 import { getMnemonicVisual } from "@/lib/mnemonic-visual";
 import { useColors } from "@/hooks/use-colors";
 import { useQuestionTimer } from "@/hooks/use-question-timer";
 import { selectAdaptiveItemNums } from "@/lib/adaptive-quiz";
-import { ADAPTIVE_POLICY } from "@/lib/learning-analytics";
-import { getWordbookPracticeItems, parseWordbookPracticeRequest } from "@/lib/wordbook-practice";
+import { getWordbookPracticeItems, parseWordbookPracticeRequest, inspectWordbookPractice, practiceCandidate, practiceMasteredKeys } from "@/lib/wordbook-practice";
 import { classifyQuizSwipe, getNextQuizIndex, canReorderQuizQuestion } from "@/lib/quiz-navigation";
 import {
   createEmptyQuestionViewState,
@@ -281,10 +277,7 @@ export default function QuizScreen() {
       if (cancelled) return;
       // Fresh MASTER is protected for one day, not excluded forever. Older
       // MASTER rejoins the pool with a low, time-dependent sampling weight.
-      const masteredKeys = selectedScope?.includeMastered ? [] : [...masteredTargetKeys(learningState)].filter(key => {
-        const state = getLearningTargetState(learningState, key);
-        return state.lastStudiedAt > 0 && Date.now() - state.lastStudiedAt < ADAPTIVE_POLICY.masterProtectionMs;
-      });
+      const masteredKeys = practiceMasteredKeys(learningState, selectedScope?.includeMastered);
 
       // Re-resolve the exact displayed section/filter without putting thousands
       // of IDs in the URL or silently truncating the selected pool to 200 rows.
@@ -309,7 +302,9 @@ export default function QuizScreen() {
         allowMeaningFallback: false,
       } as const;
       failureStage = "CONTENT_PREPARE";
-      const candidates = getQuizCandidateItems(baseOptions);
+      const prepared = selectedScope ? await inspectWordbookPractice(baseOptions, learningState, Infinity, () => cancelled) : undefined;
+      if (cancelled) return;
+      const candidates = prepared ? [...prepared.questions.values()].map(question => question.item) : getQuizCandidateItems(baseOptions);
       const sessionId = `problem-${Date.now().toString(36)}-${Math.random()
         .toString(36)
         .slice(2, 10)}`;
@@ -319,27 +314,13 @@ export default function QuizScreen() {
         sessionId,
         rangeId: rangeId || "custom",
         mode,
-        candidates: candidates.map((item) => {
-          const targets = getQuizLearningTargets(item, mode).filter(target => !reviewKeys.length || reviewKeys.includes(target.key));
-          const rankedTargets = targets
-            .map(target => ({ target, score: learningPriority(getLearningTargetState(learningState, target.key)) }))
-            .sort((left, right) => right.score - left.score);
-          return {
-            num: item.num,
-            conceptId: item.conceptId,
-            word: item.w,
-            learningKey: rankedTargets[0]?.target.key,
-            learningPriority: rankedTargets[0]?.score ?? 0,
-            learningStatus: rankedTargets[0] ? getLearningTargetState(learningState, rankedTargets[0].target.key).status : "NEW",
-            lastStudiedAt: rankedTargets[0] ? getLearningTargetState(learningState, rankedTargets[0].target.key).lastStudiedAt : 0,
-          };
-        }),
+        candidates: candidates.map(item => practiceCandidate(item, mode, learningState, reviewKeys)),
         count,
       });
       if (cancelled) return;
 
       failureStage = "CONTENT_PREPARE";
-      const nextQuestions = buildQuizQuestions({
+      const nextQuestions = prepared ? selectedNums.flatMap(num => prepared.questions.get(num) ?? []) : buildQuizQuestions({
         ...baseOptions,
         itemNums: selectedNums,
         preserveItemOrder: true,
@@ -994,6 +975,7 @@ export default function QuizScreen() {
           failure={preparationFailure} issue={quizStorageIssue}
           canRetry={!quizStorageIssue || canRetryStorage} busy={recoveryBusy}
           onBackup={() => router.push("/(tabs)/settings")}
+          onWordbook={() => router.replace("/(tabs)/wordbook")}
           onSettings={() => router.replace("/")}
           onStart={() => { void retryPreparation(); }} /> : <QuizEmptyState ready={questionsReady}
           request={{ mode, choiceLang, rangeId, rangeStart, rangeEnd, count,

@@ -132,14 +132,28 @@ export function createLearningStorageAdapter(
       let value: T;
       let hasValue = false;
       let failure: Error | undefined;
+      let settled = false;
+      const fail = (error: Error) => {
+        if (settled) return;
+        settled = true; clearTimeout(timer); transactions.delete(tx); reject(error);
+      };
       const abort = (error: Error) => {
         failure = error;
-        try { tx.abort(); } catch { clearTimeout(timer); transactions.delete(tx); reject(error); }
+        try { tx.abort(); } catch { /* already ended; do not report a commit */ }
+        // Some suspended browser connections never deliver onabort. The caller
+        // still needs a bounded failure and must retain its uncommitted record.
+        fail(error);
       };
-      const timer = setTimeout(() => abort(new LearningStorageError("indexeddb-transaction-timeout")), 10000);
-      tx.onabort = () => { clearTimeout(timer); transactions.delete(tx); reject(failure ?? storageError(tx.error, "indexeddb-transaction-aborted")); };
+      const timer = setTimeout(() => {
+        opening = undefined; ready = undefined;
+        abort(new LearningStorageError("indexeddb-transaction-timeout"));
+        db.close();
+      }, 10000);
+      tx.onabort = () => fail(failure ?? storageError(tx.error, "indexeddb-transaction-aborted"));
       tx.onerror = () => { failure ??= storageError(tx.error, "indexeddb-request-failed"); };
       tx.oncomplete = () => {
+        if (settled) return;
+        settled = true;
         clearTimeout(timer);
         transactions.delete(tx);
         try {

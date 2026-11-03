@@ -1,7 +1,49 @@
 import { bookStudyDetails } from '@/lib/book-edition';
-import { excludeFullyMasteredItems } from '@/lib/canonical-learning';
-import type { SenseLearningState } from '@/lib/learning-state';
-import { getRangeItems, QUIZ_MODES, WORDBOOK_RANGES, type QuizMode } from '@/lib/vocab';
+import { excludeFullyMasteredItems, getQuizLearningTargets } from '@/lib/canonical-learning';
+import { getLearningTargetState, learningPriority, masteredTargetKeys, type SenseLearningState } from '@/lib/learning-state';
+import { ADAPTIVE_POLICY } from '@/lib/learning-analytics';
+import { inspectQuizQuestions, type BuildQuizOptions, type QuizQuestion } from '@/lib/quiz-engine';
+import { getRangeItems, QUIZ_MODES, WORDBOOK_RANGES, type QuizMode, type VocabItem } from '@/lib/vocab';
+
+export function practiceMasteredKeys(state: SenseLearningState, includeMastered = false, now = Date.now()) {
+  return includeMastered ? [] : [...masteredTargetKeys(state)].filter(key => {
+    const target = getLearningTargetState(state, key);
+    return target.lastStudiedAt > 0 && now - target.lastStudiedAt < ADAPTIVE_POLICY.masterProtectionMs;
+  });
+}
+
+/** Shared ranking identity: counts must follow the selector's existing dedup contract. */
+export function practiceCandidate(item: VocabItem, mode: QuizMode, state: SenseLearningState, reviewKeys: string[] = []) {
+  const ranked = getQuizLearningTargets(item, mode).filter(target => !reviewKeys.length || reviewKeys.includes(target.key))
+    .map(target => ({ target, score: learningPriority(getLearningTargetState(state, target.key)) }))
+    .sort((a, b) => b.score - a.score);
+  const target = ranked[0] && getLearningTargetState(state, ranked[0].target.key);
+  return { num: item.num, conceptId: item.conceptId, word: item.w, learningKey: ranked[0]?.target.key,
+    learningPriority: ranked[0]?.score ?? 0, learningStatus: target?.status ?? 'NEW', lastStudiedAt: target?.lastStudiedAt ?? 0 };
+}
+
+/** Read-only preflight. No session, history, storage writes or automatic fallback. */
+export async function inspectWordbookPractice(options: BuildQuizOptions, state: SenseLearningState,
+  limit = Infinity, cancelled: () => boolean = () => false) {
+  const questions = new Map<number, QuizQuestion>();
+  const keys = new Set<string>();
+  const words = new Set<string>();
+  let visited = 0;
+  for (const question of inspectQuizQuestions(options)) {
+    if (cancelled()) return null;
+    if (question) {
+      const candidate = practiceCandidate(question.item, options.mode, state);
+      const word = candidate.word.trim().toLowerCase().replace(/\s+/g, ' ');
+      const key = candidate.learningKey?.trim() || word || `num:${candidate.num}`;
+      if (!keys.has(key) && (!word || !words.has(word))) { keys.add(key); if (word) words.add(word); }
+      questions.set(question.item.num, question);
+      if (keys.size >= limit) break;
+    }
+    // Keep long, sparse/private sections responsive and cancel obsolete filters.
+    if (++visited % 100 === 0) await new Promise<void>(resolve => setTimeout(resolve, 0));
+  }
+  return cancelled() ? null : { count: keys.size, questions };
+}
 
 /** A filter, not another vocabulary/learning store or a truncated ID snapshot. */
 export type WordbookPracticeScope = {

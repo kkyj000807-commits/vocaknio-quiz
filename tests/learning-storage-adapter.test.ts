@@ -122,6 +122,26 @@ function fixture() {
 }
 
 describe("web learning storage adapter", () => {
+  it('settles a timed-out write even when the browser omits its abort event, preserving records', async () => {
+    const f = fixture(); f.raw.set(STATS, 'original'); await f.adapter.getItem(STATS);
+    vi.useFakeTimers();
+    try {
+      f.db.pauseCommit = true;
+      let result = 'pending';
+      void f.adapter.setItem(STATS, 'uncommitted').then(() => { result = 'success'; }, error => { result = error.message; });
+      await vi.advanceTimersByTimeAsync(0);
+      const tx = f.db.queue[0]; const abort = tx.abort.bind(tx); const lateComplete = tx.oncomplete;
+      tx.abort = () => { tx.onabort = undefined; abort(); };
+      await vi.advanceTimersByTimeAsync(10_000);
+      expect(result).toBe('indexeddb-transaction-timeout');
+      lateComplete?.(); expect(result).toBe('indexeddb-transaction-timeout');
+      expect(f.db.data.get(STATS)).toBe('original'); expect(f.raw.get(STATS)).toBe('original');
+      f.db.pauseCommit = false;
+      const recovered = f.adapter.getItem(STATS);
+      await vi.advanceTimersByTimeAsync(0);
+      expect(await recovered).toBe('original');
+    } finally { vi.useRealTimers(); }
+  });
   it("copies exact raw bytes and nulls atomically without editing legacy records", async () => {
     const f = fixture(); f.raw.set(STATS, " { broken but preserved }"); f.raw.set(WRONG, "[1, 2]");
     expect(await f.adapter.getItem(STATS)).toBe(" { broken but preserved }");

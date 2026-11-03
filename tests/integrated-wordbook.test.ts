@@ -2,12 +2,13 @@ import { afterEach, describe, expect, it } from 'vitest';
 import fs from 'node:fs';
 import { createIntegratedWordbook, localBookIdentity } from '../lib/integrated-wordbook';
 import { arrangeWordbook } from '../lib/wordbook-display';
-import { VOCAB, WORDBOOK_VOCAB, getVocabItem, getRangeItems, RANGES, registerStudyItems, type VocabItem } from '../lib/vocab';
+import { VOCAB, VOCAB_BY_NUM, WORDBOOK_VOCAB, getVocabItem, getRangeItems, RANGES, registerStudyItems, type VocabItem } from '../lib/vocab';
 import { getItemLearningTargets, getQuestionLearningTargetKey } from '../lib/canonical-learning';
 import { buildQuizQuestions, getQuizCandidateItems, validateQuestion } from '../lib/quiz-engine';
 import { createEmptyQuestionViewState, parseQuizSession, isQuizSessionContentCurrent } from '../lib/quiz-session';
 import type { BookEdition, BookEntry } from '../lib/book-edition';
-import { buildWordbookPracticeHref, getWordbookPracticeItems, parseWordbookPracticeRequest, parseWordbookPracticeScope, type WordbookPracticeScope } from '../lib/wordbook-practice';
+import { buildWordbookPracticeHref, getWordbookPracticeItems, parseWordbookPracticeRequest, parseWordbookPracticeScope, inspectWordbookPractice, practiceCandidate, practiceMasteredKeys, type WordbookPracticeScope } from '../lib/wordbook-practice';
+import { selectAdaptiveItemNums, createEmptyAdaptiveHistory } from '../lib/adaptive-quiz';
 import { createEmptySenseLearningState, getLearningTargetState } from '../lib/learning-state';
 
 const oldItem = (id: string, w: string, k: string): VocabItem => ({
@@ -20,9 +21,37 @@ const book = (id: string, word: string, order: number, section = 'V101'): BookEn
 });
 const edition = (entries: BookEntry[]): BookEdition => ({ schema: 1, edition: '1.5', privateContent: true,
   datasetSha256: '', pdfSha256: '', canonicalSha256: '', entries, sections: ['V101', 'V301', '보카바이블 B', '숙어'], sourceCounts: {} });
-afterEach(() => registerStudyItems(WORDBOOK_VOCAB));
+afterEach(() => { registerStudyItems(WORDBOOK_VOCAB); for (const num of [910001, 910002, 910003]) VOCAB_BY_NUM.delete(num); });
 
 describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
+  it('counts built questions and the same adaptive target once without promoting private or reference rows', async () => {
+    const rows = [oldItem('910001', 'unique-fixture', '뜻'), oldItem('910002', 'unique-fixture', '뜻'),
+      { ...oldItem('910003', 'reference-fixture', '참고 뜻'), referenceOnly: true },
+      ...createIntegratedWordbook([], edition([book('study-930001', 'private-fixture', 1)]))];
+    registerStudyItems([...VOCAB, ...rows]);
+    for (const row of rows.filter(row => !row.localBook)) VOCAB_BY_NUM.set(row.num, row);
+    const state = createEmptySenseLearningState(); const before = JSON.stringify([rows, state]);
+    const options = { mode: 'kor-choice' as const, count: 30, itemNums: rows.map(row => row.num) };
+    const result = (await inspectWordbookPractice(options, state))!;
+    expect(result.count).toBe(1); expect(result.questions.size).toBe(2);
+    const selected = selectAdaptiveItemNums({ candidates: [...result.questions.values()].map(q => practiceCandidate(q.item, options.mode, state)),
+      count: 30, mode: options.mode, history: createEmptyAdaptiveHistory(), strategy: 'weighted' });
+    expect(selected).toHaveLength(result.count);
+    expect(selected.every(num => validateQuestion(result.questions.get(num)!))).toBe(true);
+    expect((await inspectWordbookPractice({ ...options, mode: 'flashcard' }, state))!.count).toBe(2);
+    expect((await inspectWordbookPractice({ ...options, itemNums: [] }, state))!.count).toBe(0);
+    expect(await inspectWordbookPractice(options, state, 30, () => true)).toBeNull();
+    expect(JSON.stringify([rows, state])).toBe(before);
+  });
+  it('honours protected MASTER and caps the read-only preview at thirty', async () => {
+    const state = createEmptySenseLearningState(); const rows = VOCAB.slice(0, 200);
+    const result = (await inspectWordbookPractice({ mode: 'flashcard', count: 30, itemNums: rows.map(row => row.num) }, state, 30))!;
+    expect(result.count).toBe(30);
+    const item = rows[0]; const key = getItemLearningTargets(item)[0].key;
+    state.targets[key] = { ...getLearningTargetState(state, key), status: 'MASTERED', lastStudiedAt: Date.now() };
+    expect(practiceMasteredKeys(state)).toContain(key); expect(practiceMasteredKeys(state, true)).toEqual([]);
+    expect((await inspectWordbookPractice({ mode: 'flashcard', count: 10, itemNums: [item.num], masteredTargetKeys: practiceMasteredKeys(state) }, state))!.count).toBe(0);
+  });
   const scope = (rangeId = 'all'): WordbookPracticeScope => ({ rangeId, concept: '', query: '', bookmarksOnly: false, includeMastered: false });
   it('keeps private search/concept text out of HTTP requests while surviving reload', () => {
     const selected = { ...scope(), concept: '개인 개념 & # 100%', query: '개인 검색 문구?' };
@@ -99,7 +128,7 @@ describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
     expect(source.indexOf('parseWordbookPracticeRequest(wordbookScope)')).toBeLessThan(source.indexOf('await loadQuizSessionForStudy(requestKey)'));
     expect(source).toContain('...(wordbookScope !== undefined ? { wordbookScope } : {})');
     expect(source).toContain('itemNums: scopedNums ??');
-    expect(source).toContain('selectedScope?.includeMastered ? []');
+    expect(source).toContain('practiceMasteredKeys(learningState, selectedScope?.includeMastered)');
     const screen = fs.readFileSync('app/(tabs)/wordbook.tsx', 'utf8');
     expect(screen).toContain('getWordbookPracticeItems(practiceScope, bookmarks, learningState)');
     expect(screen).not.toContain('slice(0, 200)');
@@ -164,6 +193,21 @@ describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
     expect(folded).toHaveLength(1);
     expect(folded[0].book?.id).toBe(entry.id);
     expect(folded[0].displaySourceIds).toEqual(['1', '2']);
+  });
+  it('folds only exact private content in the same section and keeps independent rows accessible', () => {
+    const first = book('study-940001', 'same-local-fixture', 1, 'V301');
+    const second = { ...first, id: 'study-940002', order: 2 };
+    const distinct = { ...first, id: 'study-940003', order: 3, display: { ...first.display!, examples: ['different example'] } };
+    const otherConcept = { ...first, id: 'study-940004', order: 4, concept: '다른 개념' };
+    const rows = createIntegratedWordbook([], edition([first, second, distinct, otherConcept]));
+    const before = JSON.stringify(rows);
+    const folded = arrangeWordbook(rows, () => 'NEW', true);
+    expect(folded).toHaveLength(3);
+    expect(folded[0].displaySourceIds).toEqual([rows[0].id, rows[1].id]);
+    expect(folded[0].displayDuplicates).toEqual([rows[1]]);
+    expect(getItemLearningTargets(rows[0])[0].key).not.toBe(getItemLearningTargets(rows[1])[0].key);
+    expect(arrangeWordbook(rows, item => item.id, true)).toHaveLength(4);
+    expect(JSON.stringify(rows)).toBe(before);
   });
   it('has one ordinary WordCard path and collapsed content setup, not a second viewer', () => {
     const screen = fs.readFileSync('app/(tabs)/wordbook.tsx', 'utf8');

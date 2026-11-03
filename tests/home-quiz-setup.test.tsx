@@ -11,7 +11,7 @@ import { buildWordbookPracticeHref, type WordbookPracticeScope } from "@/lib/wor
 
 // Exercise the actual setup component without mounting native modules, loading
 // learner storage, or navigating a real session. The PNG is an inert fixture.
-function renderSetup(localContent = false, wordbook?: { scope: WordbookPracticeScope; label: string; availableCount: number; hasLocalContent: boolean }) {
+function renderSetup(localContent = false, wordbook?: { scope: WordbookPracticeScope; label: string; availableCount: number; hasLocalContent: boolean; counts?: Record<string, number | undefined> }) {
   const buttons: { label: string; selected?: boolean; press: () => void }[] = [];
   const push = vi.fn();
   const save = vi.fn();
@@ -51,6 +51,7 @@ function renderSetup(localContent = false, wordbook?: { scope: WordbookPracticeS
     "@/lib/quiz-engine": { getQuizCandidateItems: () => [] },
     "@/lib/store": { loadQuizSettings: load, saveQuizSettings: save },
     "@/lib/wordbook-practice": { buildWordbookPracticeHref },
+    "@/hooks/use-wordbook-practice": { useWordbookPractice: () => ({ counts: wordbook?.counts ?? Object.fromEntries(QUIZ_MODES.map(mode => [mode.id, wordbook?.availableCount ?? 0])) }) },
     "@/assets/images/finetune-home-v2.png": "image-fixture",
   };
   const source = fs.readFileSync(new URL(wordbook ? "../components/wordbook-practice.tsx" : "../app/(tabs)/index.tsx", import.meta.url), "utf8");
@@ -164,7 +165,20 @@ describe('wordbook section practice setup', () => {
     short.buttons.find(button => button.label === '학습 시작 · 2문제')!.press();
     expect(JSON.parse(decodeURIComponent(new URL(short.push.mock.calls[0][0], 'https://fixture.invalid').hash.slice(1)).slice('wordbook:'.length)).count).toBe(2);
     const empty = setup(0); empty.buttons[0].press(); empty.render();
-    empty.buttons.find(button => button.label === '학습할 단어가 없어요')!.press();
+    empty.buttons.find(button => button.label === '이 유형의 문제가 없어요')!.press();
     expect(empty.push).not.toHaveBeenCalled();
+  });
+  it('uses verified mode counts instead of visible rows and blocks unavailable or pending modes', () => {
+    const view = renderSetup(true, { scope, label: 'V301', availableCount: 250, hasLocalContent: true,
+      counts: { 'kor-choice': 2, 'syn-choice': 0, 'definition-choice': undefined, flashcard: 30 } });
+    view.buttons[0].press(); view.render();
+    expect(view.buttons.some(button => button.label === '학습 시작 · 2문제')).toBe(true);
+    view.buttons.find(button => button.label.startsWith('유형 선택'))!.press(); view.render();
+    view.buttons.find(button => button.label === '동의어 · 없음')!.press(); view.render();
+    expect(view.buttons.some(button => button.label === '학습 시작 · 2문제')).toBe(true);
+    view.buttons.find(button => button.label === '영영정의')!.press();
+    expect(view.render()).toContain('출제 가능한 문제 확인 중');
+    view.buttons.find(button => button.label === '확인 중…')!.press();
+    expect(view.push).not.toHaveBeenCalled();
   });
 });
