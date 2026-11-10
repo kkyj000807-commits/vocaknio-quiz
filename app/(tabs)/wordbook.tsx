@@ -217,8 +217,8 @@ function WordCard({
 
       <View style={s.metadataRow}>
         <View style={s.sourceMetadata}>
-          <Text style={s.numText}>{nested ? "다른 용법" : item.localBook ? "내 교재 · 빠른 암기" : item.referenceOnly ? "추가 단어 · 검수 중" : `#${item.num}`}</Text>
-          {item.book ? <Text style={s.numText}>{item.book.section}{nested ? '' : ` · v1.5 #${item.book.order}`}</Text> : <WordSectionLabel groups={item.displaySourceGroups ?? [item.group]} />}
+          <Text style={s.numText}>{nested ? "다른 용법" : item.book ? `#${item.book.order}` : item.localBook ? "내 교재 · 빠른 암기" : item.referenceOnly ? "추가 단어 · 검수 중" : `#${item.num}`}</Text>
+          {item.book ? <Text style={s.numText}>{item.book.section}</Text> : <WordSectionLabel groups={item.displaySourceGroups ?? [item.group]} />}
         </View>
         <Pressable
           accessibilityRole="button"

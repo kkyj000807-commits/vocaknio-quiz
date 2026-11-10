@@ -85,6 +85,14 @@ export const relationLayoutCases = [
     assert.match(chips, /equivalent/); assert.match(chips, /같은 사전 sense 동의어/);
     assert.doesNotMatch(chips, /\(기본 뜻\)/);
   }],
+  ['a book card shows its book number only and preserves the underlying record number', () => {
+    const { WordCardForTest } = load('app/(tabs)/wordbook.tsx');
+    const item = { id: 'fixture-row', num: 98765, w: 'fixture', k_short: '기본 뜻', k: '기본 뜻', s: [], group: 'V101', type: 'word',
+      book: { section: 'V101', order: 3, display: { annotations: [], examples: [], patterns: [], synonym_hints: [] } } };
+    const html = render(React.createElement(WordCardForTest, { item, bookmarks: new Set(), colors, maskMode: false, learningStatus: 'NEW',
+      onToggleBookmark: () => {}, onPlayHide: () => {}, onPlayReveal: () => {}, onLearningStatusPress: () => {} }));
+    assert.match(html, /#3/); assert.doesNotMatch(html, /#98765/); assert.equal(item.num, 98765);
+  }],
   ['answer-side basic order is Korean core, synonyms, definition, English example, translation', () => {
     const { ActiveRecallAnswer } = load('components/active-recall-card.tsx');
     const recall = { headword: 'boast', koreanMeaning: '자랑하다', conciseEnglishDefinition: 'Talk proudly about oneself.', englishDefinition: 'Talk proudly about oneself in detail.',
