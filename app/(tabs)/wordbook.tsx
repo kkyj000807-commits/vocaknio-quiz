@@ -37,7 +37,7 @@ import { getWordbookPracticeItems } from "@/lib/wordbook-practice";
 import { BOOK_EDITION } from "@/lib/book-edition";
 import { getActiveBookEdition } from "@/lib/integrated-wordbook";
 import { useStudyVocab } from "@/hooks/use-study-vocab";
-import { arrangeWordbook, groupWordbookHeadwords, isVolumeOneWord, type DisplayWord } from "@/lib/wordbook-display";
+import { arrangeWordbook, groupWordbookHeadwords, includeLegacySearch, isVolumeOneWord, type DisplayWord } from "@/lib/wordbook-display";
 import { getProductionSenseQuestions, hasSenseQuestionMapping, senseMatchesItem } from "@/lib/sense-questions";
 import { WORDBOOK_RANGES, getVocabItem, getAdditionalHeadwordMeanings, type VocabItem, type VocabRange } from "@/lib/vocab";
 import {
@@ -418,8 +418,8 @@ export default function WordbookScreen() {
   const [bookmarks, setBookmarks] = useState<Set<number>>(new Set());
   const [showOnlyBookmarks, setShowOnlyBookmarks] = useState(false);
   const [showMastered, setShowMastered] = useState(true);
-  // Additional old senses are searchable, not another setting on the study screen.
-  const includeLegacy = edition.privateContent && !!searchQuery.trim();
+  // The book's main volume and whole-book search retain printed placements.
+  const includeLegacy = includeLegacySearch(edition.privateContent, searchQuery, rangeOptions[selectedRange] ?? rangeOptions[0]);
   const [isShuffled, setIsShuffled] = useState(false);
   const [maskMode, setMaskMode] = useState(false);
   const [learningState, setLearningState] = useState<SenseLearningState | null>(null);

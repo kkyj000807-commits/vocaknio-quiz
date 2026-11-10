@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { arrangeWordbook } from "../lib/wordbook-display";
+import { arrangeWordbook, includeLegacySearch } from "../lib/wordbook-display";
 import vocabulary from "../assets/vocab-v1.4.json";
 import order from "../assets/wordbook-order.json";
 import type { VocabItem } from "../lib/vocab";
@@ -11,6 +11,15 @@ const item = (id: string, overrides: Partial<VocabItem> = {}): VocabItem => ({
 });
 
 describe("lossless display-only book ordering and exact duplicate folding", () => {
+  it("keeps whole-book and volume-one search on book placements while retaining other legacy search paths", () => {
+    expect(includeLegacySearch(true, 'bank', { id: 'all' })).toBe(false);
+    for (const group of ['V101', 'V201', 'V301', 'V401', 'V501', 'V502', 'V601', 'APPENDIX'] as const)
+      expect(includeLegacySearch(true, 'bank', { id: group.toLowerCase(), group })).toBe(false);
+    expect(includeLegacySearch(true, 'bank', { id: 'idioms' })).toBe(true);
+    expect(includeLegacySearch(true, 'bank', { id: 'book-b' })).toBe(true);
+    expect(includeLegacySearch(true, '  ', { id: 'idioms' })).toBe(false);
+    expect(includeLegacySearch(false, 'bank', { id: 'idioms' })).toBe(false);
+  });
   it("folds identical repeated content across 101-601 while retaining every original ID and section", () => {
     const input = [item("1"), item("2", { group: "V601" })];
     const before = JSON.stringify(input);

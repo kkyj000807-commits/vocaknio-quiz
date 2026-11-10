@@ -1,5 +1,5 @@
 import bookOrder from "@/assets/wordbook-order.json";
-import type { VocabItem } from "@/lib/vocab";
+import type { VocabItem, VocabRange } from "@/lib/vocab";
 
 const managed = new Set(["V101", "V201", "V301", "V401", "V501", "V502", "V601"]);
 const volumeOneSections = new Set([...managed, "APPENDIX", "부록"]);
@@ -8,6 +8,11 @@ export type DisplayWord = VocabItem & { displaySourceIds?: string[]; displaySour
 
 export function isVolumeOneWord(item: VocabItem): boolean {
   return item.type === "word" && volumeOneSections.has(item.book?.section ?? item.group);
+}
+
+/** Searching the book's main volume must not add unprinted legacy rows. */
+export function includeLegacySearch(isPrivate: boolean, query: string, range: Pick<VocabRange, 'id' | 'group'>): boolean {
+  return isPrivate && !!query.trim() && range.id !== 'all' && !volumeOneSections.has(range.group ?? '');
 }
 
 /** Group only identical headwords for display. All underlying rows remain accessible. */

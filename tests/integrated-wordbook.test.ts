@@ -69,6 +69,8 @@ describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
     expect(exact).toHaveLength(4); // Printed repeat placements are not silently folded away.
     expect(getWordbookPracticeItems({ ...selected, rangeId: 'idioms' }, new Set(), null).map(item => item.book!.section)).toEqual(['숙어']);
     expect(getWordbookPracticeItems({ ...selected, includeLegacy: true }, new Set(), null).at(-1)?.id).toBe(old[0].id);
+    expect(getWordbookPracticeItems({ ...selected, query: old[0].w }, new Set(), null)).toEqual([]);
+    expect(getWordbookPracticeItems({ ...selected, query: old[0].w, includeLegacy: true }, new Set(), null).map(item => item.id)).toContain(old[0].id);
     expect(selectBookOrderedItems([...rows].reverse()).map(item => item.book!.order)).toEqual([1, 2, 3, 4]);
     expect(parseWordbookPracticeScope(JSON.stringify({ ...selected, includeLegacy: true })).includeLegacy).toBe(true);
     expect(() => parseWordbookPracticeScope(JSON.stringify({ ...selected, includeLegacy: 'yes' }))).toThrow();
