@@ -93,6 +93,18 @@ export const relationLayoutCases = [
       onToggleBookmark: () => {}, onPlayHide: () => {}, onPlayReveal: () => {}, onLearningStatusPress: () => {} }));
     assert.match(html, /#3/); assert.doesNotMatch(html, /#98765/); assert.equal(item.num, 98765);
   }],
+  ['V301 displays its book chunk before the unchanged meaning without exposing it when masked', () => {
+    const { WordCardForTest } = load('app/(tabs)/wordbook.tsx');
+    const item = { id: 'fixture-row', num: 98765, w: 'fixture', k_short: '원본 뜻', k: '원본 뜻', s: [], group: 'V301', type: 'word',
+      book: { section: 'V301', order: 3, concept: '높아짐/낮아짐', chunk: '낮아지다', display: { annotations: [], examples: [], patterns: [], synonym_hints: [] } } };
+    const props = { item, bookmarks: new Set(), colors, learningStatus: 'NEW', onToggleBookmark: () => {}, onPlayHide: () => {}, onPlayReveal: () => {}, onLearningStatusPress: () => {} };
+    const shown = render(React.createElement(WordCardForTest, { ...props, maskMode: false }));
+    assert.ok(shown.indexOf('대표 뜻 · 낮아지다') < shown.indexOf('원래 뜻'));
+    assert.ok(shown.indexOf('원래 뜻') < shown.indexOf('원본 뜻'));
+    const masked = render(React.createElement(WordCardForTest, { ...props, maskMode: true }));
+    assert.doesNotMatch(masked, /낮아지다|원본 뜻/);
+    assert.equal(item.k, '원본 뜻'); assert.equal(item.num, 98765);
+  }],
   ['answer-side basic order is Korean core, synonyms, definition, English example, translation', () => {
     const { ActiveRecallAnswer } = load('components/active-recall-card.tsx');
     const recall = { headword: 'boast', koreanMeaning: '자랑하다', conciseEnglishDefinition: 'Talk proudly about oneself.', englishDefinition: 'Talk proudly about oneself in detail.',

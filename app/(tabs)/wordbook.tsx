@@ -108,6 +108,7 @@ function WordCard({
   const [meaningHidden, setMeaningHidden] = useState(maskMode);
   const isBookmarked = bookmarks.has(item.num);
   const additionalMeanings = isVolumeOneWord(item) ? getAdditionalHeadwordMeanings(item) : [];
+  const chunkMeaning = item.book?.section === 'V301' ? item.book.chunk?.trim() : '';
   const s = cardStyles(colors);
   const hasReviewedMapping = hasSenseQuestionMapping(item.id);
   const dictionaryEntry = getDefinitionQuizEntry(item.id);
@@ -199,6 +200,8 @@ function WordCard({
           ) : (
             <View>
               {item.book?.gradingReview?.status === 'requires_editorial_policy_review' && <Text style={s.korText}>뜻 확인 필요 · 아래 정정 참고</Text>}
+              {!!chunkMeaning && <Text style={s.korText}>대표 뜻 · {chunkMeaning}</Text>}
+              {!!chunkMeaning && <Text style={s.numText}>원래 뜻</Text>}
               <Text style={s.korText}>
                 {item.k_short}
               </Text>
