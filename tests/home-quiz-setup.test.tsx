@@ -177,6 +177,14 @@ describe('wordbook section practice setup', () => {
     expect(view.push).toHaveBeenCalledWith(buildWordbookPracticeHref(scope, 'flashcard', 7));
     expect(view.save).not.toHaveBeenCalled();
   });
+  it('offers book meaning recall even when the same range also has reviewed multiple-choice questions', () => {
+    const view = renderSetup(true, { scope, label: '숙어', availableCount: 0, hasLocalContent: true,
+      counts: { 'kor-choice': 2, flashcard: 30 } });
+    view.buttons[0].press(); view.render();
+    view.buttons.find(button => button.label === '뜻 확인 학습 · 10개')!.press();
+    expect(view.push).toHaveBeenCalledWith(buildWordbookPracticeHref(scope, 'flashcard', 10));
+    expect(view.save).not.toHaveBeenCalled();
+  });
   it('waits for validated recall counts and does not change ordinary empty meaning study', () => {
     const pending = renderSetup(true, { scope, label: 'V301', availableCount: 0, hasLocalContent: true,
       counts: { 'kor-choice': 0, flashcard: undefined } });

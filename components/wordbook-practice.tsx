@@ -28,6 +28,7 @@ export function WordbookPractice({ scope, label, items, learningState, hasLocalC
   const directRecall = recallCandidate && (availability.counts.flashcard ?? 0) > 0;
   const startMode = directRecall ? 'flashcard' : mode;
   const actualCount = Math.min(count, availability.counts[startMode] ?? 0);
+  const recallCount = Math.min(count, availability.counts.flashcard ?? 0);
   const chip = (active: boolean) => [styles.chip, { backgroundColor: active ? colors.primary : colors.surface, borderColor: active ? colors.primary : colors.border }];
   return <View style={styles.container}>
     <Pressable accessibilityRole="button" accessibilityLabel="이 범위 학습 설정" accessibilityState={{ expanded: open }}
@@ -69,6 +70,12 @@ export function WordbookPractice({ scope, label, items, learningState, hasLocalC
         style={[styles.start, { backgroundColor: colors.primary, opacity: actualCount ? 1 : 0.45 }]}>
         <Text style={styles.startText}>{directRecall ? `뜻 확인 학습 · ${actualCount}개` : actualCount ? `학습 시작 · ${actualCount}문제` : available === undefined || recallPending ? '확인 중…' : '이 유형의 문제가 없어요'}</Text>
       </Pressable>
+      {hasLocalContent && mode === DEFAULT_QUIZ_MODE && !directRecall && recallCount > 0 &&
+        <Pressable accessibilityRole="button" accessibilityLabel={`뜻 확인 학습 ${recallCount}개 시작`}
+          onPress={() => router.push(buildWordbookPracticeHref(scope, 'flashcard', recallCount) as Href)}
+          style={[styles.start, { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.primary }]}>
+          <Text style={[styles.startText, { color: colors.primary }]}>{`뜻 확인 학습 · ${recallCount}개`}</Text>
+        </Pressable>}
     </View>}
   </View>;
 }
