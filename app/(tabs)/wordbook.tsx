@@ -37,7 +37,7 @@ import { getWordbookPracticeItems } from "@/lib/wordbook-practice";
 import { BOOK_EDITION } from "@/lib/book-edition";
 import { getActiveBookEdition } from "@/lib/integrated-wordbook";
 import { useStudyVocab } from "@/hooks/use-study-vocab";
-import { arrangeWordbook, groupWordbookHeadwords, type DisplayWord } from "@/lib/wordbook-display";
+import { arrangeWordbook, groupWordbookHeadwords, isVolumeOneWord, type DisplayWord } from "@/lib/wordbook-display";
 import { getProductionSenseQuestions, hasSenseQuestionMapping, senseMatchesItem } from "@/lib/sense-questions";
 import { WORDBOOK_RANGES, getVocabItem, getAdditionalHeadwordMeanings, type VocabItem, type VocabRange } from "@/lib/vocab";
 import {
@@ -107,7 +107,7 @@ function WordCard({
   const [duplicatesOpen, setDuplicatesOpen] = useState(false);
   const [meaningHidden, setMeaningHidden] = useState(maskMode);
   const isBookmarked = bookmarks.has(item.num);
-  const additionalMeanings = getAdditionalHeadwordMeanings(item);
+  const additionalMeanings = isVolumeOneWord(item) ? getAdditionalHeadwordMeanings(item) : [];
   const s = cardStyles(colors);
   const hasReviewedMapping = hasSenseQuestionMapping(item.id);
   const dictionaryEntry = getDefinitionQuizEntry(item.id);
@@ -482,6 +482,7 @@ export default function WordbookScreen() {
   const firstLegacySection = useMemo(() => {
     const first = new Map<string, string>();
     for (const item of VOCAB) {
+      if (!isVolumeOneWord(item)) continue;
       const key = item.w.trim().toLowerCase().replace(/\s+/g, ' ');
       if (key && !first.has(key)) first.set(key, item.group);
     }
@@ -493,7 +494,7 @@ export default function WordbookScreen() {
     // In the legacy-only list, a word belongs to its first original section.
     // Bookmark-only views remain able to reach every old individual record.
     const sectionItems = !edition.privateContent && !showOnlyBookmarks && active?.kind === 'section' && active.group
-      ? practiceItems.filter(item => firstLegacySection.get(item.w.trim().toLowerCase().replace(/\s+/g, ' ')) === active.group)
+      ? practiceItems.filter(item => !isVolumeOneWord(item) || firstLegacySection.get(item.w.trim().toLowerCase().replace(/\s+/g, ' ')) === active.group)
       : practiceItems;
     const rows = arrangeWordbook(sectionItems, item => JSON.stringify([
       bookmarks.has(item.num),

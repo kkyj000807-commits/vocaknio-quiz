@@ -37,6 +37,12 @@ describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
     expect(grouped[0].displayDuplicates?.map(row => row.k)).toEqual(['은행', '기울다']);
     expect(JSON.stringify(original)).toBe(before);
   });
+  it('does not regroup idioms or non-volume-one material', () => {
+    const a = { ...oldItem('10011', 'take over', '인수하다'), type: 'idiom' as const };
+    const b = { ...oldItem('10012', 'take over', '이어받다'), type: 'idiom' as const };
+    const outside = { ...oldItem('10013', 'take over', '별도 자료'), group: 'PERSONAL' as const };
+    expect(groupWordbookHeadwords([a, b, outside])).toEqual([a, b, outside]);
+  });
   it('exposes stored alternate glosses without changing the original entries or learning IDs', () => {
     const groups = new Map<string, VocabItem[]>();
     for (const row of VOCAB) {

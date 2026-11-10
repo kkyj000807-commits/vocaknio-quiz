@@ -2,14 +2,20 @@ import bookOrder from "@/assets/wordbook-order.json";
 import type { VocabItem } from "@/lib/vocab";
 
 const managed = new Set(["V101", "V201", "V301", "V401", "V501", "V502", "V601"]);
+const volumeOneSections = new Set([...managed, "APPENDIX", "부록"]);
 const ranks = new Map(bookOrder.headwords.map((word, index) => [word, index]));
 export type DisplayWord = VocabItem & { displaySourceIds?: string[]; displaySourceGroups?: string[]; displayDuplicates?: VocabItem[] };
+
+export function isVolumeOneWord(item: VocabItem): boolean {
+  return item.type === "word" && volumeOneSections.has(item.book?.section ?? item.group);
+}
 
 /** Group only identical headwords for display. All underlying rows remain accessible. */
 export function groupWordbookHeadwords(items: readonly DisplayWord[]): DisplayWord[] {
   const seen = new Map<string, DisplayWord>();
   const output: DisplayWord[] = [];
   for (const item of items) {
+    if (!isVolumeOneWord(item)) { output.push(item); continue; }
     const key = item.w.trim().toLowerCase().replace(/\s+/g, ' ');
     const prior = key ? seen.get(key) : undefined;
     if (prior) {
