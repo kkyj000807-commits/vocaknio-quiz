@@ -333,6 +333,13 @@ export function getAcceptedSynonyms(item: VocabItem): string[] {
   return item.s;
 }
 
+/** Other stored glosses for the same headword are references, not sense merges. */
+export function getAdditionalHeadwordMeanings(item: VocabItem): string[] {
+  const current = item.k.trim();
+  return [...new Set((ITEMS_BY_WORD.get(normalizeWord(item.w)) ?? [])
+    .map(row => row.k.trim()).filter(meaning => meaning && meaning !== current))];
+}
+
 export function isAcceptedSynonym(item: VocabItem, candidate: string): boolean {
   const normalized = normalizeWord(candidate);
   return item.s.some((synonym) => normalizeWord(synonym) === normalized);

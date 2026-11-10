@@ -2,9 +2,24 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, it, vi } from "vitest";
 import { ActiveRecallStudyDetails, DictionaryExamples, EditorialExamples } from "@/components/learning-details";
-import { ActiveRecallPrompt, DefinitionRecallPrompt } from "@/components/active-recall-card";
+import { ActiveRecallPrompt, DefinitionRecallPrompt, SynonymRecallAnswer } from "@/components/active-recall-card";
 import { ACTIVE_RECALL_SENSES } from "@/lib/active-recall";
 const disclosure = vi.hoisted(() => ({ open: false }));
+
+it("정답 공개 뒤 모든 선지의 연결된 뜻을 표시하고 추가 뜻이 있을 수 있음을 알린다", () => {
+  const recall = { headword: "target", senseId: "s1", partOfSpeech: "noun", definition: "a target meaning",
+    lexicographerFile: "noun.test", synsetMembers: ["target", "answer"], antonyms: [], examples: [] };
+  const choices = [
+    { id: "1", value: "answer", label: "answer", word: "answer", meaning: "정답 뜻", isCorrect: true },
+    { id: "2", value: "other", label: "other", word: "other", meaning: "다른 뜻 · 추가 뜻", isCorrect: false },
+    { id: "3", value: "missing", label: "missing", word: "missing", meaning: "", isCorrect: false },
+  ];
+  const html = renderToStaticMarkup(<SynonymRecallAnswer recall={recall} koreanMeaning="핵심 뜻" choices={choices} />);
+  expect(html).toContain("선지 뜻 확인");
+  expect(html).toContain("다른 뜻 · 추가 뜻");
+  expect(html).toContain("뜻 확인 필요");
+  expect(html).toContain("다른 뜻이 더 있을 수 있습니다");
+});
 vi.mock("@/components/korean-reveal", async importOriginal => {
   const original = await importOriginal<typeof import("@/components/korean-reveal")>();
   return { KoreanReveal: (props: React.ComponentProps<typeof original.KoreanReveal>) =>

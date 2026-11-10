@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import fs from 'node:fs';
 import { createIntegratedWordbook, localBookIdentity, selectBookOrderedItems } from '../lib/integrated-wordbook';
-import { arrangeWordbook } from '../lib/wordbook-display';
-import { VOCAB, VOCAB_BY_NUM, WORDBOOK_VOCAB, getVocabItem, getRangeItems, RANGES, registerStudyItems, type VocabItem } from '../lib/vocab';
+import { arrangeWordbook, groupWordbookHeadwords } from '../lib/wordbook-display';
+import { VOCAB, VOCAB_BY_NUM, WORDBOOK_VOCAB, getVocabItem, getRangeItems, getAdditionalHeadwordMeanings, RANGES, registerStudyItems, type VocabItem } from '../lib/vocab';
 import { getItemLearningTargets, getQuestionLearningTargetKey } from '../lib/canonical-learning';
 import { buildQuizQuestions, getQuizCandidateItems, validateQuestion } from '../lib/quiz-engine';
 import { createEmptyQuestionViewState, parseQuizSession, isQuizSessionContentCurrent } from '../lib/quiz-session';
@@ -24,6 +24,32 @@ const edition = (entries: BookEntry[]): BookEdition => ({ schema: 1, edition: '1
 afterEach(() => { registerStudyItems(WORDBOOK_VOCAB); for (const num of [910001, 910002, 910003]) VOCAB_BY_NUM.delete(num); });
 
 describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
+  it('groups a headword across sections while retaining different meanings and independent IDs', () => {
+    const first = oldItem('10001', 'bank', '강둑');
+    const second = { ...oldItem('10002', 'bank', '은행'), group: 'V301' as const };
+    const third = { ...oldItem('10003', 'bank', '기울다'), group: 'V501' as const };
+    const original = [first, second, third];
+    const before = JSON.stringify(original);
+    const grouped = groupWordbookHeadwords(arrangeWordbook(original, item => item.id, true));
+    expect(grouped).toHaveLength(1);
+    expect(grouped[0].displaySourceIds).toEqual(['10001', '10002', '10003']);
+    expect(grouped[0].displaySourceGroups).toEqual(['V101', 'V301', 'V501']);
+    expect(grouped[0].displayDuplicates?.map(row => row.k)).toEqual(['은행', '기울다']);
+    expect(JSON.stringify(original)).toBe(before);
+  });
+  it('exposes stored alternate glosses without changing the original entries or learning IDs', () => {
+    const groups = new Map<string, VocabItem[]>();
+    for (const row of VOCAB) {
+      const key = row.w.trim().toLowerCase().replace(/\s+/g, ' ');
+      groups.set(key, [...(groups.get(key) ?? []), row]);
+    }
+    const sameWord = [...groups.values()].find(rows => new Set(rows.map(row => row.k.trim())).size > 1)!;
+    expect(sameWord).toBeDefined();
+    const original = JSON.stringify(sameWord);
+    const expected = [...new Set(sameWord.map(row => row.k.trim()).filter(k => k && k !== sameWord[0].k.trim()))];
+    expect(getAdditionalHeadwordMeanings(sameWord[0])).toEqual(expected);
+    expect(JSON.stringify(sameWord)).toBe(original);
+  });
   it('shows precisely the printed placements by default and retains extra old senses only on explicit inclusion', () => {
     const entries = [book('study-950001', 'first-book', 1, 'V301'), book('study-950002', 'second-book', 2, 'V301'),
       book('study-950003', 'book-phrase', 3, 'V301'), book('study-950004', 'book-idiom', 4, '숙어')];

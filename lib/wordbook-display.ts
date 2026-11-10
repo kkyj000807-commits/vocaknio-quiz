@@ -5,6 +5,27 @@ const managed = new Set(["V101", "V201", "V301", "V401", "V501", "V502", "V601"]
 const ranks = new Map(bookOrder.headwords.map((word, index) => [word, index]));
 export type DisplayWord = VocabItem & { displaySourceIds?: string[]; displaySourceGroups?: string[]; displayDuplicates?: VocabItem[] };
 
+/** Group only identical headwords for display. All underlying rows remain accessible. */
+export function groupWordbookHeadwords(items: readonly DisplayWord[]): DisplayWord[] {
+  const seen = new Map<string, DisplayWord>();
+  const output: DisplayWord[] = [];
+  for (const item of items) {
+    const key = item.w.trim().toLowerCase().replace(/\s+/g, ' ');
+    const prior = key ? seen.get(key) : undefined;
+    if (prior) {
+      prior.displayDuplicates!.push(item);
+      for (const id of item.displaySourceIds ?? [item.id]) if (!prior.displaySourceIds!.includes(id)) prior.displaySourceIds!.push(id);
+      for (const group of item.displaySourceGroups ?? [item.group]) if (!prior.displaySourceGroups!.includes(group)) prior.displaySourceGroups!.push(group);
+    } else {
+      const copy = { ...item, displaySourceIds: [...(item.displaySourceIds ?? [item.id])],
+        displaySourceGroups: [...(item.displaySourceGroups ?? [item.group])], displayDuplicates: [...(item.displayDuplicates ?? [])] };
+      output.push(copy);
+      if (key) seen.set(key, copy);
+    }
+  }
+  return output;
+}
+
 /** Display folding only; never feed representatives back into quiz/store/migration. */
 export function arrangeWordbook(
   items: readonly VocabItem[],

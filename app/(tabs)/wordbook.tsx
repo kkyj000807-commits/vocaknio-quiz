@@ -37,9 +37,9 @@ import { getWordbookPracticeItems } from "@/lib/wordbook-practice";
 import { BOOK_EDITION } from "@/lib/book-edition";
 import { getActiveBookEdition } from "@/lib/integrated-wordbook";
 import { useStudyVocab } from "@/hooks/use-study-vocab";
-import { arrangeWordbook, type DisplayWord } from "@/lib/wordbook-display";
+import { arrangeWordbook, groupWordbookHeadwords, type DisplayWord } from "@/lib/wordbook-display";
 import { getProductionSenseQuestions, hasSenseQuestionMapping, senseMatchesItem } from "@/lib/sense-questions";
-import { WORDBOOK_RANGES, getVocabItem, type VocabItem, type VocabRange } from "@/lib/vocab";
+import { WORDBOOK_RANGES, getVocabItem, getAdditionalHeadwordMeanings, type VocabItem, type VocabRange } from "@/lib/vocab";
 import {
   loadBookmarks,
   loadSenseLearningState,
@@ -84,8 +84,10 @@ function WordCard({
   onPlayHide,
   onPlayReveal,
   learningStatus,
+  getLearningStatus,
   onLearningStatusPress,
   readOnly = false,
+  nested = false,
 }: {
   item: DisplayWord;
   bookmarks: Set<number>;
@@ -95,14 +97,17 @@ function WordCard({
   onPlayHide: () => void;
   onPlayReveal: () => void;
   learningStatus: LearningStatus;
+  getLearningStatus: (item: VocabItem) => LearningStatus;
   onLearningStatusPress: (item: VocabItem) => void;
   readOnly?: boolean;
+  nested?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [relationDetailsOpen, setRelationDetailsOpen] = useState(false);
   const [duplicatesOpen, setDuplicatesOpen] = useState(false);
   const [meaningHidden, setMeaningHidden] = useState(maskMode);
   const isBookmarked = bookmarks.has(item.num);
+  const additionalMeanings = getAdditionalHeadwordMeanings(item);
   const s = cardStyles(colors);
   const hasReviewedMapping = hasSenseQuestionMapping(item.id);
   const dictionaryEntry = getDefinitionQuizEntry(item.id);
@@ -197,6 +202,9 @@ function WordCard({
               <Text style={s.korText}>
                 {item.k_short}
               </Text>
+              {additionalMeanings.length > 0 && <Text style={s.numText}>
+                기존 자료의 다른 뜻 · {additionalMeanings.join(" / ")}
+              </Text>}
               {(item.group === "V301" || item.group === "V502") && !(item.book?.concept || item.book?.chunk) && (
                 <Text testID="wordbook-original-concept" style={s.numText}>
                   {formatWordbookConcept(item)}
@@ -209,8 +217,8 @@ function WordCard({
 
       <View style={s.metadataRow}>
         <View style={s.sourceMetadata}>
-          <Text style={s.numText}>{item.localBook ? "내 교재 · 빠른 암기" : item.referenceOnly ? "추가 단어 · 검수 중" : `#${item.num}`}</Text>
-          {item.book ? <Text style={s.numText}>{item.book.section} · v1.5 #{item.book.order}</Text> : <WordSectionLabel groups={item.displaySourceGroups ?? [item.group]} />}
+          <Text style={s.numText}>{nested ? "다른 용법" : item.localBook ? "내 교재 · 빠른 암기" : item.referenceOnly ? "추가 단어 · 검수 중" : `#${item.num}`}</Text>
+          {item.book ? <Text style={s.numText}>{item.book.section}{nested ? '' : ` · v1.5 #${item.book.order}`}</Text> : <WordSectionLabel groups={item.displaySourceGroups ?? [item.group]} />}
         </View>
         <Pressable
           accessibilityRole="button"
@@ -259,11 +267,11 @@ function WordCard({
       {!meaningHidden && <LearningDetails itemId={item.id} />}
       {!!item.displayDuplicates?.length && <>
         <Pressable accessibilityRole="button" accessibilityState={{ expanded: duplicatesOpen }} onPress={() => setDuplicatesOpen(value => !value)} style={s.expandButton}>
-          <Text style={s.expandHint}>같은 내용 {item.displayDuplicates.length + 1}개 · {duplicatesOpen ? '접기' : '각 기록 보기'}</Text>
+          <Text style={s.expandHint}>다른 항목 · {duplicatesOpen ? '접기' : '기록과 용법 보기'}</Text>
         </Pressable>
         {duplicatesOpen && item.displayDuplicates.map(duplicate => <WordCard key={duplicate.id} item={duplicate} bookmarks={bookmarks}
           onToggleBookmark={onToggleBookmark} colors={colors} maskMode={maskMode} onPlayHide={onPlayHide} onPlayReveal={onPlayReveal}
-          learningStatus={learningStatus} onLearningStatusPress={onLearningStatusPress} readOnly={readOnly} />)}
+          learningStatus={getLearningStatus(duplicate)} getLearningStatus={getLearningStatus} onLearningStatusPress={onLearningStatusPress} readOnly={readOnly} nested />)}
       </>}
     </View>
   );
@@ -471,14 +479,29 @@ export default function WordbookScreen() {
     bookmarksOnly: showOnlyBookmarks, includeMastered: showMastered, includeLegacy }), [rangeOptions, selectedRange, concept, searchQuery, showOnlyBookmarks, showMastered, includeLegacy]);
   const practiceItems = useMemo(() => VOCAB.length ? getWordbookPracticeItems(practiceScope, bookmarks, learningState) : [],
     [practiceScope, bookmarks, learningState, VOCAB]);
+  const firstLegacySection = useMemo(() => {
+    const first = new Map<string, string>();
+    for (const item of VOCAB) {
+      const key = item.w.trim().toLowerCase().replace(/\s+/g, ' ');
+      if (key && !first.has(key)) first.set(key, item.group);
+    }
+    return first;
+  }, [VOCAB]);
   const filteredVocab = useMemo(() => {
     if (edition.privateContent && !includeLegacy) return isShuffled ? shuffle(practiceItems) : practiceItems;
-    const rows = arrangeWordbook(practiceItems, item => JSON.stringify([
+    const active = rangeOptions[selectedRange];
+    // In the legacy-only list, a word belongs to its first original section.
+    // Bookmark-only views remain able to reach every old individual record.
+    const sectionItems = !edition.privateContent && !showOnlyBookmarks && active?.kind === 'section' && active.group
+      ? practiceItems.filter(item => firstLegacySection.get(item.w.trim().toLowerCase().replace(/\s+/g, ' ')) === active.group)
+      : practiceItems;
+    const rows = arrangeWordbook(sectionItems, item => JSON.stringify([
       bookmarks.has(item.num),
       getItemLearningTargets(item).map(target => [item.localBook ? 'local' : target.key, learningState?.targets[target.key] ?? null]),
     ]), edition.privateContent);
-    return isShuffled ? shuffle(rows) : rows;
-  }, [practiceItems, bookmarks, isShuffled, learningState, edition, includeLegacy]);
+    const grouped = groupWordbookHeadwords(rows);
+    return isShuffled ? shuffle(grouped) : grouped;
+  }, [practiceItems, bookmarks, isShuffled, learningState, edition, includeLegacy, firstLegacySection, rangeOptions, selectedRange, showOnlyBookmarks]);
 
   const renderRecord = useCallback(
     (item: DisplayWord) => (
@@ -491,6 +514,7 @@ export default function WordbookScreen() {
         onPlayHide={playHide}
         onPlayReveal={playReveal}
         learningStatus={learningState?.targets[getItemLearningTargets(item)[0]?.key]?.status ?? "NEW"}
+        getLearningStatus={row => learningState?.targets[getItemLearningTargets(row)[0]?.key]?.status ?? "NEW"}
         onLearningStatusPress={handleLearningStatusPress}
         readOnly={!!storageIssue}
       />

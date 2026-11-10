@@ -36,7 +36,7 @@ function load(relative) {
       brag: { headword: 'brag', senseId: 'brag%lexical', partOfSpeech: 'verb', definition: 'talk with excessive pride', synsetMembers: ['brag', 'boast'], antonyms: [], lexicographerFile: 'verb.communication', examples: [] },
     }, items: { boastRow: 'boast', bragRow: 'brag' } },
     '@/lib/vocab': { VOCAB_BY_ID: new Map([['boastRow', { k_short: '자랑하다' }], ['bragRow', { k_short: '자랑하다' }]]),
-      getSynonymDetails: () => [], getSynonymSourceGroups: () => [], normalizeWord: word => word.trim().toLowerCase(),
+      getSynonymDetails: () => [], getSynonymSourceGroups: () => [], getAdditionalHeadwordMeanings: () => [], normalizeWord: word => word.trim().toLowerCase(),
       WORDBOOK_RANGES: [], VOCAB: [], VOCAB_HEADWORD_COUNT: 1, getRangeItems: () => [] },
     'react-native-reanimated': { __esModule: true, default: { View: host('div') }, FadeIn: { duration: () => ({}) },
       useSharedValue: value => ({ value }), useAnimatedStyle: fn => fn(), withTiming: value => value, interpolate: () => 1, Extrapolation: { CLAMP: 'clamp' } },

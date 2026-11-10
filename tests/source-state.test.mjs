@@ -7,6 +7,11 @@ import { readSourceState } from "../scripts/lib/source-state.mjs";
 
 it("detects clean, untracked, staged and generated modifications without changing git state", () => {
   const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "finetune-source-state-"));
+  // A release candidate can supply an external Git directory and index. Never
+  // let those point this temporary fixture at the real repository.
+  const keys = ["GIT_DIR", "GIT_WORK_TREE", "GIT_INDEX_FILE"];
+  const saved = Object.fromEntries(keys.map(key => [key, process.env[key]]));
+  for (const key of keys) delete process.env[key];
   const git = args => { const r = spawnSync("git", args, { cwd, encoding: "utf8" }); expect(r.status).toBe(0); return r.stdout.trim(); };
   try {
     git(["init", "--quiet"]);
@@ -23,5 +28,11 @@ it("detects clean, untracked, staged and generated modifications without changin
     const before = git(["status", "--porcelain"]);
     expect(readSourceState(cwd).sourceDirty).toBe(true);
     expect(git(["status", "--porcelain"])).toBe(before);
-  } finally { fs.rmSync(cwd, { recursive: true, force: true }); }
+  } finally {
+    for (const key of keys) {
+      if (saved[key] === undefined) delete process.env[key];
+      else process.env[key] = saved[key];
+    }
+    fs.rmSync(cwd, { recursive: true, force: true });
+  }
 });

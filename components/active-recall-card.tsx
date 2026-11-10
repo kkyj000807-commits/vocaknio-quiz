@@ -128,6 +128,15 @@ export function SynonymRecallAnswer({
       </Text>
       {item && <WordPronunciation item={item} context="answer" />}
       <Text style={[styles.detailText, { color: colors.foreground }]}>{koreanMeaning}</Text>
+      <View style={styles.details}>
+        <Text style={[styles.label, { color: colors.primary }]}>선지 뜻 확인</Text>
+        {choices.map(choice => (
+          <Text key={choice.id} style={[styles.detailText, { color: colors.foreground }]}>
+            {choice.word} · {choice.meaning?.trim() || "뜻 확인 필요"}{choice.isCorrect ? " · 정답" : ""}
+          </Text>
+        ))}
+        <Text style={[styles.note, { color: colors.muted }]}>표시된 뜻은 현재 연결된 뜻이며, 다른 뜻이 더 있을 수 있습니다.</Text>
+      </View>
       <SemanticRelationCluster
         headword={recall.headword}
         coreMeaningKo={koreanMeaning}
