@@ -37,6 +37,24 @@ const recall = {
 beforeEach(() => { pronunciation.get.mockReset().mockReturnValue("커프리셔스"); });
 
 describe("pronunciation study aid stays out of unanswered recall prompts", () => {
+  it("prefers the device book's exact pronunciation and never fills its missing fields from old data", () => {
+    const book = { id: 'study-1', order: 1, section: 'V101', word: item.w, appIds: [], concept: '', chunk: '', chapter: null,
+      automaticGrading: false, pronunciation: { ipa: '/book/', korean_pronunciation: '≈ 책발음', pronunciation_status: null } };
+    const linked: VocabItem = { ...item, book };
+    let html = renderToStaticMarkup(<WordPronunciation item={linked} context="study" />);
+    expect(html).toContain('/book/'); expect(html).toContain('책발음'); expect(html).not.toContain(item.p);
+    book.pronunciation.ipa = ''; book.pronunciation.korean_pronunciation = '';
+    pronunciation.get.mockClear();
+    html = renderToStaticMarkup(<WordPronunciation item={linked} context="study" />);
+    expect(html).toContain('IPA 미확인'); expect(html).not.toContain(item.p); expect(html).not.toContain('커프리셔스');
+    expect(pronunciation.get).not.toHaveBeenCalled();
+    book.pronunciation.korean_pronunciation = '≈ 책발음';
+    html = renderToStaticMarkup(<WordPronunciation item={linked} context="study" />);
+    expect(html).toContain('IPA 미확인'); expect(html).toContain('책발음');
+    expect(renderToStaticMarkup(<WordPronunciation item={linked} context="question" />)).not.toContain('책발음');
+    html = renderToStaticMarkup(<WordPronunciation item={{ ...linked, book: { ...book, pronunciation: undefined } }} context="study" />);
+    expect(html).toContain('IPA 미확인'); expect(html).not.toContain(item.p); expect(html).not.toContain('커프리셔스');
+  });
   it("shows IPA and the small approximation in study/answer contexts but skips Korean lookup for questions", () => {
     for (const context of ["study", "answer"] as const) {
       const html = renderToStaticMarkup(<WordPronunciation item={item} context={context} />);

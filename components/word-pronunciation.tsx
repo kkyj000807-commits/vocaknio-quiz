@@ -11,10 +11,14 @@ export function WordPronunciation({ item, context, ipaStyle }: {
   ipaStyle?: StyleProp<TextStyle>;
 }) {
   const colors = useColors();
-  if (!item.p && !item.book?.pronunciation) return null;
-  const korean = context === "question" ? null : item.book?.pronunciation?.korean_pronunciation.replace(/^≈\s*/, '') || getKoreanPronunciation(item);
+  const book = item.book;
+  const ipa = book ? book.pronunciation?.ipa : item.p;
+  if (!ipa && !book) return null;
+  const korean = context === "question" ? null : book
+    ? book.pronunciation?.korean_pronunciation?.replace(/^≈\s*/, '') || null
+    : getKoreanPronunciation(item);
   return <View style={s.row}>
-    <Text style={[s.ipa, { color: colors.primary }, ipaStyle]}>{item.p || 'IPA 미확인'}</Text>
+    <Text style={[s.ipa, { color: colors.primary }, ipaStyle]}>{ipa || 'IPA 미확인'}</Text>
     {korean && <Text
       testID="korean-pronunciation"
       accessibilityLabel={`한글 발음 근사치 ${korean}. 정확한 발음은 IPA와 음성을 확인하세요.`}
