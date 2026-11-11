@@ -26,6 +26,7 @@ export default function ResultScreen() {
     reviewMode?: string;
     reviewKeys?: string;
     choiceLang?: string;
+    practiceOnly?: string;
   }>();
 
   const correct = parseInt(params.correct ?? "0");
@@ -77,6 +78,7 @@ export default function ResultScreen() {
           <Text style={s.subText}>
             {total}문제 중 {correct}개 정답
           </Text>
+          {params.practiceOnly === '1' && <Text style={s.subText}>이번 풀이는 기기에 저장되지 않았습니다. 기존 기록은 그대로입니다.</Text>}
 
           {/* Score Breakdown */}
           <View style={s.breakdownRow}>

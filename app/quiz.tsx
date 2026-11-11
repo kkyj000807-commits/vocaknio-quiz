@@ -84,11 +84,12 @@ import {
 } from "@/lib/canonical-learning";
 import {
   getLearningTargetState,
+  createEmptySenseLearningState,
 } from "@/lib/learning-state";
 import { getMnemonicVisual } from "@/lib/mnemonic-visual";
 import { useColors } from "@/hooks/use-colors";
 import { useQuestionTimer } from "@/hooks/use-question-timer";
-import { selectAdaptiveItemNums } from "@/lib/adaptive-quiz";
+import { selectAdaptiveItemNums, createEmptyAdaptiveHistory } from "@/lib/adaptive-quiz";
 import { getWordbookPracticeItems, parseWordbookPracticeRequest, inspectWordbookPractice, practiceCandidate, practiceMasteredKeys } from "@/lib/wordbook-practice";
 import { classifyQuizSwipe, getNextQuizIndex, canReorderQuizQuestion } from "@/lib/quiz-navigation";
 import {
@@ -138,6 +139,9 @@ export default function QuizScreen() {
   );
   const sessionIdRef = useRef("");
   const sessionCompletedRef = useRef(false);
+  // A record protection failure is not a content failure. This visit can study
+  // without writing to the unreadable original session/history.
+  const practiceOnlyRef = useRef(false);
   const questionTimer = useQuestionTimer();
   const [restartToken, setRestartToken] = useState(0);
   const [sessionNotice, setSessionNotice] = useState("");
@@ -242,17 +246,18 @@ export default function QuizScreen() {
     }).catch(() => undefined);
 
     let failureStage: QuizPreparationFailure = "SESSION_READ";
-    const prepareQuestions = async () => {
+    const prepareQuestions = async (practiceOnly = false) => {
+      practiceOnlyRef.current = practiceOnly;
       setQuestionsReady(false);
       setQuestions([]);
       isMovingRef.current = false;
       sessionCompletedRef.current = false;
-      setSessionNotice("");
+      setSessionNotice(practiceOnly ? "저장이 제한되어 이번 풀이는 이 탭에서만 유지됩니다. 기존 기록은 그대로입니다." : "");
       setSessionRecoveryFailed(false);
       failureStage = "CONTENT_PREPARE";
       const selectedScope = wordbookScope !== undefined ? parseWordbookPracticeRequest(wordbookScope) : undefined;
       failureStage = "SESSION_READ";
-      const { session: saved, archived } = await loadQuizSessionForStudy(requestKey);
+      const { session: saved, archived } = practiceOnly ? { session: null, archived: false } : await loadQuizSessionForStudy(requestKey);
       if (cancelled) return;
       if (archived) setSessionNotice("이전 답안은 보관했습니다. 최신 문제로 새 학습을 시작합니다.");
       if (saved) {
@@ -270,7 +275,7 @@ export default function QuizScreen() {
         return;
       }
       failureStage = "LEARNING_READ";
-      const [loadedMastered, learningState] = await Promise.all([
+      const [loadedMastered, learningState] = practiceOnly ? [[], createEmptySenseLearningState()] as const : await Promise.all([
         loadMastered(),
         loadSenseLearningState(),
       ]);
@@ -310,13 +315,16 @@ export default function QuizScreen() {
         .slice(2, 10)}`;
       sessionIdRef.current = sessionId;
       failureStage = "SESSION_SAVE";
-      const selectedNums = await prepareAdaptiveQuizSession({
+      const selection = {
         sessionId,
         rangeId: rangeId || "custom",
         mode,
         candidates: candidates.map(item => practiceCandidate(item, mode, learningState, reviewKeys)),
         count,
-      });
+      };
+      const selectedNums = practiceOnly
+        ? selectAdaptiveItemNums({ ...selection, history: createEmptyAdaptiveHistory() })
+        : await prepareAdaptiveQuizSession(selection);
       if (cancelled) return;
 
       failureStage = "CONTENT_PREPARE";
@@ -340,19 +348,23 @@ export default function QuizScreen() {
       setHintLevel(0);
       setMasteredOnCard(false);
       failureStage = "SESSION_SAVE";
-      if (nextQuestions.length) await saveQuizSession({
+      if (!practiceOnly && nextQuestions.length) await saveQuizSession({
         schema: 1, requestKey, sessionId, questions: nextQuestions,
         states: nextQuestions.map(() => createEmptyQuestionViewState()), currentIndex: 0, completed: false,
       });
-      if (getQuizStorageIssue()) throw new Error("New session is not safely saved");
+      if (!practiceOnly && getQuizStorageIssue()) throw new Error("New session is not safely saved");
       if (cancelled) return;
       setQuestions(nextQuestions);
       setQuestionsReady(true);
     };
 
-    prepareQuestions().catch(() => {
+    prepareQuestions().catch(async () => {
       if (cancelled) return;
-      // Do not start an unsaved fallback or drop exact review filters on failure.
+      // Retry the SAME mode/range/review constraints without persistence. Do not
+      // turn a content error into another question type or overwrite old records.
+      if (failureStage !== 'CONTENT_PREPARE') {
+        try { await prepareQuestions(true); return; } catch { /* retain hold for invalid content/filter */ }
+      }
       setPreparationFailure(getQuizStorageIssue() ? "STORAGE_RECOVERY" : failureStage);
       setSessionRecoveryFailed(true);
       setQuestionsReady(true);
@@ -465,7 +477,7 @@ export default function QuizScreen() {
   }), [requestKey, questions, currentIdx]);
 
   useEffect(() => {
-    if (!questionsReady || !questions.length || sessionCompletedRef.current) return;
+    if (!questionsReady || !questions.length || sessionCompletedRef.current || practiceOnlyRef.current) return;
     captureQuestionViewState();
     void saveQuizSession(makeSessionSnapshot()).catch(() => {
       setSessionNotice("이어 풀기 기록을 저장하지 못했습니다. 이번 진행은 복원되지 않을 수 있어요.");
@@ -474,7 +486,11 @@ export default function QuizScreen() {
 
   const finishSession = useCallback(async () => {
     sessionCompletedRef.current = true;
-    await saveQuizSession(makeSessionSnapshot(true));
+    if (!practiceOnlyRef.current) {
+      try { await saveQuizSession(makeSessionSnapshot(true)); }
+      catch { practiceOnlyRef.current = true; setSessionNotice('이번 풀이 저장을 확인하지 못했어요. 기존 기록은 보존됩니다.'); }
+      if (getQuizStorageIssue()) practiceOnlyRef.current = true;
+    }
   }, [makeSessionSnapshot]);
 
   const releaseMovingLock = useCallback(() => {
@@ -493,7 +509,7 @@ export default function QuizScreen() {
     if (!q || !mnemonicVisual || imageRevealed) return;
     haptic("light");
     setImageRevealed(true);
-    void recordSenseLearningEvent({
+    if (!practiceOnlyRef.current) void recordSenseLearningEvent({
       targetKey: getQuestionLearningTargetKey(q),
       type: "image_used",
       questionType: q.mode,
@@ -502,7 +518,7 @@ export default function QuizScreen() {
 
   const recordImageHelped = useCallback(() => {
     if (!q || !imageRevealed) return;
-    void recordSenseLearningEvent({
+    if (!practiceOnlyRef.current) void recordSenseLearningEvent({
       targetKey: getQuestionLearningTargetKey(q),
       type: "image_helped",
       questionType: q.mode,
@@ -539,6 +555,7 @@ export default function QuizScreen() {
 
   const handleBookmark = useCallback(async () => {
     if (!q) return;
+    if (practiceOnlyRef.current) { setSessionNotice('기존 북마크는 보존 중입니다. 저장이 복구되면 추가할 수 있어요.'); return; }
     haptic("light");
     const updated = await toggleBookmark(q.item.num);
     setBookmarks(updated);
@@ -575,7 +592,7 @@ export default function QuizScreen() {
         skipped: false,
       });
       // 한 문제 단위 즉시 저장
-      recordOneAnswer(
+      if (!practiceOnlyRef.current) recordOneAnswer(
         isCorrect,
         isCorrect ? undefined : q.item.num,
         makeAdaptiveAnswerContext(
@@ -621,7 +638,7 @@ export default function QuizScreen() {
       skipped: true,
     });
     // 패스도 오답으로 즉시 저장
-    recordOneAnswer(false, q.item.num, makeAdaptiveAnswerContext("skip"), makeSessionSnapshot());
+    if (!practiceOnlyRef.current) recordOneAnswer(false, q.item.num, makeAdaptiveAnswerContext("skip"), makeSessionSnapshot());
   }, [
     answered,
     currentIdx,
@@ -664,7 +681,7 @@ export default function QuizScreen() {
         flashGrade: grade,
       });
       // 플래시카드 채점 즉시 저장
-      recordOneAnswer(
+      if (!practiceOnlyRef.current) recordOneAnswer(
         grade === "correct",
         grade === "correct" ? undefined : q.item.num,
         makeAdaptiveAnswerContext(grade, grade),
@@ -686,6 +703,7 @@ export default function QuizScreen() {
 
   // 플래시카드 마스터 처리 — 이 단어를 마스터 목록에 추가
   const handleFlashMaster = useCallback(async () => {
+    if (practiceOnlyRef.current) { handleFlashGrade('correct'); return; }
     if (
       Date.now() < suppressTouchPressUntilRef.current ||
       !q ||
@@ -731,6 +749,7 @@ export default function QuizScreen() {
         pathname: "/result",
         params: {
           correct: nextCorrectCount,
+          practiceOnly: practiceOnlyRef.current ? '1' : undefined,
           total: questions.length,
           wrongNums: wrongItems.map((w) => w.num).join(","),
           ...resultReviewParams(makeSessionSnapshot(), mode, choiceLang),
@@ -761,6 +780,7 @@ export default function QuizScreen() {
     makeAdaptiveAnswerContext,
     finishSession,
     makeSessionSnapshot,
+    handleFlashGrade,
   ]);
 
   const handleTypeSubmit = useCallback(() => {
@@ -790,7 +810,7 @@ export default function QuizScreen() {
       typeResult: isCorrect ? "correct" : "wrong",
     });
     // 타이핑 정답 즉시 저장
-    recordOneAnswer(
+    if (!practiceOnlyRef.current) recordOneAnswer(
       isCorrect,
       isCorrect ? undefined : q.item.num,
       makeAdaptiveAnswerContext(isCorrect ? "correct" : "wrong", typedAnswer),
@@ -827,6 +847,7 @@ export default function QuizScreen() {
         pathname: "/result",
         params: {
           correct: correctCount,
+          practiceOnly: practiceOnlyRef.current ? '1' : undefined,
           total: questions.length,
           wrongNums: finalWrongNums.join(","),
           ...resultReviewParams(makeSessionSnapshot(), mode, choiceLang),
@@ -835,7 +856,7 @@ export default function QuizScreen() {
       return;
     }
     if (targetIndex < currentIdx) setSessionNotice("아직 답하지 않은 문제로 돌아왔습니다. 이동만으로는 채점하지 않아요.");
-    if (answered && targetIndex > currentIdx && canReorderQuizQuestion(questionViewStatesRef.current.get(targetIndex))) {
+    if (!practiceOnlyRef.current && answered && targetIndex > currentIdx && canReorderQuizQuestion(questionViewStatesRef.current.get(targetIndex))) {
       // The answer write is ahead of this snapshot in the shared queue. Re-rank
       // only unanswered positions; back navigation and saved grades stay intact.
       try {

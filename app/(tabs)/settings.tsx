@@ -16,8 +16,6 @@ import {
 import { ScreenContainer } from "@/components/screen-container";
 import { PronunciationSettings } from "@/components/pronunciation-settings";
 import { LearningBackupSettings } from "@/components/learning-backup-settings";
-import { LocalBookImport } from "@/components/local-book-import";
-import { useLocalSearchParams } from "expo-router";
 import { VOCAB, VOCAB_HEADWORD_COUNT } from "@/lib/vocab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useColors } from "@/hooks/use-colors";
@@ -59,8 +57,6 @@ const LANG_OPTIONS: LangOption[] = [
 
 export default function SettingsScreen() {
   const colors = useColors();
-  const { book } = useLocalSearchParams<{ book?: string }>();
-  const onBookLoaded = useCallback(() => {}, []);
   const { user, isAuthenticated, loading: authLoading, logout, refresh: refreshAuth } = useAuth();
   const { themeMode, themeStorageIssue, setThemeMode } = useThemeContext();
   const [syncing, setSyncing] = useState(false);
@@ -275,7 +271,6 @@ export default function SettingsScreen() {
           </View>
 
           <PronunciationSettings />
-          <LocalBookImport onLoaded={onBookLoaded} collapsible={book !== '1'} />
           <LearningBackupSettings />
 
           {/* 테마 섹션 */}

@@ -19,7 +19,7 @@ import Animated, {
   interpolate,
   Extrapolation,
 } from "react-native-reanimated";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useFocusEffect } from "expo-router";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { PronunciationButton } from "@/components/pronunciation-button";
@@ -33,7 +33,6 @@ import { getDefinitionQuizEntry, getDefinitionAnswerRelations } from "@/lib/defi
 import { WordSectionLabel } from "@/components/word-section-label";
 import { formatWordbookConcept } from "@/lib/wordbook-concepts";
 import { WordbookPractice } from "@/components/wordbook-practice";
-import { EncryptedBookUnlock } from "@/components/encrypted-book-unlock";
 import { getWordbookPracticeItems } from "@/lib/wordbook-practice";
 import { BOOK_EDITION } from "@/lib/book-edition";
 import { getActiveBookEdition } from "@/lib/integrated-wordbook";
@@ -398,7 +397,6 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
 // ─── 메인 화면 ────────────────────────────────────────────────────────────────
 export default function WordbookScreen() {
   const colors = useColors();
-  const router = useRouter();
   const storageIssue = useSyncExternalStore(subscribeLearningStorage, getLearningStorageIssue, () => null);
 
   const [edition, setEdition] = useState(getActiveBookEdition() ?? BOOK_EDITION);
@@ -546,7 +544,6 @@ export default function WordbookScreen() {
 
   const listHeader = (
     <>
-      <EncryptedBookUnlock onLoaded={() => setEdition(getActiveBookEdition() ?? BOOK_EDITION)} />
       {/* 헤더 */}
       <View style={styles.header}>
         <View style={styles.headerCopy}>
@@ -612,10 +609,6 @@ export default function WordbookScreen() {
         </View>
       </View>
 
-      {!edition.privateContent && <Pressable accessibilityRole="button" accessibilityLabel="단권화 불러오기"
-        onPress={() => router.push('/settings?book=1')} style={{ minHeight: MIN_TOUCH_TARGET, paddingHorizontal: STUDY_PAGE_GUTTER, justifyContent: 'center' }}>
-        <Text style={{ color: colors.primary }}>단권화 불러오기</Text>
-      </Pressable>}
 
       {/* 마스크 모드 안내 배너 */}
       {maskMode && (

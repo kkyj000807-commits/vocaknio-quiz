@@ -24,10 +24,7 @@ import { migrateStoredVocabLists, startLearningStorageRecovery } from "@/lib/sto
 import { LearningStorageNotice } from "@/components/learning-storage-notice";
 import { subscribeWebViewport } from "@/lib/web-viewport";
 import { getVocabStorageFailureMessage } from "@/lib/vocab-storage-migration";
-import { LearningBackupSettings } from "@/components/learning-backup-settings";
-import { loadLocalBook, localBookFailureMessage } from "@/lib/local-book-file";
-import { activateLocalBook } from "@/lib/integrated-wordbook";
-import { restoreRevisedBook } from "@/lib/encrypted-book-package";
+import { loadPublicBook } from "@/lib/public-book";
 
 const DEFAULT_WEB_INSETS: EdgeInsets = { top: 0, right: 0, bottom: 0, left: 0 };
 const DEFAULT_WEB_FRAME: Rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -63,12 +60,14 @@ function RootContents() {
     setBookIssue("");
     // Content first: restored sessions/bookmarks must resolve stable IDs.
     // A failed content read never clears learner records or blocks legacy access.
-    (Platform.OS === 'web' ? restoreRevisedBook().then(restored => restored ? undefined : loadLocalBook().then(data => { if (data) activateLocalBook(data); })).catch(error => setBookIssue(localBookFailureMessage(error))) : Promise.resolve())
+    (Platform.OS === 'web' ? loadPublicBook().catch(() => setBookIssue('교재 연결을 다시 확인해 주세요. 기존 기록은 그대로입니다.')) : Promise.resolve())
       .then(() => migrateStoredVocabLists())
       .then(() => setMigrationStatus("ready"))
       .catch((error) => {
         setMigrationIssue(getVocabStorageFailureMessage(error));
-        setMigrationStatus("error");
+        // Migration failure protects old records, but must not lock the entire
+        // wordbook/settings UI. Quiz uses non-writing practice when necessary.
+        setMigrationStatus("ready");
       });
   }, []);
 
@@ -130,6 +129,7 @@ function RootContents() {
       <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
           <LearningStorageNotice />
+          {!!migrationIssue && <Text accessibilityLiveRegion="polite" style={{ padding: 10, color: colors.muted }}>기존 기록은 보존 중입니다. 단어장은 계속 사용할 수 있어요.</Text>}
           {!!bookIssue && <View accessibilityLiveRegion="polite" style={{ padding: 10, backgroundColor: colors.surface }}>
             <Text style={{ color: colors.foreground, lineHeight: 21 }}>{bookIssue}</Text>
             <Pressable accessibilityRole="button" onPress={runStorageMigration} style={{ minHeight: 44, justifyContent: 'center' }}>
@@ -168,7 +168,7 @@ function RootContents() {
             <>
               <ActivityIndicator size="large" color={colors.primary} />
               <Text style={{ color: colors.foreground, marginTop: 16, fontSize: 15 }}>
-                학습 기록을 확인하고 있습니다
+                단어장을 준비하고 있습니다
               </Text>
             </>
           ) : (
@@ -185,9 +185,6 @@ function RootContents() {
               >
                 <Text style={{ color: "#FFFFFF", fontWeight: "700" }}>다시 시도</Text>
               </Pressable>
-              <View style={{ marginTop: 20, width: "100%", maxWidth: 600 }}>
-                <LearningBackupSettings exportOnly />
-              </View>
             </>
           )}
         </ScrollView>

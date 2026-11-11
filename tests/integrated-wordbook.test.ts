@@ -262,17 +262,19 @@ describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
     expect(arrangeWordbook(rows, item => item.id, true)).toHaveLength(4);
     expect(JSON.stringify(rows)).toBe(before);
   });
-  it('has one ordinary WordCard path and collapsed content setup, not a second viewer', () => {
+  it('has one ordinary WordCard path with automatic public content, not a second viewer or setup', () => {
     const screen = fs.readFileSync('app/(tabs)/wordbook.tsx', 'utf8');
     expect(screen).not.toMatch(/IntegratedBookCard|BookEditionBrowser|LegacyWordbookScreen|renderRecord\(record\)/);
     expect(screen).toContain('<WordCard');
     expect(screen).not.toContain('<LocalBookImport');
-    expect(screen).toContain("router.push('/settings?book=1')");
+    expect(screen).not.toContain("router.push('/settings?book=1')");
+    expect(screen).not.toContain('<EncryptedBookUnlock');
+    expect(fs.readFileSync('app/_layout.tsx', 'utf8')).toContain('loadPublicBook()');
     expect(screen).not.toContain('setIncludeLegacy');
     expect(screen).toContain('setEdition(getActiveBookEdition() ?? BOOK_EDITION)');
-    expect(fs.readFileSync('app/(tabs)/settings.tsx', 'utf8')).toContain('<LocalBookImport');
+    expect(fs.readFileSync('app/(tabs)/settings.tsx', 'utf8')).not.toContain('<LocalBookImport');
     expect(screen).toContain('!(item.book?.concept || item.book?.chunk)');
-    expect(fs.readFileSync('app/_layout.tsx', 'utf8').indexOf('activateLocalBook(data)')).toBeGreaterThan(0);
+    expect(fs.readFileSync('app/_layout.tsx', 'utf8').indexOf('loadPublicBook()')).toBeGreaterThan(0);
     for (const path of ['app/(tabs)/wrong.tsx', 'app/(tabs)/bookmarks.tsx', 'app/result.tsx']) {
       const source = fs.readFileSync(path, 'utf8');
       expect(source).toContain('.map(getVocabItem)');
