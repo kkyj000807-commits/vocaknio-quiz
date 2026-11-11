@@ -2,6 +2,8 @@ import edition from '@/assets/book-edition-v1.5.json';
 import { VOCAB_BY_ID } from '@/lib/vocab';
 
 export interface BookEntry {
+  historical?: boolean;
+  printedNumber?: number;
   id: string; order: number; section: string; word: string; appIds: string[];
   concept: string; chunk: string; chapter: number | null; automaticGrading: boolean;
   display?: { meaning_display: string; annotations: unknown[]; examples: unknown[]; patterns: string[];

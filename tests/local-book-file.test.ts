@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createHash, webcrypto } from 'node:crypto';
 import fs from 'node:fs';
 import { BOOK_EDITION, bookMeanings, selectBookEntries, type BookEdition } from '../lib/book-edition';
-import { inspectLocalBook, validateLocalBook, loadLocalBook, saveLocalBook, localBookFailureMessage } from '../lib/local-book-file';
+import { inspectLocalBook, validateLocalBook, loadLocalBook, saveLocalBook, localBookFailureMessage, readRevisedBookContent, writeRevisedBookContent } from '../lib/local-book-file';
 
 afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
 function fixture() {
@@ -53,6 +53,19 @@ function database(initial?: string, abortWrite = false) {
 }
 
 describe('local book content: no learner migration or upload', () => {
+  it('uses a distinct revision key and awaits its transaction commit', async () => {
+    fixture();
+    const db = database();
+    let completed = false;
+    const saved = writeRevisedBookContent('verified fixture').then(() => { completed = true; });
+    await vi.waitFor(() => expect(db.keys).toHaveLength(1));
+    expect(completed).toBe(false);
+    expect(db.keys).toEqual(['verified-encrypted-package:1.7.4']);
+    db.commit(); await saved;
+    expect(await readRevisedBookContent()).toBe('verified fixture');
+    expect(db.opened).toEqual(['finetune-personal-book-content', 'finetune-personal-book-content']);
+    expect(db.keys.every(key => key === 'verified-encrypted-package:1.7.4')).toBe(true);
+  });
   it.each(['QuotaExceededError', 'SecurityError'])('classifies %s without exposing browser details', async name => {
     vi.stubGlobal('indexedDB', { open: () => { throw Object.assign(new Error('private-detail'), { name }); } });
     const error = await loadLocalBook().catch(error => error);

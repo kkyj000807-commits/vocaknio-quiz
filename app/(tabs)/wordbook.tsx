@@ -33,13 +33,14 @@ import { getDefinitionQuizEntry, getDefinitionAnswerRelations } from "@/lib/defi
 import { WordSectionLabel } from "@/components/word-section-label";
 import { formatWordbookConcept } from "@/lib/wordbook-concepts";
 import { WordbookPractice } from "@/components/wordbook-practice";
+import { EncryptedBookUnlock } from "@/components/encrypted-book-unlock";
 import { getWordbookPracticeItems } from "@/lib/wordbook-practice";
 import { BOOK_EDITION } from "@/lib/book-edition";
 import { getActiveBookEdition } from "@/lib/integrated-wordbook";
 import { useStudyVocab } from "@/hooks/use-study-vocab";
 import { arrangeWordbook, groupWordbookHeadwords, includeLegacySearch, isVolumeOneWord, type DisplayWord } from "@/lib/wordbook-display";
 import { getProductionSenseQuestions, hasSenseQuestionMapping, senseMatchesItem } from "@/lib/sense-questions";
-import { WORDBOOK_RANGES, getVocabItem, getAdditionalHeadwordMeanings, type VocabItem, type VocabRange } from "@/lib/vocab";
+import { WORDBOOK_RANGES, getVocabItem, type VocabItem, type VocabRange } from "@/lib/vocab";
 import {
   loadBookmarks,
   loadSenseLearningState,
@@ -107,8 +108,8 @@ function WordCard({
   const [duplicatesOpen, setDuplicatesOpen] = useState(false);
   const [meaningHidden, setMeaningHidden] = useState(maskMode);
   const isBookmarked = bookmarks.has(item.num);
-  const additionalMeanings = isVolumeOneWord(item) ? getAdditionalHeadwordMeanings(item) : [];
   const chunkMeaning = item.book?.section === 'V301' ? item.book.chunk?.trim() : '';
+  const displayMeaning = item.book?.display?.meaning_display ?? item.k_short;
   const s = cardStyles(colors);
   const hasReviewedMapping = hasSenseQuestionMapping(item.id);
   const dictionaryEntry = getDefinitionQuizEntry(item.id);
@@ -200,14 +201,8 @@ function WordCard({
           ) : (
             <View>
               {item.book?.gradingReview?.status === 'requires_editorial_policy_review' && <Text style={s.korText}>뜻 확인 필요 · 아래 정정 참고</Text>}
-              {!!chunkMeaning && <Text style={s.korText}>대표 뜻 · {chunkMeaning}</Text>}
-              {!!chunkMeaning && <Text style={s.numText}>원래 뜻</Text>}
-              <Text style={s.korText}>
-                {item.k_short}
-              </Text>
-              {additionalMeanings.length > 0 && <Text style={s.numText}>
-                기존 자료의 다른 뜻 · {additionalMeanings.join(" / ")}
-              </Text>}
+              {!!chunkMeaning && chunkMeaning !== displayMeaning && <Text style={s.korText}>{chunkMeaning}</Text>}
+              <Text style={s.korText}>{displayMeaning}</Text>
               {(item.group === "V301" || item.group === "V502") && !(item.book?.concept || item.book?.chunk) && (
                 <Text testID="wordbook-original-concept" style={s.numText}>
                   {formatWordbookConcept(item)}
@@ -220,7 +215,7 @@ function WordCard({
 
       <View style={s.metadataRow}>
         <View style={s.sourceMetadata}>
-          <Text style={s.numText}>{nested ? "다른 용법" : item.book ? `#${item.book.order}` : item.localBook ? "내 교재 · 빠른 암기" : item.referenceOnly ? "추가 단어 · 검수 중" : `#${item.num}`}</Text>
+          <Text style={s.numText}>{nested ? "다른 용법" : item.book ? `#${item.book.printedNumber ?? item.book.order}` : item.localBook ? "내 교재 · 빠른 암기" : item.referenceOnly ? "추가 단어 · 검수 중" : `#${item.num}`}</Text>
           {item.book ? <Text style={s.numText}>{item.book.section}</Text> : <WordSectionLabel groups={item.displaySourceGroups ?? [item.group]} />}
         </View>
         <Pressable
@@ -407,6 +402,7 @@ export default function WordbookScreen() {
   const storageIssue = useSyncExternalStore(subscribeLearningStorage, getLearningStorageIssue, () => null);
 
   const [edition, setEdition] = useState(getActiveBookEdition() ?? BOOK_EDITION);
+  const revisedIdiomCount = edition.sourceCounts['숙어'];
   const rangeOptions = useMemo(() => edition.privateContent ? [RANGE_OPTIONS.find(range => range.id === 'all')!,
     ...edition.sections.map(section => RANGE_OPTIONS.find(range => section === '숙어' ? range.kind === 'idioms'
       : section === '보카바이블 B' ? range.id === 'book-b' : (range.group === 'APPENDIX' ? '부록' : range.group) === section)!)] : RANGE_OPTIONS, [edition]);
@@ -550,6 +546,7 @@ export default function WordbookScreen() {
 
   const listHeader = (
     <>
+      <EncryptedBookUnlock onLoaded={() => setEdition(getActiveBookEdition() ?? BOOK_EDITION)} />
       {/* 헤더 */}
       <View style={styles.header}>
         <View style={styles.headerCopy}>
@@ -557,7 +554,7 @@ export default function WordbookScreen() {
             단어장
           </Text>
           <Text style={[styles.headerSub, { color: colors.muted }]}>
-            {edition.privateContent ? `단권화 v${edition.edition} · ${edition.entries.length.toLocaleString()}개 · 책 순서` : `단어 ${VOCAB_HEADWORD_COUNT.toLocaleString()}개`}
+            {edition.privateContent ? `단권화 v${edition.edition} · ${(edition.entries.length - (edition.sourceCounts['숙어'] ?? 0) + (revisedIdiomCount ?? edition.sourceCounts['숙어'] ?? 0)).toLocaleString()}개 · 책 순서` : `단어 ${VOCAB_HEADWORD_COUNT.toLocaleString()}개`}
           </Text>
         </View>
         {/* 버튼 그룹 */}
@@ -701,8 +698,8 @@ export default function WordbookScreen() {
           horizontal
           style={
             Platform.OS === "web"
-              ? ({ touchAction: "pan-x pan-y" } as any)
-              : undefined
+              ? ([styles.rangeScroller, { touchAction: "pan-x", overscrollBehaviorX: "contain" }] as any)
+              : styles.rangeScroller
           }
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.rangeContent}
@@ -741,7 +738,7 @@ export default function WordbookScreen() {
                   },
                 ]}
               >
-                {getRangeChipLabel(item)}{edition.privateContent && item.id !== 'all' ? ` ${edition.sourceCounts[item.bookSection ?? (item.kind === 'idioms' ? '숙어' : item.group === 'APPENDIX' ? '부록' : item.group ?? '')]?.toLocaleString() ?? ''}` : ''}
+                {getRangeChipLabel(item)}{edition.privateContent && item.id !== 'all' ? ` ${(item.kind === 'idioms' ? revisedIdiomCount ?? edition.sourceCounts['숙어'] : edition.sourceCounts[item.bookSection ?? (item.group === 'APPENDIX' ? '부록' : item.group ?? '')])?.toLocaleString() ?? ''}` : ''}
               </Text>
             </TouchableOpacity>
           ))}
@@ -905,7 +902,11 @@ const styles = StyleSheet.create({
   rangeWrapper: {
     height: 46,
     marginBottom: 2,
+    width: '100%',
+    minWidth: 0,
+    overflow: 'hidden',
   },
+  rangeScroller: { width: '100%', minWidth: 0, flexGrow: 0 },
   rangeContent: {
     paddingHorizontal: STUDY_PAGE_GUTTER,
     gap: 6,
@@ -913,6 +914,7 @@ const styles = StyleSheet.create({
     height: 46,
   },
   rangeChip: {
+    flexShrink: 0,
     paddingHorizontal: 12,
     paddingVertical: 7,
     minHeight: 44,

@@ -111,10 +111,11 @@ describe("explicit basic-meaning study from an empty ordinary session", () => {
   });
 });
 
-it("keeps the original Korean wordbook meaning unclamped even without a synonym expansion control (source contract)", () => {
+it("keeps the current textbook meaning unclamped, with legacy meaning only as a no-book fallback (source contract)", () => {
   const source = fs.readFileSync(path.join(process.cwd(), "app/(tabs)/wordbook.tsx"), "utf8");
-  expect(source).toMatch(/<Text style=\{s\.korText\}>\s*\{item\.k_short\}/);
-  expect(source).not.toMatch(/<Text[^>]*numberOfLines[^>]*>\s*\{item\.k_short\}/);
+  expect(source).toContain("const displayMeaning = item.book?.display?.meaning_display ?? item.k_short;");
+  expect(source).toMatch(/<Text style=\{s\.korText\}>\s*\{displayMeaning\}/);
+  expect(source).not.toMatch(/<Text[^>]*numberOfLines[^>]*>\s*\{displayMeaning\}/);
 });
 
 it("does not advertise an automatic mode fallback that the engine deliberately disallows (source contract)", () => {

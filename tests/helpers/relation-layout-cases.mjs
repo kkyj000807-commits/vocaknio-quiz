@@ -36,13 +36,14 @@ function load(relative) {
       brag: { headword: 'brag', senseId: 'brag%lexical', partOfSpeech: 'verb', definition: 'talk with excessive pride', synsetMembers: ['brag', 'boast'], antonyms: [], lexicographerFile: 'verb.communication', examples: [] },
     }, items: { boastRow: 'boast', bragRow: 'brag' } },
     '@/lib/vocab': { VOCAB_BY_ID: new Map([['boastRow', { k_short: '자랑하다' }], ['bragRow', { k_short: '자랑하다' }]]),
-      getSynonymDetails: () => [], getSynonymSourceGroups: () => [], getAdditionalHeadwordMeanings: () => [], normalizeWord: word => word.trim().toLowerCase(),
+      getSynonymDetails: () => [], getSynonymSourceGroups: () => [], getAdditionalHeadwordMeanings: () => ['obsolete alternate meaning'], normalizeWord: word => word.trim().toLowerCase(),
       WORDBOOK_RANGES: [], VOCAB: [], VOCAB_HEADWORD_COUNT: 1, getRangeItems: () => [] },
     'react-native-reanimated': { __esModule: true, default: { View: host('div') }, FadeIn: { duration: () => ({}) },
       useSharedValue: value => ({ value }), useAnimatedStyle: fn => fn(), withTiming: value => value, interpolate: () => 1, Extrapolation: { CLAMP: 'clamp' } },
     'expo-router': { useRouter: () => ({ push: () => {} }) }, 'expo-haptics': {}, 'expo-audio': {},
     '@/components/word-section-label': { WordSectionLabel: () => null },
     '@/components/screen-container': { ScreenContainer: host('div') },
+    '@/components/encrypted-book-unlock': { EncryptedBookUnlock: () => null },
     '@/components/problem-sense-context': { ProblemSenseContext: () => null },
     '@/components/ui/icon-symbol': { IconSymbol: () => null },
     '@/lib/sense-questions': { hasSenseQuestionMapping: () => false, getProductionSenseQuestions: () => [] },
@@ -74,6 +75,15 @@ function load(relative) {
 }
 const render = element => renderToStaticMarkup(element);
 export const relationLayoutCases = [
+  ['book cards show only the current supplied gloss, never alternate old-data meanings', () => {
+    const { WordCardForTest } = load('app/(tabs)/wordbook.tsx');
+    const item = { id: 'current-book', num: 1, w: 'fixture', k_short: 'old shortened meaning', k: 'old meaning', s: [], group: 'V101',
+      book: { id: 'study-1', order: 1, section: 'V101', display: { meaning_display: 'current book meaning', annotations: [], examples: [], patterns: [] } } };
+    const html = render(React.createElement(WordCardForTest, { item, bookmarks: new Set(), colors, maskMode: false, learningStatus: 'NEW',
+      onToggleBookmark: () => {}, onPlayHide: () => {}, onPlayReveal: () => {}, onLearningStatusPress: () => {} }));
+    assert.match(html, /current book meaning/);
+    assert.doesNotMatch(html, /old shortened meaning|obsolete alternate meaning|기존 자료의 다른 뜻|원래 뜻/);
+  }],
   ['a valid dictionary relation enables the wordbook button and chips even with no original synonyms', () => {
     const { WordCardForTest } = load('app/(tabs)/wordbook.tsx');
     const { SynonymDetails } = load('components/synonym-details.tsx');
@@ -99,8 +109,10 @@ export const relationLayoutCases = [
       book: { section: 'V301', order: 3, concept: '높아짐/낮아짐', chunk: '낮아지다', display: { annotations: [], examples: [], patterns: [], synonym_hints: [] } } };
     const props = { item, bookmarks: new Set(), colors, learningStatus: 'NEW', onToggleBookmark: () => {}, onPlayHide: () => {}, onPlayReveal: () => {}, onLearningStatusPress: () => {} };
     const shown = render(React.createElement(WordCardForTest, { ...props, maskMode: false }));
-    assert.ok(shown.indexOf('대표 뜻 · 낮아지다') < shown.indexOf('원래 뜻'));
-    assert.ok(shown.indexOf('원래 뜻') < shown.indexOf('원본 뜻'));
+    assert.match(shown, /낮아지다/);
+    assert.match(shown, /원본 뜻/);
+    assert.ok(shown.indexOf('낮아지다') < shown.indexOf('원본 뜻'));
+    assert.doesNotMatch(shown, /원래 뜻|기존 자료의 다른 뜻/);
     const masked = render(React.createElement(WordCardForTest, { ...props, maskMode: true }));
     assert.doesNotMatch(masked, /낮아지다|원본 뜻/);
     assert.equal(item.k, '원본 뜻'); assert.equal(item.num, 98765);

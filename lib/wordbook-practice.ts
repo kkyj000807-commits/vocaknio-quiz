@@ -95,7 +95,8 @@ export function getWordbookPracticeItems(scope: WordbookPracticeScope, bookmarks
   if (!range) throw new Error('Unknown wordbook section');
   let items = getRangeItems(range);
   const hasBook = getStudyVocab().some(item => item.book);
-  items = selectBookOrderedItems(items, scope.includeLegacy, hasBook);
+  // Historical IDs remain reachable in bookmark-only views, without combining records.
+  items = selectBookOrderedItems(items, scope.includeLegacy || scope.bookmarksOnly, hasBook);
   if (hasBook && !scope.includeLegacy && range.kind === 'idioms') items = items.filter(item => item.book?.section === '숙어');
   if (scope.concept) items = items.filter(item => (item.book?.concept ?? item.conceptLabel) === scope.concept);
   const query = scope.query.trim().toLowerCase();

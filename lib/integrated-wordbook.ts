@@ -1,4 +1,5 @@
 import type { BookEdition, BookEntry } from '@/lib/book-edition';
+import { orderInstalledIdiomSubset } from '@/lib/idiom-book-order';
 import { registerStudyItems, WORDBOOK_VOCAB, type VocabItem } from '@/lib/vocab';
 
 export const LOCAL_BOOK_NUM_BASE = 1_000_000_000;
@@ -31,7 +32,8 @@ export function createIntegratedWordbook(original: readonly VocabItem[], edition
     // Literal word/gloss/IPA match only, no editorial conflict or alias inference.
     const exact = entry.gradingReview?.status !== 'requires_editorial_policy_review'
       ? (byWord.get(entry.word) ?? []).find(item => !consumed.has(item.id) && item.k === entry.display!.meaning_display &&
-        (!entry.pronunciation?.ipa || item.p === entry.pronunciation.ipa)) : undefined;
+        (edition.edition === '1.7.4' ? item.p === (entry.pronunciation?.ipa ?? '') :
+          (!entry.pronunciation?.ipa || item.p === entry.pronunciation.ipa))) : undefined;
     if (exact) { consumed.add(exact.id); rows.push({ ...exact, book: entry }); continue; }
     const identity = localBookIdentity(entry);
     if (seenIds.has(identity.id) || seenNums.has(identity.num)) throw new Error('Conflicting study identity');
@@ -77,7 +79,7 @@ export function getActiveBookEdition() { return activeEdition; }
  * Extra original senses remain registered for old sessions/review and are opt-in here. */
 export function selectBookOrderedItems(items: readonly VocabItem[], includeLegacy = false, hasBook = items.some(item => item.book)): VocabItem[] {
   if (!hasBook) return [...items];
-  const book = items.filter(item => item.book).sort((a, b) => a.book!.order - b.book!.order);
+  const book = orderInstalledIdiomSubset(items.filter(item => item.book && (includeLegacy || !item.book.historical)).sort((a, b) => a.book!.order - b.book!.order), includeLegacy);
   return includeLegacy ? [...book, ...items.filter(item => !item.book)] : book;
 }
 /** Only after complete pinned-file verification. No learner writes. */
@@ -85,5 +87,17 @@ export function activateLocalBook(edition: BookEdition) {
   if (activeEdition === edition) return;
   const items = createIntegratedWordbook(WORDBOOK_VOCAB, edition);
   registerStudyItems(items);
+  activeEdition = edition;
+}
+
+/** Publish a verified revised edition, retaining old identities for bookmarks and
+ * archived sessions. Historical content is not a source of current displayed meanings. */
+export function activateRevisedBook(base: BookEdition, edition: BookEdition) {
+  const previous = createIntegratedWordbook(WORDBOOK_VOCAB, base);
+  const current = createIntegratedWordbook(WORDBOOK_VOCAB, edition);
+  const currentIds = new Set(current.map(item => item.id));
+  const historical = previous.filter(item => item.book && !currentIds.has(item.id))
+    .map(item => ({ ...item, book: { ...item.book!, historical: true } }));
+  registerStudyItems([...current, ...historical]);
   activeEdition = edition;
 }

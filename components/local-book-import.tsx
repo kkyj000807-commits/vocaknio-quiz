@@ -20,7 +20,7 @@ export function LocalBookImport({ onLoaded, collapsible = false }: { onLoaded: (
     if (Platform.OS !== 'web' || BOOK_EDITION.privateContent) { setBusy(false); return; }
     let active = true;
     setBusy(true); setReadFailed(false);
-    void (!readAttempt && getActiveBookEdition() ? Promise.resolve(getActiveBookEdition()) : loadLocalBook()).then(data => {
+    void (getActiveBookEdition()?.edition === '1.7.4' || (!readAttempt && getActiveBookEdition()) ? Promise.resolve(getActiveBookEdition()) : loadLocalBook()).then(data => {
       if (!active) return;
       if (data) { activateLocalBook(data); onLoaded(data); setMessage(`단어·숙어 ${data.entries.length.toLocaleString()}개 불러옴`); }
       else setMessage('이 브라우저에 교재가 없어요. 교재 파일을 불러와 주세요. 학습 기록과는 별개입니다.');

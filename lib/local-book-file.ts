@@ -73,7 +73,7 @@ export async function inspectLocalBook(raw: string, expected = BOOK_EDITION): Pr
   return validateLocalBook(JSON.parse(envelope.payload), expected);
 }
 
-async function contentTransaction(mode: IDBTransactionMode, raw?: string, expected = BOOK_EDITION): Promise<string | undefined> {
+async function contentTransaction(mode: IDBTransactionMode, raw?: string, expected = BOOK_EDITION, contentKey?: string): Promise<string | undefined> {
   if (typeof indexedDB === 'undefined') throw new LocalBookStorageError('unavailable');
   const db = await new Promise<IDBDatabase>((resolve, reject) => {
     let finished = false;
@@ -117,7 +117,7 @@ async function contentTransaction(mode: IDBTransactionMode, raw?: string, expect
       transaction.oncomplete = () => finish();
       transaction.onabort = transaction.onerror = () => finish(storageFailure(transaction?.error));
       const store = transaction.objectStore(STORE);
-      const key = `${expected.edition}:${expected.datasetSha256}`;
+      const key = contentKey ?? `${expected.edition}:${expected.datasetSha256}`;
       const request = mode === 'readwrite' ? store.put(raw, key) : store.get(key);
       request.onsuccess = () => { if (mode === 'readonly') value = request.result; };
       // A successful put request is NOT a committed transaction.
@@ -132,4 +132,14 @@ export async function saveLocalBook(raw: string, expected = BOOK_EDITION): Promi
   const data = await inspectLocalBook(raw, expected);
   await contentTransaction('readwrite', raw, expected);
   return data;
+}
+
+// Same transactional content store, separate revision key. Never replace the old
+// edition or write learner keys. Callers must validate before write and after read.
+const REVISED_BOOK_KEY = 'verified-encrypted-package:1.7.4';
+export function readRevisedBookContent() {
+  return contentTransaction('readonly', undefined, BOOK_EDITION, REVISED_BOOK_KEY);
+}
+export async function writeRevisedBookContent(raw: string) {
+  await contentTransaction('readwrite', raw, BOOK_EDITION, REVISED_BOOK_KEY);
 }
