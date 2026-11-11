@@ -3,6 +3,28 @@ import vm from 'node:vm';
 import ts from 'typescript';
 import { expect, it, vi } from 'vitest';
 
+it('keeps scoped practice reachable during storage protection while record editing remains guarded', () => {
+  const source = fs.readFileSync('app/(tabs)/wordbook.tsx', 'utf8');
+  const file = ts.createSourceFile('wordbook.tsx', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const gates: string[] = [];
+  let count = 0;
+  const visit = (node: ts.Node) => {
+    if (ts.isJsxSelfClosingElement(node) && node.tagName.getText(file) === 'WordbookPractice') {
+      count++;
+      for (let parent = node.parent; parent; parent = parent.parent) {
+        if (ts.isConditionalExpression(parent) || ts.isBinaryExpression(parent)) gates.push(parent.getText(file));
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(file);
+  expect(count).toBe(1);
+  expect(gates.filter(gate => gate.includes('storageIssue'))).toEqual([]);
+  expect(source).toContain('readOnly={!!storageIssue}');
+  const backup = fs.readFileSync('components/learning-backup-settings.tsx', 'utf8');
+  expect(backup).not.toContain('교재 파일은 별도로');
+});
+
 // Execute the actual screen's preparation closure, not a second implementation.
 // Rendering and device interaction remain separate acceptance gates.
 function preparation() {

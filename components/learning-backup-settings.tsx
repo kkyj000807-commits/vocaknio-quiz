@@ -54,7 +54,7 @@ export function LearningBackupSettings({ exportOnly = false }: { exportOnly?: bo
       <Text style={{ color: c.foreground, fontWeight: "700", fontSize: 16 }}>{exportOnly ? "복구용 학습 기록 백업" : "학습 기록 백업·복원"} {expanded ? "−" : "+"}</Text>
     </Pressable>
     {expanded && <View style={{ gap: 8, padding: 14, backgroundColor: c.card, borderRadius: 12 }}>
-      <Text style={{ color: c.muted, lineHeight: 21 }}>풀이·오답·북마크·MASTER와 이어 풀기를 보관합니다. 교재 파일은 별도로 옮겨 주세요. 로그인 정보는 포함하지 않습니다. 개인 학습 기록은 공개하지 마세요.</Text>
+      <Text style={{ color: c.muted, lineHeight: 21 }}>기기를 바꿀 때만 기록을 옮기세요. 평소 학습에는 필요 없습니다. 로그인 정보는 포함하지 않습니다. 개인 학습 기록은 공개하지 마세요.</Text>
       {button("백업 파일 다운로드", () => { void save(); })}
       {download && <View style={{ gap: 8 }}>
         <Text style={{ color: c.foreground, lineHeight: 21 }}>파일이 내려받아지지 않으면 아래 ‘파일 직접 저장’을 눌러 주세요. 파일 앱에서 저장 여부를 확인하세요.</Text>

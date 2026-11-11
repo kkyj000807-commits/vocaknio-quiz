@@ -756,9 +756,9 @@ export default function WordbookScreen() {
           {maskMode ? " · 플래시카드 모드" : ""}
         </Text>
       </View>
-      {storageIssue ? <Text style={{ color: colors.muted, paddingHorizontal: STUDY_PAGE_GUTTER, paddingBottom: 12 }}>단어장은 계속 볼 수 있어요. 기록 변경은 복구 후에 가능합니다.</Text>
-        : <WordbookPractice scope={practiceScope} label={getRangeChipLabel(activeRange)} items={practiceItems} learningState={learningState}
-          hasLocalContent={practiceItems.some(item => item.localBook)} />}
+      {storageIssue && <Text style={{ color: colors.muted, paddingHorizontal: STUDY_PAGE_GUTTER, paddingBottom: 12 }}>학습은 계속할 수 있어요. 기존 기록은 보호됩니다.</Text>}
+      <WordbookPractice scope={practiceScope} label={getRangeChipLabel(activeRange)} items={practiceItems} learningState={learningState}
+        hasLocalContent={practiceItems.some(item => item.localBook)} />
     </>
   );
 
