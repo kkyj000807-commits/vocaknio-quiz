@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from 'react';
-import { getStudyRevision, getStudyVocab, subscribeStudyVocab } from '@/lib/vocab';
+import { getStudyVocab, subscribeStudyVocab } from '@/lib/vocab';
 export function useStudyVocab() {
-  useSyncExternalStore(subscribeStudyVocab, getStudyRevision, getStudyRevision);
-  return getStudyVocab();
+  // Return the subscribed immutable array itself. A separate getter with an
+  // ignored revision can be memoized by React Compiler across book activation.
+  return useSyncExternalStore(subscribeStudyVocab, getStudyVocab, getStudyVocab);
 }

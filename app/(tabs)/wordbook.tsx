@@ -415,7 +415,7 @@ export default function WordbookScreen() {
   const [showOnlyBookmarks, setShowOnlyBookmarks] = useState(false);
   const [showMastered, setShowMastered] = useState(true);
   // The book's main volume and whole-book search retain printed placements.
-  const includeLegacy = includeLegacySearch(edition.privateContent, searchQuery, rangeOptions[selectedRange] ?? rangeOptions[0]);
+  const includeLegacy = includeLegacySearch(edition.privateContent, searchQuery, rangeOptions[selectedRange] ?? rangeOptions[0], edition.edition);
   const [isShuffled, setIsShuffled] = useState(false);
   const [maskMode, setMaskMode] = useState(false);
   const [learningState, setLearningState] = useState<SenseLearningState | null>(null);

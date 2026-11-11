@@ -11,7 +11,10 @@ export function isVolumeOneWord(item: VocabItem): boolean {
 }
 
 /** Searching the book's main volume must not add unprinted legacy rows. */
-export function includeLegacySearch(isPrivate: boolean, query: string, range: Pick<VocabRange, 'id' | 'group'>): boolean {
+export function includeLegacySearch(isPrivate: boolean, query: string, range: Pick<VocabRange, 'id' | 'group'>, edition?: string): boolean {
+  // The revised book is authoritative, including idiom search. Old identities
+  // remain available through bookmarks/review, never as extra search cards.
+  if (edition === '1.7.4') return false;
   return isPrivate && !!query.trim() && range.id !== 'all' && !volumeOneSections.has(range.group ?? '');
 }
 

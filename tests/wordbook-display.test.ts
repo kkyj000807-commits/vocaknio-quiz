@@ -11,6 +11,10 @@ const item = (id: string, overrides: Partial<VocabItem> = {}): VocabItem => ({
 });
 
 describe("lossless display-only book ordering and exact duplicate folding", () => {
+  it('never mixes old rows into revised-book search, including idioms', () => {
+    for (const id of ['all', 'v101', 'v301', 'v502', 'idioms', 'book-b'])
+      expect(includeLegacySearch(true, 'abide by', { id }, '1.7.4')).toBe(false);
+  });
   it("keeps whole-book and volume-one search on book placements while retaining other legacy search paths", () => {
     expect(includeLegacySearch(true, 'bank', { id: 'all' })).toBe(false);
     for (const group of ['V101', 'V201', 'V301', 'V401', 'V501', 'V502', 'V601', 'APPENDIX'] as const)
