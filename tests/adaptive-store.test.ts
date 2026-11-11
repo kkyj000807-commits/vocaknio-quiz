@@ -11,6 +11,8 @@ import {
   retryLearningStorage,
   loadLearningSnapshot,
   markLearningTargetMastered,
+  clearMastered,
+  startLearningTargetAgain,
 } from "@/lib/store";
 import { VOCAB, WORDBOOK_VOCAB, registerStudyItems } from "@/lib/vocab";
 import { createIntegratedWordbook } from "@/lib/integrated-wordbook";
@@ -70,6 +72,25 @@ vi.mock("@react-native-async-storage/async-storage", () => ({
 describe("adaptive quiz storage", () => {
   beforeEach(() => {
     storageMock.reset();
+  });
+  it('restores only on explicit request and resets MASTER without clearing answers or bookmarks', async () => {
+    await loadLearningSnapshot();
+    const key = getItemLearningTargets(VOCAB[0])[0].key;
+    await recordOneAnswer(false, VOCAB[0].num, { sessionId: 'master-reset-fixture', itemNum: VOCAB[0].num, mode: 'flashcard', outcome: 'wrong', learningTargetKey: key });
+    storageMock.values.set('vocaknio_bookmarks', JSON.stringify([VOCAB[0].num]));
+    await markLearningTargetMastered(key, VOCAB[0].num);
+    const before = await loadLearningSnapshot();
+    await startLearningTargetAgain(key);
+    expect((await loadLearningSnapshot()).learning.targets[key].status).toBe('RELEARNING');
+    await markLearningTargetMastered(key, VOCAB[0].num);
+    await clearMastered();
+    const after = await loadLearningSnapshot();
+    expect(after.learning.targets[key].status).toBe('RELEARNING');
+    expect(after.stats).toEqual(before.stats);
+    expect(after.history).toEqual(before.history);
+    expect(await loadWrongWords()).toContain(VOCAB[0].num);
+    expect(storageMock.values.get('vocaknio_bookmarks')).toBe(JSON.stringify([VOCAB[0].num]));
+    expect(storageMock.values.get('vocaknio_mastered')).toBe('[]');
   });
   it('keeps device-book responses separate, reloadable, idempotent and compatible with old MASTER/bookmarks', async () => {
     const baseline = await loadLearningSnapshot();

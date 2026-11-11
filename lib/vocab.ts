@@ -162,13 +162,14 @@ const CORE_GROUPS = new Set<VocabGroup>(["V301", "V501", "V502"]);
 export const RANGES: VocabRange[] = [
   ...VOCAB_META.sections.map((section) => ({
     ...section,
+    label: section.group === 'APPENDIX' ? '부록' : section.label,
     kind: "section" as const,
     core: CORE_GROUPS.has(section.group),
   })),
   { id: "book-b", label: "보카바이블 B", start: 0, end: -1, count: 0, kind: "section" },
   {
     id: "idioms",
-    label: "숙어·표현",
+    label: "숙어+관용어구",
     start: 0,
     end: VOCAB.length - 1,
     count: VOCAB_IDIOMS.length,

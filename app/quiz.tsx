@@ -280,8 +280,7 @@ export default function QuizScreen() {
         loadSenseLearningState(),
       ]);
       if (cancelled) return;
-      // Fresh MASTER is protected for one day, not excluded forever. Older
-      // MASTER rejoins the pool with a low, time-dependent sampling weight.
+      // MASTER remains excluded until explicit restore/reset, regardless of age.
       const masteredKeys = practiceMasteredKeys(learningState, selectedScope?.includeMastered);
 
       // Re-resolve the exact displayed section/filter without putting thousands
@@ -1316,7 +1315,7 @@ export default function QuizScreen() {
                         onPress={handleFlashMaster}
                       >
                         <Text style={s.masterBtnText}>
-                          ⭐ 마스터 — 목록 제외 · 나중에 기억 재검증
+                          ⭐ 마스터 — 목록·출제에서 제외
                         </Text>
                       </Pressable>
                     </View>

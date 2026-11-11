@@ -170,6 +170,9 @@ export function applyLearningEvent(
   } else if (input.type === "image_helped") {
     target.imageHelped += 1;
   }
+  // An answer from an already-open session still counts, but cannot silently
+  // restore a word explicitly removed from study. Only relearning/reset can.
+  if (previous.status === 'MASTERED' && input.type !== 'relearning') target.status = 'MASTERED';
   target.lastEvent = input.type;
   target.lastStudiedAt = Math.max(0, Math.floor(input.occurredAt ?? Date.now()));
   if (typeof input.responseMs === "number" && Number.isFinite(input.responseMs))

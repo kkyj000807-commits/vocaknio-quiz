@@ -116,7 +116,7 @@ describe("학습 기록의 공통 저장 경로", () => {
     const next = await store.loadSenseLearningState();
     expect(Object.keys(next.targets)).toEqual([oldKey]);
     expect(next.targets[oldKey].attempts).toBe(original.targets[oldKey].attempts + 1);
-    expect(next.targets[oldKey].status).toBe(type === "wrong" ? "WEAK" : "RELEARNING");
+    expect(next.targets[oldKey].status).toBe(type === "mastered" ? "MASTERED" : type === "wrong" ? "WEAK" : "RELEARNING");
   });
 
   it("보강 전후 유형별 응답은 동일 통계·우선순위 키에 모이며 표본을 복제하지 않는다", async () => {
@@ -196,7 +196,7 @@ describe("학습 기록의 공통 저장 경로", () => {
     expect(storage.values.get("vocaknio_mastered")).toBe("[18434]");
   });
 
-  it("실제 sense의 오답·힌트·응답시간을 저장하고 마스터 실패는 재학습으로 되돌린다", async () => {
+  it("실제 sense의 오답·힌트·응답시간을 보존하되 직접 복귀 전까지 마스터를 유지한다", async () => {
     const key = "sense:jury-foreman%3Aleader-of-jury";
     await store.markLearningTargetMastered(key, 18434);
     const masteredAt = (await store.loadSenseLearningState()).targets[key].lastStudiedAt;
@@ -213,7 +213,7 @@ describe("학습 기록의 공통 저장 경로", () => {
     });
     const saved = (await store.loadSenseLearningState()).targets[key];
     expect(saved).toMatchObject({
-      status: "RELEARNING",
+      status: "MASTERED",
       wrong: 1,
       hints: 1,
       lastResponseMs: 4200,

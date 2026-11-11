@@ -603,15 +603,18 @@ export function* inspectQuizQuestions(options: BuildQuizOptions): Generator<Quiz
 export function buildReviewQuestions(
   itemNums: number[],
   count: number,
+  masteredTargetKeys: readonly string[] = [],
 ): QuizQuestion[] {
   if (!Number.isInteger(count) || count <= 0 || count > 200) return [];
   const questions: QuizQuestion[] = [];
+  const masteredKeys = new Set(masteredTargetKeys);
   const items = shuffle(
     [...new Set(itemNums)]
       .map(getVocabItem)
       .filter((item): item is VocabItem => Boolean(item)),
   );
   for (const item of items) {
+    if (itemIsFullyMastered(item, masteredKeys)) continue;
     const mode: QuizMode = item.localBook ? 'flashcard' : getActiveRecallSenses(item.id).some((entry) =>
       entry.prompts.some((prompt) => prompt.kind === "definition-recall"),
     ) || getDefinitionQuizEntry(item.id)
@@ -619,7 +622,7 @@ export function buildReviewQuestions(
       : item.s.length > 0
         ? "syn-choice"
         : "kor-choice";
-    const question = makeQuestion(item, mode, "korean");
+    const question = makeQuestion(item, mode, "korean", masteredKeys);
     if (question) questions.push(question);
     if (questions.length >= count) break;
   }

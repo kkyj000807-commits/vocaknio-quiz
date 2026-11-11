@@ -43,7 +43,8 @@ import {
   isChoiceCorrect,
   type QuizQuestion,
 } from "@/lib/quiz-engine";
-import { loadBookmarks, recordOneAnswer, toggleBookmark } from "@/lib/store";
+import { loadBookmarks, loadSenseLearningState, recordOneAnswer, toggleBookmark } from "@/lib/store";
+import { practiceMasteredKeys } from "@/lib/wordbook-practice";
 import { getQuestionLearningTargetKey } from "@/lib/canonical-learning";
 import { useColors } from "@/hooks/use-colors";
 import { useQuestionTimer } from "@/hooks/use-question-timer";
@@ -96,14 +97,20 @@ export default function WrongQuizScreen() {
     count: string;
   }>();
 
-  const wrongNums = params.wrongNums
-    ? params.wrongNums.split(",").map(Number).filter(Boolean)
-    : [];
   const count = parseInt(params.count ?? "20");
 
-  const [questions] = useState<QuizQuestion[]>(() =>
-    buildReviewQuestions(wrongNums, count),
-  );
+  const [questions, setQuestions] = useState<QuizQuestion[]>([]);
+  const [preparation, setPreparation] = useState<'loading' | 'ready' | 'failed'>('loading');
+  useEffect(() => {
+    let cancelled = false;
+    void loadSenseLearningState().then(state => {
+      if (cancelled) return;
+      const nums = params.wrongNums?.split(',').map(Number).filter(Boolean) ?? [];
+      setQuestions(buildReviewQuestions(nums, count, practiceMasteredKeys(state)));
+      setPreparation('ready');
+    }).catch(() => { if (!cancelled) setPreparation('failed'); });
+    return () => { cancelled = true; };
+  }, [params.wrongNums, count]);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null);
@@ -365,7 +372,7 @@ export default function WrongQuizScreen() {
       <ScreenContainer containerClassName="bg-background">
         <View style={s.emptyContainer}>
           <Text style={s.emptyEmoji}>📭</Text>
-          <Text style={s.emptyTitle}>복습할 오답이 없습니다</Text>
+          <Text style={s.emptyTitle}>{preparation === 'loading' ? '복습을 준비하고 있습니다' : preparation === 'failed' ? '기록을 확인하지 못했습니다' : '복습할 오답이 없습니다'}</Text>
           <Text style={s.emptyText}>
             오답 목록으로 돌아가 학습할 단어를 확인해 주세요.
           </Text>

@@ -102,7 +102,9 @@ describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
     expect(result.count).toBe(30);
     const item = rows[0]; const key = getItemLearningTargets(item)[0].key;
     state.targets[key] = { ...getLearningTargetState(state, key), status: 'MASTERED', lastStudiedAt: Date.now() };
-    expect(practiceMasteredKeys(state)).toContain(key); expect(practiceMasteredKeys(state, true)).toEqual([]);
+    expect(practiceMasteredKeys(state)).toContain(key); expect(practiceMasteredKeys(state, true)).toContain(key);
+    state.targets[key].lastStudiedAt = 0;
+    expect(practiceMasteredKeys(state)).toContain(key);
     expect((await inspectWordbookPractice({ mode: 'flashcard', count: 10, itemNums: [item.num], masteredTargetKeys: practiceMasteredKeys(state) }, state))!.count).toBe(0);
   });
   const scope = (rangeId = 'all'): WordbookPracticeScope => ({ rangeId, concept: '', query: '', bookmarksOnly: false, includeMastered: false });

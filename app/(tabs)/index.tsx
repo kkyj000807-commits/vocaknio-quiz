@@ -26,7 +26,7 @@ import { getQuizCandidateItems } from "@/lib/quiz-engine";
 import { useStudyVocab } from "@/hooks/use-study-vocab";
 
 const DEFAULT_RANGE_ID = "all";
-const SETUP_RANGES = [...RANGES.filter(range => range.id === DEFAULT_RANGE_ID), ...RANGES.filter(range => range.id !== DEFAULT_RANGE_ID)];
+const SETUP_RANGES = [...RANGES.filter(range => range.id === DEFAULT_RANGE_ID), ...RANGES.filter(range => range.id !== DEFAULT_RANGE_ID && range.id !== 'book-b')];
 
 export default function HomeScreen() {
   const studyItems = useStudyVocab();

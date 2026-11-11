@@ -95,8 +95,12 @@ describe("study setup starts with Korean meaning and keeps other modes available
     expect(buttons.some(button => button.label === "핵심")).toBe(false);
     const ranges = buttons.filter(button => RANGES.some(range => range.label === button.label));
     expect(ranges[0]).toMatchObject({ label: "전체", selected: true });
-    expect(ranges).toHaveLength(RANGES.length);
-    for (const range of RANGES) expect(ranges.some(button => button.label === range.label)).toBe(true);
+    expect(ranges).toHaveLength(RANGES.length - 1);
+    for (const range of RANGES.filter(range => range.id !== 'book-b')) expect(ranges.some(button => button.label === range.label)).toBe(true);
+    expect(html).not.toContain('보카바이블');
+    expect(html).not.toContain('보카니오');
+    expect(html).toContain('숙어+관용어구');
+    expect(html).toContain('부록');
     buttons.find(button => button.label === "문제 풀기→")!.press();
     const all = RANGES.find(range => range.id === "all")!;
     expect(push).toHaveBeenCalledWith({ pathname: "/quiz", params: {

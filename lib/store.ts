@@ -1117,7 +1117,13 @@ export async function addMastered(num: number): Promise<number[]> {
  * 마스터 목록 전체를 초기화합니다 (리셋).
  */
 export async function clearMastered(): Promise<void> {
-  await saveNumberList(MASTERED_KEY, []);
+  return enqueueLearningStorageTask(async () => {
+    let next = await readSenseLearningStateUnsafe();
+    for (const target of Object.values(next.targets)) {
+      if (target.status === 'MASTERED') next = applyLearningEvent(next, { targetKey: target.key, type: 'relearning' });
+    }
+    await persistLearningEntries([[MASTERED_KEY, '[]'], [SENSE_LEARNING_STATE_KEY, JSON.stringify(next)]]);
+  });
 }
 
 // ─── Quiz Settings ────────────────────────────────────────────────────────────────

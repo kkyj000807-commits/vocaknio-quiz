@@ -2,15 +2,13 @@ import { bookStudyDetails } from '@/lib/book-edition';
 import { selectBookOrderedItems } from '@/lib/integrated-wordbook';
 import { excludeFullyMasteredItems, getQuizLearningTargets } from '@/lib/canonical-learning';
 import { getLearningTargetState, learningPriority, masteredTargetKeys, type SenseLearningState } from '@/lib/learning-state';
-import { ADAPTIVE_POLICY } from '@/lib/learning-analytics';
 import { inspectQuizQuestions, type BuildQuizOptions, type QuizQuestion } from '@/lib/quiz-engine';
 import { getRangeItems, getStudyVocab, QUIZ_MODES, WORDBOOK_RANGES, type QuizMode, type VocabItem } from '@/lib/vocab';
 
-export function practiceMasteredKeys(state: SenseLearningState, includeMastered = false, now = Date.now()) {
-  return includeMastered ? [] : [...masteredTargetKeys(state)].filter(key => {
-    const target = getLearningTargetState(state, key);
-    return target.lastStudiedAt > 0 && now - target.lastStudiedAt < ADAPTIVE_POLICY.masterProtectionMs;
-  });
+export function practiceMasteredKeys(state: SenseLearningState, includeMastered = false) {
+  // Viewing the mastered list is not permission to resume its quiz targets.
+  void includeMastered;
+  return [...masteredTargetKeys(state)];
 }
 
 /** Shared ranking identity: counts must follow the selector's existing dedup contract. */

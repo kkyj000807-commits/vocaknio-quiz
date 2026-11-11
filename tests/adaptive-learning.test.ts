@@ -68,15 +68,16 @@ describe("actual evidence drives selection and statistics", () => {
     expect(word.modes.find(m => m.mode === "definition-choice")?.correct).toBe(1);
     expect(word.need.reasons.some(r => r.includes("최근"))).toBe(true);
   });
-  it("unknown enters RELEARNING, MASTER lapse is counted, one success cannot restore MASTER", () => {
+  it("counts a MASTER lapse without silently restoring its quiz eligibility", () => {
     let learning = applyLearningEvent(state, { targetKey: "sense:abate", type: "mastered", occurredAt: NOW - 86400000 });
     learning = applyLearningEvent(learning, { targetKey: "sense:abate", type: "unknown", occurredAt: NOW });
     learning = applyLearningEvent(learning, { targetKey: "sense:abate", type: "correct", occurredAt: NOW + 1 });
-    expect(getLearningTargetState(learning, "sense:abate").status).toBe("RELEARNING");
-    const history = recordAdaptiveAnswer(createEmptyAdaptiveHistory(), { sessionId: "lapse", itemNum: 1, targetKey: "sense:abate", groupId: "v101", mode: "kor-choice", outcome: "wrong", answeredAt: NOW, statusBefore: "MASTERED", statusAfter: "RELEARNING" });
+    expect(getLearningTargetState(learning, "sense:abate").status).toBe("MASTERED");
+    expect(getLearningTargetState(learning, "sense:abate").unknown).toBe(1);
+    const history = recordAdaptiveAnswer(createEmptyAdaptiveHistory(), { sessionId: "lapse", itemNum: 1, targetKey: "sense:abate", groupId: "v101", mode: "kor-choice", outcome: "wrong", answeredAt: NOW, statusBefore: "MASTERED", statusAfter: "MASTERED" });
     const model = buildLearningStatistics(history, learning, fixtureItems, { now: NOW });
     expect(model.performance).toMatchObject({ masterChecks: 1, masterRetained: 0, lapses: 1 });
-    expect(model.masterRetention).toBe(0); expect(model.stateCounts.RELEARNING).toBe(1);
+    expect(model.masterRetention).toBe(0); expect(model.stateCounts.MASTERED).toBe(1);
   });
   it("cumulative and recent results differ; period/group/type filters reconcile with daily aggregates", () => {
     let history = fixtureHistory();

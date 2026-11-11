@@ -11,7 +11,7 @@ import {
   getItemLearningTargets,
 } from "@/lib/canonical-learning";
 import { getVocabItem } from "@/lib/vocab";
-import { buildQuizQuestions, getQuizCandidateItems } from "@/lib/quiz-engine";
+import { buildQuizQuestions, buildReviewQuestions, getQuizCandidateItems } from "@/lib/quiz-engine";
 
 describe("canonical sense learning state", () => {
   it("counts delayed responses without rolling back newer mastery or its evidence", () => {
@@ -50,7 +50,7 @@ describe("canonical sense learning state", () => {
     expect(new Set(keys).size).toBe(2);
   });
 
-  it("moves failure to WEAK, explicit mastery to MASTERED, and later failure to RELEARNING", () => {
+  it("keeps explicit mastery after later answers until the user restores the target", () => {
     const key = canonicalSenseKey("jury-foreman:leader-of-jury");
     let state = createEmptySenseLearningState();
     state = applyLearningEvent(state, { targetKey: key, type: "wrong" });
@@ -59,6 +59,9 @@ describe("canonical sense learning state", () => {
     state = applyLearningEvent(state, { targetKey: key, type: "mastered" });
     expect(getLearningTargetState(state, key).status).toBe("MASTERED");
     state = applyLearningEvent(state, { targetKey: key, type: "wrong" });
+    expect(getLearningTargetState(state, key).status).toBe("MASTERED");
+    expect(getLearningTargetState(state, key).wrong).toBe(2);
+    state = applyLearningEvent(state, { targetKey: key, type: "relearning" });
     expect(getLearningTargetState(state, key).status).toBe("RELEARNING");
     expect(learningPriority(getLearningTargetState(state, key))).toBeGreaterThan(weakPriority);
   });
@@ -95,6 +98,7 @@ describe("canonical sense learning state", () => {
   it("removes a fully mastered real sense from all ordinary target pools", () => {
     const item = getVocabItem(18434)!;
     const mastered = canonicalSenseKey("jury-foreman:leader-of-jury");
+    expect(buildReviewQuestions([item.num], 1, [mastered])).toEqual([]);
     for (const mode of ["definition-choice", "syn-choice", "kor-choice", "flashcard"] as const) {
       expect(getQuizCandidateItems({
         mode,

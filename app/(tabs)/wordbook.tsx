@@ -49,13 +49,13 @@ import {
   getLearningStorageIssue,
   subscribeLearningStorage,
 } from "@/lib/store";
-import { getItemLearningTargets } from "@/lib/canonical-learning";
+import { getItemLearningTargets, itemIsFullyMastered } from "@/lib/canonical-learning";
 import type { LearningStatus, SenseLearningState } from "@/lib/learning-state";
 import { useColors } from "@/hooks/use-colors";
 import * as Haptics from "expo-haptics";
 import { useAudioPlayer, setAudioModeAsync } from "expo-audio";
 
-const RANGE_OPTIONS: (VocabRange & { bookSection?: string })[] = [...WORDBOOK_RANGES].sort((a, b) => Number(b.id === 'all') - Number(a.id === 'all'))
+const RANGE_OPTIONS: (VocabRange & { bookSection?: string })[] = WORDBOOK_RANGES.filter(range => range.id !== 'book-b').sort((a, b) => Number(b.id === 'all') - Number(a.id === 'all'))
   .map(range => range.id === 'book-b' ? { ...range, bookSection: '보카바이블 B' } : range);
 
 function getRangeChipLabel(range: (typeof RANGE_OPTIONS)[number]) {
@@ -402,7 +402,7 @@ export default function WordbookScreen() {
   const [edition, setEdition] = useState(getActiveBookEdition() ?? BOOK_EDITION);
   const revisedIdiomCount = edition.sourceCounts['숙어'];
   const rangeOptions = useMemo(() => edition.privateContent ? [RANGE_OPTIONS.find(range => range.id === 'all')!,
-    ...edition.sections.map(section => RANGE_OPTIONS.find(range => section === '숙어' ? range.kind === 'idioms'
+    ...edition.sections.filter(section => section !== '보카바이블 B').map(section => RANGE_OPTIONS.find(range => section === '숙어' ? range.kind === 'idioms'
       : section === '보카바이블 B' ? range.id === 'book-b' : (range.group === 'APPENDIX' ? '부록' : range.group) === section)!)] : RANGE_OPTIONS, [edition]);
   const VOCAB = useStudyVocab();
   const VOCAB_HEADWORD_COUNT = useMemo(() => new Set(VOCAB.map(item => item.w)).size, [VOCAB]);
@@ -411,7 +411,7 @@ export default function WordbookScreen() {
   const [concept, setConcept] = useState('');
   const [bookmarks, setBookmarks] = useState<Set<number>>(new Set());
   const [showOnlyBookmarks, setShowOnlyBookmarks] = useState(false);
-  const [showMastered, setShowMastered] = useState(true);
+  const [showMastered, setShowMastered] = useState(false);
   // The book's main volume and whole-book search retain printed placements.
   const includeLegacy = includeLegacySearch(edition.privateContent, searchQuery, rangeOptions[selectedRange] ?? rangeOptions[0], edition.edition);
   const [isShuffled, setIsShuffled] = useState(false);
@@ -474,8 +474,12 @@ export default function WordbookScreen() {
 
   const practiceScope = useMemo(() => ({ rangeId: rangeOptions[selectedRange]?.id ?? 'all', concept, query: searchQuery,
     bookmarksOnly: showOnlyBookmarks, includeMastered: showMastered, includeLegacy }), [rangeOptions, selectedRange, concept, searchQuery, showOnlyBookmarks, showMastered, includeLegacy]);
-  const practiceItems = useMemo(() => VOCAB.length ? getWordbookPracticeItems(practiceScope, bookmarks, learningState) : [],
-    [practiceScope, bookmarks, learningState, VOCAB]);
+  const practiceItems = useMemo(() => {
+    const items = VOCAB.length ? getWordbookPracticeItems(practiceScope, bookmarks, learningState) : [];
+    if (!showMastered) return items;
+    const keys = new Set(Object.values(learningState?.targets ?? {}).filter(target => target.status === 'MASTERED').map(target => target.key));
+    return items.filter(item => itemIsFullyMastered(item, keys));
+  }, [practiceScope, bookmarks, learningState, VOCAB, showMastered]);
   const firstLegacySection = useMemo(() => {
     const first = new Map<string, string>();
     for (const item of VOCAB) {
@@ -676,7 +680,7 @@ export default function WordbookScreen() {
           ]}
           onPress={() => setShowMastered((value) => !value)}
           accessibilityRole="button"
-          accessibilityLabel={showMastered ? "외운 단어 목록에서 숨기기" : "외운 단어 목록에 표시하기"}
+          accessibilityLabel={showMastered ? "학습할 단어 목록으로 돌아가기" : "외운 단어 목록 보기"}
           accessibilityState={{ selected: showMastered }}
         >
           <Text style={[styles.masteredFilterText, { color: showMastered ? colors.warning : colors.muted }]}>
@@ -751,7 +755,7 @@ export default function WordbookScreen() {
           {filteredVocab.length.toLocaleString()}개
           {searchQuery ? ` · "${searchQuery}" 검색 결과` : ""}
           {showOnlyBookmarks ? " · 북마크만" : ""}
-          {!showMastered ? " · 외운 단어 제외" : " · 외운 단어 포함"}
+          {!showMastered ? " · 외운 단어 제외" : " · 외운 단어만"}
           {isShuffled ? " · 랜덤 순서" : ""}
           {maskMode ? " · 플래시카드 모드" : ""}
         </Text>
