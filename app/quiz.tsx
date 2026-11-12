@@ -1402,7 +1402,7 @@ export default function QuizScreen() {
                 </View>
               )}
 
-              {answered && !q.sentenceCompletion && !q.recall && !q.definitionRecall && <LearningDetails itemId={q.item.id} />}
+              {answered && !q.sentenceCompletion && !q.recall && !q.definitionRecall && <LearningDetails itemId={q.item.id} bookEntry={q.item.book} />}
 
             </Animated.View>
           </ScrollView>

@@ -3,6 +3,29 @@ import vm from 'node:vm';
 import ts from 'typescript';
 import { expect, it, vi } from 'vitest';
 
+it('passes the actual book entry to the same expanded dictionary after quiz and review answers', () => {
+  for (const name of ['quiz', 'wrong-quiz']) {
+    const file = ts.createSourceFile(name + '.tsx', fs.readFileSync('app/' + name + '.tsx', 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+    const calls: ts.JsxSelfClosingElement[] = [];
+    const visit = (node: ts.Node) => {
+      if (ts.isJsxSelfClosingElement(node) && node.tagName.getText(file) === 'LearningDetails') calls.push(node);
+      ts.forEachChild(node, visit);
+    };
+    visit(file);
+    expect(calls.length).toBe(1);
+    const call = calls[0];
+    const props = Object.fromEntries(call.attributes.properties.filter(ts.isJsxAttribute).map(attr => [
+      attr.name.getText(file), attr.initializer && ts.isJsxExpression(attr.initializer) ? attr.initializer.expression?.getText(file) : '',
+    ]));
+    expect(props).toEqual({ itemId: 'q.item.id', bookEntry: 'q.item.book' });
+    let answerGate = false;
+    for (let parent = call.parent; parent; parent = parent.parent) {
+      if (ts.isBinaryExpression(parent) && parent.getText(file).startsWith('answered &&')) answerGate = true;
+    }
+    expect(answerGate).toBe(true);
+  }
+});
+
 it('keeps scoped practice reachable during storage protection while record editing remains guarded', () => {
   const source = fs.readFileSync('app/(tabs)/wordbook.tsx', 'utf8');
   const file = ts.createSourceFile('wordbook.tsx', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);

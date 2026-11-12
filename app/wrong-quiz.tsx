@@ -610,7 +610,7 @@ export default function WrongQuizScreen() {
               </View>
             )}
 
-            {answered && !q.recall && !q.definitionRecall && <LearningDetails itemId={q.item.id} />}
+            {answered && !q.recall && !q.definitionRecall && <LearningDetails itemId={q.item.id} bookEntry={q.item.book} />}
 
             {(currentIdx > 0 || answered) && (
               <View style={s.questionNavRow}>
