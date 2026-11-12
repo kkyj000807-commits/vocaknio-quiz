@@ -20,7 +20,7 @@ it('keeps scoped practice reachable during storage protection while record editi
   visit(file);
   expect(count).toBe(1);
   expect(gates.filter(gate => gate.includes('storageIssue'))).toEqual([]);
-  expect(source).toContain('readOnly={!!storageIssue}');
+  expect(source).toContain('readOnly={!!storageIssue || isUpdatingMaster}');
   const backup = fs.readFileSync('components/learning-backup-settings.tsx', 'utf8');
   expect(backup).not.toContain('교재 파일은 별도로');
 });

@@ -1,9 +1,8 @@
 import { MIN_TOUCH_TARGET, SCROLL_END_PADDING, STUDY_CARD_PADDING, STUDY_PAGE_GUTTER } from "@/lib/layout";
-import { useState, useCallback, useMemo, useEffect, useSyncExternalStore } from "react";
+import { useState, useRef, useCallback, useMemo, useEffect, useSyncExternalStore } from "react";
 import {
   View,
   Text,
-  FlatList,
   ScrollView,
   TextInput,
   Pressable,
@@ -13,6 +12,10 @@ import {
 } from "react-native";
 import Animated, {
   FadeIn,
+  FadeOut,
+  LinearTransition,
+  Easing,
+  ReduceMotion,
   useSharedValue,
   useAnimatedStyle,
   withTiming,
@@ -74,6 +77,9 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+const CARD_EXIT = FadeOut.duration(160).easing(Easing.out(Easing.cubic)).reduceMotion(ReduceMotion.System);
+const CARD_LAYOUT = LinearTransition.duration(240).easing(Easing.out(Easing.cubic)).reduceMotion(ReduceMotion.System);
+
 // ─── 단어 카드 ────────────────────────────────────────────────────────────────
 function WordCard({
   item,
@@ -88,6 +94,7 @@ function WordCard({
   onLearningStatusPress,
   readOnly = false,
   nested = false,
+  animateExit = false,
 }: {
   item: DisplayWord;
   bookmarks: Set<number>;
@@ -101,6 +108,7 @@ function WordCard({
   onLearningStatusPress: (item: VocabItem) => void;
   readOnly?: boolean;
   nested?: boolean;
+  animateExit?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [relationDetailsOpen, setRelationDetailsOpen] = useState(false);
@@ -121,8 +129,8 @@ function WordCard({
     transform: [{ perspective: 900 }, { rotateY: `${flipRotation.value}deg` }],
     opacity: interpolate(
       Math.abs(flipRotation.value),
-      [0, 74, 82],
-      [1, 0.35, 0],
+      [0, 18],
+      [1, 0.72],
       Extrapolation.CLAMP,
     ),
     backfaceVisibility: "hidden",
@@ -131,8 +139,12 @@ function WordCard({
   const handleMeaningPress = useCallback(() => {
     const nextHidden = !meaningHidden;
     setMeaningHidden(nextHidden);
-    flipRotation.value = nextHidden ? 82 : -82;
-    flipRotation.value = withTiming(0, { duration: 190 });
+    flipRotation.value = nextHidden ? 18 : -18;
+    flipRotation.value = withTiming(0, {
+      duration: 240,
+      easing: Easing.out(Easing.cubic),
+      reduceMotion: ReduceMotion.System,
+    });
     if (nextHidden) onPlayHide();
     else onPlayReveal();
     if (Platform.OS !== "web") {
@@ -163,7 +175,7 @@ function WordCard({
   );
 
   return (
-    <View style={s.card}>
+    <Animated.View exiting={animateExit ? CARD_EXIT : undefined} style={s.card}>
       <View style={s.topRow}>
         <View style={s.wordArea}>
           <Text style={s.wordText}>{item.w}</Text>
@@ -270,7 +282,7 @@ function WordCard({
           onToggleBookmark={onToggleBookmark} colors={colors} maskMode={maskMode} onPlayHide={onPlayHide} onPlayReveal={onPlayReveal}
           learningStatus={getLearningStatus(duplicate)} getLearningStatus={getLearningStatus} onLearningStatusPress={onLearningStatusPress} readOnly={readOnly} nested />)}
       </>}
-    </View>
+    </Animated.View>
   );
 }
 
@@ -339,7 +351,7 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
       overflow: "hidden",
     },
     meaningTouchPressed: {
-      opacity: 0.78,
+      opacity: 0.96,
     },
     meaningFace: {
       minHeight: MIN_TOUCH_TARGET,
@@ -417,6 +429,9 @@ export default function WordbookScreen() {
   const [isShuffled, setIsShuffled] = useState(false);
   const [maskMode, setMaskMode] = useState(false);
   const [learningState, setLearningState] = useState<SenseLearningState | null>(null);
+  const masteryPending = useRef(false);
+  const [isUpdatingMaster, setIsUpdatingMaster] = useState(false);
+  const [masteryMotionItem, setMasteryMotionItem] = useState<number | null>(null);
 
   // ─── 사운드 (개별/전체 가리기 피드백) ─────────────────────────────────────
   const hidePlayer = useAudioPlayer(require("@/assets/sounds/hide.wav"));
@@ -453,14 +468,26 @@ export default function WordbookScreen() {
   }, []));
 
   const handleLearningStatusPress = useCallback(async (item: VocabItem) => {
-    if (getLearningStorageIssue()) return;
+    if (masteryPending.current || getLearningStorageIssue()) return;
     const targets = getItemLearningTargets(item);
     if (targets.length !== 1) return;
-    const current = learningState?.targets[targets[0].key]?.status ?? "NEW";
-    const next = current === "MASTERED"
-      ? await startLearningTargetAgain(targets[0].key)
-      : await markLearningTargetMastered(targets[0].key, item.num);
-    setLearningState(next);
+    masteryPending.current = true;
+    setIsUpdatingMaster(true);
+    setMasteryMotionItem(item.num);
+    try {
+      const current = learningState?.targets[targets[0].key]?.status ?? "NEW";
+      const next = current === "MASTERED"
+        ? await startLearningTargetAgain(targets[0].key)
+        : await markLearningTargetMastered(targets[0].key, item.num);
+      // Commit the list change only after persistence succeeds; never hide on failure.
+      setLearningState(next);
+    } catch {
+      // The store reports the protection issue. Keep the card and original state.
+      setMasteryMotionItem(null);
+    } finally {
+      masteryPending.current = false;
+      setIsUpdatingMaster(false);
+    }
   }, [learningState]);
 
   const handleToggleBookmark = useCallback(async (num: number) => {
@@ -473,7 +500,7 @@ export default function WordbookScreen() {
   }, []);
 
   const practiceScope = useMemo(() => ({ rangeId: rangeOptions[selectedRange]?.id ?? 'all', concept, query: searchQuery,
-    bookmarksOnly: showOnlyBookmarks, includeMastered: showMastered, includeLegacy }), [rangeOptions, selectedRange, concept, searchQuery, showOnlyBookmarks, showMastered, includeLegacy]);
+    bookmarksOnly: showOnlyBookmarks, includeMastered: showMastered || !!searchQuery.trim(), includeLegacy }), [rangeOptions, selectedRange, concept, searchQuery, showOnlyBookmarks, showMastered, includeLegacy]);
   const practiceItems = useMemo(() => {
     const items = VOCAB.length ? getWordbookPracticeItems(practiceScope, bookmarks, learningState) : [];
     if (!showMastered) return items;
@@ -518,16 +545,18 @@ export default function WordbookScreen() {
         learningStatus={learningState?.targets[getItemLearningTargets(item)[0]?.key]?.status ?? "NEW"}
         getLearningStatus={row => learningState?.targets[getItemLearningTargets(row)[0]?.key]?.status ?? "NEW"}
         onLearningStatusPress={handleLearningStatusPress}
-        readOnly={!!storageIssue}
+        readOnly={!!storageIssue || isUpdatingMaster}
+        animateExit={item.num === masteryMotionItem}
       />
     ),
-    [bookmarks, handleLearningStatusPress, handleToggleBookmark, colors, learningState, maskMode, playHide, playReveal, storageIssue],
+    [bookmarks, handleLearningStatusPress, handleToggleBookmark, colors, learningState, maskMode, playHide, playReveal, storageIssue, isUpdatingMaster, masteryMotionItem],
   );
 
   const renderItem = useCallback(({ item }: { item: DisplayWord }) => renderRecord(item), [renderRecord]);
   const keyExtractor = useCallback((item: DisplayWord) => item.id, []);
 
   const handleShuffle = useCallback(() => {
+    setMasteryMotionItem(null);
     setIsShuffled((v) => !v);
     if (Platform.OS !== "web") {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -543,8 +572,9 @@ export default function WordbookScreen() {
 
   const activeRange = rangeOptions[selectedRange] ?? rangeOptions[0];
   const activeBookSection = activeRange.bookSection ?? (activeRange.group === 'APPENDIX' ? '부록' : activeRange.group);
-  const concepts = useMemo(() => edition.privateContent && (activeBookSection === 'V301' || activeBookSection === 'V502')
-    ? [...new Set(edition.entries.filter(entry => entry.section === activeBookSection).map(entry => entry.concept).filter(Boolean))] : [], [edition, activeBookSection]);
+  const conceptSection = activeRange.kind === 'idioms' ? '숙어' : activeBookSection;
+  const concepts = useMemo(() => edition.privateContent && (conceptSection === 'V301' || conceptSection === 'V502' || conceptSection === '숙어')
+    ? [...new Set(edition.entries.filter(entry => entry.section === conceptSection).map(entry => entry.concept).filter(Boolean))] : [], [edition, conceptSection]);
 
   const listHeader = (
     <>
@@ -644,7 +674,7 @@ export default function WordbookScreen() {
           <TextInput
             style={[styles.searchInput, { color: colors.foreground }]}
             value={searchQuery}
-            onChangeText={setSearchQuery}
+            onChangeText={value => { setMasteryMotionItem(null); setSearchQuery(value); }}
             placeholder="단어, 뜻, 동의어 검색..."
             placeholderTextColor={colors.muted}
             autoCapitalize="none"
@@ -663,7 +693,7 @@ export default function WordbookScreen() {
               borderColor: showOnlyBookmarks ? colors.primary : colors.border,
             },
           ]}
-          onPress={() => setShowOnlyBookmarks((v) => !v)}
+          onPress={() => { setMasteryMotionItem(null); setShowOnlyBookmarks((v) => !v); }}
           accessibilityRole="button"
           accessibilityLabel={showOnlyBookmarks ? "북마크 필터 해제" : "북마크한 단어만 보기"}
           accessibilityState={{ selected: showOnlyBookmarks }}
@@ -678,7 +708,7 @@ export default function WordbookScreen() {
               borderColor: showMastered ? colors.warning : colors.border,
             },
           ]}
-          onPress={() => setShowMastered((value) => !value)}
+          onPress={() => { setMasteryMotionItem(null); setShowMastered((value) => !value); }}
           accessibilityRole="button"
           accessibilityLabel={showMastered ? "학습할 단어 목록으로 돌아가기" : "외운 단어 목록 보기"}
           accessibilityState={{ selected: showMastered }}
@@ -723,6 +753,7 @@ export default function WordbookScreen() {
                   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 }
                 setSelectedRange(index);
+                setMasteryMotionItem(null);
                 setConcept('');
               }}
             >
@@ -744,8 +775,8 @@ export default function WordbookScreen() {
 
       {concepts.length > 0 && <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.rangeContent}>
         {['', ...concepts].map(value => <Pressable key={value} accessibilityRole="button" accessibilityState={{ selected: value === concept }}
-          onPress={() => setConcept(value)} style={[styles.rangeChip, { backgroundColor: value === concept ? colors.primary : colors.surface, borderColor: colors.border }]}>
-          <Text style={{ color: value === concept ? '#fff' : colors.foreground }}>{value || '개념 전체'}</Text>
+          onPress={() => { setMasteryMotionItem(null); setConcept(value); }} style={[styles.rangeChip, { backgroundColor: value === concept ? colors.primary : colors.surface, borderColor: colors.border }]}>
+          <Text style={{ color: value === concept ? '#fff' : colors.foreground }}>{value || (conceptSection === '숙어' ? '숙어 전체' : '개념 전체')}</Text>
         </Pressable>)}
       </ScrollView>}
 
@@ -755,7 +786,7 @@ export default function WordbookScreen() {
           {filteredVocab.length.toLocaleString()}개
           {searchQuery ? ` · "${searchQuery}" 검색 결과` : ""}
           {showOnlyBookmarks ? " · 북마크만" : ""}
-          {!showMastered ? " · 외운 단어 제외" : " · 외운 단어만"}
+          {showMastered ? " · 외운 단어만" : searchQuery.trim() ? " · 외운 단어 포함" : " · 외운 단어 제외"}
           {isShuffled ? " · 랜덤 순서" : ""}
           {maskMode ? " · 플래시카드 모드" : ""}
         </Text>
@@ -768,7 +799,8 @@ export default function WordbookScreen() {
 
   return (
     <ScreenContainer containerClassName="bg-background">
-      <FlatList
+      <Animated.FlatList
+        itemLayoutAnimation={masteryMotionItem !== null ? CARD_LAYOUT : undefined}
         style={styles.list}
         data={filteredVocab}
         keyExtractor={keyExtractor}

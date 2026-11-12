@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import fs from 'node:fs';
 import { createIntegratedWordbook, localBookIdentity, selectBookOrderedItems } from '../lib/integrated-wordbook';
 import { arrangeWordbook, groupWordbookHeadwords } from '../lib/wordbook-display';
-import { VOCAB, VOCAB_BY_NUM, WORDBOOK_VOCAB, getVocabItem, getRangeItems, getAdditionalHeadwordMeanings, RANGES, registerStudyItems, type VocabItem } from '../lib/vocab';
+import { VOCAB, VOCAB_BY_NUM, WORDBOOK_VOCAB, WORDBOOK_RANGES, getVocabItem, getRangeItems, getAdditionalHeadwordMeanings, RANGES, registerStudyItems, type VocabItem } from '../lib/vocab';
 import { getItemLearningTargets, getQuestionLearningTargetKey } from '../lib/canonical-learning';
 import { buildQuizQuestions, getQuizCandidateItems, validateQuestion } from '../lib/quiz-engine';
 import { createEmptyQuestionViewState, parseQuizSession, isQuizSessionContentCurrent } from '../lib/quiz-session';
@@ -108,6 +108,33 @@ describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
     expect((await inspectWordbookPractice({ mode: 'flashcard', count: 10, itemNums: [item.num], masteredTargetKeys: practiceMasteredKeys(state) }, state))!.count).toBe(0);
   });
   const scope = (rangeId = 'all'): WordbookPracticeScope => ({ rangeId, concept: '', query: '', bookmarksOnly: false, includeMastered: false });
+  it('partitions every current idiom by its printed subsection without losing order or widening quiz scope', () => {
+    const source = JSON.parse(fs.readFileSync('public/data/book/book-1.7.4-0be56a709696210a.json', 'utf8')).current as BookEdition;
+    const entries = source.entries.filter(entry => entry.section === '숙어');
+    registerStudyItems(createIntegratedWordbook([], { ...source, entries }));
+    const rangeId = WORDBOOK_RANGES.find(range => range.kind === 'idioms')!.id;
+    const all = getWordbookPracticeItems(scope(rangeId), new Set(), null);
+    expect(all).toHaveLength(5789);
+    const concepts = [...new Set(entries.map(entry => entry.concept))];
+    expect(concepts).toEqual(['101', '201', '301', '401', '501', '502', '601', '부록', '추가 숙어']);
+    const partition = concepts.flatMap(concept => {
+      const selected = { ...scope(rangeId), concept };
+      const reloaded = parseWordbookPracticeScope(JSON.stringify(selected));
+      const rows = getWordbookPracticeItems(reloaded, new Set(), null);
+      expect(rows.map(row => row.book!.id)).toEqual(entries.filter(entry => entry.concept === concept).map(entry => entry.id));
+      return rows.map(row => row.book!.id);
+    });
+    expect(new Set(partition).size).toBe(all.length);
+    expect(partition).toEqual(all.map(row => row.book!.id));
+    const first = all[0];
+    const state = createEmptySenseLearningState();
+    const key = getItemLearningTargets(first)[0].key;
+    state.targets[key] = { ...getLearningTargetState(state, key), status: 'MASTERED' };
+    const search = { ...scope(rangeId), query: first.w, includeMastered: true };
+    expect(getWordbookPracticeItems(search, new Set(), state).some(row => row.id === first.id)).toBe(true);
+    expect(getWordbookPracticeItems(scope(rangeId), new Set(), state).some(row => row.id === first.id)).toBe(false);
+    expect(practiceMasteredKeys(state, true)).toContain(key);
+  });
   it('keeps private search/concept text out of HTTP requests while surviving reload', () => {
     const selected = { ...scope(), concept: '개인 개념 & # 100%', query: '개인 검색 문구?' };
     const url = new URL(buildWordbookPracticeHref(selected, 'kor-choice', 20), 'https://fixture.invalid');

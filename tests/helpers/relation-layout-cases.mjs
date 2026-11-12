@@ -17,6 +17,7 @@ const native = { View: host('div'), Text: host('span'), Pressable: host('button'
   FlatList: host('div'), ScrollView: host('div'), TextInput: host('input'), TouchableOpacity: host('button'), Platform: { OS: 'web' },
   StyleSheet: { create: value => value }, Linking: { openURL: async () => {} } };
 const colors = { foreground: '#222', muted: '#666', primary: '#456', success: '#187', error: '#c33', border: '#ccc', surface: '#fff', card: '#eee', background: '#fff' };
+const motionBuilder = { duration() { return this; }, easing() { return this; }, reduceMotion() { return this; } };
 const fixtureReference = { senseId: 'fixture:one', headword: 'fixture', examples: ['A fixture example.'], synsetMembers: ['fixture', 'equivalent'], antonyms: [] };
 function load(relative) {
   if (cache.has(relative)) return cache.get(relative);
@@ -38,7 +39,8 @@ function load(relative) {
     '@/lib/vocab': { VOCAB_BY_ID: new Map([['boastRow', { k_short: '자랑하다' }], ['bragRow', { k_short: '자랑하다' }]]),
       getSynonymDetails: () => [], getSynonymSourceGroups: () => [], getAdditionalHeadwordMeanings: () => ['obsolete alternate meaning'], normalizeWord: word => word.trim().toLowerCase(),
       WORDBOOK_RANGES: [], VOCAB: [], VOCAB_HEADWORD_COUNT: 1, getRangeItems: () => [] },
-    'react-native-reanimated': { __esModule: true, default: { View: host('div') }, FadeIn: { duration: () => ({}) },
+    'react-native-reanimated': { __esModule: true, default: { View: host('div') }, FadeIn: motionBuilder,
+      FadeOut: motionBuilder, LinearTransition: motionBuilder, Easing: { cubic: x => x, out: fn => fn }, ReduceMotion: { System: 'system' },
       useSharedValue: value => ({ value }), useAnimatedStyle: fn => fn(), withTiming: value => value, interpolate: () => 1, Extrapolation: { CLAMP: 'clamp' } },
     'expo-router': { useRouter: () => ({ push: () => {} }) }, 'expo-haptics': {}, 'expo-audio': {},
     '@/components/word-section-label': { WordSectionLabel: () => null },
