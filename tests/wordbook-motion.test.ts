@@ -99,6 +99,9 @@ it('reveals a guarded action on swipe rather than marking or deleting records on
   expect(callbacks.length).toBeGreaterThan(0);
   for (const callback of callbacks) expect(callback).not.toMatch(/onLearningStatusPress|markLearningTarget|removeItem|delete/);
   expect(source).toContain('disabled={readOnly || !swipeOpen}');
+  expect(source).toContain('onSwipeableWillOpen={handleSwipeWillOpen}');
+  expect(source).toContain('onSwipeableClose={handleSwipeClose}');
+  expect(source).toContain('animationOptions={SWIPE_ANIMATION}');
   expect(source).toContain('overshootLeft={false} overshootRight={false}');
   expect(source).not.toContain('✓ 마스터');
   expect(source).toContain('교재와 학습 기록은 보존됩니다');

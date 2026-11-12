@@ -80,6 +80,7 @@ function shuffle<T>(arr: T[]): T[] {
 
 const CARD_EXIT = FadeOut.duration(280).easing(Easing.inOut(Easing.cubic)).reduceMotion(ReduceMotion.System);
 const CARD_LAYOUT = LinearTransition.duration(480).easing(Easing.inOut(Easing.cubic)).reduceMotion(ReduceMotion.System);
+const SWIPE_ANIMATION = { damping: 24, stiffness: 160, overshootClamping: true, reduceMotion: ReduceMotion.System };
 
 // ─── 단어 카드 ────────────────────────────────────────────────────────────────
 function WordCard({
@@ -119,6 +120,11 @@ function WordCard({
   const [meaningHidden, setMeaningHidden] = useState(maskMode);
   const swipeRef = useRef<SwipeableMethods>(null);
   const [swipeOpen, setSwipeOpen] = useState(false);
+  const handleSwipeWillOpen = useCallback(() => {
+    setSwipeOpen(true);
+    if (swipeRef.current) onSwipeOpen?.(swipeRef.current);
+  }, [onSwipeOpen]);
+  const handleSwipeClose = useCallback(() => setSwipeOpen(false), []);
   const isBookmarked = bookmarks.has(item.num);
   const chunkMeaning = item.book?.section === 'V301' ? item.book.chunk?.trim() : '';
   const displayMeaning = item.book?.display?.meaning_display ?? item.k_short;
@@ -187,9 +193,9 @@ function WordCard({
     <ReanimatedSwipeable ref={swipeRef} enabled={!readOnly && learningStatus !== 'MASTERED'}
       friction={1} rightThreshold={36} overshootLeft={false} overshootRight={false}
       enableTrackpadTwoFingerGesture
-      animationOptions={{ damping: 24, stiffness: 160, overshootClamping: true, reduceMotion: ReduceMotion.System }}
-      onSwipeableWillOpen={() => { setSwipeOpen(true); if (swipeRef.current) onSwipeOpen?.(swipeRef.current); }}
-      onSwipeableClose={() => setSwipeOpen(false)}
+      animationOptions={SWIPE_ANIMATION}
+      onSwipeableWillOpen={handleSwipeWillOpen}
+      onSwipeableClose={handleSwipeClose}
       renderRightActions={learningStatus === 'MASTERED' ? undefined : () => (
         <Pressable accessibilityRole="button" accessibilityLabel={`${item.w} 암기 완료 후 목록에서 삭제`}
           accessibilityHint="교재와 학습 기록은 보존됩니다. 외운 단어에서 되돌릴 수 있습니다."
