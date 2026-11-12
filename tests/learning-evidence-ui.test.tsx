@@ -80,7 +80,7 @@ describe("reviewed learning evidence and explanation boundaries", () => {
     disclosure.forceOpen = false;
     const closed = render(<DictionaryDefinition entry={dictionary} itemId="approved-test-row" />);
     expect(closed.replace(/<[^>]+>/g, "")).toContain("equivalent (동등한 것)");
-    expect(closed.indexOf("equivalent")).toBeLessThan(closed.indexOf("an explicit test reference"));
+    expect(closed.indexOf("an explicit test reference")).toBeLessThan(closed.indexOf("equivalent"));
     expect(closed).toContain("An English test example.");
     expect(closed).not.toContain("한국어 예문");
     expect(closed).not.toContain("이 뜻에 한정된 용법 설명");
@@ -109,7 +109,10 @@ describe("reviewed learning evidence and explanation boundaries", () => {
       for (const [word, meaning] of Object.entries(entry.relationMeaningsKo!)) {
         expect(html.replace(/<[^>]+>/g, "")).toContain(`${word} (${meaning})`);
       }
-      expect(html.indexOf("의미 클러스터")).toBeLessThan(html.indexOf(entry.definitionEn));
+      expect(html.indexOf(entry.definitionEn)).toBeLessThan(html.indexOf("쉽게 풀면"));
+      expect(html.indexOf("쉽게 풀면")).toBeLessThan(html.indexOf(entry.definitionKo));
+      expect(html.indexOf(entry.definitionKo)).toBeLessThan(html.indexOf("바꿔 쓰는 표현"));
+      expect(html).toContain("품사·목적어·전치사");
       expect(html).not.toContain(entry.contrasts[0].noteKo);
     }
   });

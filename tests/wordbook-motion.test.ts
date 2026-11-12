@@ -76,7 +76,9 @@ it('preserves restore and storage protection semantics', async () => {
   expect(protectedHandler.ctx.markLearningTargetMastered).not.toHaveBeenCalled();
 });
 
-it('uses short easing transitions with system reduced-motion support, not delayed record writes', () => {
+it('uses gentle settling transitions with system reduced-motion support, not delayed record writes', () => {
+  expect(source).toContain('FadeOut.duration(280).easing(Easing.inOut(Easing.cubic))');
+  expect(source).toContain('LinearTransition.duration(480).easing(Easing.inOut(Easing.cubic))');
   expect(source).toContain('itemLayoutAnimation={masteryMotionItem !== null ? CARD_LAYOUT : undefined}');
   expect(source).toContain('exiting={animateExit ? CARD_EXIT : undefined}');
   expect(source).toContain('onChangeText={value => { setMasteryMotionItem(null); setSearchQuery(value); }}');

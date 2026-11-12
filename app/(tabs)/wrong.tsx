@@ -1,6 +1,6 @@
 import { SCROLL_END_PADDING } from "@/lib/layout";
 import { WordPronunciation } from "@/components/word-pronunciation";
-import { BookLearningDetails } from "@/components/book-learning-details";
+import { LearningDetails } from "@/components/learning-details";
 import { useState, useCallback } from "react";
 import {
   View,
@@ -181,7 +181,7 @@ export default function WrongScreen() {
             <Text style={s.korText} numberOfLines={2}>
               {item.k_short}
             </Text>
-            <BookLearningDetails entry={item.book} />
+            <LearningDetails itemId={item.id} bookEntry={item.book} />
             {item.s.length > 0 && (
               <View style={s.synTagRow}>
                 {item.s.slice(0, 4).map((syn, i) => (

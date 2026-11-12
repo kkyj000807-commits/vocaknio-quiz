@@ -1,5 +1,5 @@
 import { MIN_TOUCH_TARGET, SCROLL_END_PADDING, STUDY_CARD_PADDING, STUDY_PAGE_GUTTER } from "@/lib/layout";
-import { useState, useRef, useCallback, useMemo, useEffect, useSyncExternalStore } from "react";
+import { memo, useState, useRef, useCallback, useMemo, useEffect, useSyncExternalStore } from "react";
 import {
   View,
   Text,
@@ -29,7 +29,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { PronunciationButton } from "@/components/pronunciation-button";
 import { WordPronunciation } from "@/components/word-pronunciation";
 import { LearningDetails } from "@/components/learning-details";
-import { BookLearningDetails } from "@/components/book-learning-details";
+
 import { ProblemSenseContext } from "@/components/problem-sense-context";
 import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
 import { SynonymDetails } from "@/components/synonym-details";
@@ -37,7 +37,7 @@ import { getDefinitionQuizEntry, getDefinitionAnswerRelations } from "@/lib/defi
 import { WordSectionLabel } from "@/components/word-section-label";
 import { formatWordbookConcept } from "@/lib/wordbook-concepts";
 import { WordbookPractice } from "@/components/wordbook-practice";
-import { getWordbookPracticeItems, getWordbookMasteryProgress } from "@/lib/wordbook-practice";
+import { getWordbookPracticeItems, getWordbookMasteryProgress, getWordbookScopeMasteryProgress } from "@/lib/wordbook-practice";
 import { BOOK_EDITION } from "@/lib/book-edition";
 import { getActiveBookEdition } from "@/lib/integrated-wordbook";
 import { useStudyVocab } from "@/hooks/use-study-vocab";
@@ -78,8 +78,8 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-const CARD_EXIT = FadeOut.duration(160).easing(Easing.out(Easing.cubic)).reduceMotion(ReduceMotion.System);
-const CARD_LAYOUT = LinearTransition.duration(240).easing(Easing.out(Easing.cubic)).reduceMotion(ReduceMotion.System);
+const CARD_EXIT = FadeOut.duration(280).easing(Easing.inOut(Easing.cubic)).reduceMotion(ReduceMotion.System);
+const CARD_LAYOUT = LinearTransition.duration(480).easing(Easing.inOut(Easing.cubic)).reduceMotion(ReduceMotion.System);
 
 // ─── 단어 카드 ────────────────────────────────────────────────────────────────
 function WordCard({
@@ -122,11 +122,11 @@ function WordCard({
   const isBookmarked = bookmarks.has(item.num);
   const chunkMeaning = item.book?.section === 'V301' ? item.book.chunk?.trim() : '';
   const displayMeaning = item.book?.display?.meaning_display ?? item.k_short;
-  const s = cardStyles(colors);
-  const hasReviewedMapping = hasSenseQuestionMapping(item.id);
-  const dictionaryEntry = getDefinitionQuizEntry(item.id);
-  const hasDictionarySynonyms = !!dictionaryEntry && getDefinitionAnswerRelations(dictionaryEntry).synonyms.length > 0;
-  const reviewedSenses = getProductionSenseQuestions(item.id).filter(sense => senseMatchesItem(sense, item));
+  const s = useMemo(() => cardStyles(colors), [colors]);
+  const hasReviewedMapping = useMemo(() => hasSenseQuestionMapping(item.id), [item.id]);
+  const dictionaryEntry = useMemo(() => getDefinitionQuizEntry(item.id), [item.id]);
+  const hasDictionarySynonyms = useMemo(() => !!dictionaryEntry && getDefinitionAnswerRelations(dictionaryEntry).synonyms.length > 0, [dictionaryEntry]);
+  const reviewedSenses = useMemo(() => getProductionSenseQuestions(item.id).filter(sense => senseMatchesItem(sense, item)), [item]);
 
   // 상태는 즉시 바꾸고 회전은 표시 효과만 담당해 Safari에서도 멈추지 않습니다.
   const flipRotation = useSharedValue(0);
@@ -185,9 +185,9 @@ function WordCard({
       accessibilityActions={learningStatus !== 'MASTERED' ? [{ name: 'activate', label: '암기 완료 메뉴 열기' }] : []}
       onAccessibilityAction={() => { if (!readOnly) swipeRef.current?.openRight(); }}>
     <ReanimatedSwipeable ref={swipeRef} enabled={!readOnly && learningStatus !== 'MASTERED'}
-      friction={1.5} rightThreshold={36} overshootLeft={false} overshootRight={false}
+      friction={1} rightThreshold={36} overshootLeft={false} overshootRight={false}
       enableTrackpadTwoFingerGesture
-      animationOptions={{ damping: 24, stiffness: 240, overshootClamping: true, reduceMotion: ReduceMotion.System }}
+      animationOptions={{ damping: 24, stiffness: 160, overshootClamping: true, reduceMotion: ReduceMotion.System }}
       onSwipeableWillOpen={() => { setSwipeOpen(true); if (swipeRef.current) onSwipeOpen?.(swipeRef.current); }}
       onSwipeableClose={() => setSwipeOpen(false)}
       renderRightActions={learningStatus === 'MASTERED' ? undefined : () => (
@@ -296,8 +296,7 @@ function WordCard({
           {relationDetailsOpen && <><Text style={s.korText}>{sense.contextEn}</Text><ProblemSenseContext sense={sense} answered /></>}
         </View>)}
       </View>}
-      {!meaningHidden && <BookLearningDetails entry={item.book} />}
-      {!meaningHidden && <LearningDetails itemId={item.id} />}
+      {!meaningHidden && <LearningDetails itemId={item.id} bookEntry={item.book} />}
       {!!item.displayDuplicates?.length && <>
         <Pressable accessibilityRole="button" accessibilityState={{ expanded: duplicatesOpen }} onPress={() => setDuplicatesOpen(value => !value)} style={s.expandButton}>
           <Text style={s.expandHint}>다른 항목 · {duplicatesOpen ? '접기' : '기록과 용법 보기'}</Text>
@@ -433,6 +432,8 @@ const cardStyles = (colors: ReturnType<typeof useColors>) =>
   });
 
 // ─── 메인 화면 ────────────────────────────────────────────────────────────────
+const MemoWordCard = memo(WordCard);
+
 export default function WordbookScreen() {
   const colors = useColors();
   const storageIssue = useSyncExternalStore(subscribeLearningStorage, getLearningStorageIssue, () => null);
@@ -540,6 +541,10 @@ export default function WordbookScreen() {
       bookmarksOnly: false, includeMastered: true, includeLegacy: false }, new Set(), null);
     return getWordbookMasteryProgress(all, learningState);
   }, [learningState, VOCAB, storageIssue]);
+  const sectionProgress = useMemo(() => {
+    if (!learningState || !VOCAB.length || storageIssue) return null;
+    return getWordbookScopeMasteryProgress({ rangeId: rangeOptions[selectedRange]?.id ?? 'all', concept }, learningState);
+  }, [learningState, VOCAB, storageIssue, rangeOptions, selectedRange, concept]);
   const practiceItems = useMemo(() => {
     const items = VOCAB.length ? getWordbookPracticeItems(practiceScope, bookmarks, learningState) : [];
     if (!showMastered) return items;
@@ -571,9 +576,11 @@ export default function WordbookScreen() {
     return isShuffled ? shuffle(grouped) : grouped;
   }, [practiceItems, bookmarks, isShuffled, learningState, edition, includeLegacy, firstLegacySection, rangeOptions, selectedRange, showOnlyBookmarks]);
 
+  const getLearningStatus = useCallback((row: VocabItem): LearningStatus =>
+    learningState?.targets[getItemLearningTargets(row)[0]?.key]?.status ?? "NEW", [learningState]);
   const renderRecord = useCallback(
     (item: DisplayWord) => (
-      <WordCard
+      <MemoWordCard
         item={item}
         bookmarks={bookmarks}
         onToggleBookmark={handleToggleBookmark}
@@ -582,14 +589,14 @@ export default function WordbookScreen() {
         onPlayHide={playHide}
         onPlayReveal={playReveal}
         learningStatus={learningState?.targets[getItemLearningTargets(item)[0]?.key]?.status ?? "NEW"}
-        getLearningStatus={row => learningState?.targets[getItemLearningTargets(row)[0]?.key]?.status ?? "NEW"}
+        getLearningStatus={getLearningStatus}
         onLearningStatusPress={handleLearningStatusPress}
         readOnly={!!storageIssue || isUpdatingMaster}
         animateExit={item.num === masteryMotionItem}
         onSwipeOpen={handleSwipeOpen}
       />
     ),
-    [bookmarks, handleLearningStatusPress, handleToggleBookmark, colors, learningState, maskMode, playHide, playReveal, storageIssue, isUpdatingMaster, masteryMotionItem, handleSwipeOpen],
+    [bookmarks, handleLearningStatusPress, handleToggleBookmark, colors, learningState, maskMode, playHide, playReveal, storageIssue, isUpdatingMaster, masteryMotionItem, handleSwipeOpen, getLearningStatus],
   );
 
   const renderItem = useCallback(({ item }: { item: DisplayWord }) => renderRecord(item), [renderRecord]);
@@ -840,6 +847,25 @@ export default function WordbookScreen() {
           <Text style={{ color: value === concept ? '#fff' : colors.foreground }}>{value || (conceptSection === '숙어' ? '숙어 전체' : '개념 전체')}</Text>
         </Pressable>)}
       </ScrollView>}
+
+      {(activeRange.id !== 'all' || concept) && <View style={styles.masteryPanel}>
+        <View style={styles.masteryHeading}>
+          <Text style={{ color: colors.foreground, fontWeight: '700', flex: 1 }}>{getRangeChipLabel(activeRange)}{concept ? ` · ${concept}` : ''} 암기</Text>
+          <Text style={{ color: colors.primary, fontWeight: '700' }}>{sectionProgress ? `${sectionProgress.percent.toFixed(2)}%` : '—'}</Text>
+        </View>
+        {sectionProgress ? <>
+          <View style={styles.batteryRow} accessibilityRole="progressbar"
+            accessibilityLabel={`${getRangeChipLabel(activeRange)} ${concept} 암기율`}
+            accessibilityValue={{ min: 0, max: sectionProgress.total, now: sectionProgress.mastered,
+              text: `${sectionProgress.percent}% 암기, ${sectionProgress.remaining}개 남음` }}>
+            <View style={[styles.batteryBody, { borderColor: colors.primary }]}>
+              <View style={{ height: '100%', borderRadius: 3, backgroundColor: colors.primary, width: `${sectionProgress.percent}%` }} />
+            </View>
+            <View style={[styles.batteryTip, { backgroundColor: colors.primary }]} />
+          </View>
+          <Text style={{ color: colors.muted, fontSize: 12 }}>{sectionProgress.mastered.toLocaleString()} / {sectionProgress.total.toLocaleString()}개 · {sectionProgress.remaining.toLocaleString()}개 남음</Text>
+        </> : <Text style={{ color: colors.muted, fontSize: 12 }}>암기 기록 확인 중</Text>}
+      </View>}
 
       {/* 결과 수 */}
       <View style={styles.resultRow}>

@@ -7,7 +7,7 @@ import { getItemLearningTargets, getQuestionLearningTargetKey } from '../lib/can
 import { buildQuizQuestions, getQuizCandidateItems, validateQuestion } from '../lib/quiz-engine';
 import { createEmptyQuestionViewState, parseQuizSession, isQuizSessionContentCurrent } from '../lib/quiz-session';
 import type { BookEdition, BookEntry } from '../lib/book-edition';
-import { buildWordbookPracticeHref, getWordbookPracticeItems, getWordbookMasteryProgress, parseWordbookPracticeRequest, parseWordbookPracticeScope, inspectWordbookPractice, practiceCandidate, practiceMasteredKeys, type WordbookPracticeScope } from '../lib/wordbook-practice';
+import { buildWordbookPracticeHref, getWordbookPracticeItems, getWordbookMasteryProgress, getWordbookScopeMasteryProgress, parseWordbookPracticeRequest, parseWordbookPracticeScope, inspectWordbookPractice, practiceCandidate, practiceMasteredKeys, type WordbookPracticeScope } from '../lib/wordbook-practice';
 import { selectAdaptiveItemNums, createEmptyAdaptiveHistory } from '../lib/adaptive-quiz';
 import { createEmptySenseLearningState, getLearningTargetState } from '../lib/learning-state';
 
@@ -124,6 +124,29 @@ describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
     state.targets[first].status = 'RELEARNING';
     expect(getWordbookMasteryProgress(rows, state).mastered).toBe(1);
     expect(getWordbookMasteryProgress([], state)).toEqual({ total: 0, mastered: 0, remaining: 0, percent: 0 });
+  });
+  it('counts selected sections and idiom subchapters independently of temporary filters and preserves records', () => {
+    const entries = [book('study-78001', 'a', 1), book('study-78002', 'b', 2),
+      book('study-78003', 'c', 3, 'V201'), { ...book('study-78004', 'take a', 4, '숙어'), concept: '101' },
+      { ...book('study-78005', 'take b', 5, '숙어'), concept: '201' }];
+    const rows = createIntegratedWordbook([], edition(entries));
+    registerStudyItems(rows);
+    const state = createEmptySenseLearningState();
+    for (const row of [rows[0], rows.find(row => row.book?.id === 'study-78004')!]) {
+      const key = getItemLearningTargets(row)[0].key;
+      state.targets[key] = { ...getLearningTargetState(state, key), status: 'MASTERED' };
+    }
+    const rangeId = WORDBOOK_RANGES.find(range => range.group === 'V101')!.id;
+    const selection = { ...scope(rangeId), query: 'no match', bookmarksOnly: true, includeMastered: false };
+    const before = JSON.stringify([rows, state]);
+    expect(getWordbookScopeMasteryProgress(selection, state)).toEqual({ total: 2, mastered: 1, remaining: 1, percent: 50 });
+    expect(getWordbookScopeMasteryProgress(scope(WORDBOOK_RANGES.find(range => range.group === 'V201')!.id), state).mastered).toBe(0);
+    expect(getWordbookScopeMasteryProgress({ ...scope('idioms'), concept: '101' }, state).percent).toBe(100);
+    expect(getWordbookScopeMasteryProgress({ ...scope('idioms'), concept: '201' }, state).percent).toBe(0);
+    expect(getWordbookScopeMasteryProgress({ ...scope('idioms'), concept: 'missing' }, state).total).toBe(0);
+    expect(JSON.stringify([rows, state])).toBe(before);
+    state.targets[getItemLearningTargets(rows[0])[0].key].status = 'RELEARNING';
+    expect(getWordbookScopeMasteryProgress(selection, state).mastered).toBe(0);
   });
   it('partitions every current idiom by its printed subsection without losing order or widening quiz scope', () => {
     const source = JSON.parse(fs.readFileSync('public/data/book/book-1.7.4-0be56a709696210a.json', 'utf8')).current as BookEdition;
@@ -325,7 +348,8 @@ describe('v1.5 uses existing vocabulary cards and learning contracts', () => {
       const source = fs.readFileSync(path, 'utf8');
       expect(source).toContain('.map(getVocabItem)');
       expect(source).not.toMatch(/VOCAB\.find/);
-      expect(source).toContain('BookLearningDetails');
+      expect(source).toContain('LearningDetails');
+      expect(source).toMatch(/bookEntry=\{item!?\.book\}/);
     }
   });
 });

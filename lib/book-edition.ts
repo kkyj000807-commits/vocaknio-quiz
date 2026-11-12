@@ -38,7 +38,25 @@ export function bookStudyDetails(entry: BookEntry): BookStudyDetail[] {
     return [{ label: typeof note.kind === 'string' ? note.kind : fallback, text: note.text,
       ...(typeof note.source === 'string' ? { source: note.source } : {}) }];
   });
-  return [...project(entry.display.annotations, '학습 주석'), ...project(entry.display.examples, '예문')];
+  const seen = new Set<string>();
+  return [...project(entry.display.annotations, '학습 주석'), ...project(entry.display.examples, '예문')].filter(note => {
+    const key = JSON.stringify([note.text.trim().replace(/\s+/g, ' '), note.source ?? '']);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+/** Presentation only: retain distinct senses, omit exact repeated patterns. */
+export function bookStudyPatterns(entry: BookEntry): string[] {
+  const normalize = (text: string = '') => text.trim().replace(/\s+/g, ' ');
+  const seen = new Set([entry.word, entry.concept, entry.chunk, entry.display?.meaning_display ?? '',
+    ...bookStudyDetails(entry).map(note => note.text)].map(normalize));
+  return (entry.display?.patterns ?? []).filter(pattern => {
+    const key = normalize(pattern);
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 export function bookNeedsEditorialReview(entry: BookEntry): boolean {
   return entry.gradingReview?.status === 'requires_editorial_policy_review';

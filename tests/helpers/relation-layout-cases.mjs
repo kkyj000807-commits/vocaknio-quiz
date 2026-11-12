@@ -41,7 +41,7 @@ function load(relative) {
       getSynonymDetails: () => [], getSynonymSourceGroups: () => [], getAdditionalHeadwordMeanings: () => ['obsolete alternate meaning'], normalizeWord: word => word.trim().toLowerCase(),
       WORDBOOK_RANGES: [], VOCAB: [], VOCAB_HEADWORD_COUNT: 1, getRangeItems: () => [] },
     'react-native-reanimated': { __esModule: true, default: { View: host('div') }, FadeIn: motionBuilder,
-      FadeOut: motionBuilder, LinearTransition: motionBuilder, Easing: { cubic: x => x, out: fn => fn }, ReduceMotion: { System: 'system' },
+      FadeOut: motionBuilder, LinearTransition: motionBuilder, Easing: { cubic: x => x, out: fn => fn, inOut: fn => fn }, ReduceMotion: { System: 'system' },
       useSharedValue: value => ({ value }), useAnimatedStyle: fn => fn(), withTiming: value => value, interpolate: () => 1, Extrapolation: { CLAMP: 'clamp' } },
     'expo-router': { useRouter: () => ({ push: () => {} }) }, 'expo-haptics': {}, 'expo-audio': {},
     '@/components/word-section-label': { WordSectionLabel: () => null },
@@ -81,10 +81,14 @@ export const relationLayoutCases = [
   ['book cards show only the current supplied gloss, never alternate old-data meanings', () => {
     const { WordCardForTest } = load('app/(tabs)/wordbook.tsx');
     const item = { id: 'current-book', num: 1, w: 'fixture', k_short: 'old shortened meaning', k: 'old meaning', s: [], group: 'V101',
-      book: { id: 'study-1', order: 1, section: 'V101', display: { meaning_display: 'current book meaning', annotations: [], examples: [], patterns: [] } } };
+      book: { id: 'study-1', order: 1, section: 'V101', word: 'fixture', display: { meaning_display: 'current book meaning',
+        annotations: [{ kind: '용법', text: 'Detailed usage stays inside examples.', source: 'https://example.com/source' }],
+        examples: [], patterns: ['fixture plus object'] } } };
     const html = render(React.createElement(WordCardForTest, { item, bookmarks: new Set(), colors, maskMode: false, learningStatus: 'NEW',
       onToggleBookmark: () => {}, onPlayHide: () => {}, onPlayReveal: () => {}, onLearningStatusPress: () => {} }));
     assert.match(html, /current book meaning/);
+    assert.doesNotMatch(html, /Detailed usage|example.com|문형:|fixture plus object/);
+    assert.match(html, /영영 정의·뜻·예문/);
     assert.doesNotMatch(html, /old shortened meaning|obsolete alternate meaning|기존 자료의 다른 뜻|원래 뜻/);
   }],
   ['a valid dictionary relation enables the wordbook button and chips even with no original synonyms', () => {

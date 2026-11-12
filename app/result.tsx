@@ -12,7 +12,7 @@ import * as Haptics from "expo-haptics";
 import { ScreenContainer } from "@/components/screen-container";
 import { WordSectionLabel } from "@/components/word-section-label";
 import { getVocabItem, QUIZ_MODES, getSynonymSourceGroups } from "@/lib/vocab";
-import { BookLearningDetails } from "@/components/book-learning-details";
+import { LearningDetails } from "@/components/learning-details";
 import { useColors } from "@/hooks/use-colors";
 import { getProductionSenseQuestions } from "@/lib/sense-questions";
 
@@ -192,7 +192,7 @@ export default function ResultScreen() {
                     ))}
                   </View>
                 )}
-                <BookLearningDetails entry={item!.book} />
+                <LearningDetails itemId={item!.id} bookEntry={item!.book} />
                 {item!.book ? <Text style={s.wrongKor}>{item!.book.section}</Text> : <WordSectionLabel groups={[item!.group]} />}
               </View>
             ))}

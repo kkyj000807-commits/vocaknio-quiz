@@ -20,6 +20,13 @@ export function getWordbookMasteryProgress(items: readonly VocabItem[], state: S
   return { total, mastered, remaining, percent };
 }
 
+/** Section denominator ignores temporary search/bookmark/mastered-list filters. */
+export function getWordbookScopeMasteryProgress(scope: Pick<WordbookPracticeScope, 'rangeId' | 'concept'>, state: SenseLearningState) {
+  const items = getWordbookPracticeItems({ rangeId: scope.rangeId, concept: scope.concept, query: '',
+    bookmarksOnly: false, includeMastered: true, includeLegacy: false }, new Set(), null);
+  return getWordbookMasteryProgress(items, state);
+}
+
 /** Shared ranking identity: counts must follow the selector's existing dedup contract. */
 export function practiceCandidate(item: VocabItem, mode: QuizMode, state: SenseLearningState, reviewKeys: string[] = []) {
   const ranked = getQuizLearningTargets(item, mode).filter(target => !reviewKeys.length || reviewKeys.includes(target.key))

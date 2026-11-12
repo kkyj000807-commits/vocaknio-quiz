@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Linking, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { useColors } from "@/hooks/use-colors";
+import { BookLearningDetails } from "@/components/book-learning-details";
+import type { BookEntry } from "@/lib/book-edition";
 import { VOCAB_BY_ID } from "@/lib/vocab";
 import { getPersonalVocabReference } from "@/lib/personal-vocab";
 import { ReasoningPractice, LazyReasoningPractice } from "@/components/reasoning-practice";
@@ -28,15 +30,15 @@ import {
   type VocabDictionarySense,
 } from "@/lib/vocab-definitions";
 
-type LearningDetailsProps = { itemId: string };
+type LearningDetailsProps = { itemId: string; bookEntry?: BookEntry };
 
 /** Mount only after an answer is revealed/graded by the parent screen. */
-export function LearningDetails({ itemId }: LearningDetailsProps) {
+export function LearningDetails({ itemId, bookEntry }: LearningDetailsProps) {
   // Keyed state prevents an expanded previous sense from flashing on a new card.
-  return <LearningDetailsPanel key={itemId} itemId={itemId} />;
+  return <LearningDetailsPanel key={itemId} itemId={itemId} bookEntry={bookEntry} />;
 }
 
-function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
+function LearningDetailsPanel({ itemId, bookEntry }: LearningDetailsProps) {
   const colors = useColors();
   const s = styles(colors);
   const item = VOCAB_BY_ID.get(itemId);
@@ -137,6 +139,10 @@ function LearningDetailsPanel({ itemId }: LearningDetailsProps) {
             <Text style={s.linkText}>사전 참고 · 다른 뜻·용례 {referenceOpen ? "접기" : "보기"}</Text>
           </Pressable>}
           {dictionary && ((activeRecallSenses.length === 0 && !entries?.length) || referenceOpen) && <DictionaryDefinition entry={dictionary} itemId={itemId} />}
+          {bookEntry && <View style={s.exampleBox}>
+            <Text style={s.label}>교재 예문·용법</Text>
+            <BookLearningDetails entry={bookEntry} />
+          </View>}
         </View>
       )}
     </View>
@@ -166,14 +172,18 @@ export function ActiveRecallStudyDetails({
       </Text>
 
       <View style={s.section}>
-        <Text style={s.label}>한국어 핵심 뜻</Text>
+        <Text style={s.label}>영영 정의 · 사전 대조 후 편집</Text>
+        <Text style={s.english}>{entry.englishDefinition}</Text>
+        <Text style={s.label}>쉽게 풀면</Text>
         <Text style={s.text}>{entry.koreanMeaning}</Text>
+        {entry.contextExplanationKo !== entry.koreanMeaning && <Text style={s.note}>{entry.contextExplanationKo}</Text>}
       </View>
 
       <SemanticRelationCluster
         headword={entry.headword}
         coreMeaningKo={entry.koreanMeaning}
         bridgeKo={entry.contextExplanationKo}
+        substitutionGuide showRelationNotes
         showDefinitionBridge={false}
         exactSynonyms={entry.exactSynonyms}
         nearSynonyms={entry.nearSynonyms}
@@ -182,11 +192,6 @@ export function ActiveRecallStudyDetails({
         relatedWords={entry.relatedWords}
         choiceMeanings={relationMeanings}
       />
-
-      <View style={s.section}>
-        <Text style={s.label}>영영 정의 · 사전 대조 후 편집</Text>
-        <Text style={s.english}>{entry.englishDefinition}</Text>
-      </View>
 
       <View style={s.exampleBox}>
         <Text style={s.label}>예문 · 학습용 창작</Text>
@@ -212,12 +217,7 @@ export function ActiveRecallStudyDetails({
         ))}
       </View>
 
-      <KoreanReveal label="문맥 상세 설명">
-      <View style={s.section}>
-        <Text style={s.label}>문맥 설명 · 초월번역</Text>
-        <Text style={s.text}>{entry.contextExplanationKo}</Text>
-      </View>
-      </KoreanReveal>
+
 
       <LearningEvidence entry={entry} />
     </View>
@@ -302,8 +302,9 @@ export function DictionaryDefinition({ entry, itemId }: { entry: VocabDefinition
           return (
           <View key={`${sense.senseId}-${index}`} style={s.definitionCandidate}>
             <Text style={s.note}>{sense.partOfSpeech}</Text>
+            <Text style={s.english}>{sense.definition}</Text>
             {(sameReference || Object.keys(editorialMeanings).length > 0) && <>
-              <SemanticRelationCluster headword={entry.headword} coreMeaningKo="" showDefinitionBridge={false}
+              <SemanticRelationCluster headword={entry.headword} coreMeaningKo="" showDefinitionBridge={false} substitutionGuide showRelationNotes
                 exactSynonyms={sameReference ? getDefinitionAnswerRelations(sameReference).synonyms : Object.keys(editorialMeanings)}
                 antonyms={sameReference ? getDefinitionAnswerRelations(sameReference).antonyms : []}
                 choiceMeanings={[...(sameReference ? getDefinitionRelationMeanings(sameReference, "")
@@ -311,7 +312,6 @@ export function DictionaryDefinition({ entry, itemId }: { entry: VocabDefinition
                   .map(({ word, meaning }) => ({ word, meaning })) : []),
                   ...Object.entries(editorialMeanings).map(([word, meaning]) => ({ word, meaning }))]} />
             </>}
-            <Text style={s.english}>{sense.definition}</Text>
             <EditorialExamples sense={sense} itemId={itemId} />
             <DictionaryExamples key={sense.senseId} sense={sense}
               fallback={reference?.senseId === sense.senseId ? reference.examples : []} />
@@ -391,15 +391,18 @@ export function SenseDetails({ entry, index, count }: { entry: LearningEntry; in
         {count > 1 ? `${index + 1}. ` : ""}{entry.headword} · {entry.partOfSpeech}
       </Text>
 
-      <Text style={s.text}>{entry.definitionKo}</Text>
-      {!!entry.sharedBookReferences?.length && <Text style={s.note}>제본·앱 공통 해설 연결 확인 · 원문 출현과 학습 기록은 별도 유지</Text>}
-      <SemanticRelationCluster headword={entry.headword} coreMeaningKo={entry.definitionKo} showDefinitionBridge={false}
-        exactSynonyms={entry.exactSynonyms} nearSynonyms={entry.nearSynonyms}
-        choiceMeanings={Object.entries(entry.relationMeaningsKo ?? {}).map(([word, meaning]) => ({ word, meaning }))} />
       <View style={s.section}>
         <Text style={s.label}>{entry.definitionKind === "editorial" ? "영영 정의 · 사전 대조 후 편집" : "영영 정의"}</Text>
         <Text style={s.english}>{entry.definitionEn}</Text>
+        <Text style={s.label}>쉽게 풀면</Text>
+        <Text style={s.text}>{entry.definitionKo}</Text>
+        {core?.bridgeKo && core.bridgeKo !== entry.definitionKo && <Text style={s.note}>{core.bridgeKo}</Text>}
       </View>
+      <SemanticRelationCluster headword={entry.headword} coreMeaningKo={entry.definitionKo} showDefinitionBridge={false}
+        substitutionGuide showRelationNotes
+        exactSynonyms={entry.exactSynonyms} nearSynonyms={entry.nearSynonyms}
+        choiceMeanings={Object.entries(entry.relationMeaningsKo ?? {}).map(([word, meaning]) => ({ word, meaning }))} />
+      {!!entry.sharedBookReferences?.length && <Text style={s.note}>제본·앱 공통 해설 연결 확인 · 원문 출현과 학습 기록은 별도 유지</Text>}
       <View style={s.exampleBox}>
         <Text style={s.label}>예문 · {entry.example.kind === "editorial" ? "학습용 창작" : "출처 원문"}</Text>
         <Text style={s.english}>{entry.example.en}</Text>
@@ -418,8 +421,7 @@ export function SenseDetails({ entry, index, count }: { entry: LearningEntry; in
         <Text style={s.text}>{core.keyMeaningKo}</Text>
         <Text style={s.label}>2. 영영 의미핵 · 사전 대조 후 편집</Text>
         <Text style={s.english}>{core.semanticCoreEn}</Text>
-        <Text style={s.label}>3. 초월번역 · 쉽게 이해하기</Text>
-        <Text style={s.text}>{core.bridgeKo}</Text>
+
         <Text style={s.label}>4. 의미 확장 지도</Text>
         {core.extensions.map((extension) => <View key={extension.senseKo} style={s.section}>
           <Text style={s.contrastWord}>{extension.senseKo}</Text>

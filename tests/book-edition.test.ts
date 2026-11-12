@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BOOK_EDITION, bookMeanings, bookStudyDetails, bookNeedsEditorialReview, bookPronunciation, selectBookEntries, type BookEntry } from '../lib/book-edition';
+import { BOOK_EDITION, bookMeanings, bookStudyDetails, bookStudyPatterns, bookNeedsEditorialReview, bookPronunciation, selectBookEntries, type BookEntry } from '../lib/book-edition';
 import { VOCAB_BY_ID } from '../lib/vocab';
 
 describe('v1.5 edition display adapter: never learner migration', () => {
@@ -31,6 +31,17 @@ describe('v1.5 edition display adapter: never learner migration', () => {
     const before = JSON.stringify(BOOK_EDITION);
     selectBookEntries('숙어', '', 'up');
     expect(JSON.stringify(BOOK_EDITION)).toBe(before);
+  });
+  it('omits exact repeated patterns and notes without erasing different usage or provenance', () => {
+    const entry: BookEntry = { id: 'display-only', order: 1, section: 'V101', word: 'take',
+      appIds: [], concept: '개념', chunk: '가지다', chapter: null, automaticGrading: false,
+      display: { meaning_display: '잡다', patterns: ['take', '잡다', 'take a rest', ' take   a rest ', 'take off', 'take off'],
+        annotations: [{ text: 'take a rest', source: 'A' }, { text: 'take a rest', source: 'A' },
+          { text: 'take a rest', source: 'B' }], examples: ['I take a rest.'] } };
+    const before = JSON.stringify(entry);
+    expect(bookStudyPatterns(entry)).toEqual(['take off']);
+    expect(bookStudyDetails(entry).map(note => note.source)).toEqual(['A', 'B', undefined]);
+    expect(JSON.stringify(entry)).toBe(before);
   });
   it('keeps original meanings separate from labelled corrections and editorial examples', () => {
     const entry: BookEntry = { id: 'fixture-only', order: 1, section: '숙어', word: 'fixture', appIds: [],

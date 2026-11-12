@@ -16,7 +16,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { WordSectionLabel } from "@/components/word-section-label";
 import { WordPronunciation } from "@/components/word-pronunciation";
 import { VOCAB, getVocabItem, getSynonymSourceGroups, type VocabItem } from "@/lib/vocab";
-import { BookLearningDetails } from "@/components/book-learning-details";
+import { LearningDetails } from "@/components/learning-details";
 import { loadBookmarks, toggleBookmark } from "@/lib/store";
 import { useColors } from "@/hooks/use-colors";
 
@@ -92,7 +92,7 @@ export default function BookmarksScreen() {
           ))}
         </View>
       )}
-      <BookLearningDetails entry={item.book} />
+      <LearningDetails itemId={item.id} bookEntry={item.book} />
       {item.book ? <Text style={s.korText}>{item.book.section}</Text> : <WordSectionLabel groups={[item.group]} />}
     </View>
   );

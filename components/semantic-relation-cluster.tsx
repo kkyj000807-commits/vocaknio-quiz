@@ -15,6 +15,7 @@ type SemanticRelationClusterProps = {
   bridgeKo?: string;
   showDefinitionBridge?: boolean;
   showRelationNotes?: boolean;
+  substitutionGuide?: boolean;
   exactSynonyms?: readonly string[];
   nearSynonyms?: readonly string[];
   antonyms?: readonly string[];
@@ -39,6 +40,7 @@ export function SemanticRelationCluster({
   bridgeKo,
   showDefinitionBridge = true,
   showRelationNotes = false,
+  substitutionGuide = false,
   exactSynonyms,
   nearSynonyms,
   antonyms,
@@ -62,7 +64,10 @@ export function SemanticRelationCluster({
       accessibilityLabel={`${headword} 의미 클러스터. 같은 의미축과 반대 의미축`}
       style={[styles.cluster, { borderColor: colors.border, backgroundColor: colors.surface }]}
     >
-      <Text style={[styles.title, { color: colors.primary }]}>의미 클러스터</Text>
+      <Text style={[styles.title, { color: colors.primary }]}>{substitutionGuide ? '바꿔 쓰는 표현' : '의미 클러스터'}</Text>
+      {substitutionGuide && cluster.synonyms.length > 0 && <Text style={[styles.bridge, { color: colors.muted }]}>
+        같은 뜻의 반복을 피할 때 참고하세요. ≈ 유사어는 초점이 다릅니다. 품사·목적어·전치사와 문맥이 맞는지 확인하세요.
+      </Text>}
 
       {cluster.synonyms.length > 0 ? (
         <View style={styles.axis}>
