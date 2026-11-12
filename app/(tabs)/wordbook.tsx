@@ -36,7 +36,7 @@ import { getDefinitionQuizEntry, getDefinitionAnswerRelations } from "@/lib/defi
 import { WordSectionLabel } from "@/components/word-section-label";
 import { formatWordbookConcept } from "@/lib/wordbook-concepts";
 import { WordbookPractice } from "@/components/wordbook-practice";
-import { getWordbookPracticeItems } from "@/lib/wordbook-practice";
+import { getWordbookPracticeItems, getWordbookMasteryProgress } from "@/lib/wordbook-practice";
 import { BOOK_EDITION } from "@/lib/book-edition";
 import { getActiveBookEdition } from "@/lib/integrated-wordbook";
 import { useStudyVocab } from "@/hooks/use-study-vocab";
@@ -501,6 +501,12 @@ export default function WordbookScreen() {
 
   const practiceScope = useMemo(() => ({ rangeId: rangeOptions[selectedRange]?.id ?? 'all', concept, query: searchQuery,
     bookmarksOnly: showOnlyBookmarks, includeMastered: showMastered || !!searchQuery.trim(), includeLegacy }), [rangeOptions, selectedRange, concept, searchQuery, showOnlyBookmarks, showMastered, includeLegacy]);
+  const masteryProgress = useMemo(() => {
+    if (!learningState || !VOCAB.length || storageIssue) return null;
+    const all = getWordbookPracticeItems({ rangeId: 'all', concept: '', query: '',
+      bookmarksOnly: false, includeMastered: true, includeLegacy: false }, new Set(), null);
+    return getWordbookMasteryProgress(all, learningState);
+  }, [learningState, VOCAB, storageIssue]);
   const practiceItems = useMemo(() => {
     const items = VOCAB.length ? getWordbookPracticeItems(practiceScope, bookmarks, learningState) : [];
     if (!showMastered) return items;
@@ -643,6 +649,27 @@ export default function WordbookScreen() {
         </View>
       </View>
 
+
+      <View style={styles.masteryPanel}>
+        <View style={styles.masteryHeading}>
+          <Text style={{ color: colors.foreground, fontWeight: '700' }}>전체 암기</Text>
+          <Text style={{ color: colors.primary, fontWeight: '700' }}>{masteryProgress ? `${masteryProgress.percent.toFixed(2)}%` : '—'}</Text>
+        </View>
+        {masteryProgress ? <>
+          <View style={styles.batteryRow} accessibilityRole="progressbar" accessibilityLabel="전체 교재 암기율"
+            accessibilityValue={{ min: 0, max: masteryProgress.total, now: masteryProgress.mastered,
+              text: `${masteryProgress.percent}% 암기, ${masteryProgress.remaining}개 남음` }}>
+            <View style={[styles.batteryBody, { borderColor: colors.primary }]}>
+              <View style={{ height: '100%', borderRadius: 3, backgroundColor: colors.primary,
+                width: `${masteryProgress.percent}%` }} />
+            </View>
+            <View style={[styles.batteryTip, { backgroundColor: colors.primary }]} />
+          </View>
+          <Text style={{ color: colors.muted, fontSize: 12 }}>
+            {masteryProgress.mastered.toLocaleString()} / {masteryProgress.total.toLocaleString()}개 · {masteryProgress.remaining.toLocaleString()}개 남음
+          </Text>
+        </> : <Text style={{ color: colors.muted, fontSize: 12 }}>{storageIssue ? '기록을 확인하면 암기율이 표시돼요' : '암기 기록 확인 중'}</Text>}
+      </View>
 
       {/* 마스크 모드 안내 배너 */}
       {maskMode && (
@@ -828,6 +855,11 @@ export default function WordbookScreen() {
 }
 
 const styles = StyleSheet.create({
+  masteryPanel: { paddingHorizontal: STUDY_PAGE_GUTTER, paddingBottom: 14, gap: 6 },
+  masteryHeading: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  batteryRow: { flexDirection: 'row', alignItems: 'center' },
+  batteryBody: { flex: 1, height: 16, borderWidth: 1.5, borderRadius: 5, padding: 2, overflow: 'hidden' },
+  batteryTip: { width: 3, height: 7, borderTopRightRadius: 2, borderBottomRightRadius: 2 },
   list: {
     flex: 1,
   },

@@ -11,6 +11,15 @@ export function practiceMasteredKeys(state: SenseLearningState, includeMastered 
   return [...masteredTargetKeys(state)];
 }
 
+/** Current book rows only. Read-only projection, never a second progress store. */
+export function getWordbookMasteryProgress(items: readonly VocabItem[], state: SenseLearningState) {
+  const total = items.length;
+  const remaining = excludeFullyMasteredItems(items, masteredTargetKeys(state)).length;
+  const mastered = total - remaining;
+  const percent = total === 0 ? 0 : remaining === 0 ? 100 : Math.min(99.99, Math.round(mastered / total * 10000) / 100);
+  return { total, mastered, remaining, percent };
+}
+
 /** Shared ranking identity: counts must follow the selector's existing dedup contract. */
 export function practiceCandidate(item: VocabItem, mode: QuizMode, state: SenseLearningState, reviewKeys: string[] = []) {
   const ranked = getQuizLearningTargets(item, mode).filter(target => !reviewKeys.length || reviewKeys.includes(target.key))
