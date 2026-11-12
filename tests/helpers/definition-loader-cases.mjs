@@ -18,7 +18,7 @@ function loader(responses, pathname = '/vocaknio-quiz/quiz') {
   vm.runInNewContext(compiled, {
     exports,
     require: name => {
-      if (name === '@/assets/vocab-definitions-oewn-2025.json') return { default: { version: 'test', coverage: {}, source: {} } };
+      if (name === '@/assets/vocab-definitions-oewn-2025.json') return { default: { version: 'test', coverage: {}, source: { archiveSha256: 'pinned' } } };
       if (name === '@/lib/vocab') return { VOCAB_BY_ID: new Map([
         ['row', { group: 'V101' }], ['other-row', { group: 'V101' }],
         ['personal-row', { group: 'PERSONAL', referenceOnly: true }],
@@ -38,6 +38,27 @@ function loader(responses, pathname = '/vocaknio-quiz/quiz') {
 }
 
 export const definitionLoaderCases = [
+  ['current book IDs load sense-separated references without legacy ID or PERSONAL group guesses', async () => {
+    const entry = { headword: 'calumny', referenceOnly: true, status: 'dictionary_primary_unreviewed', representativeSenseId: 'n1',
+      senses: [{senseId: 'n1', partOfSpeech: 'noun', definition: 'a false accusation', synsetMembers: ['calumny','slander'], examples: []},
+        {senseId: 'n2', partOfSpeech: 'noun', definition: 'an abusive attack', synsetMembers: ['calumny','defamation'], examples: []}] };
+    const header = { version: 'test', bookSha256: 'book', source: { archiveSha256: 'pinned', license: 'CC BY 4.0' } };
+    const api = loader([{ok:true,json:async()=>({...header,headwords:{calumny:'a'}})}, {ok:true,json:async()=>({...header,headwords:{calumny:entry}})}]);
+    assert.deepEqual(await api.load('book:v1.5:study-00028', 'calumny'), entry);
+    assert.deepEqual(await api.load('another-book-id', ' CALUMNY '), entry);
+    assert.equal(api.calls.length,2);
+    assert.equal(api.calls[0][0],'/vocaknio-quiz/data/book-dictionary/test/index.json');
+    assert.equal(await api.load('missing-book','made up phrase'),null);
+    assert.equal(api.calls.length,2);
+  }],
+  ['book reference rejects mismatched provenance or word instead of guessing and can retry', async () => {
+    const header={version:'test',bookSha256:'book',source:{archiveSha256:'pinned',license:'CC BY 4.0'}};
+    const api=loader([{ok:true,json:async()=>({...header,source:{archiveSha256:'wrong'},headwords:{}})},
+      {ok:true,json:async()=>({...header,headwords:{test:'a'}})},
+      {ok:true,json:async()=>({...header,headwords:{test:{headword:'other',referenceOnly:true,status:'single_sense',senses:[]}}})}]);
+    await assert.rejects(api.load('book-id','test'),/판본/);
+    await assert.rejects(api.load('book-id','test'),/표제어/);
+  }],
   ['private and retired source references do not request a nonexistent approved dictionary file', async () => {
     const api = loader([]);
     assert.equal(await api.load('personal-row'), null);

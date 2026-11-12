@@ -14,6 +14,8 @@ export interface VocabDictionarySense {
   definition: string;
   matchedHeadword?: string;
   examples?: string[];
+  synsetMembers?: string[];
+  antonyms?: string[];
   reviewedExamples?: { en: string; ko: string; cueKo: string }[];
   editorialExamples?: { en: string; ko: string; cueKo: string; sourceRowIds: string[];
     relationMeaningsKo?: Record<string, string>; usageKo?: string;
@@ -28,6 +30,7 @@ export function getEditorialExamples(sense: VocabDictionarySense, itemId: string
 }
 
 export interface VocabDefinitionEntry {
+  referenceOnly?: boolean;
   headword: string;
   status: VocabDefinitionStatus;
   representativeSenseId: string | null;
@@ -65,6 +68,40 @@ interface DefinitionGroupFile {
 
 const DEFINITION_META = definitionMetaRaw as DefinitionMetadata;
 const groupCache = new Map<string, Promise<DefinitionGroupFile>>();
+const bookReferenceCache = new Map<string, Promise<Record<string, unknown>>>();
+
+const normalizeHeadword = (value: string) => value.trim().toLowerCase().replace(/_/g, " ").replace(/\s+/g, " ");
+
+async function loadBookReferenceFile(file: string): Promise<Record<string, unknown>> {
+  const cached = bookReferenceCache.get(file);
+  if (cached) return cached;
+  const request = (async () => {
+    const response = await fetch(`${getPublicBasePath()}/data/book-dictionary/${DEFINITION_META.version}/${file}.json`, { cache: "no-cache" });
+    if (!response.ok) throw new Error(`사전 참고 요청 실패: ${response.status}`);
+    const data: unknown = await response.json();
+    if (!isRecord(data) || data.version !== DEFINITION_META.version || !isRecord(data.headwords)
+      || !isRecord(data.source) || data.source.archiveSha256 !== DEFINITION_META.source.archiveSha256
+      || data.source.license !== "CC BY 4.0") throw new Error("사전 참고 판본 불일치");
+    return data;
+  })();
+  bookReferenceCache.set(file, request);
+  request.catch(() => bookReferenceCache.delete(file));
+  return request;
+}
+
+async function loadBookReference(word: string): Promise<VocabDefinitionEntry | null> {
+  const key = normalizeHeadword(word);
+  const index = await loadBookReferenceFile("index");
+  const shard = (index.headwords as Record<string, unknown>)[key];
+  if (shard === undefined) return null;
+  if (typeof shard !== "string" || !/^[0-9a-f]$/.test(shard)) throw new Error("사전 참고 연결 오류");
+  const payload = await loadBookReferenceFile(shard);
+  if (payload.bookSha256 !== index.bookSha256) throw new Error("사전 참고 교재 판본 불일치");
+  const entry = (payload.headwords as Record<string, unknown>)[key];
+  if (!isDefinitionEntry(entry) || normalizeHeadword(entry.headword) !== key || !entry.referenceOnly)
+    throw new Error("사전 참고 표제어 불일치");
+  return entry;
+}
 
 export const VOCAB_DEFINITION_COVERAGE = DEFINITION_META.coverage;
 export const VOCAB_DEFINITION_SOURCE = DEFINITION_META.source;
@@ -134,7 +171,9 @@ async function loadGroup(group: string): Promise<DefinitionGroupFile> {
   return request;
 }
 
-export async function loadVocabDefinition(itemId: string): Promise<VocabDefinitionEntry | null> {
+export async function loadVocabDefinition(itemId: string, bookWord?: string): Promise<VocabDefinitionEntry | null> {
+  // Display-only dictionary reference: never overwrite a book ID or approve a quiz sense.
+  if (bookWord?.trim()) return loadBookReference(bookWord);
   const vocabItem = VOCAB_BY_ID.get(itemId);
   // Private source references have no approved dictionary group/row pointer.
   // This is intentional absence, not a failed request for personal.json.

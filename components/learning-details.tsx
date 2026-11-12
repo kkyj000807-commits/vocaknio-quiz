@@ -61,7 +61,7 @@ function LearningDetailsPanel({ itemId, bookEntry }: LearningDetailsProps) {
     setError(false);
     void loadLearningDetailParts({
       entries: loaded.current.entries ? undefined : () => loadLearningEntries(itemId),
-      dictionary: loaded.current.dictionary ? undefined : () => loadVocabDefinition(itemId),
+      dictionary: loaded.current.dictionary ? undefined : () => loadVocabDefinition(itemId, bookEntry?.word),
     }, {
       onEntries: value => { if (!cancelled) { loaded.current.entries = true; setEntries(value); } },
       onDictionary: value => { if (!cancelled) { loaded.current.dictionary = true; setDictionary(value); } },
@@ -70,7 +70,7 @@ function LearningDetailsPanel({ itemId, bookEntry }: LearningDetailsProps) {
     return () => {
       cancelled = true;
     };
-  }, [activeRecallSenses.length, attempt, expanded, itemId]);
+  }, [activeRecallSenses.length, attempt, expanded, itemId, bookEntry?.word]);
 
   return (
     <View style={s.panel}>
@@ -280,7 +280,7 @@ export function DictionaryDefinition({ entry, itemId }: { entry: VocabDefinition
     );
   }
 
-  const reviewNeeded = entry.status !== "single_sense";
+  const reviewNeeded = entry.referenceOnly || entry.status !== "single_sense";
   const aliasMatched = entry.status === "dictionary_alias_unreviewed";
   const visibleSenses = allSensesOpen ? entry.senses : representative ? [representative] : [];
 
@@ -292,21 +292,22 @@ export function DictionaryDefinition({ entry, itemId }: { entry: VocabDefinition
           {aliasMatched
             ? "철자·하이픈 변형으로 찾은 영영 정의 후보"
             : reviewNeeded
-              ? "대표 영영 정의 후보 · sense 검수 전"
+              ? "영영 사전 · 뜻별 참고"
               : "영영 정의"}
         </Text>
         {visibleSenses.map((sense, index) => {
           const editorialMeanings = Object.assign({}, ...getEditorialExamples(sense, itemId)
             .map(example => example.relationMeaningsKo ?? {})) as Record<string, string>;
           const sameReference = reference?.senseId === sense.senseId ? reference : null;
+          const sourceSynonyms = (sense.synsetMembers ?? []).filter(word => word.toLowerCase() !== entry.headword.toLowerCase());
           return (
           <View key={`${sense.senseId}-${index}`} style={s.definitionCandidate}>
             <Text style={s.note}>{sense.partOfSpeech}</Text>
             <Text style={s.english}>{sense.definition}</Text>
-            {(sameReference || Object.keys(editorialMeanings).length > 0) && <>
+            {(sameReference || sourceSynonyms.length > 0 || Object.keys(editorialMeanings).length > 0) && <>
               <SemanticRelationCluster headword={entry.headword} coreMeaningKo="" showDefinitionBridge={false} substitutionGuide showRelationNotes
-                exactSynonyms={sameReference ? getDefinitionAnswerRelations(sameReference).synonyms : Object.keys(editorialMeanings)}
-                antonyms={sameReference ? getDefinitionAnswerRelations(sameReference).antonyms : []}
+                exactSynonyms={sameReference ? getDefinitionAnswerRelations(sameReference).synonyms : sourceSynonyms.length ? sourceSynonyms : Object.keys(editorialMeanings)}
+                antonyms={sameReference ? getDefinitionAnswerRelations(sameReference).antonyms : sense.antonyms ?? []}
                 choiceMeanings={[...(sameReference ? getDefinitionRelationMeanings(sameReference, "")
                   .filter(value => value.source === "same-sense-vocab" || value.source === "linked-antonym-vocab")
                   .map(({ word, meaning }) => ({ word, meaning })) : []),
@@ -327,7 +328,7 @@ export function DictionaryDefinition({ entry, itemId }: { entry: VocabDefinition
           style={({ pressed }) => [s.sourceToggle, pressed && s.pressed]}
         >
           <Text style={s.linkText}>
-            사전 sense 후보 {entry.senses.length}개 {allSensesOpen ? "접기 −" : "모두 보기 +"}
+            다른 뜻 {entry.senses.length - 1}개 {allSensesOpen ? "접기 −" : "더 보기 +"}
           </Text>
         </Pressable>
       )}

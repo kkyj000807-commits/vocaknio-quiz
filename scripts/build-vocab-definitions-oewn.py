@@ -235,6 +235,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--archive", type=Path, default=default_archive)
     parser.add_argument("--reference-stage", type=Path, help="Private analysis/qa candidate output; never changes app data")
+    parser.add_argument("--book-reference", action="store_true", help="Build reference-only dictionary shards for the current book; never changes quiz or learning IDs")
     return parser.parse_args()
 
 
@@ -308,6 +309,18 @@ def main() -> int:
     if editorial_batch["source"]["archiveSha256"] != actual_hash or editorial_batch["source"]["sourceVocabularySha256"] != archive_hash(VOCAB_PATH):
         raise ValueError("Editorial source edition does not match the current inputs")
     editorial_examples = editorial_batch["entries"]
+
+    book_hash = None
+    if args.book_reference:
+        if args.reference_stage:
+            raise ValueError("Select either private stage or book reference")
+        manifest = json.loads((ROOT / "assets/public-book-manifest.json").read_text(encoding="utf-8"))
+        book_path = ROOT / "public" / manifest["file"]
+        book_hash = archive_hash(book_path)
+        if book_hash != manifest["sha256"]:
+            raise ValueError("Current book hash mismatch")
+        book = json.loads(book_path.read_text(encoding="utf-8"))["current"]
+        vocab = [{"id": row["id"], "w": row["word"], "group": row["section"]} for row in book["entries"]]
 
     wanted = {normalize_headword(str(item["w"])) for item in vocab}
     aliases_by_key = {key: safe_alias_candidates(key) for key in wanted}
@@ -472,6 +485,47 @@ def main() -> int:
         "attribution": "Princeton WordNet; Open English WordNet Team",
         "archiveSha256": actual_hash,
     }
+
+    if args.book_reference:
+        # Same pinned importer, but a separate reference namespace. No item ID,
+        # answer eligibility, learner status or Korean sense is inferred here.
+        output = ROOT / "public/data/book-dictionary/oewn-2025"
+        output.mkdir(parents=True, exist_ok=True)
+        shards: dict[str, dict[str, Any]] = defaultdict(dict)
+        index: dict[str, str] = {}
+        for key in sorted(wanted):
+            senses = definitions_by_key[key]
+            if not senses:
+                continue
+            shard = hashlib.sha256(key.encode()).hexdigest()[0]
+            index[key] = shard
+            matches = matches_by_key[key]
+            shards[shard][key] = {
+                "headword": display_by_key[key], "referenceOnly": True,
+                "status": "dictionary_alias_unreviewed" if matches[0]["matchType"] != "exact" else "dictionary_primary_unreviewed" if len(senses) > 1 else "single_sense",
+                "representativeSenseId": senses[0]["senseId"], "matches": matches,
+                "senses": [{
+                    **{field: sense[field] for field in ("senseId", "synsetId", "partOfSpeech", "definition", "matchedHeadword", "examples", "synsetMembers", "antonyms") if field in sense},
+                    "reviewedExamples": [{field: t[field] for field in ("en", "ko", "cueKo")} for t in translations
+                        if normalize_headword(t["headword"]) == key and t["senseId"] == sense["senseId"] and t["en"] in sense["examples"]],
+                    "editorialExamples": [{**{field: t[field] for field in ("en", "ko", "cueKo", "sourceRowIds", "relationMeaningsKo", "usageKo") if field in t},
+                        "provenance": "FINETUNE original", "reviewStatus": "ai-reviewed-editorial-example"} for t in editorial_examples
+                        if normalize_headword(t["headword"]) == key and t["senseId"] == sense["senseId"]
+                        and t["matchEvidence"]["sourceDefinition"] == sense["definition"]],
+                } for sense in senses],
+            }
+        header = {"schema": 1, "version": "oewn-2025", "bookSha256": book_hash, "source": source}
+        for shard, headwords in shards.items():
+            write_json_if_changed(output / f"{shard}.json", {**header, "headwords": headwords})
+        coverage = {
+            "bookRows": len(vocab), "referenceRows": sum(normalize_headword(row["w"]) in index for row in vocab),
+            "missingRows": sum(normalize_headword(row["w"]) not in index for row in vocab),
+            "exampleRows": sum(any(s["examples"] for s in definitions_by_key[normalize_headword(row["w"])]) for row in vocab),
+            "synonymRows": sum(any(any(w != normalize_headword(row["w"]) for w in s["synsetMembers"]) for s in definitions_by_key[normalize_headword(row["w"])]) for row in vocab),
+        }
+        write_json_if_changed(output / "index.json", {**header, "headwords": index, "coverage": coverage})
+        print(json.dumps({"status": "REFERENCE_ONLY", **coverage, "quizChanges": 0, "learnerChanges": 0}))
+        return 0
 
     if stage_path:
         # Reuse the importer's actual sense/synset extraction. Shared clusters
