@@ -81,8 +81,24 @@ it('uses short easing transitions with system reduced-motion support, not delaye
   expect(source).toContain('exiting={animateExit ? CARD_EXIT : undefined}');
   expect(source).toContain('onChangeText={value => { setMasteryMotionItem(null); setSearchQuery(value); }}');
   expect(source).toContain('includeMastered: showMastered || !!searchQuery.trim()');
-  expect(source.match(/ReduceMotion.System/g)).toHaveLength(3);
+  expect(source.match(/ReduceMotion.System/g)).toHaveLength(4);
   expect(source).not.toContain('nextHidden ? 82 : -82');
   expect(source).toContain('setMeaningHidden(nextHidden)');
+});
+
+it('reveals a guarded action on swipe rather than marking or deleting records on drag', () => {
+  const file = ts.createSourceFile('wordbook.tsx', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const callbacks: string[] = [];
+  const visit = (node: ts.Node) => {
+    if (ts.isJsxAttribute(node) && /^onSwipeable/.test(node.name.getText(file))) callbacks.push(node.getText(file));
+    ts.forEachChild(node, visit);
+  };
+  visit(file);
+  expect(callbacks.length).toBeGreaterThan(0);
+  for (const callback of callbacks) expect(callback).not.toMatch(/onLearningStatusPress|markLearningTarget|removeItem|delete/);
+  expect(source).toContain('disabled={readOnly || !swipeOpen}');
+  expect(source).toContain('overshootLeft={false} overshootRight={false}');
+  expect(source).not.toContain('✓ 마스터');
+  expect(source).toContain('교재와 학습 기록은 보존됩니다');
 });
 

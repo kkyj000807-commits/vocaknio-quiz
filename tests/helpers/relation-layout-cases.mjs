@@ -32,6 +32,7 @@ function load(relative) {
     + (relative === 'app/(tabs)/wordbook.tsx' ? '\nexports.WordCardForTest = WordCard;\n' : '');
   const dependencies = {
     'react': React, 'react/jsx-runtime': jsx, 'react-native': native, 'zod': { z },
+    'react-native-gesture-handler/ReanimatedSwipeable': { __esModule: true, default: host('div') },
     '@/assets/vocab-definition-quiz-oewn-2025.json': { entries: {
       boast: { headword: 'boast', senseId: 'boast%lexical', partOfSpeech: 'verb', definition: 'talk with excessive pride', synsetMembers: ['boast', 'brag'], antonyms: [], lexicographerFile: 'verb.communication', examples: [] },
       brag: { headword: 'brag', senseId: 'brag%lexical', partOfSpeech: 'verb', definition: 'talk with excessive pride', synsetMembers: ['brag', 'boast'], antonyms: [], lexicographerFile: 'verb.communication', examples: [] },

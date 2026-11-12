@@ -23,6 +23,7 @@ import Animated, {
   Extrapolation,
 } from "react-native-reanimated";
 import { useFocusEffect } from "expo-router";
+import ReanimatedSwipeable, { type SwipeableMethods } from "react-native-gesture-handler/ReanimatedSwipeable";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { PronunciationButton } from "@/components/pronunciation-button";
@@ -95,6 +96,7 @@ function WordCard({
   readOnly = false,
   nested = false,
   animateExit = false,
+  onSwipeOpen,
 }: {
   item: DisplayWord;
   bookmarks: Set<number>;
@@ -109,11 +111,14 @@ function WordCard({
   readOnly?: boolean;
   nested?: boolean;
   animateExit?: boolean;
+  onSwipeOpen?: (swipe: SwipeableMethods) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [relationDetailsOpen, setRelationDetailsOpen] = useState(false);
   const [duplicatesOpen, setDuplicatesOpen] = useState(false);
   const [meaningHidden, setMeaningHidden] = useState(maskMode);
+  const swipeRef = useRef<SwipeableMethods>(null);
+  const [swipeOpen, setSwipeOpen] = useState(false);
   const isBookmarked = bookmarks.has(item.num);
   const chunkMeaning = item.book?.section === 'V301' ? item.book.chunk?.trim() : '';
   const displayMeaning = item.book?.display?.meaning_display ?? item.k_short;
@@ -164,6 +169,7 @@ function WordCard({
     flipRotation.value = 0;
     setMeaningHidden(maskMode);
   }, [flipRotation, item.num, maskMode]);
+  useEffect(() => { swipeRef.current?.close(); }, [item.num, learningStatus]);
 
   const handleBookmark = useCallback(
     (e: any) => {
@@ -175,7 +181,27 @@ function WordCard({
   );
 
   return (
-    <Animated.View exiting={animateExit ? CARD_EXIT : undefined} style={s.card}>
+    <Animated.View exiting={animateExit ? CARD_EXIT : undefined} style={s.swipeContainer}
+      accessibilityActions={learningStatus !== 'MASTERED' ? [{ name: 'activate', label: '암기 완료 메뉴 열기' }] : []}
+      onAccessibilityAction={() => { if (!readOnly) swipeRef.current?.openRight(); }}>
+    <ReanimatedSwipeable ref={swipeRef} enabled={!readOnly && learningStatus !== 'MASTERED'}
+      friction={1.5} rightThreshold={36} overshootLeft={false} overshootRight={false}
+      enableTrackpadTwoFingerGesture
+      animationOptions={{ damping: 24, stiffness: 240, overshootClamping: true, reduceMotion: ReduceMotion.System }}
+      onSwipeableWillOpen={() => { setSwipeOpen(true); if (swipeRef.current) onSwipeOpen?.(swipeRef.current); }}
+      onSwipeableClose={() => setSwipeOpen(false)}
+      renderRightActions={learningStatus === 'MASTERED' ? undefined : () => (
+        <Pressable accessibilityRole="button" accessibilityLabel={`${item.w} 암기 완료 후 목록에서 삭제`}
+          accessibilityHint="교재와 학습 기록은 보존됩니다. 외운 단어에서 되돌릴 수 있습니다."
+          accessibilityElementsHidden={!swipeOpen} importantForAccessibility={swipeOpen ? 'auto' : 'no-hide-descendants'}
+          aria-hidden={!swipeOpen} disabled={readOnly || !swipeOpen}
+          onPress={() => onLearningStatusPress(getVocabItem(item.num) ?? item)}
+          style={[s.swipeDelete, { backgroundColor: colors.error }]}>
+          <Text style={{ color: '#fff', fontSize: 14, fontWeight: '700' }}>삭제</Text>
+          <Text style={{ color: '#fff', fontSize: 11, marginTop: 4 }}>암기 완료</Text>
+        </Pressable>
+      )}>
+    <View style={s.card}>
       <View style={s.topRow}>
         <View style={s.wordArea}>
           <Text style={s.wordText}>{item.w}</Text>
@@ -229,17 +255,15 @@ function WordCard({
           <Text style={s.numText}>{nested ? "다른 용법" : item.book ? `#${item.book.printedNumber ?? item.book.order}` : item.localBook ? "내 교재 · 빠른 암기" : item.referenceOnly ? "추가 단어 · 검수 중" : `#${item.num}`}</Text>
           {item.book ? <Text style={s.numText}>{item.book.section}</Text> : <WordSectionLabel groups={item.displaySourceGroups ?? [item.group]} />}
         </View>
-        <Pressable
+        {learningStatus === "MASTERED" && <Pressable
           accessibilityRole="button"
-          accessibilityLabel={learningStatus === "MASTERED" ? `${item.w} 다시 학습` : `${item.w} 마스터`}
+          accessibilityLabel={`${item.w} 다시 학습`}
           disabled={readOnly} accessibilityState={{ disabled: readOnly }}
           onPress={() => onLearningStatusPress(getVocabItem(item.num) ?? item)}
           style={({ pressed }) => [s.learningStateButton, pressed && { opacity: 0.65 }]}
         >
-          <Text style={[s.learningStateText, { color: learningStatus === "MASTERED" ? colors.warning : colors.muted }]}>
-            {learningStatus === "MASTERED" ? "↻ 다시 학습" : learningStatus === "RELEARNING" ? "재학습 중" : "✓ 마스터"}
-          </Text>
-        </Pressable>
+          <Text style={[s.learningStateText, { color: colors.warning }]}>↻ 다시 학습</Text>
+        </Pressable>}
       </View>
       {!meaningHidden && expanded && !hasReviewedMapping && <SynonymDetails item={item} compact />}
       {!meaningHidden && (hasReviewedMapping || item.s.length > 0 || hasDictionarySynonyms) && (
@@ -280,22 +304,24 @@ function WordCard({
         </Pressable>
         {duplicatesOpen && item.displayDuplicates.map(duplicate => <WordCard key={duplicate.id} item={duplicate} bookmarks={bookmarks}
           onToggleBookmark={onToggleBookmark} colors={colors} maskMode={maskMode} onPlayHide={onPlayHide} onPlayReveal={onPlayReveal}
-          learningStatus={getLearningStatus(duplicate)} getLearningStatus={getLearningStatus} onLearningStatusPress={onLearningStatusPress} readOnly={readOnly} nested />)}
+          learningStatus={getLearningStatus(duplicate)} getLearningStatus={getLearningStatus} onLearningStatusPress={onLearningStatusPress} readOnly={readOnly} onSwipeOpen={onSwipeOpen} nested />)}
       </>}
+    </View>
+    </ReanimatedSwipeable>
     </Animated.View>
   );
 }
 
 const cardStyles = (colors: ReturnType<typeof useColors>) =>
   StyleSheet.create({
+    swipeContainer: { marginHorizontal: STUDY_PAGE_GUTTER, marginBottom: 8, borderRadius: 14, overflow: 'hidden' },
+    swipeDelete: { width: 84, justifyContent: 'center', alignItems: 'center', minHeight: MIN_TOUCH_TARGET },
     card: {
       backgroundColor: colors.surface,
       borderWidth: 1,
       borderColor: colors.border,
       borderRadius: 14,
       padding: STUDY_CARD_PADDING,
-      marginHorizontal: STUDY_PAGE_GUTTER,
-      marginBottom: 8,
     },
     topRow: {
       flexDirection: "row",
@@ -432,6 +458,13 @@ export default function WordbookScreen() {
   const masteryPending = useRef(false);
   const [isUpdatingMaster, setIsUpdatingMaster] = useState(false);
   const [masteryMotionItem, setMasteryMotionItem] = useState<number | null>(null);
+  const openSwipeRef = useRef<SwipeableMethods | null>(null);
+  const handleSwipeOpen = useCallback((swipe: SwipeableMethods) => {
+    if (openSwipeRef.current !== swipe) openSwipeRef.current?.close();
+    openSwipeRef.current = swipe;
+  }, []);
+  useEffect(() => { openSwipeRef.current?.close(); openSwipeRef.current = null; },
+    [searchQuery, selectedRange, concept, showOnlyBookmarks, showMastered, isShuffled]);
 
   // ─── 사운드 (개별/전체 가리기 피드백) ─────────────────────────────────────
   const hidePlayer = useAudioPlayer(require("@/assets/sounds/hide.wav"));
@@ -553,9 +586,10 @@ export default function WordbookScreen() {
         onLearningStatusPress={handleLearningStatusPress}
         readOnly={!!storageIssue || isUpdatingMaster}
         animateExit={item.num === masteryMotionItem}
+        onSwipeOpen={handleSwipeOpen}
       />
     ),
-    [bookmarks, handleLearningStatusPress, handleToggleBookmark, colors, learningState, maskMode, playHide, playReveal, storageIssue, isUpdatingMaster, masteryMotionItem],
+    [bookmarks, handleLearningStatusPress, handleToggleBookmark, colors, learningState, maskMode, playHide, playReveal, storageIssue, isUpdatingMaster, masteryMotionItem, handleSwipeOpen],
   );
 
   const renderItem = useCallback(({ item }: { item: DisplayWord }) => renderRecord(item), [renderRecord]);
