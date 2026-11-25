@@ -5,7 +5,7 @@ import fs from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ActiveRecallAnswer, ActiveRecallPrompt } from "@/components/active-recall-card";
+import { ActiveRecallAnswer, ActiveRecallPrompt, DefinitionRecallAnswer, DefinitionRecallPrompt, SynonymRecallAnswer } from "@/components/active-recall-card";
 import { ActiveRecallStudyDetails, DictionaryDefinition, LearningDetails, SenseDetails } from "@/components/learning-details";
 import type { VocabDefinitionEntry } from "@/lib/vocab-definitions";
 import reviewedBatch from "@/data/vocab-learning/reviewed-batch-20261014.json";
@@ -21,6 +21,7 @@ import authored from "@/data/vocab-learning/wrong-review-examples.json";
 import projected from "@/assets/wrong-review-examples.json";
 import { wrongReviewExample, dictionaryUsage } from "@/lib/wrong-review-example";
 import type { BookEntry } from "@/lib/book-edition";
+import { getDefinitionQuizEntry } from "@/lib/definition-quiz";
 
 const native = vi.hoisted(() => ({ openURL: vi.fn(), links: [] as { label: string; press: () => void }[] }));
 const disclosure = vi.hoisted(() => ({ forceOpen: true, forceAllRelations: false }));
@@ -81,6 +82,37 @@ describe("reviewed learning evidence and explanation boundaries", () => {
       expect(text).toContain("편파성");
       expect(text).toContain("어느 한쪽을 더 좋게");
     }
+  });
+  it("walks through garish in order but leaves examples and nuances closed by default", () => {
+    const row = vocabulary.find(item => item.w === "garish" && getDefinitionQuizEntry(item.id))!;
+    const recall = getDefinitionQuizEntry(row.id)!;
+    const original = disclosure.forceOpen;
+    try {
+      disclosure.forceOpen = false;
+      const props = { recall, koreanMeaning: row.k };
+      const closed = render(<DefinitionRecallAnswer {...props} />);
+      const steps = ["tastelessly showy", "직역", "세련되지 않은 방식", "의역", "색이나 장식이 지나치게", "왜 이 뜻인가?"];
+      expect(steps.map(step => closed.indexOf(step)).every((at, index, all) => at >= 0 && (index === 0 || at > all[index - 1]))).toBe(true);
+      expect(closed).not.toContain("neon sign");
+      const prompt = render(<DefinitionRecallPrompt definition={recall.definition} />);
+      expect(prompt).not.toContain("세련되지 않은 방식");
+      const other = render(<DefinitionRecallAnswer {...props} recall={{ ...recall, senseId: "unrelated-sense" }} />);
+      expect(other).not.toContain("색이나 장식이 지나치게");
+      expect(other).toContain("교재 뜻");
+      disclosure.forceOpen = true;
+      const open = render(<DefinitionRecallAnswer {...props} />);
+      for (const content of ["neon sign", "나무 간판으로 바꿨다", "소박한 나무 간판을 달았다", "gaudy로 바꿔도", "눈길을 끄는 데 초점"]) expect(open).toContain(content);
+    } finally { disclosure.forceOpen = original; }
+  });
+  it("explains the actual synonym rather than only printing both words, without repeating the contrast", () => {
+    const row = vocabulary.find(item => item.w === "partisanship")!;
+    const q = buildQuizQuestions({ mode: "syn-choice", itemNums: [row.num], count: 1 })[0];
+    expect(q.correct).toBe("partiality");
+    const html = render(<SynonymRecallAnswer recall={q.synonymRecall!} koreanMeaning={row.k} choices={q.choices} />);
+    expect(html).toContain("favor A over B");
+    expect(html).toContain("왜 정답과 뜻이 가까운가?");
+    expect(html).toContain("partiality for jazz");
+    expect(occurrences(html, "자기편을 더 유리하게 대한다")).toBe(1);
   });
   it("explains each adulterate relation in its own sense without suggesting interchangeability", () => {
     const shard = JSON.parse(fs.readFileSync("public/data/book-dictionary/oewn-2025/1.json", "utf8"));

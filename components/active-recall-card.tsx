@@ -16,6 +16,7 @@ import {
   getDefinitionRelationMeanings,
   type DefinitionQuizEntry,
 } from "@/lib/definition-quiz";
+import { getDefinitionWalkthrough } from "@/lib/definition-walkthrough";
 
 type MeaningChoice = { word: string; meaning: string };
 
@@ -55,6 +56,73 @@ export function DefinitionRecallPrompt({ definition }: { definition: string }) {
   );
 }
 
+function DefinitionMeaning({ recall, koreanMeaning }: { recall: DefinitionQuizEntry; koreanMeaning: string }) {
+  const colors = useColors();
+  const reviewed = getDefinitionWalkthrough(recall);
+  const label = (title: string) => <Text style={[styles.label, { color: colors.primary }]}>{title}</Text>;
+  const text = (value: string) => <Text style={[styles.definition, { color: colors.foreground }]}>{value}</Text>;
+  return <View style={styles.details}>
+    {label("영영 정의")}
+    {text(recall.definition)}
+    {reviewed ? <>
+      {label("직역")}{text(reviewed.literalKo)}
+      {label("의역")}{text(reviewed.naturalKo)}
+      {label("왜 이 뜻인가?")}{text(reviewed.whyKo)}
+    </> : <>{label("교재 뜻")}{text(koreanMeaning)}</>}
+  </View>;
+}
+
+function DefinitionFurtherStudy({ recall, koreanMeaning, highlightedRelation }: {
+  recall: DefinitionQuizEntry;
+  koreanMeaning: string;
+  highlightedRelation?: string;
+}) {
+  const colors = useColors();
+  const reviewed = getDefinitionWalkthrough(recall);
+  const relations = getDefinitionAnswerRelations(recall);
+  const meanings = getDefinitionRelationMeanings(recall, koreanMeaning)
+    .filter(value => value.source === "same-sense-vocab" || value.source === "linked-antonym-vocab")
+    .map(({ word, meaning }) => ({ word, meaning }));
+  const label = (title: string) => <Text style={[styles.label, { color: colors.primary }]}>{title}</Text>;
+  const text = (value: string) => <Text style={[styles.detailText, { color: colors.foreground }]}>{value}</Text>;
+  const extraRelations = reviewed?.relations.filter(note => note.word !== highlightedRelation) ?? [];
+  if (!reviewed && !recall.examples.length && !relations.synonyms.length && !relations.antonyms.length) return null;
+  return <KoreanReveal key={recall.senseId} label="예문·유사어">
+    {reviewed && <>
+      <View style={styles.example}>
+        {label("예문")}
+        {text(reviewed.example.en)}
+        <PronunciationButton text={reviewed.example.en} compact />
+        {text(`직역 · ${reviewed.example.literalKo}`)}
+        {text(`의역 · ${reviewed.example.naturalKo}`)}
+        {text(`문맥 단서 · ${reviewed.example.cueKo}`)}
+      </View>
+      {extraRelations.length > 0 && <View style={styles.details}>
+        {label("유사어는 어디까지 같은가?")}
+        {extraRelations.map(({ word, meaningKo, contrastKo }) => (
+          <View key={word} style={styles.example}>
+            <Text style={[styles.relationName, { color: colors.foreground }]}>{word} · {meaningKo}</Text>
+            {text(contrastKo)}
+          </View>
+        ))}
+      </View>}
+    </>}
+    {(relations.synonyms.length > 0 || relations.antonyms.length > 0) && <KoreanReveal label="사전 관계어">
+      <SemanticRelationCluster headword={recall.headword} coreMeaningKo={koreanMeaning} showDefinitionBridge={false}
+        exactSynonyms={relations.synonyms} antonyms={relations.antonyms} choiceMeanings={meanings} />
+    </KoreanReveal>}
+    {recall.examples.length > 0 && <View style={styles.details}>
+      {label("사전 관련 용례")}
+      {recall.examples.slice(0, 2).map((example, index) => (
+        <View key={`${example}:${index}`} style={styles.example}>
+          {text(example)}
+          <PronunciationButton text={example} compact />
+        </View>
+      ))}
+    </View>}
+  </KoreanReveal>;
+}
+
 export function DefinitionRecallAnswer({
   recall,
   koreanMeaning,
@@ -66,38 +134,13 @@ export function DefinitionRecallAnswer({
   item?: VocabItem;
 }) {
   const colors = useColors();
-  const relations = getDefinitionAnswerRelations(recall);
-  const definitionMeanings = getDefinitionRelationMeanings(recall, koreanMeaning)
-    .filter(value => value.source === "same-sense-vocab" || value.source === "linked-antonym-vocab")
-    .map(({ word, meaning }) => ({ word, meaning }));
   return (
     <View style={[styles.answer, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <Text style={[styles.answerWord, { color: colors.foreground }]}>{recall.headword}</Text>
       {item && <WordPronunciation item={item} context="answer" />}
-      <Text style={[styles.detailText, { color: colors.foreground }]}>{koreanMeaning}</Text>
-      <SemanticRelationCluster
-        headword={recall.headword}
-        coreMeaningKo={koreanMeaning}
-        showDefinitionBridge={false}
-        exactSynonyms={relations.synonyms}
-        antonyms={relations.antonyms}
-        choiceMeanings={definitionMeanings}
-      />
-      <Text style={[styles.label, { color: colors.primary }]}>EN · 영영사전 원문</Text>
-      <Text style={[styles.definition, { color: colors.foreground }]}>{recall.definition}</Text>
-      {recall.examples.length > 0 ? (
-        <>
-          <Text style={[styles.label, { color: colors.primary }]}>예문 · 영영사전 원문</Text>
-          {recall.examples.slice(0, 2).map((example, index) => (
-            <View key={`${example}:${index}`} style={styles.example}>
-              <Text style={[styles.detailText, { color: colors.foreground }]}>{example}</Text>
-              <PronunciationButton text={example} compact />
-              <ExampleRelationCue synonyms={relations.synonyms} antonyms={relations.antonyms} meanings={Object.fromEntries(definitionMeanings.map(m => [m.word, m.meaning]))} />
-            </View>
-          ))}
-        </>
-      ) : null}
-      <Text style={[styles.note, { color: colors.muted }]}>Open English WordNet 2025 · exact single-sense 항목</Text>
+      <DefinitionMeaning recall={recall} koreanMeaning={koreanMeaning} />
+      <DefinitionFurtherStudy recall={recall} koreanMeaning={koreanMeaning} />
+      <Text style={[styles.note, { color: colors.muted }]}>정의 출처 · Open English WordNet 2025</Text>
     </View>
   );
 }
@@ -114,20 +157,22 @@ export function SynonymRecallAnswer({
   item?: VocabItem;
 }) {
   const colors = useColors();
-  const relations = getDefinitionAnswerRelations(recall);
-  const relationMeanings = getDefinitionRelationMeanings(recall, koreanMeaning)
-    .filter(value => value.source === "same-sense-vocab" || value.source === "linked-antonym-vocab")
-    .map(({ word, meaning }) => ({ word, meaning }));
   const correct = choices.find((choice) => choice.isCorrect);
+  const relation = getDefinitionWalkthrough(recall)?.relations.find(note => note.word === correct?.word.toLowerCase());
 
   return (
     <View style={[styles.answer, { borderColor: colors.border, backgroundColor: colors.card }]}>
       <Text style={[styles.eyebrow, { color: colors.primary }]}>영어 동의어</Text>
       <Text style={[styles.answerWord, { color: colors.foreground }]}>
-        {recall.headword} ≒ {correct?.word ?? relations.synonyms[0]}
+        {recall.headword}{correct ? ` ≒ ${correct.word}` : ""}
       </Text>
       {item && <WordPronunciation item={item} context="answer" />}
-      <Text style={[styles.detailText, { color: colors.foreground }]}>{koreanMeaning}</Text>
+      <DefinitionMeaning recall={recall} koreanMeaning={koreanMeaning} />
+      {relation && <View style={styles.details}>
+        <Text style={[styles.label, { color: colors.primary }]}>왜 정답과 뜻이 가까운가?</Text>
+        <Text style={[styles.detailText, { color: colors.foreground }]}>{relation.word} · {relation.meaningKo}</Text>
+        <Text style={[styles.detailText, { color: colors.foreground }]}>{relation.contrastKo}</Text>
+      </View>}
       <View style={styles.details}>
         <Text style={[styles.label, { color: colors.primary }]}>선지 뜻 확인</Text>
         {choices.map(choice => (
@@ -137,27 +182,7 @@ export function SynonymRecallAnswer({
         ))}
         <Text style={[styles.note, { color: colors.muted }]}>표시된 뜻은 현재 연결된 뜻이며, 다른 뜻이 더 있을 수 있습니다.</Text>
       </View>
-      <SemanticRelationCluster
-        headword={recall.headword}
-        coreMeaningKo={koreanMeaning}
-        showDefinitionBridge={false}
-        exactSynonyms={relations.synonyms}
-        antonyms={relations.antonyms}
-        choiceMeanings={relationMeanings}
-      />
-      <Text style={[styles.definition, { color: colors.foreground }]}>{recall.definition}</Text>
-      {recall.examples.length > 0 ? (
-        <View style={styles.details}>
-          <Text style={[styles.label, { color: colors.primary }]}>예문</Text>
-          {recall.examples.slice(0, 2).map((example) => (
-            <View key={example} style={styles.example}>
-              <Text style={[styles.detailText, { color: colors.foreground }]}>{example}</Text>
-              <PronunciationButton text={example} compact />
-              <ExampleRelationCue synonyms={relations.synonyms} antonyms={relations.antonyms} meanings={Object.fromEntries(relationMeanings.map(m => [m.word, m.meaning]))} />
-            </View>
-          ))}
-        </View>
-      ) : null}
+      <DefinitionFurtherStudy recall={recall} koreanMeaning={koreanMeaning} highlightedRelation={relation?.word} />
       <Text style={[styles.note, { color: colors.muted }]}>관계 근거: Open English WordNet 2025</Text>
     </View>
   );
@@ -260,6 +285,7 @@ const styles = StyleSheet.create({
   moreText: { fontSize: 12, fontWeight: "700" },
   details: { gap: 6, paddingTop: 4 },
   example: { gap: 4 },
+  relationName: { fontSize: 13, lineHeight: 21, fontWeight: "700" },
   exampleRelations: { gap: 3, marginTop: 3, paddingHorizontal: 9, paddingVertical: 6, borderWidth: 1, borderRadius: 9 },
   exampleRelationText: { fontSize: 11, lineHeight: 17, fontWeight: "800" },
   detailText: { fontSize: 13, lineHeight: 21 },
