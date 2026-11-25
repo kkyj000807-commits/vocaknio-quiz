@@ -158,7 +158,13 @@ describe('wordbook section practice setup', () => {
     view.buttons.find(button => button.label === `학습 시작 · ${count}문제`)!.press();
     expect(JSON.parse(decodeURIComponent(new URL(view.push.mock.calls[0][0], 'https://fixture.invalid').hash.slice(1)).slice('wordbook:'.length)).count).toBe(count);
   });
-  it.each(QUIZ_MODES.map(option => [option.id, option.title]))('starts explicit type %s without dropping section filters', (mode, title) => {
+  it('does not present school exam numbers as a filtered vocabulary section', () => {
+    const view = setup(); view.buttons[0].press(); view.render();
+    view.buttons.find(button => button.label.startsWith('유형 선택'))!.press(); view.render();
+    view.buttons.find(button => button.label.startsWith('그 외'))!.press();
+    expect(view.render()).not.toContain('대학 기출 논리완성');
+  });
+  it.each(QUIZ_MODES.filter(option => option.id !== 'sentence-completion').map(option => [option.id, option.title]))('starts explicit type %s without dropping section filters', (mode, title) => {
     const view = setup(); view.buttons[0].press(); view.render();
     view.buttons.find(button => button.label.startsWith('유형 선택'))!.press(); view.render();
     view.buttons.find(button => button.label.startsWith('그 외'))!.press(); view.render();

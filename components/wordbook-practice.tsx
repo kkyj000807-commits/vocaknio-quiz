@@ -48,7 +48,7 @@ export function WordbookPractice({ scope, label, items, learningState, hasLocalC
         <Text style={{ color: colors.primary }}>유형 선택 · {selected.title} {typesOpen ? '▴' : '▾'}</Text>
       </Pressable>
       {typesOpen && <>
-        <View style={styles.row}>{QUIZ_MODES.filter(option => option.primary || othersOpen).map(option => <Pressable key={option.id}
+        <View style={styles.row}>{QUIZ_MODES.filter(option => option.id !== 'sentence-completion' && (option.primary || othersOpen)).map(option => <Pressable key={option.id}
           accessibilityRole="button" accessibilityLabel={`${option.title} 선택`} accessibilityState={{ selected: mode === option.id, disabled: availability.counts[option.id] === 0 }}
           disabled={availability.counts[option.id] === 0}
           onPress={() => { if (availability.counts[option.id] !== 0) setMode(option.id); }} style={[chip(mode === option.id), { opacity: availability.counts[option.id] === 0 ? 0.45 : 1 }]}>

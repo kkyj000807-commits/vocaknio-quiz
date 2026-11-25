@@ -1,4 +1,5 @@
 import { QuizCorrectFeedback } from "@/components/quiz-correct-feedback";
+import { OfficialLogicPractice } from "@/components/official-logic-practice";
 import { ProblemSenseContext } from "@/components/problem-sense-context";
 import {
   ActiveRecallAnswer,
@@ -130,6 +131,16 @@ function getTouchPoint(event: GestureResponderEvent, useChangedTouch = false) {
 }
 
 export default function QuizScreen() {
+  const params = useLocalSearchParams<{mode?: string; '#'?: string}>();
+  const scope = params['#'];
+  let mode = params.mode;
+  if (scope?.startsWith('wordbook:')) {
+    try { mode = parseWordbookPracticeRequest(scope.slice('wordbook:'.length)).mode; } catch { /* normal validation below */ }
+  }
+  return mode === 'sentence-completion' ? <OfficialLogicPractice /> : <VocabularyQuizScreen />;
+}
+
+function VocabularyQuizScreen() {
   const colors = useColors();
   const router = useRouter();
   const isMovingRef = useRef(false);

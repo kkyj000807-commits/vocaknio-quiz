@@ -22,7 +22,6 @@ import {
 } from "@/lib/vocab";
 import { useColors } from "@/hooks/use-colors";
 import { PRODUCT_NAME, PRODUCT_PHILOSOPHY } from "@/constants/brand";
-import { getQuizCandidateItems } from "@/lib/quiz-engine";
 import { useStudyVocab } from "@/hooks/use-study-vocab";
 
 const DEFAULT_RANGE_ID = "all";
@@ -64,7 +63,6 @@ export default function HomeScreen() {
   }, [selectedMode, selectedRange, selectedCount, router]);
 
   const s = styles(colors);
-  const completionCount = selectedMode === "sentence-completion" ? getQuizCandidateItems({ mode: selectedMode, rangeId: selectedRange, count: 200 }).length : 0;
 
   return (
     <ScreenContainer containerClassName="bg-background">
@@ -131,11 +129,12 @@ export default function HomeScreen() {
           </View>)}
 
           {selectedMode === "sentence-completion" ? <Text style={{ color: colors.muted, fontSize: 13, lineHeight: 21, marginTop: 10 }}>
-            자체 창작 논리 문항 · 선택 범위 {completionCount}문제. 등록 수보다 많이 요청하면 등록된 문항만 출제합니다. 관련 단어의 암기 상태와 논리 성과는 구분됩니다.
+            대학 입학처 원본으로 풉니다. 다음 화면에서 학교와 학년도를 고르세요.
           </Text> : null}
         </View>
 
         {/* ── 단어 범위 ─────────────────────────── */}
+        {selectedMode !== "sentence-completion" && <>
         <View style={s.section}>
           <View style={s.sectionTitleRow}>
             <Text style={s.sectionTitle}>단어 범위</Text>
@@ -195,6 +194,7 @@ export default function HomeScreen() {
         </View>
 
         {/* ── 시작 버튼 ─────────────────────────── */}
+        </>}
         <View style={s.startWrap}>
           <Pressable
             style={({ pressed }) => [
@@ -209,7 +209,7 @@ export default function HomeScreen() {
           </Pressable>
           <Text style={s.startNote}>
             {studyItems.some(item => item.localBook) ? '불러온 교재의 신규 뜻은 빠른 암기(자기평가)로 학습합니다. 자동채점은 기존 검수 문항만 사용합니다. ' : ''}
-            {selectedMode === "syn-context-basic"
+            {selectedMode === "sentence-completion" ? "공식 정답이 확인된 회차만 답을 대조합니다." : selectedMode === "syn-context-basic"
               ? "밑줄 친 표현을 문맥으로 판단합니다. 영어 선지와 한글 뜻을 함께 봅니다."
               : selectedMode === "syn-context"
               ? "밑줄 친 표현을 문맥으로 판단합니다. 영어 선지의 뜻과 해설은 채점 후에 나옵니다."
