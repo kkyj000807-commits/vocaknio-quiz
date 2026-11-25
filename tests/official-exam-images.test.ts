@@ -40,3 +40,22 @@ it('rejects an arbitrary local import without replacing stored content',async()=
   await expect(importExamPack(JSON.stringify({kind:'finetune-private-exam-images',sets:[]}))).rejects.toThrow();
   expect(writePrivateExamContent).not.toHaveBeenCalled();
 });
+
+it.each([true, false])('only reports persistence after the verified file is saved (persisted=%s)', async persisted => {
+  const verifiedHash = '0ac30e833da2b68d40ee00d202b273a4b754c6ab05ddb93917963eef8da2b023';
+  const digest = vi.fn(async () => Uint8Array.from(Buffer.from(verifiedHash, 'hex')).buffer);
+  const write = vi.mocked(writePrivateExamContent);
+  if (persisted) write.mockResolvedValueOnce(undefined);
+  else write.mockRejectedValueOnce(new Error('Device storage unavailable'));
+  const raw = JSON.stringify({ sets:[set] });
+  vi.stubGlobal('crypto', {subtle:{digest}});
+  try {
+    const result = await importExamPack(raw);
+    expect(digest).toHaveBeenCalledOnce();
+    expect(write).toHaveBeenLastCalledWith(raw);
+    expect(result).toEqual({ pack:{sets:[set]}, persisted });
+    expect(disk.size).toBe(0);
+  } finally {
+    vi.unstubAllGlobals();
+  }
+});

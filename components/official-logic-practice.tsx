@@ -31,11 +31,12 @@ export function OfficialLogicPractice() {
   const [busy, setBusy] = useState(Platform.OS === 'web');
   const [notice, setNotice] = useState('');
   const mounted = useRef(false);
+  const fileInput = useRef<HTMLInputElement>(null);
   useEffect(() => {
     mounted.current = true;
     if (Platform.OS === 'web') void loadExamPack()
       .then(pack=>{ if (mounted.current && pack) setSets(pack.sets); })
-      .catch(()=>{ if (mounted.current) setNotice('기출 파일을 다시 선택해 주세요. 기존 학습 기록은 그대로입니다.'); })
+      .catch(()=>{ if (mounted.current) setNotice('이 기기에 저장된 기출을 열지 못했습니다. 아래에서 다시 불러올 수 있습니다.'); })
       .finally(()=>{ if (mounted.current) setBusy(false); });
     return () => { mounted.current = false; };
   }, []);
@@ -43,10 +44,13 @@ export function OfficialLogicPractice() {
     setBusy(true); setNotice('');
     try {
       if (file.size > EXAM_FILE_MAX_BYTES) throw new Error('Invalid file');
-      const pack = await importExamPack(await file.text());
-      if (mounted.current) setSets(pack.sets);
+      const { pack, persisted } = await importExamPack(await file.text());
+      if (mounted.current) {
+        setSets(pack.sets);
+        if (!persisted) setNotice('기출 파일을 이 기기에 저장하지 못했습니다. 지금은 풀 수 있지만, 화면을 닫으면 파일을 다시 불러와야 합니다.');
+      }
     } catch {
-      if (mounted.current) setNotice('기출 파일을 확인하거나 저장하지 못했습니다. 받은 파일을 다시 선택해 주세요.');
+      if (mounted.current) setNotice('이 파일은 열 수 없습니다. PDF나 학습 기록 백업이 아닌 FINETUNE 기출 자료(.json)를 선택해 주세요.');
     } finally { if (mounted.current) setBusy(false); }
   };
   const years = [...new Set(sets.filter(s=>s.school===school).map(s=>s.year))].sort((a,b)=>b-a);
@@ -55,15 +59,18 @@ export function OfficialLogicPractice() {
   return <ScreenContainer containerClassName="bg-background">
     <ScrollView contentContainerStyle={{ width:'100%', maxWidth:780, alignSelf:'center', padding:16, paddingBottom:88, gap:12 }}>
       <Text accessibilityRole="header" style={{fontSize:24,fontWeight:'700',color:c.foreground}}>대학 기출</Text>
-      {busy ? <Text style={{color:c.muted}}>기출을 불러오는 중입니다.</Text> : !sets.length ? <>
+      {!sets.length && !!notice && <Text accessibilityLiveRegion="polite" style={{color:c.foreground}}>{notice}</Text>}
+      {busy ? <Text accessibilityLiveRegion="polite" style={{color:c.muted}}>기출을 불러오는 중입니다.</Text> : !sets.length ? <>
         <Text style={{color:c.foreground}}>{Platform.OS === 'web'
-          ? '기출 원본 파일을 한 번만 선택하면 여기에 실제 문제와 선지가 나옵니다.'
+          ? '이 브라우저에는 기출이 없습니다. FINETUNE 기출 자료(.json)를 불러오면 학교별 어휘·논리 문제를 풀 수 있습니다.'
           : '기출 원본은 FINETUNE 웹에서 열 수 있습니다.'}</Text>
-        {Platform.OS === 'web' && <input type="file" accept=".json,application/json" aria-label="개인 기출 원본 파일"
-          style={{maxWidth:'100%',color:c.foreground}} onChange={e=>{
-            const file = e.currentTarget.files?.[0]; e.currentTarget.value = '';
-            if (file) void chooseFile(file);
-          }} />}
+        {Platform.OS === 'web' && <>
+          <input ref={fileInput} type="file" accept=".json,application/json" aria-label="개인 기출 원본 파일" hidden onChange={e=>{
+              const file = e.currentTarget.files?.[0]; e.currentTarget.value = '';
+              if (file) void chooseFile(file);
+            }} />
+          <ExamButton label="기출 불러오기" action={()=>fileInput.current?.click()} />
+        </>}
       </> : <>
         <View style={row}>{schools.map(name=><ExamButton key={name} label={name} selected={name===school} action={()=>{setSchool(name);setYear(2026);}} />)}</View>
         <View style={row}>{years.map(y=><ExamButton key={y} label={`${y}학년도`} selected={y===selectedYear} action={()=>setYear(y)} />)}</View>
@@ -73,8 +80,11 @@ export function OfficialLogicPractice() {
         </View>
         {selected ? <ExamQuestions key={examSetId(selected)} set={selected} /> : <Text style={{color:c.muted}}>이 회차에 등록된 문제가 없습니다.</Text>}
       </>}
-      {!!notice && <Text accessibilityLiveRegion="polite" style={{color:c.foreground}}>{notice}</Text>}
-      <ExamButton label="학습 방식으로 돌아가기" action={()=>router.replace('/')} />
+      {sets.length > 0 && !!notice && <Text accessibilityLiveRegion="polite" style={{color:c.foreground}}>{notice}</Text>}
+      {!sets.length && <ExamButton label="파일 없이 예문 동의어 풀기" action={()=>router.replace({
+        pathname:'/quiz', params:{ mode:'syn-context', rangeId:'all', count:10 },
+      })} />}
+      <ExamButton label="문풀로 돌아가기" action={()=>router.replace('/')} />
     </ScrollView>
   </ScreenContainer>;
 }

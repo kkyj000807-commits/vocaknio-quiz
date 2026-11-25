@@ -120,8 +120,16 @@ describe("study setup starts with Korean meaning and keeps other modes available
     const view = renderSetup();
     view.buttons.find(button => button.label.startsWith('그 외'))!.press(); view.render();
     view.buttons.find(button => button.label.includes(description))!.press(); view.render();
-    view.buttons.find(button => button.label === '문제 풀기→')!.press();
+    view.buttons.find(button => button.label === (id === 'sentence-completion' ? '기출 열기→' : '문제 풀기→'))!.press();
     expect(view.push.mock.calls[0][0].params.mode).toBe(id);
+  });
+  it('explains first-time exam setup without asking for unrelated textbook data', () => {
+    const view = renderSetup(true);
+    view.buttons.find(button => button.label.includes('대학 기출'))!.press();
+    const html = view.render();
+    expect(html).toContain('처음 쓰는 브라우저에서만 기출 자료가 필요합니다.');
+    expect(html).not.toContain('불러온 교재의 신규 뜻');
+    expect(view.buttons.some(button => button.label === '기출 열기→')).toBe(true);
   });
   it('returns to meaning when collapsing a selected other mode', () => {
     const view = renderSetup();

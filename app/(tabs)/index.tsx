@@ -129,7 +129,7 @@ export default function HomeScreen() {
           </View>)}
 
           {selectedMode === "sentence-completion" ? <Text style={{ color: colors.muted, fontSize: 13, lineHeight: 21, marginTop: 10 }}>
-            다음 화면에서 학교와 학년도를 고르고 어휘·논리 원문을 풉니다.
+            이 브라우저에 자료가 있으면 학교를 골라 바로 풉니다.
           </Text> : null}
         </View>
 
@@ -204,12 +204,12 @@ export default function HomeScreen() {
             onPress={handleStart}
           >
             <View style={s.startGlow} />
-            <Text style={s.startBtnText}>문제 풀기</Text>
+            <Text style={s.startBtnText}>{selectedMode === "sentence-completion" ? "기출 열기" : "문제 풀기"}</Text>
             <Text style={s.startBtnArrow}>→</Text>
           </Pressable>
           <Text style={s.startNote}>
-            {studyItems.some(item => item.localBook) ? '불러온 교재의 신규 뜻은 빠른 암기(자기평가)로 학습합니다. 자동채점은 기존 검수 문항만 사용합니다. ' : ''}
-            {selectedMode === "sentence-completion" ? "기출은 이 기기에만 보관합니다. 공식 정답을 확인한 문항만 채점합니다." : selectedMode === "syn-context-basic"
+            {selectedMode !== "sentence-completion" && studyItems.some(item => item.localBook) ? '불러온 교재의 신규 뜻은 빠른 암기(자기평가)로 학습합니다. 자동채점은 기존 검수 문항만 사용합니다. ' : ''}
+            {selectedMode === "sentence-completion" ? "처음 쓰는 브라우저에서만 기출 자료가 필요합니다." : selectedMode === "syn-context-basic"
               ? "밑줄 친 표현을 문맥으로 판단합니다. 영어 선지와 한글 뜻을 함께 봅니다."
               : selectedMode === "syn-context"
               ? "밑줄 친 표현을 문맥으로 판단합니다. 영어 선지의 뜻과 해설은 채점 후에 나옵니다."

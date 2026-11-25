@@ -27,8 +27,14 @@ export async function loadExamPack() {
 }
 export async function importExamPack(raw: string) {
   const pack = await verifyExamPack(raw);
-  await writePrivateExamContent(raw);
-  return pack;
+  try {
+    await writePrivateExamContent(raw);
+    return { pack, persisted: true };
+  } catch {
+    // The checked original is usable even if this browser cannot retain it.
+    // Do not retry or change learner storage on a content write failure.
+    return { pack, persisted: false };
+  }
 }
 
 export type ExamProgress = { picks: Record<number, number>; revisit: Record<number, boolean> };
