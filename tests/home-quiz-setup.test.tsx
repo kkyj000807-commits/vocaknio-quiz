@@ -84,7 +84,7 @@ describe("study setup starts with Korean meaning and keeps other modes available
     const { html, buttons } = renderSetup();
     expect(html).toContain("동의어 실전형");
     expect(html).toContain("동의어 기초형");
-    const positions = ["뜻고르기", "동의어 실전형", "동의어 기초형", "정의고르기", "논리완성", "예문 동의어 실전형", "예문 동의어 기초형", "그 외"].map(label => html.indexOf(label));
+    const positions = ["뜻고르기", "동의어 실전형", "동의어 기초형", "정의고르기", "대학 기출", "예문 동의어 실전형", "예문 동의어 기초형", "그 외"].map(label => html.indexOf(label));
     expect(positions.every((at, i) => at >= 0 && (!i || at > positions[i - 1]))).toBe(true);
     expect(buttons.some(button => button.label.includes("뜻 확인 후 채점") || button.label.includes("동의어 타이핑"))).toBe(false);
     expect(buttons.find(button => button.label.includes("정확한 뜻 4택"))?.selected).toBe(true);
@@ -130,7 +130,7 @@ describe("study setup starts with Korean meaning and keeps other modes available
     view.buttons.find(button => button.label.startsWith('그 외'))!.press();
     const html = view.render();
     expect(html).not.toContain('동의어 타이핑');
-    expect(html).toContain('논리완성');
+    expect(html).toContain('대학 기출');
     expect(view.buttons.find(button => button.label.includes('정확한 뜻 4택'))?.selected).toBe(true);
     expect(view.save).not.toHaveBeenCalled();
   });
@@ -162,7 +162,7 @@ describe('wordbook section practice setup', () => {
     const view = setup(); view.buttons[0].press(); view.render();
     view.buttons.find(button => button.label.startsWith('유형 선택'))!.press(); view.render();
     view.buttons.find(button => button.label.startsWith('그 외'))!.press();
-    expect(view.render()).not.toContain('대학 기출 논리완성');
+    expect(view.render()).not.toContain('대학 기출');
   });
   it.each(QUIZ_MODES.filter(option => option.id !== 'sentence-completion').map(option => [option.id, option.title]))('starts explicit type %s without dropping section filters', (mode, title) => {
     const view = setup(); view.buttons[0].press(); view.render();

@@ -239,7 +239,7 @@ export const QUIZ_MODES: {
   { id: "syn-choice", icon: "≈", title: "동의어 실전형", desc: "영어 → 영어", primary: true },
   { id: "syn-kor-choice", icon: "≈", title: "동의어 기초형", desc: "영어 → 영어 + 한글 뜻", primary: true },
   { id: "definition-choice", icon: "EN", title: "정의고르기", desc: "영영 정의에서 정확한 단어 찾기", primary: true },
-  { id: "sentence-completion", icon: "∴", title: "대학 기출 논리완성", desc: "학교·학년도별 실제 편입 빈칸 문제", primary: true },
+  { id: "sentence-completion", icon: "∴", title: "대학 기출", desc: "학교별 어휘·논리 원문 문제", primary: true },
   { id: "syn-context", icon: "≈", title: "예문 동의어 실전형", desc: "밑줄 표현 → 영어 선지", primary: true },
   { id: "syn-context-basic", icon: "≈", title: "예문 동의어 기초형", desc: "밑줄 표현 → 영어 선지 + 한글 뜻", primary: true },
   { id: "flashcard", icon: "⚡", title: "빠른 암기", desc: "뜻 확인 후 채점" },

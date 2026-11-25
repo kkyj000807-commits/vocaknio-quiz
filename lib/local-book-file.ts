@@ -143,3 +143,11 @@ export function readRevisedBookContent() {
 export async function writeRevisedBookContent(raw: string) {
   await contentTransaction('readwrite', raw, BOOK_EDITION, REVISED_BOOK_KEY);
 }
+
+const PRIVATE_EXAM_KEY = 'verified-private-exam-images:2024-2026:v1';
+export function readPrivateExamContent() {
+  return contentTransaction('readonly', undefined, BOOK_EDITION, PRIVATE_EXAM_KEY);
+}
+export async function writePrivateExamContent(raw: string) {
+  await contentTransaction('readwrite', raw, BOOK_EDITION, PRIVATE_EXAM_KEY);
+}
