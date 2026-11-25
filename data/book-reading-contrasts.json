@@ -1,0 +1,960 @@
+[
+  {
+    "targets": [
+      {
+        "id": "study-new-b9abdfa5387bf94176ea",
+        "word": "sufficient",
+        "section": "V301",
+        "meaning": "충분한, 족한 / 족한(=ample)"
+      },
+      {
+        "id": "study-03782",
+        "word": "essential",
+        "section": "V301",
+        "meaning": "극히 중요한; 본질적인; 필수적인; 없어서는 안 될"
+      },
+      {
+        "id": "study-03132",
+        "word": "indispensable",
+        "section": "V301",
+        "meaning": "필수적인; 없어서는 안 될; 불가결의; 없어서는 안 되는; 긴요한"
+      },
+      {
+        "id": "study-03785",
+        "word": "prerequisite",
+        "section": "V301",
+        "meaning": "사전에 필요한; 전제 조건; 필수(적인); 필요조건; 선수과목"
+      }
+    ],
+    "focus": "없으면 안 되는가, 그것만으로 되는가?",
+    "en": "A permit is a prerequisite for entry, but a permit alone is not sufficient: visitors must also show ID.",
+    "ko": "허가증이 없으면 못 들어간다. 그렇다고 허가증만 내밀면 통과하는 것도 아니다. 신분증도 필요하다.",
+    "distinction": "입장했다면 허가증이 있었다는 결론은 따라온다. 허가증이 있으니 입장했다는 결론은 안 나온다. sufficient for가 붙으면 조건에서 결과로, indispensable to가 붙으면 그 조건이 없을 때 무엇이 불가능한지 읽는다. essential이 ‘본질적인’이라는 다른 뜻인 경우는 따로 본다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-00537",
+        "word": "premise",
+        "section": "V101",
+        "meaning": "전제; 토지; 가옥 / n. 1. 전제(=assumption, postulation) 2. (pl.) 집, 건물; 구내 v. 서두로 말하다; 전제하다"
+      },
+      {
+        "id": "study-01930",
+        "word": "correlation",
+        "section": "V201",
+        "meaning": "(상관)관계"
+      },
+      {
+        "id": "study-00096",
+        "word": "warrant",
+        "section": "V301",
+        "meaning": "① 보증하다  ② 영장 · 정당화하다; 필요하게 하다 / 영장(=writ); 면허장; 정당한 이유; 보증; 1. 정당화하다(=justify); 〈구어〉 보증하다(=guarantee) 2. 정식으로 허가하다"
+      },
+      {
+        "id": "study-08521",
+        "word": "conclusive",
+        "section": "V601",
+        "meaning": "결정적인; 최종적인 / 결정적인(=decisive); 설득력있는"
+      }
+    ],
+    "focus": "관찰과 결론 사이에 빠진 전제가 있나?",
+    "en": "A correlation between tutoring and high scores warrants investigation, not the conclusion that tutoring caused the difference.",
+    "ko": "과외를 받는 학생들의 점수가 높았다. 조사해 볼 이유는 생겼지만 점수 차이가 과외 때문이라고 결론 낼 근거까지 생긴 건 아니다.",
+    "distinction": "원래 성적이 높은 학생이 과외를 더 많이 받았을 수도 있다. 이 가능성을 말하는 것은 ‘과외 효과가 없다’는 반증이 아니다. premise는 결론의 출발점이고, warrants investigation은 조사할 이유가 있다는 말이지 conclusive evidence는 아니다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-01708",
+        "word": "rebut",
+        "section": "V301",
+        "meaning": "반박하다; 반대하다; 논박하다; 논박하다(=disprove); 반증을 들다"
+      },
+      {
+        "id": "study-00207",
+        "word": "refute",
+        "section": "V301",
+        "meaning": "반박하다"
+      }
+    ],
+    "focus": "반론을 냈나, 핵심 주장이 틀렸음을 보였나?",
+    "en": "The town rebutted the claim that every well was dry by pointing to Well Four. A direct measurement then showed water in that well.",
+    "ko": "마을은 4번 우물을 들어 ‘모든 우물이 말랐다’는 말에 반론을 폈다. 실제 측정에서 물이 확인되자 비로소 그 보편 진술을 깨는 반례가 생겼다.",
+    "distinction": "rebut은 논거를 들어 맞서는 행위에, refute는 엄밀한 논증 문맥에서 틀렸음을 보이는 데 초점을 둘 수 있다. 둘이 언제나 배타적인 것은 아니다. 한 우물의 물은 ‘모두 말랐다’는 주장은 깨지만 ‘대다수가 말랐다’까지 깨지는 않는다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-02704",
+        "word": "resent",
+        "section": "V201",
+        "meaning": "분노하다; 분개하다; 괘씸하게 생각하다 / 원망하다"
+      },
+      {
+        "id": "study-02080",
+        "word": "detest",
+        "section": "V301",
+        "meaning": "몹시 싫어하다; 몹시 혐오하다; 증오하다"
+      },
+      {
+        "id": "study-00921",
+        "word": "loathe",
+        "section": "V301",
+        "meaning": "혐오하다"
+      },
+      {
+        "id": "study-08675",
+        "word": "dislike",
+        "section": "V601",
+        "meaning": "싫어하다; 혐오; 싫어함"
+      }
+    ],
+    "focus": "‘싫다’의 강도인가, 부당하다고 여기는 이유인가?",
+    "en": "I dislike waiting, but what I resent is being made to wait while others go first.",
+    "ko": "기다리는 건 싫다. 하지만 남들은 먼저 보내면서 나만 기다리게 하는 건 억울하고 화가 난다.",
+    "distinction": "dislike는 폭이 넓고 detest·loathe는 강한 혐오를 표현한다. detest와 loathe 중 어느 쪽이 반드시 더 센지는 문맥 없이 정할 수 없다. resent의 단서는 단순한 강도보다 대우나 상황을 못마땅하게 여기는 태도다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-01317",
+        "word": "irate",
+        "section": "V101",
+        "meaning": "격분한; 분노하는; 성난; 화가 난(wrathful); 노한"
+      },
+      {
+        "id": "study-09991",
+        "word": "annoyance",
+        "section": "V301",
+        "meaning": "짜증; 성가심; 골칫거리 (irritant)"
+      },
+      {
+        "id": "study-01095",
+        "word": "rage",
+        "section": "V301",
+        "meaning": "분노; 몹시 화를 내다; 격노; 격노하다; 격분; 폭력사태; 격렬히 화를 내다"
+      },
+      {
+        "id": "study-04887",
+        "word": "furious",
+        "section": "V401",
+        "meaning": "흉포한; 맹렬한; 성난; 성내어 날뛰는; 격노한"
+      },
+      {
+        "id": "study-08067",
+        "word": "livid",
+        "section": "V502",
+        "meaning": "납빛의; 낯빛이 검푸른; 격노한; 얼굴색이 납빛인 흙빛의; 멍처럼 검푸른 / 〈구어〉 격분한; (얼굴색이) 흙빛의, 검푸른"
+      }
+    ],
+    "focus": "불편한 기색인가, 격분인가? 얼굴색인지도 보자.",
+    "en": "A late bus caused mild annoyance. Learning that the driver had passed them on purpose made the passengers furious.",
+    "ko": "버스가 늦을 땐 승객들이 좀 짜증이 났다. 그런데 일부러 지나쳤다는 걸 알고는 불같이 화를 냈다.",
+    "distinction": "이 예문의 mild annoyance보다 furious가 훨씬 강하다. 단순히 annoyed라는 말만 보고 격분을 단정하지 않는다. irate·furious·livid는 분노 의미에서 겹치며 서로 고정된 강도 순서는 없다. a livid bruise는 격분이 아니라 멍의 색이다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-03572",
+        "word": "mild",
+        "section": "V301",
+        "meaning": "포근한; 순한; 약한; (음식·음료가) 자극이 없는 부드러운; (성질·태도가) 온순한; 상냥한 (음식·음료가) 부드러운; 자극성이 없는; 온화한"
+      },
+      {
+        "id": "study-00824",
+        "word": "severe",
+        "section": "V301",
+        "meaning": "심한; 엄한; 수수한; 가혹한; 혹독한; 꾸밈없는; 엄격한; 맹렬한 / 날씨가 매우 나쁜"
+      }
+    ],
+    "focus": "강도와 빈도는 독립적이다.",
+    "en": "Her headaches were frequent but mild. Her brother had just one, but it was severe.",
+    "ko": "그녀는 머리가 자주 아팠지만 통증은 약했다. 남동생은 딱 한 번 아팠는데 그 한 번이 심했다.",
+    "distinction": "frequent는 몇 번 생겼는지, mild와 severe는 한 번 생겼을 때 얼마나 심한지를 말한다. ‘자주 아팠다’에서 ‘심하게 아팠다’를 끌어내면 축을 바꾼 오답이다. 날씨나 성격을 묘사할 때는 해당 대상의 뜻으로 다시 읽는다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-01173",
+        "word": "plausible",
+        "section": "V301",
+        "meaning": "그럴싸한; 그럴듯한; 실행 가능한; 타당한 것 같은"
+      },
+      {
+        "id": "study-03293",
+        "word": "certain",
+        "section": "V301",
+        "meaning": "확실한; 어떤"
+      },
+      {
+        "id": "study-06332",
+        "word": "anxious",
+        "section": "V501",
+        "meaning": "갈망하는; 걱정하는; 걱정스러운 / 1. 걱정하는, 불안해하는 2. 몹시 ~하고 싶어 하는"
+      }
+    ],
+    "focus": "가능한 설명인가, 사실로 확정됐나, 아니면 사람의 감정인가?",
+    "en": "A leak was a plausible explanation. The engineers were anxious about the bridge, but none was certain it was unsafe.",
+    "ko": "누수라면 말은 된다. 기술자들은 다리가 걱정됐지만, 위험하다고 확신하는 사람은 없었다.",
+    "distinction": "plausible은 근거와 잘 맞아 그럴듯하다는 평가이지 입증이 아니다. anxious about은 판단의 확률이 아니라 사람의 걱정이다. be certain that은 확신, a certain engineer는 ‘어떤 기술자’이므로 certain을 언제나 ‘확실한’으로 읽지 않는다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-00005",
+        "word": "jeopardize",
+        "section": "V101",
+        "meaning": "위험에 빠뜨리다"
+      },
+      {
+        "id": "study-00114",
+        "word": "alleviate",
+        "section": "V301",
+        "meaning": "완화하다; 경감하다; 고통을 완화시키다"
+      },
+      {
+        "id": "study-01255",
+        "word": "mitigate",
+        "section": "V301",
+        "meaning": "완화하다; 경감시키다; 가라앉히다; (형벌 따위를) 가볍게 하다; 고통이나 형벌을 가볍게 하다"
+      },
+      {
+        "id": "study-00357",
+        "word": "eradicate",
+        "section": "V301",
+        "meaning": "근절하다; 박멸하다; 화학 용제로 얼룩을 지우다 / 뿌리째 뽑다"
+      }
+    ],
+    "focus": "위험이 생겼나, 피해가 줄었나, 원인 자체가 없어졌나?",
+    "en": "The leak jeopardized the harvest. A pump mitigated the damage, but did not eradicate the fungus.",
+    "ko": "물이 새 수확이 위태로워졌다. 펌프로 피해는 줄였지만 곰팡이까지 뿌리 뽑은 건 아니다.",
+    "distinction": "jeopardize는 위험에 빠뜨리는 단계라 실제 손실이 필수는 아니다. alleviate pain은 고통을 덜고 mitigate damage는 피해를 줄인다. 둘의 강도를 고정 순위로 외우지 말고 무엇을 덜었는지 본다. eradicate의 목적어는 없애려는 대상 자체다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-14939",
+        "word": "at most",
+        "section": "숙어",
+        "meaning": "많아야"
+      },
+      {
+        "id": "study-16086",
+        "word": "no less than",
+        "section": "숙어",
+        "meaning": "~만큼이나"
+      },
+      {
+        "id": "study-new-413189ecc2a50b79d660",
+        "word": "no more than~",
+        "section": "숙어",
+        "meaning": "<적음을 강조> 단지 ~에 지나지 않은; 겨우(=only)"
+      }
+    ],
+    "focus": "상한인가, 하한인가, 아니면 수에 대한 놀라움인가?",
+    "en": "At most ten seats will be available. No less than a hundred people have applied.",
+    "ko": "자리는 다 합쳐도 열 개가 한계인데 지원자는 무려 백 명이나 된다.",
+    "distinction": "at most ten은 열을 포함한 상한이지 꼭 열이라는 뜻이 아니다. no more than ten은 문맥에 따라 상한 또는 ‘겨우 열’이라는 평가다. no less than a hundred에는 수가 많다는 강조가 실릴 수 있다. 숫자만 지우고 두 표현을 같은 ‘약’으로 읽지 않는다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-16091",
+        "word": "not a few",
+        "section": "숙어",
+        "meaning": "적지 않은; 꽤 많은"
+      },
+      {
+        "id": "study-16381",
+        "word": "quite a few",
+        "section": "숙어",
+        "meaning": "(꽤)많은"
+      },
+      {
+        "id": "study-17198",
+        "word": "few and far between",
+        "section": "숙어",
+        "meaning": "아주 드문; 극히 적은(=rare)"
+      }
+    ],
+    "focus": "few가 있어도 화자가 수를 적게 보는가?",
+    "en": "Quite a few volunteers signed up, but trained medics were few and far between.",
+    "ko": "지원자는 제법 많았지만 그중 훈련받은 의료 인력은 찾아보기 힘들었다.",
+    "distinction": "quite a few와 not a few는 ‘상당수’ 쪽이다. few and far between은 ‘드물다’ 쪽이다. a few는 일부의 존재를 말할 뿐 상당수라고 하지는 않는다. 어느 표현도 정해진 인원수나 백분율은 아니다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-15618",
+        "word": "get used to",
+        "section": "숙어",
+        "meaning": "~에 익숙해지다"
+      },
+      {
+        "id": "study-new-f3bffa29b551a7491a58",
+        "word": "be used to ~ing",
+        "section": "숙어",
+        "meaning": "~에 익숙하다"
+      }
+    ],
+    "focus": "get·be의 차이인가, to 뒤의 구조 차이인가?",
+    "en": "I used to work nights. I never got used to sleeping during the day.",
+    "ko": "예전에는 야간 근무를 했다. 그렇다고 낮에 자는 생활이 몸에 밴 건 아니다.",
+    "distinction": "used to + 동사원형은 과거의 습관, get used to + 명사·동명사는 익숙해지는 변화, be used to + 명사·동명사는 이미 익숙한 상태다. A lamp is used to signal danger에서는 ‘신호를 보내는 데 쓰인다’는 수동태와 목적의 to다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-15342",
+        "word": "consist of",
+        "section": "숙어",
+        "meaning": "-으로 구성되다"
+      },
+      {
+        "id": "study-15341",
+        "word": "consist in",
+        "section": "숙어",
+        "meaning": "~에 본질이 있다; ~을 주된 요소나 특징으로 하다"
+      },
+      {
+        "id": "study-new-2dfb9b54345301ac4c27",
+        "word": "consist of sb/sth",
+        "section": "숙어",
+        "meaning": "~으로 구성되다"
+      }
+    ],
+    "focus": "재료를 열거하나, 핵심을 짚나?",
+    "en": "The course consists of six workshops. Its value consists in the feedback after each one.",
+    "ko": "수업을 구성하는 것은 여섯 차례의 실습이다. 그 수업이 값진 이유는 매번 받는 피드백에 있다.",
+    "distinction": "consist of는 전체에서 구성원·부분으로 간다. consist in은 가치나 특징의 본질이 어디에 있는지 밝힌다. 같은 수업에 대한 두 진술은 서로 반대가 아니라 답하는 질문이 다르다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-00844",
+        "word": "disinterested",
+        "section": "V301",
+        "meaning": "사심이 없는; 편견이 없는; 사심 없는; 공정한; 사욕이 없는; 청렴한; 이해관계가 없는 / 객관적인(=detached); 무관심한(=indifferent)"
+      },
+      {
+        "id": "study-04605",
+        "word": "uninterested",
+        "section": "V401",
+        "meaning": "관심이 없는; (이해관계가 없어서) 관심이 없는 / 무관심한(=indifferent)"
+      }
+    ],
+    "focus": "이해관계가 없나, 관심 자체가 없나?",
+    "en": "We needed a disinterested judge, not an uninterested one: she had to care about the contest without having a stake in its outcome.",
+    "ko": "대회에 관심을 끄라는 게 아니다. 관심을 갖고 심사하되 누가 이겨도 자기 득실은 없어야 했다.",
+    "distinction": "이 문맥에서는 disinterested가 공정성, uninterested가 흥미의 축이다. without a stake가 전자를 결정한다. 실제 영어의 뜻이 일부 겹치더라도 여기서 ‘공정한 심사위원’을 ‘심사하기 싫은 사람’으로 읽으면 안 된다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-04326",
+        "word": "historical",
+        "section": "V401",
+        "meaning": "역사상의"
+      },
+      {
+        "id": "study-04327",
+        "word": "historic",
+        "section": "V401",
+        "meaning": "역사적으로 중요한; 역사적으로 유명한"
+      }
+    ],
+    "focus": "과거와 관련됐나, 역사를 바꿀 만큼 중요했나?",
+    "en": "The clerk filed the receipt among the historical records. Nobody called the purchase a historic event.",
+    "ko": "영수증은 당시를 보여 주는 기록이라 보관했다. 물건을 산 일 자체가 역사적 대사건이라는 말은 아니다.",
+    "distinction": "historical records는 과거를 다룬 기록이다. historic event는 중요성에 대한 평가까지 담는다. 오래됐다는 사실만으로 historic이라 결론 내리지 않는다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-03560",
+        "word": "economical",
+        "section": "V301",
+        "meaning": "경제적인; 절약하는 / 검소한; 절약되는"
+      },
+      {
+        "id": "study-05139",
+        "word": "economic",
+        "section": "V401",
+        "meaning": "경제의 / 경제학의"
+      }
+    ],
+    "focus": "경제를 다루나, 비용이나 자원을 아끼나?",
+    "en": "The ministry published an economic report. Printing a copy for everyone was hardly economical.",
+    "ko": "경제에 관한 보고서였다. 그렇다고 모두에게 한 부씩 인쇄하는 게 돈을 아끼는 방법이라는 뜻은 아니다.",
+    "distinction": "economic policy는 보통 정책의 분야, economical use는 자원 사용의 효율을 말한다. ‘경제적’ 한 단어로 뭉개지 말고 ‘경제에 관한’과 ‘낭비가 적은’ 중 어느 쪽인지 대입한다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-01894",
+        "word": "sensible",
+        "section": "V201",
+        "meaning": "분별력 있는; 감정보다 이성에 따라 현명한 결정을 하는 / 현명한, 분별있는; 지각할 수 있는"
+      },
+      {
+        "id": "study-01652",
+        "word": "sensitive",
+        "section": "V301",
+        "meaning": "민감한; 감수성이 예민한; 예민한; 신경질적인 / 섬세한"
+      }
+    ],
+    "focus": "판단이 합리적인가, 자극에 잘 반응하는가?",
+    "en": "The sensor is sensitive to heat, so moving it away from the oven was a sensible precaution.",
+    "ko": "센서가 열에 민감해서 오븐 옆에서 치운 건 현명한 예방책이었다.",
+    "distinction": "sensitive는 무엇에 반응하는지(to heat), sensible은 어떤 판단이나 행동이 합리적인지 본다. 예민한 사람이 현명할 수도 있으므로 두 형용사는 반의어가 아니다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-00397",
+        "word": "complement",
+        "section": "V101",
+        "meaning": "보완하다; 보충하다; 보충 / 보충물; 보완물"
+      },
+      {
+        "id": "study-00400",
+        "word": "complimentary",
+        "section": "V101",
+        "meaning": "칭찬하는; 무료의"
+      },
+      {
+        "id": "study-02114",
+        "word": "complementary",
+        "section": "V201",
+        "meaning": "보충적인; 보충하는"
+      },
+      {
+        "id": "study-00671",
+        "word": "compliment",
+        "section": "V301",
+        "meaning": "칭찬하다; 칭찬; 칭찬하는 말; 증정하다; 인사 / 경의"
+      }
+    ],
+    "focus": "빠진 기능을 채우나, 사람을 칭찬하나?",
+    "en": "Her diagrams complemented my talk. Afterward a listener complimented her on their clarity.",
+    "ko": "그림 덕분에 내 설명이 더 온전해졌다. 끝난 뒤 청중 한 명이 그림이 명쾌하다며 그녀를 칭찬했다.",
+    "distinction": "도표가 설명을 보완하면 complement, 사람이 다른 사람을 칭찬하면 compliment A on B다. complimentary ticket은 무료 입장권일 수 있다. 이때 무료의 반대는 유료이지 ‘비난하는’이 아니다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-00220",
+        "word": "eligible",
+        "section": "V101",
+        "meaning": "자격을 갖춘; 자격이 있는 / 적격의, 적임의(for)"
+      },
+      {
+        "id": "study-11083",
+        "word": "legible",
+        "section": "부록",
+        "meaning": "(글자, 서명) 읽기 쉬운 (readable)"
+      }
+    ],
+    "focus": "사람의 자격인가, 글자의 판독 가능성인가?",
+    "en": "The applicant was eligible for the grant, but her handwritten address was barely legible.",
+    "ko": "신청 자격은 됐다. 문제는 손으로 쓴 주소가 간신히 읽힐 정도였다는 것이다.",
+    "distinction": "eligible for는 지원 조건을 충족했다는 말이지 선발됐다는 말이 아니다. legible은 글씨를 읽어 낼 수 있다는 뜻이지 내용이 참이거나 이해하기 쉽다는 뜻은 아니다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-00084",
+        "word": "substitute A (for B)",
+        "section": "V101",
+        "meaning": "A로 (B를) 교체하다"
+      },
+      {
+        "id": "study-00085",
+        "word": "replace A (with B)",
+        "section": "V101",
+        "meaning": "A를 (B로) 교체하다"
+      },
+      {
+        "id": "study-04463",
+        "word": "supplant",
+        "section": "V401",
+        "meaning": "추방하다; 대체하다; -을 대신하다; 밀어내다; (물건을) 대체하다; (사람에) 대신하다 / 대신하다; 찬탈하다"
+      }
+    ],
+    "focus": "무엇이 빠지고 무엇이 남나?",
+    "en": "The editor substituted a map for the photo. In other words, she replaced the photo with a map.",
+    "ko": "편집자는 사진을 빼고 그 자리에 지도를 넣었다. 두 문장 모두 마지막에 남는 건 지도다.",
+    "distinction": "substitute A for B에서는 A가 새것, replace A with B에서는 A가 빠지는 것이다. 수동태 The photo was replaced with a map에서도 사진은 빠진다. A supplanted B에서는 주어 A가 B의 자리를 차지한다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-00275",
+        "word": "suspect ~",
+        "section": "V101",
+        "meaning": "~라고 생각하다"
+      },
+      {
+        "id": "study-00276",
+        "word": "doubt ~",
+        "section": "V101",
+        "meaning": "~라고 생각하지 않다"
+      },
+      {
+        "id": "study-01829",
+        "word": "suspect",
+        "section": "V101",
+        "meaning": "용의자; (확실한 증거 없이) 의심하다 / vt. 1. 의심하다, 혐의를 가지다 2. [suspect+목+to be] ~이 아닌가 생각하다 3. 짐작하다; 깨닫다 n. 용의자, 수상쩍은 사람 a. 의심스러운, 혐의를 받은, 수상한"
+      }
+    ],
+    "focus": "판단하는 명제와 확신의 세기를 따로 보자.",
+    "en": "I suspect the figures are wrong. My colleague doubts they are wrong.",
+    "ko": "나는 ‘수치가 틀렸을지도 모른다’ 쪽에, 동료는 ‘틀렸다고 보기 어렵다’ 쪽에 무게를 둔다.",
+    "distinction": "둘 다 판단하는 내용은 the figures are wrong이다. suspect that P는 P 쪽으로 기울지만 확신은 아니다. doubt that P는 P에 회의적이지만 거짓이라고 입증한 것은 아니다. 사람을 뜻하는 명사 a suspect에는 이 공식을 적용하지 않는다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-01835",
+        "word": "exculpate",
+        "section": "V201",
+        "meaning": "무죄로 만들다 / 결백을 입증하다, 무죄로 하다"
+      },
+      {
+        "id": "study-05191",
+        "word": "convict",
+        "section": "V501",
+        "meaning": "유죄 판결을 내리다; 유죄 판결을 받은 죄수; 유죄 판결 죄수"
+      },
+      {
+        "id": "study-16612",
+        "word": "suspect A of B",
+        "section": "숙어",
+        "meaning": "A를 B혐의로 용의선 상에 두다; A를 B혐의로 의심하다"
+      },
+      {
+        "id": "study-14857",
+        "word": "accuse A of B",
+        "section": "숙어",
+        "meaning": "A를 B혐의로 기소하다"
+      }
+    ],
+    "focus": "혐의와 판결은 다른 단계다.",
+    "en": "The clerk was suspected of theft and later accused of it, but the records showed she was elsewhere.",
+    "ko": "처음엔 그 직원을 의심했고 나중엔 도둑이라고 지목했다. 그런데 기록을 보니 그 시각 다른 곳에 있었다.",
+    "distinction": "suspect는 의심하는 사람의 판단, accuse는 남에게 잘못을 돌리는 행위다. accuse 자체는 정식 기소나 유죄 판결까지 뜻하지 않는다. convict는 유죄로 판단하는 것, exculpate는 잘못이 없음을 보여 책임을 벗겨 주는 것이다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-04145",
+        "word": "retain",
+        "section": "V301",
+        "meaning": "존치(存置)하다 / 보유하다, 유지하다, 간직하다"
+      },
+      {
+        "id": "study-00080",
+        "word": "abolish",
+        "section": "V301",
+        "meaning": "(판례·관례·제도 등을) 폐지하다"
+      },
+      {
+        "id": "study-05186",
+        "word": "abeyance",
+        "section": "V501",
+        "meaning": "중지 상태; (일시적) 중지(상태); 정지(=pause); 소유자 미정"
+      },
+      {
+        "id": "study-07736",
+        "word": "postpone",
+        "section": "V502",
+        "meaning": "연기하다; 미루다"
+      },
+      {
+        "id": "study-08019",
+        "word": "suspend",
+        "section": "V502",
+        "meaning": "중지하다; (판단이나 결정을) 보류하다 / 1. 매달다, 걸다; 일시 중지하다, 보류하다; 2. (공식적으로) 일시 중지하다, 유예하다; 3. (공식적으로) 연기[유보]하다; 4. (수동태로) 정직시키다[sb from sth]"
+      }
+    ],
+    "focus": "제도가 사라졌나, 시행만 멈췄나?",
+    "en": "The council retained the rule but suspended its enforcement until June. It did not abolish the rule.",
+    "ko": "규정은 그대로 남았다. 6월까지 멈춘 건 집행이지, 규정 자체가 아니다.",
+    "distinction": "같은 규정의 존속 여부라면 retain ↔ abolish가 대립한다. suspend는 시행 중단, in abeyance는 일이 보류된 상태, postpone은 예정된 일을 뒤로 미루는 것이다. 중단했다는 말만으로 폐지나 실제 재개를 단정할 수 없다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-03646",
+        "word": "plain",
+        "section": "V301",
+        "meaning": "소박한; 무늬가 없는; 장식이 없는; (사람·언동 등이) 솔직한; 터놓은 / 넓고 평평한 땅, 평원 / a. 1. 명백한, 분명한(=evident) 2. (사람·언동 등이) 솔직한, 터놓은 3. 쉬운, 평이한, 단순한 4. 검소한, 소박한(=austere) 5. (여자가) 예쁘지 않은, 못생긴 n. (종종 pl.) 평지, 평원; 광야 v. <고어> 한탄하다, 슬퍼하다"
+      },
+      {
+        "id": "study-04648",
+        "word": "comely",
+        "section": "V401",
+        "meaning": "잘생긴; 균형이 잘 잡힌 / (여자가) 용모가 아름다운, 미모의; 〈고어〉 알맞은"
+      },
+      {
+        "id": "study-08499",
+        "word": "comeliness",
+        "section": "V601",
+        "meaning": "잘생김"
+      },
+      {
+        "id": "study-10877",
+        "word": "homely",
+        "section": "부록",
+        "meaning": "가정적인; 소박한; 수수한; (외모가) 못생긴; 매력 없는 / 1. (얼굴이) 못생긴 2. 제집같이 편안한; 수수한"
+      },
+      {
+        "id": "study-11851",
+        "word": "uncomely",
+        "section": "부록",
+        "meaning": "아름답지 못한; 못생긴 (ugly); 예쁘지 않은; 못생긴; 어울리지 않는"
+      },
+      {
+        "id": "study-11877",
+        "word": "unsightly",
+        "section": "부록",
+        "meaning": "보기 흉한; 볼품없는; (사물이나 행동이) 보기 흉한"
+      }
+    ],
+    "focus": "사람의 외모를 평가하나, 꾸밈이나 분위기를 말하나?",
+    "en": "The novel describes him as a comely man in a plain coat. His cottage is modest but homely.",
+    "ko": "소설 속 그는 잘생겼고, 외투는 수수하다. 오두막은 소박하지만 집처럼 정겹다.",
+    "distinction": "외모라는 같은 축에서는 handsome·comely와 ugly·uncomely가 반대 방향이다. not handsome은 중간인 ‘평범함’도 포함하므로 곧 ugly는 아니다. plain coat는 못생긴 외투가 아니라 꾸밈없는 외투다. homely는 사람의 외모와 장소의 편안함을 구별한다. comeliness는 성질을 가리키는 명사다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-00689",
+        "word": "persistent",
+        "section": "V101",
+        "meaning": "완고한; 일관성 있는; 만성적인; 의지가 확고하고 참을성 있는 / 끊임없이 지속[반복]되는"
+      },
+      {
+        "id": "study-03820",
+        "word": "constant",
+        "section": "V301",
+        "meaning": "끊임없는; 변함없는; 변치 않는; 일정한; 끊임없이 계속하는; 불변의"
+      },
+      {
+        "id": "study-00981",
+        "word": "intermittent",
+        "section": "V301",
+        "meaning": "간헐적(間歇的)인; 산발적인"
+      },
+      {
+        "id": "study-00414",
+        "word": "sporadic",
+        "section": "V301",
+        "meaning": "산발적인; 이따금 발생하는"
+      }
+    ],
+    "focus": "몇 번인지보다 어떻게 이어지는지 보자.",
+    "en": "The signal was intermittent all afternoon; the log records only sporadic complaints.",
+    "ko": "오후 내내 신호가 끊겼다 돌아왔다. 그렇다고 민원이 매번 들어온 건 아니다. 기록에는 어쩌다 한 건씩만 보인다.",
+    "distinction": "intermittent의 단서는 중단과 재개다. sporadic은 흩어져 불규칙하게 나타난다는 데 초점이 있다. 같은 현상이 둘 다일 수도 있다. persistent는 오래 계속되거나 자꾸 재발한다는 뜻이어서 반드시 한순간도 끊기지 않았다는 말은 아니다. constant도 ‘일정한’ 뜻과 ‘끊임없는’ 뜻을 나눈다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-01245",
+        "word": "invariably",
+        "section": "V101",
+        "meaning": "항상"
+      },
+      {
+        "id": "study-01464",
+        "word": "occasionally",
+        "section": "V101",
+        "meaning": "종종"
+      },
+      {
+        "id": "study-11469",
+        "word": "rarely",
+        "section": "부록",
+        "meaning": "좀처럼 ~하지 않는 (seldom)"
+      }
+    ],
+    "focus": "힘이 센 행동인가가 아니라, 몇 번이나 성립하는가?",
+    "en": "She rarely missed a rehearsal, occasionally arrived late, and invariably called ahead when delayed.",
+    "ko": "연습을 빠지는 일은 드물었고 지각은 가끔 했다. 다만 늦을 때면 예외 없이 미리 전화했다.",
+    "distinction": "rarely는 ‘한 번도 안’이 아니고 occasionally는 ‘가끔’이지 ‘대개’가 아니다. invariably가 걸리는 범위는 ‘늦었을 때 전화했는가’다. 매번 지각했다는 뜻이 아니다. 세 표현에 고정 백분율을 붙이지 않는다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-01928",
+        "word": "infer",
+        "section": "V201",
+        "meaning": "유추하다 / (어떤 사실에 근거하여) 추론[추측]하다"
+      },
+      {
+        "id": "study-07680",
+        "word": "imply",
+        "section": "V502",
+        "meaning": "함축하다; 암시하다"
+      }
+    ],
+    "focus": "뜻을 내보낸 쪽인가, 단서로 읽어 낸 쪽인가?",
+    "en": "The manager implied that the deadline might move. I inferred that we had more time, but she had promised nothing.",
+    "ko": "팀장은 마감이 바뀔 수도 있다는 뜻을 내비쳤다. 시간이 더 생긴다고 읽은 건 나지, 팀장이 연장을 약속한 게 아니다.",
+    "distinction": "말이나 증거가 어떤 결론을 시사하면 imply, 사람이 단서에서 결론을 끌어내면 infer다. 같은 메시지를 두고도 화자의 암시와 청자의 추론은 일치하지 않을 수 있다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-05829",
+        "word": "rise",
+        "section": "V501",
+        "meaning": "상승하다 / 오르다(to get up); 물가 등이 상승하다; 해나 달이 뜨다 — 자동사"
+      },
+      {
+        "id": "study-11463",
+        "word": "raise",
+        "section": "부록",
+        "meaning": "① 돈·기금을 모으다, 조달하다  ② raise A to B: B를 기념하는 A를 세우다  ③ 급여·가격·비율을 올리다  ④ 아이·가축을 키우다  ⑤ 식물을 재배하다  ⑥ 질문·문제를 제기하다  ⑦ 임금 인상 / (돈, 기금) 모으다, 조달하다; (급여, 가격, 비율) 올리다, 높이다; (아이, 가축) 키우다, 기르다; (식물) 재배하다; (질문, 문제) 제기하다 n. 임금인상 / 현재보다 더 올리다; 양이나 값을 올리다, 손을 들어 이의를 제기하다, 반란을 일으키다; 사람이나 동물을 기르거나 부양하다; 기금을 조성하다 — 타동사"
+      }
+    ],
+    "focus": "오른 대상이 주어인가, 올린 주체가 주어인가?",
+    "en": "Prices rose in April. Only one shop admitted that it had raised its prices.",
+    "ko": "4월에 물가가 올랐다. 자기네가 가격을 올렸다고 인정한 가게는 한 곳뿐이었다.",
+    "distinction": "rise는 자동사라 가격이 주어이고, raise는 이 뜻에서 타동사라 가격이 목적어다. Prices were raised도 가격이 올려진 것이지만 행위자가 누구인지는 말하지 않는다. raise funds는 가격을 올리는 게 아니라 돈을 모으는 별도 용법이다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-16423",
+        "word": "result from",
+        "section": "숙어",
+        "meaning": "~에서 생기다; ~으로부터 기인하다; 결과로서 생기다"
+      },
+      {
+        "id": "study-16424",
+        "word": "result in",
+        "section": "숙어",
+        "meaning": "결국~이 되다; (결과를) 낳다; 야기하다; 어떠한 결과로 귀착되다; 끝나다"
+      }
+    ],
+    "focus": "from 뒤는 출발점, in 뒤는 도착점.",
+    "en": "The delay resulted from a leak and resulted in a missed connection.",
+    "ko": "물이 샜다 → 출발이 늦었다 → 갈아탈 차를 놓쳤다. 가운데 사건인 지연이 두 문형의 주어다.",
+    "distinction": "A results from B는 B가 원인, A results in B는 B가 결과다. 두 표현을 같은 뜻이라고 외우면 원인과 결과를 뒤집게 된다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-02491",
+        "word": "attribute",
+        "section": "V201",
+        "meaning": "특징; 탓으로 돌리다"
+      },
+      {
+        "id": "study-15364",
+        "word": "credit A with B",
+        "section": "숙어",
+        "meaning": "A에게 B의 공을 돌리다; A에게 B에 대한 공로를 인정하다; A에게 B에 대한 공을 인정하다"
+      },
+      {
+        "id": "study-14953",
+        "word": "attribute A to B",
+        "section": "숙어",
+        "meaning": "A를 B의 결과로 보다; A를 B의 탓으로 돌리다"
+      },
+      {
+        "id": "study-14930",
+        "word": "ascribe (A to B)",
+        "section": "숙어",
+        "meaning": "(A를 B의) 탓(덕택)으로 돌리다; (A를 B에) 속하는 것으로 생각하다 (attribute)"
+      },
+      {
+        "id": "study-14954",
+        "word": "attribute* A to B",
+        "section": "숙어",
+        "meaning": "A를 B 때문으로 생각하다"
+      },
+      {
+        "id": "study-16247",
+        "word": "owe A to B",
+        "section": "숙어",
+        "meaning": "① A를 B에 빚지다  ② ~의 덕택이다 / A를 B 덕분으로 여기다"
+      }
+    ],
+    "focus": "평가자가 무엇을 누구의 공으로 돌리나?",
+    "en": "The team attributed the recovery to Mina. The director credited Mina with the recovery.",
+    "ko": "팀은 회복한 공을 미나에게 돌렸다. 감독도 회복을 이끈 사람으로 미나를 꼽았다.",
+    "distinction": "attribute 결과 to 원인과 credit 사람 with 성과는 같은 공을 다루지만 자리가 다르다. owe our recovery to Mina는 미나 덕에 회복했다는 뜻이다. 원인을 그렇게 평가했다는 진술과 실제 원인이 입증됐다는 진술도 구별한다. 명사 attribute는 ‘특성’이다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-03765",
+        "word": "deprive",
+        "section": "V301",
+        "meaning": "빼앗다; 파면하다"
+      },
+      {
+        "id": "study-15409",
+        "word": "deprive A of B",
+        "section": "숙어",
+        "meaning": "A에게서 B를 없애다; A에게 B를 박탈하다"
+      },
+      {
+        "id": "study-16432",
+        "word": "rob A of B",
+        "section": "숙어",
+        "meaning": "A에게서 B를 없애다; A에게서 B를 박탈하다; A에게서 B를 강탈하다"
+      },
+      {
+        "id": "study-16328",
+        "word": "provide A with B",
+        "section": "숙어",
+        "meaning": "A에게 B를 공급하다"
+      }
+    ],
+    "focus": "사람 A에게 B가 들어가나, 빠져나가나?",
+    "en": "The outage deprived the clinic of power; a generator provided it with electricity.",
+    "ko": "정전으로 병원은 전기를 잃었고, 발전기 덕에 전기를 공급받았다.",
+    "distinction": "deprive·rob A of B에서는 A가 잃는 쪽이고 B가 잃는 대상이다. provide A with B에서는 A가 받는 쪽이다. The clinic was deprived of power라고 해도 병원이 전기를 빼앗은 주체로 바뀌지 않는다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-06586",
+        "word": "suffice",
+        "section": "V502",
+        "meaning": "충분하다 / 만족시키다; ~을 충족시키다(=satisfy)"
+      },
+      {
+        "id": "study-09413",
+        "word": "preventable",
+        "section": "V601",
+        "meaning": "방지할 수 있는"
+      },
+      {
+        "id": "study-11871",
+        "word": "unlikely",
+        "section": "부록",
+        "meaning": "있음직하지(있을 것 같지) 않은; 가능성이 낮은 의외의; 뜻밖의"
+      }
+    ],
+    "focus": "충분하다는 말인가, 가능하다는 말인가?",
+    "en": "One barrier may suffice to stop the leak. That makes flooding preventable, not impossible.",
+    "ko": "차단막 하나로 누수를 막을 수도 있다. 침수를 막을 수 있다는 말이지, 침수가 절대로 안 난다는 말은 아니다.",
+    "distinction": "suffice는 목표를 이루기에 충분하다는 뜻이다. 그것만이 유일하게 필요한 방법이라는 뜻은 아니다. preventable은 방지 가능성, unlikely는 발생 가능성이 낮다는 판단이다. 어느 쪽도 실제로 막았다는 결과를 보장하지 않는다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-14881",
+        "word": "all but",
+        "section": "숙어",
+        "meaning": "거의 (almost) ~만 제외하고 모두"
+      },
+      {
+        "id": "study-15226",
+        "word": "by no means",
+        "section": "숙어",
+        "meaning": "결코 ~가 아닌"
+      },
+      {
+        "id": "study-14900",
+        "word": "anything but",
+        "section": "숙어",
+        "meaning": "① 결코~아니다  ② 결코~아닌"
+      }
+    ],
+    "focus": "부정이 무엇에 걸리는지 빈칸 뒤까지 보자.",
+    "en": "The repair was all but complete. All but two rooms had power. The job was anything but easy.",
+    "ko": "수리는 거의 끝났다. 두 방만 빼고 전기가 들어왔다. 그렇다고 쉬운 일은 결코 아니었다.",
+    "distinction": "all but complete는 ‘거의’, all but two rooms는 ‘둘을 제외한 전부’다. anything but easy나 by no means easy는 easy를 강하게 부정한다. but이 보인다는 이유로 모두 ‘제외’라고 읽지 않는다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-16096",
+        "word": "not so much A as B",
+        "section": "숙어",
+        "meaning": "A라기 보다는 B; A라기 보단 B"
+      }
+    ],
+    "focus": "부정하는 것은 A의 존재인가, A라는 설명의 적절성인가?",
+    "en": "It was not so much anger as embarrassment that kept him silent.",
+    "ko": "그가 입을 다문 건 화가 나서라기보다 민망해서였다.",
+    "distinction": "A를 완전히 배제하지 않고 B가 더 잘 맞는 설명이라고 바로잡는다. ‘화가 전혀 나지 않았다’까지 고르면 원문보다 강해진다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-04254",
+        "word": "incidence",
+        "section": "V401",
+        "meaning": "발생(률) / (사건의) 발생률; (세금의) 부담"
+      }
+    ],
+    "focus": "얼마나 자주 생기나, 얼마나 심한가?",
+    "en": "The incidence of infection fell, but those who did get sick needed longer treatment.",
+    "ko": "새로 감염되는 경우는 줄었다. 그렇다고 병이 가벼워진 건 아니다. 걸린 사람은 오히려 더 오래 치료받았다.",
+    "distinction": "incidence는 여기서 새 사례의 발생을 본다. 환자 한 사람의 중증도나 현재 환자 전체의 규모를 말하는 것이 아니다. 같은 기간과 모집단을 비교하는지도 확인한다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-05185",
+        "word": "abate",
+        "section": "V501",
+        "meaning": "완화하다; (기세·격렬함이) 약해지다; 수(양·정도 따위를) 줄이다"
+      }
+    ],
+    "focus": "누가 무엇을 줄였나, 현상 자체가 잦아들었나?",
+    "en": "By noon the noise had abated, though a faint hum remained.",
+    "ko": "정오가 되자 소음은 한풀 꺾였지만 낮은 웅웅거림은 여전히 남아 있었다.",
+    "distinction": "the noise abated는 소음이 주어인 변화다. abate a nuisance는 누군가 방해 요인을 줄이거나 없애는 타동사 용법이다. 예문의 abated는 약해졌다는 말이므로 완전한 소멸을 고르면 안 된다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-08232",
+        "word": "absorbent",
+        "section": "V601",
+        "meaning": "흡수성의"
+      }
+    ],
+    "focus": "물질이 흡수하는 쪽인가, 흡수되는 쪽인가?",
+    "en": "The absorbent pad took up the oil; the oil was absorbed by the pad.",
+    "ko": "기름을 빨아들인 건 패드고, 패드에 스며든 건 기름이다.",
+    "distinction": "absorbent는 빨아들일 수 있는 재질의 성질이다. an absorbent pad만 보고 이미 젖었다고 단정할 수 없다. absorbed는 이 문맥에서 실제로 흡수된 상태를 말한다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-09884",
+        "word": "abashed",
+        "section": "부록",
+        "meaning": "당황한 (embarrassed) cf) abash 당황하다(주로 p.p); 부끄러워; 당황하여"
+      }
+    ],
+    "focus": "감정을 느끼는 쪽인가, 감정을 일으키는 쪽인가?",
+    "en": "His blunt remark abashed the speaker, who looked away, visibly abashed.",
+    "ko": "직설적인 말에 발표자가 무안해져 시선을 돌렸다. 무안해한 사람은 말을 한 쪽이 아니라 들은 쪽이다.",
+    "distinction": "abash는 남을 무안하게 만드는 타동사이고 abashed는 그 감정을 겪는 쪽을 꾸민다. The speaker looked abashed만으로는 누가 무안하게 했는지 알 수 없다."
+  },
+  {
+    "targets": [
+      {
+        "id": "study-03133",
+        "word": "attract",
+        "section": "V301",
+        "meaning": "마음을 끌다; -의 마음을 끌다; 아름다움이나 매력 등으로 반하게 하다"
+      }
+    ],
+    "focus": "무엇이 끌어당기고 무엇이 끌리나?",
+    "en": "The lights attracted moths. The moths were attracted to the lights.",
+    "ko": "불빛이 나방을 끌어들였다. 나방 쪽에서 말하면 불빛에 이끌린 것이다.",
+    "distinction": "능동문의 주어는 끌어당기는 불빛, 수동문의 주어는 이끌리는 나방이다. 주어는 바뀌어도 나방이 불빛을 끌어당긴 사건으로 뒤바뀌지 않는다."
+  }
+]

@@ -17,7 +17,8 @@ it('passes the actual book entry to the same expanded dictionary after quiz and 
     const props = Object.fromEntries(call.attributes.properties.filter(ts.isJsxAttribute).map(attr => [
       attr.name.getText(file), attr.initializer && ts.isJsxExpression(attr.initializer) ? attr.initializer.expression?.getText(file) : '',
     ]));
-    expect(props).toEqual({ itemId: 'q.item.id', bookEntry: 'q.item.book' });
+    expect(props).toEqual({ itemId: 'q.item.id', bookEntry: 'q.item.book',
+      ...(name === 'wrong-quiz' ? { reviewPreview: '' } : {}) });
     let answerGate = false;
     for (let parent = call.parent; parent; parent = parent.parent) {
       if (ts.isBinaryExpression(parent) && parent.getText(file).startsWith('answered &&')) answerGate = true;

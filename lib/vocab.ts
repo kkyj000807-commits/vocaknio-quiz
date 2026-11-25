@@ -229,12 +229,12 @@ export const QUIZ_MODES: {
   desc: string;
   primary?: boolean;
 }[] = [
-  { id: "kor-choice", icon: "🇰🇷", title: "뜻찾기", desc: "정확한 뜻 4택", primary: true },
-  { id: "syn-choice", icon: "≈", title: "동의어", desc: "뜻이 같은 영어 표현 찾기", primary: true },
-  { id: "definition-choice", icon: "EN", title: "영영정의", desc: "정의에서 정확한 단어 찾기", primary: true },
-  { id: "sentence-completion", icon: "∴", title: "Sentence Completion · 논리", desc: "문맥과 논리로 빈칸 추론" },
+  { id: "kor-choice", icon: "🇰🇷", title: "뜻고르기", desc: "정확한 뜻 4택", primary: true },
+  { id: "syn-choice", icon: "≈", title: "동의어 실전형", desc: "영어 → 영어", primary: true },
+  { id: "syn-kor-choice", icon: "≈", title: "동의어 기초형", desc: "영어 → 영어 + 한글 뜻", primary: true },
+  { id: "definition-choice", icon: "EN", title: "정의고르기", desc: "영영 정의에서 정확한 단어 찾기", primary: true },
+  { id: "sentence-completion", icon: "∴", title: "논리완성", desc: "문맥과 논리로 빈칸 추론", primary: true },
   { id: "flashcard", icon: "⚡", title: "빠른 암기", desc: "뜻 확인 후 채점" },
-  { id: "syn-kor-choice", icon: "🔀", title: "동의어 해설형", desc: "영어로 풀고 한국어로 복습" },
   { id: "syn-type", icon: "✍️", title: "직접 입력", desc: "동의어 타이핑" },
 ];
 

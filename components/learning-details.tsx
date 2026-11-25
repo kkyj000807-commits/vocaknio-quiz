@@ -3,6 +3,7 @@ import { ActivityIndicator, Linking, Pressable, StyleSheet, Text, View } from "r
 
 import { useColors } from "@/hooks/use-colors";
 import { BookLearningDetails } from "@/components/book-learning-details";
+import { wrongReviewExample, dictionaryUsage } from "@/lib/wrong-review-example";
 import type { BookEntry } from "@/lib/book-edition";
 import { VOCAB_BY_ID } from "@/lib/vocab";
 import { getPersonalVocabReference } from "@/lib/personal-vocab";
@@ -30,22 +31,26 @@ import {
   type VocabDictionarySense,
 } from "@/lib/vocab-definitions";
 
-type LearningDetailsProps = { itemId: string; bookEntry?: BookEntry };
+type LearningDetailsProps = { itemId: string; bookEntry?: BookEntry; reviewPreview?: boolean };
 
 /** Mount only after an answer is revealed/graded by the parent screen. */
-export function LearningDetails({ itemId, bookEntry }: LearningDetailsProps) {
+export function LearningDetails({ itemId, bookEntry, reviewPreview }: LearningDetailsProps) {
   // Keyed state prevents an expanded previous sense from flashing on a new card.
-  return <LearningDetailsPanel key={itemId} itemId={itemId} bookEntry={bookEntry} />;
+  return <LearningDetailsPanel key={itemId} itemId={itemId} bookEntry={bookEntry} reviewPreview={reviewPreview} />;
 }
 
-function LearningDetailsPanel({ itemId, bookEntry }: LearningDetailsProps) {
+function LearningDetailsPanel({ itemId, bookEntry, reviewPreview }: LearningDetailsProps) {
   const colors = useColors();
   const s = styles(colors);
   const item = VOCAB_BY_ID.get(itemId);
   const personal = item ? getPersonalVocabReference(item.w) : undefined;
   const [expanded, setExpanded] = useState(false);
+  const example = (reviewPreview || expanded) ? wrongReviewExample(item, bookEntry) : undefined;
   const [entries, setEntries] = useState<LearningEntry[] | null>(null);
   const [dictionary, setDictionary] = useState<VocabDefinitionEntry | null | undefined>(undefined);
+  const previewDictionary = !!reviewPreview && !example && !bookEntry?.historical;
+  const usage = previewDictionary ? dictionaryUsage(dictionary, bookEntry?.word ?? item?.w ?? '',
+    bookEntry ? undefined : getDefinitionQuizEntry(itemId)?.senseId) : undefined;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -55,12 +60,12 @@ function LearningDetailsPanel({ itemId, bookEntry }: LearningDetailsProps) {
   const [additionalOpen, setAdditionalOpen] = useState(false);
 
   useEffect(() => {
-    if (!expanded || (loaded.current.entries && loaded.current.dictionary)) return;
+    if ((!expanded && !previewDictionary) || ((!expanded || loaded.current.entries) && loaded.current.dictionary)) return;
     let cancelled = false;
     setLoading(true);
     setError(false);
     void loadLearningDetailParts({
-      entries: loaded.current.entries ? undefined : () => loadLearningEntries(itemId),
+      entries: !expanded || loaded.current.entries ? undefined : () => loadLearningEntries(itemId),
       dictionary: loaded.current.dictionary ? undefined : () => loadVocabDefinition(itemId, bookEntry?.word),
     }, {
       onEntries: value => { if (!cancelled) { loaded.current.entries = true; setEntries(value); } },
@@ -70,10 +75,20 @@ function LearningDetailsPanel({ itemId, bookEntry }: LearningDetailsProps) {
     return () => {
       cancelled = true;
     };
-  }, [activeRecallSenses.length, attempt, expanded, itemId, bookEntry?.word]);
+  }, [activeRecallSenses.length, attempt, expanded, itemId, bookEntry?.word, previewDictionary]);
 
   return (
     <View style={s.panel}>
+      {example && <View style={s.exampleBox}>
+        <Text style={s.label}>예문 · {example.sense}</Text>
+        <Text style={s.english}>{example.en}</Text>
+        <Text style={s.note}>{example.ko}</Text>
+      </View>}
+      {usage && !expanded && <View style={s.exampleBox}>
+        <Text style={s.label}>사전 용례</Text><Text style={s.english}>{usage.en}</Text>
+        {usage.ko && <Text style={s.note}>{usage.ko}</Text>}
+        <Text style={s.note}>{usage.definition}</Text>
+      </View>}
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={`영영 정의·뜻·예문 ${expanded ? "접기" : "펼치기"}`}
@@ -86,6 +101,7 @@ function LearningDetailsPanel({ itemId, bookEntry }: LearningDetailsProps) {
       </Pressable>
       {expanded && (
         <View style={s.body}>
+          {(example?.source === 'OEWN 2025' || usage) && <Text style={s.note}>Open English WordNet 2025 · Princeton WordNet / Open English WordNet Team · <Text accessibilityRole="link" onPress={() => Linking.openURL('https://creativecommons.org/licenses/by/4.0/')}>CC BY 4.0</Text></Text>}
           {personal && <View style={s.memoryBox}>
             <Text style={s.senseTitle}>개인 통합 단어장 · {personal.sources.length ? "보카바이블 B" : personal.sourceSection}</Text>
             <Text style={s.note}>원문 참고·부분 검수 자료입니다. 기존 뜻·정답을 대체하지 않으며 문항 검수 완료를 뜻하지 않습니다.</Text>
@@ -247,7 +263,6 @@ export function DictionaryExamples({ sense, fallback = [] }: { sense: VocabDicti
         {translation && <KoreanReveal>
           <Text style={s.text}>{translation.ko}</Text>
           <Text style={s.note}>문맥 단서: {translation.cueKo}</Text>
-          <Text style={s.note}>한국어 해석·단서는 FINETUNE 자체 편집이며 사전 공식 번역이 아닙니다.</Text>
         </KoreanReveal>}
       </View>;
     })}
@@ -255,7 +270,6 @@ export function DictionaryExamples({ sense, fallback = [] }: { sense: VocabDicti
       onPress={() => setAllOpen(value => !value)} style={s.sourceToggle}>
       <Text style={s.linkText}>용례 {examples.length}개 {allOpen ? "접기" : "모두 보기"}</Text>
     </Pressable>}
-    <Text style={s.note}>해당 사전 의미군의 원문 용례로, 다른 동의어나 구 형태가 포함될 수 있습니다. 현재 단어장의 한국어 뜻과 일치하는지는 별도 검수 대상입니다.</Text>
   </View>;
 }
 
@@ -269,15 +283,7 @@ export function DictionaryDefinition({ entry, itemId }: { entry: VocabDefinition
   ) ?? entry.senses[0];
 
   if (entry.status === "source_not_found") {
-    return (
-      <View style={s.section}>
-        <Text style={s.senseTitle}>{entry.headword}</Text>
-        <Text style={s.note}>
-          Open English WordNet 2025에서 정확히 일치하는 표제어 정의를 찾지 못했습니다.
-          다른 사전의 sense 대조 전에는 임의 정의를 넣지 않습니다.
-        </Text>
-      </View>
-    );
+    return null;
   }
 
   const reviewNeeded = entry.referenceOnly || entry.status !== "single_sense";
@@ -332,12 +338,9 @@ export function DictionaryDefinition({ entry, itemId }: { entry: VocabDefinition
           </Text>
         </Pressable>
       )}
-      {reviewNeeded && (
+      {aliasMatched && (
         <Text style={s.note}>
-          {aliasMatched
-            ? `OEWN 표제어 ${entry.matches?.map((match) => match.headword).join(" · ") || "변형"}에서 찾았습니다. `
-            : "현재 한국어 뜻과의 sense 연결 검수 전 자료입니다. "}
-          문제 정답 근거와 숙달 판정에는 사용하지 않습니다.
+          표기 변형: {entry.matches?.map((match) => match.headword).join(" · ")}
         </Text>
       )}
       <Text style={s.note}>
@@ -364,7 +367,6 @@ export function EditorialExamples({ sense, itemId }: { sense: VocabDictionarySen
         {example.usageKo ? <Text style={s.note}>용법·주의: {example.usageKo}</Text> : null}
       </KoreanReveal>
     </View>)}
-    <Text style={s.note}>사전 원문이 아닌 AI 편집 예문입니다. 연결된 뜻의 학습 참고용이며 정답 판정에는 사용하지 않습니다.</Text>
   </View>;
 }
 
@@ -529,7 +531,7 @@ export function SenseDetails({ entry, index, count }: { entry: LearningEntry; in
           ))}
           {linkError && <Text style={s.note}>출처 페이지를 열지 못했습니다. 잠시 후 다시 눌러 주세요.</Text>}
           <Text style={s.note}>
-            한국어 해설·비교·학습용 예문은 AI 편집 검수 자료이며, 사전의 공식 번역이나 인증이 아닙니다.
+            한국어 해설·학습 예문: FINETUNE
           </Text>
         </View>
       )}

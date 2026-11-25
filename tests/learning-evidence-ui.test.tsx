@@ -14,6 +14,11 @@ import { shortRelationGloss } from "@/lib/semantic-cluster";
 import { LearningEvidence } from "@/components/learning-evidence";
 import { SemanticRelationCluster } from "@/components/semantic-relation-cluster";
 import { ACTIVE_RECALL_SENSES } from "@/lib/active-recall";
+import bookManifest from "@/assets/public-book-manifest.json";
+import authored from "@/data/vocab-learning/wrong-review-examples.json";
+import projected from "@/assets/wrong-review-examples.json";
+import { wrongReviewExample, dictionaryUsage } from "@/lib/wrong-review-example";
+import type { BookEntry } from "@/lib/book-edition";
 
 const native = vi.hoisted(() => ({ openURL: vi.fn(), links: [] as { label: string; press: () => void }[] }));
 const disclosure = vi.hoisted(() => ({ forceOpen: true, forceAllRelations: false }));
@@ -590,6 +595,29 @@ describe("reviewed learning evidence and explanation boundaries", () => {
     expect(html).toContain("예문·전체 정의 보기");
   });
 
+  it("binds every newly written example to its printed meaning and keeps a closed ordinary card quiet", () => {
+    const rows = JSON.parse(fs.readFileSync('public/'+bookManifest.file,'utf8')).current.entries as BookEntry[];
+    const originals = new Map(vocabulary.map(v => [v.id,v]));
+    for (const ex of projected) for (const link of ex.links.filter(l => !l.id.startsWith('study-'))) {
+      const v = originals.get(link.id)!;
+      const item = {id:v.id,w:v.w,k:v.k,group:link.section as import('@/lib/vocab').VocabGroup};
+      expect(link.section).toBe(v.group);
+      expect(wrongReviewExample(item)?.word).toBe(ex.word);
+      expect(wrongReviewExample({...item,k:'다른 뜻'})).toBeUndefined();
+    }
+    for (const x of authored.entries) {
+      const b = rows.find(row=>row.id===x.id)!;
+      expect(wrongReviewExample(undefined,b)).toMatchObject({en:x.en,ko:x.ko});
+      expect(wrongReviewExample(undefined,{...b,historical:true})).toBeUndefined();
+      expect(wrongReviewExample(undefined,{...b,display:{...b.display!,meaning_display:'다른 뜻'}})).toBeUndefined();
+    }
+    const b = rows.find(row=>row.word==='by the same token')!;
+    const props = {itemId:'book:v1.5:'+b.id, bookEntry:b};
+    const sentence = wrongReviewExample(undefined,b)!.ko;
+    expect(render(<LearningDetails {...props} />)).not.toContain(sentence);
+    expect(render(<LearningDetails {...props} reviewPreview />)).toContain(sentence);
+  });
+
   it("does not leak the Korean answer or evidence into the question or closed details", () => {
     const html = render(<ActiveRecallPrompt recall={entry} />);
     const details = render(<LearningDetails itemId={entry.itemIds[0]} />);
@@ -599,6 +627,17 @@ describe("reviewed learning evidence and explanation boundaries", () => {
       expect(output).not.toContain("사전 근거 · 편집 노트");
       expect(output).not.toContain(entry.sources[0].publisher);
     }
+  });
+
+  it("never picks an unbound sense or another headword for a quick dictionary example", () => {
+    const sense = {senseId:'s1',partOfSpeech:'noun',definition:'a place to sit',examples:['They took a seat.','They saw a chair.']};
+    const entry: VocabDefinitionEntry = {headword:'chair',status:'single_sense',representativeSenseId:'s1',senses:[sense]};
+    expect(dictionaryUsage(entry,'chair')?.en).toBe('They saw a chair.');
+    expect(dictionaryUsage(entry,'seat')).toBeUndefined();
+    const multi = {...entry,senses:[sense,{...sense,senseId:'s2',definition:'the presiding officer'}]};
+    expect(dictionaryUsage(multi,'chair')).toBeUndefined();
+    expect(dictionaryUsage(multi,'chair','s1')?.definition).toBe(sense.definition);
+    expect(render(<DictionaryDefinition entry={{...entry,status:'source_not_found',senses:[]}} itemId="missing" />)).toBe('');
   });
 
   it("only removes the optional repeated bridge, never individual relation meanings", () => {

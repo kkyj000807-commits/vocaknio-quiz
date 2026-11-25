@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildQuizQuestions, isChoiceCorrect, validateQuestion, type QuizQuestion } from "@/lib/quiz-engine";
+import { buildQuizQuestions, choiceGloss, isChoiceCorrect, validateQuestion, type QuizQuestion } from "@/lib/quiz-engine";
 import { createEmptyQuestionViewState, parseQuizSession, summarizeQuizSession, type QuizSession } from "@/lib/quiz-session";
 
 function question(mode: "kor-choice" | "syn-choice"): QuizQuestion {
@@ -15,6 +15,20 @@ function saved(q: QuizQuestion): QuizSession {
 }
 
 describe("legacy question answer contract", () => {
+  it.each(["syn-choice", "syn-kor-choice"] as const)("%s keeps English answers and shows choice glosses at the right time", mode => {
+    const q = buildQuizQuestions({ mode, itemNums: [1], count: 1 })[0];
+    expect(q.mode).toBe(mode);
+    expect(q.choices).toHaveLength(4);
+    for (const c of q.choices) {
+      expect(c.label).toBe(c.word);
+      expect(c.value).toBe(c.word);
+      if (mode === "syn-kor-choice") expect(choiceGloss(q, c, false)).toMatch(/[가-힣]/u);
+      else expect(choiceGloss(q, c, false)).toBe("");
+      expect(choiceGloss(q, c, true)).toBe(c.meaning);
+    }
+    expect(q.choices.filter(c => isChoiceCorrect(q, c))).toHaveLength(1);
+    expect(parseQuizSession(saved(q))?.questions[0]).toEqual(q);
+  });
   it.each(["kor-choice", "syn-choice"] as const)("%s rejects choices outside the current question", mode => {
     const q = question(mode);
     const right = q.choices.find(c => c.isCorrect)!;

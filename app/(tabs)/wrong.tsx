@@ -181,7 +181,7 @@ export default function WrongScreen() {
             <Text style={s.korText} numberOfLines={2}>
               {item.k_short}
             </Text>
-            <LearningDetails itemId={item.id} bookEntry={item.book} />
+            <LearningDetails itemId={item.id} bookEntry={item.book} reviewPreview />
             {item.s.length > 0 && (
               <View style={s.synTagRow}>
                 {item.s.slice(0, 4).map((syn, i) => (

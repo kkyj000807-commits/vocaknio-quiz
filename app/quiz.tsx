@@ -45,6 +45,7 @@ import { FlipCard } from "@/components/flip-card";
 import { PronunciationButton } from "@/components/pronunciation-button";
 import { LearningDetails } from "@/components/learning-details";
 import { BookLearningDetails } from "@/components/book-learning-details";
+import { quizBookCategory } from "@/lib/wordbook-concepts";
 import { WordPronunciation } from "@/components/word-pronunciation";
 import { SynonymDetails } from "@/components/synonym-details";
 import { QuizEmptyState, QuizSessionHold, type QuizPreparationFailure } from "@/components/quiz-empty-state";
@@ -55,6 +56,7 @@ import {
   buildQuizQuestions,
   getQuizCandidateItems,
   isChoiceCorrect,
+  choiceGloss,
   isTypedAnswerCorrect,
   type ChoiceLang,
   type QuizQuestion,
@@ -1009,6 +1011,7 @@ export default function QuizScreen() {
   const pct = Math.round((currentIdx / questions.length) * 100);
 
   const questionMode = q.mode;
+  const categoryFeedback = !q.sentenceCompletion && quizBookCategory(q.item, answered);
   const isChoiceMode = q.choices.length > 0;
 
   const getModeLabel = () => {
@@ -1017,13 +1020,13 @@ export default function QuizScreen() {
     if (q.recall) {
       return "영영 정의 → 정확한 단어";
     }
-    if (questionMode === "syn-choice") return "영어 동의어";
+    if (questionMode === "syn-choice") return "동의어 실전형";
     if (questionMode === "kor-choice") {
       return q.answerKind === "synonym"
         ? "동의어 고르기 (영어)"
         : mode !== "kor-choice" ? "한국어 뜻 고르기 · 동의어 자료 부족" : "한국어 뜻 고르기";
     }
-    if (questionMode === "syn-kor-choice") return "영어 동의어 · 정답 후 한국어 해설";
+    if (questionMode === "syn-kor-choice") return "동의어 기초형";
     if (questionMode === "flashcard") return "플래시카드";
     return "동의어 입력";
   };
@@ -1140,6 +1143,7 @@ export default function QuizScreen() {
                 </View>
                 <PronunciationButton itemId={q.item.id} text={q.item.w} />
               </View> : null}
+              {categoryFeedback ? <Text accessibilityLiveRegion="polite" style={{ color: colors.primary, fontWeight: "700", marginVertical: 6 }}>{categoryFeedback}</Text> : null}
 
               {/* 4지선다 모드 */}
               {q.sentenceCompletion ? <SentenceCompletionPrompt question={q.sentenceCompletion} /> : null}
@@ -1168,6 +1172,7 @@ export default function QuizScreen() {
                   <View style={s.choicesContainer}>
                     {q.choices.map((choice, idx) => {
                       const choiceIsCorrect = isChoiceCorrect(q, choice);
+                      const gloss = choiceGloss(q, choice, answered);
                       let choiceStyle = s.choiceBtn;
                       let textStyle = s.choiceText;
                       if (answered) {
@@ -1221,11 +1226,9 @@ export default function QuizScreen() {
                             <Text style={textStyle} numberOfLines={q.sentenceCompletion ? undefined : 3}>
                               {choice.label}
                             </Text>
-                            {answered &&
-                            choice.meaning &&
-                            choice.meaning !== choice.label ? (
+                            {gloss ? (
                               <Text style={s.choiceKorText}>
-                                {choice.meaning}
+                                {gloss}
                               </Text>
                             ) : null}
                           </View>
@@ -1284,7 +1287,7 @@ export default function QuizScreen() {
                       </View>
                     }
                   />
-                  {revealed && <BookLearningDetails entry={q.item.book} />}
+                  {revealed && <BookLearningDetails entry={q.item.book} hideCategory={!!categoryFeedback} />}
                   {revealed && !answered && (
                     <View style={{ marginTop: 14, gap: 8 }}>
                       <View style={s.gradeRow}>

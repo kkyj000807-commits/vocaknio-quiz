@@ -77,15 +77,16 @@ describe("study setup starts with Korean meaning and keeps other modes available
     expect(buttons.find(button => button.label.includes('정확한 뜻 4택'))?.selected).toBe(true);
   });
   it("orders meaning, synonyms, definitions before the other retained modes", () => {
-    expect(QUIZ_MODES.slice(0, 3).map(mode => mode.id)).toEqual(["kor-choice", "syn-choice", "definition-choice"]);
+    expect(QUIZ_MODES.filter(mode => mode.primary).map(mode => mode.id)).toEqual(["kor-choice", "syn-choice", "syn-kor-choice", "definition-choice", "sentence-completion"]);
     expect(QUIZ_MODES.map(mode => mode.id).sort()).toEqual([
       "definition-choice", "flashcard", "kor-choice", "sentence-completion", "syn-choice", "syn-kor-choice", "syn-type",
     ]);
     const { html, buttons } = renderSetup();
-    expect(html.indexOf("뜻찾기")).toBeLessThan(html.indexOf("동의어"));
-    expect(html.indexOf("동의어")).toBeLessThan(html.indexOf("영영정의"));
-    expect(html.indexOf("영영정의")).toBeLessThan(html.indexOf("그 외"));
-    expect(html).not.toContain("Sentence Completion");
+    expect(html).toContain("동의어 실전형");
+    expect(html).toContain("동의어 기초형");
+    const positions = ["뜻고르기", "동의어 실전형", "동의어 기초형", "정의고르기", "논리완성", "그 외"].map(label => html.indexOf(label));
+    expect(positions.every((at, i) => at >= 0 && (!i || at > positions[i - 1]))).toBe(true);
+    expect(buttons.some(button => button.label.includes("뜻 확인 후 채점") || button.label.includes("동의어 타이핑"))).toBe(false);
     expect(buttons.find(button => button.label.includes("정확한 뜻 4택"))?.selected).toBe(true);
   });
 
@@ -125,10 +126,11 @@ describe("study setup starts with Korean meaning and keeps other modes available
   it('returns to meaning when collapsing a selected other mode', () => {
     const view = renderSetup();
     view.buttons.find(button => button.label.startsWith('그 외'))!.press(); view.render();
-    view.buttons.find(button => button.label.includes('문맥과 논리로 빈칸 추론'))!.press(); view.render();
+    view.buttons.find(button => button.label.includes('동의어 타이핑'))!.press(); view.render();
     view.buttons.find(button => button.label.startsWith('그 외'))!.press();
     const html = view.render();
-    expect(html).not.toContain('Sentence Completion');
+    expect(html).not.toContain('동의어 타이핑');
+    expect(html).toContain('논리완성');
     expect(view.buttons.find(button => button.label.includes('정확한 뜻 4택'))?.selected).toBe(true);
     expect(view.save).not.toHaveBeenCalled();
   });
@@ -144,7 +146,7 @@ describe('wordbook section practice setup', () => {
     view.buttons.find(button => button.label.startsWith('이 범위 학습'))!.press();
     const html = view.render();
     expect(html).toContain('V301'); expect(html).toContain('선택 개념');
-    expect(html).toContain('유형 선택 · 뜻찾기');
+    expect(html).toContain('유형 선택 · 뜻고르기');
     expect(html).toContain('자동채점은 검수된 단어만');
     view.buttons.find(button => button.label === '학습 시작 · 10문제')!.press();
     expect(view.push).toHaveBeenCalledWith(buildWordbookPracticeHref(scope, 'kor-choice', 10));
@@ -209,9 +211,9 @@ describe('wordbook section practice setup', () => {
     view.buttons[0].press(); view.render();
     expect(view.buttons.some(button => button.label === '학습 시작 · 2문제')).toBe(true);
     view.buttons.find(button => button.label.startsWith('유형 선택'))!.press(); view.render();
-    view.buttons.find(button => button.label === '동의어 · 없음')!.press(); view.render();
+    view.buttons.find(button => button.label === '동의어 실전형 · 없음')!.press(); view.render();
     expect(view.buttons.some(button => button.label === '학습 시작 · 2문제')).toBe(true);
-    view.buttons.find(button => button.label === '영영정의')!.press();
+    view.buttons.find(button => button.label === '정의고르기')!.press();
     expect(view.render()).toContain('출제 가능한 문제 확인 중');
     view.buttons.find(button => button.label === '확인 중…')!.press();
     expect(view.push).not.toHaveBeenCalled();

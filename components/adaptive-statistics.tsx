@@ -7,8 +7,8 @@ import { statisticsReviewCandidates } from "@/lib/learning-statistics";
 
 export const QUESTION_TYPE_LABELS: Record<string, string> = {
   "sentence-completion": "Sentence Completion · 논리",
-  "definition-choice": "영영 정의 → 단어", "syn-choice": "영어 동의어",
-  "syn-kor-choice": "동의어 해설형", "kor-choice": "영어 → 한글",
+  "definition-choice": "영영 정의 → 단어", "syn-choice": "동의어 실전형",
+  "syn-kor-choice": "동의어 기초형", "kor-choice": "영어 → 한글",
   "syn-type": "동의어 직접 입력", flashcard: "빠른 암기 · 자기채점",
 };
 const statusLabels: Record<EvidenceStatus, string> = { NEW: "미학습", ACTIVE: "학습 중", MASTERED: "MASTER", WEAK: "WEAK", RELEARNING: "RELEARNING" };

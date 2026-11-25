@@ -66,6 +66,15 @@ export interface QuizQuestion {
   sentenceCompletion?: SentenceCompletionQuestion;
 }
 
+// Only the visible gloss changes; the English value, grading key and stored choices do not.
+export function choiceGloss(question: Pick<QuizQuestion, "mode" | "answerKind">, choice: QuizChoice, answered: boolean): string {
+  if (!choice.meaning || choice.meaning === choice.label) return "";
+  if (answered) return choice.meaning;
+  if (question.mode !== "syn-kor-choice" || question.answerKind !== "synonym") return "";
+  const gloss = choice.meaning.replace(/^같은 sense의 핵심 뜻\s*·\s*/u, "").trim();
+  return /[가-힣]/u.test(gloss) && !/검수 대기/u.test(gloss) ? gloss : "";
+}
+
 export interface BuildQuizOptions {
   mode: QuizMode;
   rangeStart?: number;
@@ -573,6 +582,7 @@ function makeQuestionWithFallback(
   const masteredTargets = new Set(options.masteredTargetKeys ?? []);
   const requestedKeys = new Set(options.learningTargetKeys ?? []);
   const primary = makeQuestion(item, options.mode, choiceLang, masteredTargets, requestedKeys);
+  if (primary?.mode === "syn-kor-choice" && primary.choices.some(choice => !choiceGloss(primary, choice, false))) return null;
   if (primary && requestedKeys.size && !requestedKeys.has(getQuestionLearningTargetKey(primary))) return null;
   if (primary || !options.allowMeaningFallback) return primary;
   if (!canFallBackToMeaning(options.mode, choiceLang)) return null;

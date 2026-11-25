@@ -41,6 +41,7 @@ import { type VocabItem } from "@/lib/vocab";
 import {
   buildReviewQuestions,
   isChoiceCorrect,
+  choiceGloss,
   type QuizQuestion,
 } from "@/lib/quiz-engine";
 import { loadBookmarks, loadSenseLearningState, recordOneAnswer, toggleBookmark } from "@/lib/store";
@@ -472,7 +473,7 @@ export default function WrongQuizScreen() {
                 {q.answerKind === "target"
                   ? "영영 정의 → 정확한 단어"
                   : q.answerKind === "synonym"
-                  ? "동의어 고르기"
+                  ? q.mode === "syn-kor-choice" ? "동의어 기초형" : "동의어 실전형"
                   : "한국어 뜻 고르기"}
               </Text>
               <Pressable
@@ -507,6 +508,7 @@ export default function WrongQuizScreen() {
             <View style={s.choicesContainer}>
               {q.choices.map((choice, idx) => {
                 const choiceIsCorrect = isChoiceCorrect(q, choice);
+                const gloss = choiceGloss(q, choice, answered);
                 let choiceStyle = s.choiceBtn;
                 let textStyle = s.choiceText;
                 if (answered) {
@@ -553,10 +555,8 @@ export default function WrongQuizScreen() {
                       <Text style={textStyle} numberOfLines={2}>
                         {choice.label}
                       </Text>
-                      {answered &&
-                      choice.meaning &&
-                      choice.meaning !== choice.label ? (
-                        <Text style={s.choiceMeaning}>{choice.meaning}</Text>
+                      {gloss ? (
+                        <Text style={s.choiceMeaning}>{gloss}</Text>
                       ) : null}
                     </View>
                   </Pressable>
@@ -610,7 +610,7 @@ export default function WrongQuizScreen() {
               </View>
             )}
 
-            {answered && !q.recall && !q.definitionRecall && <LearningDetails itemId={q.item.id} bookEntry={q.item.book} />}
+            {answered && !q.recall && !q.definitionRecall && <LearningDetails itemId={q.item.id} bookEntry={q.item.book} reviewPreview />}
 
             {(currentIdx > 0 || answered) && (
               <View style={s.questionNavRow}>

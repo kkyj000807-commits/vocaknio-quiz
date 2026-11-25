@@ -210,7 +210,7 @@ export default function HomeScreen() {
           <Text style={s.startNote}>
             {studyItems.some(item => item.localBook) ? '불러온 교재의 신규 뜻은 빠른 암기(자기평가)로 학습합니다. 자동채점은 기존 검수 문항만 사용합니다. ' : ''}
             {selectedMode === "syn-kor-choice"
-              ? "영어 동의어와 한글 뜻이 함께 검증된 문항만 출제됩니다"
+              ? "영어 선지 아래에 한글 뜻이 함께 나옵니다."
               : "선택한 유형에서 출제 가능한 문항만 사용합니다. 자료가 부족하면 다른 유형을 직접 선택할 수 있습니다"}
           </Text>
         </View>
