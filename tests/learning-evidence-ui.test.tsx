@@ -56,6 +56,18 @@ const render = (element: React.ReactElement) => renderToStaticMarkup(element.typ
 const occurrences = (text: string, value: string) => text.split(value).length - 1;
 
 describe("reviewed learning evidence and explanation boundaries", () => {
+  it.each([[96,"substituted a map","남는 건 지도"],[97,"replaced the photo","남는 건 지도"],
+    [296,"I suspect the figures","무게를 둔다"],[297,"doubts they are wrong","무게를 둔다"]] as const)(
+    "reuses the printed contrast only after a missed or skipped V101 question %i", (num, en, ko) => {
+      const q = buildQuizQuestions({ mode: "kor-choice", itemNums: [num], count: 1 })[0];
+      const box = (answered: boolean, skipped: boolean, selectedChoice: number | null) =>
+        render(<QuizCorrectFeedback question={q} {...{ answered, skipped, selectedChoice }} />);
+      expect(box(false, false, null)).not.toContain(en);
+      expect(box(true, false, q.choices.findIndex(c => c.isCorrect))).not.toContain(en);
+      expect(box(true, false, q.choices.findIndex(c => !c.isCorrect))).toContain(en);
+      expect(box(true, true, null)).toContain(ko);
+      expect(render(<QuizCorrectFeedback question={{...q,item:{...q.item,k:"다른 뜻"}}} answered skipped selectedChoice={null} />)).not.toContain(en);
+    });
   it.each(["syn-choice", "syn-kor-choice"] as const)("shows the correct choice's sense inside feedback after skip or wrong answer in %s", mode => {
     const item = vocabulary.find(row => row.w === "partisanship")!;
     const q = buildQuizQuestions({ mode, itemNums: [item.num], count: 1 })[0];

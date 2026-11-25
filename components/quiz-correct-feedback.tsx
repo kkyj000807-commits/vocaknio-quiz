@@ -2,6 +2,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import { useColors } from "@/hooks/use-colors";
 import type { QuizQuestion } from "@/lib/quiz-engine";
+import { quizReadingContrast } from "@/lib/book-reading-contrast";
 
 /** Read only the current question. Never look up a different sense by spelling. */
 export function QuizCorrectFeedback({ question: q, answered, skipped, selectedChoice }: {
@@ -12,6 +13,7 @@ export function QuizCorrectFeedback({ question: q, answered, skipped, selectedCh
   if (!answered || q.sentenceCompletion || (!skipped && (!selected || selected.isCorrect))) return null;
   const correct = q.choices.find(choice => choice.isCorrect);
   if (!correct) return null;
+  const contrast = quizReadingContrast(q.item);
   const meaning = correct.meaning.replace(/^같은 sense의 핵심 뜻\s*·\s*/u, "").trim();
   const partiality = q.synonymRecall?.senseId === "partisanship%1:09:00::" && correct.value.toLowerCase() === "partiality";
   const gloss = partiality ? "편파성 · 한쪽을 더 편드는 성향" : meaning === correct.label ? correct.word : meaning;
@@ -26,5 +28,10 @@ export function QuizCorrectFeedback({ question: q, answered, skipped, selectedCh
     <Text style={{ color: colors.foreground, fontSize: 17, fontWeight: "700" }}>{correct.label}</Text>
     {!!gloss && gloss !== correct.label && <Text style={{ color: colors.foreground }}>{gloss}</Text>}
     {!!reason && reason !== gloss && <Text style={{ color: colors.foreground, lineHeight: 22 }}>{reason}</Text>}
+    {contrast && <>
+      <Text style={{ color: colors.foreground, fontWeight: "700" }}>{contrast.focus}</Text>
+      <Text style={{ color: colors.foreground, lineHeight: 22 }}>{contrast.en}</Text>
+      <Text style={{ color: colors.foreground, lineHeight: 22 }}>{contrast.ko}</Text>
+    </>}
   </View>;
 }
