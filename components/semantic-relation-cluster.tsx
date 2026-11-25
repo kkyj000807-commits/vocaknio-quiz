@@ -16,6 +16,8 @@ type SemanticRelationClusterProps = {
   showDefinitionBridge?: boolean;
   showRelationNotes?: boolean;
   substitutionGuide?: boolean;
+  dictionarySense?: boolean;
+  contexts?: Readonly<Record<string, string>>;
   exactSynonyms?: readonly string[];
   nearSynonyms?: readonly string[];
   antonyms?: readonly string[];
@@ -41,6 +43,8 @@ export function SemanticRelationCluster({
   showDefinitionBridge = true,
   showRelationNotes = false,
   substitutionGuide = false,
+  dictionarySense = false,
+  contexts,
   exactSynonyms,
   nearSynonyms,
   antonyms,
@@ -49,6 +53,7 @@ export function SemanticRelationCluster({
   choiceMeanings,
 }: SemanticRelationClusterProps) {
   const colors = useColors();
+  const contextFor = (word: string) => contexts && Object.prototype.hasOwnProperty.call(contexts, word) ? contexts[word] : undefined;
   const cluster = buildSemanticCluster({
     exactSynonyms,
     nearSynonyms,
@@ -64,15 +69,20 @@ export function SemanticRelationCluster({
       accessibilityLabel={`${headword} 의미 클러스터. 같은 의미축과 반대 의미축`}
       style={[styles.cluster, { borderColor: colors.border, backgroundColor: colors.surface }]}
     >
-      <Text style={[styles.title, { color: colors.primary }]}>{substitutionGuide ? '바꿔 쓰는 표현' : '의미 클러스터'}</Text>
+      <Text style={[styles.title, { color: colors.primary }]}>{dictionarySense ? '이 뜻에서 가까운 표현' : substitutionGuide ? '바꿔 쓰는 표현' : '의미 클러스터'}</Text>
       {substitutionGuide && cluster.synonyms.length > 0 && <Text style={[styles.bridge, { color: colors.muted }]}>
         같은 뜻의 반복을 피할 때 참고하세요. ≈ 유사어는 초점이 다릅니다. 품사·목적어·전치사와 문맥이 맞는지 확인하세요.
       </Text>}
 
       {cluster.synonyms.length > 0 ? (
         <View style={styles.axis}>
-          <Text style={[styles.axisLabel, { color: colors.success }]}>동의어 · ≈ 유사어</Text>
-          <RelationTerms terms={cluster.synonyms} showNotes={showRelationNotes} />
+          {!dictionarySense && <Text style={[styles.axisLabel, { color: colors.success }]}>동의어 · ≈ 유사어</Text>}
+          {contexts && cluster.synonyms.filter(term => contextFor(term.word)).map(term =>
+            <Text key={term.word} style={[styles.bridge, { color: colors.foreground }]}>
+              <Text style={{ fontWeight: "700" }}>{term.word}</Text>{' · '}{contextFor(term.word)}
+            </Text>)}
+          {cluster.synonyms.some(term => !contextFor(term.word)) &&
+            <RelationTerms terms={contexts ? cluster.synonyms.filter(term => !contextFor(term.word)) : cluster.synonyms} showNotes={showRelationNotes} />}
         </View>
       ) : null}
 
@@ -88,7 +98,7 @@ export function SemanticRelationCluster({
           <Text style={[styles.axisLabel, { color: colors.error }]}>←→ 반의어</Text>
           <RelationTerms terms={cluster.opposites} showNotes={showRelationNotes} />
         </View>
-      ) : (
+      ) : dictionarySense ? null : (
         <Text style={[styles.emptyOpposite, { color: colors.muted }]}>←→ 검증된 반의어 관계 없음</Text>
       )}
 

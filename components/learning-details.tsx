@@ -273,6 +273,20 @@ export function DictionaryExamples({ sense, fallback = [] }: { sense: VocabDicti
   </View>;
 }
 
+// Presentation only: a WordNet sense key is narrower than a spelling or a shared synset.
+const relationContexts: Record<string, Record<string, string>> = {
+  "adulterate%2:30:00::": {
+    dilute: "술에 물을 타서 순도를 떨어뜨리면 둘 다 쓸 수 있다. dilute는 농도가 낮아지는 데 초점이 있어, 마시기 좋게 주스를 희석할 때도 쓴다.",
+    debase: "은화에 값싼 금속을 섞으면 adulterate는 섞은 행위, debase는 은화의 가치가 떨어진 결과를 가리킨다. debase the debate(토론의 수준을 떨어뜨리다)에는 섞는 행위가 없다.",
+    stretch: "올리브유에 값싼 기름을 섞어 양을 늘렸다면 같은 상황이다. stretch는 원래 재료를 더 오래·많이 쓰는 데 초점이 있다. 남은 수프를 두 끼로 나눠 먹어도 stretch라고 한다.",
+    load: "밀가루에 값싼 충전재를 잔뜩 넣은 상황에서 겹친다. load A with B는 A에 B를 많이 넣는다는 말이고, adulterate A with B는 B를 섞어 A의 순도를 해친다는 말이다.",
+  },
+  "adulterate%5:00:00:impure:02": {
+    adulterated: "값싼 시럽이 섞인 꿀처럼 이미 순수하지 않은 상태다. 오늘날에는 이 뜻의 형용사로 adulterate보다 adulterated honey가 자연스럽다.",
+    debased: "값싼 금속이 섞인 은화를 두고 쓸 수 있다. adulterated는 불순물이 섞였다는 점, debased는 본래 가치나 품질이 낮아졌다는 점을 강조한다.",
+  },
+};
+
 export function DictionaryDefinition({ entry, itemId }: { entry: VocabDefinitionEntry; itemId: string }) {
   const colors = useColors();
   const s = styles(colors);
@@ -311,7 +325,8 @@ export function DictionaryDefinition({ entry, itemId }: { entry: VocabDefinition
             <Text style={s.note}>{sense.partOfSpeech}</Text>
             <Text style={s.english}>{sense.definition}</Text>
             {(sameReference || sourceSynonyms.length > 0 || Object.keys(editorialMeanings).length > 0) && <>
-              <SemanticRelationCluster headword={entry.headword} coreMeaningKo="" showDefinitionBridge={false} substitutionGuide showRelationNotes
+              <SemanticRelationCluster headword={entry.headword} coreMeaningKo="" showDefinitionBridge={false} dictionarySense showRelationNotes
+                contexts={relationContexts[sense.senseId]}
                 exactSynonyms={sameReference ? getDefinitionAnswerRelations(sameReference).synonyms : sourceSynonyms.length ? sourceSynonyms : Object.keys(editorialMeanings)}
                 antonyms={sameReference ? getDefinitionAnswerRelations(sameReference).antonyms : sense.antonyms ?? []}
                 choiceMeanings={[...(sameReference ? getDefinitionRelationMeanings(sameReference, "")

@@ -54,6 +54,17 @@ const render = (element: React.ReactElement) => renderToStaticMarkup(element.typ
 const occurrences = (text: string, value: string) => text.split(value).length - 1;
 
 describe("reviewed learning evidence and explanation boundaries", () => {
+  it("explains each adulterate relation in its own sense without suggesting interchangeability", () => {
+    const shard = JSON.parse(fs.readFileSync("public/data/book-dictionary/oewn-2025/1.json", "utf8"));
+    const source: VocabDefinitionEntry = shard.headwords.adulterate;
+    const show = (id: string) => render(<DictionaryDefinition entry={{ ...source, representativeSenseId: id }} itemId="book-context-test" />);
+    const verb = show("adulterate%2:30:00::");
+    for (const cue of ["농도가 낮아지는", "은화의 가치", "남은 수프", "load A with B"]) expect(verb).toContain(cue);
+    expect(verb).not.toContain("바꿔 쓰는 표현");
+    const adj = show("adulterate%5:00:00:impure:02");
+    expect(adj).toContain("adulterated honey");
+    expect(adj).not.toContain("농도가 낮아지는");
+  });
   it("renders every shipped editorial example, usage note and individual gloss on its bound row", () => {
     disclosure.forceAllRelations = true;
     const groups = new Map<string, { headwords: Record<string, VocabDefinitionEntry> }>();
