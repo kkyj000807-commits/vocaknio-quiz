@@ -1,4 +1,6 @@
 import React from "react";
+import { QuizCorrectFeedback } from "@/components/quiz-correct-feedback";
+import { buildQuizQuestions } from "@/lib/quiz-engine";
 import fs from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -54,6 +56,20 @@ const render = (element: React.ReactElement) => renderToStaticMarkup(element.typ
 const occurrences = (text: string, value: string) => text.split(value).length - 1;
 
 describe("reviewed learning evidence and explanation boundaries", () => {
+  it.each(["syn-choice", "syn-kor-choice"] as const)("shows the correct choice's sense inside feedback after skip or wrong answer in %s", mode => {
+    const item = vocabulary.find(row => row.w === "partisanship")!;
+    const q = buildQuizQuestions({ mode, itemNums: [item.num], count: 1 })[0];
+    expect(q.correct).toBe("partiality");
+    const box = (answered: boolean, skipped: boolean, selectedChoice: number | null) =>
+      render(<QuizCorrectFeedback question={q} {...{ answered, skipped, selectedChoice }} />);
+    expect(box(false, false, null)).toBe("");
+    expect(box(true, false, q.choices.findIndex(c => c.isCorrect))).toBe("");
+    for (const text of [box(true, true, null), box(true, false, q.choices.findIndex(c => !c.isCorrect))]) {
+      expect(text).toContain("partiality");
+      expect(text).toContain("편파성");
+      expect(text).toContain("어느 한쪽을 더 좋게");
+    }
+  });
   it("explains each adulterate relation in its own sense without suggesting interchangeability", () => {
     const shard = JSON.parse(fs.readFileSync("public/data/book-dictionary/oewn-2025/1.json", "utf8"));
     const source: VocabDefinitionEntry = shard.headwords.adulterate;

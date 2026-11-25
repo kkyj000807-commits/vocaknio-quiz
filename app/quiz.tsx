@@ -1,3 +1,4 @@
+import { QuizCorrectFeedback } from "@/components/quiz-correct-feedback";
 import { ProblemSenseContext } from "@/components/problem-sense-context";
 import {
   ActiveRecallAnswer,
@@ -1244,13 +1245,7 @@ export default function QuizScreen() {
                     </Pressable>
                   )}
 
-                  {/* 패스 후 정답 표시 */}
-                  {answered && skipped && questionMode !== "sentence-completion" && (
-                    <View style={s.skipResultBox}>
-                      <Text style={s.skipResultLabel}>정답</Text>
-                      <Text style={s.skipResultAnswer}>{q.correct}</Text>
-                    </View>
-                  )}
+                  <QuizCorrectFeedback question={q} answered={answered} skipped={skipped} selectedChoice={selectedChoice} />
                 </>
               )}
 
@@ -1662,27 +1657,6 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontSize: 13,
       color: colors.dim,
       fontWeight: "600",
-    },
-    skipResultBox: {
-      marginTop: 12,
-      backgroundColor: "rgba(248,113,113,0.08)",
-      borderWidth: 1,
-      borderColor: "rgba(248,113,113,0.25)",
-      borderRadius: 10,
-      padding: 14,
-    },
-    skipResultLabel: {
-      fontSize: 10,
-      color: colors.error,
-      fontWeight: "700",
-      letterSpacing: 1,
-      textTransform: "uppercase",
-      marginBottom: 4,
-    },
-    skipResultAnswer: {
-      fontSize: 16,
-      fontWeight: "700",
-      color: colors.foreground,
     },
     flashContainer: {
       marginTop: 8,

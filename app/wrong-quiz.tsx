@@ -1,3 +1,4 @@
+import { QuizCorrectFeedback } from "@/components/quiz-correct-feedback";
 import { ProblemSenseContext } from "@/components/problem-sense-context";
 import {
   ActiveRecallAnswer,
@@ -571,13 +572,7 @@ export default function WrongQuizScreen() {
               </Pressable>
             )}
 
-            {/* 패스 후 정답 표시 */}
-            {answered && skipped && (
-              <View style={s.skipResultBox}>
-                <Text style={s.skipResultLabel}>정답</Text>
-                <Text style={s.skipResultAnswer}>{q.correct}</Text>
-              </View>
-            )}
+            <QuizCorrectFeedback question={q} answered={answered} skipped={skipped} selectedChoice={selectedChoice} />
 
             {/* Explanation Panel */}
             {answered && q.recall ? <ActiveRecallAnswer recall={q.recall} choices={q.choices} item={q.item} /> : null}
@@ -982,26 +977,5 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       fontSize: 13,
       color: colors.dim,
       fontWeight: "600" as const,
-    },
-    skipResultBox: {
-      marginTop: 12,
-      backgroundColor: "rgba(248,113,113,0.08)",
-      borderWidth: 1,
-      borderColor: "rgba(248,113,113,0.25)",
-      borderRadius: 10,
-      padding: 14,
-    },
-    skipResultLabel: {
-      fontSize: 10,
-      color: colors.error,
-      fontWeight: "700" as const,
-      letterSpacing: 1,
-      textTransform: "uppercase" as const,
-      marginBottom: 4,
-    },
-    skipResultAnswer: {
-      fontSize: 16,
-      fontWeight: "700" as const,
-      color: colors.foreground,
     },
   });
