@@ -690,7 +690,7 @@ function matchesAnswerKey(question: QuizQuestion, choice: QuizChoice): boolean {
     return question.answerKind === "target" && choice.id === `${question.recall.id}:target` && choice.value === question.item.w;
   }
   if (question.sense) {
-    if (!isCurrentSenseQuestion(question.sense, question.item)) return false;
+    if (!isCurrentSenseQuestion(question.sense, question.item, isContextSynonymMode(question.mode))) return false;
     // Never regrade a contextual answer against the headword-level synonym list.
     const correct = question.sense.choices.find(c => c.id === question.sense!.correctId);
     return choice.id === `${question.sense.id}:${question.sense.correctId}` &&
@@ -760,7 +760,7 @@ export function validateQuestion(question: QuizQuestion): boolean {
     !question.recall && !question.definitionRecall && !question.synonymRecall && !question.sentenceCompletion && hasSenseQuestionMapping(question.item.id)) return false;
   if (question.sense) {
     const sense = question.sense;
-    if (!isCurrentSenseQuestion(sense, question.item) || sense.status !== "production" ||
+    if (!isCurrentSenseQuestion(sense, question.item, isContextSynonymMode(question.mode)) || sense.status !== "production" ||
       !sense.itemIds.includes(question.item.id) || sense.headword !== question.item.w ||
       !question.choices.every(c => sense.choices.some(source => {
         const value = question.answerKind === "synonym" ? source.en : source.ko;

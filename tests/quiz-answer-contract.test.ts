@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import { buildQuizQuestions, choiceGloss, isChoiceCorrect, validateQuestion, type QuizQuestion } from "@/lib/quiz-engine";
 import { createEmptyQuestionViewState, parseQuizSession, summarizeQuizSession, type QuizSession } from "@/lib/quiz-session";
 import { canonicalSenseKey, getQuestionLearningTargetKey, getQuizLearningTargets } from "@/lib/canonical-learning";
-import { contextTargetSpan, SENSE_QUESTIONS } from "@/lib/sense-questions";
+import { CONTEXT_DRILLS, contextTargetSpan, SENSE_QUESTIONS } from "@/lib/sense-questions";
+import { SECTION_RANGES } from "@/lib/vocab";
 
 function question(mode: "kor-choice" | "syn-choice"): QuizQuestion {
   const q = buildQuizQuestions({ mode, itemNums: [4], count: 1 })[0];
@@ -26,8 +27,8 @@ describe("underlined contextual synonym questions", () => {
     }
   });
   it.each(["syn-context", "syn-context-basic"] as const)("%s restores the reviewed question, answer and feedback for every approved sense", mode => {
-    for (const id of senses) {
-      const sense = SENSE_QUESTIONS.find(entry => entry.id === id)!;
+    for (const id of [...senses, ...CONTEXT_DRILLS.map(q=>q.id)]) {
+      const sense = [...SENSE_QUESTIONS, ...CONTEXT_DRILLS].find(entry => entry.id === id)!;
       const key = canonicalSenseKey(sense.senseId);
       const [q] = buildQuizQuestions({ mode, rangeId: "all", count: 1, learningTargetKeys: [key] });
       expect(q.sense?.id).toBe(id);
@@ -63,14 +64,26 @@ describe("underlined contextual synonym questions", () => {
   it("does not inflate coverage with repeated rows or fall back to a non-substitutable answer", () => {
     const options = { mode: "syn-context" as const, count: 30, rangeId: "all", allowMeaningFallback: true };
     const questions = buildQuizQuestions(options);
-    expect(questions).toHaveLength(4);
-    expect(new Set(questions.map(q => q.item.w)).size).toBe(4);
+    expect(questions).toHaveLength(4 + CONTEXT_DRILLS.length);
+    expect(new Set(questions.map(q => q.item.w)).size).toBe(questions.length);
     const excluded = SENSE_QUESTIONS.find(entry => entry.id === "all-but.except.v1")!;
     const allBut = questions.find(q => q.item.w === "all but")!;
     expect(getQuizLearningTargets(allBut.item, options.mode)).toEqual([{ key: getQuestionLearningTargetKey(allBut) }]);
     expect(getQuizLearningTargets(allBut.item, "kor-choice").map(target => target.key)).toContain(canonicalSenseKey(excluded.senseId));
     expect(buildQuizQuestions({ ...options, learningTargetKeys: [canonicalSenseKey(excluded.senseId)] })).toEqual([]);
     expect(buildQuizQuestions({ ...options, itemNums: [4] })).toEqual([]);
+  });
+  it("has contextual questions in every printed section and in idioms without changing legacy quiz answers", () => {
+    for (const rangeId of [...SECTION_RANGES.map(s=>s.id), "idioms"]) {
+      const qs = buildQuizQuestions({ mode: "syn-context", rangeId, count: 5 });
+      expect(qs.length, rangeId).toBeGreaterThanOrEqual(2);
+      expect(qs.every(q=>q.sense && validateQuestion(q))).toBe(true);
+    }
+    const [q] = buildQuizQuestions({ mode:"syn-context", itemNums:[1423],count:1 });
+    expect(q.sense?.contextBinding?.meaning).toBe("격분한");
+    expect(validateQuestion({...q,mode:"syn-choice"})).toBe(false);
+    expect(validateQuestion({...q,item:{...q.item,k:"그저 불편한"}})).toBe(false);
+    expect(buildQuizQuestions({mode:"kor-choice",itemNums:[1423], count:1})[0]?.sense?.id).toBeUndefined();
   });
 });
 

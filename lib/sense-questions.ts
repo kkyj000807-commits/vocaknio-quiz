@@ -1,5 +1,6 @@
 import { z } from "zod";
 import catalog from "../data/sense-questions.json";
+import contextCatalog from "../data/context-synonym-drills.json";
 import type { VocabItem } from "./vocab";
 
 const nonempty = z.string().trim().min(1);
@@ -15,6 +16,7 @@ export const senseQuestionSchema = z.object({
   })).length(4),
   sources: z.array(z.object({ publisher: nonempty, url: z.url(), note: nonempty })),
   reviewedAt: nonempty, reviewer: nonempty, reviewNote: nonempty,
+  contextBinding: z.object({ meaning: nonempty, conceptId: z.string(), group: nonempty }).optional(),
   relation: z.object({
     reviewId: nonempty, targetWord: nonempty, targetSenseId: nonempty,
     excludedTargetSenseIds: z.array(nonempty).min(1), constraintKo: nonempty,
@@ -45,6 +47,8 @@ export type SenseQuestion = z.infer<typeof senseQuestionSchema>;
 
 export const SENSE_QUESTIONS = z.object({ schema: z.literal(1), entries: z.array(senseQuestionSchema) })
   .parse(catalog).entries;
+export const CONTEXT_DRILLS = z.object({ schema: z.literal(1), entries: z.array(senseQuestionSchema) })
+  .parse(contextCatalog).entries;
 
 // Only reviewed answers that replace the target expression in its sentence.
 // all-but.except.v1 answers a counting question, not a synonym question.
@@ -67,12 +71,13 @@ export function contextTargetSpan(sense: Pick<SenseQuestion, "contextEn" | "head
 }
 
 const contextByItem = new Map<string, SenseQuestion[]>();
-for (const sense of SENSE_QUESTIONS) {
-  if (!contextSynonymIds.has(sense.id) || sense.status !== "production" || !contextTargetSpan(sense)) continue;
+for (const sense of [...SENSE_QUESTIONS, ...CONTEXT_DRILLS]) {
+  if (!(contextSynonymIds.has(sense.id) || sense.contextBinding) || sense.status !== "production" || !contextTargetSpan(sense)) continue;
   for (const id of sense.itemIds) contextByItem.set(id, [...(contextByItem.get(id) ?? []), sense]);
 }
 
-export function getContextSynonymSenses(item: Pick<VocabItem, "id" | "w" | "k" | "conceptId">) {
+type SourceItem = Pick<VocabItem, "id" | "w" | "k" | "conceptId" | "group">;
+export function getContextSynonymSenses(item: SourceItem) {
   return contextByItem.get(item.id)?.filter(sense => sense.status === "production" && sense.quality !== "C" && senseMatchesItem(sense, item)) ?? [];
 }
 
@@ -85,16 +90,18 @@ export function hasSenseQuestionMapping(itemId: string): boolean {
 }
 
 /** Exact source bindings prevent a reviewed relation leaking into another sense. */
-export function senseMatchesItem(sense: SenseQuestion, item: Pick<VocabItem, "id" | "w" | "k" | "conceptId">): boolean {
-  return sense.itemIds.includes(item.id) && sense.headword === item.w && (!sense.relation ||
+export function senseMatchesItem(sense: SenseQuestion, item: SourceItem): boolean {
+  const b = sense.contextBinding;
+  return sense.itemIds.includes(item.id) && sense.headword === item.w &&
+    (!b || (b.group === item.group && b.meaning === item.k && b.conceptId === item.conceptId)) && (!sense.relation ||
     (sense.relation.sourceConceptId === item.conceptId &&
       sense.relation.sourceRows.some(row => row.id === item.id && row.meaning === item.k)));
 }
 
 /** A saved snapshot must still be an approved question, not a self-certified answer key. */
-export function isCurrentSenseQuestion(sense: SenseQuestion, item: Pick<VocabItem, "id" | "w" | "k" | "conceptId">): boolean {
+export function isCurrentSenseQuestion(sense: SenseQuestion, item: SourceItem, contextual = false): boolean {
   const parsed = senseQuestionSchema.safeParse(sense);
-  const current = getProductionSenseQuestions(item.id).find(q => q.id === sense.id);
+  const current = (contextual ? getContextSynonymSenses(item) : getProductionSenseQuestions(item.id)).find(q => q.id === sense.id);
   return parsed.success && !!current && senseMatchesItem(current, item) &&
     JSON.stringify(parsed.data) === JSON.stringify(current);
 }
