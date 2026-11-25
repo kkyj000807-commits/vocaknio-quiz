@@ -99,7 +99,9 @@ export function QuizEmptyState({ ready, request, onSettings, onMeaningStudy }: {
       <Text style={s.emoji}>{ready ? "📭" : "⏳"}</Text>
       <Text style={s.title}>{ready ? "출제할 문제가 없습니다" : "문제를 준비하고 있습니다"}</Text>
       {ready && <>
-        <Text style={s.note}>선택한 범위·유형·숙달 상태에서 출제 가능한 문항이 없습니다.</Text>
+        <Text style={s.note}>{request.mode === "syn-context" || request.mode === "syn-context-basic"
+          ? "이 범위와 현재 학습 상태에서 풀 수 있는 예문 동의어 문제가 없습니다. 다른 범위를 선택해 주세요."
+          : "선택한 범위·유형·숙달 상태에서 출제 가능한 문항이 없습니다."}</Text>
         {route && <View style={s.action}>
           <Text style={s.note}>
             같은 범위의 원자료 한국어 뜻으로 새 학습을 시작할 수 있습니다. 기존 영영·동의어 문제의 정답을 대체하지 않습니다.

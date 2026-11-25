@@ -1,7 +1,8 @@
 import { buildAdaptiveEvidenceIndex, mergeAdaptiveStats, type AdaptiveCandidate, type AdaptiveHistory, type AdaptiveItemStats } from "./adaptive-quiz";
 import { ADAPTIVE_POLICY, accuracyPercent, calculateLearningNeed, eventPerformance, learningDay, median, mergePerformance, responseBaseline, type EvidenceStatus, type PerformanceCounts } from "./learning-analytics";
 import { getLearningTargetState, type SenseLearningState } from "./learning-state";
-import type { QuizMode } from "./vocab";
+import { getVocabItem, isContextSynonymMode, type QuizMode } from "./vocab";
+import { getQuizLearningTargets } from "./canonical-learning";
 import { getSentenceCompletionByKey, LOGIC_TYPE_LABELS, DIFFICULTY_LABELS } from "./sentence-completion";
 
 export interface LearningItemMeta extends AdaptiveCandidate { word: string; groupId: string; sourceId: string; mode?: string }
@@ -121,8 +122,15 @@ export function statisticsReviewCandidates(model: LearningStatistics, groupId = 
 export function buildStatisticsReviewParams(model: LearningStatistics, groupId = "", word?: WordPerformance) {
   let words = word ? [word] : statisticsReviewCandidates(model, groupId).slice(0, 20);
   if (!words.length) return null;
-  const mode: QuizMode = ["sentence-completion", "definition-choice", "syn-choice", "syn-kor-choice", "kor-choice", "syn-type", "flashcard"].includes(words[0].reviewMode) ? words[0].reviewMode as QuizMode : "kor-choice";
+  const mode: QuizMode = ["sentence-completion", "definition-choice", "syn-choice", "syn-kor-choice", "syn-context", "syn-context-basic", "kor-choice", "syn-type", "flashcard"].includes(words[0].reviewMode) ? words[0].reviewMode as QuizMode : "kor-choice";
   words = words.filter(row => row.key.startsWith('book:v1.5:') ? mode === 'flashcard' : row.reviewMode === mode || !["sentence-completion"].includes(row.reviewMode) && mode !== "sentence-completion");
+  if (isContextSynonymMode(mode)) {
+    words = words.filter(row => {
+      const item = getVocabItem(row.num);
+      return item && getQuizLearningTargets(item, mode).some(target => target.key === row.key);
+    });
+    if (!words.length) return null;
+  }
   return { mode, rangeId: "statistics-review", count: String(Math.min(10, words.length)),
     bookmarkNums: [...new Set(words.map(row => row.num))].join(","),
     reviewKeys: JSON.stringify([...new Set(words.map(row => row.key))]), choiceLang: "korean" };

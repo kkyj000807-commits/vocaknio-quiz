@@ -1,11 +1,12 @@
 import { z } from "zod";
-import { getVocabItem, isAcceptedSynonym, normalizeWord, type VocabItem } from "@/lib/vocab";
+import { getVocabItem, isAcceptedSynonym, isContextSynonymMode, normalizeWord, type VocabItem } from "@/lib/vocab";
 import { senseQuestionSchema } from "@/lib/sense-questions";
 import { activeRecallSenseSchema } from "@/lib/active-recall";
 import { definitionQuizEntrySchema, getDefinitionAnswerRelations } from "@/lib/definition-quiz";
 import { sentenceCompletionSchema } from "@/lib/sentence-completion";
 import {
   isChoiceCorrect,
+  isContextSynonymSnapshot,
   isTypedAnswerCorrect,
   validateQuestion,
   type QuizQuestion,
@@ -77,6 +78,8 @@ const storedQuestionSchema = z
       "sentence-completion",
       "definition-choice",
       "syn-choice",
+      "syn-context",
+      "syn-context-basic",
       "kor-choice",
       "syn-kor-choice",
       "flashcard",
@@ -108,6 +111,7 @@ const storedQuestionSchema = z
     // Readability is a snapshot contract, not a lookup in today's catalog.
     // A held/corrected question is preserved, never regraded here.
     if (!hasConsistentStoredAnswer(q as QuizQuestion)) return false;
+    if (isContextSynonymMode(q.mode) && !isContextSynonymSnapshot(q as QuizQuestion)) return false;
     if (q.sense && (!q.sense.itemIds.includes(q.item.id) || q.sense.headword !== q.item.w ||
       q.sense.status !== "production" ||
       !q.choices.every(c => q.sense!.choices.some(source => c.id === `${q.sense!.id}:${source.id}` &&

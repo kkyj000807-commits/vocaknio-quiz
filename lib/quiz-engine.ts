@@ -7,6 +7,7 @@ import {
   getSynonymDetails,
   getVocabItem,
   isAcceptedSynonym,
+  isContextSynonymMode,
   meaningsOverlap,
   normalizeMeaning,
   normalizeWord,
@@ -15,7 +16,7 @@ import {
   type SynonymDetail,
   type VocabItem,
 } from "@/lib/vocab";
-import { getProductionSenseQuestions, hasSenseQuestionMapping, isCurrentSenseQuestion, senseMatchesItem, type SenseQuestion } from "@/lib/sense-questions";
+import { contextTargetSpan, getContextSynonymSenses, getProductionSenseQuestions, hasSenseQuestionMapping, isCurrentSenseQuestion, senseMatchesItem, type SenseQuestion } from "@/lib/sense-questions";
 import { getActiveRecallSenses, isCurrentActiveRecallSense, activeRecallMatchesItem, type ActiveRecallSense } from "@/lib/active-recall";
 import {
   getDefinitionQuizDistractors,
@@ -70,7 +71,7 @@ export interface QuizQuestion {
 export function choiceGloss(question: Pick<QuizQuestion, "mode" | "answerKind">, choice: QuizChoice, answered: boolean): string {
   if (!choice.meaning || choice.meaning === choice.label) return "";
   if (answered) return choice.meaning;
-  if (question.mode !== "syn-kor-choice" || question.answerKind !== "synonym") return "";
+  if ((question.mode !== "syn-kor-choice" && question.mode !== "syn-context-basic") || question.answerKind !== "synonym") return "";
   const gloss = choice.meaning.replace(/^같은 sense의 핵심 뜻\s*·\s*/u, "").trim();
   return /[가-힣]/u.test(gloss) && !/검수 대기/u.test(gloss) ? gloss : "";
 }
@@ -440,16 +441,17 @@ function makeQuestion(
     return buildOewnDefinitionQuestion(item);
   }
 
-  const asksForSynonym =
+  const contextual = isContextSynonymMode(mode);
+  const asksForSynonym = contextual ||
     mode === "syn-choice" ||
     mode === "syn-kor-choice" ||
     (mode === "kor-choice" && choiceLang === "english");
-  const reviewed = getProductionSenseQuestions(item.id).filter(sense =>
+  const reviewed = (contextual ? getContextSynonymSenses(item) : getProductionSenseQuestions(item.id)).filter(sense =>
     senseMatchesItem(sense, item) &&
     (!requestedKeys.size || requestedKeys.has(canonicalSenseKey(sense.senseId))) &&
     !masteredTargetKeys.has(canonicalSenseKey(sense.senseId)));
   // A withheld sense must not quietly fall back to the old headword-level question.
-  if (hasSenseQuestionMapping(item.id) && reviewed.length === 0) return null;
+  if (reviewed.length === 0 && (contextual || hasSenseQuestionMapping(item.id))) return null;
   if (reviewed.length) {
     const sense = reviewed[Math.floor(Math.random() * reviewed.length)];
     const choices = shuffle(sense.choices.map((choice): QuizChoice => ({
@@ -524,11 +526,24 @@ function canFallBackToMeaning(mode: QuizMode, choiceLang: ChoiceLang): boolean {
  */
 export function getQuizCandidateItems(options: BuildQuizOptions): VocabItem[] {
   if (!Number.isInteger(options.count) || options.count <= 0 || options.count > 200 ||
-      !["sentence-completion", "definition-choice", "syn-choice", "syn-kor-choice", "syn-type", "kor-choice", "flashcard"].includes(options.mode)) return [];
+      !["sentence-completion", "definition-choice", "syn-choice", "syn-kor-choice", "syn-context", "syn-context-basic", "syn-type", "kor-choice", "flashcard"].includes(options.mode)) return [];
   const choiceLang = options.choiceLang ?? "korean";
   const mastered = new Set(options.masteredNums ?? []);
   const masteredTargets = new Set(options.masteredTargetKeys ?? []);
   let pool = resolvePool(options).filter((item) => item.k.length > 0 && (!item.localBook || options.mode === 'flashcard'));
+  if (isContextSynonymMode(options.mode)) {
+    const words = new Set<string>();
+    const requested = new Set(options.learningTargetKeys);
+    return pool.filter(item => {
+      const word = normalizeWord(item.w);
+      if (item.referenceOnly || words.has(word) || !getContextSynonymSenses(item).some(sense => {
+        const key = canonicalSenseKey(sense.senseId);
+        return !masteredTargets.has(key) && (!requested.size || requested.has(key));
+      })) return false;
+      words.add(word);
+      return true;
+    });
+  }
   if (options.mode === "sentence-completion") return pool.filter(item => {
     const question = getSentenceCompletion(item.id);
     return question && !masteredTargets.has(sentenceCompletionKey(question)) &&
@@ -582,7 +597,8 @@ function makeQuestionWithFallback(
   const masteredTargets = new Set(options.masteredTargetKeys ?? []);
   const requestedKeys = new Set(options.learningTargetKeys ?? []);
   const primary = makeQuestion(item, options.mode, choiceLang, masteredTargets, requestedKeys);
-  if (primary?.mode === "syn-kor-choice" && primary.choices.some(choice => !choiceGloss(primary, choice, false))) return null;
+  if (primary && (primary.mode === "syn-kor-choice" || primary.mode === "syn-context-basic") &&
+    primary.choices.some(choice => !choiceGloss(primary, choice, false))) return null;
   if (primary && requestedKeys.size && !requestedKeys.has(getQuestionLearningTargetKey(primary))) return null;
   if (primary || !options.allowMeaningFallback) return primary;
   if (!canFallBackToMeaning(options.mode, choiceLang)) return null;
@@ -651,6 +667,8 @@ export function isChoiceCorrect(
 // Check the stored key independently of its display flag. Otherwise a corrupt
 // flag can make both grading and validation agree on the same wrong answer.
 function matchesAnswerKey(question: QuizQuestion, choice: QuizChoice): boolean {
+  if (isContextSynonymMode(question.mode) && (!isContextSynonymSnapshot(question) ||
+    !getContextSynonymSenses(question.item).some(sense => sense.id === question.sense?.id))) return false;
   if (question.sentenceCompletion) return question.mode === "sentence-completion" &&
     question.answerKind === "completion" && isCurrentSentenceCompletion(question.sentenceCompletion, question.item) &&
     choice.id === `${question.sentenceCompletion.id}:${question.sentenceCompletion.correctChoiceId}` &&
@@ -692,7 +710,20 @@ export function isTypedAnswerCorrect(
   return isAcceptedSynonym(question.item, answer);
 }
 
+// Snapshot checks never look up today's catalog, so corrected material can still be recovered.
+export function isContextSynonymSnapshot(q: QuizQuestion): boolean {
+  const sense = q.sense;
+  if (!sense || q.answerKind !== "synonym" || q.recall || q.recallPromptId || q.definitionRecall ||
+    q.synonymRecall || q.sentenceCompletion || !contextTargetSpan(sense) ||
+    q.id !== `${q.item.id}-${q.mode}-${sense.id}` || q.acceptedAnswers.length !== 1 ||
+    q.acceptedAnswers[0] !== q.correct) return false;
+  return q.choices.every(c => sense.choices.some(source => c.id === `${sense.id}:${source.id}` &&
+    c.value === source.en && c.label === source.en && c.word === source.en && c.meaning === source.ko));
+}
+
 export function validateQuestion(question: QuizQuestion): boolean {
+  if (isContextSynonymMode(question.mode) && (!isContextSynonymSnapshot(question) ||
+    !getContextSynonymSenses(question.item).some(sense => sense.id === question.sense?.id))) return false;
   if (question.item.localBook && (question.mode !== 'flashcard' || question.answerKind !== 'self' ||
     question.correct !== question.item.k || question.choices.length !== 0)) return false;
   if (question.mode === "sentence-completion" || question.sentenceCompletion || question.answerKind === "completion") {

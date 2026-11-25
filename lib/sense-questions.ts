@@ -46,6 +46,36 @@ export type SenseQuestion = z.infer<typeof senseQuestionSchema>;
 export const SENSE_QUESTIONS = z.object({ schema: z.literal(1), entries: z.array(senseQuestionSchema) })
   .parse(catalog).entries;
 
+// Only reviewed answers that replace the target expression in its sentence.
+// all-but.except.v1 answers a counting question, not a synonym question.
+const contextSynonymIds = new Set(["capricious.unpredictable-mood.v1", "blind-alley.fruitless-course.v1",
+  "all-but.almost.v1", "sanction.authorize.v1", "sanction.penalize.v1"]);
+
+/** UTF-16 offsets for one standalone occurrence (safe to slice in React Native). */
+export function contextTargetSpan(sense: Pick<SenseQuestion, "contextEn" | "headword">): { start: number; end: number } | null {
+  const target = sense.headword.toLowerCase();
+  if (!target) return null;
+  const sentence = sense.contextEn.toLowerCase();
+  let match: { start: number; end: number } | null = null;
+  for (let start = sentence.indexOf(target); start !== -1; start = sentence.indexOf(target, start + target.length)) {
+    const end = start + target.length;
+    if (/[a-z0-9_’'-]/i.test(sentence.charAt(start - 1)) || /[a-z0-9_’'-]/i.test(sentence.charAt(end))) continue;
+    if (match) return null;
+    match = { start, end };
+  }
+  return match;
+}
+
+const contextByItem = new Map<string, SenseQuestion[]>();
+for (const sense of SENSE_QUESTIONS) {
+  if (!contextSynonymIds.has(sense.id) || sense.status !== "production" || !contextTargetSpan(sense)) continue;
+  for (const id of sense.itemIds) contextByItem.set(id, [...(contextByItem.get(id) ?? []), sense]);
+}
+
+export function getContextSynonymSenses(item: Pick<VocabItem, "id" | "w" | "k" | "conceptId">) {
+  return contextByItem.get(item.id)?.filter(sense => sense.status === "production" && sense.quality !== "C" && senseMatchesItem(sense, item)) ?? [];
+}
+
 export function getProductionSenseQuestions(itemId: string): SenseQuestion[] {
   return SENSE_QUESTIONS.filter(q => q.status === "production" && q.quality !== "C" && q.itemIds.includes(itemId));
 }

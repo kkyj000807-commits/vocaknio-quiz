@@ -38,7 +38,7 @@ import { ScreenContainer } from "@/components/screen-container";
 import { PronunciationButton } from "@/components/pronunciation-button";
 import { LearningDetails } from "@/components/learning-details";
 import { WordPronunciation } from "@/components/word-pronunciation";
-import { type VocabItem } from "@/lib/vocab";
+import { isContextSynonymMode, type VocabItem } from "@/lib/vocab";
 import {
   buildReviewQuestions,
   isChoiceCorrect,
@@ -390,6 +390,7 @@ export default function WrongQuizScreen() {
   }
 
   const pct = Math.round((currentIdx / questions.length) * 100);
+  const contextSynonym = isContextSynonymMode(q.mode);
 
   return (
     <ScreenContainer containerClassName="bg-background">
@@ -471,7 +472,8 @@ export default function WrongQuizScreen() {
             <View style={s.questionHeader}>
               <Text style={s.questionNum}>
                 문제 {currentIdx + 1} ·{" "}
-                {q.answerKind === "target"
+                {contextSynonym ? (q.mode === "syn-context-basic" ? "예문 동의어 기초형" : "예문 동의어 실전형")
+                  : q.answerKind === "target"
                   ? "영영 정의 → 정확한 단어"
                   : q.answerKind === "synonym"
                   ? q.mode === "syn-kor-choice" ? "동의어 기초형" : "동의어 실전형"
@@ -491,18 +493,18 @@ export default function WrongQuizScreen() {
               </Pressable>
             </View>
 
-            {(!q.recall && !q.definitionRecall) || answered ? <View style={s.wordPronunciationRow}>
+            {!contextSynonym && ((!q.recall && !q.definitionRecall) || answered) ? <View style={s.wordPronunciationRow}>
               <Text style={s.wordText}>{q.item.w}</Text>
               <PronunciationButton itemId={q.item.id} text={q.item.w} />
             </View> : null}
-            {((!q.recall && !q.definitionRecall) || answered) && q.item.p ? <Text style={s.ipaText}>{q.item.p}</Text> : null}
+            {!contextSynonym && ((!q.recall && !q.definitionRecall) || answered) && q.item.p ? <Text style={s.ipaText}>{q.item.p}</Text> : null}
 
             {q.recall && !answered ? <ActiveRecallPrompt recall={q.recall} promptId={q.recallPromptId} /> : null}
             {q.definitionRecall && !answered ? <DefinitionRecallPrompt definition={q.definitionRecall.definition} /> : null}
-            <ProblemSenseContext sense={q.sense} />
+            <ProblemSenseContext sense={q.sense} contextSynonym={contextSynonym} />
 
             <Text style={s.hintText}>
-              {q.recall || q.definitionRecall ? "영영 정의에 정확히 맞는 표현은?" : q.sense ? "이 문맥에서 뜻이 같은 것은?" : q.answerKind === "synonym"
+              {contextSynonym ? "밑줄 친 표현과 문맥상 뜻이 가장 가까운 것은?" : q.recall || q.definitionRecall ? "영영 정의에 정확히 맞는 표현은?" : q.sense ? "이 문맥에서 뜻이 같은 것은?" : q.answerKind === "synonym"
                 ? "올바른 동의어는?"
                 : "올바른 한국어 뜻은?"}
             </Text>
@@ -582,7 +584,7 @@ export default function WrongQuizScreen() {
             {answered && q.synonymRecall ? (
               <SynonymRecallAnswer recall={q.synonymRecall} koreanMeaning={q.item.k_short} choices={q.choices} item={q.item} />
             ) : null}
-            {answered && q.sense && <ProblemSenseContext sense={q.sense} answered />}
+            {answered && q.sense && <ProblemSenseContext sense={q.sense} contextSynonym={contextSynonym} answered />}
             {answered && !q.sense && !q.recall && !q.definitionRecall && !q.synonymRecall && (
               <View style={s.explPanel}>
                 <Text style={s.explHeader}>해설</Text>

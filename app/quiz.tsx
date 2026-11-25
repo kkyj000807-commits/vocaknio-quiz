@@ -52,7 +52,7 @@ import { SynonymDetails } from "@/components/synonym-details";
 import { QuizEmptyState, QuizSessionHold, type QuizPreparationFailure } from "@/components/quiz-empty-state";
 import { SentenceCompletionAnswer, SentenceCompletionPrompt } from "@/components/sentence-completion-card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { DEFAULT_QUIZ_MODE, getVocabItem, type QuizMode, type VocabItem } from "@/lib/vocab";
+import { DEFAULT_QUIZ_MODE, getVocabItem, isContextSynonymMode, type QuizMode, type VocabItem } from "@/lib/vocab";
 import {
   buildQuizQuestions,
   getQuizCandidateItems,
@@ -1012,10 +1012,12 @@ export default function QuizScreen() {
   const pct = Math.round((currentIdx / questions.length) * 100);
 
   const questionMode = q.mode;
+  const contextSynonym = isContextSynonymMode(questionMode);
   const categoryFeedback = !q.sentenceCompletion && quizBookCategory(q.item, answered);
   const isChoiceMode = q.choices.length > 0;
 
   const getModeLabel = () => {
+    if (contextSynonym) return questionMode === "syn-context-basic" ? "예문 동의어 기초형" : "예문 동의어 실전형";
     if (q.sentenceCompletion) return "Sentence Completion · 논리";
     if (q.definitionRecall) return "영영 정의 → 정확한 단어";
     if (q.recall) {
@@ -1033,6 +1035,7 @@ export default function QuizScreen() {
   };
 
   const getHintText = () => {
+    if (contextSynonym) return "밑줄 친 표현과 문맥상 뜻이 가장 가까운 것은?";
     if (q.sentenceCompletion) return "Which completion best fits the entire context?";
     if (q.recall || q.definitionRecall) return "영영 정의에 정확히 맞는 표현은?";
     if (q.sense) return q.answerKind === "meaning" ? "이 문맥에서 표현의 뜻은?" : "이 문맥에서 뜻이 같은 표현은?";
@@ -1137,7 +1140,7 @@ export default function QuizScreen() {
                 </Pressable>
               </View>
 
-              {!q.sentenceCompletion && ((!q.recall && !q.definitionRecall) || answered) ? <View style={s.wordPronunciationRow}>
+              {!contextSynonym && !q.sentenceCompletion && ((!q.recall && !q.definitionRecall) || answered) ? <View style={s.wordPronunciationRow}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={s.wordText}>{q.item.w}</Text>
                   {q.item.p ? <Text style={s.ipaText}>{q.item.p}</Text> : null}
@@ -1150,8 +1153,8 @@ export default function QuizScreen() {
               {q.sentenceCompletion ? <SentenceCompletionPrompt question={q.sentenceCompletion} /> : null}
               {q.recall && !answered ? <ActiveRecallPrompt recall={q.recall} promptId={q.recallPromptId} /> : null}
               {q.definitionRecall && !answered ? <DefinitionRecallPrompt definition={q.definitionRecall.definition} /> : null}
-              <ProblemSenseContext sense={q.sense} />
-              {mnemonicVisual && !answered ? (
+              <ProblemSenseContext sense={q.sense} contextSynonym={contextSynonym} />
+              {!contextSynonym && mnemonicVisual && !answered ? (
                 <View style={s.mnemonicHintArea}>
                   {!imageRevealed ? (
                     <Pressable
@@ -1383,7 +1386,7 @@ export default function QuizScreen() {
               {answered && q.synonymRecall ? (
                 <SynonymRecallAnswer recall={q.synonymRecall} koreanMeaning={q.item.k_short} choices={q.choices} item={q.item} />
               ) : null}
-              {answered && q.sense && <ProblemSenseContext sense={q.sense} answered />}
+              {answered && q.sense && <ProblemSenseContext sense={q.sense} contextSynonym={contextSynonym} answered />}
               {answered && !q.sentenceCompletion && !q.sense && !q.recall && !q.definitionRecall && !q.synonymRecall && questionMode !== "flashcard" && (
                 <View style={s.explPanel}>
                   <Text style={s.explHeader}>해설</Text>

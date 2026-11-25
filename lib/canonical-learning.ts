@@ -1,8 +1,9 @@
 import { ACTIVE_RECALL_SENSES, getActiveRecallSenses } from "@/lib/active-recall";
-import { getProductionSenseQuestions } from "@/lib/sense-questions";
+import { getContextSynonymSenses, getProductionSenseQuestions } from "@/lib/sense-questions";
 import { getDefinitionQuizEntry } from "@/lib/definition-quiz";
 import { getSentenceCompletion, sentenceCompletionKey } from "@/lib/sentence-completion";
 import {
+  isContextSynonymMode,
   normalizeMeaning,
   normalizeWord,
   type VocabItem,
@@ -124,6 +125,7 @@ export function getQuestionLearningTargetKey(question: {
 
 /** A logic success must not certify vocabulary mastery (and vice versa). */
 export function getQuizLearningTargets(item: VocabItem, mode: string): Pick<LearningTargetRef, "key">[] {
+  if (isContextSynonymMode(mode)) return getContextSynonymSenses(item).map(sense => ({ key: canonicalSenseKey(sense.senseId) }));
   const completion = mode === "sentence-completion" ? getSentenceCompletion(item.id) : undefined;
   return mode === "sentence-completion" ? completion ? [{ key: sentenceCompletionKey(completion) }] : [] : getItemLearningTargets(item);
 }

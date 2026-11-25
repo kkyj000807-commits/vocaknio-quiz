@@ -8,6 +8,7 @@ const fixture = vi.hoisted(() => ({ current: true, failAfter: -1, disk: new Map<
 } }));
 // Keep the real parser/store/journal, replacing only large content registries.
 vi.mock("@/lib/vocab", () => ({ getVocabItem: () => fixture.item, normalizeWord: (s: string) => s.trim().toLowerCase(),
+  isContextSynonymMode: (mode: string) => mode === "syn-context" || mode === "syn-context-basic",
   isAcceptedSynonym: (item: { s: string[] }, value: string) => item.s.includes(value) }));
 vi.mock("@/lib/sense-questions", () => ({ senseQuestionSchema: z.never() }));
 vi.mock("@/lib/active-recall", () => ({ activeRecallSenseSchema: z.never() }));

@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { buildQuizQuestions, choiceGloss, isChoiceCorrect, validateQuestion, type QuizQuestion } from "@/lib/quiz-engine";
 import { createEmptyQuestionViewState, parseQuizSession, summarizeQuizSession, type QuizSession } from "@/lib/quiz-session";
+import { canonicalSenseKey, getQuestionLearningTargetKey, getQuizLearningTargets } from "@/lib/canonical-learning";
+import { contextTargetSpan, SENSE_QUESTIONS } from "@/lib/sense-questions";
 
 function question(mode: "kor-choice" | "syn-choice"): QuizQuestion {
   const q = buildQuizQuestions({ mode, itemNums: [4], count: 1 })[0];
@@ -13,6 +15,64 @@ function saved(q: QuizQuestion): QuizSession {
   return { schema: 1, requestKey: "answer-contract", sessionId: "answer-contract",
     questions: [q], states: [createEmptyQuestionViewState()], currentIndex: 0, completed: false };
 }
+
+describe("underlined contextual synonym questions", () => {
+  const senses = ["capricious.unpredictable-mood.v1", "blind-alley.fruitless-course.v1", "all-but.almost.v1",
+    "sanction.authorize.v1", "sanction.penalize.v1"];
+  it("requires a unique whole expression, not a substring or the context clue", () => {
+    expect(contextTargetSpan({ headword: "all but", contextEn: "All but certain." })).toEqual({ start: 0, end: 7 });
+    for (const contextEn of ["small button", "All but one; all but two.", "all-but", "not present"]) {
+      expect(contextTargetSpan({ headword: "all but", contextEn })).toBeNull();
+    }
+  });
+  it.each(["syn-context", "syn-context-basic"] as const)("%s restores the reviewed question, answer and feedback for every approved sense", mode => {
+    for (const id of senses) {
+      const sense = SENSE_QUESTIONS.find(entry => entry.id === id)!;
+      const key = canonicalSenseKey(sense.senseId);
+      const [q] = buildQuizQuestions({ mode, rangeId: "all", count: 1, learningTargetKeys: [key] });
+      expect(q.sense?.id).toBe(id);
+      const span = contextTargetSpan(sense)!;
+      expect(sense.contextEn.slice(span.start, span.end).toLowerCase()).toBe(sense.headword);
+      expect(getQuestionLearningTargetKey(q)).toBe(key);
+      expect(q.choices.filter(c => isChoiceCorrect(q, c)).map(c => c.value)).toEqual([q.correct]);
+      for (const c of q.choices) {
+        const source = sense.choices.find(o => c.id === `${sense.id}:${o.id}`)!;
+        expect(c.label).toBe(source.en);
+        expect(source.reasonKo).toBeTruthy();
+        expect(choiceGloss(q, c, false)).toBe(mode === "syn-context-basic" ? source.ko : "");
+        expect(choiceGloss(q, c, true)).toBe(source.ko);
+      }
+      const session = saved(q);
+      session.states[0] = { ...session.states[0], answered: true, selectedChoice: q.choices.findIndex(c => c.isCorrect) };
+      const restored = parseQuizSession(JSON.parse(JSON.stringify(session)));
+      expect(restored).toEqual(session);
+      expect(summarizeQuizSession(restored!)).toMatchObject({ correctCount: 1, wrongCount: 0 });
+      for (const tampered of [{ ...q, sense: undefined }, { ...q, acceptedAnswers: ["intruder"] },
+        { ...q, choices: q.choices.map((c, i) => i ? c : { ...c, meaning: "엉뚱한 뜻" }) }]) {
+        expect(validateQuestion(tampered)).toBe(false);
+        expect(parseQuizSession(saved(tampered))).toBeNull();
+      }
+      const rewritten = { ...q, sense: { ...sense, choices: sense.choices.map((option, i) =>
+        i ? option : { ...option, reasonKo: "관계 없는 해설" }) } };
+      expect(validateQuestion(rewritten)).toBe(false);
+      expect(parseQuizSession(saved(rewritten))).toBeNull();
+      expect(buildQuizQuestions({ mode, count: 1, itemNums: [q.item.num], learningTargetKeys: [key],
+        masteredTargetKeys: [key], allowMeaningFallback: true })).toEqual([]);
+    }
+  });
+  it("does not inflate coverage with repeated rows or fall back to a non-substitutable answer", () => {
+    const options = { mode: "syn-context" as const, count: 30, rangeId: "all", allowMeaningFallback: true };
+    const questions = buildQuizQuestions(options);
+    expect(questions).toHaveLength(4);
+    expect(new Set(questions.map(q => q.item.w)).size).toBe(4);
+    const excluded = SENSE_QUESTIONS.find(entry => entry.id === "all-but.except.v1")!;
+    const allBut = questions.find(q => q.item.w === "all but")!;
+    expect(getQuizLearningTargets(allBut.item, options.mode)).toEqual([{ key: getQuestionLearningTargetKey(allBut) }]);
+    expect(getQuizLearningTargets(allBut.item, "kor-choice").map(target => target.key)).toContain(canonicalSenseKey(excluded.senseId));
+    expect(buildQuizQuestions({ ...options, learningTargetKeys: [canonicalSenseKey(excluded.senseId)] })).toEqual([]);
+    expect(buildQuizQuestions({ ...options, itemNums: [4] })).toEqual([]);
+  });
+});
 
 describe("legacy question answer contract", () => {
   it.each(["syn-choice", "syn-kor-choice"] as const)("%s keeps English answers and shows choice glosses at the right time", mode => {

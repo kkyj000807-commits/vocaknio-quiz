@@ -77,14 +77,14 @@ describe("study setup starts with Korean meaning and keeps other modes available
     expect(buttons.find(button => button.label.includes('정확한 뜻 4택'))?.selected).toBe(true);
   });
   it("orders meaning, synonyms, definitions before the other retained modes", () => {
-    expect(QUIZ_MODES.filter(mode => mode.primary).map(mode => mode.id)).toEqual(["kor-choice", "syn-choice", "syn-kor-choice", "definition-choice", "sentence-completion"]);
+    expect(QUIZ_MODES.filter(mode => mode.primary).map(mode => mode.id)).toEqual(["kor-choice", "syn-choice", "syn-kor-choice", "definition-choice", "sentence-completion", "syn-context", "syn-context-basic"]);
     expect(QUIZ_MODES.map(mode => mode.id).sort()).toEqual([
-      "definition-choice", "flashcard", "kor-choice", "sentence-completion", "syn-choice", "syn-kor-choice", "syn-type",
+      "definition-choice", "flashcard", "kor-choice", "sentence-completion", "syn-choice", "syn-context", "syn-context-basic", "syn-kor-choice", "syn-type",
     ]);
     const { html, buttons } = renderSetup();
     expect(html).toContain("동의어 실전형");
     expect(html).toContain("동의어 기초형");
-    const positions = ["뜻고르기", "동의어 실전형", "동의어 기초형", "정의고르기", "논리완성", "그 외"].map(label => html.indexOf(label));
+    const positions = ["뜻고르기", "동의어 실전형", "동의어 기초형", "정의고르기", "논리완성", "예문 동의어 실전형", "예문 동의어 기초형", "그 외"].map(label => html.indexOf(label));
     expect(positions.every((at, i) => at >= 0 && (!i || at > positions[i - 1]))).toBe(true);
     expect(buttons.some(button => button.label.includes("뜻 확인 후 채점") || button.label.includes("동의어 타이핑"))).toBe(false);
     expect(buttons.find(button => button.label.includes("정확한 뜻 4택"))?.selected).toBe(true);

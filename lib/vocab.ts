@@ -215,12 +215,18 @@ export type QuizMode =
   | "sentence-completion"
   | "definition-choice"
   | "syn-choice"
+  | "syn-context"
+  | "syn-context-basic"
   | "kor-choice"
   | "syn-kor-choice"
   | "flashcard"
   | "syn-type";
 
 export const DEFAULT_QUIZ_MODE: QuizMode = "kor-choice";
+
+export function isContextSynonymMode(mode: string): mode is "syn-context" | "syn-context-basic" {
+  return mode === "syn-context" || mode === "syn-context-basic";
+}
 
 export const QUIZ_MODES: {
   id: QuizMode;
@@ -234,6 +240,8 @@ export const QUIZ_MODES: {
   { id: "syn-kor-choice", icon: "≈", title: "동의어 기초형", desc: "영어 → 영어 + 한글 뜻", primary: true },
   { id: "definition-choice", icon: "EN", title: "정의고르기", desc: "영영 정의에서 정확한 단어 찾기", primary: true },
   { id: "sentence-completion", icon: "∴", title: "논리완성", desc: "문맥과 논리로 빈칸 추론", primary: true },
+  { id: "syn-context", icon: "≈", title: "예문 동의어 실전형", desc: "밑줄 표현 → 영어 선지", primary: true },
+  { id: "syn-context-basic", icon: "≈", title: "예문 동의어 기초형", desc: "밑줄 표현 → 영어 선지 + 한글 뜻", primary: true },
   { id: "flashcard", icon: "⚡", title: "빠른 암기", desc: "뜻 확인 후 채점" },
   { id: "syn-type", icon: "✍️", title: "직접 입력", desc: "동의어 타이핑" },
 ];

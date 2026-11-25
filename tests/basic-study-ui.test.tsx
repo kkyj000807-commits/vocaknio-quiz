@@ -5,19 +5,44 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildExplicitMeaningStudyRoute, QuizEmptyState, QuizSessionHold } from "@/components/quiz-empty-state";
+import { ProblemSenseContext } from "@/components/problem-sense-context";
+import { SENSE_QUESTIONS } from "@/lib/sense-questions";
 
 // Isolated presentation and route contracts: no corpus, learner disk or browser.
 const native = vi.hoisted(() => ({ buttons: [] as { label: string; press: () => void }[] }));
 vi.mock("react-native", () => {
   const component = (tag: string) => function MockNative({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) {
     if (tag === "button") native.buttons.push({ label: String(props.accessibilityLabel), press: props.onPress as () => void });
-    return React.createElement(tag, { "aria-label": props.accessibilityLabel }, children);
+    const underlined = tag === "span" && (props.style as { textDecorationLine?: string } | undefined)?.textDecorationLine === "underline";
+    return React.createElement(underlined ? "u" : tag, { "aria-label": props.accessibilityLabel }, children);
   };
   return { View: component("div"), ScrollView: component("div"), Text: component("span"), Pressable: component("button"), StyleSheet: { create: <T,>(value: T) => value } };
 });
 vi.mock("@/hooks/use-colors", () => ({ useColors: () => ({ foreground: "#222", dim: "#666", primary: "#536" }) }));
 
 const request = { mode: "definition-choice" as const, choiceLang: "korean" as const, rangeId: "v501", rangeStart: 18000, rangeEnd: 19000, count: 10 };
+
+it("underlines only the tested expression; translation, evidence and per-choice reasons follow submission", () => {
+  const sense = SENSE_QUESTIONS.find(entry => entry.id === "capricious.unpredictable-mood.v1")!;
+  const prompt = renderToStaticMarkup(<ProblemSenseContext sense={sense} contextSynonym />);
+  expect(prompt.match(/<u>/g)).toHaveLength(1);
+  expect(prompt).toContain("<u>capricious</u>");
+  expect(prompt).not.toContain(sense.contextKo);
+  expect(prompt).not.toContain("문장 단서 · ");
+  for (const choice of sense.choices) expect(prompt).not.toContain(choice.reasonKo);
+  const feedback = renderToStaticMarkup(<ProblemSenseContext sense={sense} contextSynonym answered />);
+  expect(feedback).toContain(sense.contextKo);
+  expect(feedback).toContain(sense.evidence);
+  for (const choice of sense.choices) expect(feedback).toContain(choice.reasonKo);
+});
+
+it.each(["syn-context", "syn-context-basic"] as const)("never substitutes a non-context question in empty %s", mode => {
+  const empty = { ...request, mode };
+  expect(buildExplicitMeaningStudyRoute(empty)).toBeNull();
+  const html = renderToStaticMarkup(<QuizEmptyState ready request={empty} onMeaningStudy={vi.fn()} onSettings={vi.fn()} />);
+  expect(html).toContain("예문 동의어 문제가 없습니다");
+  expect(html).not.toContain("한국어 뜻 문제로 전환");
+});
 
 it("keeps problem navigation outside long scrolling explanations and uses automatic archival", () => {
   const source = fs.readFileSync(path.resolve("app/quiz.tsx"), "utf8");
