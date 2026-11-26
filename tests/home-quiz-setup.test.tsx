@@ -73,20 +73,21 @@ describe("study setup starts with Korean meaning and keeps other modes available
   it('explains the device-book self-assessment boundary with the meaning default', () => {
     const { html, buttons } = renderSetup(true);
     expect(html).not.toContain('v1.5 단권화 전체 구성');
-    expect(html).toContain('신규 뜻은 빠른 암기(자기평가)로 학습');
+    expect(html).toContain('신규 뜻은 3초 인출(자기평가)로 학습');
     expect(buttons.find(button => button.label.includes('정확한 뜻 4택'))?.selected).toBe(true);
   });
   it("orders meaning, synonyms, definitions before the other retained modes", () => {
-    expect(QUIZ_MODES.filter(mode => mode.primary).map(mode => mode.id)).toEqual(["kor-choice", "syn-choice", "syn-kor-choice", "definition-choice", "sentence-completion", "syn-context", "syn-context-basic"]);
+    expect(QUIZ_MODES.filter(mode => mode.primary).map(mode => mode.id)).toEqual(["kor-choice", "syn-choice", "syn-kor-choice", "definition-choice", "sentence-completion", "syn-context", "syn-context-basic", "flashcard"]);
     expect(QUIZ_MODES.map(mode => mode.id).sort()).toEqual([
       "definition-choice", "flashcard", "kor-choice", "sentence-completion", "syn-choice", "syn-context", "syn-context-basic", "syn-kor-choice", "syn-type",
     ]);
     const { html, buttons } = renderSetup();
     expect(html).toContain("동의어 실전형");
     expect(html).toContain("동의어 기초형");
-    const positions = ["뜻고르기", "동의어 실전형", "동의어 기초형", "정의고르기", "대학 기출", "예문 동의어 실전형", "예문 동의어 기초형", "그 외"].map(label => html.indexOf(label));
+    const positions = ["뜻고르기", "동의어 실전형", "동의어 기초형", "정의고르기", "대학 기출", "예문 동의어 실전형", "예문 동의어 기초형", "3초 인출", "그 외"].map(label => html.indexOf(label));
     expect(positions.every((at, i) => at >= 0 && (!i || at > positions[i - 1]))).toBe(true);
-    expect(buttons.some(button => button.label.includes("뜻 확인 후 채점") || button.label.includes("동의어 타이핑"))).toBe(false);
+    expect(buttons.some(button => button.label.includes("3초 인출"))).toBe(true);
+    expect(buttons.some(button => button.label.includes("동의어 타이핑"))).toBe(false);
     expect(buttons.find(button => button.label.includes("정확한 뜻 4택"))?.selected).toBe(true);
   });
 

@@ -62,7 +62,7 @@ describe("underlined contextual synonym questions", () => {
     }
   });
   it("does not inflate coverage with repeated rows or fall back to a non-substitutable answer", () => {
-    const options = { mode: "syn-context" as const, count: 30, rangeId: "all", allowMeaningFallback: true };
+    const options = { mode: "syn-context" as const, count: 100, rangeId: "all", allowMeaningFallback: true };
     const questions = buildQuizQuestions(options);
     expect(questions).toHaveLength(4 + CONTEXT_DRILLS.length);
     expect(new Set(questions.map(q => q.item.w)).size).toBe(questions.length);
@@ -76,7 +76,7 @@ describe("underlined contextual synonym questions", () => {
   it("has contextual questions in every printed section and in idioms without changing legacy quiz answers", () => {
     for (const rangeId of [...SECTION_RANGES.map(s=>s.id), "idioms"]) {
       const qs = buildQuizQuestions({ mode: "syn-context", rangeId, count: 5 });
-      expect(qs.length, rangeId).toBeGreaterThanOrEqual(2);
+      expect(qs.length, rangeId).toBeGreaterThanOrEqual(4);
       expect(qs.every(q=>q.sense && validateQuestion(q))).toBe(true);
     }
     const [q] = buildQuizQuestions({ mode:"syn-context", itemNums:[1423],count:1 });

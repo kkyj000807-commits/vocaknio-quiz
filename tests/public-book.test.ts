@@ -57,7 +57,9 @@ describe('approved public book without owner import or password', () => {
     expect(quiz).toContain('practiceOnly ? { session: null, archived: false }');
     expect(quiz).toContain('if (!practiceOnly && nextQuestions.length) await saveQuizSession');
     expect(quiz.match(/if \(!practiceOnlyRef.current\) recordOneAnswer/g)).toHaveLength(4);
-    expect(quiz).toContain("if (practiceOnlyRef.current) { handleFlashGrade('correct'); return; }");
+    expect(quiz).not.toContain("markLearningTargetMastered(");
+    expect(quiz).not.toContain("onPress={handleFlashMaster}");
+    expect(quiz).toContain("setMasteredOnCard(snapshot.mastered)");
     expect(quiz).toContain('learningTargetKeys: reviewKeys.length ? reviewKeys : undefined');
     expect(quiz).toContain('itemNums: scopedNums ??');
     expect(fs.readFileSync('app/result.tsx', 'utf8')).toContain("params.practiceOnly === '1'");

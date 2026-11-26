@@ -68,7 +68,6 @@ import {
   loadMastered,
   loadSenseLearningState,
   loadLearningSnapshot,
-  markLearningTargetMastered,
   loadQuizSessionForStudy,
   retryLearningStorage,
   getQuizStorageIssue,
@@ -213,6 +212,7 @@ function VocabularyQuizScreen() {
   const [wrongCount, setWrongCount] = useState(0);
   const [wrongItems, setWrongItems] = useState<VocabItem[]>([]);
   const [revealed, setRevealed] = useState(false);
+  const [recallElapsed, setRecallElapsed] = useState<{ questionId: string; milliseconds: number } | null>(null);
   const [flashGrade, setFlashGrade] = useState<"correct" | "wrong" | null>(
     null,
   );
@@ -564,6 +564,7 @@ function VocabularyQuizScreen() {
   useEffect(() => {
     questionTimer.reset();
     setImageRevealed(false);
+    setRecallElapsed(null);
   }, [currentIdx, q?.id, questionTimer]);
 
   const handleBookmark = useCallback(async () => {
@@ -664,11 +665,13 @@ function VocabularyQuizScreen() {
   ]);
 
   const handleReveal = useCallback(() => {
-    if (Date.now() < suppressTouchPressUntilRef.current) return;
+    if (!q || isMovingRef.current || Date.now() < suppressTouchPressUntilRef.current ||
+      questionViewStatesRef.current.get(currentIdx)?.revealed) return;
+    setRecallElapsed({ questionId: q.id, milliseconds: questionTimer.read().responseMs });
     haptic("light");
     setRevealed(true);
     captureQuestionViewState({ revealed: true });
-  }, [haptic, captureQuestionViewState]);
+  }, [currentIdx, q, questionTimer, haptic, captureQuestionViewState]);
 
   const handleFlashGrade = useCallback(
     (grade: "correct" | "wrong") => {
@@ -713,88 +716,6 @@ function VocabularyQuizScreen() {
       recordImageHelped,
     ],
   );
-
-  // 플래시카드 마스터 처리 — 이 단어를 마스터 목록에 추가
-  const handleFlashMaster = useCallback(async () => {
-    if (practiceOnlyRef.current) { handleFlashGrade('correct'); return; }
-    if (
-      Date.now() < suppressTouchPressUntilRef.current ||
-      !q ||
-      answered ||
-      isMovingRef.current ||
-      questionViewStatesRef.current.get(currentIdx)?.answered
-    )
-      return;
-    isMovingRef.current = true;
-    haptic("success");
-    try {
-      await markLearningTargetMastered(getQuestionLearningTargetKey(q), q.item.num);
-    } catch {
-      isMovingRef.current = false;
-      return;
-    }
-    const nextCorrectCount = correctCount + 1;
-    setCorrectCount(nextCorrectCount);
-    setAnswered(true);
-    setRevealed(true);
-    setMasteredOnCard(true);
-    captureQuestionViewState({
-      answered: true,
-      revealed: true,
-      flashGrade: null,
-      mastered: true,
-    });
-    // '마스터'는 알고 있는 단어로 한 번만 채점한다.
-    const masteredContext = makeAdaptiveAnswerContext("mastered");
-    recordOneAnswer(
-      true,
-      undefined,
-      masteredContext
-        ? { ...masteredContext, learningTargetKey: undefined }
-        : undefined,
-      makeSessionSnapshot(),
-    );
-    // 마스터 처리 후 자동으로 다음 문제로 이동
-    const targetIndex = getNextQuizIndex(currentIdx, makeSessionSnapshot().states);
-    if (targetIndex === null) {
-      await finishSession();
-      router.replace({
-        pathname: "/result",
-        params: {
-          correct: nextCorrectCount,
-          practiceOnly: practiceOnlyRef.current ? '1' : undefined,
-          total: questions.length,
-          wrongNums: wrongItems.map((w) => w.num).join(","),
-          ...resultReviewParams(makeSessionSnapshot(), mode, choiceLang),
-        },
-      });
-      return;
-    }
-    restoreQuestionViewState(targetIndex);
-    setCurrentIdx(targetIndex);
-    animateMoveCard("next");
-    scrollRef.current?.scrollTo({ y: 0, animated: true });
-    releaseMovingLock();
-  }, [
-    answered,
-    q,
-    haptic,
-    currentIdx,
-    questions.length,
-    correctCount,
-    wrongItems,
-    mode,
-    choiceLang,
-    router,
-    captureQuestionViewState,
-    restoreQuestionViewState,
-    animateMoveCard,
-    releaseMovingLock,
-    makeAdaptiveAnswerContext,
-    finishSession,
-    makeSessionSnapshot,
-    handleFlashGrade,
-  ]);
 
   const handleTypeSubmit = useCallback(() => {
     if (
@@ -1041,7 +962,7 @@ function VocabularyQuizScreen() {
         : mode !== "kor-choice" ? "한국어 뜻 고르기 · 동의어 자료 부족" : "한국어 뜻 고르기";
     }
     if (questionMode === "syn-kor-choice") return "동의어 기초형";
-    if (questionMode === "flashcard") return "플래시카드";
+    if (questionMode === "flashcard") return "3초 인출";
     return "동의어 입력";
   };
 
@@ -1154,9 +1075,9 @@ function VocabularyQuizScreen() {
               {!contextSynonym && !q.sentenceCompletion && ((!q.recall && !q.definitionRecall) || answered) ? <View style={s.wordPronunciationRow}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={s.wordText}>{q.item.w}</Text>
-                  {q.item.p ? <Text style={s.ipaText}>{q.item.p}</Text> : null}
+                  {q.item.p && (questionMode !== "flashcard" || revealed) ? <Text style={s.ipaText}>{q.item.p}</Text> : null}
                 </View>
-                <PronunciationButton itemId={q.item.id} text={q.item.w} />
+                {(questionMode !== "flashcard" || revealed) && <PronunciationButton itemId={q.item.id} text={q.item.w} />}
               </View> : null}
               {categoryFeedback ? <Text accessibilityLiveRegion="polite" style={{ color: colors.primary, fontWeight: "700", marginVertical: 6 }}>{categoryFeedback}</Text> : null}
 
@@ -1165,7 +1086,7 @@ function VocabularyQuizScreen() {
               {q.recall && !answered ? <ActiveRecallPrompt recall={q.recall} promptId={q.recallPromptId} /> : null}
               {q.definitionRecall && !answered ? <DefinitionRecallPrompt definition={q.definitionRecall.definition} /> : null}
               <ProblemSenseContext sense={q.sense} contextSynonym={contextSynonym} />
-              {!contextSynonym && mnemonicVisual && !answered ? (
+              {!contextSynonym && questionMode !== "flashcard" && mnemonicVisual && !answered ? (
                 <View style={s.mnemonicHintArea}>
                   {!imageRevealed ? (
                     <Pressable
@@ -1272,10 +1193,10 @@ function VocabularyQuizScreen() {
                     front={
                       <View style={s.flipFront}>
                         <Text style={s.flashHint}>
-                          뜻을 떠올린 후 확인 버튼을 누르세요
+                          3초 안에 뜻을 말해 보세요. 막히면 바로 확인하세요.
                         </Text>
-                        <Pressable style={s.revealBtn} onPress={handleReveal}>
-                          <Text style={s.revealBtnText}>🔍 뜻 확인</Text>
+                        <Pressable accessibilityRole="button" style={s.revealBtn} onPress={handleReveal}>
+                          <Text style={s.revealBtnText}>뜻 확인</Text>
                         </Pressable>
                       </View>
                     }
@@ -1296,6 +1217,11 @@ function VocabularyQuizScreen() {
                       </View>
                     }
                   />
+                  {revealed && recallElapsed?.questionId === q.id && (
+                    <Text style={[s.flashHint, { color: colors.muted }]}>
+                      뜻 확인까지 {(recallElapsed.milliseconds / 1000).toFixed(1)}초 · 목표 3초
+                    </Text>
+                  )}
                   {revealed && <BookLearningDetails entry={q.item.book} hideCategory={!!categoryFeedback} />}
                   {revealed && !answered && (
                     <View style={{ marginTop: 14, gap: 8 }}>
@@ -1307,7 +1233,7 @@ function VocabularyQuizScreen() {
                           <Text
                             style={[s.gradeBtnText, { color: colors.error }]}
                           >
-                            ❌ 모르겠어요
+                            다시 볼래요
                           </Text>
                         </Pressable>
                         <Pressable
@@ -1317,19 +1243,10 @@ function VocabularyQuizScreen() {
                           <Text
                             style={[s.gradeBtnText, { color: colors.success }]}
                           >
-                            ✅ 알았어요
+                            뜻이 떠올랐어요
                           </Text>
                         </Pressable>
                       </View>
-                      {/* 마스터 버튼 — 이 단어는 완전히 알아서 앞으로 출제 제외 */}
-                      <Pressable
-                        style={s.masterBtn}
-                        onPress={handleFlashMaster}
-                      >
-                        <Text style={s.masterBtnText}>
-                          ⭐ 마스터 — 목록·출제에서 제외
-                        </Text>
-                      </Pressable>
                     </View>
                   )}
                   {masteredOnCard && (
@@ -1925,19 +1842,6 @@ const styles = (colors: ReturnType<typeof useColors>) =>
       color: colors.dim,
       marginTop: 3,
       lineHeight: 15,
-    },
-    masterBtn: {
-      backgroundColor: "rgba(251,191,36,0.12)",
-      borderWidth: 1,
-      borderColor: "rgba(251,191,36,0.35)",
-      borderRadius: 12,
-      paddingVertical: 12,
-      alignItems: "center",
-    },
-    masterBtnText: {
-      fontSize: 13,
-      fontWeight: "700",
-      color: "#F59E0B",
     },
     masteredInfo: {
       marginTop: 14,

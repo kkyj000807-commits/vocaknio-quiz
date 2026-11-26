@@ -208,13 +208,15 @@ export default function HomeScreen() {
             <Text style={s.startBtnArrow}>→</Text>
           </Pressable>
           <Text style={s.startNote}>
-            {selectedMode !== "sentence-completion" && studyItems.some(item => item.localBook) ? '불러온 교재의 신규 뜻은 빠른 암기(자기평가)로 학습합니다. 자동채점은 기존 검수 문항만 사용합니다. ' : ''}
+            {selectedMode !== "sentence-completion" && studyItems.some(item => item.localBook) ? '불러온 교재의 신규 뜻은 3초 인출(자기평가)로 학습합니다. 자동채점은 기존 검수 문항만 사용합니다. ' : ''}
             {selectedMode === "sentence-completion" ? "처음 쓰는 브라우저에서만 기출 자료가 필요합니다." : selectedMode === "syn-context-basic"
               ? "밑줄 친 표현을 문맥으로 판단합니다. 영어 선지와 한글 뜻을 함께 봅니다."
               : selectedMode === "syn-context"
               ? "밑줄 친 표현을 문맥으로 판단합니다. 영어 선지의 뜻과 해설은 채점 후에 나옵니다."
               : selectedMode === "syn-kor-choice"
               ? "영어 선지 아래에 한글 뜻이 함께 나옵니다."
+              : selectedMode === "flashcard"
+              ? "단어만 보고 뜻을 떠올린 뒤 스스로 확인합니다. 3초는 목표이며 시간으로 채점하지 않습니다."
               : "선택한 유형에서 출제 가능한 문항만 사용합니다. 자료가 부족하면 다른 유형을 직접 선택할 수 있습니다"}
           </Text>
         </View>

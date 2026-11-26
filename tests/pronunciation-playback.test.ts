@@ -5,7 +5,7 @@ import { DEFAULT_PRONUNCIATION } from "@/lib/pronunciation-preference";
 function fixture() {
   let voices = [{ lang: "en-US", name: "Microsoft Aria Natural", voiceURI: "aria" }] as SpeechSynthesisVoice[];
   class Utterance { constructor(public text: string) {} }
-  const synthesis = { speak: vi.fn(), cancel: vi.fn(), getVoices: () => voices };
+  const synthesis = { speak: vi.fn(), cancel: vi.fn(), getVoices: () => voices, paused: false, resume: vi.fn() };
   let rejectPlay!: (reason: Error) => void;
   const audios: Audio[] = [];
   class Audio {
@@ -82,5 +82,31 @@ describe("shared pronunciation playback", () => {
     expect(f.start().onStatus.mock.lastCall?.[0]).toMatchObject({ speaking: false, failed: true });
     const g = fixture(); g.synthesis.speak.mockImplementation(() => { throw new Error("unavailable"); });
     expect(g.start().onStatus.mock.lastCall?.[0]).toMatchObject({ speaking: false, failed: true });
+  });
+  it("does not claim audio without a start event and a second click uses the OS default", () => {
+    vi.useFakeTimers();
+    try {
+      const f = fixture();
+      f.synthesis.paused = true;
+      const first = f.start();
+      expect(f.synthesis.resume).toHaveBeenCalledOnce();
+      expect(first.onStatus).toHaveBeenLastCalledWith({ speaking: false, starting: true, source: "synthesis", failed: false });
+      const late = f.synthesis.speak.mock.calls[0][0].onstart;
+      vi.advanceTimersByTime(2200);
+      expect(first.onStatus).toHaveBeenLastCalledWith({ speaking: false, starting: false, source: "synthesis", failed: true });
+      expect(f.synthesis.cancel).toHaveBeenCalledOnce();
+      const retry = f.start({ useDefaultVoice: true, recordingUrl: "https://example.test/licensed.ogg" });
+      expect(f.audios).toHaveLength(0);
+      const utterance = f.synthesis.speak.mock.calls[1][0];
+      expect(utterance).toMatchObject({ voice: null, lang: "en-US" });
+      late();
+      expect(retry.onStatus.mock.lastCall?.[0].speaking).toBe(false);
+      utterance.onstart();
+      vi.advanceTimersByTime(2400);
+      expect(retry.onStatus.mock.lastCall?.[0]).toMatchObject({ speaking: true, failed: false });
+      utterance.onend();
+      f.start();
+      expect(f.synthesis.cancel).toHaveBeenCalledOnce(); // Don't cancel a completed utterance on a fresh click.
+    } finally { vi.useRealTimers(); }
   });
 });

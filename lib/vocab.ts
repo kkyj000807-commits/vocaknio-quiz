@@ -242,7 +242,7 @@ export const QUIZ_MODES: {
   { id: "sentence-completion", icon: "∴", title: "대학 기출", desc: "학교별 어휘·논리 원문 문제", primary: true },
   { id: "syn-context", icon: "≈", title: "예문 동의어 실전형", desc: "밑줄 표현 → 영어 선지", primary: true },
   { id: "syn-context-basic", icon: "≈", title: "예문 동의어 기초형", desc: "밑줄 표현 → 영어 선지 + 한글 뜻", primary: true },
-  { id: "flashcard", icon: "⚡", title: "빠른 암기", desc: "뜻 확인 후 채점" },
+  { id: "flashcard", icon: "⚡", title: "3초 인출", desc: "단어만 보고 뜻 떠올리기", primary: true },
   { id: "syn-type", icon: "✍️", title: "직접 입력", desc: "동의어 타이핑" },
 ];
 
